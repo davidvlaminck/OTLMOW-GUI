@@ -1,0 +1,2 @@
+# htmlcov folder is no longer included in linguist (calculates Languages report in repo)
+UnitTests/htmlcov/* linguist-vendored
