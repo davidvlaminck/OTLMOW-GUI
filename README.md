@@ -1,4 +1,4 @@
-# OTLMOW-Model
+# OTLMOW-GUI
 [![PyPI](https://img.shields.io/pypi/v/otlmow-gui?label=latest%20release)](https://pypi.org/project/otlmow-gui/)
 [![otlmow-gui-downloads](https://img.shields.io/pypi/dm/otlmow-gui)](https://pypi.org/project/otlmow-gui/)
 [![Unittests](https://github.com/davidvlaminck/OTLMOW-GUI/actions/workflows/unittest.yml/badge.svg)](https://github.com/davidvlaminck/OTLMOW-GUI/actions/workflows/unittest.yml)
@@ -13,14 +13,14 @@
 ## OTLMOW Project 
 This project aims to implement the Flemish data standard OTL (https://wegenenverkeer.data.vlaanderen.be/) in Python.
 It is split into different packages to reduce compatibility issues
-- [otlmow_model](https://github.com/davidvlaminck/OTLMOW-Model) (you are currently looking at this package)
+- [otlmow_model](https://github.com/davidvlaminck/OTLMOW-Model)
 - [otlmow_modelbuilder](https://github.com/davidvlaminck/OTLMOW-ModelBuilder)
-- [otlmow_converter](https://github.com/davidvlaminck/OTLMOW-Converter) 
-- [otlmow_template](https://github.com/davidvlaminck/OTLMOW-Template) 
-- [otlmow_postenmapping](https://github.com/davidvlaminck/OTLMOW-PostenMapping) 
+- [otlmow_converter](https://github.com/davidvlaminck/OTLMOW-Converter)
+- [otlmow_template](https://github.com/davidvlaminck/OTLMOW-Template)
+- [otlmow_postenmapping](https://github.com/davidvlaminck/OTLMOW-PostenMapping)
 - [otlmow_davie](https://github.com/davidvlaminck/OTLMOW-DAVIE)
 - [otlmow_visuals](https://github.com/davidvlaminck/OTLMOW-Visuals)
-- [otlmow_gui](https://github.com/davidvlaminck/OTLMOW-GUI) 
+- [otlmow_gui](https://github.com/davidvlaminck/OTLMOW-GUI) (you are currently looking at this package)
 
 ## Installation guide
 TODO
