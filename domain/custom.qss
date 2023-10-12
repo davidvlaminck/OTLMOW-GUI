@@ -1,4 +1,4 @@
-QPushButton{
+.new-project{
     background-color: #0E5A69;
     color: #ffffff;
     height: 25px;
@@ -11,6 +11,8 @@ QHeaderView::section{
     color: #B35F35;
     font-family: Roboto;
     text-align: left;
+    margin-top: 20px;
+    margin-left: 5px;
 }
 
 @QTableWidget{
@@ -25,14 +27,16 @@ QHeaderView::section{
     font-family: Roboto;
 }
 
-QLabel#titel{
-    color: #ffffff;
-}
+
 
 .search{
     background-color: #ffffff;
     border: 1px solid #716F6F;
     border-radius: 5px;
+}
+
+QTableWidget::item{
+    selection-background-color: grey;
 }
 
 

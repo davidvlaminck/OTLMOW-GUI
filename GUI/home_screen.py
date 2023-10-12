@@ -1,6 +1,7 @@
 from PyQt6.QtWidgets import QWidget, QPushButton, QLabel, QHBoxLayout, QVBoxLayout, QTableWidget, \
     QTableWidgetItem, QLineEdit, QHeaderView
 from PyQt6.QtCore import Qt
+import qtawesome as qta
 
 
 class HomeScreen(QWidget):
@@ -8,52 +9,56 @@ class HomeScreen(QWidget):
         super().__init__()
 
         # Vertical layout
-        vert = QVBoxLayout()
+        containerHomeScreen = QVBoxLayout()
 
         # Create the header
         headWrapper = QWidget()
         headWrapper.setProperty('class', 'header')
-        Header = QHBoxLayout()
+        header = QHBoxLayout()
         title = QLabel('OTLWizard')
-        Header.addWidget(title)
-        button = QPushButton('New Project')
-        Header.addWidget(button)
-        Header.setAlignment(button, Qt.AlignmentFlag.AlignLeft)
-        User_pref = QHBoxLayout()
-        settings = QPushButton('Settings')
-        User_pref.addWidget(settings)
-        help = QPushButton('Help')
-        User_pref.addWidget(help)
-        Header.addLayout(User_pref)
-        Header.setAlignment(User_pref, Qt.AlignmentFlag.AlignRight)
-        headWrapper.setLayout(Header)
+        header.addWidget(title)
+        newProjectButton = QPushButton('New Project')
+        newProjectButton.setProperty('class', 'new-project')
+        header.addWidget(newProjectButton)
+        header.setAlignment(newProjectButton, Qt.AlignmentFlag.AlignLeft)
+        userPrefContainer = QHBoxLayout()
+        settings = QPushButton()
+        settings.setIcon(qta.icon('mdi.cog'))
+        userPrefContainer.addWidget(settings)
+        helpwidget = QPushButton()
+        helpwidget.setIcon(qta.icon('mdi.help-circle'))
+        userPrefContainer.addWidget(helpwidget)
+        header.addLayout(userPrefContainer)
+        header.setAlignment(userPrefContainer, Qt.AlignmentFlag.AlignRight)
+        headWrapper.setLayout(header)
 
         # Search bar
         searchWrapper = QWidget()
         searchWrapper.setProperty('class', 'search')
         search = QHBoxLayout()
         inputField = QLineEdit()
+        inputField.setPlaceholderText('Zoeken op projectnaam of bestek')
         search.addWidget(inputField)
         searchbutton = QPushButton('Search')
         search.addWidget(searchbutton)
+        search.addStretch()
         searchWrapper.setLayout(search)
 
         # Create the table with QTableView
         table = QTableWidget()
         table.setRowCount(4)
         table.verticalHeader().setVisible(False)
-        table.setColumnCount(4)
-
-        for column in range(table.columnCount()):
+        table.setColumnCount(6)
+        for column in range(table.columnCount() - 2):
             table.horizontalHeader().setSectionResizeMode(column, QHeaderView.ResizeMode.Stretch)
-            #table.setColumnWidth(column, 474)
+        table.horizontalHeader().setSectionResizeMode(4, QHeaderView.ResizeMode.ResizeToContents)
+        table.horizontalHeader().setSectionResizeMode(5, QHeaderView.ResizeMode.ResizeToContents)
         table.setShowGrid(False)
         # Zorgt ervoor dat selectie op row is niet op cell
         table.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows)
         # Zorgt ervoor dat de table niet editable is
         table.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
-        table.resizeRowsToContents()
-        table.setHorizontalHeaderLabels(['Eigen referentie:', 'Bestek - (Dienstbevel)', 'Subset', 'Laatst bewerkt'])
+        table.setHorizontalHeaderLabels(['Eigen referentie:', 'Bestek - (Dienstbevel)', 'Subset', 'Laatst bewerkt', '',''])
         # ALign titles of header to the left
         table.horizontalHeader().setDefaultAlignment(Qt.AlignmentFlag.AlignLeft)
 
@@ -63,15 +68,21 @@ class HomeScreen(QWidget):
                 item = QTableWidgetItem()
                 item.setText('test')
                 table.setItem(j, i, item)
-
+            item = QPushButton()
+            item.setIcon(qta.icon('mdi.pencil'))
+            table.setCellWidget(j, 4, item)
+            item = QPushButton()
+            item.setIcon(qta.icon('mdi.trash-can'))
+            table.setCellWidget(j, 5, item)
         # add header to the vertical layout
-        vert.addWidget(headWrapper)
-        vert.addSpacing(39)
+        containerHomeScreen.addWidget(headWrapper)
+        containerHomeScreen.addSpacing(39)
         # add searchbar to the vertical layout
-        vert.addWidget(searchWrapper)
-        vert.addSpacing(43)
+        containerHomeScreen.addWidget(searchWrapper)
+        containerHomeScreen.addSpacing(43)
         # add table to the vertical layout
-        vert.addWidget(table)
+        containerHomeScreen.addWidget(table)
+        containerHomeScreen.addStretch()
 
-        self.setLayout(vert)
+        self.setLayout(containerHomeScreen)
         self.show()
