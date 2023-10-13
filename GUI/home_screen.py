@@ -9,46 +9,47 @@ class HomeScreen(QWidget):
         super().__init__()
 
         # Vertical layout
-        containerHomeScreen = QVBoxLayout()
+        container_home_screen = QVBoxLayout()
 
         # Create the header
-        headWrapper = QWidget()
-        headWrapper.setProperty('class', 'header')
+        head_wrapper = QWidget()
+        head_wrapper.setProperty('class', 'header')
         header = QHBoxLayout()
         title = QLabel('OTLWizard')
         header.addWidget(title)
-        newProjectButton = QPushButton('New Project')
-        newProjectButton.setProperty('class', 'new-project')
-        header.addWidget(newProjectButton)
-        header.setAlignment(newProjectButton, Qt.AlignmentFlag.AlignLeft)
-        userPrefContainer = QHBoxLayout()
+        new_project_button = QPushButton('New Project')
+        new_project_button.setProperty('class', 'new-project')
+        header.addWidget(new_project_button)
+        header.setAlignment(new_project_button, Qt.AlignmentFlag.AlignLeft)
+        user_pref_container = QHBoxLayout()
         settings = QPushButton()
         settings.setIcon(qta.icon('mdi.cog'))
-        userPrefContainer.addWidget(settings)
-        helpwidget = QPushButton()
-        helpwidget.setIcon(qta.icon('mdi.help-circle'))
-        userPrefContainer.addWidget(helpwidget)
-        header.addLayout(userPrefContainer)
-        header.setAlignment(userPrefContainer, Qt.AlignmentFlag.AlignRight)
-        headWrapper.setLayout(header)
+        user_pref_container.addWidget(settings)
+        help_widget = QPushButton()
+        help_widget.setIcon(qta.icon('mdi.help-circle'))
+        user_pref_container.addWidget(help_widget)
+        header.addLayout(user_pref_container)
+        header.setAlignment(user_pref_container, Qt.AlignmentFlag.AlignRight)
+        head_wrapper.setLayout(header)
 
         # Search bar
-        searchWrapper = QWidget()
-        searchWrapper.setProperty('class', 'search')
+        search_wrapper = QWidget()
+        search_wrapper.setProperty('class', 'search')
         search = QHBoxLayout()
-        inputField = QLineEdit()
-        inputField.setPlaceholderText('Zoeken op projectnaam of bestek')
-        search.addWidget(inputField)
-        searchbutton = QPushButton('Search')
-        search.addWidget(searchbutton)
+        input_field = QLineEdit()
+        input_field.setPlaceholderText('Zoeken op projectnaam of bestek')
+        search.addWidget(input_field)
+        search_button = QPushButton('Search')
+        search.addWidget(search_button)
         search.addStretch()
-        searchWrapper.setLayout(search)
+        search_wrapper.setLayout(search)
 
         # Create the table with QTableView
         table = QTableWidget()
         table.setRowCount(4)
         table.verticalHeader().setVisible(False)
         table.setColumnCount(6)
+        # Set the width of the columns to stretch except the last two columns for buttons
         for column in range(table.columnCount() - 2):
             table.horizontalHeader().setSectionResizeMode(column, QHeaderView.ResizeMode.Stretch)
         table.horizontalHeader().setSectionResizeMode(4, QHeaderView.ResizeMode.ResizeToContents)
@@ -58,7 +59,8 @@ class HomeScreen(QWidget):
         table.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows)
         # Zorgt ervoor dat de table niet editable is
         table.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
-        table.setHorizontalHeaderLabels(['Eigen referentie:', 'Bestek - (Dienstbevel)', 'Subset', 'Laatst bewerkt', '',''])
+        table.setHorizontalHeaderLabels(
+            ['Eigen referentie:', 'Bestek - (Dienstbevel)', 'Subset', 'Laatst bewerkt', '', ''])
         # ALign titles of header to the left
         table.horizontalHeader().setDefaultAlignment(Qt.AlignmentFlag.AlignLeft)
 
@@ -75,14 +77,14 @@ class HomeScreen(QWidget):
             item.setIcon(qta.icon('mdi.trash-can'))
             table.setCellWidget(j, 5, item)
         # add header to the vertical layout
-        containerHomeScreen.addWidget(headWrapper)
-        containerHomeScreen.addSpacing(39)
+        container_home_screen.addWidget(head_wrapper)
+        container_home_screen.addSpacing(39)
         # add searchbar to the vertical layout
-        containerHomeScreen.addWidget(searchWrapper)
-        containerHomeScreen.addSpacing(43)
+        container_home_screen.addWidget(search_wrapper)
+        container_home_screen.addSpacing(43)
         # add table to the vertical layout
-        containerHomeScreen.addWidget(table)
-        containerHomeScreen.addStretch()
+        container_home_screen.addWidget(table)
+        container_home_screen.addStretch()
 
-        self.setLayout(containerHomeScreen)
+        self.setLayout(container_home_screen)
         self.show()
