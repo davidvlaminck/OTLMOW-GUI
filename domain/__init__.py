@@ -1,8 +1,7 @@
 import sys
 
-from PyQt6.QtWidgets import QApplication, QWidget
+from PyQt6.QtWidgets import QApplication
 from GUI.home_screen import HomeScreen
-from qt_material import apply_stylesheet
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
@@ -12,4 +11,4 @@ if __name__ == '__main__':
     window.resize(1920, 1080)
     window.setWindowTitle("OTLWizard")
     window.setMinimumSize(1280, 720)
-    sys.exit(app.exec())  
+    sys.exit(app.exec())
