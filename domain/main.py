@@ -11,4 +11,5 @@ if __name__ == '__main__':
     window = HomeScreen()
     window.resize(1920, 1080)
     window.setWindowTitle("OTLWizard")
-    sys.exit(app.exec())
+    window.setMinimumSize(1280, 720)
+    sys.exit(app.exec())  
