@@ -23,10 +23,13 @@ class Database:
             '''CREATE TABLE IF NOT EXISTS projects(Id INTEGER PRIMARY KEY AUTOINCREMENT, Eigen_referentie TEXT, Bestek TEXT, Subset TEXT, Laatst_bewerkt TIMESTAMP)''')
 
     # Adds a project to the project table taking the parameters as values
-    def add_project(self, eigen_referentie, bestek, subset, laatst_bewerkt):
-        self.cursor.execute(
-            '''INSERT INTO projects(Eigen_referentie, Bestek, Subset, Laatst_bewerkt) VALUES(?,?,?,?)''',
-            (eigen_referentie, bestek, subset, laatst_bewerkt))
+    def add_project(self, eigen_referentie: str, bestek: str, subset: str, laatst_bewerkt):
+        if not isinstance(eigen_referentie, str) or not isinstance(bestek, str) or not isinstance(subset, str):
+            raise TypeError("Invalid type")
+        else:
+            self.cursor.execute(
+                '''INSERT INTO projects(Eigen_referentie, Bestek, Subset, Laatst_bewerkt) VALUES(?,?,?,?)''',
+                (eigen_referentie, bestek, subset, laatst_bewerkt))
 
     # Returns all projects in the project table
     def get_all_projects(self):
@@ -42,9 +45,12 @@ class Database:
         self.cursor.execute('''SELECT * FROM projects WHERE Id = ?''', (id,))
         return self.cursor.fetchone()
 
-    def update_project(self, id, eigen_referentie, bestek, subset, laatst_bewerkt):
-        self.cursor.execute('''UPDATE projects SET Eigen_referentie = ?, Bestek = ?, Subset = ?, Laatst_bewerkt = ? WHERE Id = ?''', (eigen_referentie, bestek, subset, laatst_bewerkt, id))
-        return self.cursor.rowcount
+    def update_project(self, id, eigen_referentie: str, bestek: str, subset: str, laatst_bewerkt):
+        if not isinstance(eigen_referentie, str) or not isinstance(bestek, str) or not isinstance(subset, str):
+            raise TypeError("Invalid Type")
+        else:
+            self.cursor.execute('''UPDATE projects SET Eigen_referentie = ?, Bestek = ?, Subset = ?, Laatst_bewerkt = ? WHERE Id = ?''', (eigen_referentie, bestek, subset, laatst_bewerkt, id))
+            return self.cursor.rowcount
 
     # Returns amount of projects in database
     def count_projects(self):

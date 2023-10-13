@@ -26,6 +26,13 @@ def test_add_project(db):
     db.close_connection()
 
 
+@pytest.mark.parametrize('eigen_ref, bestek, subset', [(1, 1, 1), (None, None, None)])
+def test_add_project_with_non_string_values_returns_error(db, eigen_ref, bestek, subset):
+    with pytest.raises(TypeError):
+        db.add_project(eigen_ref, bestek, subset, None)
+    db.close_connection()
+
+
 def test_remove_project(db):
     db.add_project('test', 'test', 'test', None)
     db.remove_project(1)
@@ -48,6 +55,13 @@ def test_update_project(db):
     db.add_project('test', 'test', 'test', None)
     assert db.update_project(1, 'test2', 'test2', 'test2', None) == 1
     assert db.get_project(1) == (1, 'test2', 'test2', 'test2', None)
+    db.close_connection()
+
+@pytest.mark.parametrize('eigen_ref, bestek, subset', [(1, 1, 1), (None, None, None)])
+def test_update_project_with_non_string_values_returns_error(db, eigen_ref, bestek, subset):
+    db.add_project('test', 'test', 'test', None)
+    with pytest.raises(TypeError):
+        db.update_project(1, eigen_ref, bestek, subset, None)
     db.close_connection()
 
 
