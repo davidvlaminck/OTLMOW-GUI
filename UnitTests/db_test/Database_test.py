@@ -54,3 +54,14 @@ def test_update_project(db):
 def test_update_returns_zero_if_no_rows_affected(db):
     assert db.update_project(1, 'test2', 'test2', 'test2', None) == 0
     db.close_connection()
+
+
+def test_count_projects(db):
+    db.add_project('test', 'test', 'test', None)
+    assert db.count_projects() == 1
+    db.close_connection()
+
+
+def test_count_projects_empty(db):
+    assert db.count_projects() == 0
+    db.close_connection()

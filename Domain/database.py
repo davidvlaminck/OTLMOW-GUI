@@ -46,6 +46,14 @@ class Database:
         self.cursor.execute('''UPDATE projects SET Eigen_referentie = ?, Bestek = ?, Subset = ?, Laatst_bewerkt = ? WHERE Id = ?''', (eigen_referentie, bestek, subset, laatst_bewerkt, id))
         return self.cursor.rowcount
 
+    # Returns amount of projects in database
+    def count_projects(self):
+        self.cursor.execute('''SELECT COUNT(*) FROM projects''')
+        result = self.cursor.fetchone()
+        return result[0]
+
+
+
     # Closes the connection to the database
     def close_connection(self):
         self.cursor.close()
