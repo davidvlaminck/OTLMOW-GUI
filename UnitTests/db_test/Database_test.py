@@ -1,6 +1,6 @@
 import pytest
 
-from domain.database import Database
+from Domain.database import Database
 
 
 @pytest.fixture
