@@ -27,30 +27,30 @@ class Database:
                 (eigen_referentie, bestek, subset, laatst_bewerkt))
 
     # Returns all projects in the project table
-    def get_all_projects(self):
+    def get_all_projects(self) -> list:
         self.cursor.execute('''SELECT * FROM projects''')
         return self.cursor.fetchall()
 
     # Removes a project from the project table based on id
-    def remove_project(self, id):
-        self.cursor.execute('''DELETE FROM projects WHERE Id = ?''', (id,))
+    def remove_project(self, id_: int):
+        self.cursor.execute('''DELETE FROM projects WHERE Id = ?''', (id_,))
 
     # Get a certain project based on id
-    def get_project(self, id):
-        self.cursor.execute('''SELECT * FROM projects WHERE Id = ?''', (id,))
+    def get_project(self, id_: int):
+        self.cursor.execute('''SELECT * FROM projects WHERE Id = ?''', (id_,))
         return self.cursor.fetchone()
 
-    def update_project(self, id, eigen_referentie: str, bestek: str, subset: str, laatst_bewerkt):
+    def update_project(self, id_: int, eigen_referentie: str, bestek: str, subset: str, laatst_bewerkt) -> int:
         if not isinstance(eigen_referentie, str) or not isinstance(bestek, str) or not isinstance(subset, str):
             raise TypeError("Invalid Type")
         else:
             self.cursor.execute(
                 '''UPDATE projects SET Eigen_referentie = ?, Bestek = ?, Subset = ?, Laatst_bewerkt = ? WHERE Id = ?''',
-                (eigen_referentie, bestek, subset, laatst_bewerkt, id))
+                (eigen_referentie, bestek, subset, laatst_bewerkt, id_))
             return self.cursor.rowcount
 
     # Returns amount of projects in database
-    def count_projects(self):
+    def count_projects(self) -> int:
         self.cursor.execute('''SELECT COUNT(*) FROM projects''')
         result = self.cursor.fetchone()
         return result[0]
