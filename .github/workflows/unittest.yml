@@ -24,7 +24,7 @@ jobs:
           path: "requirements.txt"
       - name: Install additional OS dependencies
         if: matrix.os == 'ubuntu-latest'
-        run: sudo apt-get update && sudo apt-get install libgl1-mesa-glx
+        run: sudo apt-get update && sudo apt-get install libgl1-mesa-glx libopengl0
       - name: Run unittests with pytest
         run: python -m pytest -v
         working-directory: ./UnitTests
