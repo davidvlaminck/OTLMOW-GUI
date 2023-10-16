@@ -33,7 +33,7 @@ class Database:
 
     # Removes a project from the project table based on id
     def remove_project(self, id_: int):
-        self.cursor.execute('''DELETE FROM projects WHERE Id = ?''', (id_,))
+        self.connection.execute('''DELETE FROM projects WHERE Id = ?''', (id_,))
 
     # Get a certain project based on id
     def get_project(self, id_: int):

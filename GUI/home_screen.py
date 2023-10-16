@@ -2,11 +2,13 @@ from PyQt6.QtWidgets import QWidget, QPushButton, QLabel, QHBoxLayout, QVBoxLayo
     QTableWidgetItem, QLineEdit, QHeaderView
 from PyQt6.QtCore import Qt
 import qtawesome as qta
+import Domain.home_domain as HomeDomain
 
 
 class HomeScreen(QWidget):
-    def __init__(self):
+    def __init__(self, database):
         super().__init__()
+        home_func = HomeDomain.HomeDomain(database)
 
         # Vertical layout
         container_home_screen = QVBoxLayout()
@@ -46,7 +48,7 @@ class HomeScreen(QWidget):
 
         # Create the table with QTableView
         table = QTableWidget()
-        table.setRowCount(4)
+        table.setRowCount(home_func.get_amount_of_rows())
         table.verticalHeader().setVisible(False)
         table.setColumnCount(6)
         # Set the width of the columns to stretch except the last two columns for buttons
@@ -65,17 +67,19 @@ class HomeScreen(QWidget):
         table.horizontalHeader().setDefaultAlignment(Qt.AlignmentFlag.AlignLeft)
 
         # add data to the table
-        for j in range(4):
+        projects = home_func.get_all_projects()
+        for j in range(home_func.get_amount_of_rows()):
             for i in range(4):
                 item = QTableWidgetItem()
-                item.setText('test')
+                item.setText(projects[j][i + 1])
                 table.setItem(j, i, item)
             item = QPushButton()
             item.setIcon(qta.icon('mdi.pencil'))
             table.setCellWidget(j, 4, item)
-            item = QPushButton()
-            item.setIcon(qta.icon('mdi.trash-can'))
-            table.setCellWidget(j, 5, item)
+            button = QPushButton()
+            button.setIcon(qta.icon('mdi.trash-can'))
+            button.clicked.connect(lambda: home_func.remove_project(projects[j][0], table))
+            table.setCellWidget(j, 5, button)
         # add header to the vertical layout
         container_home_screen.addWidget(head_wrapper)
         container_home_screen.addSpacing(39)
