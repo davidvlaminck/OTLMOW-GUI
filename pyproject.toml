@@ -32,7 +32,6 @@ dependencies = [
     'otlmow_model >= 2.8.1',
     'pyqt6 >= 6.5.2',
     'qtawesome >= 1.2.3',
-    'pluggy >= 1.0.0',
 ]
 
 
