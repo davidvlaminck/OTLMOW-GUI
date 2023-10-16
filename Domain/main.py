@@ -8,8 +8,8 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
     #Initialiseren van Database
     db = Database()
-    #Momenteel met test database
-    db.create_test_connection()
+    #Connecteren met test database
+    db.create_connection(":memory:")
     with open('custom.qss', 'r') as file:
         app.setStyleSheet(file.read())
     window = HomeScreen()

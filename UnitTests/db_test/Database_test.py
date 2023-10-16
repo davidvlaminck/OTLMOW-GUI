@@ -1,3 +1,5 @@
+import datetime
+
 import pytest
 
 from Domain.database import Database
@@ -6,7 +8,7 @@ from Domain.database import Database
 @pytest.fixture
 def db():
     db = Database()
-    db.create_test_connection()
+    db.create_connection(":memory:")
     return db
 
 
@@ -21,8 +23,9 @@ def test_new_database_is_empty(db):
 
 
 def test_add_project(db):
-    db.add_project('test', 'test', 'test', None)
-    assert db.get_all_projects() == [(1, 'test', 'test', 'test', None)]
+    test_date = datetime.datetime.now()
+    db.add_project('test', 'test', 'test', test_date)
+    assert db.get_all_projects() == [(1, 'test', 'test', 'test', test_date)]
     db.close_connection()
 
 
@@ -36,6 +39,16 @@ def test_add_project_with_non_string_values_returns_error(db, eigen_ref, bestek,
 def test_remove_project(db):
     db.add_project('test', 'test', 'test', None)
     db.remove_project(1)
+    assert db.get_all_projects() == []
+    db.close_connection()
+
+def test_remove_project_that_does_not_exist(db):
+    db.remove_project(1)
+    assert db.get_all_projects() == []
+    db.close_connection()
+
+def test_remove_project_with_non_int_value(db):
+    db.remove_project('test')
     assert db.get_all_projects() == []
     db.close_connection()
 
