@@ -1,3 +1,5 @@
+from PyQt6.QtWidgets import QDialogButtonBox, QVBoxLayout, QMessageBox
+
 
 class HomeDomain:
     db = None
@@ -14,8 +16,21 @@ class HomeDomain:
         return projects
 
     def remove_project(self, id_, table):
-        table.removeRow(table.currentRow())
         try:
-            self.db.remove_project(id_)
+            dlg = QMessageBox()
+            dlg.setWindowTitle("Verwijderen")
+            dlg.setText("Weet u zeker dat u dit project wilt verwijderen?")
+            dlg.setIcon(QMessageBox.Icon.Warning)
+            dlg.setStandardButtons(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+            button = dlg.exec()
         except Exception as e:
             print(e)
+        if button == QMessageBox.StandardButton.Yes:
+            try:
+                self.db.remove_project(id_)
+                table.removeRow(table.currentRow())
+            except Exception as e:
+                print(e)
+        else:
+            dlg.close()
+
