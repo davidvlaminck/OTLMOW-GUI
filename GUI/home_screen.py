@@ -3,12 +3,14 @@ from PyQt6.QtWidgets import QWidget, QPushButton, QLabel, QHBoxLayout, QVBoxLayo
 from PyQt6.QtCore import Qt
 import qtawesome as qta
 import Domain.home_domain as HomeDomain
+import GUI.dialog_window as DialogWindow
 
 
 class HomeScreen(QWidget):
     def __init__(self, database):
         super().__init__()
         home_func = HomeDomain.HomeDomain(database)
+        dialog_window = DialogWindow.DialogWindow(database)
 
         # Vertical layout
         container_home_screen = QVBoxLayout()
@@ -66,19 +68,28 @@ class HomeScreen(QWidget):
         # ALign titles of header to the left
         table.horizontalHeader().setDefaultAlignment(Qt.AlignmentFlag.AlignLeft)
 
-        # add data to the table
+        # add data to the table"
         projects = home_func.get_all_projects()
         for j in range(home_func.get_amount_of_rows()):
             for i in range(4):
                 item = QTableWidgetItem()
                 item.setText(projects[j][i + 1])
                 table.setItem(j, i, item)
-            item = QPushButton()
-            item.setIcon(qta.icon('mdi.pencil'))
-            table.setCellWidget(j, 4, item)
+            edit = QPushButton()
+            edit.setIcon(qta.icon('mdi.pencil'))
+            edit.clicked.connect(lambda _, row_id = j: dialog_window.update_project(id_= projects[row_id][0],
+                                                                                  eigen_ref=projects[row_id][1],
+                                                                                  bestek=projects[row_id][2],
+                                                                                  subset=projects[row_id][3],
+                                                                                  table=table
+                                                                                    ))
+            table.setCellWidget(j, 4, edit)
+            edit.show()
             button = QPushButton()
             button.setIcon(qta.icon('mdi.trash-can'))
-            button.clicked.connect(lambda: home_func.remove_project(projects[j][0], table))
+            button.setProperty('class', f"""{projects[j][0]}""")
+            button.clicked.connect(lambda _, i= projects[j][0]:
+                                   home_func.remove_project(id_=i, table=table))
             table.setCellWidget(j, 5, button)
         # add header to the vertical layout
         container_home_screen.addWidget(head_wrapper)

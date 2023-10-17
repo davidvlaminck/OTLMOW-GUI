@@ -12,7 +12,7 @@ def initialize_database():
     return db
 
 def mockData(database):
-    database.add_project('test', 'test', 'test', None)
+    database.add_project('testen', 'test', 'test', None)
     database.add_project('test2', 'test2', 'test2', None)
     database.add_project('test3', 'test3', 'test3', None)
 

@@ -13,7 +13,7 @@ def db():
 
 
 def test_create_connection(db):
-    assert db.connection is not 0
+    assert db.connection != 0
     db.close_connection()
 
 
