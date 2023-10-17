@@ -1,8 +1,9 @@
-from PyQt6.QtWidgets import QDialogButtonBox, QVBoxLayout, QMessageBox, QDialog, QLineEdit
+from PyQt6.QtWidgets import QDialogButtonBox, QVBoxLayout, QMessageBox, QDialog, QLineEdit, QTableWidgetItem
 
 
 class HomeDomain:
     db = None
+    HomeScreen = None
 
     def __init__(self, database):
         self.db = database
@@ -29,11 +30,16 @@ class HomeDomain:
             except Exception as e:
                 print(e)
 
-    def update_project(self, id_, table, eigen_ref, bestek, subset):
+    def update_project(self, id_, eigen_ref: str, bestek: str, subset: str, table, dlg):
+        print(id_, eigen_ref, bestek, subset)
         try:
+            # Updates the project in the database
             self.db.update_project(id_, eigen_ref, bestek, subset, None)
-            table.setItem(table.currentRow(), 1, eigen_ref)
-            table.setItem(table.currentRow(), 2, bestek)
-            table.setItem(table.currentRow(), 3, subset)
+            # Updates the items in the table with the new data
+            table.setItem(table.currentRow(), 0, QTableWidgetItem(eigen_ref))
+            table.setItem(table.currentRow(), 1, QTableWidgetItem(bestek))
+            table.setItem(table.currentRow(), 2, QTableWidgetItem(subset))
+            # Closes the dialog window
+            dlg.close()
         except Exception as e:
             print(e)

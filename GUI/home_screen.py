@@ -7,6 +7,9 @@ import GUI.dialog_window as DialogWindow
 
 
 class HomeScreen(QWidget):
+    projects = None
+    home_func = None
+
     def __init__(self, database):
         super().__init__()
         home_func = HomeDomain.HomeDomain(database)
@@ -48,7 +51,23 @@ class HomeScreen(QWidget):
         search.addStretch()
         search_wrapper.setLayout(search)
 
-        # Create the table with QTableView
+        # Create the table
+        table = self.draw_table(home_func, dialog_window)
+
+        # add header to the vertical layout
+        container_home_screen.addWidget(head_wrapper)
+        container_home_screen.addSpacing(39)
+        # add searchbar to the vertical layout
+        container_home_screen.addWidget(search_wrapper)
+        container_home_screen.addSpacing(43)
+        # add table to the vertical layout
+        container_home_screen.addWidget(table)
+        container_home_screen.addStretch()
+
+        self.setLayout(container_home_screen)
+        self.show()
+
+    def draw_table(self, home_func, dialog_window):
         table = QTableWidget()
         table.setRowCount(home_func.get_amount_of_rows())
         table.verticalHeader().setVisible(False)
@@ -68,38 +87,27 @@ class HomeScreen(QWidget):
         # ALign titles of header to the left
         table.horizontalHeader().setDefaultAlignment(Qt.AlignmentFlag.AlignLeft)
 
-        # add data to the table"
-        projects = home_func.get_all_projects()
+        # add data to the table
+        self.projects = home_func.get_all_projects()
         for j in range(home_func.get_amount_of_rows()):
             for i in range(4):
                 item = QTableWidgetItem()
-                item.setText(projects[j][i + 1])
+                item.setText(self.projects[j][i + 1])
                 table.setItem(j, i, item)
             edit = QPushButton()
             edit.setIcon(qta.icon('mdi.pencil'))
-            edit.clicked.connect(lambda _, row_id = j: dialog_window.update_project(id_= projects[row_id][0],
-                                                                                  eigen_ref=projects[row_id][1],
-                                                                                  bestek=projects[row_id][2],
-                                                                                  subset=projects[row_id][3],
-                                                                                  table=table
-                                                                                    ))
+            edit.clicked.connect(lambda _, row_id=j: dialog_window.update_project(id_=self.projects[row_id][0],
+                                                                                  eigen_ref=self.projects[row_id][1],
+                                                                                  bestek=self.projects[row_id][2],
+                                                                                  subset=self.projects[row_id][3],
+                                                                                  table=table, home_screen=self
+                                                                                  ))
             table.setCellWidget(j, 4, edit)
             edit.show()
             button = QPushButton()
             button.setIcon(qta.icon('mdi.trash-can'))
-            button.setProperty('class', f"""{projects[j][0]}""")
-            button.clicked.connect(lambda _, i= projects[j][0]:
+            button.setProperty('class', f"""{self.projects[j][0]}""")
+            button.clicked.connect(lambda _, i=self.projects[j][0]:
                                    home_func.remove_project(id_=i, table=table))
             table.setCellWidget(j, 5, button)
-        # add header to the vertical layout
-        container_home_screen.addWidget(head_wrapper)
-        container_home_screen.addSpacing(39)
-        # add searchbar to the vertical layout
-        container_home_screen.addWidget(search_wrapper)
-        container_home_screen.addSpacing(43)
-        # add table to the vertical layout
-        container_home_screen.addWidget(table)
-        container_home_screen.addStretch()
-
-        self.setLayout(container_home_screen)
-        self.show()
+        return table
