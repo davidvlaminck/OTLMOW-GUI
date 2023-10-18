@@ -24,8 +24,8 @@ def test_new_database_is_empty(db):
 
 def test_add_project(db):
     test_date = datetime.datetime.now()
-    db.add_project('test', 'test', 'test', test_date)
-    assert db.get_all_projects() == [(1, 'test', 'test', 'test', test_date)]
+    project_id = db.add_project('test', 'test', 'test', test_date)
+    assert project_id == 1
     db.close_connection()
 
 

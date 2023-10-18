@@ -43,6 +43,7 @@ class HomeScreen(QWidget):
         head_wrapper.setLayout(header)
 
         # Search bar
+        search_container = QVBoxLayout()
         search_wrapper = QWidget()
         search_wrapper.setProperty('class', 'search')
         search = QHBoxLayout()
@@ -53,9 +54,14 @@ class HomeScreen(QWidget):
         search.addWidget(search_button)
         search.addStretch()
         search_wrapper.setLayout(search)
+        search_container.addWidget(search_wrapper)
+        search_container.setContentsMargins(16, 0, 16, 0)
 
         # Create the table
         table = self.draw_table()
+        table_container = QVBoxLayout()
+        table_container.addWidget(table)
+        table_container.setContentsMargins(16, 0, 16, 0)
 
         # Add functionality to new project button
         # Can only happen here because the table needs to be drawn first
@@ -65,16 +71,17 @@ class HomeScreen(QWidget):
         container_home_screen.addWidget(head_wrapper)
         container_home_screen.addSpacing(39)
         # add searchbar to the vertical layout
-        container_home_screen.addWidget(search_wrapper)
+        container_home_screen.addLayout(search_container)
         container_home_screen.addSpacing(43)
-        # add table to the vertical layout
-        container_home_screen.addWidget(table)
+        # add table to the vertical layout with margins
+        container_home_screen.addLayout(table_container)
         container_home_screen.addStretch()
-
+        container_home_screen.setContentsMargins(0,0,0,0)
         self.setLayout(container_home_screen)
         self.show()
 
     def draw_table(self):
+        table_container = QVBoxLayout()
         table = QTableWidget()
         table.setRowCount(self.home_func.get_amount_of_rows())
         table.verticalHeader().setVisible(False)
@@ -100,7 +107,6 @@ class HomeScreen(QWidget):
             for i in range(4):
                 self.add_cell_to_table(table, count, i, element[i + 1])
             self.add_update_and_delete_button(count, element[0], table)
-
         return table
 
     def add_update_and_delete_button(self, count, id_, table):
