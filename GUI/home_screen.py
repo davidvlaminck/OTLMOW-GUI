@@ -98,12 +98,7 @@ class HomeScreen(QWidget):
         self.projects = self.home_func.get_all_projects()
         for count, element in enumerate(self.projects):
             for i in range(4):
-                item = QTableWidgetItem()
-                if isinstance(element[i + 1], datetime.date):
-                    item.setText(element[i + 1].strftime("%d-%m-%Y"))
-                else:
-                    item.setText(element[i + 1])
-                table.setItem(count, i, item)
+                self.add_cell_to_table(table, count, i, element[i + 1])
             self.add_update_and_delete_button(count, element[0], table)
 
         return table
@@ -121,3 +116,9 @@ class HomeScreen(QWidget):
         button.clicked.connect(lambda _, i=id_:
                                self.home_func.remove_project(id_=i, table=table))
         table.setCellWidget(count, 5, button)
+
+    def add_cell_to_table(self, table, row, column, item):
+        if isinstance(item, datetime.date):
+            table.setItem(row,column, QTableWidgetItem(item.strftime("%d-%m-%Y")))
+        else:
+            table.setItem(row, column, QTableWidgetItem(item))

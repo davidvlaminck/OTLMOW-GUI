@@ -32,32 +32,22 @@ class HomeDomain:
             except Exception as e:
                 print(e)
 
-    def update_project(self, id_, eigen_ref: str, bestek: str, subset: str, table, dlg):
-        changed_on = datetime.now()
-        try:
-            # Updates the project in the database
-            self.db.update_project(id_, eigen_ref, bestek, subset, changed_on)
-            # Updates the items in the table with the new data
-            table.setItem(table.currentRow(), 0, QTableWidgetItem(eigen_ref))
-            table.setItem(table.currentRow(), 1, QTableWidgetItem(bestek))
-            table.setItem(table.currentRow(), 2, QTableWidgetItem(subset))
-            table.setItem(table.currentRow(), 3, QTableWidgetItem(changed_on.strftime("%d-%m-%Y")))
-            # Closes the dialog window
-            dlg.close()
-        except Exception as e:
-            print(e)
-
-    def add_project(self, eigen_ref: str, bestek: str, subset: str, table, dlg, home_screen):
-        added_on = datetime.now()
-
-        id_ = self.db.add_project(eigen_ref, bestek, subset, added_on)
-        home_screen.projects = self.db.get_all_projects()
-        table.insertRow(table.rowCount())
-        table.setItem(table.rowCount() - 1, 0, QTableWidgetItem(eigen_ref))
-        table.setItem(table.rowCount() - 1, 1, QTableWidgetItem(bestek))
-        table.setItem(table.rowCount() - 1, 2, QTableWidgetItem(subset))
-        table.setItem(table.rowCount() - 1, 3, QTableWidgetItem(added_on.strftime("%d-%m-%Y")))
-        home_screen.add_update_and_delete_button(count= table.rowCount() - 1, id_=id_, table=table)
+    def alter_table(self, properties,table, dlg, home_screen, id_=None):
+        time_of_alter = datetime.now()
+        properties += [time_of_alter]
+        project_exists = id_ is not None
+        if project_exists:
+            row = table.currentRow()
+            self.db.update_project(id_, properties[0], properties[1], properties[2], time_of_alter)
+        else:
+            home_screen.projects = self.db.get_all_projects()
+            table.insertRow(table.rowCount())
+            row = table.rowCount() - 1
+            id_ = self.db.add_project(properties[0], properties[1], properties[2], time_of_alter)
+        for count, element in enumerate(properties):
+            home_screen.add_cell_to_table(table, row, count, element)
+        if not project_exists:
+            home_screen.add_update_and_delete_button(count=row, id_=id_, table=table)
         dlg.close()
 
 
