@@ -96,7 +96,6 @@ class HomeScreen(QWidget):
 
         # add data to the table
         self.projects = self.home_func.get_all_projects()
-        # TODO: Enumerate projects
         for count, element in enumerate(self.projects):
             for i in range(4):
                 item = QTableWidgetItem()

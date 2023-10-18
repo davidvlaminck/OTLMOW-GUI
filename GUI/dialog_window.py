@@ -78,13 +78,15 @@ class DialogWindow:
         home_screen.projects = self.home_domain.get_all_projects()
 
     def validate(self, input_eigen_ref: str, input_bestek: str, input_subset: str, table, dialog_window, home_screen, id_: int = None):
-
-        if input_eigen_ref == "" or input_subset == "" or input_subset.isspace() or input_eigen_ref.isspace():
+        is_project = id_ is not None
+        if input_eigen_ref.strip() == "" or input_subset.strip() == "":
             self.error_label.setText("Vul alle velden in")
             return
         self.error_label.setText("")
-        if id_ is None:
-            self.home_domain.add_project(input_eigen_ref, input_bestek, input_subset, table, dialog_window, home_screen)
+        if is_project:
+            self.home_domain.update_project(id_, input_eigen_ref.strip(), input_bestek.strip(),
+                                            input_subset.strip(), table, dialog_window)
         else:
-            self.home_domain.update_project(id_, input_eigen_ref, input_bestek,
-                                            input_subset, table, dialog_window)
+            self.home_domain.add_project(input_eigen_ref.strip(),
+                                         input_bestek.strip(), input_subset.strip(),
+                                         table, dialog_window, home_screen)
