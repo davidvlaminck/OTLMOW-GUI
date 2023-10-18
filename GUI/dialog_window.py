@@ -11,14 +11,15 @@ class DialogWindow:
         self.home_domain = HomeDomain(database)
         self.error_label = QLabel()
 
-    def update_project(self, id_, eigen_ref: str = None, bestek: str = None, subset: str = None, table=None,
-                       home_screen=None):
+    def update_project(self,home_screen, id_ = None, eigen_ref: str = None, bestek: str = None, subset: str = None, table=None,):
+        is_project = id_ is not None
+        # TODO: velden trimmen
         # Resets the error label to empty when reopening the dialog
         self.error_label.setText("")
         dialog_window = QDialog()
         # Makes the dialog the primary screen, disabling the screen behind it
         dialog_window.setModal(True)
-        if eigen_ref is None:
+        if is_project:
             dialog_window.setWindowTitle("Project bewerken")
         else:
             dialog_window.setWindowTitle("Nieuw project")
@@ -30,12 +31,11 @@ class DialogWindow:
         container_subset = QHBoxLayout()
         # Creates labels for the input fields and adds them to the horizontal layouts
         label_eigen_ref = QLabel("Eigen referentie:")
-        container_eigen_ref.addWidget(label_eigen_ref, alignment= Qt.AlignmentFlag.AlignLeft)
+        container_eigen_ref.addWidget(label_eigen_ref, alignment=Qt.AlignmentFlag.AlignLeft)
         label_bestek = QLabel("Bestek:")
-        container_bestek.addWidget(label_bestek, alignment= Qt.AlignmentFlag.AlignLeft)
+        container_bestek.addWidget(label_bestek, alignment=Qt.AlignmentFlag.AlignLeft)
         label_subset = QLabel("Subset:")
-        container_subset.addWidget(label_subset, alignment= Qt.AlignmentFlag.AlignLeft)
-        # Adds the labels to the layout
+        container_subset.addWidget(label_subset, alignment=Qt.AlignmentFlag.AlignLeft)
         # Creates the input fields
         input_eigen_ref = QLineEdit()
         container_eigen_ref.addWidget(input_eigen_ref)
@@ -46,7 +46,7 @@ class DialogWindow:
         input_eigen_ref.setPlaceholderText("Eigen referentie:")
         input_bestek.setPlaceholderText("Bestek")
         input_subset.setPlaceholderText("Subset")
-        if table is not None:
+        if is_project:
             input_eigen_ref.setText(eigen_ref)
             input_subset.setText(subset)
             input_bestek.setText(bestek)
@@ -55,9 +55,8 @@ class DialogWindow:
         layout.addLayout(container_bestek)
         layout.addLayout(container_subset)
 
-        #Changes the color of the error label to red
+        # Changes the color of the error label to red
         self.error_label.setStyleSheet("color: red")
-
 
         # Creates the button box
         button_box = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)

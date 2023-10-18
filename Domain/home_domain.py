@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from PyQt6.QtWidgets import QDialogButtonBox, QVBoxLayout, QMessageBox, QDialog, QLineEdit, QTableWidgetItem
 
 
@@ -31,14 +33,15 @@ class HomeDomain:
                 print(e)
 
     def update_project(self, id_, eigen_ref: str, bestek: str, subset: str, table, dlg):
-        print(id_, eigen_ref, bestek, subset)
+        changed_on = datetime.now()
         try:
             # Updates the project in the database
-            self.db.update_project(id_, eigen_ref, bestek, subset, None)
+            self.db.update_project(id_, eigen_ref, bestek, subset, changed_on)
             # Updates the items in the table with the new data
             table.setItem(table.currentRow(), 0, QTableWidgetItem(eigen_ref))
             table.setItem(table.currentRow(), 1, QTableWidgetItem(bestek))
             table.setItem(table.currentRow(), 2, QTableWidgetItem(subset))
+            table.setItem(table.currentRow(), 3, QTableWidgetItem(changed_on.strftime("%d-%m-%Y")))
             # Closes the dialog window
             dlg.close()
         except Exception as e:

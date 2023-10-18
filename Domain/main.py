@@ -1,4 +1,5 @@
 import sys
+from datetime import datetime
 
 from PyQt6.QtWidgets import QApplication
 
@@ -12,9 +13,9 @@ def initialize_database():
     return db
 
 def mockData(database):
-    database.add_project('testen', 'test', 'test', None)
-    database.add_project('test2', 'test2', 'test2', None)
-    database.add_project('test3', 'test3', 'test3', None)
+    database.add_project('testen', 'test', 'test', datetime(2021,9,11,12,30,0))
+    database.add_project('test2', 'test2', 'test2', datetime(2022,4,3,23,59,59))
+    database.add_project('test3', 'test3', 'test3', datetime(2020,1,1,0,0,0))
 
 
 if __name__ == '__main__':

@@ -1,3 +1,5 @@
+import datetime
+
 from PyQt6.QtWidgets import QWidget, QPushButton, QLabel, QHBoxLayout, QVBoxLayout, QTableWidget, \
     QTableWidgetItem, QLineEdit, QHeaderView
 from PyQt6.QtCore import Qt
@@ -26,6 +28,7 @@ class HomeScreen(QWidget):
         header.addWidget(title)
         new_project_button = QPushButton('New Project')
         new_project_button.setProperty('class', 'new-project')
+        new_project_button.clicked.connect(lambda: dialog_window.update_project(home_screen=self))
         header.addWidget(new_project_button)
         header.setAlignment(new_project_button, Qt.AlignmentFlag.AlignLeft)
         user_pref_container = QHBoxLayout()
@@ -89,25 +92,29 @@ class HomeScreen(QWidget):
 
         # add data to the table
         self.projects = home_func.get_all_projects()
-        for j in range(home_func.get_amount_of_rows()):
+        for count, element in enumerate(self.projects):
             for i in range(4):
                 item = QTableWidgetItem()
-                item.setText(self.projects[j][i + 1])
-                table.setItem(j, i, item)
+                if isinstance(element[i + 1], datetime.date):
+                    item.setText(element[i + 1].strftime("%d-%m-%Y"))
+                else:
+                    item.setText(element[i + 1])
+
+                table.setItem(count, i, item)
             edit = QPushButton()
             edit.setIcon(qta.icon('mdi.pencil'))
-            edit.clicked.connect(lambda _, row_id=j: dialog_window.update_project(id_=self.projects[row_id][0],
+            edit.clicked.connect(lambda _, row_id=count: dialog_window.update_project(id_=self.projects[row_id][0],
                                                                                   eigen_ref=self.projects[row_id][1],
                                                                                   bestek=self.projects[row_id][2],
                                                                                   subset=self.projects[row_id][3],
                                                                                   table=table, home_screen=self
                                                                                   ))
-            table.setCellWidget(j, 4, edit)
+            table.setCellWidget(count, 4, edit)
             edit.show()
             button = QPushButton()
             button.setIcon(qta.icon('mdi.trash-can'))
-            button.setProperty('class', f"""{self.projects[j][0]}""")
-            button.clicked.connect(lambda _, i=self.projects[j][0]:
+            button.setProperty('class', f"""{element[0]}""")
+            button.clicked.connect(lambda _, i=element[0]:
                                    home_func.remove_project(id_=i, table=table))
-            table.setCellWidget(j, 5, button)
+            table.setCellWidget(count, 5, button)
         return table
