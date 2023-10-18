@@ -11,7 +11,7 @@ class DialogWindow:
         self.home_domain = HomeDomain(database)
         self.error_label = QLabel()
 
-    def update_project(self,home_screen, id_ = None, eigen_ref: str = None, bestek: str = None, subset: str = None, table=None,):
+    def update_project(self, home_screen, id_=None, table=None):
         is_project = id_ is not None
         # TODO: velden trimmen
         # Resets the error label to empty when reopening the dialog
@@ -20,6 +20,7 @@ class DialogWindow:
         # Makes the dialog the primary screen, disabling the screen behind it
         dialog_window.setModal(True)
         if is_project:
+            project = home_screen.home_func.db.get_project(id_)
             dialog_window.setWindowTitle("Project bewerken")
         else:
             dialog_window.setWindowTitle("Nieuw project")
@@ -47,9 +48,9 @@ class DialogWindow:
         input_bestek.setPlaceholderText("Bestek")
         input_subset.setPlaceholderText("Subset")
         if is_project:
-            input_eigen_ref.setText(eigen_ref)
-            input_subset.setText(subset)
-            input_bestek.setText(bestek)
+            input_eigen_ref.setText(project[1])
+            input_subset.setText(project[2])
+            input_bestek.setText(project[3])
         # Adds the input fields to the layout
         layout.addLayout(container_eigen_ref)
         layout.addLayout(container_bestek)
@@ -62,8 +63,8 @@ class DialogWindow:
         button_box = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
         # sends the values off to validate once submitted
         button_box.accepted.connect(
-            lambda: self.validate(id_, input_eigen_ref.text(), input_bestek.text(),
-                                  input_subset.text(), table, dialog_window))
+            lambda: self.validate(input_eigen_ref.text(), input_bestek.text(),
+                                  input_subset.text(), table, dialog_window, home_screen, id_))
         button_box.rejected.connect(dialog_window.reject)
         # Adds the two buttons to the layout
         layout.addWidget(button_box)
@@ -76,11 +77,14 @@ class DialogWindow:
         # Updates the projects behind the table
         home_screen.projects = self.home_domain.get_all_projects()
 
-    def validate(self, id_: int, input_eigen_ref: str, input_bestek: str, input_subset: str, table, dialog_window):
+    def validate(self, input_eigen_ref: str, input_bestek: str, input_subset: str, table, dialog_window, home_screen, id_: int = None):
 
         if input_eigen_ref == "" or input_subset == "" or input_subset.isspace() or input_eigen_ref.isspace():
             self.error_label.setText("Vul alle velden in")
             return
         self.error_label.setText("")
-        self.home_domain.update_project(id_, input_eigen_ref, input_bestek,
-                                        input_subset, table, dialog_window)
+        if id_ is None:
+            self.home_domain.add_project(input_eigen_ref, input_bestek, input_subset, table, dialog_window, home_screen)
+        else:
+            self.home_domain.update_project(id_, input_eigen_ref, input_bestek,
+                                            input_subset, table, dialog_window)

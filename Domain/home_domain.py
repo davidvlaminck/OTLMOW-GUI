@@ -46,3 +46,19 @@ class HomeDomain:
             dlg.close()
         except Exception as e:
             print(e)
+
+    def add_project(self, eigen_ref: str, bestek: str, subset: str, table, dlg, home_screen):
+        added_on = datetime.now()
+
+        id_ = self.db.add_project(eigen_ref, bestek, subset, added_on)
+        home_screen.projects = self.db.get_all_projects()
+        table.insertRow(table.rowCount())
+        table.setItem(table.rowCount() - 1, 0, QTableWidgetItem(eigen_ref))
+        table.setItem(table.rowCount() - 1, 1, QTableWidgetItem(bestek))
+        table.setItem(table.rowCount() - 1, 2, QTableWidgetItem(subset))
+        table.setItem(table.rowCount() - 1, 3, QTableWidgetItem(added_on.strftime("%d-%m-%Y")))
+        home_screen.add_update_and_delete_button(count= table.rowCount() - 1, id_=id_, table=table)
+        dlg.close()
+
+
+

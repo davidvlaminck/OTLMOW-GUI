@@ -25,6 +25,7 @@ class Database:
             self.cursor.execute(
                 '''INSERT INTO projects(Eigen_referentie, Bestek, Subset, Laatst_bewerkt) VALUES(?,?,?,?)''',
                 (eigen_referentie, bestek, subset, laatst_bewerkt))
+            return self.cursor.lastrowid
 
     # Returns all projects in the project table
     def get_all_projects(self) -> list:

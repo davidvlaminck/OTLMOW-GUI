@@ -11,11 +11,12 @@ import GUI.dialog_window as DialogWindow
 class HomeScreen(QWidget):
     projects = None
     home_func = None
+    dialog_window = None
 
     def __init__(self, database):
         super().__init__()
-        home_func = HomeDomain.HomeDomain(database)
-        dialog_window = DialogWindow.DialogWindow(database)
+        self.home_func = HomeDomain.HomeDomain(database)
+        self.dialog_window = DialogWindow.DialogWindow(database)
 
         # Vertical layout
         container_home_screen = QVBoxLayout()
@@ -28,7 +29,6 @@ class HomeScreen(QWidget):
         header.addWidget(title)
         new_project_button = QPushButton('New Project')
         new_project_button.setProperty('class', 'new-project')
-        new_project_button.clicked.connect(lambda: dialog_window.update_project(home_screen=self))
         header.addWidget(new_project_button)
         header.setAlignment(new_project_button, Qt.AlignmentFlag.AlignLeft)
         user_pref_container = QHBoxLayout()
@@ -55,7 +55,11 @@ class HomeScreen(QWidget):
         search_wrapper.setLayout(search)
 
         # Create the table
-        table = self.draw_table(home_func, dialog_window)
+        table = self.draw_table()
+
+        # Add functionality to new project button
+        # Can only happen here because the table needs to be drawn first
+        new_project_button.clicked.connect(lambda: self.dialog_window.update_project(home_screen=self, table=table))
 
         # add header to the vertical layout
         container_home_screen.addWidget(head_wrapper)
@@ -70,9 +74,9 @@ class HomeScreen(QWidget):
         self.setLayout(container_home_screen)
         self.show()
 
-    def draw_table(self, home_func, dialog_window):
+    def draw_table(self):
         table = QTableWidget()
-        table.setRowCount(home_func.get_amount_of_rows())
+        table.setRowCount(self.home_func.get_amount_of_rows())
         table.verticalHeader().setVisible(False)
         table.setColumnCount(6)
         # Set the width of the columns to stretch except the last two columns for buttons
@@ -91,7 +95,8 @@ class HomeScreen(QWidget):
         table.horizontalHeader().setDefaultAlignment(Qt.AlignmentFlag.AlignLeft)
 
         # add data to the table
-        self.projects = home_func.get_all_projects()
+        self.projects = self.home_func.get_all_projects()
+        # TODO: Enumerate projects
         for count, element in enumerate(self.projects):
             for i in range(4):
                 item = QTableWidgetItem()
@@ -99,22 +104,21 @@ class HomeScreen(QWidget):
                     item.setText(element[i + 1].strftime("%d-%m-%Y"))
                 else:
                     item.setText(element[i + 1])
-
                 table.setItem(count, i, item)
-            edit = QPushButton()
-            edit.setIcon(qta.icon('mdi.pencil'))
-            edit.clicked.connect(lambda _, row_id=count: dialog_window.update_project(id_=self.projects[row_id][0],
-                                                                                  eigen_ref=self.projects[row_id][1],
-                                                                                  bestek=self.projects[row_id][2],
-                                                                                  subset=self.projects[row_id][3],
-                                                                                  table=table, home_screen=self
-                                                                                  ))
-            table.setCellWidget(count, 4, edit)
-            edit.show()
-            button = QPushButton()
-            button.setIcon(qta.icon('mdi.trash-can'))
-            button.setProperty('class', f"""{element[0]}""")
-            button.clicked.connect(lambda _, i=element[0]:
-                                   home_func.remove_project(id_=i, table=table))
-            table.setCellWidget(count, 5, button)
+            self.add_update_and_delete_button(count, element[0], table)
+
         return table
+
+    def add_update_and_delete_button(self, count, id_, table):
+        edit = QPushButton()
+        edit.setIcon(qta.icon('mdi.pencil'))
+        edit.clicked.connect(lambda _, row_id=id_: self.dialog_window.update_project(id_=row_id,
+                                                                                     table=table, home_screen=self
+                                                                                     ))
+        table.setCellWidget(count, 4, edit)
+        button = QPushButton()
+        button.setIcon(qta.icon('mdi.trash-can'))
+        button.setProperty('class', f"""{id_}""")
+        button.clicked.connect(lambda _, i=id_:
+                               self.home_func.remove_project(id_=i, table=table))
+        table.setCellWidget(count, 5, button)
