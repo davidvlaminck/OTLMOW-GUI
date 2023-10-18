@@ -85,10 +85,3 @@ class DialogWindow:
         self.error_label.setText("")
         properties = [input_eigen_ref, input_bestek, input_subset]
         self.home_domain.alter_table(properties, table, dialog_window, home_screen, id_)
-        #if is_project:
-        #    self.home_domain.update_project(id_, input_eigen_ref.strip(), input_bestek.strip(),
-        #                                    input_subset.strip(), table, dialog_window)
-        #else:
-        #    self.home_domain.add_project(input_eigen_ref.strip(),
-        #                                 input_bestek.strip(), input_subset.strip(),
-        #                                 table, dialog_window, home_screen)
