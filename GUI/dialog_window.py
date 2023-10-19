@@ -1,5 +1,5 @@
-import gettext
-_ = gettext.gettext
+from Domain.language_settings import returnLanguage
+_ = returnLanguage()
 
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QDialog, QVBoxLayout, QLineEdit, QDialogButtonBox, QLabel, QHBoxLayout

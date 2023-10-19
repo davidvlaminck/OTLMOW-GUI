@@ -1,6 +1,7 @@
 import datetime
 import gettext
-_ = gettext.gettext
+from Domain.language_settings import returnLanguage
+_ = returnLanguage()
 
 from PyQt6.QtWidgets import QWidget, QPushButton, QLabel, QHBoxLayout, QVBoxLayout, QTableWidget, \
     QTableWidgetItem, QLineEdit, QHeaderView

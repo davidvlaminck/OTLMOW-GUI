@@ -1,3 +1,6 @@
+from language_settings import returnLanguage
+_ = returnLanguage()
+
 from datetime import datetime
 
 from PyQt6.QtWidgets import QMessageBox
@@ -20,8 +23,8 @@ class HomeDomain:
 
     def remove_project(self, id_, table):
         dlg = QMessageBox()
-        dlg.setWindowTitle("Verwijderen")
-        dlg.setText("Weet u zeker dat u dit project wilt verwijderen?")
+        dlg.setWindowTitle(_("Verwijderen"))
+        dlg.setText(_("Weet u zeker dat u dit project wilt verwijderen?"))
         dlg.setIcon(QMessageBox.Icon.Warning)
         dlg.setStandardButtons(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
         button = dlg.exec()

@@ -1,17 +1,18 @@
-# Translations template for PROJECT.
+# Dutch (Belgium) translations for PROJECT.
 # Copyright (C) 2023 ORGANIZATION
 # This file is distributed under the same license as the PROJECT project.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2023.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
-"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"Report-Msgid-Bugs-To: jasper.berton@mow.vlaanderen.be\n"
 "POT-Creation-Date: 2023-10-19 13:20+0200\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"PO-Revision-Date: 2023-10-19 13:13+0200\n"
+"Last-Translator: Jasper Berton <jasper.berton@mow.vlaanderen.be>\n"
+"Language: nl_BE\n"
+"Language-Team: nl_BE <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -19,65 +20,65 @@ msgstr ""
 
 #: Domain/home_domain.py:26
 msgid "Verwijderen"
-msgstr ""
+msgstr "Verwijderen"
 
 #: Domain/home_domain.py:27
 msgid "Weet u zeker dat u dit project wilt verwijderen?"
-msgstr ""
+msgstr "Weet u zeker dat u dit project wilt verwijderen?"
 
 #: GUI/dialog_window.py:28
 msgid "Project bewerken"
-msgstr ""
+msgstr "Project bewerken"
 
 #: GUI/dialog_window.py:30
 msgid "Nieuw project"
-msgstr ""
+msgstr "Nieuw project"
 
 #: GUI/dialog_window.py:38 GUI/home_screen.py:105
 msgid "Eigen referentie:"
-msgstr ""
+msgstr "Eigen referentie:"
 
 #: GUI/dialog_window.py:40
 msgid "Bestek:"
-msgstr ""
+msgstr "Bestek:"
 
 #: GUI/dialog_window.py:42
 msgid "Subset:"
-msgstr ""
+msgstr "Subset:"
 
 #: GUI/dialog_window.py:51
 msgid "Eigen referentie"
-msgstr ""
+msgstr "Eigen referentie"
 
 #: GUI/dialog_window.py:52
 msgid "Bestek"
-msgstr ""
+msgstr "Bestek"
 
 #: GUI/dialog_window.py:53 GUI/home_screen.py:105
 msgid "Subset"
-msgstr ""
+msgstr "Subset"
 
 #: GUI/dialog_window.py:90
 msgid "Vul alle velden in"
-msgstr ""
+msgstr "Vul alle velden in"
 
 #: GUI/home_screen.py:33
 msgid "New Project"
-msgstr ""
+msgstr "Nieuw Project"
 
 #: GUI/home_screen.py:56
 msgid "Zoeken op projectnaam of bestek"
-msgstr ""
+msgstr "Zoeken op projectnaam of bestek"
 
 #: GUI/home_screen.py:58
 msgid "Search"
-msgstr ""
+msgstr "Zoeken"
 
 #: GUI/home_screen.py:105
 msgid "Bestek - (Dienstbevel)"
-msgstr ""
+msgstr "Bestek - (Dienstbevel)"
 
 #: GUI/home_screen.py:105
 msgid "Laatst bewerkt"
-msgstr ""
+msgstr "Laatst bewerkt"
 
