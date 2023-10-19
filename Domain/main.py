@@ -1,7 +1,8 @@
 import sys
 from datetime import datetime
 
-from PyQt6.QtWidgets import QApplication
+from PyQt6.QtGui import QIcon
+from PyQt6.QtWidgets import QApplication, QStyle
 
 from Domain.database import Database
 from GUI.home_screen import HomeScreen
@@ -20,6 +21,8 @@ def mockData(database):
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
+    app_icon = QIcon('../img/wizard.ico')
+    app.setWindowIcon(app_icon)
     db = initialize_database()
     mockData(db)
     with open('custom.qss', 'r') as file:

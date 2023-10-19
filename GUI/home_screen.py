@@ -26,6 +26,7 @@ class HomeScreen(QWidget):
         head_wrapper.setProperty('class', 'header')
         header = QHBoxLayout()
         title = QLabel('OTLWizard')
+        title.setProperty('class', 'title')
         header.addWidget(title)
         new_project_button = QPushButton('New Project')
         new_project_button.setProperty('class', 'new-project')
@@ -34,9 +35,11 @@ class HomeScreen(QWidget):
         user_pref_container = QHBoxLayout()
         settings = QPushButton()
         settings.setIcon(qta.icon('mdi.cog'))
+        settings.setProperty('class','settings')
         user_pref_container.addWidget(settings)
         help_widget = QPushButton()
         help_widget.setIcon(qta.icon('mdi.help-circle'))
+        help_widget.setProperty('class', 'settings')
         user_pref_container.addWidget(help_widget)
         header.addLayout(user_pref_container)
         header.setAlignment(user_pref_container, Qt.AlignmentFlag.AlignRight)
@@ -112,13 +115,14 @@ class HomeScreen(QWidget):
     def add_update_and_delete_button(self, count, id_, table):
         edit = QPushButton()
         edit.setIcon(qta.icon('mdi.pencil'))
+        edit.setProperty('class', 'alter-button')
         edit.clicked.connect(lambda _, row_id=id_: self.dialog_window.update_project(id_=row_id,
                                                                                      table=table, home_screen=self
                                                                                      ))
         table.setCellWidget(count, 4, edit)
         button = QPushButton()
         button.setIcon(qta.icon('mdi.trash-can'))
-        button.setProperty('class', f"""{id_}""")
+        button.setProperty('class', 'alter-button')
         button.clicked.connect(lambda _, i=id_:
                                self.home_func.remove_project(id_=i, table=table))
         table.setCellWidget(count, 5, button)

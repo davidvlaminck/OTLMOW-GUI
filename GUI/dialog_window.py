@@ -61,6 +61,7 @@ class DialogWindow:
 
         # Creates the button box
         button_box = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
+
         # sends the values off to validate once submitted
         button_box.accepted.connect(
             lambda: self.validate(input_eigen_ref.text(), input_bestek.text(),
