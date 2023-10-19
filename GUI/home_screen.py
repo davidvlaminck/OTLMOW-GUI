@@ -1,4 +1,6 @@
 import datetime
+import gettext
+_ = gettext.gettext
 
 from PyQt6.QtWidgets import QWidget, QPushButton, QLabel, QHBoxLayout, QVBoxLayout, QTableWidget, \
     QTableWidgetItem, QLineEdit, QHeaderView
@@ -28,7 +30,7 @@ class HomeScreen(QWidget):
         title = QLabel('OTLWizard')
         title.setProperty('class', 'title')
         header.addWidget(title)
-        new_project_button = QPushButton('New Project')
+        new_project_button = QPushButton(_('New Project'))
         new_project_button.setProperty('class', 'new-project')
         header.addWidget(new_project_button)
         header.setAlignment(new_project_button, Qt.AlignmentFlag.AlignLeft)
@@ -51,9 +53,9 @@ class HomeScreen(QWidget):
         search_wrapper.setProperty('class', 'search')
         search = QHBoxLayout()
         input_field = QLineEdit()
-        input_field.setPlaceholderText('Zoeken op projectnaam of bestek')
+        input_field.setPlaceholderText(_('Zoeken op projectnaam of bestek'))
         search.addWidget(input_field)
-        search_button = QPushButton('Search')
+        search_button = QPushButton(_('Search'))
         search.addWidget(search_button)
         search.addStretch()
         search_wrapper.setLayout(search)
@@ -100,7 +102,7 @@ class HomeScreen(QWidget):
         # Zorgt ervoor dat de table niet editable is
         table.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
         table.setHorizontalHeaderLabels(
-            ['Eigen referentie:', 'Bestek - (Dienstbevel)', 'Subset', 'Laatst bewerkt', '', ''])
+            [_('Eigen referentie:'), _('Bestek - (Dienstbevel)'), _('Subset'), _('Laatst bewerkt'), '', ''])
         # ALign titles of header to the left
         table.horizontalHeader().setDefaultAlignment(Qt.AlignmentFlag.AlignLeft)
 

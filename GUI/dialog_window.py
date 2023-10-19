@@ -1,6 +1,10 @@
+import gettext
+_ = gettext.gettext
+
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QDialog, QVBoxLayout, QLineEdit, QDialogButtonBox, QLabel, QHBoxLayout
 from Domain.home_domain import HomeDomain
+
 
 
 class DialogWindow:
@@ -21,9 +25,9 @@ class DialogWindow:
         dialog_window.setModal(True)
         if is_project:
             project = home_screen.home_func.db.get_project(id_)
-            dialog_window.setWindowTitle("Project bewerken")
+            dialog_window.setWindowTitle(_("Project bewerken"))
         else:
-            dialog_window.setWindowTitle("Nieuw project")
+            dialog_window.setWindowTitle(_("Nieuw project"))
         # Creates the vertical stack layout
         layout = QVBoxLayout()
         # Creates 3 horizontal layouts for each input field with its label
@@ -31,11 +35,11 @@ class DialogWindow:
         container_bestek = QHBoxLayout()
         container_subset = QHBoxLayout()
         # Creates labels for the input fields and adds them to the horizontal layouts
-        label_eigen_ref = QLabel("Eigen referentie:")
+        label_eigen_ref = QLabel(_("Eigen referentie:"))
         container_eigen_ref.addWidget(label_eigen_ref, alignment=Qt.AlignmentFlag.AlignLeft)
-        label_bestek = QLabel("Bestek:")
+        label_bestek = QLabel(_("Bestek:"))
         container_bestek.addWidget(label_bestek, alignment=Qt.AlignmentFlag.AlignLeft)
-        label_subset = QLabel("Subset:")
+        label_subset = QLabel(_("Subset:"))
         container_subset.addWidget(label_subset, alignment=Qt.AlignmentFlag.AlignLeft)
         # Creates the input fields
         input_eigen_ref = QLineEdit()
@@ -44,9 +48,9 @@ class DialogWindow:
         container_bestek.addWidget(input_bestek)
         input_subset = QLineEdit()
         container_subset.addWidget(input_subset)
-        input_eigen_ref.setPlaceholderText("Eigen referentie:")
-        input_bestek.setPlaceholderText("Bestek")
-        input_subset.setPlaceholderText("Subset")
+        input_eigen_ref.setPlaceholderText(_("Eigen referentie"))
+        input_bestek.setPlaceholderText(_("Bestek"))
+        input_subset.setPlaceholderText(_("Subset"))
         if is_project:
             input_eigen_ref.setText(project[1])
             input_subset.setText(project[2])
@@ -83,7 +87,7 @@ class DialogWindow:
     def validate(self, input_eigen_ref: str, input_bestek: str, input_subset: str, table, dialog_window, home_screen, id_: int = None):
         is_project = id_ is not None
         if input_eigen_ref.strip() == "" or input_subset.strip() == "":
-            self.error_label.setText("Vul alle velden in")
+            self.error_label.setText(_("Vul alle velden in"))
             return
         self.error_label.setText("")
         properties = [input_eigen_ref, input_bestek, input_subset]

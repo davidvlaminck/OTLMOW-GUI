@@ -1,0 +1,75 @@
+# Translations template for PROJECT.
+# Copyright (C) 2023 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2023.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2023-10-19 13:04+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.13.0\n"
+
+#: GUI/dialog_window.py:28
+msgid "Project bewerken"
+msgstr ""
+
+#: GUI/dialog_window.py:30
+msgid "Nieuw project"
+msgstr ""
+
+#: GUI/dialog_window.py:38 GUI/home_screen.py:105
+msgid "Eigen referentie:"
+msgstr ""
+
+#: GUI/dialog_window.py:40
+msgid "Bestek:"
+msgstr ""
+
+#: GUI/dialog_window.py:42
+msgid "Subset:"
+msgstr ""
+
+#: GUI/dialog_window.py:51
+msgid "Eigen referentie"
+msgstr ""
+
+#: GUI/dialog_window.py:52
+msgid "Bestek"
+msgstr ""
+
+#: GUI/dialog_window.py:53 GUI/home_screen.py:105
+msgid "Subset"
+msgstr ""
+
+#: GUI/dialog_window.py:90
+msgid "Vul alle velden in"
+msgstr ""
+
+#: GUI/home_screen.py:33
+msgid "New Project"
+msgstr ""
+
+#: GUI/home_screen.py:56
+msgid "Zoeken op projectnaam of bestek"
+msgstr ""
+
+#: GUI/home_screen.py:58
+msgid "Search"
+msgstr ""
+
+#: GUI/home_screen.py:105
+msgid "Bestek - (Dienstbevel)"
+msgstr ""
+
+#: GUI/home_screen.py:105
+msgid "Laatst bewerkt"
+msgstr ""
+
