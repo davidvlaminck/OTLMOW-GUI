@@ -61,7 +61,7 @@ class DialogWindow:
 
         # Creates the button box
         button_box = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
-
+        button_box.setProperty("class", "button-box")
         # sends the values off to validate once submitted
         button_box.accepted.connect(
             lambda: self.validate(input_eigen_ref.text(), input_bestek.text(),
@@ -69,6 +69,8 @@ class DialogWindow:
         button_box.rejected.connect(dialog_window.reject)
         # Adds the two buttons to the layout
         layout.addWidget(button_box)
+        button_box.button(QDialogButtonBox.StandardButton.Ok).setProperty("class", "primary-button")
+        button_box.button(QDialogButtonBox.StandardButton.Cancel).setProperty("class", "secondary-button")
         layout.addWidget(self.error_label)
         # Fills the dialog with the created layout
         dialog_window.setLayout(layout)

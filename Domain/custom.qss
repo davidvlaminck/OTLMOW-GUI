@@ -4,6 +4,7 @@
     height: 25px;
     width: 70px;
     border-radius: 5px;
+    padding-left: 1Opx;
     font-family: Roboto;
 }
 
@@ -56,5 +57,19 @@ QTableWidget::item{
 .settings{
     background: transparent;
     icon-size: 25px;
+}
+
+.primary-button{
+    color: #ffffff;
+    background-color: #0E5A69;
+}
+
+.secondary-button{
+    background: transparent;
+    color: #0E5A69;
+    padding: 3px;
+    padding-left: 10px;
+    padding-right: 10px;
+    border: 1px solid #0E5A69;
 }
 
