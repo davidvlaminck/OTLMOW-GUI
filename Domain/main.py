@@ -23,15 +23,18 @@ def mockData(database):
 
 
 if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    app_icon = QIcon('../img/wizard.ico')
-    app.setWindowIcon(app_icon)
-    db = initialize_database()
-    mockData(db)
-    with open('custom.qss', 'r') as file:
-        app.setStyleSheet(file.read())
-    window = HomeScreen(db)
-    window.resize(1920, 1080)
-    window.setWindowTitle("OTLWizard")
-    window.setMinimumSize(1280, 720)
-    sys.exit(app.exec())
+    try:
+        app = QApplication(sys.argv)
+        app_icon = QIcon('../img/wizard.ico')
+        app.setWindowIcon(app_icon)
+        db = initialize_database()
+        mockData(db)
+        with open('custom.qss', 'r') as file:
+            app.setStyleSheet(file.read())
+        window = HomeScreen(db)
+        window.resize(1920, 1080)
+        window.setWindowTitle("OTLWizard")
+        window.setMinimumSize(1280, 720)
+        sys.exit(app.exec())
+    except Exception as e:
+        print(e)

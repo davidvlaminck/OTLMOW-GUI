@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-10-19 13:20+0200\n"
+"POT-Creation-Date: 2023-10-20 11:48+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,66 +18,62 @@ msgstr ""
 "Generated-By: Babel 2.13.0\n"
 
 #: Domain/home_domain.py:26
-msgid "Verwijderen"
+msgid "delete"
 msgstr ""
 
 #: Domain/home_domain.py:27
-msgid "Weet u zeker dat u dit project wilt verwijderen?"
+msgid "project_deletion_question"
 msgstr ""
 
 #: GUI/dialog_window.py:28
-msgid "Project bewerken"
+msgid "alter_project_title"
 msgstr ""
 
 #: GUI/dialog_window.py:30
-msgid "Nieuw project"
+msgid "new_project_title"
 msgstr ""
 
-#: GUI/dialog_window.py:38 GUI/home_screen.py:105
-msgid "Eigen referentie:"
+#: GUI/dialog_window.py:38 GUI/dialog_window.py:51 GUI/home_screen.py:116
+msgid "own_reference"
 msgstr ""
 
-#: GUI/dialog_window.py:40
-msgid "Bestek:"
+#: GUI/dialog_window.py:40 GUI/dialog_window.py:52 GUI/home_screen.py:116
+msgid "service_order"
 msgstr ""
 
-#: GUI/dialog_window.py:42
-msgid "Subset:"
+#: GUI/dialog_window.py:42 GUI/dialog_window.py:53 GUI/home_screen.py:116
+msgid "subset"
 msgstr ""
 
-#: GUI/dialog_window.py:51
-msgid "Eigen referentie"
+#: GUI/dialog_window.py:92
+msgid "empty_fields_error"
 msgstr ""
 
-#: GUI/dialog_window.py:52
-msgid "Bestek"
+#: GUI/dialog_window.py:101
+msgid "change_language_title"
 msgstr ""
 
-#: GUI/dialog_window.py:53 GUI/home_screen.py:105
-msgid "Subset"
+#: GUI/dialog_window.py:103
+msgid "language_option_dutch"
 msgstr ""
 
-#: GUI/dialog_window.py:90
-msgid "Vul alle velden in"
+#: GUI/dialog_window.py:104
+msgid "language_option_english"
 msgstr ""
 
-#: GUI/home_screen.py:33
-msgid "New Project"
+#: GUI/home_screen.py:37
+msgid "new_project_button"
 msgstr ""
 
-#: GUI/home_screen.py:56
-msgid "Zoeken op projectnaam of bestek"
+#: GUI/home_screen.py:62
+msgid "search_text"
 msgstr ""
 
-#: GUI/home_screen.py:58
-msgid "Search"
+#: GUI/home_screen.py:64
+msgid "search_button"
 msgstr ""
 
-#: GUI/home_screen.py:105
-msgid "Bestek - (Dienstbevel)"
-msgstr ""
-
-#: GUI/home_screen.py:105
-msgid "Laatst bewerkt"
+#: GUI/home_screen.py:116
+msgid "last_edited"
 msgstr ""
 

@@ -1,9 +1,9 @@
-from language_settings import returnLanguage
-_ = returnLanguage()
-
+from language_settings import LanguageSettings
 from datetime import datetime
-
 from PyQt6.QtWidgets import QMessageBox
+
+lang_settings = LanguageSettings()
+_ = lang_settings.return_language()
 
 
 class HomeDomain:
@@ -23,8 +23,8 @@ class HomeDomain:
 
     def remove_project(self, id_, table):
         dlg = QMessageBox()
-        dlg.setWindowTitle(_("Verwijderen"))
-        dlg.setText(_("Weet u zeker dat u dit project wilt verwijderen?"))
+        dlg.setWindowTitle(_("delete"))
+        dlg.setText(_("project_deletion_question"))
         dlg.setIcon(QMessageBox.Icon.Warning)
         dlg.setStandardButtons(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
         button = dlg.exec()
@@ -47,8 +47,8 @@ class HomeDomain:
             table.insertRow(table.rowCount())
             row = table.rowCount() - 1
             id_ = self.db.add_project(properties[0], properties[1], properties[2], time_of_alter)
-        for count, element in enumerate(properties):
-            home_screen.add_cell_to_table(table, row, count, element)
+        #for count, element in enumerate(properties):
+            # home_screen.add_cell_to_table(table, row, count, element)
         if not project_exists:
             home_screen.add_update_and_delete_button(count=row, id_=id_, table=table)
         dlg.close()

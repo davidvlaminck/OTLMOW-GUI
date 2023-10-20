@@ -1,8 +1,5 @@
 import datetime
-import gettext
-from Domain.language_settings import returnLanguage
-_ = returnLanguage()
-
+from Domain.language_settings import LanguageSettings
 from PyQt6.QtWidgets import QWidget, QPushButton, QLabel, QHBoxLayout, QVBoxLayout, QTableWidget, \
     QTableWidgetItem, QLineEdit, QHeaderView
 from PyQt6.QtCore import Qt
@@ -12,33 +9,40 @@ import GUI.dialog_window as DialogWindow
 
 
 class HomeScreen(QWidget):
+    _ = None
     projects = None
     home_func = None
     dialog_window = None
+    container_home_screen = QVBoxLayout()
+    lang_settings = None
 
     def __init__(self, database):
         super().__init__()
         self.home_func = HomeDomain.HomeDomain(database)
         self.dialog_window = DialogWindow.DialogWindow(database)
+        self.layouts = []
+        self.main_content_ui()
+        self.init_ui()
 
-        # Vertical layout
-        container_home_screen = QVBoxLayout()
-
-        # Create the header
+    def main_content_ui(self):
+        self.lang_settings = LanguageSettings()
+        self._ = self.lang_settings.return_language()
+        print("test"+ self.lang_settings.language)
         head_wrapper = QWidget()
         head_wrapper.setProperty('class', 'header')
         header = QHBoxLayout()
         title = QLabel('OTLWizard')
         title.setProperty('class', 'title')
         header.addWidget(title)
-        new_project_button = QPushButton(_('New Project'))
+        new_project_button = QPushButton(self._('new_project_button'))
         new_project_button.setProperty('class', 'new-project')
         header.addWidget(new_project_button)
         header.setAlignment(new_project_button, Qt.AlignmentFlag.AlignLeft)
         user_pref_container = QHBoxLayout()
         settings = QPushButton()
         settings.setIcon(qta.icon('mdi.cog'))
-        settings.setProperty('class','settings')
+        settings.setProperty('class', 'settings')
+        settings.clicked.connect(lambda: self.dialog_window.language_window(self))
         user_pref_container.addWidget(settings)
         help_widget = QPushButton()
         help_widget.setIcon(qta.icon('mdi.help-circle'))
@@ -46,6 +50,7 @@ class HomeScreen(QWidget):
         user_pref_container.addWidget(help_widget)
         header.addLayout(user_pref_container)
         header.setAlignment(user_pref_container, Qt.AlignmentFlag.AlignRight)
+        self.layouts.append(header)
         head_wrapper.setLayout(header)
 
         # Search bar
@@ -54,19 +59,21 @@ class HomeScreen(QWidget):
         search_wrapper.setProperty('class', 'search')
         search = QHBoxLayout()
         input_field = QLineEdit()
-        input_field.setPlaceholderText(_('Zoeken op projectnaam of bestek'))
+        input_field.setPlaceholderText(self._('search_text'))
         search.addWidget(input_field)
-        search_button = QPushButton(_('Search'))
+        search_button = QPushButton(self._('search_button'))
         search.addWidget(search_button)
         search.addStretch()
         search_wrapper.setLayout(search)
         search_container.addWidget(search_wrapper)
+        self.layouts.append(search_container)
         search_container.setContentsMargins(16, 0, 16, 0)
 
         # Create the table
         table = self.draw_table()
         table_container = QVBoxLayout()
         table_container.addWidget(table)
+        self.layouts.append(table_container)
         table_container.setContentsMargins(16, 0, 16, 0)
 
         # Add functionality to new project button
@@ -74,20 +81,23 @@ class HomeScreen(QWidget):
         new_project_button.clicked.connect(lambda: self.dialog_window.update_project(home_screen=self, table=table))
 
         # add header to the vertical layout
-        container_home_screen.addWidget(head_wrapper)
-        container_home_screen.addSpacing(39)
+        self.layouts.append(self.container_home_screen)
+        self.container_home_screen.addWidget(head_wrapper)
+        self.container_home_screen.addSpacing(39)
         # add searchbar to the vertical layout
-        container_home_screen.addLayout(search_container)
-        container_home_screen.addSpacing(43)
+        self.container_home_screen.addLayout(search_container)
+        self.container_home_screen.addSpacing(43)
         # add table to the vertical layout with margins
-        container_home_screen.addLayout(table_container)
-        container_home_screen.addStretch()
-        container_home_screen.setContentsMargins(0,0,0,0)
-        self.setLayout(container_home_screen)
+        self.container_home_screen.addLayout(table_container)
+        self.container_home_screen.addStretch()
+        self.container_home_screen.setContentsMargins(0, 0, 0, 0)
+
+    def init_ui(self):
+        self.setLayout(self.container_home_screen)
         self.show()
 
     def draw_table(self):
-        table_container = QVBoxLayout()
+        print(self.home_func.get_all_projects())
         table = QTableWidget()
         table.setRowCount(self.home_func.get_amount_of_rows())
         table.verticalHeader().setVisible(False)
@@ -103,7 +113,7 @@ class HomeScreen(QWidget):
         # Zorgt ervoor dat de table niet editable is
         table.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
         table.setHorizontalHeaderLabels(
-            [_('Eigen referentie:'), _('Bestek - (Dienstbevel)'), _('Subset'), _('Laatst bewerkt'), '', ''])
+            [self._('own_reference'), self._('service_order'), self._('subset'), self._('last_edited'), '', ''])
         # ALign titles of header to the left
         table.horizontalHeader().setDefaultAlignment(Qt.AlignmentFlag.AlignLeft)
 
@@ -135,3 +145,12 @@ class HomeScreen(QWidget):
             table.setItem(row,column, QTableWidgetItem(item.strftime("%d-%m-%Y")))
         else:
             table.setItem(row, column, QTableWidgetItem(item))
+
+    def reset_ui(self):
+        self.lang_settings = None
+        self.layouts = []
+        self.container_home_screen = QVBoxLayout()
+        self.main_content_ui()
+        self.init_ui()
+        self.container_home_screen.update()
+

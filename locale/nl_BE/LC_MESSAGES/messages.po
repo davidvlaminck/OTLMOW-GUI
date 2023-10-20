@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: jasper.berton@mow.vlaanderen.be\n"
-"POT-Creation-Date: 2023-10-19 13:20+0200\n"
+"POT-Creation-Date: 2023-10-20 11:48+0200\n"
 "PO-Revision-Date: 2023-10-19 13:13+0200\n"
 "Last-Translator: Jasper Berton <jasper.berton@mow.vlaanderen.be>\n"
 "Language: nl_BE\n"
@@ -19,66 +19,62 @@ msgstr ""
 "Generated-By: Babel 2.13.0\n"
 
 #: Domain/home_domain.py:26
-msgid "Verwijderen"
+msgid "delete"
 msgstr "Verwijderen"
 
 #: Domain/home_domain.py:27
-msgid "Weet u zeker dat u dit project wilt verwijderen?"
-msgstr "Weet u zeker dat u dit project wilt verwijderen?"
+msgid "project_deletion_question"
+msgstr "Bent u zeker dat u dit project wilt verwijderen?"
 
 #: GUI/dialog_window.py:28
-msgid "Project bewerken"
-msgstr "Project bewerken"
+msgid "alter_project_title"
+msgstr "Aanpassen project"
 
 #: GUI/dialog_window.py:30
-msgid "Nieuw project"
-msgstr "Nieuw project"
-
-#: GUI/dialog_window.py:38 GUI/home_screen.py:105
-msgid "Eigen referentie:"
-msgstr "Eigen referentie:"
-
-#: GUI/dialog_window.py:40
-msgid "Bestek:"
-msgstr "Bestek:"
-
-#: GUI/dialog_window.py:42
-msgid "Subset:"
-msgstr "Subset:"
-
-#: GUI/dialog_window.py:51
-msgid "Eigen referentie"
-msgstr "Eigen referentie"
-
-#: GUI/dialog_window.py:52
-msgid "Bestek"
-msgstr "Bestek"
-
-#: GUI/dialog_window.py:53 GUI/home_screen.py:105
-msgid "Subset"
-msgstr "Subset"
-
-#: GUI/dialog_window.py:90
-msgid "Vul alle velden in"
-msgstr "Vul alle velden in"
-
-#: GUI/home_screen.py:33
-msgid "New Project"
+msgid "new_project_title"
 msgstr "Nieuw Project"
 
-#: GUI/home_screen.py:56
-msgid "Zoeken op projectnaam of bestek"
-msgstr "Zoeken op projectnaam of bestek"
+#: GUI/dialog_window.py:38 GUI/dialog_window.py:51 GUI/home_screen.py:116
+msgid "own_reference"
+msgstr "Eigen referentie"
 
-#: GUI/home_screen.py:58
-msgid "Search"
+#: GUI/dialog_window.py:40 GUI/dialog_window.py:52 GUI/home_screen.py:116
+msgid "service_order"
+msgstr "Bestek - (dienstbevel)"
+
+#: GUI/dialog_window.py:42 GUI/dialog_window.py:53 GUI/home_screen.py:116
+#, fuzzy
+msgid "subset"
+msgstr "Subset"
+
+#: GUI/dialog_window.py:92
+msgid "empty_fields_error"
+msgstr "Gelieve alle velden in te vullen"
+
+#: GUI/dialog_window.py:101
+msgid "change_language_title"
+msgstr "Taal veranderen"
+
+#: GUI/dialog_window.py:103
+msgid "language_option_dutch"
+msgstr "Nederlands"
+
+#: GUI/dialog_window.py:104
+msgid "language_option_english"
+msgstr "Engels"
+
+#: GUI/home_screen.py:37
+msgid "new_project_button"
+msgstr "Nieuw Project"
+
+#: GUI/home_screen.py:62
+msgid "search_text"
+msgstr "Geef een project of bestek in om te zoeken"
+
+#: GUI/home_screen.py:64
+msgid "search_button"
 msgstr "Zoeken"
 
-#: GUI/home_screen.py:105
-msgid "Bestek - (Dienstbevel)"
-msgstr "Bestek - (Dienstbevel)"
-
-#: GUI/home_screen.py:105
-msgid "Laatst bewerkt"
+#: GUI/home_screen.py:116
+msgid "last_edited"
 msgstr "Laatst bewerkt"
-

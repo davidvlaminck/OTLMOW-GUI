@@ -6,3 +6,5 @@ pybabel extract . -o locale/base.pot
  -> update het pot bestand met alle nieuwe strings
 pybabel update -i locale/base.pot -d locale
 -> update alle po bestanden met de nieuwe strings
+pybabel compile -d locale
+-> compileer de po bestanden naar mo bestanden
