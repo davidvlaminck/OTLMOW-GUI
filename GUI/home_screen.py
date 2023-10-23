@@ -9,25 +9,25 @@ import GUI.dialog_window as DialogWindow
 
 
 class HomeScreen(QWidget):
-    _ = None
-    projects = None
-    home_func = None
     dialog_window = None
-    container_home_screen = QVBoxLayout()
-    lang_settings = None
 
     def __init__(self, database):
         super().__init__()
-        self.home_func = HomeDomain.HomeDomain(database)
-        self.dialog_window = DialogWindow.DialogWindow(database)
+        self.database = database
+        self.lang_settings = LanguageSettings()
+        self._ = self.lang_settings.return_language()
+        self.home_func = HomeDomain.HomeDomain(database, self.lang_settings)
+        self.container_home_screen = QVBoxLayout()
+        self.dialog_window = DialogWindow.DialogWindow(database, self.lang_settings)
+        self.search_wrapper = QWidget()
+        self.table = QTableWidget()
         self.layouts = []
         self.main_content_ui()
         self.init_ui()
+        self.projects = []
 
     def main_content_ui(self):
-        self.lang_settings = LanguageSettings()
-        self._ = self.lang_settings.return_language()
-        print("test"+ self.lang_settings.language)
+        print("test" + self.lang_settings.language)
         head_wrapper = QWidget()
         head_wrapper.setProperty('class', 'header')
         header = QHBoxLayout()
@@ -55,30 +55,26 @@ class HomeScreen(QWidget):
 
         # Search bar
         search_container = QVBoxLayout()
-        search_wrapper = QWidget()
-        search_wrapper.setProperty('class', 'search')
-        search = QHBoxLayout()
-        input_field = QLineEdit()
-        input_field.setPlaceholderText(self._('search_text'))
-        search.addWidget(input_field)
-        search_button = QPushButton(self._('search_button'))
-        search.addWidget(search_button)
-        search.addStretch()
-        search_wrapper.setLayout(search)
-        search_container.addWidget(search_wrapper)
+        self.search_wrapper = QWidget()
+        self.draw_search_bar()
+        search_container.addWidget(self.search_wrapper)
         self.layouts.append(search_container)
         search_container.setContentsMargins(16, 0, 16, 0)
 
         # Create the table
-        table = self.draw_table()
+        try:
+            self.draw_table()
+        except Exception as e:
+            print(e)
         table_container = QVBoxLayout()
-        table_container.addWidget(table)
+        table_container.addWidget(self.table)
         self.layouts.append(table_container)
         table_container.setContentsMargins(16, 0, 16, 0)
 
         # Add functionality to new project button
         # Can only happen here because the table needs to be drawn first
-        new_project_button.clicked.connect(lambda: self.dialog_window.update_project(home_screen=self, table=table))
+        new_project_button.clicked.connect(
+            lambda: self.dialog_window.update_project(home_screen=self, table=self.table))
 
         # add header to the vertical layout
         self.layouts.append(self.container_home_screen)
@@ -96,34 +92,45 @@ class HomeScreen(QWidget):
         self.setLayout(self.container_home_screen)
         self.show()
 
+    def draw_search_bar(self):
+        self.search_wrapper = QWidget()
+        self.search_wrapper.setProperty('class', 'search')
+        search = QHBoxLayout()
+        input_field = QLineEdit()
+        input_field.setPlaceholderText(self._('search_text'))
+        search.addWidget(input_field)
+        search_button = QPushButton(self._('search_button'))
+        search.addWidget(search_button)
+        search.addStretch()
+        self.search_wrapper.setLayout(search)
+
     def draw_table(self):
         print(self.home_func.get_all_projects())
-        table = QTableWidget()
-        table.setRowCount(self.home_func.get_amount_of_rows())
-        table.verticalHeader().setVisible(False)
-        table.setColumnCount(6)
+        self.table.setRowCount(self.home_func.get_amount_of_rows())
+        self.table.verticalHeader().setVisible(False)
+        self.table.setColumnCount(6)
         # Set the width of the columns to stretch except the last two columns for buttons
-        for column in range(table.columnCount() - 2):
-            table.horizontalHeader().setSectionResizeMode(column, QHeaderView.ResizeMode.Stretch)
-        table.horizontalHeader().setSectionResizeMode(4, QHeaderView.ResizeMode.ResizeToContents)
-        table.horizontalHeader().setSectionResizeMode(5, QHeaderView.ResizeMode.ResizeToContents)
-        table.setShowGrid(False)
+        for column in range(self.table.columnCount() - 2):
+            self.table.horizontalHeader().setSectionResizeMode(column, QHeaderView.ResizeMode.Stretch)
+        self.table.horizontalHeader().setSectionResizeMode(4, QHeaderView.ResizeMode.ResizeToContents)
+        self.table.horizontalHeader().setSectionResizeMode(5, QHeaderView.ResizeMode.ResizeToContents)
+        self.table.setShowGrid(False)
         # Zorgt ervoor dat selectie op row is niet op cell
-        table.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows)
+        self.table.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows)
         # Zorgt ervoor dat de table niet editable is
-        table.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
-        table.setHorizontalHeaderLabels(
+        self.table.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
+        self.table.setHorizontalHeaderLabels(
             [self._('own_reference'), self._('service_order'), self._('subset'), self._('last_edited'), '', ''])
         # ALign titles of header to the left
-        table.horizontalHeader().setDefaultAlignment(Qt.AlignmentFlag.AlignLeft)
+        self.table.horizontalHeader().setDefaultAlignment(Qt.AlignmentFlag.AlignLeft)
 
         # add data to the table
         self.projects = self.home_func.get_all_projects()
+        print(self.home_func.get_all_projects())
         for count, element in enumerate(self.projects):
             for i in range(4):
-                self.add_cell_to_table(table, count, i, element[i + 1])
-            self.add_update_and_delete_button(count, element[0], table)
-        return table
+                self.add_cell_to_table(self.table, count, i, element[i + 1])
+            self.add_update_and_delete_button(count, element[0], self.table)
 
     def add_update_and_delete_button(self, count, id_, table):
         edit = QPushButton()
@@ -142,15 +149,16 @@ class HomeScreen(QWidget):
 
     def add_cell_to_table(self, table, row, column, item):
         if isinstance(item, datetime.date):
-            table.setItem(row,column, QTableWidgetItem(item.strftime("%d-%m-%Y")))
+            table.setItem(row, column, QTableWidgetItem(item.strftime("%d-%m-%Y")))
         else:
             table.setItem(row, column, QTableWidgetItem(item))
 
-    def reset_ui(self):
-        self.lang_settings = None
-        self.layouts = []
-        self.container_home_screen = QVBoxLayout()
-        self.main_content_ui()
-        self.init_ui()
-        self.container_home_screen.update()
-
+    def reset_ui(self, lang_settings=None):
+        if lang_settings is not None:
+            self.lang_settings = lang_settings
+            self._ = self.lang_settings.return_language()
+            self.home_func = HomeDomain.HomeDomain(self.database, self.lang_settings)
+            self.dialog_window = DialogWindow.DialogWindow(self.database, self.lang_settings)
+        print("Home screen has been reset with language " + self.lang_settings.language)
+        self.draw_search_bar()
+        self.draw_table()

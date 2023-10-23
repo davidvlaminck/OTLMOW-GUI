@@ -2,16 +2,15 @@ from Domain.language_settings import LanguageSettings
 from datetime import datetime
 from PyQt6.QtWidgets import QMessageBox
 
-lang_settings = LanguageSettings()
-_ = lang_settings.return_language()
-
 
 class HomeDomain:
     db = None
     HomeScreen = None
 
-    def __init__(self, database):
+    def __init__(self, database, language_settings):
         self.db = database
+        self.lang_settings = language_settings
+        self._ = self.lang_settings.return_language()
 
     def get_amount_of_rows(self) -> int:
         rowcount = self.db.count_projects()
@@ -23,8 +22,8 @@ class HomeDomain:
 
     def remove_project(self, id_, table):
         dlg = QMessageBox()
-        dlg.setWindowTitle(_("delete"))
-        dlg.setText(_("project_deletion_question"))
+        dlg.setWindowTitle(self._("delete"))
+        dlg.setText(self._("project_deletion_question"))
         dlg.setIcon(QMessageBox.Icon.Warning)
         dlg.setStandardButtons(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
         button = dlg.exec()
@@ -35,23 +34,14 @@ class HomeDomain:
             except Exception as e:
                 print(e)
 
-    def alter_table(self, properties,table, dlg, home_screen, id_=None):
+    def alter_table(self, properties, table, dlg, home_screen, id_=None):
         time_of_alter = datetime.now()
         properties += [time_of_alter]
         project_exists = id_ is not None
         if project_exists:
-            row = table.currentRow()
+            # row = table.currentRow()
             self.db.update_project(id_, properties[0], properties[1], properties[2], time_of_alter)
         else:
-            home_screen.projects = self.db.get_all_projects()
-            table.insertRow(table.rowCount())
-            row = table.rowCount() - 1
             id_ = self.db.add_project(properties[0], properties[1], properties[2], time_of_alter)
-        #for count, element in enumerate(properties):
-            # home_screen.add_cell_to_table(table, row, count, element)
-        if not project_exists:
-            home_screen.add_update_and_delete_button(count=row, id_=id_, table=table)
+        home_screen.reset_ui()
         dlg.close()
-
-
-
