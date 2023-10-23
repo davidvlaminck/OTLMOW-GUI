@@ -1,4 +1,4 @@
-from language_settings import LanguageSettings
+from Domain.language_settings import LanguageSettings
 from datetime import datetime
 from PyQt6.QtWidgets import QMessageBox
 
