@@ -1,3 +1,4 @@
+import logging
 import sys
 import gettext
 
@@ -24,6 +25,10 @@ def mockData(database):
 
 if __name__ == '__main__':
     try:
+        logging.basicConfig(
+            format='%(asctime)s %(levelname)-8s %(message)s',
+            level=logging.DEBUG,
+            datefmt='%Y-%m-%d %H:%M:%S')
         app = QApplication(sys.argv)
         app_icon = QIcon('../img/wizard.ico')
         app.setWindowIcon(app_icon)

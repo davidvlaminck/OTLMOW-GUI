@@ -1,4 +1,5 @@
 import gettext
+import logging
 import warnings
 
 
@@ -9,7 +10,7 @@ class LanguageSettings:
 
     # Switchen kan door in language en of nl_BE in te geven
     def return_language(self):
-        print("This function returns " + self.language)
+        logging.info("This function returns " + self.language)
         translator = gettext.translation('messages', localedir='../locale/', languages=[self.language])
         translator.install()
         return translator.gettext
