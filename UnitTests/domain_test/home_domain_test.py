@@ -3,9 +3,10 @@ from Domain.home_domain import HomeDomain
 from Domain.database import Database
 
 
+# Runt enkel samen met alle andere tests anders moet ../locale/ aangepast worden naar ../../locale/
 def test_get_amount_of_rows():
     db = Database()
-    _ = return_language('../../locale/')
+    _ = return_language('../locale/')
     db.create_connection(":memory:")
     home_domain = HomeDomain(db, _)
     assert home_domain.get_amount_of_rows() == 0

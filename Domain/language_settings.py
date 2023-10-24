@@ -4,10 +4,7 @@ import warnings
 from enum import Enum
 
 
-# TODO: singleton van maken / klasse wegdoen
-
-
-    # Switchen kan door in language en of nl_BE in te geven
+# Switchen kan door in language en of nl_BE in te geven
 def return_language(localedir: str, language: str = None):
     if language is None:
         language = Language.ENGLISH.value
