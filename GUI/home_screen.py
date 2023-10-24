@@ -1,7 +1,7 @@
 import datetime
 from typing import Union
 
-from Domain.language_settings import LanguageSettings
+from Domain.language_settings import return_language
 from PyQt6.QtWidgets import QWidget, QPushButton, QLabel, QHBoxLayout, QVBoxLayout, QTableWidget, \
     QTableWidgetItem, QLineEdit, QHeaderView
 from PyQt6.QtCore import Qt
@@ -11,14 +11,12 @@ import GUI.dialog_window as DialogWindow
 
 
 class HomeScreen(QWidget):
-    dialog_window = None
 
     def __init__(self, database):
         super().__init__()
         self.database = database
-        self.lang_settings = LanguageSettings()
-        self._ = self.lang_settings.return_language()
-        self.home_domain = HomeDomain.HomeDomain(database, self.lang_settings)
+        self._ = return_language('../locale/')
+        self.home_domain = HomeDomain.HomeDomain(database, self._)
         self.container_home_screen = QVBoxLayout()
         self.table = QTableWidget()
         self.projects: list
@@ -132,7 +130,7 @@ class HomeScreen(QWidget):
             self.add_update_and_delete_button(count, element[0], self.table)
 
     def start_dialog_window(self, id_: int = None, home_screen=None, is_project=False) -> None:
-        dialog_window = DialogWindow.DialogWindow(self.database, self.lang_settings)
+        dialog_window = DialogWindow.DialogWindow(self.database, self._)
         if is_project:
             dialog_window.draw_upsert_project(id_=id_, home_screen=home_screen)
         else:
@@ -160,10 +158,8 @@ class HomeScreen(QWidget):
 
     def reset_ui(self, lang_settings=None) -> None:
         if lang_settings is not None:
-            self.lang_settings = lang_settings
-            self._ = self.lang_settings.return_language()
-            self.home_domain = HomeDomain.HomeDomain(self.database, self.lang_settings)
-        print("Home screen has been reset with language " + self.lang_settings.language)
+            self._ = lang_settings
+            self.home_domain = HomeDomain.HomeDomain(self.database, self._)
         self.draw_search_bar()
         self.draw_table()
 

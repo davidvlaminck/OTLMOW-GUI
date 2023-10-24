@@ -1,15 +1,15 @@
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QDialog, QVBoxLayout, QLineEdit, QDialogButtonBox, QLabel, QHBoxLayout, QPushButton
 from Domain.home_domain import HomeDomain
+from Domain.language_settings import return_language
 
 
 class DialogWindow:
 
     def __init__(self, database, language_settings):
-        self.lang_settings = language_settings
-        self.home_domain = HomeDomain(database, self.lang_settings)
+        self.home_domain = HomeDomain(database, language_settings)
         self.error_label = QLabel()
-        self._ = self.lang_settings.return_language()
+        self._ = language_settings
 
     def draw_upsert_project(self, home_screen, id_=None):
         is_project = id_ is not None
@@ -103,6 +103,6 @@ class DialogWindow:
         dialog.exec()
 
     def change_language(self, lang: str, dialog: QDialog, home_screen) -> None:
-        self.lang_settings.set_language(lang)
-        home_screen.reset_ui(self.lang_settings)
+        self._ = return_language('../locale/', lang)
+        home_screen.reset_ui(self._)
         dialog.close()

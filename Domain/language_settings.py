@@ -1,25 +1,24 @@
 import gettext
 import logging
 import warnings
+from enum import Enum
 
 
 # TODO: singleton van maken / klasse wegdoen
-class LanguageSettings:
 
-    def __init__(self):
-        # TODO: vervangen door enum type
-        self.language = 'en'
 
     # Switchen kan door in language en of nl_BE in te geven
-    def return_language(self):
-        logging.info("This function returns " + self.language)
-        translator = gettext.translation('messages', localedir='../locale/', languages=[self.language])
-        translator.install()
-        return translator.gettext
+def return_language(localedir: str, language: str = None):
+    if language is None:
+        language = Language.ENGLISH.value
+    elif language not in [lang.value for lang in Language]:
+        warnings.warn("Language not supported. Defaulting to English")
+        language = Language.ENGLISH.value
+    translator = gettext.translation('messages', localedir=localedir, languages=[language])
+    translator.install()
+    return translator.gettext
 
-    def set_language(self, language: str):
-        if language == 'nl_BE' or language == 'en':
-            self.language = language
-        else:
-            warnings.warn("Language not supported, switching to default language: en")
-            self.language = 'en'
+
+class Language(Enum):
+    ENGLISH = 'en'
+    DUTCH = 'nl_BE'

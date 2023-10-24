@@ -8,8 +8,7 @@ class HomeDomain:
 
     def __init__(self, database, language_settings):
         self.db = database
-        self.lang_settings = language_settings
-        self._ = self.lang_settings.return_language()
+        self._ = language_settings
 
     def get_amount_of_rows(self) -> int:
         return self.db.count_projects()
