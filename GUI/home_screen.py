@@ -1,4 +1,7 @@
 import datetime
+import logging
+from typing import Union
+
 from Domain.language_settings import LanguageSettings
 from PyQt6.QtWidgets import QWidget, QPushButton, QLabel, QHBoxLayout, QVBoxLayout, QTableWidget, \
     QTableWidgetItem, QLineEdit, QHeaderView
@@ -20,7 +23,6 @@ class HomeScreen(QWidget):
         self.container_home_screen = QVBoxLayout()
         # TODO: dezen moet weg kunnen
         self.dialog_window = DialogWindow.DialogWindow(database, self.lang_settings)
-        self.search_wrapper = QWidget()
         self.table = QTableWidget()
         self.layouts = []
         self.projects: list
@@ -58,10 +60,8 @@ class HomeScreen(QWidget):
 
         # Search bar
         search_container = QVBoxLayout()
-        # TODO self weg wrapper returnen uit functie draw_search_bar
-        self.search_wrapper = QWidget()
-        self.draw_search_bar()
-        search_container.addWidget(self.search_wrapper)
+        search_wrapper = self.draw_search_bar()
+        search_container.addWidget(search_wrapper)
         self.layouts.append(search_container)
         search_container.setContentsMargins(16, 0, 16, 0)
 
@@ -94,9 +94,9 @@ class HomeScreen(QWidget):
         self.setLayout(self.container_home_screen)
         self.show()
 
-    def draw_search_bar(self):
-        self.search_wrapper = QWidget()
-        self.search_wrapper.setProperty('class', 'search')
+    def draw_search_bar(self) -> QWidget:
+        search_wrapper = QWidget()
+        search_wrapper.setProperty('class', 'search')
         search = QHBoxLayout()
         input_field = QLineEdit()
         input_field.setPlaceholderText(self._('search_text'))
@@ -105,7 +105,8 @@ class HomeScreen(QWidget):
         search_button.clicked.connect(lambda: self.draw_table(input_field.text()))
         search.addWidget(search_button)
         search.addStretch()
-        self.search_wrapper.setLayout(search)
+        search_wrapper.setLayout(search)
+        return search_wrapper
 
     def draw_table(self, input: str = None):
         self.filter_projects(input)
@@ -137,7 +138,7 @@ class HomeScreen(QWidget):
                 self.add_cell_to_table(self.table, count, i, element[i + 1])
             self.add_update_and_delete_button(count, element[0], self.table)
 
-    def add_update_and_delete_button(self, count, id_, table):
+    def add_update_and_delete_button(self, count: int, id_: int, table: QTableWidget) -> None:
         edit = QPushButton()
         edit.setIcon(qta.icon('mdi.pencil'))
         edit.setProperty('class', 'alter-button')
@@ -149,17 +150,17 @@ class HomeScreen(QWidget):
         button.setIcon(qta.icon('mdi.trash-can'))
         button.setProperty('class', 'alter-button')
         button.clicked.connect(lambda _, i=id_:
-                               self.home_domain.remove_project(id_=i, table=table))
+                               self.home_domain.draw_remove_project_screen(id_=i, table=table))
         table.setCellWidget(count, 5, button)
 
     @staticmethod
-    def add_cell_to_table(table, row, column, item):
+    def add_cell_to_table(table: QTableWidget, row: int, column: int, item: Union[str, datetime.datetime]) -> None:
         if isinstance(item, datetime.date):
             table.setItem(row, column, QTableWidgetItem(item.strftime("%d-%m-%Y")))
         else:
             table.setItem(row, column, QTableWidgetItem(item))
 
-    def reset_ui(self, lang_settings=None):
+    def reset_ui(self, lang_settings=None) -> None:
         if lang_settings is not None:
             self.lang_settings = lang_settings
             self._ = self.lang_settings.return_language()

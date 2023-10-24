@@ -1,4 +1,3 @@
-from Domain.language_settings import LanguageSettings
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QDialog, QVBoxLayout, QLineEdit, QDialogButtonBox, QLabel, QHBoxLayout, QPushButton
 from Domain.home_domain import HomeDomain
@@ -80,7 +79,7 @@ class DialogWindow:
         # Updates the projects behind the table
 
     def validate(self, input_eigen_ref: str, input_bestek: str, input_subset: str, table, dialog_window, home_screen,
-                 id_: int = None):
+                 id_: int = None) -> None:
         if input_eigen_ref.strip() == "" or input_subset.strip() == "":
             self.error_label.setText(self._("empty_fields_error"))
             return
@@ -88,7 +87,7 @@ class DialogWindow:
         properties = [input_eigen_ref, input_bestek, input_subset]
         self.home_domain.alter_table(properties, table, dialog_window, home_screen, id_)
 
-    def language_window(self, home_screen):
+    def language_window(self, home_screen) -> None:
         dialog = QDialog()
         dialog.setModal(True)
         dialog.setWindowTitle(self._("change_language_title"))
@@ -103,10 +102,7 @@ class DialogWindow:
         dialog.show()
         dialog.exec()
 
-    def change_language(self, lang: str, dialog, home_screen):
-        try:
-            self.lang_settings.set_language(lang)
-            home_screen.reset_ui(self.lang_settings)
-            dialog.close()
-        except Exception as e:
-            print(e)
+    def change_language(self, lang: str, dialog: QDialog, home_screen) -> None:
+        self.lang_settings.set_language(lang)
+        home_screen.reset_ui(self.lang_settings)
+        dialog.close()

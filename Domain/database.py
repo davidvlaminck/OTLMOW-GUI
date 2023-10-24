@@ -7,18 +7,18 @@ class Database:
     connection = None
 
     # Creates connection to database file, if file does not exist it will be created
-    def create_connection(self, path: str):
+    def create_connection(self, path: str) -> None:
         self.connection = sqlite3.connect(path, detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
         self.cursor = self.connection.cursor()
         self.create_project_table()
 
     # Creates project table where all the data of projects can be stored if it does not exist
-    def create_project_table(self):
+    def create_project_table(self) -> None:
         self.cursor.execute(
             '''CREATE TABLE IF NOT EXISTS projects(Id INTEGER PRIMARY KEY AUTOINCREMENT, Eigen_referentie TEXT, Bestek TEXT, Subset TEXT, Laatst_bewerkt TIMESTAMP)''')
 
     # Adds a project to the project table taking the parameters as values
-    def add_project(self, eigen_referentie: str, bestek: str, subset: str, laatst_bewerkt: datetime.datetime):
+    def add_project(self, eigen_referentie: str, bestek: str, subset: str, laatst_bewerkt: datetime.datetime) -> int:
         if not isinstance(eigen_referentie, str) or not isinstance(bestek, str) or not isinstance(subset, str):
             raise TypeError("Invalid type")
         else:
@@ -33,7 +33,7 @@ class Database:
         return self.cursor.fetchall()
 
     # Removes a project from the project table based on id
-    def remove_project(self, id_: int):
+    def remove_project(self, id_: int) -> None:
         self.connection.execute('''DELETE FROM projects WHERE Id = ?''', (id_,))
 
     # Get a certain project based on id
@@ -57,6 +57,6 @@ class Database:
         return result[0]
 
     # Closes the connection to the database
-    def close_connection(self):
+    def close_connection(self) -> None:
         self.cursor.close()
         self.connection.close()
