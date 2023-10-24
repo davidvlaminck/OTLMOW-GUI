@@ -11,7 +11,7 @@ class DialogWindow:
         self.error_label = QLabel()
         self._ = self.lang_settings.return_language()
 
-    def draw_upsert_project(self, home_screen, id_=None, table=None):
+    def draw_upsert_project(self, home_screen, id_=None):
         is_project = id_ is not None
         # Resets the error label to empty when reopening the dialog
         self.error_label.setText("")
@@ -64,7 +64,7 @@ class DialogWindow:
         # sends the values off to validate once submitted
         button_box.accepted.connect(
             lambda: self.validate(input_eigen_ref.text(), input_bestek.text(),
-                                  input_subset.text(), table, dialog_window, home_screen, id_))
+                                  input_subset.text(), dialog_window, home_screen, id_))
         button_box.rejected.connect(dialog_window.reject)
         # Adds the two buttons to the layout
         layout.addWidget(button_box)
@@ -78,14 +78,14 @@ class DialogWindow:
         dialog_window.exec()
         # Updates the projects behind the table
 
-    def validate(self, input_eigen_ref: str, input_bestek: str, input_subset: str, table, dialog_window, home_screen,
+    def validate(self, input_eigen_ref: str, input_bestek: str, input_subset: str, dialog_window, home_screen,
                  id_: int = None) -> None:
         if input_eigen_ref.strip() == "" or input_subset.strip() == "":
             self.error_label.setText(self._("empty_fields_error"))
             return
         self.error_label.setText("")
         properties = [input_eigen_ref, input_bestek, input_subset]
-        self.home_domain.alter_table(properties, table, dialog_window, home_screen, id_)
+        self.home_domain.alter_table(properties, dialog_window, home_screen, id_)
 
     def language_window(self, home_screen) -> None:
         dialog = QDialog()

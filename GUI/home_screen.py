@@ -1,5 +1,4 @@
 import datetime
-import logging
 from typing import Union
 
 from Domain.language_settings import LanguageSettings
@@ -21,10 +20,7 @@ class HomeScreen(QWidget):
         self._ = self.lang_settings.return_language()
         self.home_domain = HomeDomain.HomeDomain(database, self.lang_settings)
         self.container_home_screen = QVBoxLayout()
-        # TODO: dezen moet weg kunnen
-        self.dialog_window = DialogWindow.DialogWindow(database, self.lang_settings)
         self.table = QTableWidget()
-        self.layouts = []
         self.projects: list
 
         self.main_content_ui()
@@ -32,7 +28,37 @@ class HomeScreen(QWidget):
 
     # TODO: Liever 50 functies dan een grote blok tekst
     def main_content_ui(self):
-        print("test" + self.lang_settings.language)
+        # Header
+        head_wrapper = self.draw_header_bar()
+
+        # Search bar
+        search_container = QVBoxLayout()
+        search_wrapper = self.draw_search_bar()
+        search_container.addWidget(search_wrapper)
+        search_container.setContentsMargins(16, 0, 16, 0)
+
+        # Create the table
+        self.draw_table()
+        table_container = QVBoxLayout()
+        table_container.addWidget(self.table)
+        table_container.setContentsMargins(16, 0, 16, 0)
+
+        # add header to the vertical layout
+        self.container_home_screen.addWidget(head_wrapper)
+        self.container_home_screen.addSpacing(39)
+        # add searchbar to the vertical layout
+        self.container_home_screen.addLayout(search_container)
+        self.container_home_screen.addSpacing(43)
+        # add table to the vertical layout with margins
+        self.container_home_screen.addLayout(table_container)
+        self.container_home_screen.addStretch()
+        self.container_home_screen.setContentsMargins(0, 0, 0, 0)
+
+    def init_ui(self):
+        self.setLayout(self.container_home_screen)
+        self.show()
+
+    def draw_header_bar(self):
         head_wrapper = QWidget()
         head_wrapper.setProperty('class', 'header')
         header = QHBoxLayout()
@@ -47,7 +73,7 @@ class HomeScreen(QWidget):
         settings = QPushButton()
         settings.setIcon(qta.icon('mdi.cog'))
         settings.setProperty('class', 'settings')
-        settings.clicked.connect(lambda: self.dialog_window.language_window(self))
+        settings.clicked.connect(lambda: self.start_dialog_window(home_screen=self))
         user_pref_container.addWidget(settings)
         help_widget = QPushButton()
         help_widget.setIcon(qta.icon('mdi.help-circle'))
@@ -55,44 +81,11 @@ class HomeScreen(QWidget):
         user_pref_container.addWidget(help_widget)
         header.addLayout(user_pref_container)
         header.setAlignment(user_pref_container, Qt.AlignmentFlag.AlignRight)
-        self.layouts.append(header)
         head_wrapper.setLayout(header)
-
-        # Search bar
-        search_container = QVBoxLayout()
-        search_wrapper = self.draw_search_bar()
-        search_container.addWidget(search_wrapper)
-        self.layouts.append(search_container)
-        search_container.setContentsMargins(16, 0, 16, 0)
-
-        # Create the table
-        self.draw_table()
-        table_container = QVBoxLayout()
-        table_container.addWidget(self.table)
-        self.layouts.append(table_container)
-        table_container.setContentsMargins(16, 0, 16, 0)
-
-        # Add functionality to new project button
-        # Can only happen here because the table needs to be drawn first
         # TODO: lambda met aparte functie om daar dialog_window te instantiëren en daar dan functie aan te roepen
         new_project_button.clicked.connect(
-            lambda: self.dialog_window.draw_upsert_project(home_screen=self, table=self.table))
-
-        # add header to the vertical layout
-        self.layouts.append(self.container_home_screen)
-        self.container_home_screen.addWidget(head_wrapper)
-        self.container_home_screen.addSpacing(39)
-        # add searchbar to the vertical layout
-        self.container_home_screen.addLayout(search_container)
-        self.container_home_screen.addSpacing(43)
-        # add table to the vertical layout with margins
-        self.container_home_screen.addLayout(table_container)
-        self.container_home_screen.addStretch()
-        self.container_home_screen.setContentsMargins(0, 0, 0, 0)
-
-    def init_ui(self):
-        self.setLayout(self.container_home_screen)
-        self.show()
+            lambda: self.start_dialog_window(home_screen=self, is_project=True))
+        return head_wrapper
 
     def draw_search_bar(self) -> QWidget:
         search_wrapper = QWidget()
@@ -138,13 +131,18 @@ class HomeScreen(QWidget):
                 self.add_cell_to_table(self.table, count, i, element[i + 1])
             self.add_update_and_delete_button(count, element[0], self.table)
 
+    def start_dialog_window(self, id_: int = None, home_screen=None, is_project=False) -> None:
+        dialog_window = DialogWindow.DialogWindow(self.database, self.lang_settings)
+        if is_project:
+            dialog_window.draw_upsert_project(id_=id_, home_screen=home_screen)
+        else:
+            dialog_window.language_window(home_screen=home_screen)
+
     def add_update_and_delete_button(self, count: int, id_: int, table: QTableWidget) -> None:
         edit = QPushButton()
         edit.setIcon(qta.icon('mdi.pencil'))
         edit.setProperty('class', 'alter-button')
-        edit.clicked.connect(lambda _, row_id=id_: self.dialog_window.draw_upsert_project(id_=row_id,
-                                                                                          table=table, home_screen=self
-                                                                                          ))
+        edit.clicked.connect(lambda _, row_id=id_: self.start_dialog_window(id_=row_id, home_screen=self, is_project=True))
         table.setCellWidget(count, 4, edit)
         button = QPushButton()
         button.setIcon(qta.icon('mdi.trash-can'))
@@ -165,7 +163,6 @@ class HomeScreen(QWidget):
             self.lang_settings = lang_settings
             self._ = self.lang_settings.return_language()
             self.home_domain = HomeDomain.HomeDomain(self.database, self.lang_settings)
-            self.dialog_window = DialogWindow.DialogWindow(self.database, self.lang_settings)
         print("Home screen has been reset with language " + self.lang_settings.language)
         self.draw_search_bar()
         self.draw_table()

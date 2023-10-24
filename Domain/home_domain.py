@@ -1,5 +1,5 @@
 from datetime import datetime
-from PyQt6.QtWidgets import QMessageBox, QTableWidget
+from PyQt6.QtWidgets import QMessageBox, QTableWidget, QWidget
 
 
 class HomeDomain:
@@ -17,7 +17,6 @@ class HomeDomain:
     def get_all_projects(self) -> list:
         return self.db.get_all_projects()
 
-    # TODO: remove project opsplitsen in functie voor aanmaken scherm en functie voor verwijderen
     def draw_remove_project_screen(self, id_: int, table: QTableWidget) -> None:
         dlg = QMessageBox()
         dlg.setWindowTitle(self._("delete"))
@@ -32,12 +31,12 @@ class HomeDomain:
         self.db.remove_project(id_)
         table.removeRow(table.currentRow())
 
-    def alter_table(self, properties, table, dlg, home_screen, id_=None):
+    def alter_table(self, properties: list, dlg, home_screen: QWidget, id_=None):
         time_of_alter = datetime.now()
         properties += [time_of_alter]
         project_exists = id_ is not None
         if project_exists:
-            self.db.draw_upsert_project(id_, properties[0], properties[1], properties[2], time_of_alter)
+            self.db.update_project(id_, properties[0], properties[1], properties[2], time_of_alter)
         else:
             id_ = self.db.add_project(properties[0], properties[1], properties[2], time_of_alter)
         home_screen.draw_table()
