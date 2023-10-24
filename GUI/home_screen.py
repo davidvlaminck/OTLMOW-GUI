@@ -62,10 +62,7 @@ class HomeScreen(QWidget):
         search_container.setContentsMargins(16, 0, 16, 0)
 
         # Create the table
-        try:
-            self.draw_table()
-        except Exception as e:
-            print(e)
+        self.draw_table()
         table_container = QVBoxLayout()
         table_container.addWidget(self.table)
         self.layouts.append(table_container)
@@ -100,13 +97,14 @@ class HomeScreen(QWidget):
         input_field.setPlaceholderText(self._('search_text'))
         search.addWidget(input_field)
         search_button = QPushButton(self._('search_button'))
+        search_button.clicked.connect(lambda: self.draw_table(input_field.text()))
         search.addWidget(search_button)
         search.addStretch()
         self.search_wrapper.setLayout(search)
 
-    def draw_table(self):
-        print(self.home_func.get_all_projects())
-        self.table.setRowCount(self.home_func.get_amount_of_rows())
+    def draw_table(self, input: str = None):
+        self.filter_projects(input)
+        self.table.setRowCount(len(self.projects))
         self.table.verticalHeader().setVisible(False)
         self.table.setColumnCount(6)
         # Set the width of the columns to stretch except the last two columns for buttons
@@ -126,7 +124,9 @@ class HomeScreen(QWidget):
 
         # add data to the table
         self.projects = self.home_func.get_all_projects()
-        print(self.home_func.get_all_projects())
+        if input is not None:
+            print(self.table.findItems(input, Qt.MatchFlag.MatchContains))
+            self.projects = [k for k in self.projects if input in k]
         for count, element in enumerate(self.projects):
             for i in range(4):
                 self.add_cell_to_table(self.table, count, i, element[i + 1])
@@ -162,3 +162,18 @@ class HomeScreen(QWidget):
         print("Home screen has been reset with language " + self.lang_settings.language)
         self.draw_search_bar()
         self.draw_table()
+
+    def filter_projects(self, input: str):
+        print(input)
+        print(type(input))
+        if type(input) is str:
+            input.strip()
+            try:
+                if len(input) == 0:
+                    self.table.clear()
+                    self.projects = [k for k in self.projects if input in k]
+                    return
+            except Exception as e:
+                print(e)
+        else:
+            self.projects = self.home_func.get_all_projects()

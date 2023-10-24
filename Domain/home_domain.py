@@ -1,4 +1,3 @@
-from Domain.language_settings import LanguageSettings
 from datetime import datetime
 from PyQt6.QtWidgets import QMessageBox
 
@@ -39,9 +38,8 @@ class HomeDomain:
         properties += [time_of_alter]
         project_exists = id_ is not None
         if project_exists:
-            # row = table.currentRow()
             self.db.update_project(id_, properties[0], properties[1], properties[2], time_of_alter)
         else:
             id_ = self.db.add_project(properties[0], properties[1], properties[2], time_of_alter)
-        home_screen.reset_ui()
+        home_screen.draw_table()
         dlg.close()

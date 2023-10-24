@@ -1,4 +1,5 @@
 import gettext
+import warnings
 
 
 class LanguageSettings:
@@ -13,7 +14,9 @@ class LanguageSettings:
         translator.install()
         return translator.gettext
 
-    def setLanguage(self, language):
-        print("Changing language to: " + language)
-        self.language = language
-        print("Language now saved as " + self.language)
+    def set_language(self, language : str):
+        if language == 'nl_BE' or language == 'en':
+            self.language = language
+        else:
+            warnings.warn("Language not supported, switching to default language: en")
+            self.language = 'en'

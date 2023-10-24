@@ -2,6 +2,7 @@ from Domain.language_settings import LanguageSettings
 from Domain.home_domain import HomeDomain
 from Domain.database import Database
 
+
 def test_get_amount_of_rows():
     db = Database()
     language_settings = LanguageSettings()

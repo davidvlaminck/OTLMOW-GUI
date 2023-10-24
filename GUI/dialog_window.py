@@ -4,10 +4,7 @@ from PyQt6.QtWidgets import QDialog, QVBoxLayout, QLineEdit, QDialogButtonBox, Q
 from Domain.home_domain import HomeDomain
 
 
-
 class DialogWindow:
-    home_domain = None
-    error_label = None
 
     def __init__(self, database, language_settings):
         self.lang_settings = language_settings
@@ -110,7 +107,7 @@ class DialogWindow:
 
     def change_language(self, lang: str, dialog, home_screen):
         try:
-            self.lang_settings.setLanguage(lang)
+            self.lang_settings.set_language(lang)
             home_screen.reset_ui(self.lang_settings)
             dialog.close()
         except Exception as e:
