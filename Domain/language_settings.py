@@ -3,9 +3,11 @@ import logging
 import warnings
 
 
+# TODO: singleton van maken / klasse wegdoen
 class LanguageSettings:
 
     def __init__(self):
+        # TODO: vervangen door enum type
         self.language = 'en'
 
     # Switchen kan door in language en of nl_BE in te geven
@@ -15,7 +17,7 @@ class LanguageSettings:
         translator.install()
         return translator.gettext
 
-    def set_language(self, language : str):
+    def set_language(self, language: str):
         if language == 'nl_BE' or language == 'en':
             self.language = language
         else:

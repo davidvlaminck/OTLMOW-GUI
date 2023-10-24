@@ -16,16 +16,19 @@ class HomeScreen(QWidget):
         self.database = database
         self.lang_settings = LanguageSettings()
         self._ = self.lang_settings.return_language()
-        self.home_func = HomeDomain.HomeDomain(database, self.lang_settings)
+        self.home_domain = HomeDomain.HomeDomain(database, self.lang_settings)
         self.container_home_screen = QVBoxLayout()
+        # TODO: dezen moet weg kunnen
         self.dialog_window = DialogWindow.DialogWindow(database, self.lang_settings)
         self.search_wrapper = QWidget()
         self.table = QTableWidget()
         self.layouts = []
+        self.projects: list
+
         self.main_content_ui()
         self.init_ui()
-        self.projects = []
 
+    # TODO: Liever 50 functies dan een grote blok tekst
     def main_content_ui(self):
         print("test" + self.lang_settings.language)
         head_wrapper = QWidget()
@@ -55,6 +58,7 @@ class HomeScreen(QWidget):
 
         # Search bar
         search_container = QVBoxLayout()
+        # TODO self weg wrapper returnen uit functie draw_search_bar
         self.search_wrapper = QWidget()
         self.draw_search_bar()
         search_container.addWidget(self.search_wrapper)
@@ -70,8 +74,9 @@ class HomeScreen(QWidget):
 
         # Add functionality to new project button
         # Can only happen here because the table needs to be drawn first
+        # TODO: lambda met aparte functie om daar dialog_window te instantiëren en daar dan functie aan te roepen
         new_project_button.clicked.connect(
-            lambda: self.dialog_window.update_project(home_screen=self, table=self.table))
+            lambda: self.dialog_window.draw_upsert_project(home_screen=self, table=self.table))
 
         # add header to the vertical layout
         self.layouts.append(self.container_home_screen)
@@ -122,8 +127,8 @@ class HomeScreen(QWidget):
         # ALign titles of header to the left
         self.table.horizontalHeader().setDefaultAlignment(Qt.AlignmentFlag.AlignLeft)
 
-        # add data to the table
-        self.projects = self.home_func.get_all_projects()
+        # TODO: add data to the table in aparte functie
+        self.projects = self.home_domain.get_all_projects()
         if input is not None:
             print(self.table.findItems(input, Qt.MatchFlag.MatchContains))
             self.projects = [k for k in self.projects if input in k]
@@ -136,18 +141,19 @@ class HomeScreen(QWidget):
         edit = QPushButton()
         edit.setIcon(qta.icon('mdi.pencil'))
         edit.setProperty('class', 'alter-button')
-        edit.clicked.connect(lambda _, row_id=id_: self.dialog_window.update_project(id_=row_id,
-                                                                                     table=table, home_screen=self
-                                                                                     ))
+        edit.clicked.connect(lambda _, row_id=id_: self.dialog_window.draw_upsert_project(id_=row_id,
+                                                                                          table=table, home_screen=self
+                                                                                          ))
         table.setCellWidget(count, 4, edit)
         button = QPushButton()
         button.setIcon(qta.icon('mdi.trash-can'))
         button.setProperty('class', 'alter-button')
         button.clicked.connect(lambda _, i=id_:
-                               self.home_func.remove_project(id_=i, table=table))
+                               self.home_domain.remove_project(id_=i, table=table))
         table.setCellWidget(count, 5, button)
 
-    def add_cell_to_table(self, table, row, column, item):
+    @staticmethod
+    def add_cell_to_table(table, row, column, item):
         if isinstance(item, datetime.date):
             table.setItem(row, column, QTableWidgetItem(item.strftime("%d-%m-%Y")))
         else:
@@ -157,7 +163,7 @@ class HomeScreen(QWidget):
         if lang_settings is not None:
             self.lang_settings = lang_settings
             self._ = self.lang_settings.return_language()
-            self.home_func = HomeDomain.HomeDomain(self.database, self.lang_settings)
+            self.home_domain = HomeDomain.HomeDomain(self.database, self.lang_settings)
             self.dialog_window = DialogWindow.DialogWindow(self.database, self.lang_settings)
         print("Home screen has been reset with language " + self.lang_settings.language)
         self.draw_search_bar()
@@ -176,4 +182,4 @@ class HomeScreen(QWidget):
             except Exception as e:
                 print(e)
         else:
-            self.projects = self.home_func.get_all_projects()
+            self.projects = self.home_domain.get_all_projects()

@@ -12,7 +12,7 @@ class DialogWindow:
         self.error_label = QLabel()
         self._ = self.lang_settings.return_language()
 
-    def update_project(self, home_screen, id_=None, table=None):
+    def draw_upsert_project(self, home_screen, id_=None, table=None):
         is_project = id_ is not None
         # Resets the error label to empty when reopening the dialog
         self.error_label.setText("")
@@ -20,7 +20,7 @@ class DialogWindow:
         # Makes the dialog the primary screen, disabling the screen behind it
         dialog_window.setModal(True)
         if is_project:
-            project = home_screen.home_func.db.get_project(id_)
+            project = home_screen.home_domain.db.get_project(id_)
             dialog_window.setWindowTitle(self._("alter_project_title"))
         else:
             dialog_window.setWindowTitle(self._("new_project_title"))
@@ -78,8 +78,6 @@ class DialogWindow:
         dialog_window.show()
         dialog_window.exec()
         # Updates the projects behind the table
-        home_screen.projects = self.home_domain.get_all_projects()
-        home_screen.reset_ui()
 
     def validate(self, input_eigen_ref: str, input_bestek: str, input_subset: str, table, dialog_window, home_screen,
                  id_: int = None):

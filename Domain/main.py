@@ -42,4 +42,4 @@ if __name__ == '__main__':
         window.setMinimumSize(1280, 720)
         sys.exit(app.exec())
     except Exception as e:
-        print(e)
+        logging.error(e)

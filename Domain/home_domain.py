@@ -12,13 +12,12 @@ class HomeDomain:
         self._ = self.lang_settings.return_language()
 
     def get_amount_of_rows(self) -> int:
-        rowcount = self.db.count_projects()
-        return rowcount
+        return self.db.count_projects()
 
     def get_all_projects(self) -> list:
-        projects = self.db.get_all_projects()
-        return projects
+        return self.db.get_all_projects()
 
+    # TODO: remove project opsplitsen in functie voor aanmaken scherm en functie voor verwijderen
     def remove_project(self, id_, table):
         dlg = QMessageBox()
         dlg.setWindowTitle(self._("delete"))
@@ -38,7 +37,7 @@ class HomeDomain:
         properties += [time_of_alter]
         project_exists = id_ is not None
         if project_exists:
-            self.db.update_project(id_, properties[0], properties[1], properties[2], time_of_alter)
+            self.db.draw_upsert_project(id_, properties[0], properties[1], properties[2], time_of_alter)
         else:
             id_ = self.db.add_project(properties[0], properties[1], properties[2], time_of_alter)
         home_screen.draw_table()

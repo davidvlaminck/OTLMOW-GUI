@@ -42,10 +42,12 @@ def test_remove_project(db):
     assert db.get_all_projects() == []
     db.close_connection()
 
+
 def test_remove_project_that_does_not_exist(db):
     db.remove_project(1)
     assert db.get_all_projects() == []
     db.close_connection()
+
 
 def test_remove_project_with_non_int_value(db):
     db.remove_project('test')
@@ -69,6 +71,7 @@ def test_update_project(db):
     assert db.update_project(1, 'test2', 'test2', 'test2', None) == 1
     assert db.get_project(1) == (1, 'test2', 'test2', 'test2', None)
     db.close_connection()
+
 
 @pytest.mark.parametrize('eigen_ref, bestek, subset', [(1, 1, 1), (None, None, None)])
 def test_update_project_with_non_string_values_returns_error(db, eigen_ref, bestek, subset):
