@@ -1,5 +1,4 @@
 import datetime
-import logging
 from typing import Union
 
 from Domain.language_settings import return_language
@@ -163,14 +162,12 @@ class HomeScreen(QWidget):
 
     # TODO: testen voor filter projects schrijven
     def filter_projects(self, input_text: str):
-        logging.debug(type(input_text))
         if type(input_text) is str:
             input_text.strip()
             try:
                 if len(input_text) != 0:
                     self.table.clear()
                     self.projects = [k for k in self.projects if input_text in k]
-                    logging.debug(self.projects)
                     return
                 else:
                     self.projects = self.home_domain.get_all_projects()

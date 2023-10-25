@@ -1,7 +1,10 @@
+from enum import Enum
+
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QDialog, QVBoxLayout, QLineEdit, QDialogButtonBox, QLabel, QHBoxLayout, QPushButton
 from Domain.home_domain import HomeDomain
 from Domain.language_settings import return_language
+from Domain.enums import Language
 
 
 class DialogWindow:
@@ -101,15 +104,15 @@ class DialogWindow:
         layout = QHBoxLayout()
         button_ned = QPushButton(self._("language_option_dutch"))
         button_eng = QPushButton(self._("language_option_english"))
-        button_ned.clicked.connect(lambda: self.change_language("nl_BE", dialog, home_screen))
-        button_eng.clicked.connect(lambda: self.change_language("en", dialog, home_screen))
+        button_ned.clicked.connect(lambda: self.change_language(Language.DUTCH, dialog, home_screen))
+        button_eng.clicked.connect(lambda: self.change_language(Language.ENGLISH, dialog, home_screen))
         layout.addWidget(button_ned)
         layout.addWidget(button_eng)
         dialog.setLayout(layout)
         dialog.show()
         dialog.exec()
 
-    def change_language(self, lang: str, dialog: QDialog, home_screen) -> None:
+    def change_language(self, lang: Enum, dialog: QDialog, home_screen) -> None:
         self._ = return_language('../locale/', lang)
         home_screen.reset_ui(self._)
         dialog.close()

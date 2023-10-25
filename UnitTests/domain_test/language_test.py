@@ -1,9 +1,10 @@
-import os
 from pathlib import Path
 
 import pytest
 
 from Domain.language_settings import return_language
+
+from Domain.enums import Language
 
 ROOT_DIR = Path(__file__).parent
 
@@ -17,11 +18,5 @@ def test_english_on_default():
 
 
 def test_change_to_dutch_works():
-    _ = return_language(LOCALE_DIR, 'nl_BE')
+    _ = return_language(LOCALE_DIR, Language.DUTCH)
     assert _('own_reference') == 'Eigen referentie'
-
-
-@pytest.mark.filterwarnings('ignore::UserWarning')
-def test_other_languages_are_not_supported():
-    _ = return_language(LOCALE_DIR, 'fr')
-    assert _('own_reference') == 'Own reference'
