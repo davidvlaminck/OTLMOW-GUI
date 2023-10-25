@@ -9,6 +9,7 @@ from PyQt6.QtCore import Qt
 import qtawesome as qta
 import Domain.home_domain as HomeDomain
 import GUI.dialog_window as DialogWindow
+from GUI.message_box import MessageBox
 
 
 class HomeScreen(QWidget):
@@ -21,6 +22,7 @@ class HomeScreen(QWidget):
         self.container_home_screen = QVBoxLayout()
         self.table = QTableWidget()
         self.projects: list
+        self.message_box = MessageBox(self._, self.home_domain)
 
         self.main_content_ui()
         self.init_ui()
@@ -120,10 +122,6 @@ class HomeScreen(QWidget):
         self.table.horizontalHeader().setDefaultAlignment(Qt.AlignmentFlag.AlignLeft)
 
         # TODO: add data to the table in aparte functie
-        #self.projects = self.home_domain.get_all_projects()
-        #if input is not None:
-        #    print(self.table.findItems(input, Qt.MatchFlag.MatchContains))
-        #    self.projects = [k for k in self.projects if input in k]
         for count, element in enumerate(self.projects):
             for i in range(4):
                 self.add_cell_to_table(self.table, count, i, element[i + 1])
@@ -146,7 +144,7 @@ class HomeScreen(QWidget):
         button.setIcon(qta.icon('mdi.trash-can'))
         button.setProperty('class', 'alter-button')
         button.clicked.connect(lambda _, i=id_:
-                               self.home_domain.draw_remove_project_screen(id_=i, table=table))
+                               self.message_box.draw_remove_project_screen(i, table))
         table.setCellWidget(count, 5, button)
 
     @staticmethod
@@ -165,10 +163,8 @@ class HomeScreen(QWidget):
 
     # TODO: testen voor filter projects schrijven
     def filter_projects(self, input_text: str):
-        logging.info(input_text)
         logging.debug(type(input_text))
         if type(input_text) is str:
-            logging.debug('line reached')
             input_text.strip()
             try:
                 if len(input_text) != 0:

@@ -63,8 +63,8 @@ class DialogWindow:
         button_box.setProperty("class", "button-box")
         # sends the values off to validate once submitted
         button_box.accepted.connect(
-            lambda: self.validate(input_eigen_ref.text(), input_bestek.text(),
-                                  input_subset.text(), dialog_window, home_screen, id_))
+            lambda: self.pass_values_through_validate(input_eigen_ref.text(), input_bestek.text(),
+                                                      input_subset.text(), dialog_window, home_screen, id_))
         button_box.rejected.connect(dialog_window.reject)
         # Adds the two buttons to the layout
         layout.addWidget(button_box)
@@ -78,14 +78,16 @@ class DialogWindow:
         # Shows the dialog
         dialog_window.show()
         dialog_window.exec()
-        # Updates the projects behind the table
 
     # TODO: valideer functie omzetten naar true false en weg in domain functies, functie hier laten staan en deze hernoemen
     # TODO: Error returnen en deze opslaan in de setText in de error label
-    def validate(self, input_eigen_ref: str, input_bestek: str, input_subset: str, dialog_window, home_screen,
-                 id_: int = None) -> None:
-        if input_eigen_ref.strip() == "" or input_subset.strip() == "":
-            self.error_label.setText(self._("empty_fields_error"))
+    def pass_values_through_validate(self, input_eigen_ref: str, input_bestek: str, input_subset: str, dialog_window,
+                                     home_screen,
+                                     id_: int = None) -> None:
+        try:
+            self.home_domain.validate(input_eigen_ref, input_bestek)
+        except TypeError as e:
+            self.error_label.setText(str(e))
             return
         self.error_label.setText("")
         properties = [input_eigen_ref, input_bestek, input_subset]

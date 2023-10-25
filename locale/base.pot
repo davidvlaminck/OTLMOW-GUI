@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-10-25 09:46+0200\n"
+"POT-Creation-Date: 2023-10-25 13:55+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,20 +17,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.13.0\n"
 
-#: Domain/home_domain.py:19
-msgid "delete"
+#: Domain/home_domain.py:34
+msgid "own_reference_empty_error"
 msgstr ""
 
-#: Domain/home_domain.py:20
-msgid "project_deletion_question"
-msgstr ""
-
-#: Domain/home_domain.py:22
-msgid "yes"
-msgstr ""
-
-#: Domain/home_domain.py:23
-msgid "no"
+#: Domain/home_domain.py:36
+msgid "bestek_empty_error"
 msgstr ""
 
 #: GUI/dialog_window.py:23
@@ -41,18 +33,18 @@ msgstr ""
 msgid "new_project_title"
 msgstr ""
 
-#: GUI/dialog_window.py:33 GUI/dialog_window.py:46 GUI/home_screen.py:118
-#: UnitTests/domain_test/language_test.py:8
-#: UnitTests/domain_test/language_test.py:13
-#: UnitTests/domain_test/language_test.py:19
+#: GUI/dialog_window.py:33 GUI/dialog_window.py:46 GUI/home_screen.py:120
+#: UnitTests/domain_test/language_test.py:16
+#: UnitTests/domain_test/language_test.py:21
+#: UnitTests/domain_test/language_test.py:27
 msgid "own_reference"
 msgstr ""
 
-#: GUI/dialog_window.py:35 GUI/dialog_window.py:47 GUI/home_screen.py:118
+#: GUI/dialog_window.py:35 GUI/dialog_window.py:47 GUI/home_screen.py:120
 msgid "service_order"
 msgstr ""
 
-#: GUI/dialog_window.py:37 GUI/dialog_window.py:48 GUI/home_screen.py:118
+#: GUI/dialog_window.py:37 GUI/dialog_window.py:48 GUI/home_screen.py:120
 msgid "subset"
 msgstr ""
 
@@ -64,35 +56,47 @@ msgstr ""
 msgid "cancel"
 msgstr ""
 
-#: GUI/dialog_window.py:86
-msgid "empty_fields_error"
-msgstr ""
-
-#: GUI/dialog_window.py:95
+#: GUI/dialog_window.py:100
 msgid "change_language_title"
 msgstr ""
 
-#: GUI/dialog_window.py:97
+#: GUI/dialog_window.py:102
 msgid "language_option_dutch"
 msgstr ""
 
-#: GUI/dialog_window.py:98
+#: GUI/dialog_window.py:103
 msgid "language_option_english"
 msgstr ""
 
-#: GUI/home_screen.py:67
+#: GUI/home_screen.py:69
 msgid "new_project_button"
 msgstr ""
 
-#: GUI/home_screen.py:93
+#: GUI/home_screen.py:95
 msgid "search_text"
 msgstr ""
 
-#: GUI/home_screen.py:95
+#: GUI/home_screen.py:97
 msgid "search_button"
 msgstr ""
 
-#: GUI/home_screen.py:118
+#: GUI/home_screen.py:120
 msgid "last_edited"
+msgstr ""
+
+#: GUI/message_box.py:12
+msgid "delete"
+msgstr ""
+
+#: GUI/message_box.py:13
+msgid "project_deletion_question"
+msgstr ""
+
+#: GUI/message_box.py:15
+msgid "yes"
+msgstr ""
+
+#: GUI/message_box.py:16
+msgid "no"
 msgstr ""
 

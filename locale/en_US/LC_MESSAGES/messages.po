@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-10-25 09:46+0200\n"
+"POT-Creation-Date: 2023-10-25 13:55+0200\n"
 "PO-Revision-Date: 2023-10-19 13:11+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en_US\n"
@@ -18,21 +18,13 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.13.0\n"
 
-#: Domain/home_domain.py:19
-msgid "delete"
-msgstr "Delete project"
+#: Domain/home_domain.py:34
+msgid "own_reference_empty_error"
+msgstr "Own reference is empty"
 
-#: Domain/home_domain.py:20
-msgid "project_deletion_question"
-msgstr "Are you sure you want to delete this project?"
-
-#: Domain/home_domain.py:22
-msgid "yes"
-msgstr "Yes"
-
-#: Domain/home_domain.py:23
-msgid "no"
-msgstr "No"
+#: Domain/home_domain.py:36
+msgid "bestek_empty_error"
+msgstr "Subset is empty"
 
 #: GUI/dialog_window.py:23
 msgid "alter_project_title"
@@ -42,18 +34,18 @@ msgstr "Alter Project"
 msgid "new_project_title"
 msgstr "New Project"
 
-#: GUI/dialog_window.py:33 GUI/dialog_window.py:46 GUI/home_screen.py:118
-#: UnitTests/domain_test/language_test.py:8
-#: UnitTests/domain_test/language_test.py:13
-#: UnitTests/domain_test/language_test.py:19
+#: GUI/dialog_window.py:33 GUI/dialog_window.py:46 GUI/home_screen.py:120
+#: UnitTests/domain_test/language_test.py:16
+#: UnitTests/domain_test/language_test.py:21
+#: UnitTests/domain_test/language_test.py:27
 msgid "own_reference"
 msgstr "Own reference"
 
-#: GUI/dialog_window.py:35 GUI/dialog_window.py:47 GUI/home_screen.py:118
+#: GUI/dialog_window.py:35 GUI/dialog_window.py:47 GUI/home_screen.py:120
 msgid "service_order"
 msgstr "Service order"
 
-#: GUI/dialog_window.py:37 GUI/dialog_window.py:48 GUI/home_screen.py:118
+#: GUI/dialog_window.py:37 GUI/dialog_window.py:48 GUI/home_screen.py:120
 msgid "subset"
 msgstr "Subset"
 
@@ -65,35 +57,50 @@ msgstr "Submit"
 msgid "cancel"
 msgstr "Cancel"
 
-#: GUI/dialog_window.py:86
-msgid "empty_fields_error"
-msgstr "Fill in all fields"
-
-#: GUI/dialog_window.py:95
+#: GUI/dialog_window.py:100
 msgid "change_language_title"
 msgstr "Change language"
 
-#: GUI/dialog_window.py:97
+#: GUI/dialog_window.py:102
 msgid "language_option_dutch"
 msgstr "Dutch"
 
-#: GUI/dialog_window.py:98
+#: GUI/dialog_window.py:103
 msgid "language_option_english"
 msgstr "English"
 
-#: GUI/home_screen.py:67
+#: GUI/home_screen.py:69
 msgid "new_project_button"
 msgstr "New Project"
 
-#: GUI/home_screen.py:93
+#: GUI/home_screen.py:95
 msgid "search_text"
 msgstr "Enter project or service order"
 
-#: GUI/home_screen.py:95
+#: GUI/home_screen.py:97
 msgid "search_button"
 msgstr "Search"
 
-#: GUI/home_screen.py:118
+#: GUI/home_screen.py:120
 msgid "last_edited"
 msgstr "Last edited"
+
+#: GUI/message_box.py:12
+msgid "delete"
+msgstr "Delete project"
+
+#: GUI/message_box.py:13
+msgid "project_deletion_question"
+msgstr "Are you sure you want to delete this project?"
+
+#: GUI/message_box.py:15
+msgid "yes"
+msgstr "Yes"
+
+#: GUI/message_box.py:16
+msgid "no"
+msgstr "No"
+
+#~ msgid "empty_fields_error"
+#~ msgstr "Fill in all fields"
 

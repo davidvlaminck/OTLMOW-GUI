@@ -1,13 +1,37 @@
+from pathlib import Path
+
+import pytest
+
 from Domain.language_settings import return_language
 from Domain.home_domain import HomeDomain
 from Domain.database import Database
 
+ROOT_DIR = Path(__file__).parent
 
-# Runt enkel samen met alle andere tests anders moet ../locale/ aangepast worden naar ../../locale/
-def test_get_amount_of_rows():
+LOCALE_DIR = ROOT_DIR.parent.parent / 'locale/'
+
+
+@pytest.fixture
+def home_domain():
     db = Database()
-    _ = return_language('../locale/')
     db.create_connection(":memory:")
-    home_domain = HomeDomain(db, _)
+    home_domain = HomeDomain(db, return_language(LOCALE_DIR))
+    return home_domain
+
+
+def test_get_amount_of_rows(home_domain):
     assert home_domain.get_amount_of_rows() == 0
-    db.close_connection()
+
+
+def test_validate_with_good_values(home_domain):
+    assert home_domain.validate('test', 'test') is True
+
+
+def test_validate_with_empty_eigen_ref(home_domain):
+    with pytest.raises(TypeError):
+        home_domain.validate('', 'test')
+
+
+def test_validate_with_empty_bestek(home_domain):
+    with pytest.raises(TypeError):
+        home_domain.validate('test', '')
