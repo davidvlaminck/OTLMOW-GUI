@@ -26,11 +26,9 @@ class HomeScreen(QWidget):
         self.main_content_ui()
         self.init_ui()
 
-    # TODO: Liever 50 functies dan een grote blok tekst
     def main_content_ui(self):
         # Header
-        # TODO: refactor name header_bar van draw naar construct
-        head_wrapper = self.draw_header_bar()
+        head_wrapper = self.construct_header_bar()
 
         # Search bar
         search_container = QVBoxLayout()
@@ -58,7 +56,7 @@ class HomeScreen(QWidget):
         self.setLayout(self.container_home_screen)
         self.show()
 
-    def draw_header_bar(self):
+    def construct_header_bar(self):
         head_wrapper = QWidget()
         head_wrapper.setProperty('class', 'header')
         header = QHBoxLayout()
@@ -69,6 +67,15 @@ class HomeScreen(QWidget):
         new_project_button.setProperty('class', 'new-project')
         header.addWidget(new_project_button)
         header.setAlignment(new_project_button, Qt.AlignmentFlag.AlignLeft)
+        user_settings = self.construct_settings_bar()
+        header.addLayout(user_settings)
+        header.setAlignment(user_settings, Qt.AlignmentFlag.AlignRight)
+        head_wrapper.setLayout(header)
+        new_project_button.clicked.connect(
+            lambda: self.start_dialog_window(home_screen=self, is_project=True))
+        return head_wrapper
+
+    def construct_settings_bar(self):
         user_pref_container = QHBoxLayout()
         settings = QPushButton()
         settings.setIcon(qta.icon('mdi.cog'))
@@ -79,12 +86,7 @@ class HomeScreen(QWidget):
         help_widget.setIcon(qta.icon('mdi.help-circle'))
         help_widget.setProperty('class', 'settings')
         user_pref_container.addWidget(help_widget)
-        header.addLayout(user_pref_container)
-        header.setAlignment(user_pref_container, Qt.AlignmentFlag.AlignRight)
-        head_wrapper.setLayout(header)
-        new_project_button.clicked.connect(
-            lambda: self.start_dialog_window(home_screen=self, is_project=True))
-        return head_wrapper
+        return user_pref_container
 
     def draw_search_bar(self) -> QWidget:
         search_wrapper = QWidget()
@@ -93,7 +95,7 @@ class HomeScreen(QWidget):
         input_field = QLineEdit()
         input_field.setPlaceholderText(self._('search_text'))
         search.addWidget(input_field)
-        search_button = QPushButton(self._('search_button'),self)
+        search_button = QPushButton(self._('search_button'), self)
         search_button.clicked.connect(lambda: self.draw_table(input_field.text()))
         search.addWidget(search_button)
         search.addStretch()
@@ -137,7 +139,8 @@ class HomeScreen(QWidget):
         edit = QPushButton()
         edit.setIcon(qta.icon('mdi.pencil'))
         edit.setProperty('class', 'alter-button')
-        edit.clicked.connect(lambda _, row_id=id_: self.start_dialog_window(id_=row_id, home_screen=self, is_project=True))
+        edit.clicked.connect(
+            lambda _, row_id=id_: self.start_dialog_window(id_=row_id, home_screen=self, is_project=True))
         table.setCellWidget(count, 4, edit)
         button = QPushButton()
         button.setIcon(qta.icon('mdi.trash-can'))
@@ -157,10 +160,10 @@ class HomeScreen(QWidget):
         if lang_settings is not None:
             self._ = lang_settings
             self.home_domain = HomeDomain.HomeDomain(self.database, self._)
-        self.draw_search_bar()
+        self.construct_header_bar()
         self.draw_table()
+        self.construct_header_bar()
 
-    # TODO: testen voor filter projects schrijven
     def filter_projects(self, input_text: str):
         if type(input_text) is str:
             input_text.strip()

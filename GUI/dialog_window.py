@@ -82,8 +82,6 @@ class DialogWindow:
         dialog_window.show()
         dialog_window.exec()
 
-    # TODO: valideer functie omzetten naar true false en weg in domain functies, functie hier laten staan en deze hernoemen
-    # TODO: Error returnen en deze opslaan in de setText in de error label
     def pass_values_through_validate(self, input_eigen_ref: str, input_bestek: str, input_subset: str, dialog_window,
                                      home_screen,
                                      id_: int = None) -> None:

@@ -6,7 +6,6 @@ from Domain.enums import Language
 
 
 # Switchen kan door in language en of nl_BE in te geven
-# TODO: language inladen als enum
 def return_language(locale_dir: str, language: Enum = None):
     if language is None:
         language = Language.ENGLISH
