@@ -1,11 +1,10 @@
 import logging
 import sys
-import gettext
 
 from datetime import datetime
 
 from PyQt6.QtGui import QIcon
-from PyQt6.QtWidgets import QApplication, QStyle
+from PyQt6.QtWidgets import QApplication
 
 from Domain.database import Database
 from GUI.home_screen import HomeScreen

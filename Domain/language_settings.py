@@ -1,5 +1,4 @@
 import gettext
-import logging
 import warnings
 from enum import Enum
 

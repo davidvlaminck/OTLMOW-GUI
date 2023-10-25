@@ -1,4 +1,5 @@
 import datetime
+import logging
 from typing import Union
 
 from Domain.language_settings import return_language
@@ -80,7 +81,6 @@ class HomeScreen(QWidget):
         header.addLayout(user_pref_container)
         header.setAlignment(user_pref_container, Qt.AlignmentFlag.AlignRight)
         head_wrapper.setLayout(header)
-        # TODO: lambda met aparte functie om daar dialog_window te instantiëren en daar dan functie aan te roepen
         new_project_button.clicked.connect(
             lambda: self.start_dialog_window(home_screen=self, is_project=True))
         return head_wrapper
@@ -92,15 +92,15 @@ class HomeScreen(QWidget):
         input_field = QLineEdit()
         input_field.setPlaceholderText(self._('search_text'))
         search.addWidget(input_field)
-        search_button = QPushButton(self._('search_button'))
+        search_button = QPushButton(self._('search_button'),self)
         search_button.clicked.connect(lambda: self.draw_table(input_field.text()))
         search.addWidget(search_button)
         search.addStretch()
         search_wrapper.setLayout(search)
         return search_wrapper
 
-    def draw_table(self, input: str = None):
-        self.filter_projects(input)
+    def draw_table(self, input_text: str = None):
+        self.filter_projects(input_text)
         self.table.setRowCount(len(self.projects))
         self.table.verticalHeader().setVisible(False)
         self.table.setColumnCount(6)
@@ -120,10 +120,10 @@ class HomeScreen(QWidget):
         self.table.horizontalHeader().setDefaultAlignment(Qt.AlignmentFlag.AlignLeft)
 
         # TODO: add data to the table in aparte functie
-        self.projects = self.home_domain.get_all_projects()
-        if input is not None:
-            print(self.table.findItems(input, Qt.MatchFlag.MatchContains))
-            self.projects = [k for k in self.projects if input in k]
+        #self.projects = self.home_domain.get_all_projects()
+        #if input is not None:
+        #    print(self.table.findItems(input, Qt.MatchFlag.MatchContains))
+        #    self.projects = [k for k in self.projects if input in k]
         for count, element in enumerate(self.projects):
             for i in range(4):
                 self.add_cell_to_table(self.table, count, i, element[i + 1])
@@ -163,16 +163,20 @@ class HomeScreen(QWidget):
         self.draw_search_bar()
         self.draw_table()
 
-    def filter_projects(self, input: str):
-        print(input)
-        print(type(input))
-        if type(input) is str:
-            input.strip()
+    def filter_projects(self, input_text: str):
+        logging.info(input_text)
+        logging.debug(type(input_text))
+        if type(input_text) is str:
+            logging.debug('line reached')
+            input_text.strip()
             try:
-                if len(input) == 0:
+                if len(input_text) != 0:
                     self.table.clear()
-                    self.projects = [k for k in self.projects if input in k]
+                    self.projects = [k for k in self.projects if input_text in k]
+                    logging.debug(self.projects)
                     return
+                else:
+                    self.projects = self.home_domain.get_all_projects()
             except Exception as e:
                 print(e)
         else:

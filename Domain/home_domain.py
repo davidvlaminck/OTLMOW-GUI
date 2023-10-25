@@ -3,8 +3,6 @@ from PyQt6.QtWidgets import QMessageBox, QTableWidget, QWidget
 
 
 class HomeDomain:
-    db = None
-    HomeScreen = None
 
     def __init__(self, database, language_settings):
         self.db = database
