@@ -4,6 +4,7 @@ from enum import Enum
 
 
 # Switchen kan door in language en of nl_BE in te geven
+# TODO: localedir omzetten naar locale_dir
 def return_language(localedir: str, language: str = None):
     if language is None:
         language = Language.ENGLISH.value

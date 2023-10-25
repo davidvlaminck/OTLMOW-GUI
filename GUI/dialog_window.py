@@ -69,7 +69,9 @@ class DialogWindow:
         # Adds the two buttons to the layout
         layout.addWidget(button_box)
         button_box.button(QDialogButtonBox.StandardButton.Ok).setProperty("class", "primary-button")
+        button_box.button(QDialogButtonBox.StandardButton.Ok).setText(self._("submit"))
         button_box.button(QDialogButtonBox.StandardButton.Cancel).setProperty("class", "secondary-button")
+        button_box.button(QDialogButtonBox.StandardButton.Cancel).setText(self._("cancel"))
         layout.addWidget(self.error_label)
         # Fills the dialog with the created layout
         dialog_window.setLayout(layout)

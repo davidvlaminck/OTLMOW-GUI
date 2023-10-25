@@ -1,5 +1,5 @@
 from datetime import datetime
-from PyQt6.QtWidgets import QMessageBox, QTableWidget, QWidget
+from PyQt6.QtWidgets import QMessageBox, QTableWidget, QWidget, QPushButton
 
 
 class HomeDomain:
@@ -19,9 +19,11 @@ class HomeDomain:
         dlg.setWindowTitle(self._("delete"))
         dlg.setText(self._("project_deletion_question"))
         dlg.setIcon(QMessageBox.Icon.Warning)
-        dlg.setStandardButtons(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
-        button = dlg.exec()
-        if button == QMessageBox.StandardButton.Yes:
+        dlg.addButton(QPushButton(self._("yes")), QMessageBox.ButtonRole.YesRole)
+        dlg.addButton(QPushButton(self._("no")), QMessageBox.ButtonRole.NoRole)
+        dlg.exec()
+        reply = dlg.buttonRole(dlg.clickedButton())
+        if reply == QMessageBox.ButtonRole.YesRole:
             self.remove_project(id_, table)
 
     def remove_project(self, id_: int, table: QTableWidget) -> None:
