@@ -28,12 +28,12 @@ class HomeScreen(QWidget):
     # TODO: Liever 50 functies dan een grote blok tekst
     def main_content_ui(self):
         # Header
+        # TODO: refactor name header_bar van draw naar construct
         head_wrapper = self.draw_header_bar()
 
         # Search bar
         search_container = QVBoxLayout()
-        search_wrapper = self.draw_search_bar()
-        search_container.addWidget(search_wrapper)
+        search_container.addWidget(self.draw_search_bar())
         search_container.setContentsMargins(16, 0, 16, 0)
 
         # Create the table
@@ -163,6 +163,7 @@ class HomeScreen(QWidget):
         self.draw_search_bar()
         self.draw_table()
 
+    # TODO: testen voor filter projects schrijven
     def filter_projects(self, input_text: str):
         logging.info(input_text)
         logging.debug(type(input_text))

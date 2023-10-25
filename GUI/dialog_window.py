@@ -80,6 +80,8 @@ class DialogWindow:
         dialog_window.exec()
         # Updates the projects behind the table
 
+    # TODO: valideer functie omzetten naar true false en weg in domain functies, functie hier laten staan en deze hernoemen
+    # TODO: Error returnen en deze opslaan in de setText in de error label
     def validate(self, input_eigen_ref: str, input_bestek: str, input_subset: str, dialog_window, home_screen,
                  id_: int = None) -> None:
         if input_eigen_ref.strip() == "" or input_subset.strip() == "":
@@ -87,7 +89,8 @@ class DialogWindow:
             return
         self.error_label.setText("")
         properties = [input_eigen_ref, input_bestek, input_subset]
-        self.home_domain.alter_table(properties, dialog_window, home_screen, id_)
+        self.home_domain.alter_table(properties=properties, dlg=dialog_window,
+                                     home_screen=home_screen, id_=id_)
 
     def language_window(self, home_screen) -> None:
         dialog = QDialog()

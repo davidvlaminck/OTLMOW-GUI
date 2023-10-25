@@ -14,6 +14,7 @@ class HomeDomain:
     def get_all_projects(self) -> list:
         return self.db.get_all_projects()
 
+    # TODO: functie naar dialog_window.py
     def draw_remove_project_screen(self, id_: int, table: QTableWidget) -> None:
         dlg = QMessageBox()
         dlg.setWindowTitle(self._("delete"))
