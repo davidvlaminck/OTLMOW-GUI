@@ -1,5 +1,8 @@
 import datetime
+from pathlib import Path
 from typing import Union
+
+from PyQt6.QtGui import QPixmap
 
 from Domain.language_settings import return_language
 from PyQt6.QtWidgets import QWidget, QPushButton, QLabel, QHBoxLayout, QVBoxLayout, QTableWidget, \
@@ -10,13 +13,18 @@ import Domain.home_domain as HomeDomain
 import GUI.dialog_window as DialogWindow
 from GUI.message_box import MessageBox
 
+ROOT_DIR = Path(__file__).parent
+
+IMG_DIR = ROOT_DIR.parent / 'img/'
+LANG_DIR = ROOT_DIR.parent / 'locale/'
+
 
 class HomeScreen(QWidget):
 
     def __init__(self, database):
         super().__init__()
         self.database = database
-        self._ = return_language('../locale/')
+        self._ = return_language(LANG_DIR)
         self.home_domain = HomeDomain.HomeDomain(database, self._)
         self.container_home_screen = QVBoxLayout()
         self.table = QTableWidget()
@@ -52,7 +60,10 @@ class HomeScreen(QWidget):
         self.container_home_screen.addSpacing(43)
         # add table to the vertical layout with margins
         self.container_home_screen.addLayout(table_container)
+        pixmap = QPixmap(str(IMG_DIR) + '/AWV_logo.png')
+        pixmap = pixmap.scaledToWidth(200)
         self.container_home_screen.addStretch()
+        self.container_home_screen.addWidget(QLabel(pixmap=pixmap), alignment=Qt.AlignmentFlag.AlignRight)
         self.container_home_screen.setContentsMargins(0, 0, 0, 0)
 
     def init_ui(self):
@@ -168,7 +179,7 @@ class HomeScreen(QWidget):
         self.create_input_field()
         self.create_new_project_button()
 
-    def filter_projects(self, input_text: str):
+    def filter_projects(self, input_text: str = None):
         self.projects = self.home_domain.get_all_projects()
         if type(input_text) is str:
             input_text.strip()
