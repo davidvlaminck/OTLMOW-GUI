@@ -33,6 +33,7 @@ class HomeScreen(QWidget):
         self.head_wrapper = QFrame()
         self.input_field = QLineEdit()
         self.new_project_button = QPushButton()
+        self.search_message = QLabel()
 
         self.main_content_ui()
         self.init_ui()
@@ -108,7 +109,10 @@ class HomeScreen(QWidget):
         search_wrapper.setProperty('class', 'search')
         search = QHBoxLayout()
         self.create_input_field()
+        self.search_message.setText("")
+        self.search_message.setStyleSheet("color: red")
         search.addWidget(self.input_field)
+        search.addWidget(self.search_message)
         search.addStretch()
         search_wrapper.setLayout(search)
         return search_wrapper
@@ -118,7 +122,11 @@ class HomeScreen(QWidget):
         self.input_field.setPlaceholderText(self._('search_text'))
 
     def draw_table(self, input_text: str = None):
-        self.filter_projects(input_text)
+        try:
+            self.search_message.setText("")
+            self.filter_projects(input_text)
+        except Exception as e:
+            self.search_message.setText(str(e))
         self.table.setRowCount(len(self.projects))
         self.table.verticalHeader().setVisible(False)
         self.table.setColumnCount(6)
@@ -183,12 +191,13 @@ class HomeScreen(QWidget):
         self.projects = self.home_domain.get_all_projects()
         if type(input_text) is str:
             input_text.strip()
-            try:
-                if len(input_text) != 0:
-                    self.table.clear()
-                    self.projects = [k for k in self.projects if input_text in k]
-                    return
-                else:
+            if len(input_text) != 0:
+                self.table.clear()
+                self.projects = [k for k in self.projects if input_text in k]
+                if len(self.projects) == 0:
                     self.projects = self.home_domain.get_all_projects()
-            except Exception as e:
-                print(e)
+                    raise Exception(self._('no_results'))
+                    # self.search_message.setText(self._('no_results'))
+                else:
+                    return
+            #self.projects = self.home_domain.get_all_projects()

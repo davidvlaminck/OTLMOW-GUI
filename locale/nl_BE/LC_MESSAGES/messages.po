@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: jasper.berton@mow.vlaanderen.be\n"
-"POT-Creation-Date: 2023-10-25 13:55+0200\n"
+"POT-Creation-Date: 2023-10-26 15:39+0200\n"
 "PO-Revision-Date: 2023-10-19 13:13+0200\n"
 "Last-Translator: Jasper Berton <jasper.berton@mow.vlaanderen.be>\n"
 "Language: nl_BE\n"
@@ -18,72 +18,71 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.13.0\n"
 
-#: Domain/home_domain.py:34
+#: Domain/home_domain.py:35
 msgid "own_reference_empty_error"
 msgstr "Eigen referentie is leeg"
 
-#: Domain/home_domain.py:36
+#: Domain/home_domain.py:37
 msgid "bestek_empty_error"
 msgstr "Bestek is leeg"
 
-#: GUI/dialog_window.py:23
+#: GUI/dialog_window.py:30
 msgid "alter_project_title"
 msgstr "Aanpassen project"
 
-#: GUI/dialog_window.py:25
+#: GUI/dialog_window.py:32
 msgid "new_project_title"
 msgstr "Nieuw Project"
 
-#: GUI/dialog_window.py:33 GUI/dialog_window.py:46 GUI/home_screen.py:120
-#: UnitTests/domain_test/language_test.py:16
-#: UnitTests/domain_test/language_test.py:21
-#: UnitTests/domain_test/language_test.py:27
+#: GUI/dialog_window.py:40 GUI/dialog_window.py:58 GUI/home_screen.py:144
+#: UnitTests/domain_test/language_test.py:15
+#: UnitTests/domain_test/language_test.py:20
 msgid "own_reference"
 msgstr "Eigen referentie"
 
-#: GUI/dialog_window.py:35 GUI/dialog_window.py:47 GUI/home_screen.py:120
+#: GUI/dialog_window.py:42 GUI/dialog_window.py:59 GUI/home_screen.py:144
 msgid "service_order"
 msgstr "Bestek - (dienstbevel)"
 
-#: GUI/dialog_window.py:37 GUI/dialog_window.py:48 GUI/home_screen.py:120
+#: GUI/dialog_window.py:44 GUI/dialog_window.py:60 GUI/home_screen.py:144
 msgid "subset"
 msgstr "Subset"
 
-#: GUI/dialog_window.py:72
+#: GUI/dialog_window.py:84
 msgid "submit"
 msgstr "Bevestigen"
 
-#: GUI/dialog_window.py:74
+#: GUI/dialog_window.py:86
 msgid "cancel"
 msgstr "Annuleren"
 
-#: GUI/dialog_window.py:100
+#: GUI/dialog_window.py:110
 msgid "change_language_title"
 msgstr "Taal veranderen"
 
-#: GUI/dialog_window.py:102
+#: GUI/dialog_window.py:112
 msgid "language_option_dutch"
 msgstr "Nederlands"
 
-#: GUI/dialog_window.py:103
+#: GUI/dialog_window.py:113
 msgid "language_option_english"
 msgstr "Engels"
 
-#: GUI/home_screen.py:69
+#: GUI/home_screen.py:89
 msgid "new_project_button"
 msgstr "Nieuw Project"
 
-#: GUI/home_screen.py:95
+#: GUI/home_screen.py:122
 msgid "search_text"
 msgstr "Geef een project of bestek in om te zoeken"
 
-#: GUI/home_screen.py:97
-msgid "search_button"
-msgstr "Zoeken"
-
-#: GUI/home_screen.py:120
+#: GUI/home_screen.py:144
 msgid "last_edited"
 msgstr "Laatst bewerkt"
+
+#: GUI/home_screen.py:199
+msgid "no_results"
+msgstr "Geen resultaten gevonden voor dit zoekresultaat"
 
 #: GUI/message_box.py:12
 msgid "delete"
@@ -103,4 +102,7 @@ msgstr "Nee"
 
 #~ msgid "empty_fields_error"
 #~ msgstr "Gelieve alle velden in te vullen"
+
+#~ msgid "search_button"
+#~ msgstr "Zoeken"
 
