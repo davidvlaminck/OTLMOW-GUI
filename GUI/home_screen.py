@@ -3,7 +3,7 @@ from typing import Union
 
 from Domain.language_settings import return_language
 from PyQt6.QtWidgets import QWidget, QPushButton, QLabel, QHBoxLayout, QVBoxLayout, QTableWidget, \
-    QTableWidgetItem, QLineEdit, QHeaderView
+    QTableWidgetItem, QLineEdit, QHeaderView, QFrame
 from PyQt6.QtCore import Qt
 import qtawesome as qta
 import Domain.home_domain as HomeDomain
@@ -22,13 +22,16 @@ class HomeScreen(QWidget):
         self.table = QTableWidget()
         self.projects: list
         self.message_box = MessageBox(self._, self.home_domain)
+        self.head_wrapper = QFrame()
+        self.input_field = QLineEdit()
+        self.new_project_button = QPushButton()
 
         self.main_content_ui()
         self.init_ui()
 
     def main_content_ui(self):
         # Header
-        head_wrapper = self.construct_header_bar()
+        self.construct_header_bar()
 
         # Search bar
         search_container = QVBoxLayout()
@@ -42,7 +45,7 @@ class HomeScreen(QWidget):
         table_container.setContentsMargins(16, 0, 16, 0)
 
         # add header to the vertical layout
-        self.container_home_screen.addWidget(head_wrapper)
+        self.container_home_screen.addWidget(self.head_wrapper)
         self.container_home_screen.addSpacing(39)
         # add searchbar to the vertical layout
         self.container_home_screen.addLayout(search_container)
@@ -57,23 +60,24 @@ class HomeScreen(QWidget):
         self.show()
 
     def construct_header_bar(self):
-        head_wrapper = QWidget()
-        head_wrapper.setProperty('class', 'header')
+        self.head_wrapper.setProperty('class', 'header')
         header = QHBoxLayout()
         title = QLabel('OTLWizard')
         title.setProperty('class', 'title')
         header.addWidget(title)
-        new_project_button = QPushButton(self._('new_project_button'))
-        new_project_button.setProperty('class', 'new-project')
-        header.addWidget(new_project_button)
-        header.setAlignment(new_project_button, Qt.AlignmentFlag.AlignLeft)
+        self.create_new_project_button()
+        header.addWidget(self.new_project_button)
+        header.setAlignment(self.new_project_button, Qt.AlignmentFlag.AlignLeft)
         user_settings = self.construct_settings_bar()
         header.addLayout(user_settings)
         header.setAlignment(user_settings, Qt.AlignmentFlag.AlignRight)
-        head_wrapper.setLayout(header)
-        new_project_button.clicked.connect(
+        self.head_wrapper.setLayout(header)
+
+    def create_new_project_button(self):
+        self.new_project_button.setText(self._('new_project_button'))
+        self.new_project_button.setProperty('class', 'new-project')
+        self.new_project_button.clicked.connect(
             lambda: self.start_dialog_window(home_screen=self, is_project=True))
-        return head_wrapper
 
     def construct_settings_bar(self):
         user_pref_container = QHBoxLayout()
@@ -92,13 +96,15 @@ class HomeScreen(QWidget):
         search_wrapper = QWidget()
         search_wrapper.setProperty('class', 'search')
         search = QHBoxLayout()
-        input_field = QLineEdit()
-        input_field.returnPressed.connect(lambda: self.draw_table(input_field.text()))
-        input_field.setPlaceholderText(self._('search_text'))
-        search.addWidget(input_field)
+        self.create_input_field()
+        search.addWidget(self.input_field)
         search.addStretch()
         search_wrapper.setLayout(search)
         return search_wrapper
+
+    def create_input_field(self):
+        self.input_field.returnPressed.connect(lambda: self.draw_table(self.input_field.text()))
+        self.input_field.setPlaceholderText(self._('search_text'))
 
     def draw_table(self, input_text: str = None):
         self.filter_projects(input_text)
@@ -158,9 +164,9 @@ class HomeScreen(QWidget):
         if lang_settings is not None:
             self._ = lang_settings
             self.home_domain = HomeDomain.HomeDomain(self.database, self._)
-        self.construct_header_bar()
         self.draw_table()
-        self.construct_header_bar()
+        self.create_input_field()
+        self.create_new_project_button()
 
     def filter_projects(self, input_text: str):
         self.projects = self.home_domain.get_all_projects()
