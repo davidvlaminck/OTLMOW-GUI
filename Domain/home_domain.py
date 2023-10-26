@@ -1,5 +1,6 @@
+import logging
 from datetime import datetime
-from PyQt6.QtWidgets import QMessageBox, QTableWidget, QWidget, QPushButton
+from PyQt6.QtWidgets import QTableWidget, QWidget, QDialog
 
 
 class HomeDomain:
@@ -18,7 +19,7 @@ class HomeDomain:
         self.db.remove_project(id_)
         table.removeRow(table.currentRow())
 
-    def alter_table(self, properties: list, dlg, home_screen: QWidget, id_=None):
+    def alter_table(self, properties: list, dlg: QDialog, home_screen: QWidget, id_=None):
         time_of_alter = datetime.now()
         properties += [time_of_alter]
         project_exists = id_ is not None
@@ -29,10 +30,10 @@ class HomeDomain:
         home_screen.draw_table()
         dlg.close()
 
-    def validate(self, input_eigen_ref, input_bestek):
+    def validate(self, input_eigen_ref: str, input_subset: str):
         if input_eigen_ref.strip() == "":
             raise TypeError(self._('own_reference_empty_error'))
-        elif input_bestek.strip() == "":
+        elif input_subset.strip() == "":
             raise TypeError(self._('bestek_empty_error'))
         else:
             return True

@@ -165,6 +165,7 @@ class HomeScreen(QWidget):
         self.construct_header_bar()
 
     def filter_projects(self, input_text: str):
+        self.projects = self.home_domain.get_all_projects()
         if type(input_text) is str:
             input_text.strip()
             try:
@@ -176,5 +177,3 @@ class HomeScreen(QWidget):
                     self.projects = self.home_domain.get_all_projects()
             except Exception as e:
                 print(e)
-        else:
-            self.projects = self.home_domain.get_all_projects()

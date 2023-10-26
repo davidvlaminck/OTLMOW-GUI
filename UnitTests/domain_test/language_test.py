@@ -1,7 +1,5 @@
 from pathlib import Path
 
-import pytest
-
 from Domain.language_settings import return_language
 
 from Domain.enums import Language

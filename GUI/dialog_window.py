@@ -1,10 +1,14 @@
+import logging
 from enum import Enum
+from pathlib import Path
 
 from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QDialog, QVBoxLayout, QLineEdit, QDialogButtonBox, QLabel, QHBoxLayout, QPushButton
+from PyQt6.QtWidgets import QDialog, QVBoxLayout, QLineEdit, QDialogButtonBox, QLabel, QHBoxLayout, QPushButton, \
+    QFileDialog
 from Domain.home_domain import HomeDomain
 from Domain.language_settings import return_language
 from Domain.enums import Language
+import qtawesome as qta
 
 
 class DialogWindow:
@@ -45,14 +49,19 @@ class DialogWindow:
         input_bestek = QLineEdit()
         container_bestek.addWidget(input_bestek)
         input_subset = QLineEdit()
+        input_subset.setReadOnly(True)
+        file_picker_btn = QPushButton()
+        file_picker_btn.setIcon(qta.icon('mdi.folder-open-outline'))
+        file_picker_btn.clicked.connect(lambda: self.open_file_picker(input_subset))
         container_subset.addWidget(input_subset)
+        container_subset.addWidget(file_picker_btn)
         input_eigen_ref.setPlaceholderText(self._("own_reference"))
         input_bestek.setPlaceholderText(self._("service_order"))
         input_subset.setPlaceholderText(self._("subset"))
         if is_project:
             input_eigen_ref.setText(project[1])
-            input_subset.setText(project[2])
-            input_bestek.setText(project[3])
+            input_bestek.setText(project[2])
+            input_subset.setText(project[3])
         # Adds the input fields to the layout
         layout.addLayout(container_eigen_ref)
         layout.addLayout(container_bestek)
@@ -86,7 +95,7 @@ class DialogWindow:
                                      home_screen,
                                      id_: int = None) -> None:
         try:
-            self.home_domain.validate(input_eigen_ref, input_bestek)
+            self.home_domain.validate(input_eigen_ref, input_subset)
         except TypeError as e:
             self.error_label.setText(str(e))
             return
@@ -114,3 +123,17 @@ class DialogWindow:
         self._ = return_language('../locale/', lang)
         home_screen.reset_ui(self._)
         dialog.close()
+
+    @staticmethod
+    def open_file_picker(input_subset):
+        if input_subset.text() == "":
+            file_path = str(Path.home())
+        else:
+            file_path = input_subset.text()
+        file_picker = QFileDialog()
+        file_picker.setWindowTitle("Selecteer subset")
+        file_picker.setDirectory(file_path)
+        file_picker.setNameFilter("Database files (*.db)")
+        file_picker.setOption(QFileDialog.Option.ShowDirsOnly, True)
+        if file_picker.exec():
+            input_subset.setText(file_picker.selectedFiles()[0])
