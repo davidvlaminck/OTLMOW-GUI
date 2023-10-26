@@ -75,7 +75,7 @@ msgstr "New Project"
 
 #: GUI/home_screen.py:95
 msgid "search_text"
-msgstr "Enter project or service order"
+msgstr "Enter project or service order to search"
 
 #: GUI/home_screen.py:97
 msgid "search_button"

@@ -93,11 +93,9 @@ class HomeScreen(QWidget):
         search_wrapper.setProperty('class', 'search')
         search = QHBoxLayout()
         input_field = QLineEdit()
+        input_field.returnPressed.connect(lambda: self.draw_table(input_field.text()))
         input_field.setPlaceholderText(self._('search_text'))
         search.addWidget(input_field)
-        search_button = QPushButton(self._('search_button'), self)
-        search_button.clicked.connect(lambda: self.draw_table(input_field.text()))
-        search.addWidget(search_button)
         search.addStretch()
         search_wrapper.setLayout(search)
         return search_wrapper
