@@ -125,7 +125,7 @@ class HomeScreen(QWidget):
     def draw_table(self, input_text: str = None):
         try:
             self.search_message.setText("")
-            self.filter_projects(input_text)
+            self.projects = self.filter_projects(self._, self.home_domain, input_text)
         except Exception as e:
             self.search_message.setText(str(e))
         self.table.setRowCount(len(self.projects))
@@ -189,16 +189,15 @@ class HomeScreen(QWidget):
         self.create_new_project_button()
 
     # TODO: make static en 100% test coverage
-    def filter_projects(self, input_text: str = None):
-        self.projects = self.home_domain.get_all_projects()
+    @staticmethod
+    def filter_projects(_, home_domain, input_text: str = None):
+        projects = home_domain.get_all_projects()
         if type(input_text) is str:
             input_text.strip()
             if len(input_text) != 0:
-                self.table.clear()
-                self.projects = [k for k in self.projects if k[1].startswith(input_text) or k[2].startswith(input_text)]
-                if len(self.projects) == 0:
-                    self.projects = self.home_domain.get_all_projects()
+                projects = [k for k in projects if k[1].startswith(input_text) or k[2].startswith(input_text)]
+                if len(projects) == 0:
+                    projects.append(home_domain.get_all_projects())
                     # TODO: make this a custom exception (if time)
-                    raise Exception(self._('no_results'))
-                else:
-                    return
+                    raise Exception(_('no_results'))
+        return projects
