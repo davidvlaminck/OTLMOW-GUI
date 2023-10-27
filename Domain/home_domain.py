@@ -19,7 +19,7 @@ class HomeDomain:
         self.db.remove_project(id_)
         table.removeRow(table.currentRow())
 
-    def alter_table(self, properties: list, dlg: QDialog, home_screen: QWidget, id_=None):
+    def alter_table(self, properties: list, dlg: QDialog, overview_table: QTableWidget, id_=None):
         time_of_alter = datetime.now()
         properties += [time_of_alter]
         project_exists = id_ is not None
@@ -27,7 +27,7 @@ class HomeDomain:
             self.db.update_project(id_, properties[0], properties[1], properties[2], time_of_alter)
         else:
             id_ = self.db.add_project(properties[0], properties[1], properties[2], time_of_alter)
-        home_screen.draw_table()
+        overview_table.draw_table()
         dlg.close()
 
     def validate(self, input_eigen_ref: str, input_subset: str):

@@ -18,7 +18,7 @@ class DialogWindow:
         self.error_label = QLabel()
         self._ = language_settings
 
-    def draw_upsert_project(self, home_screen, id_=None):
+    def draw_upsert_project(self, overview_table, id_=None):
         is_project = id_ is not None
         # Resets the error label to empty when reopening the dialog
         self.error_label.setText("")
@@ -26,7 +26,7 @@ class DialogWindow:
         # Makes the dialog the primary screen, disabling the screen behind it
         dialog_window.setModal(True)
         if is_project:
-            project = home_screen.home_domain.db.get_project(id_)
+            project = self.home_domain.db.get_project(id_)
             dialog_window.setWindowTitle(self._("alter_project_title"))
         else:
             dialog_window.setWindowTitle(self._("new_project_title"))
@@ -76,7 +76,7 @@ class DialogWindow:
         # sends the values off to validate once submitted
         button_box.accepted.connect(
             lambda: self.pass_values_through_validate(input_eigen_ref.text(), input_bestek.text(),
-                                                      input_subset.text(), dialog_window, home_screen, id_))
+                                                      input_subset.text(), dialog_window, overview_table, id_))
         button_box.rejected.connect(dialog_window.reject)
         # Adds the two buttons to the layout
         layout.addWidget(button_box)
@@ -92,7 +92,7 @@ class DialogWindow:
         dialog_window.exec()
 
     def pass_values_through_validate(self, input_eigen_ref: str, input_bestek: str, input_subset: str, dialog_window,
-                                     home_screen,
+                                     overview_table,
                                      id_: int = None) -> None:
         try:
             self.home_domain.validate(input_eigen_ref, input_subset)
@@ -102,7 +102,7 @@ class DialogWindow:
         self.error_label.setText("")
         properties = [input_eigen_ref, input_bestek, input_subset]
         self.home_domain.alter_table(properties=properties, dlg=dialog_window,
-                                     home_screen=home_screen, id_=id_)
+                                     overview_table=overview_table, id_=id_)
 
     def language_window(self, home_screen) -> None:
         dialog = QDialog()
