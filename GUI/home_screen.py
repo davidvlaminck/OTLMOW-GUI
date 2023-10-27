@@ -121,6 +121,7 @@ class HomeScreen(QWidget):
         self.input_field.returnPressed.connect(lambda: self.draw_table(self.input_field.text()))
         self.input_field.setPlaceholderText(self._('search_text'))
 
+    # TODO: make table his own widget and put all the table related functions in there
     def draw_table(self, input_text: str = None):
         try:
             self.search_message.setText("")
@@ -187,17 +188,17 @@ class HomeScreen(QWidget):
         self.create_input_field()
         self.create_new_project_button()
 
+    # TODO: make static en 100% test coverage
     def filter_projects(self, input_text: str = None):
         self.projects = self.home_domain.get_all_projects()
         if type(input_text) is str:
             input_text.strip()
             if len(input_text) != 0:
                 self.table.clear()
-                self.projects = [k for k in self.projects if input_text in k]
+                self.projects = [k for k in self.projects if k[1].startswith(input_text) or k[2].startswith(input_text)]
                 if len(self.projects) == 0:
                     self.projects = self.home_domain.get_all_projects()
+                    # TODO: make this a custom exception (if time)
                     raise Exception(self._('no_results'))
-                    # self.search_message.setText(self._('no_results'))
                 else:
                     return
-            #self.projects = self.home_domain.get_all_projects()
