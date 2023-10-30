@@ -1,6 +1,5 @@
-import logging
 from datetime import datetime
-from PyQt6.QtWidgets import QTableWidget, QWidget, QDialog
+from PyQt6.QtWidgets import QTableWidget, QDialog
 
 from Exceptions.EmptyFieldError import EmptyFieldError
 
