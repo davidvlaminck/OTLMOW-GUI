@@ -41,7 +41,6 @@ QTableWidget::item{
 }
 
 .alter-button{
-    background: transparent;
     icon-size: 25px;
     border: none;
 }
@@ -55,7 +54,7 @@ QTableWidget::item{
 }
 
 .settings{
-    background-color: #B35F35;
+    background: transparent;
     icon-size: 25px;
 }
 
