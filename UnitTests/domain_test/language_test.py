@@ -1,21 +1,20 @@
-import pytest
+from pathlib import Path
 
-from Domain.language_settings import LanguageSettings
+from Domain.language_settings import return_language
+
+from Domain.enums import Language
+
+ROOT_DIR = Path(__file__).parent
+
+LOCALE_DIR = ROOT_DIR.parent.parent / 'locale/'
 
 
+# Runt enkel samen met alle andere tests anders moet ../locale/ aangepast worden naar ../../locale/
 def test_english_on_default():
-    language_settings = LanguageSettings()
-    assert language_settings.language == 'en'
+    _ = return_language(LOCALE_DIR)
+    assert _('own_reference') == 'Own reference'
 
 
 def test_change_to_dutch_works():
-    language_settings = LanguageSettings()
-    language_settings.set_language('nl_BE')
-    assert language_settings.language == 'nl_BE'
-
-
-@pytest.mark.filterwarnings('ignore::UserWarning')
-def test_other_languages_are_not_supported():
-    language_settings = LanguageSettings()
-    language_settings.set_language('fr')
-    assert language_settings.language == 'en'
+    _ = return_language(LOCALE_DIR, Language.DUTCH)
+    assert _('own_reference') == 'Eigen referentie'

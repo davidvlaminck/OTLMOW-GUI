@@ -2,7 +2,7 @@
     background-color: #0E5A69;
     color: #ffffff;
     height: 25px;
-    width: 70px;
+    width: 100px;
     border-radius: 5px;
     padding-left: 1Opx;
     font-family: Roboto;
@@ -41,7 +41,6 @@ QTableWidget::item{
 }
 
 .alter-button{
-    background: transparent;
     icon-size: 25px;
     border: none;
 }
@@ -57,6 +56,10 @@ QTableWidget::item{
 .settings{
     background: transparent;
     icon-size: 25px;
+}
+
+HomeScreen{
+    background-color: #f1f1f1;
 }
 
 .primary-button{

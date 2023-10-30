@@ -1,18 +1,26 @@
-from Domain.language_settings import LanguageSettings
+import logging
+from enum import Enum
+from pathlib import Path
+
 from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QDialog, QVBoxLayout, QLineEdit, QDialogButtonBox, QLabel, QHBoxLayout, QPushButton
+from PyQt6.QtWidgets import QDialog, QVBoxLayout, QLineEdit, QDialogButtonBox, QLabel, QHBoxLayout, QPushButton, \
+    QFileDialog
 from Domain.home_domain import HomeDomain
+from Domain.language_settings import return_language
+from Domain.enums import Language
+import qtawesome as qta
+
+from Exceptions.EmptyFieldError import EmptyFieldError
 
 
 class DialogWindow:
 
     def __init__(self, database, language_settings):
-        self.lang_settings = language_settings
-        self.home_domain = HomeDomain(database, self.lang_settings)
+        self.home_domain = HomeDomain(database, language_settings)
         self.error_label = QLabel()
-        self._ = self.lang_settings.return_language()
+        self._ = language_settings
 
-    def draw_upsert_project(self, home_screen, id_=None, table=None):
+    def draw_upsert_project(self, overview_table, id_=None):
         is_project = id_ is not None
         # Resets the error label to empty when reopening the dialog
         self.error_label.setText("")
@@ -20,7 +28,7 @@ class DialogWindow:
         # Makes the dialog the primary screen, disabling the screen behind it
         dialog_window.setModal(True)
         if is_project:
-            project = home_screen.home_domain.db.get_project(id_)
+            project = self.home_domain.db.get_project(id_)
             dialog_window.setWindowTitle(self._("alter_project_title"))
         else:
             dialog_window.setWindowTitle(self._("new_project_title"))
@@ -43,14 +51,19 @@ class DialogWindow:
         input_bestek = QLineEdit()
         container_bestek.addWidget(input_bestek)
         input_subset = QLineEdit()
+        input_subset.setReadOnly(True)
+        file_picker_btn = QPushButton()
+        file_picker_btn.setIcon(qta.icon('mdi.folder-open-outline'))
+        file_picker_btn.clicked.connect(lambda: self.open_file_picker(input_subset))
         container_subset.addWidget(input_subset)
+        container_subset.addWidget(file_picker_btn)
         input_eigen_ref.setPlaceholderText(self._("own_reference"))
         input_bestek.setPlaceholderText(self._("service_order"))
         input_subset.setPlaceholderText(self._("subset"))
         if is_project:
             input_eigen_ref.setText(project[1])
-            input_subset.setText(project[2])
-            input_bestek.setText(project[3])
+            input_bestek.setText(project[2])
+            input_subset.setText(project[3])
         # Adds the input fields to the layout
         layout.addLayout(container_eigen_ref)
         layout.addLayout(container_bestek)
@@ -64,49 +77,65 @@ class DialogWindow:
         button_box.setProperty("class", "button-box")
         # sends the values off to validate once submitted
         button_box.accepted.connect(
-            lambda: self.validate(input_eigen_ref.text(), input_bestek.text(),
-                                  input_subset.text(), table, dialog_window, home_screen, id_))
+            lambda: self.pass_values_through_validate(input_eigen_ref.text(), input_bestek.text(),
+                                                      input_subset.text(), dialog_window, overview_table, id_))
         button_box.rejected.connect(dialog_window.reject)
         # Adds the two buttons to the layout
         layout.addWidget(button_box)
         button_box.button(QDialogButtonBox.StandardButton.Ok).setProperty("class", "primary-button")
+        button_box.button(QDialogButtonBox.StandardButton.Ok).setText(self._("submit"))
         button_box.button(QDialogButtonBox.StandardButton.Cancel).setProperty("class", "secondary-button")
+        button_box.button(QDialogButtonBox.StandardButton.Cancel).setText(self._("cancel"))
         layout.addWidget(self.error_label)
         # Fills the dialog with the created layout
         dialog_window.setLayout(layout)
         # Shows the dialog
         dialog_window.show()
         dialog_window.exec()
-        # Updates the projects behind the table
 
-    def validate(self, input_eigen_ref: str, input_bestek: str, input_subset: str, table, dialog_window, home_screen,
-                 id_: int = None):
-        if input_eigen_ref.strip() == "" or input_subset.strip() == "":
-            self.error_label.setText(self._("empty_fields_error"))
+    def pass_values_through_validate(self, input_eigen_ref: str, input_bestek: str, input_subset: str, dialog_window,
+                                     overview_table,
+                                     id_: int = None) -> None:
+        try:
+            self.home_domain.validate(input_eigen_ref, input_subset)
+        except EmptyFieldError as e:
+            self.error_label.setText(str(e))
             return
         self.error_label.setText("")
         properties = [input_eigen_ref, input_bestek, input_subset]
-        self.home_domain.alter_table(properties, table, dialog_window, home_screen, id_)
+        self.home_domain.alter_table(properties=properties, dlg=dialog_window,
+                                     overview_table=overview_table, id_=id_)
 
-    def language_window(self, home_screen):
+    def language_window(self, home_screen) -> None:
         dialog = QDialog()
         dialog.setModal(True)
         dialog.setWindowTitle(self._("change_language_title"))
         layout = QHBoxLayout()
         button_ned = QPushButton(self._("language_option_dutch"))
         button_eng = QPushButton(self._("language_option_english"))
-        button_ned.clicked.connect(lambda: self.change_language("nl_BE", dialog, home_screen))
-        button_eng.clicked.connect(lambda: self.change_language("en", dialog, home_screen))
+        button_ned.clicked.connect(lambda: self.change_language(Language.DUTCH, dialog, home_screen))
+        button_eng.clicked.connect(lambda: self.change_language(Language.ENGLISH, dialog, home_screen))
         layout.addWidget(button_ned)
         layout.addWidget(button_eng)
         dialog.setLayout(layout)
         dialog.show()
         dialog.exec()
 
-    def change_language(self, lang: str, dialog, home_screen):
-        try:
-            self.lang_settings.set_language(lang)
-            home_screen.reset_ui(self.lang_settings)
-            dialog.close()
-        except Exception as e:
-            print(e)
+    def change_language(self, lang: Enum, dialog: QDialog, home_screen) -> None:
+        self._ = return_language('../locale/', lang)
+        home_screen.reset_ui(self._)
+        dialog.close()
+
+    @staticmethod
+    def open_file_picker(input_subset):
+        if input_subset.text() == "":
+            file_path = str(Path.home())
+        else:
+            file_path = input_subset.text()
+        file_picker = QFileDialog()
+        file_picker.setWindowTitle("Selecteer subset")
+        file_picker.setDirectory(file_path)
+        file_picker.setNameFilter("Database files (*.db)")
+        file_picker.setOption(QFileDialog.Option.ShowDirsOnly, True)
+        if file_picker.exec():
+            input_subset.setText(file_picker.selectedFiles()[0])

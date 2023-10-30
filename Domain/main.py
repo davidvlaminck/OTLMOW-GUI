@@ -1,11 +1,11 @@
 import logging
 import sys
-import gettext
+import typing
 
 from datetime import datetime
 
 from PyQt6.QtGui import QIcon
-from PyQt6.QtWidgets import QApplication, QStyle
+from PyQt6.QtWidgets import QApplication
 
 from Domain.database import Database
 from GUI.home_screen import HomeScreen
@@ -23,16 +23,26 @@ def mockData(database):
     database.add_project('test3', 'test3', 'test3', datetime(2020, 1, 1, 0, 0, 0))
 
 
+class MyApplication(QApplication):
+    def __init__(self, argv: typing.List[str], db):
+        super().__init__(argv)
+        self.db = db
+
+    def quit(self):
+        self.db.close_connection()
+        super().quit()
+
+
 if __name__ == '__main__':
     try:
         logging.basicConfig(
             format='%(asctime)s %(levelname)-8s %(message)s',
             level=logging.DEBUG,
             datefmt='%Y-%m-%d %H:%M:%S')
-        app = QApplication(sys.argv)
+        db = initialize_database()
+        app = MyApplication(sys.argv,db)
         app_icon = QIcon('../img/wizard.ico')
         app.setWindowIcon(app_icon)
-        db = initialize_database()
         mockData(db)
         with open('custom.qss', 'r') as file:
             app.setStyleSheet(file.read())
@@ -40,6 +50,7 @@ if __name__ == '__main__':
         window.resize(1920, 1080)
         window.setWindowTitle("OTLWizard")
         window.setMinimumSize(1280, 720)
-        sys.exit(app.exec())
+        app.exec()
+        app.quit()
     except Exception as e:
         logging.error(e)

@@ -1,15 +1,15 @@
+import logging
 from datetime import datetime
-from PyQt6.QtWidgets import QMessageBox
+from PyQt6.QtWidgets import QTableWidget, QWidget, QDialog
+
+from Exceptions.EmptyFieldError import EmptyFieldError
 
 
 class HomeDomain:
-    db = None
-    HomeScreen = None
 
     def __init__(self, database, language_settings):
         self.db = database
-        self.lang_settings = language_settings
-        self._ = self.lang_settings.return_language()
+        self._ = language_settings
 
     def get_amount_of_rows(self) -> int:
         return self.db.count_projects()
@@ -17,28 +17,25 @@ class HomeDomain:
     def get_all_projects(self) -> list:
         return self.db.get_all_projects()
 
-    # TODO: remove project opsplitsen in functie voor aanmaken scherm en functie voor verwijderen
-    def remove_project(self, id_, table):
-        dlg = QMessageBox()
-        dlg.setWindowTitle(self._("delete"))
-        dlg.setText(self._("project_deletion_question"))
-        dlg.setIcon(QMessageBox.Icon.Warning)
-        dlg.setStandardButtons(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
-        button = dlg.exec()
-        if button == QMessageBox.StandardButton.Yes:
-            try:
-                self.db.remove_project(id_)
-                table.removeRow(table.currentRow())
-            except Exception as e:
-                print(e)
+    def remove_project(self, id_: int, table: QTableWidget) -> None:
+        self.db.remove_project(id_)
+        table.removeRow(table.currentRow())
 
-    def alter_table(self, properties, table, dlg, home_screen, id_=None):
+    def alter_table(self, properties: list, dlg: QDialog, overview_table: QTableWidget, id_=None):
         time_of_alter = datetime.now()
         properties += [time_of_alter]
         project_exists = id_ is not None
         if project_exists:
-            self.db.draw_upsert_project(id_, properties[0], properties[1], properties[2], time_of_alter)
+            self.db.update_project(id_, properties[0], properties[1], properties[2], time_of_alter)
         else:
             id_ = self.db.add_project(properties[0], properties[1], properties[2], time_of_alter)
-        home_screen.draw_table()
+        overview_table.draw_table()
         dlg.close()
+
+    def validate(self, input_eigen_ref: str, input_subset: str):
+        if input_eigen_ref.strip() == "":
+            raise EmptyFieldError(self._('own_reference_empty_error'))
+        elif input_subset.strip() == "":
+            raise EmptyFieldError(self._('bestek_empty_error'))
+        else:
+            return True
