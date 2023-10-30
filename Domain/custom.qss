@@ -80,3 +80,21 @@ QApplication{
     background-color: #ffffff;
 }
 
+.subtitle{
+    background-color: #FCF2E9;
+    padding: 10px;
+    border-bottom: 1px solid #B35F35;
+}
+
+.subtitle[text]{
+    color: #B35F35;
+}
+
+.return-button{
+    background: transparent;
+    border: none;
+}
+
+.return-button[text]{
+    color: #FFFFFF;
+}

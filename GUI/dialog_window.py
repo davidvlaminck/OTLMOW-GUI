@@ -25,6 +25,7 @@ class DialogWindow:
         # Resets the error label to empty when reopening the dialog
         self.error_label.setText("")
         dialog_window = QDialog()
+        dialog_window.setMinimumWidth(400)
         # Makes the dialog the primary screen, disabling the screen behind it
         dialog_window.setModal(True)
         if is_project:
