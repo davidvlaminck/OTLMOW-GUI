@@ -9,7 +9,7 @@ from PyQt6.QtWidgets import QApplication
 
 from Domain.database import Database
 from GUI.home_screen import HomeScreen
-from GUI.make_template_screen import TemplateScreen
+# from GUI.make_template_screen import TemplateScreen
 
 
 def initialize_database():

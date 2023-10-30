@@ -1,5 +1,4 @@
 import gettext
-import warnings
 from enum import Enum
 
 from Domain.enums import Language

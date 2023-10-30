@@ -1,16 +1,12 @@
-import datetime
 from pathlib import Path
-from typing import Union
 
 from PyQt6.QtGui import QPixmap
 
 from Domain.language_settings import return_language
-from PyQt6.QtWidgets import QWidget, QPushButton, QLabel, QHBoxLayout, QVBoxLayout, QTableWidget, \
-    QTableWidgetItem, QLineEdit, QHeaderView, QFrame
+from PyQt6.QtWidgets import QWidget, QPushButton, QLabel, QHBoxLayout, QVBoxLayout, \
+    QLineEdit, QFrame
 from PyQt6.QtCore import Qt
-import qtawesome as qta
 import Domain.home_domain as HomeDomain
-import GUI.dialog_window as DialogWindow
 from GUI.header_bar import HeaderBar
 from GUI.message_box import MessageBox
 from GUI.overviewtable import OverviewTable

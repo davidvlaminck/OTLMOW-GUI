@@ -7,6 +7,8 @@ from GUI.header_bar import HeaderBar
 
 ROOT_DIR = Path(__file__).parent
 LANG_DIR = ROOT_DIR.parent / 'locale/'
+
+
 class TemplateScreen(QWidget):
     def __init__(self, database):
         super().__init__()
