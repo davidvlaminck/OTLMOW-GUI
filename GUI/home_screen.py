@@ -11,6 +11,7 @@ from PyQt6.QtCore import Qt
 import qtawesome as qta
 import Domain.home_domain as HomeDomain
 import GUI.dialog_window as DialogWindow
+from GUI.header_bar import HeaderBar
 from GUI.message_box import MessageBox
 from GUI.overviewtable import OverviewTable
 
@@ -35,14 +36,12 @@ class HomeScreen(QWidget):
         self.new_project_button = QPushButton()
         self.search_message = QLabel()
         self.table = OverviewTable(self.search_message, self._, self.home_domain, self.message_box, self.database)
+        self.header = HeaderBar(self._, self.database, self, self.table)
 
         self.main_content_ui()
         self.init_ui()
 
     def main_content_ui(self):
-        # Header
-        self.construct_header_bar()
-
         # Search bar
         search_container = QVBoxLayout()
         search_container.addWidget(self.draw_search_bar())
@@ -54,8 +53,12 @@ class HomeScreen(QWidget):
         table_container.addWidget(self.table)
         table_container.setContentsMargins(16, 0, 16, 0)
 
+        # Header
+        # header = HeaderBar(self._, self.database, self, self.table)
+        self.header.construct_header_bar()
+
         # add header to the vertical layout
-        self.container_home_screen.addWidget(self.head_wrapper)
+        self.container_home_screen.addWidget(self.header)
         self.container_home_screen.addSpacing(39)
         # add searchbar to the vertical layout
         self.container_home_screen.addLayout(search_container)
@@ -71,39 +74,6 @@ class HomeScreen(QWidget):
     def init_ui(self):
         self.setLayout(self.container_home_screen)
         self.show()
-
-    def construct_header_bar(self):
-        self.head_wrapper.setProperty('class', 'header')
-        header = QHBoxLayout()
-        title = QLabel('OTLWizard')
-        title.setProperty('class', 'title')
-        header.addWidget(title)
-        self.create_new_project_button()
-        header.addWidget(self.new_project_button)
-        header.setAlignment(self.new_project_button, Qt.AlignmentFlag.AlignLeft)
-        user_settings = self.construct_settings_bar()
-        header.addLayout(user_settings)
-        header.setAlignment(user_settings, Qt.AlignmentFlag.AlignRight)
-        self.head_wrapper.setLayout(header)
-
-    def create_new_project_button(self):
-        self.new_project_button.setText(self._('new_project_button'))
-        self.new_project_button.setProperty('class', 'new-project')
-        self.new_project_button.clicked.connect(
-            lambda: self.start_dialog_window(home_screen=self, is_project=True))
-
-    def construct_settings_bar(self):
-        user_pref_container = QHBoxLayout()
-        settings = QPushButton()
-        settings.setIcon(qta.icon('mdi.cog'))
-        settings.setProperty('class', 'settings')
-        settings.clicked.connect(lambda: self.start_dialog_window(home_screen=self))
-        user_pref_container.addWidget(settings)
-        help_widget = QPushButton()
-        help_widget.setIcon(qta.icon('mdi.help-circle'))
-        help_widget.setProperty('class', 'settings')
-        user_pref_container.addWidget(help_widget)
-        return user_pref_container
 
     def draw_search_bar(self) -> QWidget:
         search_wrapper = QWidget()
@@ -122,17 +92,10 @@ class HomeScreen(QWidget):
         self.input_field.returnPressed.connect(lambda: self.table.draw_table(self.input_field.text()))
         self.input_field.setPlaceholderText(self._('search_text'))
 
-    def start_dialog_window(self, id_: int = None, overview_table=None, home_screen=None, is_project=False) -> None:
-        dialog_window = DialogWindow.DialogWindow(self.database, self._)
-        if is_project:
-            dialog_window.draw_upsert_project(id_=id_, overview_table=overview_table)
-        else:
-            dialog_window.language_window(home_screen=home_screen)
-
     def reset_ui(self, lang_settings=None) -> None:
         if lang_settings is not None:
             self._ = lang_settings
             self.home_domain = HomeDomain.HomeDomain(self.database, self._)
         self.table.reset_language(self._)
         self.create_input_field()
-        self.create_new_project_button()
+        self.header.reset_language(self._)
