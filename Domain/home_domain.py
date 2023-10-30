@@ -2,6 +2,8 @@ import logging
 from datetime import datetime
 from PyQt6.QtWidgets import QTableWidget, QWidget, QDialog
 
+from Exceptions.EmptyFieldError import EmptyFieldError
+
 
 class HomeDomain:
 
@@ -32,8 +34,8 @@ class HomeDomain:
 
     def validate(self, input_eigen_ref: str, input_subset: str):
         if input_eigen_ref.strip() == "":
-            raise TypeError(self._('own_reference_empty_error'))
+            raise EmptyFieldError(self._('own_reference_empty_error'))
         elif input_subset.strip() == "":
-            raise TypeError(self._('bestek_empty_error'))
+            raise EmptyFieldError(self._('bestek_empty_error'))
         else:
             return True

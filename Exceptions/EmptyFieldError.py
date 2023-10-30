@@ -1,0 +1,2 @@
+class EmptyFieldError(Exception):
+    pass

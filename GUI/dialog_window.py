@@ -10,6 +10,8 @@ from Domain.language_settings import return_language
 from Domain.enums import Language
 import qtawesome as qta
 
+from Exceptions.EmptyFieldError import EmptyFieldError
+
 
 class DialogWindow:
 
@@ -96,7 +98,7 @@ class DialogWindow:
                                      id_: int = None) -> None:
         try:
             self.home_domain.validate(input_eigen_ref, input_subset)
-        except TypeError as e:
+        except EmptyFieldError as e:
             self.error_label.setText(str(e))
             return
         self.error_label.setText("")

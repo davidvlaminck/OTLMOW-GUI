@@ -5,6 +5,7 @@ from PyQt6.QtCore import Qt
 
 from PyQt6.QtWidgets import QTableWidget, QHeaderView, QTableWidgetItem, QPushButton
 
+from Exceptions.EmptySearchWarning import EmptySearchWarning
 from GUI.dialog_window import DialogWindow
 
 
@@ -23,7 +24,7 @@ class OverviewTable(QTableWidget):
         try:
             self.search_message.setText("")
             self.projects = self.filter_projects(self._, self.home_domain, input_text)
-        except Exception as e:
+        except EmptySearchWarning as e:
             self.search_message.setText(str(e))
         self.setRowCount(len(self.projects))
         self.verticalHeader().setVisible(False)
@@ -80,7 +81,7 @@ class OverviewTable(QTableWidget):
                 if len(projects) == 0:
                     projects.append(home_domain.get_all_projects())
                     # TODO: make this a custom exception (if time)
-                    raise Exception(_('no_results'))
+                    raise EmptySearchWarning(_('no_results'))
         return projects
 
     def start_dialog_window(self, id_: int = None, is_project=False) -> None:

@@ -2,12 +2,12 @@ import sys
 from pathlib import Path
 
 import pytest
-from PyQt6.QtWidgets import QApplication, QTableWidget
 
 from Domain.database import Database
 from Domain.home_domain import HomeDomain
 from Domain.language_settings import return_language
-from GUI.home_screen import HomeScreen
+from Exceptions.EmptySearchWarning import EmptySearchWarning
+from GUI.overviewtable import OverviewTable
 
 ROOT_DIR = Path(__file__).parent
 
@@ -41,19 +41,19 @@ def locale():
 
 
 def test_filter_function_with_nothing_returns_all_projects(home_domain, locale, db):
-    assert len(HomeScreen.filter_projects(locale, home_domain)) == 3
+    assert len(OverviewTable.filter_projects(locale, home_domain)) == 3
 
 
 def test_filter_function_with_search_returns_correct_projects(home_domain, locale):
-    assert HomeScreen.filter_projects(locale, home_domain, 'testen') == [(1, 'testen', 'test', 'test', None)]
+    assert OverviewTable.filter_projects(locale, home_domain, 'testen') == [(1, 'testen', 'test', 'test', None)]
 
 
 def test_filter_function_with_search_not_in_set_returns_exception(home_domain, locale):
-    with pytest.raises(Exception):
-        HomeScreen.filter_projects(locale, home_domain, 'banaan')
+    with pytest.raises(EmptySearchWarning):
+        OverviewTable.filter_projects(locale, home_domain, 'banaan')
 
 
 def test_filter_function_returns_multiple_projects(home_domain, locale):
-    assert HomeScreen.filter_projects(locale, home_domain, 'test') == [(1, 'testen', 'test', 'test', None),
+    assert OverviewTable.filter_projects(locale, home_domain, 'test') == [(1, 'testen', 'test', 'test', None),
                                                                        (2, 'test2', 'test2', 'test2', None),
                                                                        (3, 'test3', 'test3', 'test3', None)]

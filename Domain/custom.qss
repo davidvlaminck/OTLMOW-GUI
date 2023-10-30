@@ -55,8 +55,12 @@ QTableWidget::item{
 }
 
 .settings{
-    background: transparent;
+    background-color: #B35F35;
     icon-size: 25px;
+}
+
+HomeScreen{
+    background-color: #f1f1f1;
 }
 
 .primary-button{
