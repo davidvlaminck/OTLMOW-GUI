@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QPushButton
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QStackedWidget
 
 from Domain.language_settings import return_language
 from GUI.header_bar import HeaderBar
@@ -17,11 +17,13 @@ class TemplateScreen(QWidget):
         self._ = self._ = return_language(LANG_DIR)
         self.header = HeaderBar(self._, self.database, self)
         self.container_template_screen = QVBoxLayout()
+        self.stacked_widget = QStackedWidget()
 
         self.init_ui()
 
     def init_ui(self):
-        self.header.header_bar_detail_screen()
+        button = self.header.header_bar_detail_screen()
+        button.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(1))
         self.container_template_screen.addWidget(self.header)
         self.container_template_screen.addSpacing(10)
         self.container_template_screen.addWidget(self.stepper_widget())

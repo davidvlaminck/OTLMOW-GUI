@@ -85,6 +85,7 @@ class HeaderBar(QFrame):
         full_header.addWidget(label)
         full_header.setContentsMargins(0, 0, 0, 0)
         self.setLayout(full_header)
+        return return_button
 
     def reset_language(self, _):
         self._ = _

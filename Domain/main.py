@@ -52,7 +52,7 @@ if __name__ == '__main__':
         stacked_widget = QStackedWidget()
         stacked_widget.addWidget(step1)
         stacked_widget.addWidget(home_screen)
-        stacked_widget.setCurrentIndex(1)
+        step1.stacked_widget = stacked_widget
         stacked_widget.show()
         stacked_widget.resize(1920, 1080)
         stacked_widget.setWindowTitle('OTLWizard')
