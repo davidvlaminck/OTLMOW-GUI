@@ -69,7 +69,6 @@ class HomeScreen(QWidget):
 
     def init_ui(self):
         self.setLayout(self.container_home_screen)
-        self.show()
 
     def draw_search_bar(self) -> QWidget:
         search_wrapper = QWidget()

@@ -5,11 +5,11 @@ import typing
 from datetime import datetime
 
 from PyQt6.QtGui import QIcon
-from PyQt6.QtWidgets import QApplication
+from PyQt6.QtWidgets import QApplication, QStackedWidget
 
 from Domain.database import Database
 from GUI.home_screen import HomeScreen
-# from GUI.make_template_screen import TemplateScreen
+from GUI.make_template_screen import TemplateScreen
 
 
 def initialize_database():
@@ -47,11 +47,16 @@ if __name__ == '__main__':
         mockData(db)
         with open('custom.qss', 'r') as file:
             app.setStyleSheet(file.read())
-        window = HomeScreen(db)
-        # window = TemplateScreen(db)
-        window.resize(1920, 1080)
-        window.setWindowTitle("OTLWizard")
-        window.setMinimumSize(1280, 720)
+        home_screen = HomeScreen(db)
+        step1 = TemplateScreen(db)
+        stacked_widget = QStackedWidget()
+        stacked_widget.addWidget(step1)
+        stacked_widget.addWidget(home_screen)
+        stacked_widget.setCurrentIndex(1)
+        stacked_widget.show()
+        stacked_widget.resize(1920, 1080)
+        stacked_widget.setWindowTitle('OTLWizard')
+        stacked_widget.setMinimumSize(1280, 720)
         app.exec()
         app.quit()
     except Exception as e:
