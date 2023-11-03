@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-10-31 11:11+0100\n"
+"POT-Creation-Date: 2023-11-03 15:12+0100\n"
 "PO-Revision-Date: 2023-10-19 13:11+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en_US\n"
@@ -18,11 +18,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.13.0\n"
 
-#: Domain/home_domain.py:36
+#: Domain/home_domain.py:35
 msgid "own_reference_empty_error"
 msgstr "Own reference is empty"
 
-#: Domain/home_domain.py:38
+#: Domain/home_domain.py:37
 msgid "bestek_empty_error"
 msgstr "Subset is empty"
 
@@ -34,17 +34,17 @@ msgstr "Alter Project"
 msgid "new_project_title"
 msgstr "New Project"
 
-#: GUI/dialog_window.py:42 GUI/dialog_window.py:60 GUI/overviewtable.py:43
-#: UnitTests/domain_test/language_test.py:15
-#: UnitTests/domain_test/language_test.py:20
+#: GUI/dialog_window.py:42 GUI/dialog_window.py:60 GUI/overviewtable.py:44
+#: UnitTests/domain_test/language_test.py:14
+#: UnitTests/domain_test/language_test.py:19
 msgid "own_reference"
 msgstr "Own reference"
 
-#: GUI/dialog_window.py:44 GUI/dialog_window.py:61 GUI/overviewtable.py:43
+#: GUI/dialog_window.py:44 GUI/dialog_window.py:61 GUI/overviewtable.py:44
 msgid "service_order"
 msgstr "Service order"
 
-#: GUI/dialog_window.py:46 GUI/dialog_window.py:62 GUI/overviewtable.py:43
+#: GUI/dialog_window.py:46 GUI/dialog_window.py:62 GUI/overviewtable.py:44
 msgid "subset"
 msgstr "Subset"
 
@@ -68,41 +68,49 @@ msgstr "Dutch"
 msgid "language_option_english"
 msgstr "English"
 
-#: GUI/header_bar.py:34
+#: GUI/header_bar.py:36
 msgid "new_project_button"
 msgstr "New Project"
 
-#: GUI/header_bar.py:70
+#: GUI/header_bar.py:71 GUI/header_bar.py:93
 msgid "return_to_home_screen"
 msgstr "Back home"
 
-#: GUI/header_bar.py:80
+#: GUI/header_bar.py:80 GUI/header_bar.py:94
 msgid "subtitle_page_1"
 msgstr "Specify which classes and settings you want to use in the template"
 
-#: GUI/home_screen.py:88
+#: GUI/home_screen.py:89
 msgid "search_text"
 msgstr "Enter project or service order to search"
 
-#: GUI/make_template_screen.py:38
-msgid "step1"
-msgstr "Create Template"
-
-#: GUI/make_template_screen.py:40
-msgid "step2"
-msgstr "Insert Asset Data"
-
-#: GUI/make_template_screen.py:42
-msgid "step3"
-msgstr "Change Asset Data"
-
 #: GUI/make_template_screen.py:44
-msgid "step4"
-msgstr "Export Asset Data"
+msgid "select_all_classes"
+msgstr "Select all classes"
 
 #: GUI/make_template_screen.py:46
-msgid "step5"
-msgstr ""
+msgid "no_choice_list"
+msgstr "Do not generate choice lists"
+
+#: GUI/make_template_screen.py:48
+msgid "geometry_column_added"
+msgstr "Add geometry column to the template"
+
+#: GUI/make_template_screen.py:50
+msgid "export_attribute_info"
+msgstr "Export additional attribute information"
+
+#: GUI/make_template_screen.py:52
+msgid "show_deprecated_attributes"
+msgstr "Highlight deprecated attributes in template"
+
+#: GUI/make_template_screen.py:56
+msgid "amount_of_examples"
+msgstr "Generate rows of example data"
+
+#: GUI/make_template_screen.py:66
+msgid "export"
+msgstr "Export"
 
 #: GUI/message_box.py:12
 msgid "delete"
@@ -120,13 +128,29 @@ msgstr "Yes"
 msgid "no"
 msgstr "No"
 
-#: GUI/overviewtable.py:43
+#: GUI/overviewtable.py:44
 msgid "last_edited"
 msgstr "Last edited"
 
-#: GUI/overviewtable.py:84
+#: GUI/overviewtable.py:86
 msgid "no_results"
 msgstr "No results found for this search value"
+
+#: GUI/stepper.py:28 GUI/stepper.py:46
+msgid "step1"
+msgstr "Create Template"
+
+#: GUI/stepper.py:29 GUI/stepper.py:47
+msgid "step2"
+msgstr "Insert Asset Data"
+
+#: GUI/stepper.py:30 GUI/stepper.py:48
+msgid "step3"
+msgstr "Change Asset Data"
+
+#: GUI/stepper.py:31 GUI/stepper.py:49
+msgid "step4"
+msgstr "Export Asset Data"
 
 #~ msgid "empty_fields_error"
 #~ msgstr "Fill in all fields"

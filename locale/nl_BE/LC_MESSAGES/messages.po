@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: jasper.berton@mow.vlaanderen.be\n"
-"POT-Creation-Date: 2023-10-31 11:11+0100\n"
+"POT-Creation-Date: 2023-11-03 15:12+0100\n"
 "PO-Revision-Date: 2023-10-19 13:13+0200\n"
 "Last-Translator: Jasper Berton <jasper.berton@mow.vlaanderen.be>\n"
 "Language: nl_BE\n"
@@ -18,11 +18,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.13.0\n"
 
-#: Domain/home_domain.py:36
+#: Domain/home_domain.py:35
 msgid "own_reference_empty_error"
 msgstr "Eigen referentie is leeg"
 
-#: Domain/home_domain.py:38
+#: Domain/home_domain.py:37
 msgid "bestek_empty_error"
 msgstr "Bestek is leeg"
 
@@ -34,17 +34,17 @@ msgstr "Aanpassen project"
 msgid "new_project_title"
 msgstr "Nieuw Project"
 
-#: GUI/dialog_window.py:42 GUI/dialog_window.py:60 GUI/overviewtable.py:43
-#: UnitTests/domain_test/language_test.py:15
-#: UnitTests/domain_test/language_test.py:20
+#: GUI/dialog_window.py:42 GUI/dialog_window.py:60 GUI/overviewtable.py:44
+#: UnitTests/domain_test/language_test.py:14
+#: UnitTests/domain_test/language_test.py:19
 msgid "own_reference"
 msgstr "Eigen referentie"
 
-#: GUI/dialog_window.py:44 GUI/dialog_window.py:61 GUI/overviewtable.py:43
+#: GUI/dialog_window.py:44 GUI/dialog_window.py:61 GUI/overviewtable.py:44
 msgid "service_order"
 msgstr "Bestek - (dienstbevel)"
 
-#: GUI/dialog_window.py:46 GUI/dialog_window.py:62 GUI/overviewtable.py:43
+#: GUI/dialog_window.py:46 GUI/dialog_window.py:62 GUI/overviewtable.py:44
 msgid "subset"
 msgstr "Subset"
 
@@ -68,41 +68,49 @@ msgstr "Nederlands"
 msgid "language_option_english"
 msgstr "Engels"
 
-#: GUI/header_bar.py:34
+#: GUI/header_bar.py:36
 msgid "new_project_button"
 msgstr "Nieuw Project"
 
-#: GUI/header_bar.py:70
+#: GUI/header_bar.py:71 GUI/header_bar.py:93
 msgid "return_to_home_screen"
 msgstr "terug naar startscherm"
 
-#: GUI/header_bar.py:80
+#: GUI/header_bar.py:80 GUI/header_bar.py:94
 msgid "subtitle_page_1"
 msgstr "Specifieer welke klassen en instellingen u in uw template wil verwerken"
 
-#: GUI/home_screen.py:88
+#: GUI/home_screen.py:89
 msgid "search_text"
 msgstr "Geef een project of bestek in om te zoeken"
 
-#: GUI/make_template_screen.py:38
-msgid "step1"
-msgstr "Aanmaken subset"
-
-#: GUI/make_template_screen.py:40
-msgid "step2"
-msgstr "Asset Data invoeren"
-
-#: GUI/make_template_screen.py:42
-msgid "step3"
-msgstr "Asset Data bewerken"
-
 #: GUI/make_template_screen.py:44
-msgid "step4"
-msgstr "Asset Data exporteren"
+msgid "select_all_classes"
+msgstr "Selecteer alle klassen"
 
 #: GUI/make_template_screen.py:46
-msgid "step5"
-msgstr ""
+msgid "no_choice_list"
+msgstr "Geen keuzelijsten opmaken"
+
+#: GUI/make_template_screen.py:48
+msgid "geometry_column_added"
+msgstr "Geometrie kolom toevoegen aan tabel"
+
+#: GUI/make_template_screen.py:50
+msgid "export_attribute_info"
+msgstr "Exporteer een omschrijving van elk attribuut"
+
+#: GUI/make_template_screen.py:52
+msgid "show_deprecated_attributes"
+msgstr "Deprecated attributen aanduiden"
+
+#: GUI/make_template_screen.py:56
+msgid "amount_of_examples"
+msgstr "Genereer voorbeeldrijen"
+
+#: GUI/make_template_screen.py:66
+msgid "export"
+msgstr "Exporteren"
 
 #: GUI/message_box.py:12
 msgid "delete"
@@ -120,13 +128,29 @@ msgstr "Ja"
 msgid "no"
 msgstr "Nee"
 
-#: GUI/overviewtable.py:43
+#: GUI/overviewtable.py:44
 msgid "last_edited"
 msgstr "Laatst bewerkt"
 
-#: GUI/overviewtable.py:84
+#: GUI/overviewtable.py:86
 msgid "no_results"
 msgstr "Geen resultaten gevonden voor dit zoekresultaat"
+
+#: GUI/stepper.py:28 GUI/stepper.py:46
+msgid "step1"
+msgstr "Aanmaken subset"
+
+#: GUI/stepper.py:29 GUI/stepper.py:47
+msgid "step2"
+msgstr "Asset Data invoeren"
+
+#: GUI/stepper.py:30 GUI/stepper.py:48
+msgid "step3"
+msgstr "Asset Data bewerken"
+
+#: GUI/stepper.py:31 GUI/stepper.py:49
+msgid "step4"
+msgstr "Asset Data exporteren"
 
 #~ msgid "empty_fields_error"
 #~ msgstr "Gelieve alle velden in te vullen"
