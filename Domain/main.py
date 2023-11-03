@@ -41,7 +41,7 @@ if __name__ == '__main__':
             level=logging.DEBUG,
             datefmt='%Y-%m-%d %H:%M:%S')
         db = initialize_database()
-        app = MyApplication(sys.argv,db)
+        app = MyApplication(sys.argv, db)
         app_icon = QIcon('../img/wizard.ico')
         app.setWindowIcon(app_icon)
         mockData(db)
