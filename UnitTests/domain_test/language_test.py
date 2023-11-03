@@ -9,7 +9,6 @@ ROOT_DIR = Path(__file__).parent
 LOCALE_DIR = ROOT_DIR.parent.parent / 'locale/'
 
 
-# Runt enkel samen met alle andere tests anders moet ../locale/ aangepast worden naar ../../locale/
 def test_english_on_default():
     _ = return_language(LOCALE_DIR)
     assert _('own_reference') == 'Own reference'

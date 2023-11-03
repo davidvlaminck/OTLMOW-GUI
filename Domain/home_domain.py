@@ -1,5 +1,4 @@
 from datetime import datetime
-from PyQt6.QtWidgets import QTableWidget, QDialog
 
 from Exceptions.EmptyFieldError import EmptyFieldError
 
@@ -16,11 +15,11 @@ class HomeDomain:
     def get_all_projects(self) -> list:
         return self.db.get_all_projects()
 
-    def remove_project(self, id_: int, table: QTableWidget) -> None:
+    def remove_project(self, id_: int, table) -> None:
         self.db.remove_project(id_)
         table.removeRow(table.currentRow())
 
-    def alter_table(self, properties: list, dlg: QDialog, overview_table: QTableWidget, id_=None):
+    def alter_table(self, properties: list, dlg, overview_table, id_=None):
         time_of_alter = datetime.now()
         properties += [time_of_alter]
         project_exists = id_ is not None
