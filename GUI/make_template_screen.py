@@ -81,10 +81,28 @@ class TemplateScreen(QWidget):
         window = QWidget()
         window.setProperty('class', 'template-menu')
         layout = QVBoxLayout()
+        layout.addWidget(self.subset_title_and_button(), alignment=Qt.AlignmentFlag.AlignLeft)
         layout.addWidget(self.options_menu())
         layout.setContentsMargins(16, 0, 16, 0)
         window.setLayout(layout)
         return window
+
+    def subset_title_and_button(self):
+        frame = QFrame()
+        title = QLabel()
+        title.setText(self._("subset")+":")
+        subset_name = QLabel()
+        subset_name.setText("test")
+        button = QPushButton()
+        button.setText(self._("change_subset"))
+        button.setProperty('class', 'secondary-button')
+        horizontal_layout = QHBoxLayout()
+        horizontal_layout.addWidget(title)
+        horizontal_layout.addWidget(subset_name)
+        horizontal_layout.addSpacing(30)
+        horizontal_layout.addWidget(button)
+        frame.setLayout(horizontal_layout)
+        return frame
 
     def reset_ui(self, _):
         self._ = _

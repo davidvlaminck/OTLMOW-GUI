@@ -7,11 +7,11 @@ from GUI.dialog_window import DialogWindow
 
 
 class HeaderBar(QFrame):
-    def __init__(self, _, db, homescreen, stacked_widget=None, table=None):
+    def __init__(self, language, database, homescreen, stacked_widget=None, table=None):
         super().__init__()
         self.new_project_button = QPushButton()
-        self._ = _
-        self.database = db
+        self._ = language
+        self.database = database
         self.home_screen = homescreen
         self.table = table
         self.stacked_widget = stacked_widget

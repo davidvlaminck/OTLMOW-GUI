@@ -33,7 +33,7 @@ class HomeScreen(QWidget):
         self.new_project_button = QPushButton()
         self.search_message = QLabel()
         self.table = OverviewTable(self.search_message, self._, self.home_domain, self.message_box, self.database)
-        self.header = HeaderBar(self._, self.database, self, self.table)
+        self.header = HeaderBar(language=self._, database=self.database, homescreen=self, table=self.table)
         self.stacked_widget = None
 
         self.main_content_ui()
