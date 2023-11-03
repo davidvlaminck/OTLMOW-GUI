@@ -9,12 +9,12 @@ from GUI.dialog_window import DialogWindow
 class HeaderBar(QFrame):
     def __init__(self, _, db, homescreen, table=None):
         super().__init__()
-        self.setFrameShadow(QFrame.Shadow.Plain)
         self.new_project_button = QPushButton()
         self._ = _
         self.database = db
         self.home_screen = homescreen
         self.table = table
+        #self.navigation = navigation
 
     def construct_header_bar(self):
         self.setProperty('class', 'header')

@@ -8,6 +8,7 @@ from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import QApplication, QStackedWidget
 
 from Domain.database import Database
+from Domain.navigation import Navigation
 from GUI.home_screen import HomeScreen
 from GUI.make_template_screen import TemplateScreen
 
@@ -49,9 +50,10 @@ if __name__ == '__main__':
             app.setStyleSheet(file.read())
         home_screen = HomeScreen(db)
         step1 = TemplateScreen(db)
-        stacked_widget = QStackedWidget()
+        stacked_widget = Navigation()
         stacked_widget.addWidget(step1)
         stacked_widget.addWidget(home_screen)
+        home_screen.table.stacked_widget = stacked_widget
         step1.stacked_widget = stacked_widget
         stacked_widget.show()
         stacked_widget.resize(1920, 1080)

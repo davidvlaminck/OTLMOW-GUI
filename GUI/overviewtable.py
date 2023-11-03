@@ -19,6 +19,7 @@ class OverviewTable(QTableWidget):
         self.projects: list
         self.message_box = message_box
         self.database = database
+        self.stacked_widget = None
 
     def draw_table(self, input_text: str = None):
         try:
@@ -49,6 +50,7 @@ class OverviewTable(QTableWidget):
             for i in range(4):
                 self.add_cell_to_table(self, count, i, element[i + 1])
             self.add_update_and_delete_button(count, element[0], self)
+            self.doubleClicked.connect(lambda: self.stacked_widget.setCurrentIndex(0))
 
     @staticmethod
     def add_cell_to_table(table: QTableWidget, row: int, column: int, item: Union[str, datetime.datetime]) -> None:
