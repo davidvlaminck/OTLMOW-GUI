@@ -89,7 +89,6 @@ class HomeScreen(QWidget):
         self.input_field.setPlaceholderText(self._('search_text'))
 
     def reset_ui(self, lang_settings=None) -> None:
-        logging.debug('resetting home screen')
         if lang_settings is not None:
             self._ = lang_settings
             self.home_domain = HomeDomain.HomeDomain(self.database, self._)
