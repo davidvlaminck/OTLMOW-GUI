@@ -1,3 +1,4 @@
+import logging
 from typing import Union
 import datetime
 import qtawesome as qta
@@ -22,28 +23,28 @@ class OverviewTable(QTableWidget):
         self.stacked_widget = None
 
     def draw_table(self, input_text: str = None):
-        try:
-            self.search_message.setText("")
-            self.projects = self.filter_projects(self._, self.home_domain, input_text)
-        except EmptySearchWarning as e:
-            self.search_message.setText(str(e))
-        self.setRowCount(len(self.projects))
         self.verticalHeader().setVisible(False)
         self.setColumnCount(6)
-        # Set the width of the columns to stretch except the last two columns for buttons
+        self.setHorizontalHeaderLabels(
+            [self._('own_reference'), self._('service_order'), self._('subset'), self._('last_edited'), '', ''])
+        # ALign titles of header to the left
+        self.horizontalHeader().setDefaultAlignment(Qt.AlignmentFlag.AlignLeft)
         for column in range(self.columnCount() - 2):
             self.horizontalHeader().setSectionResizeMode(column, QHeaderView.ResizeMode.Stretch)
         self.horizontalHeader().setSectionResizeMode(4, QHeaderView.ResizeMode.ResizeToContents)
         self.horizontalHeader().setSectionResizeMode(5, QHeaderView.ResizeMode.ResizeToContents)
         self.setShowGrid(False)
+        try:
+            self.search_message.setText("")
+            self.projects = self.filter_projects(self._, self.home_domain, input_text)
+        except EmptySearchWarning as e:
+            self.add_the_error_row(self)
+            return
+        self.setRowCount(len(self.projects))
         # Zorgt ervoor dat selectie op row is niet op cell
         self.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows)
         # Zorgt ervoor dat de table niet editable is
         self.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
-        self.setHorizontalHeaderLabels(
-            [self._('own_reference'), self._('service_order'), self._('subset'), self._('last_edited'), '', ''])
-        # ALign titles of header to the left
-        self.horizontalHeader().setDefaultAlignment(Qt.AlignmentFlag.AlignLeft)
 
         # TODO: add data to the table in aparte functie
         for count, element in enumerate(self.projects):
@@ -58,6 +59,12 @@ class OverviewTable(QTableWidget):
             table.setItem(row, column, QTableWidgetItem(item.strftime("%d-%m-%Y")))
         else:
             table.setItem(row, column, QTableWidgetItem(item))
+
+    def add_the_error_row(self, table):
+        table.setRowCount(1)
+        table.clearContents()
+        table.setItem(0, 0, QTableWidgetItem(self._('no_results')))
+
 
     def add_update_and_delete_button(self, count: int, id_: int, table: QTableWidget) -> None:
         edit = QPushButton()
@@ -82,7 +89,6 @@ class OverviewTable(QTableWidget):
                 projects = [k for k in projects if k[1].startswith(input_text) or k[2].startswith(input_text)]
                 if len(projects) == 0:
                     projects.append(home_domain.get_all_projects())
-                    # TODO: make this a custom exception (if time)
                     raise EmptySearchWarning(_('no_results'))
         return projects
 
