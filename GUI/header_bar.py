@@ -7,14 +7,14 @@ from GUI.dialog_window import DialogWindow
 
 
 class HeaderBar(QFrame):
-    def __init__(self, _, db, homescreen, table=None):
+    def __init__(self, _, db, homescreen, stacked_widget=None, table=None):
         super().__init__()
         self.new_project_button = QPushButton()
         self._ = _
         self.database = db
         self.home_screen = homescreen
         self.table = table
-        #self.navigation = navigation
+        self.stacked_widget = stacked_widget
 
     def construct_header_bar(self):
         self.setProperty('class', 'header')
@@ -41,7 +41,7 @@ class HeaderBar(QFrame):
         settings = QPushButton()
         settings.setIcon(qta.icon('mdi.cog'))
         settings.setProperty('class', 'settings')
-        settings.clicked.connect(lambda: self.start_dialog_window(home_screen=self.home_screen))
+        settings.clicked.connect(lambda: self.start_dialog_window())
         user_pref_container.addWidget(settings)
         help_widget = QPushButton()
         help_widget.setIcon(qta.icon('mdi.help-circle'))
@@ -49,12 +49,12 @@ class HeaderBar(QFrame):
         user_pref_container.addWidget(help_widget)
         return user_pref_container
 
-    def start_dialog_window(self, id_: int = None, home_screen=None, is_project=False) -> None:
+    def start_dialog_window(self, id_: int = None, is_project=False) -> None:
         dialog_window = DialogWindow(self.database, self._)
         if is_project:
             dialog_window.draw_upsert_project(id_=id_, overview_table=self.table)
         else:
-            dialog_window.language_window(home_screen=home_screen)
+            dialog_window.language_window(stacked_widget=self.stacked_widget)
 
     def header_bar_detail_screen(self):
         full_header = QVBoxLayout()
@@ -87,6 +87,6 @@ class HeaderBar(QFrame):
         self.setLayout(full_header)
         return return_button
 
-    def reset_language(self, _):
+    def reset_ui(self, _):
         self._ = _
         self.create_new_project_button()

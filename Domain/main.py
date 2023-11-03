@@ -51,8 +51,8 @@ if __name__ == '__main__':
         home_screen = HomeScreen(db)
         step1 = TemplateScreen(db)
         stacked_widget = Navigation()
-        stacked_widget.addWidget(step1)
-        stacked_widget.addWidget(home_screen)
+        stacked_widget.add_widget(step1)
+        stacked_widget.add_widget(home_screen)
         home_screen.table.stacked_widget = stacked_widget
         step1.stacked_widget = stacked_widget
         stacked_widget.show()

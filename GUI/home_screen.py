@@ -1,3 +1,4 @@
+import logging
 from pathlib import Path
 
 from PyQt6.QtGui import QPixmap
@@ -33,6 +34,7 @@ class HomeScreen(QWidget):
         self.search_message = QLabel()
         self.table = OverviewTable(self.search_message, self._, self.home_domain, self.message_box, self.database)
         self.header = HeaderBar(self._, self.database, self, self.table)
+        self.stacked_widget = None
 
         self.main_content_ui()
         self.init_ui()
@@ -50,7 +52,6 @@ class HomeScreen(QWidget):
         table_container.setContentsMargins(16, 0, 16, 0)
 
         # Header
-        # header = HeaderBar(self._, self.database, self, self.table)
         self.header.construct_header_bar()
 
         # add header to the vertical layout
@@ -88,9 +89,10 @@ class HomeScreen(QWidget):
         self.input_field.setPlaceholderText(self._('search_text'))
 
     def reset_ui(self, lang_settings=None) -> None:
+        logging.debug('resetting home screen')
         if lang_settings is not None:
             self._ = lang_settings
             self.home_domain = HomeDomain.HomeDomain(self.database, self._)
-        self.table.reset_language(self._)
+        self.table.reset_ui(self._)
         self.create_input_field()
-        self.header.reset_language(self._)
+        self.header.reset_ui(self._)

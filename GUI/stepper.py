@@ -40,3 +40,6 @@ class StepperWidget(QWidget):
         horizontal_layout.addSpacing(50)
         stepper_widget.setLayout(horizontal_layout)
         return stepper_widget
+
+    def reset_ui(self, _):
+        pass

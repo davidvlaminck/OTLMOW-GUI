@@ -91,6 +91,6 @@ class OverviewTable(QTableWidget):
         if is_project:
             dialog_window.draw_upsert_project(id_=id_, overview_table=self)
 
-    def reset_language(self, lang_settings):
+    def reset_ui(self, lang_settings):
         self._ = lang_settings
         self.draw_table()

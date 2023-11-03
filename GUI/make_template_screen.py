@@ -18,7 +18,7 @@ class TemplateScreen(QWidget):
         self._ = self._ = return_language(LANG_DIR)
         self.header = HeaderBar(self._, self.database, self)
         self.container_template_screen = QVBoxLayout()
-        self.stacked_widget = QStackedWidget()
+        self.stacked_widget = None
         self.stepper_widget = StepperWidget(self._)
 
         self.init_ui()
@@ -32,5 +32,10 @@ class TemplateScreen(QWidget):
         self.container_template_screen.addStretch()
         self.container_template_screen.setContentsMargins(0, 0, 0, 0)
         self.setLayout(self.container_template_screen)
+
+    def reset_ui(self, _):
+        self._ = _
+        self.header.reset_ui(self._)
+        self.stepper_widget.reset_ui(self._)
 
 
