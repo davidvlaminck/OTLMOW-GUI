@@ -1,7 +1,8 @@
 from pathlib import Path
 
 from PyQt6.QtCore import Qt, QLine
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QStackedWidget, QFrame
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QStackedWidget, QFrame, QCheckBox, QSpinBox, \
+    QLabel
 
 from Domain.language_settings import return_language
 from GUI.header_bar import HeaderBar
@@ -29,13 +30,63 @@ class TemplateScreen(QWidget):
         self.container_template_screen.addWidget(self.header)
         self.container_template_screen.addSpacing(10)
         self.container_template_screen.addWidget(self.stepper_widget.stepper_widget())
+        self.container_template_screen.addSpacing(10)
+        self.container_template_screen.addWidget(self.template_menu())
         self.container_template_screen.addStretch()
         self.container_template_screen.setContentsMargins(0, 0, 0, 0)
         self.setLayout(self.container_template_screen)
+
+    def options_menu(self):
+        options_menu = QFrame()
+        options_menu.setProperty('class', 'options-menu')
+        options_menu_layout = QVBoxLayout()
+        select_all_classes = QCheckBox()
+        select_all_classes.setText(self._("select_all_classes"))
+        no_choice_list = QCheckBox()
+        no_choice_list.setText(self._("no_choice_list"))
+        geometry_column_added = QCheckBox()
+        geometry_column_added.setText(self._("geometry_column_added"))
+        export_attribute_info = QCheckBox()
+        export_attribute_info.setText(self._("export_attribute_info"))
+        show_deprecated_attributes = QCheckBox()
+        show_deprecated_attributes.setText(self._("show_deprecated_attributes"))
+        example_box = QFrame()
+        example_box_layout = QHBoxLayout()
+        example_label = QLabel()
+        example_label.setText(self._("amount_of_examples"))
+        amount_of_examples = QSpinBox()
+        amount_of_examples.setRange(0, 100)
+        amount_of_examples.setValue(0)
+
+        example_box_layout.addWidget(example_label)
+        example_box_layout.addWidget(amount_of_examples)
+        example_box.setLayout(example_box_layout)
+
+        export_button = QPushButton()
+        export_button.setText(self._("export"))
+        export_button.setProperty('class', 'primary-button')
+
+        options_menu_layout.addWidget(select_all_classes)
+        options_menu_layout.addWidget(no_choice_list)
+        options_menu_layout.addWidget(geometry_column_added)
+        options_menu_layout.addWidget(export_attribute_info)
+        options_menu_layout.addWidget(show_deprecated_attributes)
+        options_menu_layout.addWidget(example_box, alignment=Qt.AlignmentFlag.AlignLeft)
+        options_menu_layout.addWidget(export_button, alignment=Qt.AlignmentFlag.AlignLeft)
+        options_menu_layout.addStretch()
+        options_menu.setLayout(options_menu_layout)
+        return options_menu
+
+    def template_menu(self):
+        window = QWidget()
+        window.setProperty('class', 'template-menu')
+        layout = QVBoxLayout()
+        layout.addWidget(self.options_menu())
+        layout.setContentsMargins(16, 0, 16, 0)
+        window.setLayout(layout)
+        return window
 
     def reset_ui(self, _):
         self._ = _
         self.header.reset_ui(self._)
         self.stepper_widget.reset_ui(self._)
-
-

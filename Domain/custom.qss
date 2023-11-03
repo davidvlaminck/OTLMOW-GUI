@@ -98,3 +98,14 @@ QApplication{
 .return-button[text]{
     color: #FFFFFF;
 }
+
+.stepper-line{
+    color: #716F6F;
+    opacity: 0.5;
+}
+
+.template-menu{
+    background-color: #ffffff;
+    margin-left: 16px;
+    margin-right: 16px;
+}
