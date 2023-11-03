@@ -15,6 +15,8 @@ class HeaderBar(QFrame):
         self.home_screen = homescreen
         self.table = table
         self.stacked_widget = stacked_widget
+        self.return_button = QPushButton()
+        self.subtitel = QLabel()
 
     def construct_header_bar(self):
         self.setProperty('class', 'header')
@@ -64,29 +66,29 @@ class HeaderBar(QFrame):
         title = QLabel('OTLWizard')
         title.setProperty('class', 'title')
         header.addWidget(title)
-        return_button = QPushButton()
-        return_button.setProperty('class', 'return-button')
-        return_button.setIcon(qta.icon('mdi.arrow-left'))
-        return_button.setText(self._('return_to_home_screen'))
-        header.addWidget(return_button)
-        header.setAlignment(return_button, Qt.AlignmentFlag.AlignLeft)
+        self.return_button.setProperty('class', 'return-button')
+        self.return_button.setIcon(qta.icon('mdi.arrow-left'))
+        self.return_button.setText(self._('return_to_home_screen'))
+        header.addWidget(self.return_button)
+        header.setAlignment(self.return_button, Qt.AlignmentFlag.AlignLeft)
         settings = self.construct_settings_bar()
         header.addLayout(settings)
         header.setAlignment(settings, Qt.AlignmentFlag.AlignRight)
 
         head_top.setLayout(header)
         # head_top.setContentsMargins(0, 0, 0, 0)
-
-        label = QLabel(self._('subtitle_page_1'))
-        label.setProperty('class', 'subtitle')
+        self.subtitel.setText(self._('subtitle_page_1'))
+        self.subtitel.setProperty('class', 'subtitle')
 
         full_header.setSpacing(0)
         full_header.addWidget(head_top)
-        full_header.addWidget(label)
+        full_header.addWidget(self.subtitel)
         full_header.setContentsMargins(0, 0, 0, 0)
         self.setLayout(full_header)
-        return return_button
+        return self.return_button
 
     def reset_ui(self, _):
         self._ = _
         self.create_new_project_button()
+        self.return_button.setText(self._('return_to_home_screen'))
+        self.subtitel.setText(self._('subtitle_page_1'))

@@ -1,3 +1,5 @@
+import logging
+
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QWidget, QPushButton, QHBoxLayout, QFrame
 
@@ -6,6 +8,10 @@ class StepperWidget(QWidget):
     def __init__(self, _):
         super().__init__()
         self._ = _
+        self.step1 = QPushButton()
+        self.step2 = QPushButton()
+        self.step3 = QPushButton()
+        self.step4 = QPushButton()
 
     def stepper_widget(self):
         stepper_widget = QWidget()
@@ -42,4 +48,9 @@ class StepperWidget(QWidget):
         return stepper_widget
 
     def reset_ui(self, _):
-        pass
+        logging.debug('resetting stepper widget')
+        self._ = _
+        self.step1.setText(self._("step1"))
+        self.step2.setText(self._("step2"))
+        self.step3.setText(self._("step3"))
+        self.step4.setText(self._("step4"))
