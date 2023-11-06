@@ -30,9 +30,9 @@ classifiers = [
 ]
 requires-python = ">=3.7"
 dependencies = [
-    'PyQt6-Qt6 <= 6.5.3',
+    'PyQt6-Qt6 == 6.5.3',
     'otlmow_model >= 2.8.1',
-    'pyqt6 >= 6.5.2',
+    'pyqt6 == 6.5.3',
     'qtawesome >= 1.2.3',
 ]
 
