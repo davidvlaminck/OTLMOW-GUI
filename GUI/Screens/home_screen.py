@@ -8,17 +8,18 @@ from PyQt6.QtWidgets import QWidget, QPushButton, QLabel, QHBoxLayout, QVBoxLayo
     QLineEdit, QFrame
 from PyQt6.QtCore import Qt
 import Domain.home_domain as HomeDomain
+from GUI.Screens.Screen import Screen
 from GUI.header_bar import HeaderBar
 from GUI.message_box import MessageBox
 from GUI.overviewtable import OverviewTable
 
 ROOT_DIR = Path(__file__).parent
 
-IMG_DIR = ROOT_DIR.parent / 'img/'
-LANG_DIR = ROOT_DIR.parent / 'locale/'
+IMG_DIR = ROOT_DIR.parent.parent / 'img/'
+LANG_DIR = ROOT_DIR.parent.parent / 'locale/'
 
 
-class HomeScreen(QWidget):
+class HomeScreen(Screen):
 
     def __init__(self, database):
         super().__init__()
@@ -33,7 +34,7 @@ class HomeScreen(QWidget):
         self.new_project_button = QPushButton()
         self.search_message = QLabel()
         self.table = OverviewTable(self.search_message, self._, self.home_domain, self.message_box, self.database)
-        self.header = HeaderBar(language=self._, database=self.database, homescreen=self, table=self.table)
+        self.header = HeaderBar(language=self._, database=self.database, table=self.table)
         self.stacked_widget = None
 
         self.main_content_ui()

@@ -7,12 +7,11 @@ from GUI.dialog_window import DialogWindow
 
 
 class HeaderBar(QFrame):
-    def __init__(self, language, database, homescreen, stacked_widget=None, table=None):
+    def __init__(self, language, database, stacked_widget=None, table=None):
         super().__init__()
         self.new_project_button = QPushButton()
         self._ = language
         self.database = database
-        self.home_screen = homescreen
         self.table = table
         self.stacked_widget = stacked_widget
         self.return_button = QPushButton()
@@ -58,7 +57,7 @@ class HeaderBar(QFrame):
         else:
             dialog_window.language_window(stacked_widget=self.stacked_widget)
 
-    def header_bar_detail_screen(self):
+    def header_bar_detail_screen(self, page: str):
         full_header = QVBoxLayout()
         header = QHBoxLayout()
         head_top = QWidget()
@@ -77,7 +76,7 @@ class HeaderBar(QFrame):
 
         head_top.setLayout(header)
         # head_top.setContentsMargins(0, 0, 0, 0)
-        self.subtitel.setText(self._('subtitle_page_1'))
+        self.subtitel.setText(self._(page))
         self.subtitel.setProperty('class', 'subtitle')
 
         full_header.setSpacing(0)
@@ -87,8 +86,8 @@ class HeaderBar(QFrame):
         self.setLayout(full_header)
         return self.return_button
 
-    def reset_ui(self, _):
+    def reset_ui(self, _, page=None):
         self._ = _
         self.create_new_project_button()
         self.return_button.setText(self._('return_to_home_screen'))
-        self.subtitel.setText(self._('subtitle_page_1'))
+        self.subtitel.setText(self._(page))

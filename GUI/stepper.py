@@ -8,6 +8,7 @@ class StepperWidget(QWidget):
     def __init__(self, _):
         super().__init__()
         self._ = _
+        self.stacked_widget = None
         self.step1 = QPushButton()
         self.step2 = QPushButton()
         self.step3 = QPushButton()
@@ -31,12 +32,16 @@ class StepperWidget(QWidget):
         self.step4.setText(self._("step4"))
 
         horizontal_layout.addWidget(self.step1, alignment=Qt.AlignmentFlag.AlignCenter)
+        self.step1.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(1))
         horizontal_layout.addWidget(line_1)
         horizontal_layout.addWidget(self.step2, alignment=Qt.AlignmentFlag.AlignLeft)
+        self.step2.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(2))
         horizontal_layout.addWidget(line_2)
         horizontal_layout.addWidget(self.step3, alignment=Qt.AlignmentFlag.AlignLeft)
+        self.step3.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(3))
         horizontal_layout.addWidget(line_3)
         horizontal_layout.addWidget(self.step4, alignment=Qt.AlignmentFlag.AlignLeft)
+        self.step4.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(5))
         horizontal_layout.addSpacing(50)
         stepper_widget.setLayout(horizontal_layout)
         return stepper_widget

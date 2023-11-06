@@ -1,23 +1,24 @@
 from pathlib import Path
 
-from PyQt6.QtCore import Qt, QLine
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QStackedWidget, QFrame, QCheckBox, QSpinBox, \
+from PyQt6.QtCore import Qt
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QFrame, QCheckBox, QSpinBox, \
     QLabel
 
 from Domain.language_settings import return_language
+from GUI.Screens.Screen import Screen
 from GUI.header_bar import HeaderBar
 from GUI.stepper import StepperWidget
 
 ROOT_DIR = Path(__file__).parent
-LANG_DIR = ROOT_DIR.parent / 'locale/'
+LANG_DIR = ROOT_DIR.parent.parent / 'locale/'
 
 
-class TemplateScreen(QWidget):
+class TemplateScreen(Screen):
     def __init__(self, database):
         super().__init__()
         self.database = database
         self._ = self._ = return_language(LANG_DIR)
-        self.header = HeaderBar(self._, self.database, self)
+        self.header = HeaderBar(self._, self.database)
         self.container_template_screen = QVBoxLayout()
         self.stacked_widget = None
         self.stepper_widget = StepperWidget(self._)
@@ -32,8 +33,8 @@ class TemplateScreen(QWidget):
         self.init_ui()
 
     def init_ui(self):
-        button = self.header.header_bar_detail_screen()
-        button.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(1))
+        button = self.header.header_bar_detail_screen('subtitle_page_1')
+        button.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(0))
         self.container_template_screen.addWidget(self.header)
         self.container_template_screen.addSpacing(10)
         self.container_template_screen.addWidget(self.stepper_widget.stepper_widget())
@@ -115,5 +116,5 @@ class TemplateScreen(QWidget):
         self.example_label.setText(self._("amount_of_examples"))
         self.export_button.setText(self._("export"))
 
-        self.header.reset_ui(self._)
+        self.header.reset_ui(self._, 'subtitle_page_1')
         self.stepper_widget.reset_ui(self._)

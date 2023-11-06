@@ -11,7 +11,9 @@ import qtawesome as qta
 
 from Exceptions.EmptyFieldError import EmptyFieldError
 
+ROOT_DIR = Path(__file__).parent
 
+LANG_DIR = ROOT_DIR.parent / 'locale/'
 class DialogWindow:
 
     def __init__(self, database, language_settings):
@@ -122,7 +124,7 @@ class DialogWindow:
         dialog.exec()
 
     def change_language(self, lang: Enum, dialog: QDialog, stacked_widget) -> None:
-        self._ = return_language('../locale/', lang)
+        self._ = return_language(LANG_DIR, lang)
         stacked_widget.reset_ui(self._)
         dialog.close()
 

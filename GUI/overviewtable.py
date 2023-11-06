@@ -51,7 +51,7 @@ class OverviewTable(QTableWidget):
             for i in range(4):
                 self.add_cell_to_table(self, count, i, element[i + 1])
             self.add_update_and_delete_button(count, element[0], self)
-            self.doubleClicked.connect(lambda: self.stacked_widget.setCurrentIndex(0))
+            self.doubleClicked.connect(lambda: self.stacked_widget.setCurrentIndex(1))
 
     @staticmethod
     def add_cell_to_table(table: QTableWidget, row: int, column: int, item: Union[str, datetime.datetime]) -> None:
@@ -64,7 +64,6 @@ class OverviewTable(QTableWidget):
         table.setRowCount(1)
         table.clearContents()
         table.setItem(0, 0, QTableWidgetItem(self._('no_results')))
-
 
     def add_update_and_delete_button(self, count: int, id_: int, table: QTableWidget) -> None:
         edit = QPushButton()
