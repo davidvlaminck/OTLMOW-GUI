@@ -32,6 +32,8 @@ class TemplateScreen(Screen):
         self.export_button = QPushButton()
         self.path = None
         self.all_classes = QListWidget()
+        self.selected = 0
+        self.label_counter = QLabel()
 
         self.init_ui()
 
@@ -83,23 +85,23 @@ class TemplateScreen(Screen):
 
     def template_menu(self):
         full_window = QWidget()
+        full_window.setProperty('class', 'template-menu')
         horizontal_layout = QHBoxLayout()
         window = QFrame()
-        window.setProperty('class', 'template-menu')
         layout = QVBoxLayout()
         layout.addWidget(self.subset_title_and_button(), alignment=Qt.AlignmentFlag.AlignLeft)
         layout.addWidget(self.options_menu())
         layout.setContentsMargins(16, 0, 16, 0)
         window.setLayout(layout)
         horizontal_layout.addWidget(window)
-        horizontal_layout.addWidget(self.all_classes)
+        horizontal_layout.addWidget(self.create_list())
         full_window.setLayout(horizontal_layout)
         return full_window
 
     def subset_title_and_button(self):
         frame = QFrame()
         title = QLabel()
-        title.setText(self._("subset")+":")
+        title.setText(self._("subset") + ":")
         subset_name = QLabel()
         subset_name.setText("test")
         button = QPushButton()
@@ -115,8 +117,30 @@ class TemplateScreen(Screen):
 
     def fill_list(self):
         self.all_classes.clear()
-        for value in ModelBuilder(self.path).get_all_classes():
-            self.all_classes.addItem(value.name)
+        try:
+            for value in ModelBuilder(self.path).get_all_classes():
+                self.all_classes.addItem(value.name)
+        except Exception:
+            self.all_classes.addItem(self._("no_classes_found"))
+
+    def create_list(self):
+        frame = QFrame()
+        vertical_layout = QVBoxLayout()
+        self.all_classes.setSelectionMode(QListWidget.SelectionMode.MultiSelection)
+        self.all_classes.itemSelectionChanged.connect(lambda: self.update_label_under_list())
+        vertical_layout.addWidget(self.all_classes)
+        self.label_counter.setText(self._(f"{self.selected} classes selected"))
+        vertical_layout.addWidget(self.label_counter)
+        frame.setLayout(vertical_layout)
+        return frame
+
+    def update_label_under_list(self):
+        counter = 0
+        for i in range(self.all_classes.count()):
+            if self.all_classes.item(i).isSelected():
+                counter += 1
+        self.selected = counter
+        self.label_counter.setText(self._(f"{self.selected} classes selected"))
 
     def reset_ui(self, _):
         self._ = _
@@ -131,3 +155,4 @@ class TemplateScreen(Screen):
 
         self.header.reset_ui(self._, 'subtitle_page_1')
         self.stepper_widget.reset_ui(self._)
+

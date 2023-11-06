@@ -80,7 +80,6 @@ class OverviewTable(QTableWidget):
         table.setCellWidget(count, 5, button)
 
     def navigate_to_project(self, row):
-        print(self.projects[row][3])
         self.stacked_widget.widget(1).path = self.projects[row][3]
         self.stacked_widget.widget(1).fill_list()
         self.stacked_widget.setCurrentIndex(1)
