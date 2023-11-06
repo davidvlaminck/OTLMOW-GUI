@@ -51,7 +51,7 @@ class OverviewTable(QTableWidget):
             for i in range(4):
                 self.add_cell_to_table(self, count, i, element[i + 1])
             self.add_update_and_delete_button(count, element[0], self)
-            self.doubleClicked.connect(lambda: self.stacked_widget.setCurrentIndex(1))
+            self.doubleClicked.connect(lambda: self.navigate_to_project(self.currentRow()))
 
     @staticmethod
     def add_cell_to_table(table: QTableWidget, row: int, column: int, item: Union[str, datetime.datetime]) -> None:
@@ -78,6 +78,12 @@ class OverviewTable(QTableWidget):
         button.clicked.connect(lambda _, i=id_:
                                self.message_box.draw_remove_project_screen(i, self))
         table.setCellWidget(count, 5, button)
+
+    def navigate_to_project(self, row):
+        print(self.projects[row][3])
+        self.stacked_widget.widget(1).path = self.projects[row][3]
+        self.stacked_widget.widget(1).fill_list()
+        self.stacked_widget.setCurrentIndex(1)
 
     @staticmethod
     def filter_projects(_, home_domain, input_text: str = None):

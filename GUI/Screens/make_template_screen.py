@@ -2,9 +2,10 @@ from pathlib import Path
 
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QFrame, QCheckBox, QSpinBox, \
-    QLabel
+    QLabel, QListWidget
 
 from Domain.language_settings import return_language
+from Domain.model_builder import ModelBuilder
 from GUI.Screens.Screen import Screen
 from GUI.header_bar import HeaderBar
 from GUI.stepper import StepperWidget
@@ -29,6 +30,8 @@ class TemplateScreen(Screen):
         self.show_deprecated_attributes = QCheckBox()
         self.example_label = QLabel()
         self.export_button = QPushButton()
+        self.path = None
+        self.all_classes = QListWidget()
 
         self.init_ui()
 
@@ -79,14 +82,19 @@ class TemplateScreen(Screen):
         return options_menu
 
     def template_menu(self):
-        window = QWidget()
+        full_window = QWidget()
+        horizontal_layout = QHBoxLayout()
+        window = QFrame()
         window.setProperty('class', 'template-menu')
         layout = QVBoxLayout()
         layout.addWidget(self.subset_title_and_button(), alignment=Qt.AlignmentFlag.AlignLeft)
         layout.addWidget(self.options_menu())
         layout.setContentsMargins(16, 0, 16, 0)
         window.setLayout(layout)
-        return window
+        horizontal_layout.addWidget(window)
+        horizontal_layout.addWidget(self.all_classes)
+        full_window.setLayout(horizontal_layout)
+        return full_window
 
     def subset_title_and_button(self):
         frame = QFrame()
@@ -104,6 +112,11 @@ class TemplateScreen(Screen):
         horizontal_layout.addWidget(button)
         frame.setLayout(horizontal_layout)
         return frame
+
+    def fill_list(self):
+        self.all_classes.clear()
+        for value in ModelBuilder(self.path).get_all_classes():
+            self.all_classes.addItem(value.name)
 
     def reset_ui(self, _):
         self._ = _
