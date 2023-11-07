@@ -1,3 +1,4 @@
+import logging
 from enum import Enum
 from pathlib import Path
 
@@ -14,6 +15,8 @@ from Exceptions.EmptyFieldError import EmptyFieldError
 ROOT_DIR = Path(__file__).parent
 
 LANG_DIR = ROOT_DIR.parent / 'locale/'
+
+
 class DialogWindow:
 
     def __init__(self, database, language_settings):

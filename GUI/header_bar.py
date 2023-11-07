@@ -1,3 +1,5 @@
+import logging
+
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QFrame, QHBoxLayout, QLabel, QPushButton, QVBoxLayout, QWidget
 
@@ -51,6 +53,7 @@ class HeaderBar(QFrame):
         return user_pref_container
 
     def start_dialog_window(self, id_: int = None, is_project=False) -> None:
+        logging.debug("function called")
         dialog_window = DialogWindow(self.database, self._)
         if is_project:
             dialog_window.draw_upsert_project(id_=id_, overview_table=self.table)
@@ -88,6 +91,6 @@ class HeaderBar(QFrame):
 
     def reset_ui(self, _, page=None):
         self._ = _
-        self.create_new_project_button()
+        self.new_project_button.setText(self._('new_project_button'))
         self.return_button.setText(self._('return_to_home_screen'))
         self.subtitel.setText(self._(page))
