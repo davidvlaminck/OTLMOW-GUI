@@ -7,7 +7,7 @@ from Domain.Project import Project
 
 class ProjectFileManager:
     @classmethod
-    def get_project(cls, project_dir_path: Path) -> Project:
+    def get_project_from_dir(cls, project_dir_path: Path) -> Project:
         if not project_dir_path.exists():
             raise FileNotFoundError(f"Project dir {project_dir_path} does not exist")
 
