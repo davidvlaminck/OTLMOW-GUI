@@ -35,6 +35,7 @@ class TemplateScreen(Screen):
         self.all_classes = QListWidget()
         self.selected = 0
         self.label_counter = QLabel()
+        self.subset_name = QLabel()
 
         self.init_ui()
 
@@ -104,14 +105,14 @@ class TemplateScreen(Screen):
         frame = QFrame()
         title = QLabel()
         title.setText(self._("subset") + ":")
-        subset_name = QLabel()
-        subset_name.setText("test")
+        self.subset_name = QLabel()
+        self.subset_name.setText("")
         button = QPushButton()
         button.setText(self._("change_subset"))
         button.setProperty('class', 'secondary-button')
         horizontal_layout = QHBoxLayout()
         horizontal_layout.addWidget(title)
-        horizontal_layout.addWidget(subset_name)
+        horizontal_layout.addWidget(self.subset_name)
         horizontal_layout.addSpacing(30)
         horizontal_layout.addWidget(button)
         frame.setLayout(horizontal_layout)
@@ -138,6 +139,12 @@ class TemplateScreen(Screen):
         vertical_layout.addWidget(self.label_counter)
         frame.setLayout(vertical_layout)
         return frame
+
+    def update_name_project(self):
+        try:
+            self.subset_name.setText(ModelBuilder(self.path).get_name_project())
+        except FileNotFoundError as e:
+            self.subset_name.setText("/")
 
     def update_label_under_list(self):
         counter = 0

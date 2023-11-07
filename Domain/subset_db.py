@@ -29,6 +29,21 @@ class SubsetDatabase:
         self.close_connection()
         return relations2
 
+    def get_general_info_project(self):
+        cursor = self.connection.cursor()
+        cursor.execute("SELECT * FROM GeneralInfo")
+        info = cursor.fetchall()
+        cursor.close()
+        self.close_connection()
+        return info
+
     def close_connection(self):
         logging.debug("Closing connection to subset database")
         self.connection.close()
+
+
+if __name__ == '__main__':
+    db = SubsetDatabase(Path('C:/#schoolwerk/Jaar III/Stage/testDb/Test1.db'))
+    print(db.get_general_info_project())
+    print(db.filter_out_relations())
+    db.close_connection()

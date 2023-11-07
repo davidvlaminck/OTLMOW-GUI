@@ -28,12 +28,18 @@ class ModelBuilder:
         step2 = self.filter_abstracts(step1)
         return step2
 
+    def get_name_project(self):
+        info = dict(self.subset_db.get_general_info_project())
+        return info.get('Naam')
+
     def close_subset_db(self):
         self.subset_db.close_connection()
 
 
 if __name__ == '__main__':
     builder = ModelBuilder(path='C:/#schoolwerk/Jaar III/Stage/testDb/FlitspaalTest.db')
-    test = builder.filter_functionality()
-    for i in test:
-        print(i.name)
+    name = builder.get_name_project()
+    print(name)
+    # test = builder.filter_functionality()
+    # for i in test:
+    #    print(i.name)

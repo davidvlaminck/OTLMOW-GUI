@@ -1,5 +1,3 @@
-import logging
-
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QFrame, QHBoxLayout, QLabel, QPushButton, QVBoxLayout, QWidget
 
@@ -53,7 +51,6 @@ class HeaderBar(QFrame):
         return user_pref_container
 
     def start_dialog_window(self, id_: int = None, is_project=False) -> None:
-        logging.debug("function called")
         dialog_window = DialogWindow(self.database, self._)
         if is_project:
             dialog_window.draw_upsert_project(id_=id_, overview_table=self.table)
