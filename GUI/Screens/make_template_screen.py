@@ -54,6 +54,7 @@ class TemplateScreen(Screen):
         options_menu.setProperty('class', 'options-menu')
         options_menu_layout = QVBoxLayout()
         self.select_all_classes.setText(self._("select_all_classes"))
+        self.select_all_classes.stateChanged.connect(lambda: self.select_all_classes_clicked())
         self.no_choice_list.setText(self._("no_choice_list"))
         self.geometry_column_added.setText(self._("geometry_column_added"))
         self.export_attribute_info.setText(self._("export_attribute_info"))
@@ -141,6 +142,12 @@ class TemplateScreen(Screen):
                 counter += 1
         self.selected = counter
         self.label_counter.setText(self._(f"{self.selected} classes selected"))
+
+    def select_all_classes_clicked(self):
+        if self.select_all_classes.isChecked():
+            self.all_classes.selectAll()
+        else:
+            self.all_classes.clearSelection()
 
     def reset_ui(self, _):
         self._ = _
