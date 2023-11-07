@@ -1,3 +1,4 @@
+import logging
 from pathlib import Path
 
 from PyQt6.QtCore import Qt
@@ -120,11 +121,12 @@ class TemplateScreen(Screen):
         self.all_classes.clear()
         try:
             self.all_classes.setEnabled(True)
-            for value in ModelBuilder(self.path).filter_abstracts():
+            values = ModelBuilder(self.path).filter_functionality()
+            for value in values:
                 self.all_classes.addItem(value.name)
-        except Exception:
+        except FileNotFoundError as e:
             self.all_classes.setEnabled(False)
-            self.all_classes.addItem(self._("no_classes_found"))
+            self.all_classes.addItem(self._("no classes found in specified path"))
 
     def create_list(self):
         frame = QFrame()

@@ -1,0 +1,34 @@
+import logging
+import os
+import sqlite3
+from pathlib import Path
+
+
+class SubsetDatabase:
+
+    def __init__(self, db_path):
+        self.db_path = db_path
+        self.connection = None
+
+        self.create_connection(self.db_path)
+
+    def create_connection(self, db_path):
+        if os.path.exists(db_path):
+            self.connection = sqlite3.connect(db_path)
+        else:
+            raise FileNotFoundError(f'{db_path} is not a valid path. File does not exist.')
+
+    def filter_out_relations(self):
+        relations2 = []
+        cursor = self.connection.cursor()
+        cursor.execute("SELECT uri FROM OSLORelaties")
+        relations = cursor.fetchall()
+        for i in relations:
+            relations2.append(i[0])
+        cursor.close()
+        self.close_connection()
+        return relations2
+
+    def close_connection(self):
+        logging.debug("Closing connection to subset database")
+        self.connection.close()
