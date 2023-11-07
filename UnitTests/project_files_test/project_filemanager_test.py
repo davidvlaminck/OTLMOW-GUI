@@ -1,9 +1,7 @@
 import datetime
 import os
-import re
 import shutil
 from pathlib import Path
-from sys import platform
 
 import pytest
 
@@ -11,6 +9,16 @@ from Domain.Project import Project
 from Domain.ProjectFileManager import ProjectFileManager
 
 ROOT_DIR = Path(__file__).parent
+
+
+@pytest.fixture
+def mock_get_otl_wizard_projects_dir(mocked_dir='mock_otlwizard_project_dir'):
+    # This fixture will mock the get_otl_wizard_projects_dir function to return a directory in the UnitTests directory
+    # and defaults to 'mock_otlwizard_project_dir'
+    orig_get_otl_wizard_projects_dir = ProjectFileManager.get_otl_wizard_projects_dir
+    ProjectFileManager.get_otl_wizard_projects_dir = lambda: Path(ROOT_DIR / mocked_dir)
+    yield
+    ProjectFileManager.get_otl_wizard_projects_dir = orig_get_otl_wizard_projects_dir
 
 
 def test_get_project_from_dir_given_project_dir_location():
@@ -43,7 +51,7 @@ def test_get_project_from_dir_details_missing():
     shutil.rmtree(project_dir_path)
 
 
-def test_save_project_given_details():
+def test_save_project_given_details(mock_get_otl_wizard_projects_dir):
     project = Project()
 
     project.project_path = Path(ROOT_DIR / 'mock_otlwizard_project_dir' / 'project_2')
@@ -53,9 +61,6 @@ def test_save_project_given_details():
     project.bestek = "bestek"
     project.laatst_bewerkt = datetime.datetime(2023, 11, 1)
 
-    orig_get_otl_wizard_projects_dir = ProjectFileManager.get_otl_wizard_projects_dir
-
-    ProjectFileManager.get_otl_wizard_projects_dir = lambda: Path(ROOT_DIR / 'mock_otlwizard_project_dir')
     ProjectFileManager.save_project_to_dir(project)
 
     project_dir_path = ROOT_DIR / 'mock_otlwizard_project_dir' / 'project_2'
@@ -71,30 +76,18 @@ def test_save_project_given_details():
 
     shutil.rmtree(project_dir_path)
 
-    ProjectFileManager.get_otl_wizard_projects_dir = orig_get_otl_wizard_projects_dir
 
-
-def test_get_all_otl_wizard_projects(caplog):
-    orig_get_otl_wizard_projects_dir = ProjectFileManager.get_otl_wizard_projects_dir
-
-    ProjectFileManager.get_otl_wizard_projects_dir = lambda: Path(ROOT_DIR / 'mock_otlwizard_project_dir')
-
+def test_get_all_otl_wizard_projects(caplog, mock_get_otl_wizard_projects_dir):
     projects = ProjectFileManager.get_all_otl_wizard_projects()
     assert len(projects) == 1
     assert projects[0].project_path == Path(ROOT_DIR / 'mock_otlwizard_project_dir' / 'project_1')
     assert len(caplog.records) == 1
 
-    ProjectFileManager.get_otl_wizard_projects_dir = orig_get_otl_wizard_projects_dir
 
-
-def test_get_all_otl_wizard_projects_wrong_directory():
-    orig_get_otl_wizard_projects_dir = ProjectFileManager.get_otl_wizard_projects_dir
-
-    ProjectFileManager.get_otl_wizard_projects_dir = lambda: Path(ROOT_DIR / 'wrong_dir')
+@pytest.mark.parametrize("mock_get_otl_wizard_projects_dir", ['bad_dir'])
+def test_get_all_otl_wizard_projects_wrong_directory(mock_get_otl_wizard_projects_dir):
     projects = ProjectFileManager.get_all_otl_wizard_projects()
     assert projects == []
-
-    ProjectFileManager.get_otl_wizard_projects_dir = orig_get_otl_wizard_projects_dir
 
 
 def test_get_otl_wizard_projects_dir():
