@@ -1,0 +1,82 @@
+[
+    {
+        "assetId": {
+            "identificator": "camera_0"
+        },
+        "isPtz": true,
+        "toestand": "in-gebruik",
+        "typeURI": "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Camera"
+    },
+    {
+        "assetId": {
+            "identificator": "camera_1"
+        },
+        "isPtz": true,
+        "toestand": "in-gebruik",
+        "typeURI": "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Camera"
+    },
+    {
+        "assetId": {
+            "identificator": "camera_2"
+        },
+        "isPtz": true,
+        "toestand": "in-gebruik",
+        "typeURI": "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Camera"
+    },
+    {
+        "assetId": {
+            "identificator": "camera_3"
+        },
+        "isPtz": true,
+        "toestand": "in-gebruik",
+        "typeURI": "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Camera"
+    },
+    {
+        "assetId": {
+            "identificator": "camera_4"
+        },
+        "isPtz": true,
+        "toestand": "in-gebruik",
+        "typeURI": "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Camera"
+    },
+    {
+        "assetId": {
+            "identificator": "camera_5"
+        },
+        "isPtz": true,
+        "toestand": "in-gebruik",
+        "typeURI": "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Camera"
+    },
+    {
+        "assetId": {
+            "identificator": "camera_6"
+        },
+        "isPtz": true,
+        "toestand": "in-gebruik",
+        "typeURI": "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Camera"
+    },
+    {
+        "assetId": {
+            "identificator": "camera_7"
+        },
+        "isPtz": true,
+        "toestand": "in-gebruik",
+        "typeURI": "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Camera"
+    },
+    {
+        "assetId": {
+            "identificator": "camera_8"
+        },
+        "isPtz": true,
+        "toestand": "in-gebruik",
+        "typeURI": "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Camera"
+    },
+    {
+        "assetId": {
+            "identificator": "camera_9"
+        },
+        "isPtz": true,
+        "toestand": "in-gebruik",
+        "typeURI": "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Camera"
+    }
+]
