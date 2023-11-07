@@ -1,5 +1,6 @@
 import datetime
 import json
+import logging
 import shutil
 from pathlib import Path
 
@@ -31,7 +32,23 @@ class ProjectFileManager:
 
     @classmethod
     def get_otl_wizard_projects_dir(cls) -> Path:
-        pass
+        return Path(Path.home() / 'OTLWizardProjects')
+
+    @classmethod
+    def get_all_otl_wizard_projects(cls) -> [Project]:
+        otl_wizard_project_dir = cls.get_otl_wizard_projects_dir()
+        if not otl_wizard_project_dir.exists():
+            return []
+
+        project_dirs = [project_dir for project_dir in otl_wizard_project_dir.iterdir() if project_dir.is_dir()]
+        projects = []
+        for project_dir in project_dirs:
+            try:
+                project = cls.get_project_from_dir(project_dir)
+                projects.append(project)
+            except FileNotFoundError:
+                logging.warning('Project dir %s is not a valid project directory', project_dir)
+        return projects
 
     @classmethod
     def save_project_to_dir(cls, project: Project):
@@ -49,8 +66,12 @@ class ProjectFileManager:
         with open(project_dir_path / "project_details.json", "w") as project_details_file:
             json.dump(project_details_dict, project_details_file)
 
-        if not project.subset_path.exists():
+        with open(project_dir_path / "assets.json", "w") as assets_file:
+            json.dump(project.assets_in_memory, assets_file)
+
+        if project.subset_path.parent.absolute() != project_dir_path.absolute():
             # move subset to project dir
             new_subset_path = project_dir_path / project.subset_path.name
             shutil.copy(project.subset_path, new_subset_path)
+
 

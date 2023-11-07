@@ -11,3 +11,4 @@ class Project:
         self.eigen_referentie: str = eigen_referentie
         self.bestek: str = bestek
         self.laatst_bewerkt: datetime.datetime = laatst_bewerkt
+        self.assets_in_memory = []
