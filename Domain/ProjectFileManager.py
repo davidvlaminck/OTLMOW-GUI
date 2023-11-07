@@ -1,5 +1,6 @@
 import datetime
 import json
+import shutil
 from pathlib import Path
 
 from Domain.Project import Project
@@ -27,3 +28,29 @@ class ProjectFileManager:
         project.assets_path = project_dir_path / 'assets.json'
 
         return project
+
+    @classmethod
+    def get_otl_wizard_projects_dir(cls) -> Path:
+        pass
+
+    @classmethod
+    def save_project_to_dir(cls, project: Project):
+        otl_wizard_project_dir = cls.get_otl_wizard_projects_dir()
+        project_dir_path = otl_wizard_project_dir / project.project_path.name
+        project_dir_path.mkdir(exist_ok=True, parents=True)
+
+        project_details_dict = {
+            'bestek': project.bestek,
+            'eigen_referentie': project.eigen_referentie,
+            'laatst_bewerkt': project.laatst_bewerkt.strftime("%Y-%m-%d %H:%M:%S"),
+            'subset': project.subset_path.name
+        }
+
+        with open(project_dir_path / "project_details.json", "w") as project_details_file:
+            json.dump(project_details_dict, project_details_file)
+
+        if not project.subset_path.exists():
+            # move subset to project dir
+            new_subset_path = project_dir_path / project.subset_path.name
+            shutil.copy(project.subset_path, new_subset_path)
+
