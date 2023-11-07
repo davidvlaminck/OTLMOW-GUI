@@ -103,4 +103,6 @@ class OverviewTable(QTableWidget):
 
     def reset_ui(self, lang_settings):
         self._ = lang_settings
-        self.draw_table()
+        self.setHorizontalHeaderLabels(
+            [self._('own_reference'), self._('service_order'), self._('subset'), self._('last_edited'), '', ''])
+
