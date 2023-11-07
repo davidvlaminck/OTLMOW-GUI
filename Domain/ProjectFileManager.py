@@ -2,7 +2,10 @@ import datetime
 import json
 import logging
 import shutil
+import zipfile
 from pathlib import Path
+
+from otlmow_converter.OtlmowConverter import OtlmowConverter
 
 from Domain.Project import Project
 
@@ -66,12 +69,29 @@ class ProjectFileManager:
         with open(project_dir_path / "project_details.json", "w") as project_details_file:
             json.dump(project_details_dict, project_details_file)
 
-        with open(project_dir_path / "assets.json", "w") as assets_file:
-            json.dump(project.assets_in_memory, assets_file)
+        OtlmowConverter().create_file_from_assets(filepath=Path(project_dir_path / "assets.json"),
+                                                  list_of_objects=project.assets_in_memory)
 
         if project.subset_path.parent.absolute() != project_dir_path.absolute():
             # move subset to project dir
             new_subset_path = project_dir_path / project.subset_path.name
             shutil.copy(project.subset_path, new_subset_path)
 
+    @classmethod
+    def export_project_to_file(cls, project: Project, file_path: Path):
+        with zipfile.ZipFile(file_path, 'w') as project_zip:
+            project_zip.write(project.project_path / 'project_details.json', arcname='project_details.json',
+                              compresslevel=zipfile.ZIP_DEFLATED)
+            project_zip.write(project.assets_path, arcname=project.assets_path.name)
+            project_zip.write(project.subset_path, arcname=project.subset_path.name)
 
+    @classmethod
+    def load_project_file(cls, file_path) -> Project:
+        project_dir_path = Path(file_path.parent / file_path.stem)
+        project_dir_path.mkdir(exist_ok=False, parents=True)  # TODO: raise error if dir already exists?
+
+        with zipfile.ZipFile(file_path) as project_file:
+            project_file.extractall(path=project_dir_path)
+
+        project = cls.get_project_from_dir(project_dir_path)
+        return project
