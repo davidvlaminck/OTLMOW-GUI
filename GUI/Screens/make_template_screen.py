@@ -119,9 +119,11 @@ class TemplateScreen(Screen):
     def fill_list(self):
         self.all_classes.clear()
         try:
+            self.all_classes.setEnabled(True)
             for value in ModelBuilder(self.path).filter_abstracts():
                 self.all_classes.addItem(value.name)
         except Exception:
+            self.all_classes.setEnabled(False)
             self.all_classes.addItem(self._("no_classes_found"))
 
     def create_list(self):
@@ -144,7 +146,9 @@ class TemplateScreen(Screen):
         self.label_counter.setText(self._(f"{self.selected} classes selected"))
 
     def select_all_classes_clicked(self):
-        if self.select_all_classes.isChecked():
+        if not self.all_classes.isEnabled():
+            return
+        elif self.select_all_classes.isChecked():
             self.all_classes.selectAll()
         else:
             self.all_classes.clearSelection()
