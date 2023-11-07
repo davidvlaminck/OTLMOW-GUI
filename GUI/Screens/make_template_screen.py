@@ -118,7 +118,7 @@ class TemplateScreen(Screen):
     def fill_list(self):
         self.all_classes.clear()
         try:
-            for value in ModelBuilder(self.path).get_all_classes():
+            for value in ModelBuilder(self.path).filter_abstracts():
                 self.all_classes.addItem(value.name)
         except Exception:
             self.all_classes.addItem(self._("no_classes_found"))

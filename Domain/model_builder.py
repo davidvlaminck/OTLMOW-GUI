@@ -12,9 +12,12 @@ class ModelBuilder:
     def get_all_classes(self):
         return self.collector.classes
 
+    def filter_abstracts(self):
+        return [x for x in self.get_all_classes() if x.abstract == 0]
+
 
 if __name__ == '__main__':
     builder = ModelBuilder(path='C:/#schoolwerk/Jaar III/Stage/testDb/FlitspaalTest.db')
-    test = builder.get_all_classes()
+    test = builder.filter_abstracts()
     for i in test:
-        print(i.name)
+        print(i)
