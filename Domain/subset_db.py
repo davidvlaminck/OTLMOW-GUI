@@ -18,17 +18,6 @@ class SubsetDatabase:
         else:
             raise FileNotFoundError(f'{db_path} is not a valid path. File does not exist.')
 
-    def filter_out_relations(self):
-        relations2 = []
-        cursor = self.connection.cursor()
-        cursor.execute("SELECT uri FROM OSLORelaties")
-        relations = cursor.fetchall()
-        for i in relations:
-            relations2.append(i[0])
-        cursor.close()
-        self.close_connection()
-        return relations2
-
     def get_general_info_project(self):
         cursor = self.connection.cursor()
         cursor.execute("SELECT * FROM GeneralInfo")
@@ -40,10 +29,3 @@ class SubsetDatabase:
     def close_connection(self):
         logging.debug("Closing connection to subset database")
         self.connection.close()
-
-
-if __name__ == '__main__':
-    db = SubsetDatabase(Path('C:/#schoolwerk/Jaar III/Stage/testDb/Test1.db'))
-    print(db.get_general_info_project())
-    print(db.filter_out_relations())
-    db.close_connection()

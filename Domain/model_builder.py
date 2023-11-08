@@ -20,8 +20,9 @@ class ModelBuilder:
         return [x for x in list_of_classes if x.abstract == 0]
 
     def filter_relations(self):
-        relations = self.subset_db.filter_out_relations()
-        return [x for x in self.get_all_classes() if x.objectUri not in relations]
+        relations = self.collector.relations
+        uri = [y.objectUri for y in relations]
+        return [x for x in self.get_all_classes() if x.objectUri not in uri]
 
     def filter_functionality(self):
         step1 = self.filter_relations()
@@ -34,12 +35,3 @@ class ModelBuilder:
 
     def close_subset_db(self):
         self.subset_db.close_connection()
-
-
-if __name__ == '__main__':
-    builder = ModelBuilder(path='C:/#schoolwerk/Jaar III/Stage/testDb/FlitspaalTest.db')
-    name = builder.get_name_project()
-    print(name)
-    # test = builder.filter_functionality()
-    # for i in test:
-    #    print(i.name)

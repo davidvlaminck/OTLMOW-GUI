@@ -19,7 +19,7 @@ class TemplateScreen(Screen):
     def __init__(self, database):
         super().__init__()
         self.database = database
-        self._ = self._ = return_language(LANG_DIR)
+        self._ = return_language(LANG_DIR)
         self.header = HeaderBar(self._, self.database)
         self.container_template_screen = QVBoxLayout()
         self.stacked_widget = None
