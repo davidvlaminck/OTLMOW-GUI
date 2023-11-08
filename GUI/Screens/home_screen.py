@@ -94,5 +94,5 @@ class HomeScreen(Screen):
             self._ = lang_settings
             self.home_domain = HomeDomain.HomeDomain(self.database, self._)
         self.table.reset_ui(self._)
-        self.create_input_field()
+        self.input_field.setPlaceholderText(self._('search_text'))
         self.header.reset_ui(self._)

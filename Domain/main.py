@@ -14,7 +14,7 @@ from GUI.Screens.conversion_screen import ConversionScreen
 from GUI.Screens.export_data_screen import ExportDataScreen
 from GUI.Screens.home_screen import HomeScreen
 from GUI.Screens.insert_data_screen import InsertDataScreen
-from GUI.Screens.make_template_screen import TemplateScreen
+from GUI.Screens.template_screen import TemplateScreen
 from GUI.Screens.relation_change_screen import RelationChangeScreen
 
 

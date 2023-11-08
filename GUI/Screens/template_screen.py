@@ -1,3 +1,4 @@
+import logging
 from pathlib import Path
 
 from PyQt6.QtCore import Qt
@@ -18,7 +19,7 @@ class TemplateScreen(Screen):
     def __init__(self, database):
         super().__init__()
         self.database = database
-        self._ = self._ = return_language(LANG_DIR)
+        self._ = return_language(LANG_DIR)
         self.header = HeaderBar(self._, self.database)
         self.container_template_screen = QVBoxLayout()
         self.stacked_widget = None
@@ -34,6 +35,7 @@ class TemplateScreen(Screen):
         self.all_classes = QListWidget()
         self.selected = 0
         self.label_counter = QLabel()
+        self.subset_name = QLabel()
 
         self.init_ui()
 
@@ -54,6 +56,7 @@ class TemplateScreen(Screen):
         options_menu.setProperty('class', 'options-menu')
         options_menu_layout = QVBoxLayout()
         self.select_all_classes.setText(self._("select_all_classes"))
+        self.select_all_classes.stateChanged.connect(lambda: self.select_all_classes_clicked())
         self.no_choice_list.setText(self._("no_choice_list"))
         self.geometry_column_added.setText(self._("geometry_column_added"))
         self.export_attribute_info.setText(self._("export_attribute_info"))
@@ -102,14 +105,14 @@ class TemplateScreen(Screen):
         frame = QFrame()
         title = QLabel()
         title.setText(self._("subset") + ":")
-        subset_name = QLabel()
-        subset_name.setText("test")
+        self.subset_name = QLabel()
+        self.subset_name.setText("")
         button = QPushButton()
         button.setText(self._("change_subset"))
         button.setProperty('class', 'secondary-button')
         horizontal_layout = QHBoxLayout()
         horizontal_layout.addWidget(title)
-        horizontal_layout.addWidget(subset_name)
+        horizontal_layout.addWidget(self.subset_name)
         horizontal_layout.addSpacing(30)
         horizontal_layout.addWidget(button)
         frame.setLayout(horizontal_layout)
@@ -118,10 +121,13 @@ class TemplateScreen(Screen):
     def fill_list(self):
         self.all_classes.clear()
         try:
-            for value in ModelBuilder(self.path).get_all_classes():
+            self.all_classes.setEnabled(True)
+            values = ModelBuilder(self.path).filter_relations_and_abstract()
+            for value in values:
                 self.all_classes.addItem(value.name)
-        except Exception:
-            self.all_classes.addItem(self._("no_classes_found"))
+        except FileNotFoundError as e:
+            self.all_classes.setEnabled(False)
+            self.all_classes.addItem(self._("no classes found in specified path"))
 
     def create_list(self):
         frame = QFrame()
@@ -134,6 +140,12 @@ class TemplateScreen(Screen):
         frame.setLayout(vertical_layout)
         return frame
 
+    def update_name_project(self):
+        try:
+            self.subset_name.setText(ModelBuilder(self.path).get_name_project())
+        except FileNotFoundError as e:
+            self.subset_name.setText("/")
+
     def update_label_under_list(self):
         counter = 0
         for i in range(self.all_classes.count()):
@@ -141,6 +153,14 @@ class TemplateScreen(Screen):
                 counter += 1
         self.selected = counter
         self.label_counter.setText(self._(f"{self.selected} classes selected"))
+
+    def select_all_classes_clicked(self):
+        if not self.all_classes.isEnabled():
+            return
+        elif self.select_all_classes.isChecked():
+            self.all_classes.selectAll()
+        else:
+            self.all_classes.clearSelection()
 
     def reset_ui(self, _):
         self._ = _

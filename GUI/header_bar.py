@@ -88,6 +88,6 @@ class HeaderBar(QFrame):
 
     def reset_ui(self, _, page=None):
         self._ = _
-        self.create_new_project_button()
+        self.new_project_button.setText(self._('new_project_button'))
         self.return_button.setText(self._('return_to_home_screen'))
         self.subtitel.setText(self._(page))

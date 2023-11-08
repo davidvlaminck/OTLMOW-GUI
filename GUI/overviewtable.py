@@ -82,6 +82,7 @@ class OverviewTable(QTableWidget):
     def navigate_to_project(self, row):
         self.stacked_widget.widget(1).path = self.projects[row][3]
         self.stacked_widget.widget(1).fill_list()
+        self.stacked_widget.widget(1).update_name_project()
         self.stacked_widget.setCurrentIndex(1)
 
     @staticmethod
@@ -103,4 +104,6 @@ class OverviewTable(QTableWidget):
 
     def reset_ui(self, lang_settings):
         self._ = lang_settings
-        self.draw_table()
+        self.setHorizontalHeaderLabels(
+            [self._('own_reference'), self._('service_order'), self._('subset'), self._('last_edited'), '', ''])
+
