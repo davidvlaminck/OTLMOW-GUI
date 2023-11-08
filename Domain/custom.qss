@@ -95,7 +95,7 @@ QApplication{
     opacity: 0.5;
 }
 
-.template-menu{
+.background-box{
     background-color: #ffffff;
     margin-left: 16px;
     margin-right: 16px;

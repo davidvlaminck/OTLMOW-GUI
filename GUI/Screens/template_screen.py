@@ -53,7 +53,6 @@ class TemplateScreen(Screen):
 
     def options_menu(self):
         options_menu = QFrame()
-        options_menu.setProperty('class', 'options-menu')
         options_menu_layout = QVBoxLayout()
         self.select_all_classes.setText(self._("select_all_classes"))
         self.select_all_classes.stateChanged.connect(lambda: self.select_all_classes_clicked())
@@ -88,7 +87,7 @@ class TemplateScreen(Screen):
 
     def template_menu(self):
         full_window = QWidget()
-        full_window.setProperty('class', 'template-menu')
+        full_window.setProperty('class', 'background-box')
         horizontal_layout = QHBoxLayout()
         window = QFrame()
         layout = QVBoxLayout()

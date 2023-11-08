@@ -41,9 +41,8 @@ class HeaderBar(QFrame):
     def construct_settings_bar(self):
         user_pref_container = QHBoxLayout()
         settings = QPushButton()
-        setting_icon = qta.icon('mdi.cog',
-                                color="white")
-        settings.setIcon(setting_icon)
+        settings.setIcon(qta.icon('mdi.cog',
+                                  color="white"))
         settings.setProperty('class', 'settings')
         settings.clicked.connect(lambda: self.start_dialog_window())
         user_pref_container.addWidget(settings)
@@ -71,9 +70,8 @@ class HeaderBar(QFrame):
         title.setProperty('class', 'title')
         header.addWidget(title)
         self.return_button.setProperty('class', 'return-button')
-        return_icon = qta.icon('mdi.arrow-left',
-                               color='white')
-        self.return_button.setIcon(return_icon)
+        self.return_button.setIcon(qta.icon('mdi.arrow-left',
+                                            color='white'))
         self.return_button.setText(self._('return_to_home_screen'))
         header.addWidget(self.return_button)
         header.setAlignment(self.return_button, Qt.AlignmentFlag.AlignLeft)
@@ -88,11 +86,8 @@ class HeaderBar(QFrame):
         self.subtitel.setText(self._(page))
         self.subtitel.setProperty('class', 'subtitle')
 
-        save_icon = qta.icon('mdi.content-save',
-                             color='white',
-                             color_active='white',
-                             color_disabled='white')
-        self.save_button.setIcon(save_icon)
+        self.save_button.setIcon(qta.icon('mdi.content-save',
+                                          color='white'))
         self.save_button.setText(self._('save_button'))
         self.save_button.setProperty('class', 'primary-button')
 
