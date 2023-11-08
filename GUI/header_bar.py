@@ -16,6 +16,7 @@ class HeaderBar(QFrame):
         self.stacked_widget = stacked_widget
         self.return_button = QPushButton()
         self.subtitel = QLabel()
+        self.save_button = QPushButton()
 
     def construct_header_bar(self):
         self.setProperty('class', 'header')
@@ -40,12 +41,16 @@ class HeaderBar(QFrame):
     def construct_settings_bar(self):
         user_pref_container = QHBoxLayout()
         settings = QPushButton()
-        settings.setIcon(qta.icon('mdi.cog'))
+        setting_icon = qta.icon('mdi.cog',
+                                color="white")
+        settings.setIcon(setting_icon)
         settings.setProperty('class', 'settings')
         settings.clicked.connect(lambda: self.start_dialog_window())
         user_pref_container.addWidget(settings)
         help_widget = QPushButton()
-        help_widget.setIcon(qta.icon('mdi.help-circle'))
+        help_icon = qta.icon('mdi.help-circle',
+                             color='white')
+        help_widget.setIcon(help_icon)
         help_widget.setProperty('class', 'settings')
         user_pref_container.addWidget(help_widget)
         return user_pref_container
@@ -66,7 +71,9 @@ class HeaderBar(QFrame):
         title.setProperty('class', 'title')
         header.addWidget(title)
         self.return_button.setProperty('class', 'return-button')
-        self.return_button.setIcon(qta.icon('mdi.arrow-left'))
+        return_icon = qta.icon('mdi.arrow-left',
+                               color='white')
+        self.return_button.setIcon(return_icon)
         self.return_button.setText(self._('return_to_home_screen'))
         header.addWidget(self.return_button)
         header.setAlignment(self.return_button, Qt.AlignmentFlag.AlignLeft)
@@ -81,18 +88,17 @@ class HeaderBar(QFrame):
         self.subtitel.setText(self._(page))
         self.subtitel.setProperty('class', 'subtitle')
 
-        save_button = QPushButton()
         save_icon = qta.icon('mdi.content-save',
                              color='white',
                              color_active='white',
                              color_disabled='white')
-        save_button.setIcon(save_icon)
-        save_button.setText(self._('save_button'))
-        save_button.setProperty('class', 'primary-button')
+        self.save_button.setIcon(save_icon)
+        self.save_button.setText(self._('save_button'))
+        self.save_button.setProperty('class', 'primary-button')
 
         header_sub_layout.addWidget(self.subtitel)
-        header_sub_layout.addWidget(save_button)
-        header_sub_layout.setAlignment(save_button, Qt.AlignmentFlag.AlignRight)
+        header_sub_layout.addWidget(self.save_button)
+        header_sub_layout.setAlignment(self.save_button, Qt.AlignmentFlag.AlignRight)
 
         header_sub.setLayout(header_sub_layout)
 
@@ -109,4 +115,5 @@ class HeaderBar(QFrame):
         self._ = _
         self.new_project_button.setText(self._('new_project_button'))
         self.return_button.setText(self._('return_to_home_screen'))
+        self.save_button.setText(self._('save_button'))
         self.subtitel.setText(self._(page))
