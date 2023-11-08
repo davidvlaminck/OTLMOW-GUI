@@ -122,7 +122,7 @@ class TemplateScreen(Screen):
         self.all_classes.clear()
         try:
             self.all_classes.setEnabled(True)
-            values = ModelBuilder(self.path).filter_functionality()
+            values = ModelBuilder(self.path).filter_relations_and_abstract()
             for value in values:
                 self.all_classes.addItem(value.name)
         except FileNotFoundError as e:

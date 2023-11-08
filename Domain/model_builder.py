@@ -15,19 +15,11 @@ class ModelBuilder:
     def get_all_classes(self):
         return self.collector.classes
 
-    @staticmethod
-    def filter_abstracts(list_of_classes):
-        return [x for x in list_of_classes if x.abstract == 0]
-
-    def filter_relations(self):
+    def filter_relations_and_abstract(self):
         relations = self.collector.relations
-        uri = [y.objectUri for y in relations]
-        return [x for x in self.get_all_classes() if x.objectUri not in uri]
-
-    def filter_functionality(self):
-        step1 = self.filter_relations()
-        step2 = self.filter_abstracts(step1)
-        return step2
+        relations_uri = [y.objectUri for y in relations]
+        classes = self.get_all_classes()
+        return [x for x in classes if x.abstract == 0 and x.objectUri not in relations_uri]
 
     def get_name_project(self):
         info = dict(self.subset_db.get_general_info_project())
