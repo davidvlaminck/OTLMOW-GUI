@@ -97,6 +97,7 @@ class TemplateScreen(Screen):
         window.setLayout(layout)
         horizontal_layout.addWidget(window)
         horizontal_layout.addWidget(self.create_list())
+        horizontal_layout.addSpacing(20)
         full_window.setLayout(horizontal_layout)
         return full_window
 
