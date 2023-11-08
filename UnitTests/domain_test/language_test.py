@@ -9,9 +9,9 @@ ROOT_DIR = Path(__file__).parent
 LOCALE_DIR = ROOT_DIR.parent.parent / 'locale/'
 
 
-def test_english_on_default():
+def test_dutch_on_default():
     _ = return_language(LOCALE_DIR)
-    assert _('own_reference') == 'Own reference'
+    assert _('own_reference') == 'Eigen referentie'
 
 
 def test_change_to_dutch_works():
