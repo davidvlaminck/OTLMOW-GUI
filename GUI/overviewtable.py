@@ -24,15 +24,16 @@ class OverviewTable(QTableWidget):
 
     def draw_table(self, input_text: str = None):
         self.verticalHeader().setVisible(False)
-        self.setColumnCount(6)
+        self.setColumnCount(7)
         self.setHorizontalHeaderLabels(
-            [self._('own_reference'), self._('service_order'), self._('subset'), self._('last_edited'), '', ''])
+            [self._('own_reference'), self._('service_order'), self._('subset'), self._('last_edited'), '', '', ''])
         # ALign titles of header to the left
         self.horizontalHeader().setDefaultAlignment(Qt.AlignmentFlag.AlignLeft)
         for column in range(self.columnCount() - 2):
             self.horizontalHeader().setSectionResizeMode(column, QHeaderView.ResizeMode.Stretch)
         self.horizontalHeader().setSectionResizeMode(4, QHeaderView.ResizeMode.ResizeToContents)
         self.horizontalHeader().setSectionResizeMode(5, QHeaderView.ResizeMode.ResizeToContents)
+        self.horizontalHeader().setSectionResizeMode(6, QHeaderView.ResizeMode.ResizeToContents)
         self.setShowGrid(False)
         try:
             self.search_message.setText("")
@@ -72,12 +73,18 @@ class OverviewTable(QTableWidget):
         edit.clicked.connect(
             lambda _, row_id=id_: self.start_dialog_window(id_=row_id, is_project=True))
         table.setCellWidget(count, 4, edit)
-        button = QPushButton()
-        button.setIcon(qta.icon('mdi.trash-can'))
-        button.setProperty('class', 'alter-button')
-        button.clicked.connect(lambda _, i=id_:
-                               self.message_box.draw_remove_project_screen(i, self))
-        table.setCellWidget(count, 5, button)
+
+        delete_btn = QPushButton()
+        delete_btn.setIcon(qta.icon('mdi.trash-can'))
+        delete_btn.setProperty('class', 'alter-button')
+        delete_btn.clicked.connect(lambda _, i=id_:
+                                   self.message_box.draw_remove_project_screen(i, self))
+        table.setCellWidget(count, 5, delete_btn)
+
+        share_btn = QPushButton()
+        share_btn.setIcon(qta.icon("mdi.share"))
+        share_btn.setProperty('class', 'alter-button')
+        table.setCellWidget(count, 6, share_btn)
 
     def navigate_to_project(self, row):
         self.stacked_widget.widget(1).path = self.projects[row][3]
@@ -106,4 +113,3 @@ class OverviewTable(QTableWidget):
         self._ = lang_settings
         self.setHorizontalHeaderLabels(
             [self._('own_reference'), self._('service_order'), self._('subset'), self._('last_edited'), '', ''])
-

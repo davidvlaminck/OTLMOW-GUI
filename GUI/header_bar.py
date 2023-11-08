@@ -17,6 +17,7 @@ class HeaderBar(QFrame):
         self.return_button = QPushButton()
         self.subtitel = QLabel()
         self.save_button = QPushButton()
+        self.import_button = QPushButton()
 
     def construct_header_bar(self):
         self.setProperty('class', 'header')
@@ -24,8 +25,12 @@ class HeaderBar(QFrame):
         title = QLabel('OTLWizard')
         title.setProperty('class', 'title')
         header.addWidget(title)
+        header.addSpacing(30)
         self.create_new_project_button()
+        self.create_import_button()
         header.addWidget(self.new_project_button)
+        header.addWidget(self.import_button)
+        header.addStretch()
         header.setAlignment(self.new_project_button, Qt.AlignmentFlag.AlignLeft)
         user_settings = self.construct_settings_bar()
         header.addLayout(user_settings)
@@ -33,6 +38,8 @@ class HeaderBar(QFrame):
         self.setLayout(header)
 
     def create_new_project_button(self):
+        self.new_project_button.setIcon(qta.icon("mdi.plus",
+                                                 color='white'))
         self.new_project_button.setText(self._('new_project_button'))
         self.new_project_button.setProperty('class', 'primary-button')
         self.new_project_button.clicked.connect(
@@ -105,6 +112,12 @@ class HeaderBar(QFrame):
         full_header.setContentsMargins(0, 0, 0, 0)
         self.setLayout(full_header)
         return self.return_button
+
+    def create_import_button(self):
+        self.import_button.setIcon(qta.icon("mdi.download",
+                                            color="#0E5A69"))
+        self.import_button.setText(self._("import"))
+        self.import_button.setProperty('class', 'secondary-button')
 
     def reset_ui(self, _, page=None):
         self._ = _
