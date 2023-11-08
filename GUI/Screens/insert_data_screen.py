@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt, QSize
 from PyQt6.QtWidgets import QVBoxLayout, QWidget, QLabel, QPushButton, QFrame, QHBoxLayout, QLineEdit, QListWidget
 
 from Domain.language_settings import return_language
@@ -21,8 +21,12 @@ class InsertDataScreen(Screen):
         self._ = return_language(LANG_DIR)
         self.container_insert_data_screen = QVBoxLayout()
         self.header = HeaderBar(database=database, language=self._)
+        left_side_layout = QVBoxLayout()
         self.stacked_widget = None
         self.stepper_widget = StepperWidget(self._)
+        self.message_icon = QLabel()
+        self.message = QLabel()
+
         self.init_ui()
 
     def init_ui(self):
@@ -54,6 +58,7 @@ class InsertDataScreen(Screen):
         button_frame_layout = QHBoxLayout()
         control_button = QPushButton()
         control_button.setText(self._('control_button'))
+        control_button.clicked.connect(lambda: self.warning_feedback_message())
         control_button.setProperty('class', 'primary-button')
         reset_button = QPushButton()
         reset_button.setIcon(qta.icon('mdi.refresh', color='#0E5A69'))
@@ -85,9 +90,20 @@ class InsertDataScreen(Screen):
         left_side_layout.addSpacing(100)
         left_side_layout.addWidget(self.input_file_field(), alignment=Qt.AlignmentFlag.AlignBottom)
         left_side_layout.addWidget(self.button_set(), alignment=Qt.AlignmentFlag.AlignTop)
+        left_side_layout.addSpacing(30)
+        left_side_layout.addWidget(self.construct_feedback_message())
         left_side_layout.addStretch()
         left_side.setLayout(left_side_layout)
         return left_side
+
+    def construct_feedback_message(self):
+        frame = QFrame()
+        frame_layout = QHBoxLayout()
+        frame_layout.addWidget(self.message_icon)
+        frame_layout.addWidget(self.message)
+        frame_layout.addStretch()
+        frame.setLayout(frame_layout)
+        return frame
 
     @staticmethod
     def add_list():
@@ -98,6 +114,14 @@ class InsertDataScreen(Screen):
         frame_layout.setContentsMargins(0, 30, 50, 85)
         frame.setLayout(frame_layout)
         return frame
+
+    def positive_feedback_message(self):
+        self.message_icon.setPixmap(qta.icon('mdi.check').pixmap(QSize(16, 16)))
+        self.message.setText(self._('all_info_correct'))
+
+    def warning_feedback_message(self):
+        self.message_icon.setPixmap(qta.icon('mdi.alert').pixmap(QSize(32, 32)))
+        self.message.setText(self._('warning'))
 
     def reset_ui(self, _):
         self._ = _
