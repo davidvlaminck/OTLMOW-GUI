@@ -1,4 +1,4 @@
-.new-project{
+.primary-button{
     background-color: #0E5A69;
     color: #ffffff;
     height: 25px;
@@ -6,6 +6,10 @@
     border-radius: 5px;
     padding-left: 1Opx;
     font-family: Roboto;
+}
+
+.primary-button[icon]{
+    color: #ffffff;
 }
 
 QHeaderView::section{
@@ -25,8 +29,6 @@ QHeaderView::section{
     background-color: #B35F35;
     font-family: Roboto;
 }
-
-
 
 .search{
     background-color: #ffffff;
@@ -62,11 +64,6 @@ HomeScreen{
     background-color: #f1f1f1;
 }
 
-.primary-button{
-    color: #ffffff;
-    background-color: #0E5A69;
-}
-
 .secondary-button{
     background: transparent;
     color: #0E5A69;
@@ -78,12 +75,6 @@ HomeScreen{
 
 QApplication{
     background-color: #ffffff;
-}
-
-.subtitle{
-    background-color: #FCF2E9;
-    padding: 10px;
-    border-bottom: 1px solid #B35F35;
 }
 
 .subtitle[text]{
@@ -109,3 +100,10 @@ QApplication{
     margin-left: 16px;
     margin-right: 16px;
 }
+
+.sub-header{
+    background-color: #FCF2E9;
+    border-bottom: 1px solid #B35F35;
+}
+
+

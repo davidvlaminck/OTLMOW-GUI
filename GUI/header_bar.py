@@ -33,7 +33,7 @@ class HeaderBar(QFrame):
 
     def create_new_project_button(self):
         self.new_project_button.setText(self._('new_project_button'))
-        self.new_project_button.setProperty('class', 'new-project')
+        self.new_project_button.setProperty('class', 'primary-button')
         self.new_project_button.clicked.connect(
             lambda: self.start_dialog_window(is_project=True))
 
@@ -74,14 +74,33 @@ class HeaderBar(QFrame):
         header.addLayout(settings)
         header.setAlignment(settings, Qt.AlignmentFlag.AlignRight)
 
-        head_top.setLayout(header)
-        # head_top.setContentsMargins(0, 0, 0, 0)
+        header_sub = QFrame()
+        header_sub_layout = QHBoxLayout()
+        header_sub.setProperty('class', 'sub-header')
+
         self.subtitel.setText(self._(page))
         self.subtitel.setProperty('class', 'subtitle')
 
+        save_button = QPushButton()
+        save_icon = qta.icon('mdi.content-save',
+                             color='white',
+                             color_active='white',
+                             color_disabled='white')
+        save_button.setIcon(save_icon)
+        save_button.setText(self._('save_button'))
+        save_button.setProperty('class', 'primary-button')
+
+        header_sub_layout.addWidget(self.subtitel)
+        header_sub_layout.addWidget(save_button)
+        header_sub_layout.setAlignment(save_button, Qt.AlignmentFlag.AlignRight)
+
+        header_sub.setLayout(header_sub_layout)
+
+        head_top.setLayout(header)
+
         full_header.setSpacing(0)
         full_header.addWidget(head_top)
-        full_header.addWidget(self.subtitel)
+        full_header.addWidget(header_sub)
         full_header.setContentsMargins(0, 0, 0, 0)
         self.setLayout(full_header)
         return self.return_button
