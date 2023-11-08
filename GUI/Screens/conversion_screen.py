@@ -3,7 +3,7 @@ from pathlib import Path
 from PyQt6.QtWidgets import QVBoxLayout
 
 from Domain.language_settings import return_language
-from GUI.Screens.Screen import Screen
+from GUI.Screens.screen import Screen
 from GUI.header_bar import HeaderBar
 from GUI.stepper import StepperWidget
 

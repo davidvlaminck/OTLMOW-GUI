@@ -7,7 +7,7 @@ from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QFra
 
 from Domain.language_settings import return_language
 from Domain.model_builder import ModelBuilder
-from GUI.Screens.Screen import Screen
+from GUI.Screens.screen import Screen
 from GUI.header_bar import HeaderBar
 from GUI.stepper import StepperWidget
 

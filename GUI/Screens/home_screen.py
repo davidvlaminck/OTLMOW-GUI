@@ -8,7 +8,7 @@ from PyQt6.QtWidgets import QWidget, QPushButton, QLabel, QHBoxLayout, QVBoxLayo
     QLineEdit, QFrame
 from PyQt6.QtCore import Qt
 import Domain.home_domain as HomeDomain
-from GUI.Screens.Screen import Screen
+from GUI.Screens.screen import Screen
 from GUI.header_bar import HeaderBar
 from GUI.message_box import MessageBox
 from GUI.overviewtable import OverviewTable
