@@ -25,8 +25,8 @@ class TableWidget(Screen):
         self.stepper_widget = StepperWidget(self._)
         self.header = HeaderBar(database=database, language=self._)
         self.stacked_widget = None
-        self.tabs.addTab(self.tab1, 'Export Data')
-        self.tabs.addTab(self.tab2, 'Conversion')
+        self.tabs.addTab(self.tab1, self._('export_data'))
+        self.tabs.addTab(self.tab2, self._('conversion'))
         self.layout = QVBoxLayout(self)
         self.layout.addWidget(self.header)
         self.layout.addSpacing(10)

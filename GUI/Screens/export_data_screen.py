@@ -16,12 +16,15 @@ class ExportDataScreen(Screen):
         super().__init__()
         self._ = return_language(LANG_DIR)
         self.container_insert_data_screen = QVBoxLayout()
+        self.export_btn = QPushButton()
 
         self.stacked_widget = None
         self.init_ui()
 
     def init_ui(self):
+        self.container_insert_data_screen.addSpacing(10)
         self.container_insert_data_screen.addWidget(self.create_menu())
+        self.container_insert_data_screen.setContentsMargins(0, 0, 0, 0)
         self.container_insert_data_screen.addStretch()
         self.setLayout(self.container_insert_data_screen)
 
@@ -31,14 +34,26 @@ class ExportDataScreen(Screen):
         window.setProperty('class', 'background-box')
         title = QLabel()
         title.setText(self._('export_to_davie'))
-        convert_btn = QPushButton()
-        convert_btn.setText(self._('export'))
+        title.setProperty('class', 'sub-title')
 
         window_layout.addWidget(title)
+        window_layout.addSpacing(20)
         window_layout.addWidget(self.input_file_field('file_to_upload'))
-        window_layout.addWidget(convert_btn)
+        window_layout.addSpacing(10)
+        window_layout.addWidget(self.button_box())
+        window_layout.addSpacing(10)
         window.setLayout(window_layout)
         return window
+
+    def button_box(self):
+        button_box = QFrame()
+        button_box_layout = QHBoxLayout()
+        self.export_btn.setText(self._('export'))
+        self.export_btn.setProperty('class', 'primary-button')
+        button_box_layout.addWidget(self.export_btn)
+        button_box_layout.addStretch()
+        button_box.setLayout(button_box_layout)
+        return button_box
 
     def input_file_field(self, text):
         input_file = QFrame()
@@ -57,3 +72,4 @@ class ExportDataScreen(Screen):
 
     def reset_ui(self, _):
         self._ = _
+        self.export_btn.setText(self._('export'))

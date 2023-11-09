@@ -31,14 +31,30 @@ class ConversionScreen(Screen):
         window.setProperty('class', 'background-box')
         title = QLabel()
         title.setText(self._('file_conversion'))
+        title.setProperty('class', 'sub-title')
         convert_btn = QPushButton()
         convert_btn.setText(self._('convert'))
+        convert_btn.setProperty('class', 'primary-button')
 
         window_layout.addWidget(title)
+        window_layout.addSpacing(20)
         window_layout.addWidget(self.input_file_field('file_for_conversion'))
-        window_layout.addWidget(convert_btn)
+        window_layout.addSpacing(10)
+        window_layout.addWidget(self.button_box())
+        window_layout.addSpacing(10)
         window.setLayout(window_layout)
         return window
+
+    def button_box(self):
+        button_box = QFrame()
+        button_box_layout = QHBoxLayout()
+        convert_btn = QPushButton()
+        convert_btn.setText(self._('convert'))
+        convert_btn.setProperty('class', 'primary-button')
+        button_box_layout.addWidget(convert_btn)
+        button_box_layout.addStretch()
+        button_box.setLayout(button_box_layout)
+        return button_box
 
     def input_file_field(self, text):
         input_file = QFrame()
