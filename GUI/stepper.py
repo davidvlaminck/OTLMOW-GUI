@@ -37,12 +37,6 @@ class StepperWidget(QWidget):
         self.step4.setText(self._("step4"))
         self.step4.setProperty('class', 'stepper-button')
 
-        # makes the number icons bigger
-        self.step1.setIconSize(QSize(25, 25))
-        self.step2.setIconSize(QSize(25, 25))
-        self.step3.setIconSize(QSize(25, 25))
-        self.step4.setIconSize(QSize(25, 25))
-
         self.step1.setIcon(qta.icon('mdi.numeric-1-circle', color="grey"))
         self.step2.setIcon(qta.icon('mdi.numeric-2-circle', color="grey"))
         self.step3.setIcon(qta.icon('mdi.numeric-3-circle', color="grey"))

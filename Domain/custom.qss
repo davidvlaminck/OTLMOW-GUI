@@ -8,10 +8,6 @@
     font-family: Roboto;
 }
 
-.primary-button[icon]{
-    color: #ffffff;
-}
-
 QHeaderView::section{
     color: #B35F35;
     font-family: Roboto;
@@ -56,8 +52,9 @@ QTableWidget::item{
 }
 
 .settings{
-    background: transparent;
+    background-color: #B35F35;
     icon-size: 25px;
+    border: none;
 }
 
 HomeScreen{
@@ -143,5 +140,6 @@ QApplication{
 .stepper-button{
     background: transparent;
     border: none;
+    icon-size: 25px;
 }
 
