@@ -21,7 +21,7 @@ class InsertDataScreen(Screen):
         self._ = return_language(LANG_DIR)
         self.container_insert_data_screen = QVBoxLayout()
         self.header = HeaderBar(database=database, language=self._)
-        left_side_layout = QVBoxLayout()
+        self.feedback_message_box = QFrame()
         self.stacked_widget = None
         self.stepper_widget = StepperWidget(self._)
         self.message_icon = QLabel()
@@ -58,7 +58,7 @@ class InsertDataScreen(Screen):
         button_frame_layout = QHBoxLayout()
         control_button = QPushButton()
         control_button.setText(self._('control_button'))
-        control_button.clicked.connect(lambda: self.warning_feedback_message())
+        control_button.clicked.connect(lambda: self.positive_feedback_message())
         control_button.setProperty('class', 'primary-button')
         reset_button = QPushButton()
         reset_button.setIcon(qta.icon('mdi.refresh', color='#0E5A69'))
@@ -91,19 +91,19 @@ class InsertDataScreen(Screen):
         left_side_layout.addWidget(self.input_file_field(), alignment=Qt.AlignmentFlag.AlignBottom)
         left_side_layout.addWidget(self.button_set(), alignment=Qt.AlignmentFlag.AlignTop)
         left_side_layout.addSpacing(30)
-        left_side_layout.addWidget(self.construct_feedback_message())
+        self.construct_feedback_message()
+        left_side_layout.addWidget(self.feedback_message_box)
         left_side_layout.addStretch()
         left_side.setLayout(left_side_layout)
         return left_side
 
     def construct_feedback_message(self):
-        frame = QFrame()
         frame_layout = QHBoxLayout()
         frame_layout.addWidget(self.message_icon)
+        self.message.setProperty('class', 'feedback-message')
         frame_layout.addWidget(self.message)
         frame_layout.addStretch()
-        frame.setLayout(frame_layout)
-        return frame
+        self.feedback_message_box.setLayout(frame_layout)
 
     @staticmethod
     def add_list():
@@ -116,12 +116,19 @@ class InsertDataScreen(Screen):
         return frame
 
     def positive_feedback_message(self):
-        self.message_icon.setPixmap(qta.icon('mdi.check').pixmap(QSize(16, 16)))
+        self.message_icon.setPixmap(qta.icon('mdi.check', color="white").pixmap(QSize(48, 48)))
         self.message.setText(self._('all_info_correct'))
+        self.feedback_message_box.setStyleSheet('background-color: #1DCA94; border-radius: 10px;')
 
     def warning_feedback_message(self):
-        self.message_icon.setPixmap(qta.icon('mdi.alert').pixmap(QSize(32, 32)))
+        self.message_icon.setPixmap(qta.icon('mdi.alert', color="white").pixmap(QSize(48, 48)))
         self.message.setText(self._('warning'))
+        self.feedback_message_box.setStyleSheet('background-color: #F8AA62; border-radius: 10px;')
+
+    def negative_feedback_message(self):
+        self.message_icon.setPixmap(qta.icon('mdi.alert-circle-outline', color="white").pixmap(QSize(48, 48)))
+        self.message.setText(self._('error'))
+        self.feedback_message_box.setStyleSheet('background-color: #CC3300; border-radius: 10px;')
 
     def reset_ui(self, _):
         self._ = _

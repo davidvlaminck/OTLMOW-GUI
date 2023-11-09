@@ -106,4 +106,15 @@ QApplication{
     border-bottom: 1px solid #B35F35;
 }
 
+.error-message{
+    background-color: red;
+}
+
+.feedback-message[text]{
+    color: #ffffff;
+    font-family: Roboto;
+    font-size: 20px;
+
+}
+
 

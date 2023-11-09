@@ -17,7 +17,7 @@ class ModelBuilder:
 
     def filter_relations_and_abstract(self):
         relations = self.collector.relations
-        relations_uri = [y.objectUri for y in relations]
+        relations_uri = {y.objectUri for y in relations}
         classes = self.get_all_classes()
         return [x for x in classes if x.abstract == 0 and x.objectUri not in relations_uri]
 
