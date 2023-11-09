@@ -1,6 +1,6 @@
+import qtawesome as qta
 
-
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt, QSize
 from PyQt6.QtWidgets import QWidget, QPushButton, QHBoxLayout, QFrame
 
 
@@ -26,10 +26,27 @@ class StepperWidget(QWidget):
         line_3 = QFrame()
         line_3.setFrameShape(QFrame.Shape.HLine)
         line_3.setProperty('class', 'stepper-line')
+
+        # sets the text for the stepper buttons and applies classes which hold the style
         self.step1.setText(self._("step1"))
+        self.step1.setProperty('class', 'stepper-button')
         self.step2.setText(self._("step2"))
+        self.step2.setProperty('class', 'stepper-button')
         self.step3.setText(self._("step3"))
+        self.step3.setProperty('class', 'stepper-button')
         self.step4.setText(self._("step4"))
+        self.step4.setProperty('class', 'stepper-button')
+
+        # makes the number icons bigger
+        self.step1.setIconSize(QSize(25, 25))
+        self.step2.setIconSize(QSize(25, 25))
+        self.step3.setIconSize(QSize(25, 25))
+        self.step4.setIconSize(QSize(25, 25))
+
+        self.step1.setIcon(qta.icon('mdi.numeric-1-circle', color="grey"))
+        self.step2.setIcon(qta.icon('mdi.numeric-2-circle', color="grey"))
+        self.step3.setIcon(qta.icon('mdi.numeric-3-circle', color="grey"))
+        self.step4.setIcon(qta.icon('mdi.numeric-4-circle', color="grey"))
 
         horizontal_layout.addWidget(self.step1, alignment=Qt.AlignmentFlag.AlignCenter)
         self.step1.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(1))

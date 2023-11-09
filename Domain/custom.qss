@@ -139,3 +139,9 @@ QApplication{
     color: #B35F35;
     font-family: Roboto;
 }
+
+.stepper-button{
+    background: transparent;
+    border: none;
+}
+
