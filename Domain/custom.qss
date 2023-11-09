@@ -114,7 +114,28 @@ QApplication{
     color: #ffffff;
     font-family: Roboto;
     font-size: 20px;
-
 }
 
+.current-page-button{
+    background-color: #B35F35;
+    height: 25px;
+    border-radius: 5px;
+    border: 2px solid #B35F35;
+}
 
+.current-page-button[text]{
+    color: #ffffff;
+    font-family: Roboto;
+}
+
+.next-page-button{
+    background: transparent;
+    border: 2px solid #B35F35;
+    height: 25px;
+    border-radius: 5px;
+}
+
+.next-page-button[text]{
+    color: #B35F35;
+    font-family: Roboto;
+}

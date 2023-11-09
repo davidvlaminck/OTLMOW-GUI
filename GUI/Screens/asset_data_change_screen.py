@@ -1,6 +1,7 @@
 from pathlib import Path
 import qtawesome as qta
 
+
 from PyQt6.QtWidgets import QVBoxLayout, QFrame, QHBoxLayout, QLabel, QLineEdit, QPushButton, QWidget
 
 from Domain.language_settings import return_language
@@ -39,6 +40,7 @@ class AssetDataChangeScreen(Screen):
         window = QWidget()
         window.setProperty('class', 'background-box')
         window_layout = QVBoxLayout()
+        window_layout.addWidget(self.navigation_buttons())
         window_layout.addWidget(self.input_file_field('original_file_load'))
         window_layout.addWidget(self.input_file_field('new_file_load'))
         window_layout.addWidget(self.button_group())
@@ -82,6 +84,25 @@ class AssetDataChangeScreen(Screen):
 
         frame.setLayout(frame_layout)
         return frame
+
+    def navigation_buttons(self):
+        frame = QFrame()
+        frame_layout = QHBoxLayout()
+        page1_btn = QPushButton()
+        page1_btn.setText(self._('update_files'))
+        page1_btn.setProperty('class', 'current-page-button')
+        page2_btn = QPushButton()
+        page2_btn.setProperty('class', 'next-page-button')
+        page2_btn.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(4))
+        page2_btn.setText(self._('update_relations'))
+        frame_layout.addSpacing(200)
+        frame_layout.addWidget(page1_btn)
+        frame_layout.addSpacing(200)
+        frame_layout.addWidget(page2_btn)
+        frame_layout.addSpacing(200)
+        frame.setLayout(frame_layout)
+        return frame
+
 
     def reset_ui(self, _):
         self._ = _
