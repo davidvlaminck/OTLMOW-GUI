@@ -20,8 +20,8 @@ class TableWidget(Screen):
         super().__init__()
         self._ = return_language(LANG_DIR)
         self.tabs = QTabWidget()
-        self.tab1 = ExportDataScreen(database)
-        self.tab2 = ConversionScreen(database)
+        self.tab1 = ExportDataScreen()
+        self.tab2 = ConversionScreen()
         self.stepper_widget = StepperWidget(self._)
         self.header = HeaderBar(database=database, language=self._)
         self.stacked_widget = None
