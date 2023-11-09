@@ -44,5 +44,7 @@ class TableWidget(Screen):
     def reset_ui(self, _):
         self._ = _
         self.header.reset_ui(_, 'step_4')
+        self.tabs.setTabText(0, self._('export_data'))
+        self.tabs.setTabText(1, self._('conversion'))
         self.tab1.reset_ui(_)
         self.tab2.reset_ui(_)

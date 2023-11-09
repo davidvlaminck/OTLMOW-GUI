@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-11-09 14:32+0100\n"
+"POT-Creation-Date: 2023-11-09 20:49+0100\n"
 "PO-Revision-Date: 2023-10-19 13:11+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en_US\n"
@@ -34,19 +34,19 @@ msgstr "Alter Project"
 msgid "new_project_title"
 msgstr "New Project"
 
-#: GUI/dialog_window.py:46 GUI/dialog_window.py:64 GUI/overviewtable.py:29
-#: GUI/overviewtable.py:115 UnitTests/domain_test/language_test.py:14
+#: GUI/dialog_window.py:46 GUI/dialog_window.py:64 GUI/overviewtable.py:31
+#: GUI/overviewtable.py:119 UnitTests/domain_test/language_test.py:14
 #: UnitTests/domain_test/language_test.py:19
 msgid "own_reference"
 msgstr "Own reference"
 
-#: GUI/dialog_window.py:48 GUI/dialog_window.py:65 GUI/overviewtable.py:29
-#: GUI/overviewtable.py:115
+#: GUI/dialog_window.py:48 GUI/dialog_window.py:65 GUI/overviewtable.py:31
+#: GUI/overviewtable.py:119
 msgid "service_order"
 msgstr "Service order"
 
-#: GUI/Screens/template_screen.py:107 GUI/dialog_window.py:50
-#: GUI/dialog_window.py:66 GUI/overviewtable.py:29 GUI/overviewtable.py:115
+#: GUI/Screens/template_screen.py:108 GUI/dialog_window.py:50
+#: GUI/dialog_window.py:66 GUI/overviewtable.py:31 GUI/overviewtable.py:119
 msgid "subset"
 msgstr "Subset"
 
@@ -102,11 +102,11 @@ msgstr "Yes"
 msgid "no"
 msgstr "No"
 
-#: GUI/overviewtable.py:29 GUI/overviewtable.py:115
+#: GUI/overviewtable.py:31 GUI/overviewtable.py:119
 msgid "last_edited"
 msgstr "Last edited"
 
-#: GUI/overviewtable.py:67 GUI/overviewtable.py:104
+#: GUI/overviewtable.py:70 GUI/overviewtable.py:108 GUI/overviewtable.py:120
 msgid "no_results"
 msgstr "No results found for this search value"
 
@@ -126,23 +126,47 @@ msgstr "Change Asset Data"
 msgid "step4"
 msgstr "Export Asset Data"
 
-#: GUI/Screens/asset_data_change_screen.py:69
+#: GUI/tab_widget.py:28 GUI/tab_widget.py:47
+#, fuzzy
+msgid "export_data"
+msgstr "Export"
+
+#: GUI/tab_widget.py:29 GUI/tab_widget.py:48
+#, fuzzy
+msgid "conversion"
+msgstr "File conversion"
+
+#: GUI/Screens/asset_data_change_screen.py:58
+#: GUI/Screens/asset_data_change_screen.py:124
+msgid "original_file_load"
+msgstr "Original file to load:"
+
+#: GUI/Screens/asset_data_change_screen.py:72
+#: GUI/Screens/asset_data_change_screen.py:125
+msgid "new_file_load"
+msgstr "New file to load:"
+
+#: GUI/Screens/asset_data_change_screen.py:86
+#: GUI/Screens/asset_data_change_screen.py:126
 msgid "control"
 msgstr "Control"
 
-#: GUI/Screens/asset_data_change_screen.py:73
-#: GUI/Screens/export_data_screen.py:35 GUI/Screens/template_screen.py:74
-#: GUI/Screens/template_screen.py:174
+#: GUI/Screens/asset_data_change_screen.py:89
+#: GUI/Screens/asset_data_change_screen.py:127
+#: GUI/Screens/export_data_screen.py:51 GUI/Screens/export_data_screen.py:75
+#: GUI/Screens/template_screen.py:75 GUI/Screens/template_screen.py:174
 msgid "export"
 msgstr "Export"
 
-#: GUI/Screens/asset_data_change_screen.py:92
-#: GUI/Screens/relation_change_screen.py:49
+#: GUI/Screens/asset_data_change_screen.py:108
+#: GUI/Screens/asset_data_change_screen.py:129
+#: GUI/Screens/relation_change_screen.py:55
 msgid "update_files"
 msgstr "Update files"
 
-#: GUI/Screens/asset_data_change_screen.py:97
-#: GUI/Screens/relation_change_screen.py:54
+#: GUI/Screens/asset_data_change_screen.py:112
+#: GUI/Screens/asset_data_change_screen.py:128
+#: GUI/Screens/relation_change_screen.py:60
 msgid "update_relations"
 msgstr "Update relations"
 
@@ -150,11 +174,11 @@ msgstr "Update relations"
 msgid "file_conversion"
 msgstr "File conversion"
 
-#: GUI/Screens/conversion_screen.py:35
+#: GUI/Screens/conversion_screen.py:36 GUI/Screens/conversion_screen.py:52
 msgid "convert"
 msgstr "Convert"
 
-#: GUI/Screens/export_data_screen.py:33
+#: GUI/Screens/export_data_screen.py:36
 msgid "export_to_davie"
 msgstr "Export data to Davie"
 
@@ -162,12 +186,11 @@ msgstr "Export data to Davie"
 msgid "search_text"
 msgstr "Enter project or service order to search"
 
-#: GUI/Screens/insert_data_screen.py:60
-#, fuzzy
+#: GUI/Screens/insert_data_screen.py:61 GUI/Screens/insert_data_screen.py:137
 msgid "control_button"
 msgstr "Control"
 
-#: GUI/Screens/insert_data_screen.py:76
+#: GUI/Screens/insert_data_screen.py:76 GUI/Screens/insert_data_screen.py:136
 msgid "input_file"
 msgstr "Load in file:"
 
@@ -183,31 +206,47 @@ msgstr "Warning"
 msgid "error"
 msgstr "Error"
 
-#: GUI/Screens/template_screen.py:57 GUI/Screens/template_screen.py:172
+#: GUI/Screens/relation_change_screen.py:74
+msgid "choose_file"
+msgstr "Pick your file..."
+
+#: GUI/Screens/relation_change_screen.py:87
+msgid "class_list"
+msgstr "Classes:"
+
+#: GUI/Screens/relation_change_screen.py:100
+msgid "relations_list"
+msgstr "Possible relations:"
+
+#: GUI/Screens/relation_change_screen.py:113
+msgid "existing_relations_list"
+msgstr "Existing relations:"
+
+#: GUI/Screens/template_screen.py:58 GUI/Screens/template_screen.py:172
 msgid "select_all_classes"
 msgstr "Select all classes"
 
-#: GUI/Screens/template_screen.py:59 GUI/Screens/template_screen.py:171
+#: GUI/Screens/template_screen.py:60 GUI/Screens/template_screen.py:171
 msgid "no_choice_list"
 msgstr "Do not generate choice lists"
 
-#: GUI/Screens/template_screen.py:60 GUI/Screens/template_screen.py:170
+#: GUI/Screens/template_screen.py:61 GUI/Screens/template_screen.py:170
 msgid "geometry_column_added"
 msgstr "Add geometry column to the template"
 
-#: GUI/Screens/template_screen.py:61 GUI/Screens/template_screen.py:169
+#: GUI/Screens/template_screen.py:62 GUI/Screens/template_screen.py:169
 msgid "export_attribute_info"
 msgstr "Export additional attribute information"
 
-#: GUI/Screens/template_screen.py:62 GUI/Screens/template_screen.py:168
+#: GUI/Screens/template_screen.py:63 GUI/Screens/template_screen.py:168
 msgid "show_deprecated_attributes"
 msgstr "Highlight deprecated attributes in template"
 
-#: GUI/Screens/template_screen.py:65 GUI/Screens/template_screen.py:173
+#: GUI/Screens/template_screen.py:66 GUI/Screens/template_screen.py:173
 msgid "amount_of_examples"
 msgstr "Generate rows of example data"
 
-#: GUI/Screens/template_screen.py:111
+#: GUI/Screens/template_screen.py:111 GUI/Screens/template_screen.py:175
 msgid "change_subset"
 msgstr "Change subset"
 

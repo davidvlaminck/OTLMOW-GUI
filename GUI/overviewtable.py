@@ -21,8 +21,10 @@ class OverviewTable(QTableWidget):
         self.message_box = message_box
         self.database = database
         self.stacked_widget = None
+        self.error_widget = QTableWidgetItem()
 
     def draw_table(self, input_text: str = None):
+        self.setEnabled(True)
         self.verticalHeader().setVisible(False)
         self.setColumnCount(7)
         self.setHorizontalHeaderLabels(
@@ -62,9 +64,11 @@ class OverviewTable(QTableWidget):
             table.setItem(row, column, QTableWidgetItem(item))
 
     def add_the_error_row(self, table):
+        table.setEnabled(False)
         table.setRowCount(1)
         table.clearContents()
-        table.setItem(0, 0, QTableWidgetItem(self._('no_results')))
+        self.error_widget.setText(self._('no_results'))
+        table.setItem(0, 0, self.error_widget)
 
     def add_update_and_delete_button(self, count: int, id_: int, table: QTableWidget) -> None:
         edit = QPushButton()
@@ -113,3 +117,4 @@ class OverviewTable(QTableWidget):
         self._ = lang_settings
         self.setHorizontalHeaderLabels(
             [self._('own_reference'), self._('service_order'), self._('subset'), self._('last_edited'), '', ''])
+        self.error_widget.setText(self._('no_results'))

@@ -36,6 +36,7 @@ class TemplateScreen(Screen):
         self.selected = 0
         self.label_counter = QLabel()
         self.subset_name = QLabel()
+        self.change_subset_btn = QPushButton()
 
         self.init_ui()
 
@@ -107,14 +108,13 @@ class TemplateScreen(Screen):
         title.setText(self._("subset") + ":")
         self.subset_name = QLabel()
         self.subset_name.setText("")
-        button = QPushButton()
-        button.setText(self._("change_subset"))
-        button.setProperty('class', 'secondary-button')
+        self.change_subset_btn.setText(self._("change_subset"))
+        self.change_subset_btn.setProperty('class', 'secondary-button')
         horizontal_layout = QHBoxLayout()
         horizontal_layout.addWidget(title)
         horizontal_layout.addWidget(self.subset_name)
         horizontal_layout.addSpacing(30)
-        horizontal_layout.addWidget(button)
+        horizontal_layout.addWidget(self.change_subset_btn)
         frame.setLayout(horizontal_layout)
         return frame
 
@@ -172,6 +172,7 @@ class TemplateScreen(Screen):
         self.select_all_classes.setText(self._("select_all_classes"))
         self.example_label.setText(self._("amount_of_examples"))
         self.export_button.setText(self._("export"))
+        self.change_subset_btn.setText(self._("change_subset"))
 
         self.header.reset_ui(self._, 'subtitle_page_1')
         self.stepper_widget.reset_ui(self._)

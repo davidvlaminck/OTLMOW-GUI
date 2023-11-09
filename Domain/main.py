@@ -16,7 +16,7 @@ from GUI.Screens.home_screen import HomeScreen
 from GUI.Screens.insert_data_screen import InsertDataScreen
 from GUI.Screens.template_screen import TemplateScreen
 from GUI.Screens.relation_change_screen import RelationChangeScreen
-from GUI.TabWidget import TableWidget
+from GUI.tab_widget import TableWidget
 
 
 def initialize_database():

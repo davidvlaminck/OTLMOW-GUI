@@ -26,6 +26,8 @@ class InsertDataScreen(Screen):
         self.stepper_widget = StepperWidget(self._)
         self.message_icon = QLabel()
         self.message = QLabel()
+        self.input_file_label = QLabel()
+        self.control_button = QPushButton()
 
         self.init_ui()
 
@@ -56,14 +58,13 @@ class InsertDataScreen(Screen):
     def button_set(self):
         button_frame = QFrame()
         button_frame_layout = QHBoxLayout()
-        control_button = QPushButton()
-        control_button.setText(self._('control_button'))
-        control_button.clicked.connect(lambda: self.positive_feedback_message())
-        control_button.setProperty('class', 'primary-button')
+        self.control_button.setText(self._('control_button'))
+        self.control_button.clicked.connect(lambda: self.positive_feedback_message())
+        self.control_button.setProperty('class', 'primary-button')
         reset_button = QPushButton()
         reset_button.setIcon(qta.icon('mdi.refresh', color='#0E5A69'))
         reset_button.setProperty('class', 'secondary-button')
-        button_frame_layout.addWidget(control_button)
+        button_frame_layout.addWidget(self.control_button)
         button_frame_layout.addWidget(reset_button)
         button_frame_layout.addStretch()
         button_frame.setLayout(button_frame_layout)
@@ -72,13 +73,12 @@ class InsertDataScreen(Screen):
     def input_file_field(self):
         input_file = QFrame()
         input_file_layout = QHBoxLayout()
-        input_file_label = QLabel()
-        input_file_label.setText(self._('input_file'))
+        self.input_file_label.setText(self._('input_file'))
         input_file_field = QLineEdit()
         input_file_field.setReadOnly(True)
         input_file_button = QPushButton()
         input_file_button.setIcon(qta.icon('mdi.folder-open-outline'))
-        input_file_layout.addWidget(input_file_label)
+        input_file_layout.addWidget(self.input_file_label)
         input_file_layout.addWidget(input_file_field)
         input_file_layout.addWidget(input_file_button)
         input_file.setLayout(input_file_layout)
@@ -133,4 +133,6 @@ class InsertDataScreen(Screen):
     def reset_ui(self, _):
         self._ = _
         self.header.reset_ui(_, 'subtitle_page_2')
+        self.input_file_label.setText(self._('input_file'))
+        self.control_button.setText(self._('control_button'))
         self.stepper_widget.reset_ui(_)
