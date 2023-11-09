@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-11-03 15:12+0100\n"
+"POT-Creation-Date: 2023-11-09 14:32+0100\n"
 "PO-Revision-Date: 2023-10-19 13:11+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en_US\n"
@@ -26,91 +26,65 @@ msgstr "Own reference is empty"
 msgid "bestek_empty_error"
 msgstr "Subset is empty"
 
-#: GUI/dialog_window.py:32
+#: GUI/dialog_window.py:36
 msgid "alter_project_title"
 msgstr "Alter Project"
 
-#: GUI/dialog_window.py:34
+#: GUI/dialog_window.py:38
 msgid "new_project_title"
 msgstr "New Project"
 
-#: GUI/dialog_window.py:42 GUI/dialog_window.py:60 GUI/overviewtable.py:44
-#: UnitTests/domain_test/language_test.py:14
+#: GUI/dialog_window.py:46 GUI/dialog_window.py:64 GUI/overviewtable.py:29
+#: GUI/overviewtable.py:115 UnitTests/domain_test/language_test.py:14
 #: UnitTests/domain_test/language_test.py:19
 msgid "own_reference"
 msgstr "Own reference"
 
-#: GUI/dialog_window.py:44 GUI/dialog_window.py:61 GUI/overviewtable.py:44
+#: GUI/dialog_window.py:48 GUI/dialog_window.py:65 GUI/overviewtable.py:29
+#: GUI/overviewtable.py:115
 msgid "service_order"
 msgstr "Service order"
 
-#: GUI/dialog_window.py:46 GUI/dialog_window.py:62 GUI/overviewtable.py:44
+#: GUI/Screens/template_screen.py:107 GUI/dialog_window.py:50
+#: GUI/dialog_window.py:66 GUI/overviewtable.py:29 GUI/overviewtable.py:115
 msgid "subset"
 msgstr "Subset"
 
-#: GUI/dialog_window.py:86
+#: GUI/dialog_window.py:90
 msgid "submit"
 msgstr "Submit"
 
-#: GUI/dialog_window.py:88
+#: GUI/dialog_window.py:92
 msgid "cancel"
 msgstr "Cancel"
 
-#: GUI/dialog_window.py:112
+#: GUI/dialog_window.py:116
 msgid "change_language_title"
 msgstr "Change language"
 
-#: GUI/dialog_window.py:114
+#: GUI/dialog_window.py:118
 msgid "language_option_dutch"
 msgstr "Dutch"
 
-#: GUI/dialog_window.py:115
+#: GUI/dialog_window.py:119
 msgid "language_option_english"
 msgstr "English"
 
-#: GUI/header_bar.py:36
+#: GUI/header_bar.py:43 GUI/header_bar.py:124
 msgid "new_project_button"
 msgstr "New Project"
 
-#: GUI/header_bar.py:71 GUI/header_bar.py:93
+#: GUI/header_bar.py:82 GUI/header_bar.py:125
 msgid "return_to_home_screen"
 msgstr "Back home"
 
-#: GUI/header_bar.py:80 GUI/header_bar.py:94
-msgid "subtitle_page_1"
-msgstr "Specify which classes and settings you want to use in the template"
+#: GUI/header_bar.py:98 GUI/header_bar.py:126
+msgid "save_button"
+msgstr "Save"
 
-#: GUI/home_screen.py:89
-msgid "search_text"
-msgstr "Enter project or service order to search"
-
-#: GUI/make_template_screen.py:44
-msgid "select_all_classes"
-msgstr "Select all classes"
-
-#: GUI/make_template_screen.py:46
-msgid "no_choice_list"
-msgstr "Do not generate choice lists"
-
-#: GUI/make_template_screen.py:48
-msgid "geometry_column_added"
-msgstr "Add geometry column to the template"
-
-#: GUI/make_template_screen.py:50
-msgid "export_attribute_info"
-msgstr "Export additional attribute information"
-
-#: GUI/make_template_screen.py:52
-msgid "show_deprecated_attributes"
-msgstr "Highlight deprecated attributes in template"
-
-#: GUI/make_template_screen.py:56
-msgid "amount_of_examples"
-msgstr "Generate rows of example data"
-
-#: GUI/make_template_screen.py:66
-msgid "export"
-msgstr "Export"
+#: GUI/header_bar.py:119
+msgid "import"
+msgstr "Import"
 
 #: GUI/message_box.py:12
 msgid "delete"
@@ -128,33 +102,125 @@ msgstr "Yes"
 msgid "no"
 msgstr "No"
 
-#: GUI/overviewtable.py:44
+#: GUI/overviewtable.py:29 GUI/overviewtable.py:115
 msgid "last_edited"
 msgstr "Last edited"
 
-#: GUI/overviewtable.py:86
+#: GUI/overviewtable.py:67 GUI/overviewtable.py:104
 msgid "no_results"
 msgstr "No results found for this search value"
 
-#: GUI/stepper.py:28 GUI/stepper.py:46
+#: GUI/stepper.py:31 GUI/stepper.py:62
 msgid "step1"
 msgstr "Create Template"
 
-#: GUI/stepper.py:29 GUI/stepper.py:47
+#: GUI/stepper.py:33 GUI/stepper.py:63
 msgid "step2"
 msgstr "Insert Asset Data"
 
-#: GUI/stepper.py:30 GUI/stepper.py:48
+#: GUI/stepper.py:35 GUI/stepper.py:64
 msgid "step3"
 msgstr "Change Asset Data"
 
-#: GUI/stepper.py:31 GUI/stepper.py:49
+#: GUI/stepper.py:37 GUI/stepper.py:65
 msgid "step4"
 msgstr "Export Asset Data"
+
+#: GUI/Screens/asset_data_change_screen.py:69
+msgid "control"
+msgstr "Control"
+
+#: GUI/Screens/asset_data_change_screen.py:73
+#: GUI/Screens/export_data_screen.py:35 GUI/Screens/template_screen.py:74
+#: GUI/Screens/template_screen.py:174
+msgid "export"
+msgstr "Export"
+
+#: GUI/Screens/asset_data_change_screen.py:92
+#: GUI/Screens/relation_change_screen.py:49
+msgid "update_files"
+msgstr "Update files"
+
+#: GUI/Screens/asset_data_change_screen.py:97
+#: GUI/Screens/relation_change_screen.py:54
+msgid "update_relations"
+msgstr "Update relations"
+
+#: GUI/Screens/conversion_screen.py:33
+msgid "file_conversion"
+msgstr "File conversion"
+
+#: GUI/Screens/conversion_screen.py:35
+msgid "convert"
+msgstr "Convert"
+
+#: GUI/Screens/export_data_screen.py:33
+msgid "export_to_davie"
+msgstr "Export data to Davie"
+
+#: GUI/Screens/home_screen.py:90 GUI/Screens/home_screen.py:97
+msgid "search_text"
+msgstr "Enter project or service order to search"
+
+#: GUI/Screens/insert_data_screen.py:60
+#, fuzzy
+msgid "control_button"
+msgstr "Control"
+
+#: GUI/Screens/insert_data_screen.py:76
+msgid "input_file"
+msgstr "Load in file:"
+
+#: GUI/Screens/insert_data_screen.py:120
+msgid "all_info_correct"
+msgstr "All provided information is correct"
+
+#: GUI/Screens/insert_data_screen.py:125
+msgid "warning"
+msgstr "Warning"
+
+#: GUI/Screens/insert_data_screen.py:130
+msgid "error"
+msgstr "Error"
+
+#: GUI/Screens/template_screen.py:57 GUI/Screens/template_screen.py:172
+msgid "select_all_classes"
+msgstr "Select all classes"
+
+#: GUI/Screens/template_screen.py:59 GUI/Screens/template_screen.py:171
+msgid "no_choice_list"
+msgstr "Do not generate choice lists"
+
+#: GUI/Screens/template_screen.py:60 GUI/Screens/template_screen.py:170
+msgid "geometry_column_added"
+msgstr "Add geometry column to the template"
+
+#: GUI/Screens/template_screen.py:61 GUI/Screens/template_screen.py:169
+msgid "export_attribute_info"
+msgstr "Export additional attribute information"
+
+#: GUI/Screens/template_screen.py:62 GUI/Screens/template_screen.py:168
+msgid "show_deprecated_attributes"
+msgstr "Highlight deprecated attributes in template"
+
+#: GUI/Screens/template_screen.py:65 GUI/Screens/template_screen.py:173
+msgid "amount_of_examples"
+msgstr "Generate rows of example data"
+
+#: GUI/Screens/template_screen.py:111
+msgid "change_subset"
+msgstr "Change subset"
+
+#: GUI/Screens/template_screen.py:130
+msgid "no classes found in specified path"
+msgstr "No classes found in specified path"
 
 #~ msgid "empty_fields_error"
 #~ msgstr "Fill in all fields"
 
 #~ msgid "search_button"
 #~ msgstr "Search"
+
+#~ msgid "subtitle_page_1"
+#~ msgstr "Specify which classes and settings you want to use in the template"
 
