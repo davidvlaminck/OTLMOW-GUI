@@ -16,6 +16,7 @@ from GUI.Screens.home_screen import HomeScreen
 from GUI.Screens.insert_data_screen import InsertDataScreen
 from GUI.Screens.template_screen import TemplateScreen
 from GUI.Screens.relation_change_screen import RelationChangeScreen
+from GUI.TabWidget import TableWidget
 
 
 def initialize_database():
@@ -58,6 +59,7 @@ if __name__ == '__main__':
         step2 = InsertDataScreen(db)
         step3_data = AssetDataChangeScreen(db)
         step3_relations = RelationChangeScreen(db)
+        tabWidgetTryOut = TableWidget(db)
         step4_export = ExportDataScreen(db)
         step4_conversion = ConversionScreen(db)
         stacked_widget = Navigation()
@@ -66,8 +68,9 @@ if __name__ == '__main__':
         stacked_widget.add_widget(step2, True)
         stacked_widget.add_widget(step3_data, True)
         stacked_widget.add_widget(step3_relations, True)
-        stacked_widget.add_widget(step4_export, True)
-        stacked_widget.add_widget(step4_conversion, True)
+        stacked_widget.add_widget(tabWidgetTryOut, True)
+        # stacked_widget.add_widget(step4_export, True)
+        # stacked_widget.add_widget(step4_conversion, True)
         home_screen.table.stacked_widget = stacked_widget
         step1.stacked_widget = stacked_widget
         stacked_widget.show()

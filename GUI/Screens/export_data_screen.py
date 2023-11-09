@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from PyQt6.QtWidgets import QVBoxLayout
+from PyQt6.QtWidgets import QVBoxLayout, QWidget, QPushButton
 
 from Domain.language_settings import return_language
 from GUI.Screens.screen import Screen
@@ -17,22 +17,25 @@ class ExportDataScreen(Screen):
         super().__init__()
         self._ = return_language(LANG_DIR)
         self.container_insert_data_screen = QVBoxLayout()
-        self.header = HeaderBar(database=database, language=self._)
+
         self.stacked_widget = None
-        self.stepper_widget = StepperWidget(self._)
         self.init_ui()
 
     def init_ui(self):
-        button = self.header.header_bar_detail_screen('subtitle_page_4.1')
-        button.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(0))
-        self.container_insert_data_screen.addWidget(self.header)
         self.container_insert_data_screen.addSpacing(10)
-        self.container_insert_data_screen.addWidget(self.stepper_widget.stepper_widget())
-        self.container_insert_data_screen.addStretch()
-        self.container_insert_data_screen.setContentsMargins(0, 0, 0, 0)
+        self.container_insert_data_screen.addWidget(self.create_menu())
+        self.container_insert_data_screen.setContentsMargins(16, 0, 16, 0)
         self.setLayout(self.container_insert_data_screen)
+
+    def create_menu(self):
+        window = QWidget()
+        window.setProperty('class', 'background-box')
+        window_layout = QVBoxLayout()
+        random_button = QPushButton()
+        random_button.setText(self._('random_button'))
+        window_layout.addWidget(random_button)
+        window.setLayout(window_layout)
+        return window
 
     def reset_ui(self, _):
         self._ = _
-        self.header.reset_ui(_, 'subtitle_page_4.1')
-        self.stepper_widget.reset_ui(_)
