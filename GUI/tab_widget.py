@@ -1,10 +1,8 @@
 from pathlib import Path
 
-from PyQt6.QtWidgets import QWidget, QTabWidget, QVBoxLayout, QFrame
+from PyQt6.QtWidgets import QTabWidget, QVBoxLayout
 
 from Domain.language_settings import return_language
-from GUI.Screens.conversion_screen import ConversionScreen
-from GUI.Screens.export_data_screen import ExportDataScreen
 from GUI.Screens.screen import Screen
 from GUI.header_bar import HeaderBar
 from GUI.stepper import StepperWidget

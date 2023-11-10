@@ -5,8 +5,6 @@ from PyQt6.QtWidgets import QVBoxLayout, QFrame, QHBoxLayout, QLabel, QLineEdit,
 
 from Domain.language_settings import return_language
 from GUI.Screens.screen import Screen
-from GUI.header_bar import HeaderBar
-from GUI.stepper import StepperWidget
 
 ROOT_DIR = Path(__file__).parent
 

@@ -5,9 +5,6 @@ from PyQt6.QtWidgets import QVBoxLayout, QWidget, QLabel, QPushButton, QFrame, Q
 
 from Domain.language_settings import return_language
 from GUI.Screens.screen import Screen
-from GUI.header_bar import HeaderBar
-from GUI.stepper import StepperWidget
-
 import qtawesome as qta
 
 ROOT_DIR = Path(__file__).parent

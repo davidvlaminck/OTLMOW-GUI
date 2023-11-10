@@ -1,4 +1,3 @@
-import logging
 from pathlib import Path
 
 from PyQt6.QtGui import QPixmap

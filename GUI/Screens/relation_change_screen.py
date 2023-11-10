@@ -1,13 +1,10 @@
 from pathlib import Path
 import qtawesome as qta
-from PyQt6.QtCore import Qt
 
 from PyQt6.QtWidgets import QVBoxLayout, QFrame, QHBoxLayout, QPushButton, QWidget, QLineEdit, QLabel, QListWidget
 
 from Domain.language_settings import return_language
 from GUI.Screens.screen import Screen
-from GUI.header_bar import HeaderBar
-from GUI.stepper import StepperWidget
 
 ROOT_DIR = Path(__file__).parent
 
