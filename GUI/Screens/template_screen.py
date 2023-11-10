@@ -66,6 +66,7 @@ class TemplateScreen(Screen):
         self.export_button.setProperty('class', 'primary-button')
 
         options_menu_layout.addWidget(self.select_all_classes)
+        options_menu_layout.addSpacing(10)
         options_menu_layout.addWidget(self.no_choice_list)
         options_menu_layout.addWidget(self.geometry_column_added)
         options_menu_layout.addWidget(self.export_attribute_info)
