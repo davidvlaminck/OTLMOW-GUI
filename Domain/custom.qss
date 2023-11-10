@@ -175,3 +175,8 @@ QTabBar::tab{
     font-weight: 550;
 }
 
+.change-table
+{
+    border: 1px solid #000000;
+}
+

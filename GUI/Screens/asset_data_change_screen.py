@@ -1,7 +1,7 @@
 from pathlib import Path
 import qtawesome as qta
 
-from PyQt6.QtWidgets import QVBoxLayout, QFrame, QHBoxLayout, QLabel, QLineEdit, QPushButton, QWidget
+from PyQt6.QtWidgets import QVBoxLayout, QFrame, QHBoxLayout, QLabel, QLineEdit, QPushButton, QWidget, QTableWidget
 
 from Domain.language_settings import return_language
 from GUI.Screens.screen import Screen
@@ -35,12 +35,28 @@ class AssetDataChangeScreen(Screen):
     def create_menu(self):
         window = QWidget()
         window.setProperty('class', 'background-box')
-        window_layout = QVBoxLayout()
-        window_layout.addWidget(self.input_original_file_field())
-        window_layout.addWidget(self.input_new_file_field())
-        window_layout.addWidget(self.button_group())
+        window_layout = QHBoxLayout()
+        window_layout.addWidget(self.left_side())
+        window_layout.addWidget(self.right_side())
         window.setLayout(window_layout)
         return window
+
+    def left_side(self):
+        frame = QFrame()
+        frame_layout = QVBoxLayout()
+        frame_layout.addWidget(self.input_original_file_field())
+        frame_layout.addWidget(self.input_new_file_field())
+        frame_layout.addWidget(self.button_group())
+        frame_layout.addStretch()
+        frame.setLayout(frame_layout)
+        return frame
+
+    def right_side(self):
+        frame = QFrame()
+        frame_layout = QVBoxLayout()
+        frame_layout.addWidget(self.change_table())
+        frame.setLayout(frame_layout)
+        return frame
 
     def input_original_file_field(self):
         input_file = QFrame()
@@ -90,6 +106,17 @@ class AssetDataChangeScreen(Screen):
 
         frame.setLayout(frame_layout)
         return frame
+
+    def change_table(self):
+        table = QTableWidget()
+        table.setProperty('class', 'change-table')
+        table.setRowCount(5)
+        table.setColumnCount(2)
+        table.verticalHeader().setVisible(False)
+        table.horizontalHeader().setStretchLastSection(True)
+        table.setHorizontalHeaderLabels(
+            [self._('id'), self._('action')])
+        return table
 
     def reset_ui(self, _):
         self._ = _

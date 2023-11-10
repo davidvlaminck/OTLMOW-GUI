@@ -62,8 +62,7 @@ class HomeScreen(Screen):
         self.container_home_screen.addSpacing(43)
         # add table to the vertical layout with margins
         self.container_home_screen.addLayout(table_container)
-        pixmap = QPixmap(str(IMG_DIR) + '/AWV_logo.png')
-        pixmap = pixmap.scaledToWidth(200)
+        pixmap = QPixmap(str(IMG_DIR) + '/AWV_200.png')
         self.container_home_screen.addStretch()
         self.container_home_screen.addWidget(QLabel(pixmap=pixmap), alignment=Qt.AlignmentFlag.AlignRight)
         self.container_home_screen.setContentsMargins(0, 0, 0, 0)
