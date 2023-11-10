@@ -41,7 +41,7 @@ class HeaderBar(QFrame):
         self.new_project_button.setIcon(qta.icon("mdi.plus",
                                                  color='white'))
         self.new_project_button.setText(self._('new_project_button'))
-        self.new_project_button.setProperty('class', 'primary-button')
+        self.new_project_button.setProperty('class', 'new-project-btn')
         self.new_project_button.clicked.connect(
             lambda: self.start_dialog_window(is_project=True))
 

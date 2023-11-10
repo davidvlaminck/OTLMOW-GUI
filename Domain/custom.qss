@@ -8,6 +8,16 @@
     font-family: Roboto;
 }
 
+.new-project-btn{
+    background-color: #0E5A69;
+    color: #ffffff;
+    height: 25px;
+    border-radius: 5px;
+    padding-left: 1Opx;
+    padding-right: 10px;
+    font-family: Roboto;
+}
+
 QHeaderView::section{
     color: #B35F35;
     font-family: Roboto;
