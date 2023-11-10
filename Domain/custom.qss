@@ -167,3 +167,11 @@ QApplication{
     border: 1px solid #000000;
 }
 
+QTabBar::tab{
+    height: 50px;
+    width: 300px;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 550;
+}
+

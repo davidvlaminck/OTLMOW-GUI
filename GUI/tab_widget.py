@@ -37,6 +37,7 @@ class TableWidget(Screen):
         self.layout.addSpacing(10)
         self.layout.addWidget(self.tabs)
         self.layout.setContentsMargins(0, 0, 0, 0)
+        self.tabs.setProperty('class', 'tab-widget')
 
         self.init_ui()
 
