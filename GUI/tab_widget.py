@@ -16,17 +16,22 @@ LANG_DIR = ROOT_DIR.parent / 'locale/'
 
 class TableWidget(Screen):
 
-    def __init__(self, database):
+    def __init__(self, database, widget1, description1: str, step_desc: str,widget2=None, description2: str = None):
         super().__init__()
         self._ = return_language(LANG_DIR)
+        self.step_desc = step_desc
         self.tabs = QTabWidget()
-        self.tab1 = ExportDataScreen()
-        self.tab2 = ConversionScreen()
+        self.tab1 = widget1
+        if widget2 is not None:
+            self.tab2 = widget2
         self.stepper_widget = StepperWidget(self._)
         self.header = HeaderBar(database=database, language=self._)
         self.stacked_widget = None
-        self.tabs.addTab(self.tab1, self._('export_data'))
-        self.tabs.addTab(self.tab2, self._('conversion'))
+        self.tabs.addTab(self.tab1, self._(description1))
+        self.desc1 = description1
+        if widget2 is not None:
+            self.tabs.addTab(self.tab2, self._(description2))
+            self.desc2 = description2
         self.layout = QVBoxLayout(self)
         self.layout.addWidget(self.header)
         self.layout.addSpacing(10)
@@ -38,13 +43,14 @@ class TableWidget(Screen):
         self.init_ui()
 
     def init_ui(self):
-        button = self.header.header_bar_detail_screen('step_4')
+        button = self.header.header_bar_detail_screen(self.step_desc)
         button.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(0))
 
     def reset_ui(self, _):
         self._ = _
-        self.header.reset_ui(_, 'step_4')
-        self.tabs.setTabText(0, self._('export_data'))
-        self.tabs.setTabText(1, self._('conversion'))
+        self.header.reset_ui(_, self.step_desc)
+        self.tabs.setTabText(0, self._(self.desc1))
+        if hasattr(self, 'tab2'):
+            self.tabs.setTabText(1, self._(self.desc2))
         self.tab1.reset_ui(_)
         self.tab2.reset_ui(_)

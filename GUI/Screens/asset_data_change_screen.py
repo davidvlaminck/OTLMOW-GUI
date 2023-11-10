@@ -14,13 +14,11 @@ LANG_DIR = ROOT_DIR.parent.parent / 'locale/'
 
 
 class AssetDataChangeScreen(Screen):
-    def __init__(self, database):
+    def __init__(self):
         super().__init__()
         self._ = return_language(LANG_DIR)
         self.container_insert_data_screen = QVBoxLayout()
-        self.header = HeaderBar(database=database, language=self._)
         self.stacked_widget = None
-        self.stepper_widget = StepperWidget(self._)
         self.original_file_label = QLabel()
         self.new_file_label = QLabel()
         self.control_button = QPushButton()
@@ -30,11 +28,6 @@ class AssetDataChangeScreen(Screen):
         self.init_ui()
 
     def init_ui(self):
-        button = self.header.header_bar_detail_screen('subtitle_page_3.1')
-        button.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(0))
-        self.container_insert_data_screen.addWidget(self.header)
-        self.container_insert_data_screen.addSpacing(10)
-        self.container_insert_data_screen.addWidget(self.stepper_widget.stepper_widget())
         self.container_insert_data_screen.addSpacing(10)
         self.container_insert_data_screen.addWidget(self.create_menu())
         self.container_insert_data_screen.addStretch()
@@ -45,7 +38,6 @@ class AssetDataChangeScreen(Screen):
         window = QWidget()
         window.setProperty('class', 'background-box')
         window_layout = QVBoxLayout()
-        window_layout.addWidget(self.navigation_buttons())
         window_layout.addWidget(self.input_original_file_field())
         window_layout.addWidget(self.input_new_file_field())
         window_layout.addWidget(self.button_group())
@@ -101,26 +93,8 @@ class AssetDataChangeScreen(Screen):
         frame.setLayout(frame_layout)
         return frame
 
-    def navigation_buttons(self):
-        frame = QFrame()
-        frame_layout = QHBoxLayout()
-        self.page1_btn = QPushButton()
-        self.page1_btn.setText(self._('update_files'))
-        self.page1_btn.setProperty('class', 'current-page-button')
-        self.page2_btn.setProperty('class', 'next-page-button')
-        self.page2_btn.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(4))
-        self.page2_btn.setText(self._('update_relations'))
-        frame_layout.addSpacing(200)
-        frame_layout.addWidget(self.page1_btn)
-        frame_layout.addSpacing(200)
-        frame_layout.addWidget(self.page2_btn)
-        frame_layout.addSpacing(200)
-        frame.setLayout(frame_layout)
-        return frame
-
     def reset_ui(self, _):
         self._ = _
-        self.header.reset_ui(_, 'subtitle_page_3.1')
         self.original_file_label.setText(self._('original_file_load'))
         self.new_file_label.setText(self._('new_file_load'))
         self.control_button.setText(self._('control'))

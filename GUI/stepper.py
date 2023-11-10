@@ -52,7 +52,7 @@ class StepperWidget(QWidget):
         self.step3.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(3))
         horizontal_layout.addWidget(line_3)
         horizontal_layout.addWidget(self.step4, alignment=Qt.AlignmentFlag.AlignLeft)
-        self.step4.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(5))
+        self.step4.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(4))
         horizontal_layout.addSpacing(50)
         stepper_widget.setLayout(horizontal_layout)
         return stepper_widget
