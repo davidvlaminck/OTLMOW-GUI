@@ -55,8 +55,10 @@ if __name__ == '__main__':
         with open('custom.qss', 'r') as file:
             app.setStyleSheet(file.read())
         home_screen = HomeScreen(db)
-        step1 = TemplateScreen(db)
-        step2 = InsertDataScreen(db)
+        step1 = TemplateScreen()
+        step1_tabwidget = TableWidget(db, step1, 'template', 'step_1')
+        step2 = InsertDataScreen()
+        step2_tabwidget = TableWidget(db, step2, 'insert_data', 'step_2')
         step3_data = AssetDataChangeScreen()
         step3_relations = RelationChangeScreen()
         step_3_tabwidget = TableWidget(db, step3_data, 'data_change', 'step_3', step3_relations, 'relation_change')
@@ -65,8 +67,8 @@ if __name__ == '__main__':
         step4_tabwidget = TableWidget(db, step4_export, 'export_data', 'step_4', step4_conversion, 'conversion')
         stacked_widget = Navigation()
         stacked_widget.add_widget(home_screen)
-        stacked_widget.add_widget(step1, True)
-        stacked_widget.add_widget(step2, True)
+        stacked_widget.add_widget(step1_tabwidget, True)
+        stacked_widget.add_widget(step2_tabwidget, True)
         stacked_widget.add_widget(step_3_tabwidget, True)
         stacked_widget.add_widget(step4_tabwidget, True)
         home_screen.table.stacked_widget = stacked_widget

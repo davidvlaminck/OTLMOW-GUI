@@ -91,9 +91,9 @@ class OverviewTable(QTableWidget):
         table.setCellWidget(count, 6, share_btn)
 
     def navigate_to_project(self, row):
-        self.stacked_widget.widget(1).path = self.projects[row][3]
-        self.stacked_widget.widget(1).fill_list()
-        self.stacked_widget.widget(1).update_name_project()
+        self.stacked_widget.widget(1).tab1.path = self.projects[row][3]
+        self.stacked_widget.widget(1).tab1.fill_list()
+        self.stacked_widget.widget(1).tab1.update_name_project()
         self.stacked_widget.setCurrentIndex(1)
 
     @staticmethod

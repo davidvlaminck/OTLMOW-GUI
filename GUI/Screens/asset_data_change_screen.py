@@ -101,4 +101,3 @@ class AssetDataChangeScreen(Screen):
         self.export_button.setText(self._('export'))
         self.page2_btn.setText(self._('update_relations'))
         self.page1_btn.setText(self._('update_files'))
-        self.stepper_widget.reset_ui(_)

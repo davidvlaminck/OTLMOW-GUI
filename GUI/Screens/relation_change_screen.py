@@ -102,8 +102,5 @@ class RelationChangeScreen(Screen):
         frame.setLayout(frame_layout)
         return frame
 
-
     def reset_ui(self, _):
         self._ = _
-        self.header.reset_ui(_, 'subtitle_page_3.2')
-        self.stepper_widget.reset_ui(_)

@@ -51,6 +51,6 @@ class TableWidget(Screen):
         self.header.reset_ui(_, self.step_desc)
         self.tabs.setTabText(0, self._(self.desc1))
         if hasattr(self, 'tab2'):
+            self.tab2.reset_ui(_)
             self.tabs.setTabText(1, self._(self.desc2))
         self.tab1.reset_ui(_)
-        self.tab2.reset_ui(_)
