@@ -14,7 +14,7 @@ LANG_DIR = ROOT_DIR.parent / 'locale/'
 
 class TableWidget(Screen):
 
-    def __init__(self, database, widget1, description1: str, step_desc: str,widget2=None, description2: str = None):
+    def __init__(self, database, page_nr: int, widget1, description1: str, step_desc: str,widget2=None, description2: str = None):
         super().__init__()
         self._ = return_language(LANG_DIR)
         self.step_desc = step_desc
@@ -22,7 +22,7 @@ class TableWidget(Screen):
         self.tab1 = widget1
         if widget2 is not None:
             self.tab2 = widget2
-        self.stepper_widget = StepperWidget(self._)
+        self.stepper_widget = StepperWidget(self._, page_nr)
         self.header = HeaderBar(database=database, language=self._)
         self.stacked_widget = None
         self.tabs.addTab(self.tab1, self._(description1))

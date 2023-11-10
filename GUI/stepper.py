@@ -5,7 +5,7 @@ from PyQt6.QtWidgets import QWidget, QPushButton, QHBoxLayout, QFrame
 
 
 class StepperWidget(QWidget):
-    def __init__(self, _):
+    def __init__(self, _, step: int):
         super().__init__()
         self._ = _
         self.stacked_widget = None
@@ -13,6 +13,7 @@ class StepperWidget(QWidget):
         self.step2 = QPushButton()
         self.step3 = QPushButton()
         self.step4 = QPushButton()
+        self.step_nr = step
 
     def stepper_widget(self):
         stepper_widget = QWidget()
@@ -36,11 +37,23 @@ class StepperWidget(QWidget):
         self.step3.setProperty('class', 'stepper-button')
         self.step4.setText(self._("step4"))
         self.step4.setProperty('class', 'stepper-button')
-
-        self.step1.setIcon(qta.icon('mdi.numeric-1-circle', color="grey"))
-        self.step2.setIcon(qta.icon('mdi.numeric-2-circle', color="grey"))
-        self.step3.setIcon(qta.icon('mdi.numeric-3-circle', color="grey"))
-        self.step4.setIcon(qta.icon('mdi.numeric-4-circle', color="grey"))
+        # sets the icons for the stepper buttons
+        if self.step_nr == 1:
+            self.step1.setIcon(qta.icon('mdi.numeric-1-circle', color="#B35F35"))
+        else:
+            self.step1.setIcon(qta.icon('mdi.numeric-1-circle', color="grey"))
+        if self.step_nr == 2:
+            self.step2.setIcon(qta.icon('mdi.numeric-2-circle', color="#B35F35"))
+        else:
+            self.step2.setIcon(qta.icon('mdi.numeric-2-circle', color="grey"))
+        if self.step_nr == 3:
+            self.step3.setIcon(qta.icon('mdi.numeric-3-circle', color="#B35F35"))
+        else:
+            self.step3.setIcon(qta.icon('mdi.numeric-3-circle', color="grey"))
+        if self.step_nr == 4:
+            self.step4.setIcon(qta.icon('mdi.numeric-4-circle', color="#B35F35"))
+        else:
+            self.step4.setIcon(qta.icon('mdi.numeric-4-circle', color="grey"))
 
         horizontal_layout.addWidget(self.step1, alignment=Qt.AlignmentFlag.AlignCenter)
         self.step1.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(1))

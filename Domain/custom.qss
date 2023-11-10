@@ -168,7 +168,7 @@ QApplication{
 }
 
 QTabBar::tab{
-    height: 50px;
+    height: 30px;
     width: 300px;
     font-size: 14px;
     font-style: normal;
