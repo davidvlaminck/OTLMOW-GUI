@@ -25,6 +25,7 @@ class OverviewTable(QTableWidget):
         self.database = database
         self.stacked_widget = None
         self.error_widget = QTableWidgetItem()
+        self.projects = None
 
     def draw_table(self, input_text: str = None):
         self.setEnabled(True)
@@ -51,8 +52,14 @@ class OverviewTable(QTableWidget):
         self.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows)
         # Zorgt ervoor dat de table niet editable is
         self.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
+        self.fill_table()
 
-        # TODO: add data to the table in aparte functie
+    def fill_table(self):
+        indices = self.selectionModel().selectedRows()
+        for index in sorted(indices):
+            self.removeRow(index.row())
+        self.projects = HomeDomain.get_all_projects()
+        self.setRowCount(len(self.projects))
         for count, element in enumerate(self.projects):
             self.add_cell_to_table(self, count, 0, element.eigen_referentie)
             self.add_cell_to_table(self, count, 1, element.bestek)
@@ -97,7 +104,7 @@ class OverviewTable(QTableWidget):
         table.setCellWidget(count, 6, share_btn)
 
     def navigate_to_project(self, project):
-        self.stacked_widget.widget(1).tab1.path = project.subset_path
+        self.stacked_widget.widget(1).tab1.project = project
         self.stacked_widget.widget(1).tab1.fill_list()
         self.stacked_widget.widget(1).tab1.update_project_info()
         self.stacked_widget.setCurrentIndex(1)
@@ -115,12 +122,13 @@ class OverviewTable(QTableWidget):
         return projects
 
     def start_dialog_window(self, project: Project = None, is_project=False) -> None:
-        dialog_window = DialogWindow(self.database, self._)
+        dialog_window = DialogWindow(self._)
         if is_project:
             dialog_window.draw_upsert_project(project=project, overview_table=self)
 
     def reset_ui(self, lang_settings):
         self._ = lang_settings
+        self.fill_table()
         self.setHorizontalHeaderLabels(
             [self._('own_reference'), self._('service_order'), self._('subset'), self._('last_edited'), '', ''])
         self.error_widget.setText(self._('no_results'))

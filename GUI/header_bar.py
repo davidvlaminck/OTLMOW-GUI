@@ -62,7 +62,7 @@ class HeaderBar(QFrame):
         return user_pref_container
 
     def start_dialog_window(self, id_: int = None, is_project=False) -> None:
-        dialog_window = DialogWindow(self.database, self._)
+        dialog_window = DialogWindow(self._)
         if is_project:
             dialog_window.draw_upsert_project(project=id_, overview_table=self.table)
         else:

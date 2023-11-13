@@ -20,10 +20,6 @@ def home_domain():
     return home_domain
 
 
-def test_get_amount_of_rows(home_domain):
-    assert home_domain.get_amount_of_rows() == 0
-
-
 def test_validate_with_good_values(home_domain):
     assert home_domain.validate('test', 'test') is True
 
