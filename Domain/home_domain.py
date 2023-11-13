@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from Domain.ProjectFileManager import ProjectFileManager
 from Exceptions.EmptyFieldError import EmptyFieldError
 
 
@@ -12,8 +13,9 @@ class HomeDomain:
     def get_amount_of_rows(self) -> int:
         return self.db.count_projects()
 
-    def get_all_projects(self) -> list:
-        return self.db.get_all_projects()
+    @staticmethod
+    def get_all_projects() -> list:
+        return ProjectFileManager.get_all_otl_wizard_projects()
 
     def remove_project(self, id_: int, table) -> None:
         self.db.remove_project(id_)

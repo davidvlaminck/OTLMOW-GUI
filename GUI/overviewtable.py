@@ -6,6 +6,7 @@ from PyQt6.QtCore import Qt
 
 from PyQt6.QtWidgets import QTableWidget, QHeaderView, QTableWidgetItem, QPushButton
 
+from Domain.Project import Project
 from Exceptions.EmptySearchWarning import EmptySearchWarning
 from GUI.dialog_window import DialogWindow
 
@@ -51,9 +52,12 @@ class OverviewTable(QTableWidget):
 
         # TODO: add data to the table in aparte functie
         for count, element in enumerate(self.projects):
-            for i in range(4):
-                self.add_cell_to_table(self, count, i, element[i + 1])
-            self.add_update_and_delete_button(count, element[0], self)
+            self.add_cell_to_table(self, count, 0, element.eigen_referentie)
+            self.add_cell_to_table(self, count, 1, element.bestek)
+            self.add_cell_to_table(self, count, 2, element.subset_path)
+            logging.debug(element.subset_path)
+            self.add_cell_to_table(self, count, 3, element.laatst_bewerkt)
+            self.add_update_and_delete_button(count, element.project_path, self)
             self.doubleClicked.connect(lambda: self.navigate_to_project(self.currentRow()))
 
     @staticmethod
@@ -61,7 +65,7 @@ class OverviewTable(QTableWidget):
         if isinstance(item, datetime.date):
             table.setItem(row, column, QTableWidgetItem(item.strftime("%d-%m-%Y")))
         else:
-            table.setItem(row, column, QTableWidgetItem(item))
+            table.setItem(row, column, QTableWidgetItem(str(item)))
 
     def add_the_error_row(self, table):
         table.setEnabled(False)
@@ -99,10 +103,11 @@ class OverviewTable(QTableWidget):
     @staticmethod
     def filter_projects(_, home_domain, input_text: str = None):
         projects = home_domain.get_all_projects()
+        logging.debug(f"Projects: {projects[0].project_path}")
         if type(input_text) is str:
             input_text.strip()
             if len(input_text) != 0:
-                projects = [k for k in projects if k[1].startswith(input_text) or k[2].startswith(input_text)]
+                projects = [Project() for k in projects if k.eigen_referentie.startswith(input_text) or k.bestek.startswith(input_text)]
                 if len(projects) == 0:
                     projects.append(home_domain.get_all_projects())
                     raise EmptySearchWarning(_('no_results'))

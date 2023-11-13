@@ -48,15 +48,17 @@ def demo_data():
         bestek="test_bestek1",
         laatst_bewerkt=datetime(2021, 9, 11))
     ProjectFileManager().save_project_to_dir(project_1)
-    ProjectFileManager().delete_project(project_1)
+    return project_1
 
 
 class MyApplication(QApplication):
     def __init__(self, argv: typing.List[str], db):
         super().__init__(argv)
         self.db = db
+        self.demo_project = demo_data()
 
     def quit(self):
+        ProjectFileManager().delete_project(self.demo_project.project_path)
         self.db.close_connection()
         super().quit()
 
@@ -68,7 +70,6 @@ if __name__ == '__main__':
             level=logging.DEBUG,
             datefmt='%Y-%m-%d %H:%M:%S')
         db = initialize_database()
-        demo_data()
         app = MyApplication(sys.argv, db)
         app_icon = QIcon('../img/wizard.ico')
         app.setWindowIcon(app_icon)
@@ -98,7 +99,6 @@ if __name__ == '__main__':
         stacked_widget.resize(1360, 768)
         stacked_widget.setWindowTitle('OTLWizard')
         stacked_widget.setMinimumSize(1280, 720)
-        print(Path(Path.home()) / 'OTLWizardProjects')
         app.exec()
         app.quit()
     except Exception as e:
