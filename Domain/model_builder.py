@@ -25,5 +25,13 @@ class ModelBuilder:
         info = dict(self.subset_db.get_general_info_project())
         return info.get('Naam')
 
+    def get_operator_name(self):
+        info = dict(self.subset_db.get_general_info_project())
+        return info.get('Operator')
+
+    def get_otl_version(self):
+        info = dict(self.subset_db.get_general_info_project())
+        return info.get('BronVersie')
+
     def close_subset_db(self):
         self.subset_db.close_connection()
