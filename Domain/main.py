@@ -74,7 +74,7 @@ if __name__ == '__main__':
         home_screen.table.stacked_widget = stacked_widget
         step1.stacked_widget = stacked_widget
         stacked_widget.show()
-        stacked_widget.resize(1920, 1080)
+        stacked_widget.resize(1360, 768)
         stacked_widget.setWindowTitle('OTLWizard')
         stacked_widget.setMinimumSize(1280, 720)
         app.exec()
