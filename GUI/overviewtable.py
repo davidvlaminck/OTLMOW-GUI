@@ -58,7 +58,7 @@ class OverviewTable(QTableWidget):
             self.add_cell_to_table(self, count, 2, ModelBuilder(element.subset_path).get_name_project())
             logging.debug(element.subset_path)
             self.add_cell_to_table(self, count, 3, element.laatst_bewerkt)
-            self.add_update_and_delete_button(count, element.project_path, self)
+            self.add_update_and_delete_button(count, element, self)
             self.doubleClicked.connect(lambda: self.navigate_to_project(self.currentRow()))
 
     @staticmethod
@@ -75,18 +75,18 @@ class OverviewTable(QTableWidget):
         self.error_widget.setText(self._('no_results'))
         table.setItem(0, 0, self.error_widget)
 
-    def add_update_and_delete_button(self, count: int, project_path: int, table: QTableWidget) -> None:
+    def add_update_and_delete_button(self, count: int, project: Project, table: QTableWidget) -> None:
         edit = QPushButton()
         edit.setIcon(qta.icon('mdi.pencil'))
         edit.setProperty('class', 'alter-button')
         edit.clicked.connect(
-            lambda _, row_id=project_path: self.start_dialog_window(id_=row_id, is_project=True))
+            lambda _, project_details=project: self.start_dialog_window(project=project_details, is_project=True))
         table.setCellWidget(count, 4, edit)
 
         delete_btn = QPushButton()
         delete_btn.setIcon(qta.icon('mdi.trash-can'))
         delete_btn.setProperty('class', 'alter-button')
-        delete_btn.clicked.connect(lambda _, i=project_path:
+        delete_btn.clicked.connect(lambda _, i=project:
                                    self.message_box.draw_remove_project_screen(i, self))
         table.setCellWidget(count, 5, delete_btn)
 
@@ -104,20 +104,19 @@ class OverviewTable(QTableWidget):
     @staticmethod
     def filter_projects(_, home_domain, input_text: str = None):
         projects = home_domain.get_all_projects()
-        logging.debug(f"Projects: {projects[0].project_path}")
         if type(input_text) is str:
             input_text.strip()
             if len(input_text) != 0:
-                projects = [Project() for k in projects if k.eigen_referentie.startswith(input_text) or k.bestek.startswith(input_text)]
+                projects = [k for k in projects if k.eigen_referentie.startswith(input_text) or k.bestek.startswith(input_text)]
                 if len(projects) == 0:
                     projects.append(home_domain.get_all_projects())
                     raise EmptySearchWarning(_('no_results'))
         return projects
 
-    def start_dialog_window(self, id_: int = None, is_project=False) -> None:
+    def start_dialog_window(self, project: Project = None, is_project=False) -> None:
         dialog_window = DialogWindow(self.database, self._)
         if is_project:
-            dialog_window.draw_upsert_project(id_=id_, overview_table=self)
+            dialog_window.draw_upsert_project(project=project, overview_table=self)
 
     def reset_ui(self, lang_settings):
         self._ = lang_settings

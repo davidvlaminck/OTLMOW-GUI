@@ -4,6 +4,8 @@ from pathlib import Path
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QDialog, QVBoxLayout, QLineEdit, QDialogButtonBox, QLabel, QHBoxLayout, QPushButton, \
     QFileDialog
+
+from Domain.Project import Project
 from Domain.home_domain import HomeDomain
 from Domain.language_settings import return_language
 from Domain.enums import Language
@@ -23,8 +25,8 @@ class DialogWindow:
         self.error_label = QLabel()
         self._ = language_settings
 
-    def draw_upsert_project(self, overview_table, id_=None):
-        is_project = id_ is not None
+    def draw_upsert_project(self, overview_table, project: Project = None):
+        is_project = project is not None
         # Resets the error label to empty when reopening the dialog
         self.error_label.setText("")
         dialog_window = QDialog()
@@ -32,7 +34,6 @@ class DialogWindow:
         # Makes the dialog the primary screen, disabling the screen behind it
         dialog_window.setModal(True)
         if is_project:
-            project = self.home_domain.db.get_project(id_)
             dialog_window.setWindowTitle(self._("alter_project_title"))
         else:
             dialog_window.setWindowTitle(self._("new_project_title"))
@@ -65,9 +66,9 @@ class DialogWindow:
         input_bestek.setPlaceholderText(self._("service_order"))
         input_subset.setPlaceholderText(self._("subset"))
         if is_project:
-            input_eigen_ref.setText(project[1])
-            input_bestek.setText(project[2])
-            input_subset.setText(project[3])
+            input_eigen_ref.setText(project.eigen_referentie)
+            input_bestek.setText(project.bestek)
+            input_subset.setText(str(project.subset_path))
         # Adds the input fields to the layout
         layout.addLayout(container_eigen_ref)
         layout.addLayout(container_bestek)
@@ -82,7 +83,7 @@ class DialogWindow:
         # sends the values off to validate once submitted
         button_box.accepted.connect(
             lambda: self.pass_values_through_validate(input_eigen_ref.text(), input_bestek.text(),
-                                                      input_subset.text(), dialog_window, overview_table, id_))
+                                                      input_subset.text(), dialog_window, overview_table, project))
         button_box.rejected.connect(dialog_window.reject)
         # Adds the two buttons to the layout
         layout.addWidget(button_box)
@@ -99,16 +100,18 @@ class DialogWindow:
 
     def pass_values_through_validate(self, input_eigen_ref: str, input_bestek: str, input_subset: str, dialog_window,
                                      overview_table,
-                                     id_: int = None) -> None:
+                                     project: Project = None) -> None:
         try:
             self.home_domain.validate(input_eigen_ref, input_subset)
         except EmptyFieldError as e:
             self.error_label.setText(str(e))
             return
         self.error_label.setText("")
-        properties = [input_eigen_ref, input_bestek, input_subset]
-        self.home_domain.alter_table(properties=properties, dlg=dialog_window,
-                                     overview_table=overview_table, id_=id_)
+        project.eigen_referentie = input_eigen_ref
+        project.bestek = input_bestek
+        project.subset_path = Path(input_subset)
+        self.home_domain.alter_table(dlg=dialog_window,
+                                     overview_table=overview_table, project=project)
 
     def language_window(self, stacked_widget) -> None:
         dialog = QDialog()
