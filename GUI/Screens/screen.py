@@ -7,4 +7,4 @@ class Screen(QWidget):
 
     @abstractmethod
     def reset_ui(self, _):
-        pass
+        raise NotImplementedError

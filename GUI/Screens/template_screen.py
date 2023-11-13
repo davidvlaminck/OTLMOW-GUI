@@ -1,4 +1,3 @@
-import logging
 from pathlib import Path
 
 from PyQt6.QtCore import Qt
@@ -7,23 +6,18 @@ from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QFra
 
 from Domain.language_settings import return_language
 from Domain.model_builder import ModelBuilder
-from GUI.Screens.Screen import Screen
-from GUI.header_bar import HeaderBar
-from GUI.stepper import StepperWidget
+from GUI.Screens.screen import Screen
 
 ROOT_DIR = Path(__file__).parent
 LANG_DIR = ROOT_DIR.parent.parent / 'locale/'
 
 
 class TemplateScreen(Screen):
-    def __init__(self, database):
+    def __init__(self):
         super().__init__()
-        self.database = database
         self._ = return_language(LANG_DIR)
-        self.header = HeaderBar(self._, self.database)
         self.container_template_screen = QVBoxLayout()
         self.stacked_widget = None
-        self.stepper_widget = StepperWidget(self._)
         self.select_all_classes = QCheckBox()
         self.no_choice_list = QCheckBox()
         self.geometry_column_added = QCheckBox()
@@ -36,15 +30,15 @@ class TemplateScreen(Screen):
         self.selected = 0
         self.label_counter = QLabel()
         self.subset_name = QLabel()
+        self.operator_name = QLabel()
+        self.otl_version = QLabel()
+        self.operator_title = QLabel()
+        self.otl_title = QLabel()
+        self.change_subset_btn = QPushButton()
 
         self.init_ui()
 
     def init_ui(self):
-        button = self.header.header_bar_detail_screen('subtitle_page_1')
-        button.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(0))
-        self.container_template_screen.addWidget(self.header)
-        self.container_template_screen.addSpacing(10)
-        self.container_template_screen.addWidget(self.stepper_widget.stepper_widget())
         self.container_template_screen.addSpacing(10)
         self.container_template_screen.addWidget(self.template_menu())
         self.container_template_screen.addStretch()
@@ -53,7 +47,6 @@ class TemplateScreen(Screen):
 
     def options_menu(self):
         options_menu = QFrame()
-        options_menu.setProperty('class', 'options-menu')
         options_menu_layout = QVBoxLayout()
         self.select_all_classes.setText(self._("select_all_classes"))
         self.select_all_classes.stateChanged.connect(lambda: self.select_all_classes_clicked())
@@ -76,6 +69,7 @@ class TemplateScreen(Screen):
         self.export_button.setProperty('class', 'primary-button')
 
         options_menu_layout.addWidget(self.select_all_classes)
+        options_menu_layout.addSpacing(10)
         options_menu_layout.addWidget(self.no_choice_list)
         options_menu_layout.addWidget(self.geometry_column_added)
         options_menu_layout.addWidget(self.export_attribute_info)
@@ -88,33 +82,57 @@ class TemplateScreen(Screen):
 
     def template_menu(self):
         full_window = QWidget()
-        full_window.setProperty('class', 'template-menu')
+        full_window.setProperty('class', 'background-box')
         horizontal_layout = QHBoxLayout()
         window = QFrame()
         layout = QVBoxLayout()
-        layout.addWidget(self.subset_title_and_button(), alignment=Qt.AlignmentFlag.AlignLeft)
+        layout.addWidget(self.subset_title_and_button())
+        layout.addWidget(self.create_operator_info_field(), alignment=Qt.AlignmentFlag.AlignLeft)
+        layout.addWidget(self.create_otl_version_field(), alignment=Qt.AlignmentFlag.AlignLeft)
         layout.addWidget(self.options_menu())
         layout.setContentsMargins(16, 0, 16, 0)
         window.setLayout(layout)
         horizontal_layout.addWidget(window)
         horizontal_layout.addWidget(self.create_list())
+        horizontal_layout.addSpacing(20)
         full_window.setLayout(horizontal_layout)
         return full_window
 
     def subset_title_and_button(self):
         frame = QFrame()
-        title = QLabel()
-        title.setText(self._("subset") + ":")
-        self.subset_name = QLabel()
-        self.subset_name.setText("")
-        button = QPushButton()
-        button.setText(self._("change_subset"))
-        button.setProperty('class', 'secondary-button')
         horizontal_layout = QHBoxLayout()
-        horizontal_layout.addWidget(title)
+        subset_title = QLabel()
+        subset_title.setText(self._("subset") + ":")
+        self.subset_name.setText("")
+        self.change_subset_btn.setText(self._("change_subset"))
+        self.change_subset_btn.setProperty('class', 'secondary-button')
+        horizontal_layout.addWidget(subset_title)
         horizontal_layout.addWidget(self.subset_name)
         horizontal_layout.addSpacing(30)
-        horizontal_layout.addWidget(button)
+        horizontal_layout.addWidget(self.change_subset_btn, alignment=Qt.AlignmentFlag.AlignRight)
+        horizontal_layout.setContentsMargins(0, 16, 0, 16)
+        frame.setLayout(horizontal_layout)
+        return frame
+
+    def create_operator_info_field(self):
+        frame = QFrame()
+        horizontal_layout = QHBoxLayout()
+        self.operator_title.setText(self._("operator") + ":")
+        self.operator_name.setText("")
+        horizontal_layout.addWidget(self.operator_title)
+        horizontal_layout.addWidget(self.operator_name)
+        horizontal_layout.setContentsMargins(0, 0, 0, 0)
+        frame.setLayout(horizontal_layout)
+        return frame
+
+    def create_otl_version_field(self):
+        frame = QFrame()
+        horizontal_layout = QHBoxLayout()
+        self.otl_title.setText(self._("otl_version") + ":")
+        self.otl_version.setText("")
+        horizontal_layout.addWidget(self.otl_title)
+        horizontal_layout.addWidget(self.otl_version, alignment=Qt.AlignmentFlag.AlignLeft)
+        horizontal_layout.setContentsMargins(0, 0, 0, 0)
         frame.setLayout(horizontal_layout)
         return frame
 
@@ -140,11 +158,16 @@ class TemplateScreen(Screen):
         frame.setLayout(vertical_layout)
         return frame
 
-    def update_name_project(self):
+    def update_project_info(self):
         try:
-            self.subset_name.setText(ModelBuilder(self.path).get_name_project())
+            model_builder = ModelBuilder(self.path)
+            self.subset_name.setText(model_builder.get_name_project())
+            self.operator_name.setText(model_builder.get_operator_name())
+            self.otl_version.setText(model_builder.get_otl_version())
         except FileNotFoundError as e:
             self.subset_name.setText("/")
+            self.operator_name.setText("/")
+            self.otl_version.setText("/")
 
     def update_label_under_list(self):
         counter = 0
@@ -172,7 +195,6 @@ class TemplateScreen(Screen):
         self.select_all_classes.setText(self._("select_all_classes"))
         self.example_label.setText(self._("amount_of_examples"))
         self.export_button.setText(self._("export"))
-
-        self.header.reset_ui(self._, 'subtitle_page_1')
-        self.stepper_widget.reset_ui(self._)
-
+        self.change_subset_btn.setText(self._("change_subset"))
+        self.operator_title.setText(self._("operator") + ":")
+        self.otl_title.setText(self._("otl_version") + ":")

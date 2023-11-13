@@ -16,6 +16,8 @@ class HeaderBar(QFrame):
         self.stacked_widget = stacked_widget
         self.return_button = QPushButton()
         self.subtitel = QLabel()
+        self.save_button = QPushButton()
+        self.import_button = QPushButton()
 
     def construct_header_bar(self):
         self.setProperty('class', 'header')
@@ -23,8 +25,12 @@ class HeaderBar(QFrame):
         title = QLabel('OTLWizard')
         title.setProperty('class', 'title')
         header.addWidget(title)
+        header.addSpacing(30)
         self.create_new_project_button()
+        self.create_import_button()
         header.addWidget(self.new_project_button)
+        header.addWidget(self.import_button)
+        header.addStretch()
         header.setAlignment(self.new_project_button, Qt.AlignmentFlag.AlignLeft)
         user_settings = self.construct_settings_bar()
         header.addLayout(user_settings)
@@ -32,20 +38,25 @@ class HeaderBar(QFrame):
         self.setLayout(header)
 
     def create_new_project_button(self):
+        self.new_project_button.setIcon(qta.icon("mdi.plus",
+                                                 color='white'))
         self.new_project_button.setText(self._('new_project_button'))
-        self.new_project_button.setProperty('class', 'new-project')
+        self.new_project_button.setProperty('class', 'new-project-btn')
         self.new_project_button.clicked.connect(
             lambda: self.start_dialog_window(is_project=True))
 
     def construct_settings_bar(self):
         user_pref_container = QHBoxLayout()
         settings = QPushButton()
-        settings.setIcon(qta.icon('mdi.cog'))
+        settings.setIcon(qta.icon('mdi.cog',
+                                  color="white"))
         settings.setProperty('class', 'settings')
         settings.clicked.connect(lambda: self.start_dialog_window())
         user_pref_container.addWidget(settings)
         help_widget = QPushButton()
-        help_widget.setIcon(qta.icon('mdi.help-circle'))
+        help_icon = qta.icon('mdi.help-circle',
+                             color='white')
+        help_widget.setIcon(help_icon)
         help_widget.setProperty('class', 'settings')
         user_pref_container.addWidget(help_widget)
         return user_pref_container
@@ -66,7 +77,8 @@ class HeaderBar(QFrame):
         title.setProperty('class', 'title')
         header.addWidget(title)
         self.return_button.setProperty('class', 'return-button')
-        self.return_button.setIcon(qta.icon('mdi.arrow-left'))
+        self.return_button.setIcon(qta.icon('mdi.arrow-left',
+                                            color='white'))
         self.return_button.setText(self._('return_to_home_screen'))
         header.addWidget(self.return_button)
         header.setAlignment(self.return_button, Qt.AlignmentFlag.AlignLeft)
@@ -74,20 +86,42 @@ class HeaderBar(QFrame):
         header.addLayout(settings)
         header.setAlignment(settings, Qt.AlignmentFlag.AlignRight)
 
-        head_top.setLayout(header)
-        # head_top.setContentsMargins(0, 0, 0, 0)
+        header_sub = QFrame()
+        header_sub_layout = QHBoxLayout()
+        header_sub.setProperty('class', 'sub-header')
+
         self.subtitel.setText(self._(page))
         self.subtitel.setProperty('class', 'subtitle')
 
+        self.save_button.setIcon(qta.icon('mdi.content-save',
+                                          color='white'))
+        self.save_button.setText(self._('save_button'))
+        self.save_button.setProperty('class', 'primary-button')
+
+        header_sub_layout.addWidget(self.subtitel)
+        header_sub_layout.addWidget(self.save_button)
+        header_sub_layout.setAlignment(self.save_button, Qt.AlignmentFlag.AlignRight)
+
+        header_sub.setLayout(header_sub_layout)
+
+        head_top.setLayout(header)
+
         full_header.setSpacing(0)
         full_header.addWidget(head_top)
-        full_header.addWidget(self.subtitel)
+        full_header.addWidget(header_sub)
         full_header.setContentsMargins(0, 0, 0, 0)
         self.setLayout(full_header)
         return self.return_button
+
+    def create_import_button(self):
+        self.import_button.setIcon(qta.icon("mdi.download",
+                                            color="#0E5A69"))
+        self.import_button.setText(self._("import"))
+        self.import_button.setProperty('class', 'secondary-button')
 
     def reset_ui(self, _, page=None):
         self._ = _
         self.new_project_button.setText(self._('new_project_button'))
         self.return_button.setText(self._('return_to_home_screen'))
+        self.save_button.setText(self._('save_button'))
         self.subtitel.setText(self._(page))

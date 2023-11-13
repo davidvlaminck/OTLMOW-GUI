@@ -21,18 +21,21 @@ class OverviewTable(QTableWidget):
         self.message_box = message_box
         self.database = database
         self.stacked_widget = None
+        self.error_widget = QTableWidgetItem()
 
     def draw_table(self, input_text: str = None):
+        self.setEnabled(True)
         self.verticalHeader().setVisible(False)
-        self.setColumnCount(6)
+        self.setColumnCount(7)
         self.setHorizontalHeaderLabels(
-            [self._('own_reference'), self._('service_order'), self._('subset'), self._('last_edited'), '', ''])
+            [self._('own_reference'), self._('service_order'), self._('subset'), self._('last_edited'), '', '', ''])
         # ALign titles of header to the left
         self.horizontalHeader().setDefaultAlignment(Qt.AlignmentFlag.AlignLeft)
         for column in range(self.columnCount() - 2):
             self.horizontalHeader().setSectionResizeMode(column, QHeaderView.ResizeMode.Stretch)
         self.horizontalHeader().setSectionResizeMode(4, QHeaderView.ResizeMode.ResizeToContents)
         self.horizontalHeader().setSectionResizeMode(5, QHeaderView.ResizeMode.ResizeToContents)
+        self.horizontalHeader().setSectionResizeMode(6, QHeaderView.ResizeMode.ResizeToContents)
         self.setShowGrid(False)
         try:
             self.search_message.setText("")
@@ -61,9 +64,11 @@ class OverviewTable(QTableWidget):
             table.setItem(row, column, QTableWidgetItem(item))
 
     def add_the_error_row(self, table):
+        table.setEnabled(False)
         table.setRowCount(1)
         table.clearContents()
-        table.setItem(0, 0, QTableWidgetItem(self._('no_results')))
+        self.error_widget.setText(self._('no_results'))
+        table.setItem(0, 0, self.error_widget)
 
     def add_update_and_delete_button(self, count: int, id_: int, table: QTableWidget) -> None:
         edit = QPushButton()
@@ -72,17 +77,23 @@ class OverviewTable(QTableWidget):
         edit.clicked.connect(
             lambda _, row_id=id_: self.start_dialog_window(id_=row_id, is_project=True))
         table.setCellWidget(count, 4, edit)
-        button = QPushButton()
-        button.setIcon(qta.icon('mdi.trash-can'))
-        button.setProperty('class', 'alter-button')
-        button.clicked.connect(lambda _, i=id_:
-                               self.message_box.draw_remove_project_screen(i, self))
-        table.setCellWidget(count, 5, button)
+
+        delete_btn = QPushButton()
+        delete_btn.setIcon(qta.icon('mdi.trash-can'))
+        delete_btn.setProperty('class', 'alter-button')
+        delete_btn.clicked.connect(lambda _, i=id_:
+                                   self.message_box.draw_remove_project_screen(i, self))
+        table.setCellWidget(count, 5, delete_btn)
+
+        share_btn = QPushButton()
+        share_btn.setIcon(qta.icon("mdi.share"))
+        share_btn.setProperty('class', 'alter-button')
+        table.setCellWidget(count, 6, share_btn)
 
     def navigate_to_project(self, row):
-        self.stacked_widget.widget(1).path = self.projects[row][3]
-        self.stacked_widget.widget(1).fill_list()
-        self.stacked_widget.widget(1).update_name_project()
+        self.stacked_widget.widget(1).tab1.path = self.projects[row][3]
+        self.stacked_widget.widget(1).tab1.fill_list()
+        self.stacked_widget.widget(1).tab1.update_project_info()
         self.stacked_widget.setCurrentIndex(1)
 
     @staticmethod
@@ -106,4 +117,4 @@ class OverviewTable(QTableWidget):
         self._ = lang_settings
         self.setHorizontalHeaderLabels(
             [self._('own_reference'), self._('service_order'), self._('subset'), self._('last_edited'), '', ''])
-
+        self.error_widget.setText(self._('no_results'))

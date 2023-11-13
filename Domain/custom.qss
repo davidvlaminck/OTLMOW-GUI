@@ -1,10 +1,20 @@
-.new-project{
+.primary-button{
     background-color: #0E5A69;
     color: #ffffff;
     height: 25px;
     width: 100px;
     border-radius: 5px;
     padding-left: 1Opx;
+    font-family: Roboto;
+}
+
+.new-project-btn{
+    background-color: #0E5A69;
+    color: #ffffff;
+    height: 25px;
+    border-radius: 5px;
+    padding-left: 1Opx;
+    padding-right: 10px;
     font-family: Roboto;
 }
 
@@ -25,8 +35,6 @@ QHeaderView::section{
     background-color: #B35F35;
     font-family: Roboto;
 }
-
-
 
 .search{
     background-color: #ffffff;
@@ -54,17 +62,13 @@ QTableWidget::item{
 }
 
 .settings{
-    background: transparent;
+    background-color: #B35F35;
     icon-size: 25px;
+    border: none;
 }
 
 HomeScreen{
     background-color: #f1f1f1;
-}
-
-.primary-button{
-    color: #ffffff;
-    background-color: #0E5A69;
 }
 
 .secondary-button{
@@ -78,12 +82,6 @@ HomeScreen{
 
 QApplication{
     background-color: #ffffff;
-}
-
-.subtitle{
-    background-color: #FCF2E9;
-    padding: 10px;
-    border-bottom: 1px solid #B35F35;
 }
 
 .subtitle[text]{
@@ -104,8 +102,81 @@ QApplication{
     opacity: 0.5;
 }
 
-.template-menu{
+.background-box{
     background-color: #ffffff;
     margin-left: 16px;
     margin-right: 16px;
 }
+
+.sub-header{
+    background-color: #FCF2E9;
+    border-bottom: 1px solid #B35F35;
+}
+
+.error-message{
+    background-color: red;
+}
+
+.feedback-message[text]{
+    color: #ffffff;
+    font-family: Roboto;
+    font-size: 20px;
+}
+
+.current-page-button{
+    background-color: #B35F35;
+    height: 25px;
+    border-radius: 5px;
+    border: 2px solid #B35F35;
+}
+
+.current-page-button[text]{
+    color: #ffffff;
+    font-family: Roboto;
+}
+
+.next-page-button{
+    background: transparent;
+    border: 2px solid #B35F35;
+    height: 25px;
+    border-radius: 5px;
+}
+
+.next-page-button[text]{
+    color: #B35F35;
+    font-family: Roboto;
+}
+
+.stepper-button{
+    background: transparent;
+    border: none;
+    icon-size: 25px;
+}
+
+.sub-title{
+    color: #B35F35;
+    font-family: Roboto;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+
+}
+
+.list{
+    border: 1px solid #000000;
+}
+
+QTabBar::tab{
+    height: 30px;
+    width: 300px;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 550;
+}
+
+.change-table
+{
+    border: 1px solid #000000;
+}
+

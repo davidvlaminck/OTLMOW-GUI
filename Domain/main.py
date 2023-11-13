@@ -16,6 +16,7 @@ from GUI.Screens.home_screen import HomeScreen
 from GUI.Screens.insert_data_screen import InsertDataScreen
 from GUI.Screens.template_screen import TemplateScreen
 from GUI.Screens.relation_change_screen import RelationChangeScreen
+from GUI.tab_widget import TableWidget
 
 
 def initialize_database():
@@ -54,24 +55,26 @@ if __name__ == '__main__':
         with open('custom.qss', 'r') as file:
             app.setStyleSheet(file.read())
         home_screen = HomeScreen(db)
-        step1 = TemplateScreen(db)
-        step2 = InsertDataScreen(db)
-        step3_data = AssetDataChangeScreen(db)
-        step3_relations = RelationChangeScreen(db)
-        step4_export = ExportDataScreen(db)
-        step4_conversion = ConversionScreen(db)
+        step1 = TemplateScreen()
+        step1_tabwidget = TableWidget(db, 1, step1, 'template', 'step_1')
+        step2 = InsertDataScreen()
+        step2_tabwidget = TableWidget(db, 2, step2, 'insert_data', 'step_2')
+        step3_data = AssetDataChangeScreen()
+        step3_relations = RelationChangeScreen()
+        step_3_tabwidget = TableWidget(db, 3, step3_data, 'data_change', 'step_3', step3_relations, 'relation_change')
+        step4_export = ExportDataScreen()
+        step4_conversion = ConversionScreen()
+        step4_tabwidget = TableWidget(db, 4, step4_export, 'export_data', 'step_4', step4_conversion, 'conversion')
         stacked_widget = Navigation()
         stacked_widget.add_widget(home_screen)
-        stacked_widget.add_widget(step1, True)
-        stacked_widget.add_widget(step2, True)
-        stacked_widget.add_widget(step3_data, True)
-        stacked_widget.add_widget(step3_relations, True)
-        stacked_widget.add_widget(step4_export, True)
-        stacked_widget.add_widget(step4_conversion, True)
+        stacked_widget.add_widget(step1_tabwidget, True)
+        stacked_widget.add_widget(step2_tabwidget, True)
+        stacked_widget.add_widget(step_3_tabwidget, True)
+        stacked_widget.add_widget(step4_tabwidget, True)
         home_screen.table.stacked_widget = stacked_widget
         step1.stacked_widget = stacked_widget
         stacked_widget.show()
-        stacked_widget.resize(1920, 1080)
+        stacked_widget.resize(1360, 768)
         stacked_widget.setWindowTitle('OTLWizard')
         stacked_widget.setMinimumSize(1280, 720)
         app.exec()

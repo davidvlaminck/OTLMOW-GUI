@@ -1,4 +1,3 @@
-import logging
 from pathlib import Path
 
 from PyQt6.QtGui import QPixmap
@@ -8,7 +7,7 @@ from PyQt6.QtWidgets import QWidget, QPushButton, QLabel, QHBoxLayout, QVBoxLayo
     QLineEdit, QFrame
 from PyQt6.QtCore import Qt
 import Domain.home_domain as HomeDomain
-from GUI.Screens.Screen import Screen
+from GUI.Screens.screen import Screen
 from GUI.header_bar import HeaderBar
 from GUI.message_box import MessageBox
 from GUI.overviewtable import OverviewTable
@@ -63,8 +62,7 @@ class HomeScreen(Screen):
         self.container_home_screen.addSpacing(43)
         # add table to the vertical layout with margins
         self.container_home_screen.addLayout(table_container)
-        pixmap = QPixmap(str(IMG_DIR) + '/AWV_logo.png')
-        pixmap = pixmap.scaledToWidth(200)
+        pixmap = QPixmap(str(IMG_DIR) + '/AWV_200.png')
         self.container_home_screen.addStretch()
         self.container_home_screen.addWidget(QLabel(pixmap=pixmap), alignment=Qt.AlignmentFlag.AlignRight)
         self.container_home_screen.setContentsMargins(0, 0, 0, 0)
