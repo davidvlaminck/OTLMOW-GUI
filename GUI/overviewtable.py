@@ -7,6 +7,7 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QTableWidget, QHeaderView, QTableWidgetItem, QPushButton
 
 from Domain.Project import Project
+from Domain.model_builder import ModelBuilder
 from Exceptions.EmptySearchWarning import EmptySearchWarning
 from GUI.dialog_window import DialogWindow
 
@@ -54,7 +55,7 @@ class OverviewTable(QTableWidget):
         for count, element in enumerate(self.projects):
             self.add_cell_to_table(self, count, 0, element.eigen_referentie)
             self.add_cell_to_table(self, count, 1, element.bestek)
-            self.add_cell_to_table(self, count, 2, element.subset_path)
+            self.add_cell_to_table(self, count, 2, ModelBuilder(element.subset_path).get_name_project())
             logging.debug(element.subset_path)
             self.add_cell_to_table(self, count, 3, element.laatst_bewerkt)
             self.add_update_and_delete_button(count, element.project_path, self)
@@ -74,18 +75,18 @@ class OverviewTable(QTableWidget):
         self.error_widget.setText(self._('no_results'))
         table.setItem(0, 0, self.error_widget)
 
-    def add_update_and_delete_button(self, count: int, id_: int, table: QTableWidget) -> None:
+    def add_update_and_delete_button(self, count: int, project_path: int, table: QTableWidget) -> None:
         edit = QPushButton()
         edit.setIcon(qta.icon('mdi.pencil'))
         edit.setProperty('class', 'alter-button')
         edit.clicked.connect(
-            lambda _, row_id=id_: self.start_dialog_window(id_=row_id, is_project=True))
+            lambda _, row_id=project_path: self.start_dialog_window(id_=row_id, is_project=True))
         table.setCellWidget(count, 4, edit)
 
         delete_btn = QPushButton()
         delete_btn.setIcon(qta.icon('mdi.trash-can'))
         delete_btn.setProperty('class', 'alter-button')
-        delete_btn.clicked.connect(lambda _, i=id_:
+        delete_btn.clicked.connect(lambda _, i=project_path:
                                    self.message_box.draw_remove_project_screen(i, self))
         table.setCellWidget(count, 5, delete_btn)
 

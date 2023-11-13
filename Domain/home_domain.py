@@ -1,4 +1,5 @@
 from datetime import datetime
+from pathlib import Path
 
 from Domain.ProjectFileManager import ProjectFileManager
 from Exceptions.EmptyFieldError import EmptyFieldError
@@ -17,8 +18,9 @@ class HomeDomain:
     def get_all_projects() -> list:
         return ProjectFileManager.get_all_otl_wizard_projects()
 
-    def remove_project(self, id_: int, table) -> None:
-        self.db.remove_project(id_)
+    @staticmethod
+    def remove_project(project_path: Path, table) -> None:
+        ProjectFileManager.delete_project(project_path)
         table.removeRow(table.currentRow())
 
     def alter_table(self, properties: list, dlg, overview_table, id_=None):

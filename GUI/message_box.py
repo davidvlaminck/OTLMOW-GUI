@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from PyQt6.QtWidgets import QMessageBox, QTableWidget, QPushButton
 
 
@@ -7,7 +9,7 @@ class MessageBox:
         self._ = language_settings
         self.home_domain = home_domain
 
-    def draw_remove_project_screen(self, id_: int, table: QTableWidget) -> None:
+    def draw_remove_project_screen(self, project_path: Path, table: QTableWidget) -> None:
         dlg = QMessageBox()
         dlg.setWindowTitle(self._("delete"))
         dlg.setText(self._("project_deletion_question"))
@@ -17,4 +19,4 @@ class MessageBox:
         dlg.exec()
         reply = dlg.buttonRole(dlg.clickedButton())
         if reply == QMessageBox.ButtonRole.YesRole:
-            self.home_domain.remove_project(id_, table)
+            self.home_domain.remove_project(project_path, table)
