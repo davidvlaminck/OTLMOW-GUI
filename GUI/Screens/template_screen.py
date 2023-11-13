@@ -32,6 +32,8 @@ class TemplateScreen(Screen):
         self.subset_name = QLabel()
         self.operator_name = QLabel()
         self.otl_version = QLabel()
+        self.operator_title = QLabel()
+        self.otl_title = QLabel()
         self.change_subset_btn = QPushButton()
 
         self.init_ui()
@@ -84,7 +86,7 @@ class TemplateScreen(Screen):
         horizontal_layout = QHBoxLayout()
         window = QFrame()
         layout = QVBoxLayout()
-        layout.addWidget(self.subset_title_and_button(), alignment=Qt.AlignmentFlag.AlignLeft)
+        layout.addWidget(self.subset_title_and_button())
         layout.addWidget(self.create_operator_info_field(), alignment=Qt.AlignmentFlag.AlignLeft)
         layout.addWidget(self.create_otl_version_field(), alignment=Qt.AlignmentFlag.AlignLeft)
         layout.addWidget(self.options_menu())
@@ -107,18 +109,17 @@ class TemplateScreen(Screen):
         horizontal_layout.addWidget(subset_title)
         horizontal_layout.addWidget(self.subset_name)
         horizontal_layout.addSpacing(30)
-        horizontal_layout.addWidget(self.change_subset_btn)
+        horizontal_layout.addWidget(self.change_subset_btn, alignment=Qt.AlignmentFlag.AlignRight)
         horizontal_layout.setContentsMargins(0, 16, 0, 16)
         frame.setLayout(horizontal_layout)
         return frame
 
     def create_operator_info_field(self):
         frame = QFrame()
-        operator_title = QLabel()
         horizontal_layout = QHBoxLayout()
-        operator_title.setText(self._("operator") + ":")
+        self.operator_title.setText(self._("operator") + ":")
         self.operator_name.setText("")
-        horizontal_layout.addWidget(operator_title)
+        horizontal_layout.addWidget(self.operator_title)
         horizontal_layout.addWidget(self.operator_name)
         horizontal_layout.setContentsMargins(0, 0, 0, 0)
         frame.setLayout(horizontal_layout)
@@ -126,11 +127,10 @@ class TemplateScreen(Screen):
 
     def create_otl_version_field(self):
         frame = QFrame()
-        otl_title = QLabel()
         horizontal_layout = QHBoxLayout()
-        otl_title.setText(self._("otl_version") + ":")
+        self.otl_title.setText(self._("otl_version") + ":")
         self.otl_version.setText("")
-        horizontal_layout.addWidget(otl_title)
+        horizontal_layout.addWidget(self.otl_title)
         horizontal_layout.addWidget(self.otl_version, alignment=Qt.AlignmentFlag.AlignLeft)
         horizontal_layout.setContentsMargins(0, 0, 0, 0)
         frame.setLayout(horizontal_layout)
@@ -160,9 +160,10 @@ class TemplateScreen(Screen):
 
     def update_project_info(self):
         try:
-            self.subset_name.setText(ModelBuilder(self.path).get_name_project())
-            self.operator_name.setText(ModelBuilder(self.path).get_operator_name())
-            self.otl_version.setText(ModelBuilder(self.path).get_otl_version())
+            model_builder = ModelBuilder(self.path)
+            self.subset_name.setText(model_builder.get_name_project())
+            self.operator_name.setText(model_builder.get_operator_name())
+            self.otl_version.setText(model_builder.get_otl_version())
         except FileNotFoundError as e:
             self.subset_name.setText("/")
             self.operator_name.setText("/")
@@ -195,3 +196,5 @@ class TemplateScreen(Screen):
         self.example_label.setText(self._("amount_of_examples"))
         self.export_button.setText(self._("export"))
         self.change_subset_btn.setText(self._("change_subset"))
+        self.operator_title.setText(self._("operator") + ":")
+        self.otl_title.setText(self._("otl_version") + ":")

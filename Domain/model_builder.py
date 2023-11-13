@@ -11,6 +11,7 @@ class ModelBuilder:
         self.collector = OSLOCollector(Path(path))
         self.subset_db = SubsetDatabase(Path(path))
         self.collector.collect_all()
+        self.info_dict = dict(self.subset_db.get_general_info_project())
 
     def get_all_classes(self):
         return self.collector.classes
@@ -22,16 +23,13 @@ class ModelBuilder:
         return [x for x in classes if x.abstract == 0 and x.objectUri not in relations_uri]
 
     def get_name_project(self):
-        info = dict(self.subset_db.get_general_info_project())
-        return info.get('Naam')
+        return self.info_dict.get('Naam')
 
     def get_operator_name(self):
-        info = dict(self.subset_db.get_general_info_project())
-        return info.get('Operator')
+        return self.info_dict.get('Operator')
 
     def get_otl_version(self):
-        info = dict(self.subset_db.get_general_info_project())
-        return info.get('BronVersie')
+        return self.info_dict.get('BronVersie')
 
     def close_subset_db(self):
         self.subset_db.close_connection()

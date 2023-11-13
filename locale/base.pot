@@ -3,7 +3,6 @@
 # This file is distributed under the same license as the PROJECT project.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2023.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
@@ -249,5 +248,57 @@ msgstr ""
 
 #: GUI/Screens/template_screen.py:130
 msgid "no classes found in specified path"
+msgstr ""
+
+#: Domain/main.py
+msgid "step_1"
+msgstr ""
+
+#: Domain/main.py
+msgid "step_2"
+msgstr ""
+
+#: Domain/main.py
+msgid "step_3"
+msgstr ""
+
+#: Domain/main.py
+msgid "step_4"
+msgstr ""
+
+#: Domain/main.py
+msgid "template"
+msgstr ""
+
+#: Domain/main.py
+msgid "insert_data"
+msgstr ""
+
+#: Domain/main.py
+msgid 'data_change'
+msgstr ""
+
+#: GUI/Screens/template_screen.py:200
+msgid "otl_version"
+msgstr ""
+
+#: GUI/Screens/template_screen.py:199
+msgid "operator"
+msgstr ""
+
+#: Domain/main.py
+msgid "relation_change"
+msgstr ""
+
+#: GUI/Screens/export_data_screen.py:36
+msgid "file_to_upload"
+msgstr ""
+
+#: GUI/Screens/conversion_screen.py:36
+msgid "file_to_convert"
+msgstr ""
+
+#: GUI/Screens/convert_screen.py
+msgid "convert"
 msgstr ""
 

@@ -17,6 +17,7 @@ class ExportDataScreen(Screen):
         self._ = return_language(LANG_DIR)
         self.container_insert_data_screen = QVBoxLayout()
         self.export_btn = QPushButton()
+        self.input_file_label = QLabel()
 
         self.stacked_widget = None
         self.init_ui()
@@ -38,7 +39,7 @@ class ExportDataScreen(Screen):
 
         window_layout.addWidget(title)
         window_layout.addSpacing(20)
-        window_layout.addWidget(self.input_file_field('file_to_upload'))
+        window_layout.addWidget(self.input_file_field())
         window_layout.addSpacing(10)
         window_layout.addWidget(self.button_box())
         window_layout.addSpacing(10)
@@ -55,16 +56,15 @@ class ExportDataScreen(Screen):
         button_box.setLayout(button_box_layout)
         return button_box
 
-    def input_file_field(self, text):
+    def input_file_field(self):
         input_file = QFrame()
         input_file_layout = QHBoxLayout()
-        input_file_label = QLabel()
-        input_file_label.setText(self._(text))
+        self.input_file_label.setText(self._('file_to_upload'))
         input_file_field = QLineEdit()
         input_file_field.setReadOnly(True)
         input_file_button = QPushButton()
         input_file_button.setIcon(qta.icon('mdi.folder-open-outline'))
-        input_file_layout.addWidget(input_file_label)
+        input_file_layout.addWidget(self.input_file_label)
         input_file_layout.addWidget(input_file_field)
         input_file_layout.addWidget(input_file_button)
         input_file.setLayout(input_file_layout)
@@ -73,3 +73,4 @@ class ExportDataScreen(Screen):
     def reset_ui(self, _):
         self._ = _
         self.export_btn.setText(self._('export'))
+        self.input_file_label.setText(self._('file_to_upload'))
