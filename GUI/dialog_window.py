@@ -107,6 +107,8 @@ class DialogWindow:
             self.error_label.setText(str(e))
             return
         self.error_label.setText("")
+        if project is None:
+            project = Project()
         project.eigen_referentie = input_eigen_ref
         project.bestek = input_bestek
         project.subset_path = Path(input_subset)

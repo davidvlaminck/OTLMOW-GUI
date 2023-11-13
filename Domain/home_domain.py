@@ -25,15 +25,17 @@ class HomeDomain:
         ProjectFileManager.delete_project(project.project_path)
         table.removeRow(table.currentRow())
 
-    def alter_table(self, dlg, overview_table, project: Project = None):
+    @staticmethod
+    def alter_table(dlg, overview_table, project: Project = None):
         time_of_alter = datetime.now().date()
-        project_exists = project is not None
+        project.laatst_bewerkt = time_of_alter
+        project_exists = project.project_path is not None
         if project_exists:
-            project.laatst_bewerkt = time_of_alter
             ProjectFileManager.save_project_to_dir(project)
         else:
             logging.debug("Creating new project")
-            # project = self.db.add_project(properties[0], properties[1], properties[2], time_of_alter)
+            project.project_path = Path(ProjectFileManager.get_otl_wizard_projects_dir() / project.eigen_referentie)
+            ProjectFileManager.save_project_to_dir(project)
         overview_table.draw_table()
         dlg.close()
 
