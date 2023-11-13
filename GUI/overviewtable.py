@@ -7,6 +7,7 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QTableWidget, QHeaderView, QTableWidgetItem, QPushButton
 
 from Domain.Project import Project
+from Domain.home_domain import HomeDomain
 from Domain.model_builder import ModelBuilder
 from Exceptions.EmptySearchWarning import EmptySearchWarning
 from GUI.dialog_window import DialogWindow
@@ -41,7 +42,7 @@ class OverviewTable(QTableWidget):
         self.setShowGrid(False)
         try:
             self.search_message.setText("")
-            self.projects = self.filter_projects(self._, self.home_domain, input_text)
+            self.projects = self.filter_projects(self._, input_text)
         except EmptySearchWarning as e:
             self.add_the_error_row(self)
             return
@@ -102,14 +103,14 @@ class OverviewTable(QTableWidget):
         self.stacked_widget.setCurrentIndex(1)
 
     @staticmethod
-    def filter_projects(_, home_domain, input_text: str = None):
-        projects = home_domain.get_all_projects()
+    def filter_projects(_, input_text: str = None):
+        projects = HomeDomain.get_all_projects()
         if type(input_text) is str:
             input_text.strip()
             if len(input_text) != 0:
                 projects = [k for k in projects if k.eigen_referentie.startswith(input_text) or k.bestek.startswith(input_text)]
                 if len(projects) == 0:
-                    projects.append(home_domain.get_all_projects())
+                    projects.append(HomeDomain.get_all_projects())
                     raise EmptySearchWarning(_('no_results'))
         return projects
 

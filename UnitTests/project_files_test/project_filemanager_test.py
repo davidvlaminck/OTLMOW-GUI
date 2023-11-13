@@ -13,7 +13,7 @@ PARENT_OF_THIS_FILE = Path(__file__).parent
 
 
 @pytest.fixture
-def mock_get_otl_wizard_projects_dir(mocked_dir='mock_otlwizard_project_dir'):
+def mock_get_otl_wizard_projects_dir(mocked_dir='mock_otlwizard_project_dir/'):
     # This fixture will mock the get_otl_wizard_projects_dir function to return a directory in the UnitTests directory
     # and defaults to 'mock_otlwizard_project_dir'
     orig_get_otl_wizard_projects_dir = ProjectFileManager.get_otl_wizard_projects_dir
@@ -78,6 +78,7 @@ def test_save_project_given_details(mock_get_otl_wizard_projects_dir):
     shutil.rmtree(project_dir_path)
 
 
+# KAPUTT
 def test_get_all_otl_wizard_projects(caplog, mock_get_otl_wizard_projects_dir):
     projects = ProjectFileManager.get_all_otl_wizard_projects()
     assert len(projects) == 1
@@ -85,6 +86,7 @@ def test_get_all_otl_wizard_projects(caplog, mock_get_otl_wizard_projects_dir):
     assert len(caplog.records) == 1
 
 
+# KAPUTT
 @pytest.mark.parametrize("mock_get_otl_wizard_projects_dir", ['bad_dir'])
 def test_get_all_otl_wizard_projects_wrong_directory(mock_get_otl_wizard_projects_dir):
     projects = ProjectFileManager.get_all_otl_wizard_projects()
@@ -93,7 +95,7 @@ def test_get_all_otl_wizard_projects_wrong_directory(mock_get_otl_wizard_project
 
 def test_get_otl_wizard_projects_dir():
     home_dir = os.path.expanduser('~')
-    otl_wizard_dir_using_os = Path(os.path.join(home_dir, 'OTLWizardProjects'))
+    otl_wizard_dir_using_os = Path(os.path.join(home_dir, 'OTLWizardProjects/'))
 
     otl_wizard_projects_dir = ProjectFileManager.get_otl_wizard_projects_dir()
 
@@ -136,9 +138,12 @@ def test_load_project_file():
     assert file_path.exists()
 
     project_loaded = ProjectFileManager.load_project_file(file_path=file_path)
-    assert project_loaded.project_path == Path(PARENT_OF_THIS_FILE / 'mock_otlwizard_project_dir' / 'project_extract_and_load')
-    assert project_loaded.subset_path == Path(PARENT_OF_THIS_FILE / 'mock_otlwizard_project_dir' / 'project_extract_and_load' / 'OTL_AllCasesTestClass.db')
-    assert project_loaded.assets_path == Path(PARENT_OF_THIS_FILE / 'mock_otlwizard_project_dir' / 'project_extract_and_load' / 'assets.json')
+    assert project_loaded.project_path == Path(
+        PARENT_OF_THIS_FILE / 'mock_otlwizard_project_dir' / 'project_extract_and_load')
+    assert project_loaded.subset_path == Path(
+        PARENT_OF_THIS_FILE / 'mock_otlwizard_project_dir' / 'project_extract_and_load' / 'OTL_AllCasesTestClass.db')
+    assert project_loaded.assets_path == Path(
+        PARENT_OF_THIS_FILE / 'mock_otlwizard_project_dir' / 'project_extract_and_load' / 'assets.json')
     assert project_loaded.eigen_referentie == project.eigen_referentie
     assert project_loaded.bestek == project.bestek
     assert project_loaded.laatst_bewerkt == project.laatst_bewerkt
