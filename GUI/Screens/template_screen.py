@@ -158,7 +158,7 @@ class TemplateScreen(Screen):
         frame.setLayout(vertical_layout)
         return frame
 
-    def update_name_project(self):
+    def update_project_info(self):
         try:
             self.subset_name.setText(ModelBuilder(self.path).get_name_project())
             self.operator_name.setText(ModelBuilder(self.path).get_operator_name())

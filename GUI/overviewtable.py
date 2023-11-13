@@ -93,7 +93,7 @@ class OverviewTable(QTableWidget):
     def navigate_to_project(self, row):
         self.stacked_widget.widget(1).tab1.path = self.projects[row][3]
         self.stacked_widget.widget(1).tab1.fill_list()
-        self.stacked_widget.widget(1).tab1.update_name_project()
+        self.stacked_widget.widget(1).tab1.update_project_info()
         self.stacked_widget.setCurrentIndex(1)
 
     @staticmethod

@@ -1,5 +1,6 @@
 from pathlib import Path
 import qtawesome as qta
+from PyQt6.QtGui import QPixmap
 
 from PyQt6.QtWidgets import QVBoxLayout, QFrame, QHBoxLayout, QPushButton, QWidget, QLineEdit, QLabel, QListWidget
 
@@ -33,7 +34,7 @@ class RelationChangeScreen(Screen):
         window_layout.addSpacing(10)
         window_layout.addWidget(self.input_file_field())
         window_layout.addSpacing(10)
-        window_layout.addWidget(self.listbox())
+        window_layout.addWidget(self.horizontal_layout())
         window.setLayout(window_layout)
         return window
 
@@ -90,14 +91,24 @@ class RelationChangeScreen(Screen):
         frame.setLayout(frame_layout)
         return frame
 
-    def listbox(self):
+    def horizontal_layout(self):
         frame = QFrame()
         frame_layout = QHBoxLayout()
         frame_layout.addWidget(self.class_list())
         frame_layout.addWidget(self.relations_list())
         frame_layout.addWidget(self.existing_relations_list())
+        frame_layout.addWidget(self.map_widget())
+        frame_layout.addSpacing(20)
         frame.setLayout(frame_layout)
         return frame
+
+    def map_widget(self):
+        root_dir = Path(__file__).parent
+        img_dir = root_dir.parent.parent / 'img/'
+        pixmap = QPixmap(str(img_dir) + '/Dienstkaart-cropped-resized.png')
+        image_label = QLabel()
+        image_label.setPixmap(pixmap)
+        return image_label
 
     def reset_ui(self, _):
         self._ = _
