@@ -57,6 +57,7 @@ class ProjectFileManager:
     def save_project_to_dir(cls, project: Project):
         otl_wizard_project_dir = cls.get_otl_wizard_projects_dir()
         project_dir_path = otl_wizard_project_dir / project.project_path.name
+        logging.debug("Saving project to %s", project_dir_path)
         project_dir_path.mkdir(exist_ok=True, parents=True)
 
         project_details_dict = {
@@ -95,3 +96,8 @@ class ProjectFileManager:
 
         project = cls.get_project_from_dir(project_dir_path)
         return project
+
+    @classmethod
+    def delete_project(cls, file_path: Path):
+        logging.debug("Deleting project %s", file_path)
+        shutil.rmtree(file_path)

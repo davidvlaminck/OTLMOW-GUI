@@ -3,10 +3,13 @@ import sys
 import typing
 
 from datetime import datetime
+from pathlib import Path
 
 from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import QApplication
 
+from Domain.Project import Project
+from Domain.ProjectFileManager import ProjectFileManager
 from Domain.database import Database
 from Domain.navigation import Navigation
 from GUI.Screens.asset_data_change_screen import AssetDataChangeScreen
@@ -17,6 +20,10 @@ from GUI.Screens.insert_data_screen import InsertDataScreen
 from GUI.Screens.template_screen import TemplateScreen
 from GUI.Screens.relation_change_screen import RelationChangeScreen
 from GUI.tab_widget import TableWidget
+
+ROOT_DIR = Path(__file__).parent.parent
+
+project_dir = ROOT_DIR / 'demo_projects/'
 
 
 def initialize_database():
@@ -29,6 +36,19 @@ def mockData(database):
     database.add_project('testen', 'test', 'test', datetime(2021, 9, 11, 12, 30, 0))
     database.add_project('test2', 'test2', 'test2', datetime(2022, 4, 3, 23, 59, 59))
     database.add_project('test3', 'test3', 'test3', datetime(2020, 1, 1, 0, 0, 0))
+
+
+# Used to add demo data to the application for showcase purpose only
+def demo_data():
+    project_1 = Project(
+        project_path=Path(Path.home() / 'OTLWizardProjects' / 'project_1'),
+        subset_path=Path(project_dir / 'project_1' / 'FlitspaalTest.db'),
+        assets_path=Path(project_dir / 'project_1' / 'assets.json'),
+        eigen_referentie="test1",
+        bestek="test_bestek1",
+        laatst_bewerkt=datetime(2021, 9, 11))
+    ProjectFileManager().save_project_to_dir(project_1)
+    ProjectFileManager().delete_project(project_1)
 
 
 class MyApplication(QApplication):
@@ -48,6 +68,7 @@ if __name__ == '__main__':
             level=logging.DEBUG,
             datefmt='%Y-%m-%d %H:%M:%S')
         db = initialize_database()
+        demo_data()
         app = MyApplication(sys.argv, db)
         app_icon = QIcon('../img/wizard.ico')
         app.setWindowIcon(app_icon)
@@ -77,6 +98,7 @@ if __name__ == '__main__':
         stacked_widget.resize(1360, 768)
         stacked_widget.setWindowTitle('OTLWizard')
         stacked_widget.setMinimumSize(1280, 720)
+        print(Path(Path.home()) / 'OTLWizardProjects')
         app.exec()
         app.quit()
     except Exception as e:
