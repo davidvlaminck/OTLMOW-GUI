@@ -59,7 +59,7 @@ class OverviewTable(QTableWidget):
             logging.debug(element.subset_path)
             self.add_cell_to_table(self, count, 3, element.laatst_bewerkt)
             self.add_update_and_delete_button(count, element, self)
-            self.doubleClicked.connect(lambda: self.navigate_to_project(self.currentRow()))
+            self.doubleClicked.connect(lambda _, project=element: self.navigate_to_project(project))
 
     @staticmethod
     def add_cell_to_table(table: QTableWidget, row: int, column: int, item: Union[str, datetime.datetime]) -> None:
@@ -95,8 +95,8 @@ class OverviewTable(QTableWidget):
         share_btn.setProperty('class', 'alter-button')
         table.setCellWidget(count, 6, share_btn)
 
-    def navigate_to_project(self, row):
-        self.stacked_widget.widget(1).tab1.path = self.projects[row][3]
+    def navigate_to_project(self, project):
+        self.stacked_widget.widget(1).tab1.path = project.subset_path
         self.stacked_widget.widget(1).tab1.fill_list()
         self.stacked_widget.widget(1).tab1.update_project_info()
         self.stacked_widget.setCurrentIndex(1)
