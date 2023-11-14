@@ -117,7 +117,7 @@ class HeaderBar(QFrame):
         self.import_button.setIcon(qta.icon("mdi.download",
                                             color="#0E5A69"))
         self.import_button.setText(self._("import"))
-        self.import_button.setProperty('class', 'secondary-button')
+        self.import_button.setProperty('class', 'import-button')
 
     def reset_ui(self, _, page=None):
         self._ = _
