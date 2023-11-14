@@ -60,20 +60,24 @@ class TemplateScreen(Screen):
         self.general_settings_titel.setProperty('class', 'settings-title')
         self.general_settings_titel.setText(self._("general_settings"))
         self.no_choice_list.setText(self._("no_choice_list"))
+        self.no_choice_list.setProperty('class', 'settings-checkbox')
         self.geometry_column_added.setText(self._("geometry_column_added"))
+        self.geometry_column_added.setProperty('class', 'settings-checkbox')
 
         self.example_settings_titel.setProperty('class', 'settings-title')
         self.example_settings_titel.setText(self._("example_settings"))
         example_box = QFrame()
         example_box_layout = QHBoxLayout()
         self.example_label.setText(self._("amount_of_examples"))
+        self.example_label.setProperty('class', 'settings-label')
         self.amount_of_examples.setRange(0, 100)
         self.amount_of_examples.setValue(0)
         self.export_attribute_info.setText(self._("export_attribute_info"))
-
+        self.export_attribute_info.setProperty('class', 'settings-checkbox')
         self.deprecated_titel.setText(self._("deprecated_settings"))
         self.deprecated_titel.setProperty('class', 'settings-title')
         self.show_deprecated_attributes.setText(self._("show_deprecated_attributes"))
+        self.show_deprecated_attributes.setProperty('class', 'settings-checkbox')
 
         example_box_layout.addWidget(self.example_label)
         example_box_layout.addWidget(self.amount_of_examples)
@@ -83,7 +87,6 @@ class TemplateScreen(Screen):
         self.export_button.setProperty('class', 'primary-button')
         self.export_button.clicked.connect(lambda: self.export_function())
 
-        options_menu_layout.addWidget(self.select_all_classes)
         options_menu_layout.addSpacing(10)
         options_menu_layout.addWidget(self.general_settings_titel)
         options_menu_layout.addWidget(self.no_choice_list)
@@ -95,7 +98,7 @@ class TemplateScreen(Screen):
         options_menu_layout.addWidget(self.example_settings_titel)
         options_menu_layout.addWidget(self.export_attribute_info)
         options_menu_layout.addWidget(example_box)
-        options_menu_layout.addWidget(self.export_button)
+        options_menu_layout.addWidget(self.export_button, alignment=Qt.AlignmentFlag.AlignLeft)
         options_menu_layout.addStretch()
         options_menu.setLayout(options_menu_layout)
         return options_menu
@@ -107,8 +110,6 @@ class TemplateScreen(Screen):
         window = QFrame()
         layout = QVBoxLayout()
         layout.addWidget(self.subset_title_and_button())
-        layout.addWidget(self.create_operator_info_field(), alignment=Qt.AlignmentFlag.AlignLeft)
-        layout.addWidget(self.create_otl_version_field(), alignment=Qt.AlignmentFlag.AlignLeft)
         layout.addWidget(self.options_menu())
         layout.setContentsMargins(16, 0, 16, 0)
         window.setLayout(layout)
@@ -121,15 +122,10 @@ class TemplateScreen(Screen):
     def subset_title_and_button(self):
         frame = QFrame()
         horizontal_layout = QHBoxLayout()
-        subset_title = QLabel()
-        subset_title.setText(self._("subset") + ":")
-        self.subset_name.setText("")
         self.change_subset_btn.setText(self._("change_subset"))
         self.change_subset_btn.clicked.connect(lambda: self.change_subset())
         self.change_subset_btn.setProperty('class', 'secondary-button')
-        horizontal_layout.addWidget(subset_title)
-        horizontal_layout.addWidget(self.subset_name)
-        horizontal_layout.addSpacing(30)
+        horizontal_layout.addWidget(self.subset_info_list())
         horizontal_layout.addWidget(self.change_subset_btn, alignment=Qt.AlignmentFlag.AlignRight)
         horizontal_layout.setContentsMargins(0, 16, 0, 16)
         frame.setLayout(horizontal_layout)
@@ -139,9 +135,10 @@ class TemplateScreen(Screen):
         frame = QFrame()
         horizontal_layout = QHBoxLayout()
         self.operator_title.setText(self._("operator") + ":")
+        self.operator_title.setProperty('class', 'info-label')
         self.operator_name.setText("")
         horizontal_layout.addWidget(self.operator_title)
-        horizontal_layout.addWidget(self.operator_name)
+        horizontal_layout.addWidget(self.operator_name, alignment=Qt.AlignmentFlag.AlignRight)
         horizontal_layout.setContentsMargins(0, 0, 0, 0)
         frame.setLayout(horizontal_layout)
         return frame
@@ -150,11 +147,34 @@ class TemplateScreen(Screen):
         frame = QFrame()
         horizontal_layout = QHBoxLayout()
         self.otl_title.setText(self._("otl_version") + ":")
+        self.otl_title.setProperty('class', 'info-label')
         self.otl_version.setText("")
         horizontal_layout.addWidget(self.otl_title)
-        horizontal_layout.addWidget(self.otl_version, alignment=Qt.AlignmentFlag.AlignLeft)
+        horizontal_layout.addWidget(self.otl_version, alignment=Qt.AlignmentFlag.AlignRight)
         horizontal_layout.setContentsMargins(0, 0, 0, 0)
         frame.setLayout(horizontal_layout)
+        return frame
+
+    def create_subset_name_field(self):
+        frame = QFrame()
+        horizontal_layout = QHBoxLayout()
+        subset_title = QLabel()
+        subset_title.setText(self._("subset") + ":")
+        subset_title.setProperty('class', 'info-label')
+        self.subset_name.setText("")
+        horizontal_layout.addWidget(subset_title)
+        horizontal_layout.addWidget(self.subset_name, alignment=Qt.AlignmentFlag.AlignRight)
+        horizontal_layout.setContentsMargins(0, 0, 0, 0)
+        frame.setLayout(horizontal_layout)
+        return frame
+
+    def subset_info_list(self):
+        frame = QFrame()
+        vertical_layout = QVBoxLayout()
+        vertical_layout.addWidget(self.create_subset_name_field())
+        vertical_layout.addWidget(self.create_operator_info_field())
+        vertical_layout.addWidget(self.create_otl_version_field())
+        frame.setLayout(vertical_layout)
         return frame
 
     def fill_list(self):
@@ -171,8 +191,11 @@ class TemplateScreen(Screen):
     def create_list(self):
         frame = QFrame()
         vertical_layout = QVBoxLayout()
+        self.select_all_classes.setText(self._("select_all_classes"))
+        self.select_all_classes.stateChanged.connect(lambda: self.select_all_classes_clicked())
         self.all_classes.setSelectionMode(QListWidget.SelectionMode.MultiSelection)
         self.all_classes.itemSelectionChanged.connect(lambda: self.update_label_under_list())
+        vertical_layout.addWidget(self.select_all_classes, alignment=Qt.AlignmentFlag.AlignTop)
         vertical_layout.addWidget(self.all_classes)
         self.label_counter.setText(self._(f"{self.selected} classes selected"))
         vertical_layout.addWidget(self.label_counter)
