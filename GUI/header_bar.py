@@ -4,10 +4,11 @@ from PyQt6.QtWidgets import QFrame, QHBoxLayout, QLabel, QPushButton, QVBoxLayou
 import qtawesome as qta
 
 from GUI.dialog_window import DialogWindow
+from GUI.overviewtable import OverviewTable
 
 
 class HeaderBar(QFrame):
-    def __init__(self, language, database, stacked_widget=None, table=None):
+    def __init__(self, language, database, stacked_widget=None, table: OverviewTable =None):
         super().__init__()
         self.new_project_button = QPushButton()
         self._ = language
@@ -118,6 +119,13 @@ class HeaderBar(QFrame):
                                             color="#0E5A69"))
         self.import_button.setText(self._("import"))
         self.import_button.setProperty('class', 'import-button')
+        self.import_button.clicked.connect(
+            lambda: self.import_project_window())
+
+    def import_project_window(self):
+        dialog_window = DialogWindow(self._)
+        dialog_window.open_project_file_picker()
+        self.table.reset_ui(self._)
 
     def reset_ui(self, _, page=None):
         self._ = _

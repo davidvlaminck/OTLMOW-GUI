@@ -126,7 +126,7 @@ def test_export_project_to_file():
     os.remove(file_path)
 
 
-def test_load_project_file():
+def test_load_project_file(mock_get_otl_wizard_projects_dir):
     project = Project(
         project_path=Path(PARENT_OF_THIS_FILE / 'mock_otlwizard_project_dir' / 'project_1'),
         subset_path=Path(PARENT_OF_THIS_FILE / 'mock_otlwizard_project_dir' / 'project_1' / 'OTL_AllCasesTestClass.db'),
@@ -134,7 +134,7 @@ def test_load_project_file():
         eigen_referentie="eigen referentie",
         bestek="bestek",
         laatst_bewerkt=datetime.datetime(2023, 11, 1))
-    file_path = Path(PARENT_OF_THIS_FILE / 'mock_otlwizard_project_dir' / 'project_extract_and_load.otlw')
+    file_path = Path(PARENT_OF_THIS_FILE / 'project_extract_and_load.otlw')
 
     ProjectFileManager.export_project_to_file(project=project, file_path=file_path)
 

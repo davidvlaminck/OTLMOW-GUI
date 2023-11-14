@@ -88,7 +88,7 @@ class ProjectFileManager:
 
     @classmethod
     def load_project_file(cls, file_path) -> Project:
-        project_dir_path = Path(file_path.parent / file_path.stem)
+        project_dir_path = Path(cls.get_otl_wizard_projects_dir() / file_path.stem)
         project_dir_path.mkdir(exist_ok=False, parents=True)  # TODO: raise error if dir already exists?
 
         with zipfile.ZipFile(file_path) as project_file:
