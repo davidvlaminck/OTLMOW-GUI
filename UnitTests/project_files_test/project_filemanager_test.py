@@ -85,10 +85,14 @@ def test_get_all_otl_wizard_projects(caplog, mock_get_otl_wizard_projects_dir):
     assert len(caplog.records) == 1
 
 
-# TODO: Ask about this test
-@pytest.mark.parametrize("mock_get_otl_wizard_projects_dir", ['bad_dir'])
 def test_get_all_otl_wizard_projects_wrong_directory(mock_get_otl_wizard_projects_dir):
+    orig_get_otl_wizard_projects_dir = ProjectFileManager.get_otl_wizard_projects_dir
+    ProjectFileManager.get_otl_wizard_projects_dir = lambda: Path(PARENT_OF_THIS_FILE / 'bad_dir')
+
     projects = ProjectFileManager.get_all_otl_wizard_projects()
+
+    ProjectFileManager.get_otl_wizard_projects_dir = orig_get_otl_wizard_projects_dir
+
     assert projects == []
 
 
