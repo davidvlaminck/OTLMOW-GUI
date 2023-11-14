@@ -190,11 +190,15 @@ class TemplateScreen(Screen):
             self.all_classes.clearSelection()
 
     def export_function(self):
+        selected_classes = []
         logging.debug("No choice list: " + str(self.no_choice_list.isChecked()))
         logging.debug("Geometry column added: " + str(self.geometry_column_added.isChecked()))
         logging.debug("Export attribute info: " + str(self.export_attribute_info.isChecked()))
         logging.debug("Show deprecated attributes: " + str(self.show_deprecated_attributes.isChecked()))
         logging.debug("Amount of examples: " + str(self.amount_of_examples.value()))
+        for item in self.all_classes.selectedItems():
+            selected_classes.append(item.text())
+        logging.debug("Selected classes: " + str(selected_classes))
 
     def reset_ui(self, _):
         self._ = _

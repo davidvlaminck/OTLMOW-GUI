@@ -152,6 +152,7 @@ class DialogWindow:
     def change_subset_window(self, project, stacked_widget):
         dialog = QDialog()
         dialog.setModal(True)
+        dialog.setMinimumWidth(700)
         dialog.setWindowTitle(self._("change_subset"))
         layout = QVBoxLayout()
 
@@ -175,6 +176,7 @@ class DialogWindow:
         button_box.button(QDialogButtonBox.StandardButton.Cancel).setProperty("class", "secondary-button")
         button_box.button(QDialogButtonBox.StandardButton.Cancel).setText(self._("cancel"))
         button_box.accepted.connect(lambda: self.home_domain.change_subset(project, input_subset.text(), dialog, stacked_widget))
+        button_box.rejected.connect(dialog.reject)
 
         layout.addWidget(frame)
         layout.addWidget(button_box)
