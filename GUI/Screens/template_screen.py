@@ -199,6 +199,11 @@ class TemplateScreen(Screen):
         for item in self.all_classes.selectedItems():
             selected_classes.append(item.text())
         logging.debug("Selected classes: " + str(selected_classes))
+        DialogWindow(self._).export_window()
+
+    def change_subset(self):
+        dialog_window = DialogWindow(self._)
+        dialog_window.change_subset_window(self.project, self.stacked_widget)
 
     def reset_ui(self, _):
         self._ = _
@@ -216,8 +221,3 @@ class TemplateScreen(Screen):
         self.change_subset_btn.setText(self._("change_subset"))
         self.operator_title.setText(self._("operator") + ":")
         self.otl_title.setText(self._("otl_version") + ":")
-
-    def change_subset(self):
-        dialog_window = DialogWindow(self._)
-        dialog_window.change_subset_window(self.project, self.stacked_widget)
-

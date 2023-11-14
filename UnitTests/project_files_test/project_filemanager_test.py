@@ -78,7 +78,6 @@ def test_save_project_given_details(mock_get_otl_wizard_projects_dir):
     shutil.rmtree(project_dir_path)
 
 
-# KAPUTT
 def test_get_all_otl_wizard_projects(caplog, mock_get_otl_wizard_projects_dir):
     projects = ProjectFileManager.get_all_otl_wizard_projects()
     assert len(projects) == 1
@@ -86,7 +85,7 @@ def test_get_all_otl_wizard_projects(caplog, mock_get_otl_wizard_projects_dir):
     assert len(caplog.records) == 1
 
 
-# KAPUTT
+# TODO: Ask about this test
 @pytest.mark.parametrize("mock_get_otl_wizard_projects_dir", ['bad_dir'])
 def test_get_all_otl_wizard_projects_wrong_directory(mock_get_otl_wizard_projects_dir):
     projects = ProjectFileManager.get_all_otl_wizard_projects()

@@ -1,3 +1,4 @@
+import logging
 from enum import Enum
 from pathlib import Path
 
@@ -184,4 +185,13 @@ class DialogWindow:
         dialog.show()
         dialog.exec()
         stacked_widget.reset_ui(self._)
+
+    @staticmethod
+    def export_window():
+        file_picker = QFileDialog()
+        file_picker.setModal(True)
+        file_picker.setDirectory(str(Path.home()))
+        document_loc = file_picker.getSaveFileName(filter="Excel files (*.xlsx);;CSV files (*.csv)")
+        if document_loc:
+            logging.debug(document_loc)
 

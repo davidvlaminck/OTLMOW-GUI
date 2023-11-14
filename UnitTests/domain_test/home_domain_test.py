@@ -14,9 +14,7 @@ LOCALE_DIR = ROOT_DIR.parent.parent / 'locale/'
 
 @pytest.fixture
 def home_domain():
-    db = Database()
-    db.create_connection(":memory:")
-    home_domain = HomeDomain(db, return_language(LOCALE_DIR))
+    home_domain = HomeDomain(return_language(LOCALE_DIR))
     return home_domain
 
 
