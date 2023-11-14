@@ -7,6 +7,7 @@ from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QFra
 
 from Domain.language_settings import return_language
 from Domain.model_builder import ModelBuilder
+from Domain.template_domain import TemplateDomain
 from GUI.Screens.screen import Screen
 from GUI.dialog_window import DialogWindow
 
@@ -93,6 +94,7 @@ class TemplateScreen(Screen):
         options_menu_layout.addWidget(self.geometry_column_added)
         options_menu_layout.addSpacing(10)
         options_menu_layout.addWidget(self.deprecated_titel)
+        self.show_deprecated_attributes.setEnabled(True)
         options_menu_layout.addWidget(self.show_deprecated_attributes)
         options_menu_layout.addSpacing(10)
         options_menu_layout.addWidget(self.example_settings_titel)
@@ -184,6 +186,8 @@ class TemplateScreen(Screen):
             values = ModelBuilder(self.project.subset_path).filter_relations_and_abstract()
             for value in values:
                 self.all_classes.addItem(value.name)
+                if TemplateDomain.check_for_no_deprecated_present(values):
+                    self.show_deprecated_attributes.setEnabled(False)
         except FileNotFoundError as e:
             self.all_classes.setEnabled(False)
             self.all_classes.addItem(self._("no classes found in specified path"))
