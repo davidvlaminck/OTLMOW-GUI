@@ -26,14 +26,14 @@ class HomeScreen(Screen):
         self._ = return_language(LANG_DIR)
         self.home_domain = HomeDomain.HomeDomain(self._)
         self.container_home_screen = QVBoxLayout()
-        self.projects: list
+
         self.message_box = MessageBox(self._, self.home_domain)
         self.head_wrapper = QFrame()
         self.input_field = QLineEdit()
         self.new_project_button = QPushButton()
         self.search_message = QLabel()
         self.table = OverviewTable(self.search_message, self._, self.home_domain, self.message_box, self.database)
-        self.header = HeaderBar(language=self._, database=self.database, table=self.table)
+        self.header = HeaderBar(language=self._, database=self.database, table=self.table, home_screen=self)
         self.stacked_widget = None
 
         self.main_content_ui()

@@ -152,7 +152,7 @@ class DialogWindow:
             input_subset.setText(file_picker.selectedFiles()[0])
 
     @staticmethod
-    def open_project_file_picker():
+    def open_project_file_picker() -> Project:
         file_path = str(Path.home())
         file_picker = QFileDialog()
         file_picker.setWindowTitle("Selecteer een OTL wizard project")
@@ -161,7 +161,7 @@ class DialogWindow:
         file_picker.setOption(QFileDialog.Option.ShowDirsOnly, True)
         if file_picker.exec():
             project_file_path = Path(file_picker.selectedFiles()[0])
-            ProjectFileManager.load_project_file(file_path=project_file_path)
+            return ProjectFileManager.load_project_file(file_path=project_file_path)
 
     def change_subset_window(self, project, stacked_widget):
         dialog = QDialog()
