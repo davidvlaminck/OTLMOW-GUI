@@ -7,6 +7,7 @@ from PyQt6.QtWidgets import QDialog, QVBoxLayout, QLineEdit, QDialogButtonBox, Q
     QFileDialog, QFrame
 
 from Domain.Project import Project
+from Domain.ProjectFileManager import ProjectFileManager
 from Domain.home_domain import HomeDomain
 from Domain.language_settings import return_language
 from Domain.enums import Language
@@ -194,4 +195,18 @@ class DialogWindow:
         document_loc = file_picker.getSaveFileName(filter="Excel files (*.xlsx);;CSV files (*.csv)")
         if document_loc:
             logging.debug(document_loc)
+
+    @staticmethod
+    def export_project_window(project: Project) -> None:
+        file_picker = QFileDialog()
+        file_picker.setModal(True)
+        file_picker.setDirectory(str(Path.home()))
+        project_path_str = file_picker.getSaveFileName(filter="OTLWizard project files (*.otlw)")[0]
+        if not project_path_str:
+            return
+
+        project_path = Path(project_path_str)
+        ProjectFileManager.export_project_to_file(file_path=project_path, project=project)
+
+
 

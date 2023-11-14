@@ -65,7 +65,7 @@ class OverviewTable(QTableWidget):
             self.add_cell_to_table(self, count, 2, ModelBuilder(element.subset_path).get_name_project())
             logging.debug(element.subset_path)
             self.add_cell_to_table(self, count, 3, element.laatst_bewerkt)
-            self.add_update_and_delete_button(count, element, self)
+            self.add_action_buttons(count, element, self)
             self.doubleClicked.connect(lambda _, project=element: self.navigate_to_project(project))
 
     @staticmethod
@@ -82,7 +82,7 @@ class OverviewTable(QTableWidget):
         self.error_widget.setText(self._('no_results'))
         table.setItem(0, 0, self.error_widget)
 
-    def add_update_and_delete_button(self, count: int, project: Project, table: QTableWidget) -> None:
+    def add_action_buttons(self, count: int, project: Project, table: QTableWidget) -> None:
         edit = QPushButton()
         edit.setIcon(qta.icon('mdi.pencil'))
         edit.setProperty('class', 'alter-button')
@@ -100,6 +100,8 @@ class OverviewTable(QTableWidget):
         share_btn = QPushButton()
         share_btn.setIcon(qta.icon("mdi.share"))
         share_btn.setProperty('class', 'alter-button')
+        share_btn.clicked.connect(lambda _, i=project:
+                                   self.export_dialog_window(i))
         table.setCellWidget(count, 6, share_btn)
 
     def navigate_to_project(self, project):
@@ -119,6 +121,10 @@ class OverviewTable(QTableWidget):
                     projects.append(HomeDomain.get_all_projects())
                     raise EmptySearchWarning(_('no_results'))
         return projects
+
+    def export_dialog_window(self, project: Project = None) -> None:
+        dialog_window = DialogWindow(self._)
+        dialog_window.export_project_window(project=project)
 
     def start_dialog_window(self, project: Project = None, is_project=False) -> None:
         dialog_window = DialogWindow(self._)
