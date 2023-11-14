@@ -12,7 +12,7 @@ ROOT_DIR = Path(__file__).parent
 LANG_DIR = ROOT_DIR.parent / 'locale/'
 
 
-class TableWidget(Screen):
+class TabWidget(Screen):
 
     def __init__(self, database, page_nr: int, widget1, description1: str, step_desc: str,widget2=None, description2: str = None):
         super().__init__()

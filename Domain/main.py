@@ -19,7 +19,7 @@ from GUI.Screens.home_screen import HomeScreen
 from GUI.Screens.insert_data_screen import InsertDataScreen
 from GUI.Screens.template_screen import TemplateScreen
 from GUI.Screens.relation_change_screen import RelationChangeScreen
-from GUI.tab_widget import TableWidget
+from GUI.tab_widget import TabWidget
 
 ROOT_DIR = Path(__file__).parent.parent
 
@@ -78,15 +78,15 @@ if __name__ == '__main__':
             app.setStyleSheet(file.read())
         home_screen = HomeScreen(db)
         step1 = TemplateScreen()
-        step1_tabwidget = TableWidget(db, 1, step1, 'template', 'step_1')
+        step1_tabwidget = TabWidget(db, 1, step1, 'template', 'step_1')
         step2 = InsertDataScreen()
-        step2_tabwidget = TableWidget(db, 2, step2, 'insert_data', 'step_2')
+        step2_tabwidget = TabWidget(db, 2, step2, 'insert_data', 'step_2')
         step3_data = AssetDataChangeScreen()
         step3_relations = RelationChangeScreen()
-        step_3_tabwidget = TableWidget(db, 3, step3_data, 'data_change', 'step_3', step3_relations, 'relation_change')
+        step_3_tabwidget = TabWidget(db, 3, step3_data, 'data_change', 'step_3', step3_relations, 'relation_change')
         step4_export = ExportDataScreen()
         step4_conversion = ConversionScreen()
-        step4_tabwidget = TableWidget(db, 4, step4_export, 'export_data', 'step_4', step4_conversion, 'conversion')
+        step4_tabwidget = TabWidget(db, 4, step4_export, 'export_data', 'step_4', step4_conversion, 'conversion')
         stacked_widget = Navigation()
         stacked_widget.add_widget(home_screen)
         stacked_widget.add_widget(step1_tabwidget, True)
