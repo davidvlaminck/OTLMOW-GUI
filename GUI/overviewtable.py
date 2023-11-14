@@ -58,7 +58,6 @@ class OverviewTable(QTableWidget):
         indices = self.selectionModel().selectedRows()
         for index in sorted(indices):
             self.removeRow(index.row())
-        self.projects = HomeDomain.get_all_projects()
         self.setRowCount(len(self.projects))
         for count, element in enumerate(self.projects):
             self.add_cell_to_table(self, count, 0, element.eigen_referentie)
