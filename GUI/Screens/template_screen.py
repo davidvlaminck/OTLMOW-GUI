@@ -3,7 +3,7 @@ from pathlib import Path
 
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QFrame, QCheckBox, QSpinBox, \
-    QLabel, QListWidget
+    QLabel, QListWidget, QListWidgetItem
 
 from Domain.language_settings import return_language
 from Domain.model_builder import ModelBuilder
@@ -185,7 +185,10 @@ class TemplateScreen(Screen):
             self.all_classes.setEnabled(True)
             values = ModelBuilder(self.project.subset_path).filter_relations_and_abstract()
             for value in values:
-                self.all_classes.addItem(value.name)
+                item = QListWidgetItem()
+                item.setText(value.name)
+                item.setData(1, value.objectUri)
+                self.all_classes.addItem(item)
                 if TemplateDomain.check_for_no_deprecated_present(values):
                     self.show_deprecated_attributes.setEnabled(False)
         except FileNotFoundError as e:
@@ -241,7 +244,7 @@ class TemplateScreen(Screen):
         logging.debug("Show deprecated attributes: " + str(self.show_deprecated_attributes.isChecked()))
         logging.debug("Amount of examples: " + str(self.amount_of_examples.value()))
         for item in self.all_classes.selectedItems():
-            selected_classes.append(item.text())
+            selected_classes.append(item.data(1))
         logging.debug("Selected classes: " + str(selected_classes))
         DialogWindow(self._).export_window()
 
