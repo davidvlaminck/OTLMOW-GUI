@@ -194,3 +194,9 @@ QTabBar::tab{
     width: 100px;
 }
 
+.settings-title{
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: 700;
+}
+
