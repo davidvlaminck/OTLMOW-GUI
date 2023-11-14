@@ -41,23 +41,22 @@ class OverviewTable(QTableWidget):
         self.horizontalHeader().setSectionResizeMode(5, QHeaderView.ResizeMode.ResizeToContents)
         self.horizontalHeader().setSectionResizeMode(6, QHeaderView.ResizeMode.ResizeToContents)
         self.setShowGrid(False)
+        # Zorgt ervoor dat selectie op row is niet op cell
+        self.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows)
+        # Zorgt ervoor dat de table niet editable is
+        self.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
+        self.fill_table(input_text)
+
+    def fill_table(self, input_text=None):
+        indices = self.selectionModel().selectedRows()
+        for index in sorted(indices):
+            self.removeRow(index.row())
         try:
             self.search_message.setText("")
             self.projects = self.filter_projects(self._, input_text)
         except EmptySearchWarning as e:
             self.add_the_error_row(self)
             return
-        self.setRowCount(len(self.projects))
-        # Zorgt ervoor dat selectie op row is niet op cell
-        self.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows)
-        # Zorgt ervoor dat de table niet editable is
-        self.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
-        self.fill_table()
-
-    def fill_table(self):
-        indices = self.selectionModel().selectedRows()
-        for index in sorted(indices):
-            self.removeRow(index.row())
         self.setRowCount(len(self.projects))
         for count, element in enumerate(self.projects):
             self.add_cell_to_table(self, count, 0, element.eigen_referentie)
@@ -113,8 +112,9 @@ class OverviewTable(QTableWidget):
         projects = HomeDomain.get_all_projects()
         if type(input_text) is str:
             input_text.strip()
-            if len(input_text) != 0:
-                projects = [k for k in projects if k.eigen_referentie.startswith(input_text) or k.bestek.startswith(input_text)]
+            if input_text is not None:
+                projects = [k for k in projects if
+                            k.eigen_referentie.startswith(input_text) or k.bestek.startswith(input_text)]
                 if len(projects) == 0:
                     projects.append(HomeDomain.get_all_projects())
                     raise EmptySearchWarning(_('no_results'))
