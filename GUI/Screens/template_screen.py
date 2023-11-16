@@ -238,15 +238,16 @@ class TemplateScreen(Screen):
 
     def export_function(self):
         selected_classes = []
-        logging.debug("No choice list: " + str(self.no_choice_list.isChecked()))
-        logging.debug("Geometry column added: " + str(self.geometry_column_added.isChecked()))
-        logging.debug("Export attribute info: " + str(self.export_attribute_info.isChecked()))
-        logging.debug("Show deprecated attributes: " + str(self.show_deprecated_attributes.isChecked()))
-        logging.debug("Amount of examples: " + str(self.amount_of_examples.value()))
         for item in self.all_classes.selectedItems():
             selected_classes.append(item.data(1))
-        logging.debug("Selected classes: " + str(selected_classes))
-        DialogWindow(self._).export_window()
+        document_path = DialogWindow(self._).export_window()
+        if document_path is None:
+            return
+        TemplateDomain().create_template(self.project.subset_path, document_path, selected_classes,
+                                         self.no_choice_list.isChecked(), self.geometry_column_added.isChecked(),
+                                         self.export_attribute_info.isChecked(),
+                                         self.show_deprecated_attributes.isChecked(),
+                                         self.amount_of_examples.value())
 
     def change_subset(self):
         dialog_window = DialogWindow(self._)

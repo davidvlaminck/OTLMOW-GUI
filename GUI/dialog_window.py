@@ -193,5 +193,7 @@ class DialogWindow:
         file_picker.setDirectory(str(Path.home()))
         document_loc = file_picker.getSaveFileName(filter="Excel files (*.xlsx);;CSV files (*.csv)")
         if document_loc:
-            logging.debug(document_loc)
+            return document_loc[0]
+        else:
+            return None
 
