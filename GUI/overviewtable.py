@@ -6,6 +6,7 @@ from PyQt6.QtCore import Qt
 
 from PyQt6.QtWidgets import QTableWidget, QHeaderView, QTableWidgetItem, QPushButton
 
+from Domain import global_vars
 from Domain.Project import Project
 from Domain.home_domain import HomeDomain
 from Domain.model_builder import ModelBuilder
@@ -52,14 +53,15 @@ class OverviewTable(QTableWidget):
         self.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows)
         # Zorgt ervoor dat de table niet editable is
         self.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
-        self.fill_table()
 
-    def fill_table(self):
+        self.fill_table(projects=global_vars.projects)
+
+    def fill_table(self, projects: [Project]):
         indices = self.selectionModel().selectedRows()
         for index in sorted(indices):
             self.removeRow(index.row())
-        self.setRowCount(len(self.projects))
-        for count, element in enumerate(self.projects):
+        self.setRowCount(len(projects))
+        for count, element in enumerate(projects):
             self.add_cell_to_table(self, count, 0, element.eigen_referentie)
             self.add_cell_to_table(self, count, 1, element.bestek)
             self.add_cell_to_table(self, count, 2, ModelBuilder(element.subset_path).get_name_project())
@@ -133,7 +135,7 @@ class OverviewTable(QTableWidget):
 
     def reset_ui(self, lang_settings):
         self._ = lang_settings
-        self.fill_table()
+        self.fill_table(projects=global_vars.projects)
         self.setHorizontalHeaderLabels(
             [self._('own_reference'), self._('service_order'), self._('subset'), self._('last_edited'), '', ''])
         self.error_widget.setText(self._('no_results'))

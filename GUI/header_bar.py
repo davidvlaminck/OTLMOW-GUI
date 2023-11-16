@@ -5,13 +5,13 @@ from PyQt6.QtWidgets import QFrame, QHBoxLayout, QLabel, QPushButton, QVBoxLayou
 
 import qtawesome as qta
 
-from GUI.Screens.screen import Screen
+from Domain import global_vars
 from GUI.dialog_window import DialogWindow
 from GUI.overviewtable import OverviewTable
 
 
 class HeaderBar(QFrame):
-    def __init__(self, language, database, stacked_widget=None, table: OverviewTable =None, home_screen:Screen=None):
+    def __init__(self, language, database, stacked_widget=None, table: OverviewTable =None):
         super().__init__()
         self.new_project_button = QPushButton()
         self._ = language
@@ -22,7 +22,6 @@ class HeaderBar(QFrame):
         self.subtitel = QLabel()
         self.save_button = QPushButton()
         self.import_button = QPushButton()
-        self.home_screen = home_screen
 
     def construct_header_bar(self):
         self.setProperty('class', 'header')
@@ -131,9 +130,9 @@ class HeaderBar(QFrame):
         project = dialog_window.open_project_file_picker()
         if project is None:
             return
-        self.home_screen.projects.append(project)
-        logging.debug("Projects in home screen")
-        for p in self.home_screen.projects:
+        global_vars.projects.append(project)
+        logging.debug("Projects global")
+        for p in global_vars.projects:
             logging.debug(p.eigen_referentie)
         self.table.reset_ui(self._)
 

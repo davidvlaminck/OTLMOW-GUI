@@ -2,6 +2,7 @@ import logging
 from datetime import datetime
 from pathlib import Path
 
+from Domain import global_vars
 from Domain.Project import Project
 from Domain.ProjectFileManager import ProjectFileManager
 from Exceptions.EmptyFieldError import EmptyFieldError

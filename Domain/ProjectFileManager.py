@@ -7,6 +7,7 @@ from pathlib import Path
 
 from otlmow_converter.OtlmowConverter import OtlmowConverter
 
+from Domain import global_vars
 from Domain.Project import Project
 
 
@@ -101,3 +102,7 @@ class ProjectFileManager:
     def delete_project(cls, file_path: Path):
         logging.debug("Deleting project %s", file_path)
         shutil.rmtree(file_path)
+
+    @classmethod
+    def load_projects_into_global(cls):
+        global_vars.projects = ProjectFileManager.get_all_otl_wizard_projects()

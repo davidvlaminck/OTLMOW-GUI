@@ -2,6 +2,7 @@ from pathlib import Path
 
 from PyQt6.QtGui import QPixmap
 
+from Domain.ProjectFileManager import ProjectFileManager
 from Domain.language_settings import return_language
 from PyQt6.QtWidgets import QWidget, QPushButton, QLabel, QHBoxLayout, QVBoxLayout, \
     QLineEdit, QFrame
@@ -33,9 +34,10 @@ class HomeScreen(Screen):
         self.new_project_button = QPushButton()
         self.search_message = QLabel()
         self.table = OverviewTable(self.search_message, self._, self.home_domain, self.message_box, self.database)
-        self.header = HeaderBar(language=self._, database=self.database, table=self.table, home_screen=self)
+        self.header = HeaderBar(language=self._, database=self.database, table=self.table)
         self.stacked_widget = None
 
+        ProjectFileManager.load_projects_into_global()
         self.main_content_ui()
         self.init_ui()
 

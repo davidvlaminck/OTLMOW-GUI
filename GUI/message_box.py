@@ -9,6 +9,8 @@ class MessageBox:
         self._ = language_settings
         self.home_domain = home_domain
 
+    # TODO refactor this to use project
+    # also remove from global vars
     def draw_remove_project_screen(self, project_path: Path, table: QTableWidget) -> None:
         dlg = QMessageBox()
         dlg.setWindowTitle(self._("delete"))
