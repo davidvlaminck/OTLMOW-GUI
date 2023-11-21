@@ -2,6 +2,7 @@ import logging
 from datetime import datetime
 from pathlib import Path
 
+from Domain import global_vars
 from Domain.Project import Project
 from Domain.ProjectFileManager import ProjectFileManager
 from Exceptions.EmptyFieldError import EmptyFieldError
@@ -9,12 +10,8 @@ from Exceptions.EmptyFieldError import EmptyFieldError
 
 class HomeDomain:
 
-    def __init__(self, database, language_settings):
-        self.db = database
+    def __init__(self, language_settings):
         self._ = language_settings
-
-    def get_amount_of_rows(self) -> int:
-        return self.db.count_projects()
 
     @staticmethod
     def get_all_projects() -> list:
@@ -46,3 +43,12 @@ class HomeDomain:
             raise EmptyFieldError(self._('bestek_empty_error'))
         else:
             return True
+
+    @staticmethod
+    def change_subset(project, new_path, dialog, stacked_widget):
+        time_of_alter = datetime.now().date()
+        project.laatst_bewerkt = time_of_alter
+        project.subset_path = Path(new_path)
+        ProjectFileManager.save_project_to_dir(project)
+        stacked_widget.widget(1).tab1.project = project
+        dialog.close()

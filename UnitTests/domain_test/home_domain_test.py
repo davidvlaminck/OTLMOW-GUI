@@ -14,14 +14,8 @@ LOCALE_DIR = ROOT_DIR.parent.parent / 'locale/'
 
 @pytest.fixture
 def home_domain():
-    db = Database()
-    db.create_connection(":memory:")
-    home_domain = HomeDomain(db, return_language(LOCALE_DIR))
+    home_domain = HomeDomain(return_language(LOCALE_DIR))
     return home_domain
-
-
-def test_get_amount_of_rows(home_domain):
-    assert home_domain.get_amount_of_rows() == 0
 
 
 def test_validate_with_good_values(home_domain):

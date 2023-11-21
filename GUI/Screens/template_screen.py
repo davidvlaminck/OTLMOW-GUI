@@ -1,3 +1,4 @@
+import logging
 from pathlib import Path
 
 from PyQt6.QtCore import Qt
@@ -7,6 +8,7 @@ from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QFra
 from Domain.language_settings import return_language
 from Domain.model_builder import ModelBuilder
 from GUI.Screens.screen import Screen
+from GUI.dialog_window import DialogWindow
 
 ROOT_DIR = Path(__file__).parent
 LANG_DIR = ROOT_DIR.parent.parent / 'locale/'
@@ -25,7 +27,7 @@ class TemplateScreen(Screen):
         self.show_deprecated_attributes = QCheckBox()
         self.example_label = QLabel()
         self.export_button = QPushButton()
-        self.path = None
+        self.project = None
         self.all_classes = QListWidget()
         self.selected = 0
         self.label_counter = QLabel()
@@ -35,6 +37,7 @@ class TemplateScreen(Screen):
         self.operator_title = QLabel()
         self.otl_title = QLabel()
         self.change_subset_btn = QPushButton()
+        self.amount_of_examples = QSpinBox()
 
         self.init_ui()
 
@@ -57,16 +60,16 @@ class TemplateScreen(Screen):
         example_box = QFrame()
         example_box_layout = QHBoxLayout()
         self.example_label.setText(self._("amount_of_examples"))
-        amount_of_examples = QSpinBox()
-        amount_of_examples.setRange(0, 100)
-        amount_of_examples.setValue(0)
+        self.amount_of_examples.setRange(0, 100)
+        self.amount_of_examples.setValue(0)
 
         example_box_layout.addWidget(self.example_label)
-        example_box_layout.addWidget(amount_of_examples)
+        example_box_layout.addWidget(self.amount_of_examples)
         example_box.setLayout(example_box_layout)
 
         self.export_button.setText(self._("export"))
         self.export_button.setProperty('class', 'primary-button')
+        self.export_button.clicked.connect(lambda: self.export_function())
 
         options_menu_layout.addWidget(self.select_all_classes)
         options_menu_layout.addSpacing(10)
@@ -105,6 +108,7 @@ class TemplateScreen(Screen):
         subset_title.setText(self._("subset") + ":")
         self.subset_name.setText("")
         self.change_subset_btn.setText(self._("change_subset"))
+        self.change_subset_btn.clicked.connect(lambda: self.change_subset())
         self.change_subset_btn.setProperty('class', 'secondary-button')
         horizontal_layout.addWidget(subset_title)
         horizontal_layout.addWidget(self.subset_name)
@@ -140,7 +144,7 @@ class TemplateScreen(Screen):
         self.all_classes.clear()
         try:
             self.all_classes.setEnabled(True)
-            values = ModelBuilder(self.path).filter_relations_and_abstract()
+            values = ModelBuilder(self.project.subset_path).filter_relations_and_abstract()
             for value in values:
                 self.all_classes.addItem(value.name)
         except FileNotFoundError as e:
@@ -160,7 +164,7 @@ class TemplateScreen(Screen):
 
     def update_project_info(self):
         try:
-            model_builder = ModelBuilder(self.path)
+            model_builder = ModelBuilder(self.project.subset_path)
             self.subset_name.setText(model_builder.get_name_project())
             self.operator_name.setText(model_builder.get_operator_name())
             self.otl_version.setText(model_builder.get_otl_version())
@@ -185,8 +189,27 @@ class TemplateScreen(Screen):
         else:
             self.all_classes.clearSelection()
 
+    def export_function(self):
+        selected_classes = []
+        logging.debug("No choice list: " + str(self.no_choice_list.isChecked()))
+        logging.debug("Geometry column added: " + str(self.geometry_column_added.isChecked()))
+        logging.debug("Export attribute info: " + str(self.export_attribute_info.isChecked()))
+        logging.debug("Show deprecated attributes: " + str(self.show_deprecated_attributes.isChecked()))
+        logging.debug("Amount of examples: " + str(self.amount_of_examples.value()))
+        for item in self.all_classes.selectedItems():
+            selected_classes.append(item.text())
+        logging.debug("Selected classes: " + str(selected_classes))
+        DialogWindow(self._).export_window()
+
+    def change_subset(self):
+        dialog_window = DialogWindow(self._)
+        dialog_window.change_subset_window(self.project, self.stacked_widget)
+
     def reset_ui(self, _):
         self._ = _
+        if self.project is not None:
+            self.fill_list()
+            self.update_project_info()
 
         self.show_deprecated_attributes.setText(self._("show_deprecated_attributes"))
         self.export_attribute_info.setText(self._("export_attribute_info"))

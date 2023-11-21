@@ -1,13 +1,17 @@
+import logging
+
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QFrame, QHBoxLayout, QLabel, QPushButton, QVBoxLayout, QWidget
 
 import qtawesome as qta
 
+from Domain import global_vars
 from GUI.dialog_window import DialogWindow
+from GUI.overviewtable import OverviewTable
 
 
 class HeaderBar(QFrame):
-    def __init__(self, language, database, stacked_widget=None, table=None):
+    def __init__(self, language, database, stacked_widget=None, table: OverviewTable =None):
         super().__init__()
         self.new_project_button = QPushButton()
         self._ = language
@@ -62,7 +66,7 @@ class HeaderBar(QFrame):
         return user_pref_container
 
     def start_dialog_window(self, id_: int = None, is_project=False) -> None:
-        dialog_window = DialogWindow(self.database, self._)
+        dialog_window = DialogWindow(self._)
         if is_project:
             dialog_window.draw_upsert_project(project=id_, overview_table=self.table)
         else:
@@ -117,7 +121,20 @@ class HeaderBar(QFrame):
         self.import_button.setIcon(qta.icon("mdi.download",
                                             color="#0E5A69"))
         self.import_button.setText(self._("import"))
-        self.import_button.setProperty('class', 'secondary-button')
+        self.import_button.setProperty('class', 'import-button')
+        self.import_button.clicked.connect(
+            lambda: self.import_project_window())
+
+    def import_project_window(self):
+        dialog_window = DialogWindow(self._)
+        project = dialog_window.open_project_file_picker()
+        if project is None:
+            return
+        global_vars.projects.append(project)
+        logging.debug("Projects global")
+        for p in global_vars.projects:
+            logging.debug(p.eigen_referentie)
+        self.table.reset_ui(self._)
 
     def reset_ui(self, _, page=None):
         self._ = _

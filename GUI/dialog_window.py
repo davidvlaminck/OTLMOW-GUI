@@ -1,11 +1,13 @@
+import logging
 from enum import Enum
 from pathlib import Path
 
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QDialog, QVBoxLayout, QLineEdit, QDialogButtonBox, QLabel, QHBoxLayout, QPushButton, \
-    QFileDialog
+    QFileDialog, QFrame
 
 from Domain.Project import Project
+from Domain.ProjectFileManager import ProjectFileManager
 from Domain.home_domain import HomeDomain
 from Domain.language_settings import return_language
 from Domain.enums import Language
@@ -20,8 +22,8 @@ LANG_DIR = ROOT_DIR.parent / 'locale/'
 
 class DialogWindow:
 
-    def __init__(self, database, language_settings):
-        self.home_domain = HomeDomain(database, language_settings)
+    def __init__(self, language_settings):
+        self.home_domain = HomeDomain(language_settings)
         self.error_label = QLabel()
         self._ = language_settings
 
@@ -148,3 +150,78 @@ class DialogWindow:
         file_picker.setOption(QFileDialog.Option.ShowDirsOnly, True)
         if file_picker.exec():
             input_subset.setText(file_picker.selectedFiles()[0])
+
+    @staticmethod
+    def open_project_file_picker() -> Project:
+        file_path = str(Path.home())
+        file_picker = QFileDialog()
+        file_picker.setWindowTitle("Selecteer een OTL wizard project")
+        file_picker.setDirectory(file_path)
+        file_picker.setNameFilter("OTLWizard project files (*.otlw)")
+        file_picker.setOption(QFileDialog.Option.ShowDirsOnly, True)
+        if file_picker.exec():
+            project_file_path = Path(file_picker.selectedFiles()[0])
+            return ProjectFileManager.load_project_file(file_path=project_file_path)
+
+    def change_subset_window(self, project, stacked_widget):
+        dialog = QDialog()
+        dialog.setModal(True)
+        dialog.setMinimumWidth(700)
+        dialog.setWindowTitle(self._("change_subset"))
+        layout = QVBoxLayout()
+
+        frame = QFrame()
+        horizontal_layout = QHBoxLayout()
+        label = QLabel(self._("subset") + ":")
+        input_subset = QLineEdit()
+        input_subset.setReadOnly(True)
+        input_subset.setText(str(project.subset_path))
+        file_picker_btn = QPushButton()
+        file_picker_btn.setIcon(qta.icon('mdi.folder-open-outline'))
+        file_picker_btn.clicked.connect(lambda: self.open_file_picker(input_subset))
+        horizontal_layout.addWidget(label, alignment=Qt.AlignmentFlag.AlignLeft)
+        horizontal_layout.addWidget(input_subset)
+        horizontal_layout.addWidget(file_picker_btn)
+        frame.setLayout(horizontal_layout)
+
+        button_box = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
+        button_box.button(QDialogButtonBox.StandardButton.Ok).setProperty("class", "primary-button")
+        button_box.button(QDialogButtonBox.StandardButton.Ok).setText(self._("submit"))
+        button_box.button(QDialogButtonBox.StandardButton.Cancel).setProperty("class", "secondary-button")
+        button_box.button(QDialogButtonBox.StandardButton.Cancel).setText(self._("cancel"))
+        button_box.accepted.connect(lambda: self.home_domain.change_subset(project, input_subset.text(), dialog, stacked_widget))
+        button_box.rejected.connect(dialog.reject)
+
+        layout.addWidget(frame)
+        layout.addWidget(button_box)
+        dialog.setLayout(layout)
+        dialog.show()
+        dialog.exec()
+        stacked_widget.reset_ui(self._)
+
+    @staticmethod
+    def export_window():
+        file_picker = QFileDialog()
+        file_picker.setModal(True)
+        file_picker.setDirectory(str(Path.home()))
+        document_loc = file_picker.getSaveFileName(filter="Excel files (*.xlsx);;CSV files (*.csv)")
+        if document_loc:
+            logging.debug(document_loc)
+
+    @staticmethod
+    def export_project_window(project: Project) -> None:
+        file_picker = QFileDialog()
+        file_picker.setModal(True)
+        file_picker.setDirectory(str(Path.home()))
+        project_path_str = file_picker.getSaveFileName(filter="OTLWizard project files (*.otlw)")[0]
+        if not project_path_str:
+            return
+
+        if not project_path_str.endswith('.otlw'):
+            project_path_str += '.otlw'
+
+        project_path = Path(project_path_str)
+        ProjectFileManager.export_project_to_file(file_path=project_path, project=project)
+
+
+

@@ -6,6 +6,7 @@ from PyQt6.QtCore import Qt
 
 from PyQt6.QtWidgets import QTableWidget, QHeaderView, QTableWidgetItem, QPushButton
 
+from Domain import global_vars
 from Domain.Project import Project
 from Domain.home_domain import HomeDomain
 from Domain.model_builder import ModelBuilder
@@ -25,6 +26,7 @@ class OverviewTable(QTableWidget):
         self.database = database
         self.stacked_widget = None
         self.error_widget = QTableWidgetItem()
+        self.projects = None
 
     def draw_table(self, input_text: str = None):
         self.setEnabled(True)
@@ -52,14 +54,20 @@ class OverviewTable(QTableWidget):
         # Zorgt ervoor dat de table niet editable is
         self.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
 
-        # TODO: add data to the table in aparte functie
-        for count, element in enumerate(self.projects):
+        self.fill_table(projects=global_vars.projects)
+
+    def fill_table(self, projects: [Project]):
+        indices = self.selectionModel().selectedRows()
+        for index in sorted(indices):
+            self.removeRow(index.row())
+        self.setRowCount(len(projects))
+        for count, element in enumerate(projects):
             self.add_cell_to_table(self, count, 0, element.eigen_referentie)
             self.add_cell_to_table(self, count, 1, element.bestek)
             self.add_cell_to_table(self, count, 2, ModelBuilder(element.subset_path).get_name_project())
             logging.debug(element.subset_path)
             self.add_cell_to_table(self, count, 3, element.laatst_bewerkt)
-            self.add_update_and_delete_button(count, element, self)
+            self.add_action_buttons(count, element, self)
             self.doubleClicked.connect(lambda _, project=element: self.navigate_to_project(project))
 
     @staticmethod
@@ -76,7 +84,7 @@ class OverviewTable(QTableWidget):
         self.error_widget.setText(self._('no_results'))
         table.setItem(0, 0, self.error_widget)
 
-    def add_update_and_delete_button(self, count: int, project: Project, table: QTableWidget) -> None:
+    def add_action_buttons(self, count: int, project: Project, table: QTableWidget) -> None:
         edit = QPushButton()
         edit.setIcon(qta.icon('mdi.pencil'))
         edit.setProperty('class', 'alter-button')
@@ -94,10 +102,12 @@ class OverviewTable(QTableWidget):
         share_btn = QPushButton()
         share_btn.setIcon(qta.icon("mdi.share"))
         share_btn.setProperty('class', 'alter-button')
+        share_btn.clicked.connect(lambda _, i=project:
+                                   self.export_dialog_window(i))
         table.setCellWidget(count, 6, share_btn)
 
     def navigate_to_project(self, project):
-        self.stacked_widget.widget(1).tab1.path = project.subset_path
+        self.stacked_widget.widget(1).tab1.project = project
         self.stacked_widget.widget(1).tab1.fill_list()
         self.stacked_widget.widget(1).tab1.update_project_info()
         self.stacked_widget.setCurrentIndex(1)
@@ -114,13 +124,18 @@ class OverviewTable(QTableWidget):
                     raise EmptySearchWarning(_('no_results'))
         return projects
 
+    def export_dialog_window(self, project: Project = None) -> None:
+        dialog_window = DialogWindow(self._)
+        dialog_window.export_project_window(project=project)
+
     def start_dialog_window(self, project: Project = None, is_project=False) -> None:
-        dialog_window = DialogWindow(self.database, self._)
+        dialog_window = DialogWindow(self._)
         if is_project:
             dialog_window.draw_upsert_project(project=project, overview_table=self)
 
     def reset_ui(self, lang_settings):
         self._ = lang_settings
+        self.fill_table(projects=global_vars.projects)
         self.setHorizontalHeaderLabels(
             [self._('own_reference'), self._('service_order'), self._('subset'), self._('last_edited'), '', ''])
         self.error_widget.setText(self._('no_results'))

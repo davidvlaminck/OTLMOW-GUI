@@ -2,6 +2,7 @@ from pathlib import Path
 
 from PyQt6.QtGui import QPixmap
 
+from Domain.ProjectFileManager import ProjectFileManager
 from Domain.language_settings import return_language
 from PyQt6.QtWidgets import QWidget, QPushButton, QLabel, QHBoxLayout, QVBoxLayout, \
     QLineEdit, QFrame
@@ -24,9 +25,9 @@ class HomeScreen(Screen):
         super().__init__()
         self.database = database
         self._ = return_language(LANG_DIR)
-        self.home_domain = HomeDomain.HomeDomain(database, self._)
+        self.home_domain = HomeDomain.HomeDomain(self._)
         self.container_home_screen = QVBoxLayout()
-        self.projects: list
+
         self.message_box = MessageBox(self._, self.home_domain)
         self.head_wrapper = QFrame()
         self.input_field = QLineEdit()
@@ -36,6 +37,7 @@ class HomeScreen(Screen):
         self.header = HeaderBar(language=self._, database=self.database, table=self.table)
         self.stacked_widget = None
 
+        ProjectFileManager.load_projects_into_global()
         self.main_content_ui()
         self.init_ui()
 
@@ -90,7 +92,7 @@ class HomeScreen(Screen):
     def reset_ui(self, lang_settings=None) -> None:
         if lang_settings is not None:
             self._ = lang_settings
-            self.home_domain = HomeDomain.HomeDomain(self.database, self._)
+            self.home_domain = HomeDomain.HomeDomain(self._)
         self.table.reset_ui(self._)
         self.input_field.setPlaceholderText(self._('search_text'))
         self.header.reset_ui(self._)

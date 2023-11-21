@@ -7,6 +7,7 @@ from pathlib import Path
 
 from otlmow_converter.OtlmowConverter import OtlmowConverter
 
+from Domain import global_vars
 from Domain.Project import Project
 
 
@@ -88,8 +89,12 @@ class ProjectFileManager:
 
     @classmethod
     def load_project_file(cls, file_path) -> Project:
-        project_dir_path = Path(file_path.parent / file_path.stem)
-        project_dir_path.mkdir(exist_ok=False, parents=True)  # TODO: raise error if dir already exists?
+        project_dir_path = Path(cls.get_otl_wizard_projects_dir() / file_path.stem)
+        try:
+            project_dir_path.mkdir(exist_ok=False, parents=True)  # TODO: raise error if dir already exists?
+        except FileExistsError as ex:
+            logging.error("Project dir %s already exists", project_dir_path)
+            raise ex
 
         with zipfile.ZipFile(file_path) as project_file:
             project_file.extractall(path=project_dir_path)
@@ -101,3 +106,7 @@ class ProjectFileManager:
     def delete_project(cls, file_path: Path):
         logging.debug("Deleting project %s", file_path)
         shutil.rmtree(file_path)
+
+    @classmethod
+    def load_projects_into_global(cls):
+        global_vars.projects = ProjectFileManager.get_all_otl_wizard_projects()

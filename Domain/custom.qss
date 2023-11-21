@@ -11,10 +11,12 @@
 .new-project-btn{
     background-color: #0E5A69;
     color: #ffffff;
+    border: 1px solid #0E5A69;
     height: 25px;
     border-radius: 5px;
     padding-left: 1Opx;
     padding-right: 10px;
+    height: 25px;
     font-family: Roboto;
 }
 
@@ -178,5 +180,17 @@ QTabBar::tab{
 .change-table
 {
     border: 1px solid #000000;
+}
+
+.import-button{
+    background-color: #ffffff;
+    border: 1px solid #0E5A69;
+    border-radius: 5px;
+    color: #0E5A69;
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: 550;
+    height: 25px;
+    width: 100px;
 }
 
