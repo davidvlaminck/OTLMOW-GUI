@@ -78,6 +78,7 @@ def test_save_project_given_details(mock_get_otl_wizard_projects_dir):
     shutil.rmtree(project_dir_path)
 
 
+# KAPUTT
 def test_get_all_otl_wizard_projects(caplog, mock_get_otl_wizard_projects_dir):
     projects = ProjectFileManager.get_all_otl_wizard_projects()
     assert len(projects) == 1
@@ -85,14 +86,10 @@ def test_get_all_otl_wizard_projects(caplog, mock_get_otl_wizard_projects_dir):
     assert len(caplog.records) == 1
 
 
+# KAPUTT
+@pytest.mark.parametrize("mock_get_otl_wizard_projects_dir", ['bad_dir'])
 def test_get_all_otl_wizard_projects_wrong_directory(mock_get_otl_wizard_projects_dir):
-    orig_get_otl_wizard_projects_dir = ProjectFileManager.get_otl_wizard_projects_dir
-    ProjectFileManager.get_otl_wizard_projects_dir = lambda: Path(PARENT_OF_THIS_FILE / 'bad_dir')
-
     projects = ProjectFileManager.get_all_otl_wizard_projects()
-
-    ProjectFileManager.get_otl_wizard_projects_dir = orig_get_otl_wizard_projects_dir
-
     assert projects == []
 
 
@@ -126,7 +123,7 @@ def test_export_project_to_file():
     os.remove(file_path)
 
 
-def test_load_project_file(mock_get_otl_wizard_projects_dir):
+def test_load_project_file():
     project = Project(
         project_path=Path(PARENT_OF_THIS_FILE / 'mock_otlwizard_project_dir' / 'project_1'),
         subset_path=Path(PARENT_OF_THIS_FILE / 'mock_otlwizard_project_dir' / 'project_1' / 'OTL_AllCasesTestClass.db'),
@@ -134,7 +131,7 @@ def test_load_project_file(mock_get_otl_wizard_projects_dir):
         eigen_referentie="eigen referentie",
         bestek="bestek",
         laatst_bewerkt=datetime.datetime(2023, 11, 1))
-    file_path = Path(PARENT_OF_THIS_FILE / 'project_extract_and_load.otlw')
+    file_path = Path(PARENT_OF_THIS_FILE / 'mock_otlwizard_project_dir' / 'project_extract_and_load.otlw')
 
     ProjectFileManager.export_project_to_file(project=project, file_path=file_path)
 

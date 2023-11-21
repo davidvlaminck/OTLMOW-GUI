@@ -35,8 +35,16 @@ class ProjectFileManager:
         return project
 
     @classmethod
-    def get_otl_wizard_projects_dir(cls) -> Path:
+    def get_otl_wizard_work_dir(cls) -> Path:
         return Path(Path.home() / 'OTLWizardProjects')
+
+    @classmethod
+    def get_otl_wizard_projects_dir(cls) -> Path:
+        return Path(Path.home() / 'OTLWizardProjects' / 'Projects')
+
+    @classmethod
+    def get_otl_wizard_model_dir(cls) -> Path:
+        return Path(Path.home() / 'OTLWizardProjects' / 'Model')
 
     @classmethod
     def get_all_otl_wizard_projects(cls) -> [Project]:
