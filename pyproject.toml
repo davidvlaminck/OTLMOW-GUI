@@ -35,6 +35,8 @@ dependencies = [
     'otlmow-converter >= 0.12',
     'pyqt6 == 6.5.3',
     'qtawesome >= 1.2.3',
+    'PyGithub >= 2.1.1',
+    'requests >= 2.31.0'
 ]
 
 

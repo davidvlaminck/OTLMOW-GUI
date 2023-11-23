@@ -1,13 +1,15 @@
 import datetime
 import json
 import logging
+import os
 import shutil
 import zipfile
 from pathlib import Path
 
 from otlmow_converter.OtlmowConverter import OtlmowConverter
 
-from Domain import global_vars, gitdir
+from Domain import global_vars
+from Domain.GitHubDownloader import GitHubDownloader
 from Domain.Project import Project
 
 
@@ -58,13 +60,7 @@ class ProjectFileManager:
         if not model_dir_path.exists():
             model_dir_path.mkdir()
 
-            # gitdir.download_folder(repo='https://github.com/davidvlaminck/OTLMOW-Model/tree/master/otlmow_model/BaseClasses',
-            #                      out=model_dir_path)
-            # gitdir.download_file(
-            #     repo_url='davidvlaminck/OTLMOW-Model',
-            #     file_path='otlmow_model/version_info.json',
-            #     out=model_dir_path)
-
+            cls.download_fresh_otlmow_model(model_dir_path)
         return model_dir_path
 
     @classmethod
@@ -137,3 +133,15 @@ class ProjectFileManager:
     @classmethod
     def load_projects_into_global(cls):
         global_vars.projects = ProjectFileManager.get_all_otl_wizard_projects()
+
+    @classmethod
+    def download_fresh_otlmow_model(cls, model_dir_path):
+        ghdl = GitHubDownloader('davidvlaminck/OTLMOW-Model')
+        classes_dir = model_dir_path / 'OtlmowModel' / 'Classes'
+        os.makedirs(classes_dir)
+        ghdl.download(dir_or_file_path='otlmow_model/OtlmowModel/Classes', destination_dir=classes_dir)
+        datatypes_dir = model_dir_path / 'OtlmowModel' / 'Datatypes'
+        os.makedirs(datatypes_dir)
+        ghdl.download(dir_or_file_path='otlmow_model/OtlmowModel/Datatypes', destination_dir=datatypes_dir)
+        ghdl.download_file(file_path='otlmow_model/version_info.json', destination_dir=model_dir_path)
+

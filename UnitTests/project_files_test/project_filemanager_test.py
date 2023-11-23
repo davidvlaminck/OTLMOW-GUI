@@ -6,7 +6,7 @@ from pathlib import Path
 
 import pytest
 
-from Domain import gitdir
+from Domain import GitHubDownloader
 from Domain.Project import Project
 from Domain.ProjectFileManager import ProjectFileManager
 
