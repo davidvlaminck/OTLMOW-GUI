@@ -60,7 +60,8 @@ class ProjectFileManager:
         if not model_dir_path.exists():
             model_dir_path.mkdir()
 
-            cls.download_fresh_otlmow_model(model_dir_path)
+            # cls.download_fresh_otlmow_model(model_dir_path)
+            # cls.get_otlmow_model_version(model_dir_path)
         return model_dir_path
 
     @classmethod
@@ -137,11 +138,17 @@ class ProjectFileManager:
     @classmethod
     def download_fresh_otlmow_model(cls, model_dir_path):
         ghdl = GitHubDownloader('davidvlaminck/OTLMOW-Model')
-        classes_dir = model_dir_path / 'OtlmowModel' / 'Classes'
-        os.makedirs(classes_dir)
-        ghdl.download(dir_or_file_path='otlmow_model/OtlmowModel/Classes', destination_dir=classes_dir)
-        datatypes_dir = model_dir_path / 'OtlmowModel' / 'Datatypes'
-        os.makedirs(datatypes_dir)
-        ghdl.download(dir_or_file_path='otlmow_model/OtlmowModel/Datatypes', destination_dir=datatypes_dir)
-        ghdl.download_file(file_path='otlmow_model/version_info.json', destination_dir=model_dir_path)
+        ghdl.download_full_repo(model_dir_path / 'temp')
+        shutil.unpack_archive(model_dir_path / 'temp' / 'full_repo_download.zip', model_dir_path / 'temp' / 'downloaded_model')
+
+    @classmethod
+    def get_otlmow_model_version(cls, model_dir_path) -> str:
+        ghdl = GitHubDownloader('davidvlaminck/OTLMOW-Model')
+        ghdl.download_file(destination_dir=model_dir_path / 'temp', file_path='otlmow_model/version_info.json')
+        with open(model_dir_path / 'temp' / 'version_info.json') as json_file:
+            version_info = json.load(json_file)
+
+        return version_info['model_version']
+
+
 
