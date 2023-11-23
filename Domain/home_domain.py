@@ -19,7 +19,7 @@ class HomeDomain:
 
     @staticmethod
     def remove_project(project: Project, table) -> None:
-        ProjectFileManager.delete_project(project.project_path)
+        ProjectFileManager.delete_project_files_by_path(project.project_path)
         table.removeRow(table.currentRow())
 
     @staticmethod

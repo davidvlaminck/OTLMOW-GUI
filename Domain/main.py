@@ -58,7 +58,7 @@ class MyApplication(QApplication):
         self.demo_project = demo_data()
 
     def quit(self):
-        ProjectFileManager().delete_project(self.demo_project.project_path)
+        ProjectFileManager().delete_project_files_by_path(self.demo_project.project_path)
         self.db.close_connection()
         super().quit()
 

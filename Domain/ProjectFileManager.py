@@ -35,16 +35,29 @@ class ProjectFileManager:
         return project
 
     @classmethod
+    def get_home_path(cls) -> Path:
+        return Path.home()
+
+    @classmethod
     def get_otl_wizard_work_dir(cls) -> Path:
-        return Path(Path.home() / 'OTLWizardProjects')
+        work_dir_path = cls.get_home_path() / 'OTLWizardProjects'
+        if not work_dir_path.exists():
+            work_dir_path.mkdir()
+        return work_dir_path
 
     @classmethod
     def get_otl_wizard_projects_dir(cls) -> Path:
-        return Path(Path.home() / 'OTLWizardProjects' / 'Projects')
+        projects_dir_path = cls.get_otl_wizard_work_dir() / 'Projects'
+        if not projects_dir_path.exists():
+            projects_dir_path.mkdir()
+        return projects_dir_path
 
     @classmethod
     def get_otl_wizard_model_dir(cls) -> Path:
-        return Path(Path.home() / 'OTLWizardProjects' / 'Model')
+        model_dir_path = cls.get_otl_wizard_work_dir() / 'Model'
+        if not model_dir_path.exists():
+            model_dir_path.mkdir()
+        return model_dir_path
 
     @classmethod
     def get_all_otl_wizard_projects(cls) -> [Project]:
@@ -111,7 +124,7 @@ class ProjectFileManager:
         return project
 
     @classmethod
-    def delete_project(cls, file_path: Path):
+    def delete_project_files_by_path(cls, file_path: Path):
         logging.debug("Deleting project %s", file_path)
         shutil.rmtree(file_path)
 

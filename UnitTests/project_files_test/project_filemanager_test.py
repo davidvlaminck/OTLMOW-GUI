@@ -11,9 +11,17 @@ from Domain.ProjectFileManager import ProjectFileManager
 
 PARENT_OF_THIS_FILE = Path(__file__).parent
 
+@pytest.fixture
+def mock_get_home_path(mocked_dir=Path(PARENT_OF_THIS_FILE)):
+    # This fixture will mock the get_home_path function to make home path a directory in the UnitTests directory
+    # and defaults to 'project_files_test' in UnitTests
+    orig_get_home_path = ProjectFileManager.get_home_path
+    ProjectFileManager.get_home_path = lambda: mocked_dir
+    yield
+    ProjectFileManager.get_home_path = orig_get_home_path
 
 @pytest.fixture
-def mock_get_otl_wizard_projects_dir(mocked_dir='mock_otlwizard_dir/Projects'):
+def mock_get_otl_wizard_projects_dir_orig(mocked_dir='mock_otlwizard_dir/Projects'):
     # This fixture will mock the get_otl_wizard_projects_dir function to return a directory in the UnitTests directory
     # and defaults to 'mock_otlwizard_dir' / 'Projects'
     orig_get_otl_wizard_projects_dir = ProjectFileManager.get_otl_wizard_projects_dir
@@ -23,28 +31,28 @@ def mock_get_otl_wizard_projects_dir(mocked_dir='mock_otlwizard_dir/Projects'):
 
 
 def test_get_project_from_dir_given_project_dir_location():
-    project_dir_path = PARENT_OF_THIS_FILE / 'mock_otlwizard_dir' / 'Projects' / 'project_1'
+    project_dir_path = PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1'
 
     project = ProjectFileManager.get_project_from_dir(project_dir_path)
 
-    assert project.project_path == Path(PARENT_OF_THIS_FILE / 'mock_otlwizard_dir' / 'Projects' / 'project_1')
+    assert project.project_path == Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1')
     assert project.subset_path == Path(
-        PARENT_OF_THIS_FILE / 'mock_otlwizard_dir' / 'Projects' / 'project_1' / 'OTL_AllCasesTestClass.db')
-    assert project.assets_path == Path(PARENT_OF_THIS_FILE / 'mock_otlwizard_dir' / 'Projects' / 'project_1' / 'assets.json')
+        PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' / 'OTL_AllCasesTestClass.db')
+    assert project.assets_path == Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' / 'assets.json')
     assert project.eigen_referentie == "eigen referentie"
     assert project.bestek == "bestek"
     assert project.laatst_bewerkt == datetime.datetime(2023, 11, 1)
 
 
 def test_get_project_from_dir_project_dir_missing():
-    project_dir_path = PARENT_OF_THIS_FILE / 'mock_otlwizard_dir' / 'Projects' / 'project_missing'
+    project_dir_path = PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_missing'
 
     with pytest.raises(FileNotFoundError):
         ProjectFileManager.get_project_from_dir(project_dir_path)
 
 
 def test_get_project_from_dir_details_missing():
-    project_dir_path = PARENT_OF_THIS_FILE / 'mock_otlwizard_dir' / 'Projects' / 'project_details_missing'
+    project_dir_path = PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_details_missing'
     project_dir_path.mkdir(exist_ok=True, parents=True)
 
     with pytest.raises(FileNotFoundError):
@@ -53,18 +61,18 @@ def test_get_project_from_dir_details_missing():
     shutil.rmtree(project_dir_path)
 
 
-def test_save_project_given_details(mock_get_otl_wizard_projects_dir):
+def test_save_project_given_details(mock_get_home_path):
     project = Project(
-        project_path=Path(PARENT_OF_THIS_FILE / 'mock_otlwizard_dir' / 'Projects' / 'project_2'),
-        subset_path=Path(PARENT_OF_THIS_FILE / 'mock_otlwizard_dir' / 'Projects' / 'project_1' / 'OTL_AllCasesTestClass.db'),
-        assets_path=Path(PARENT_OF_THIS_FILE / 'mock_otlwizard_dir' / 'Projects' / 'project_2' / 'assets.json'),
+        project_path=Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_2'),
+        subset_path=Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' / 'OTL_AllCasesTestClass.db'),
+        assets_path=Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_2' / 'assets.json'),
         eigen_referentie="eigen referentie",
         bestek="bestek",
         laatst_bewerkt=datetime.datetime(2023, 11, 1))
 
     ProjectFileManager.save_project_to_dir(project)
 
-    project_dir_path = PARENT_OF_THIS_FILE / 'mock_otlwizard_dir' / 'Projects' / 'project_2'
+    project_dir_path = PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_2'
     assert project_dir_path.exists()
     assert (project_dir_path / 'project_details.json').exists()
     assert (project_dir_path / 'OTL_AllCasesTestClass.db').exists()
@@ -78,17 +86,16 @@ def test_save_project_given_details(mock_get_otl_wizard_projects_dir):
     shutil.rmtree(project_dir_path)
 
 
-# KAPUTT
-def test_get_all_otl_wizard_projects(caplog, mock_get_otl_wizard_projects_dir):
+def test_get_all_otl_wizard_projects(caplog, mock_get_home_path):
     projects = ProjectFileManager.get_all_otl_wizard_projects()
     assert len(projects) == 1
-    assert projects[0].project_path == Path(PARENT_OF_THIS_FILE / 'mock_otlwizard_dir' / 'Projects' / 'project_1')
+    assert projects[0].project_path == Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1')
     assert len(caplog.records) == 1
 
 
-def test_get_all_otl_wizard_projects_wrong_directory(mock_get_otl_wizard_projects_dir):
+def test_get_all_otl_wizard_projects_wrong_directory(mock_get_home_path):
     orig_get_otl_wizard_projects_dir = ProjectFileManager.get_otl_wizard_projects_dir
-    ProjectFileManager.get_otl_wizard_projects_dir = lambda: Path(PARENT_OF_THIS_FILE / 'mock_otlwizard_dir' / 'Projects' / 'bad_dir')
+    ProjectFileManager.get_otl_wizard_projects_dir = lambda: Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'bad_dir')
 
     projects = ProjectFileManager.get_all_otl_wizard_projects()
     assert projects == []
@@ -105,15 +112,15 @@ def test_get_otl_wizard_projects_dir():
     assert otl_wizard_projects_dir == otl_wizard_dir_using_os
 
 
-def test_export_project_to_file(mock_get_otl_wizard_projects_dir):
+def test_export_project_to_file(mock_get_home_path):
     project = Project(
-        project_path=Path(PARENT_OF_THIS_FILE / 'mock_otlwizard_dir' / 'Projects' / 'project_1'),
-        subset_path=Path(PARENT_OF_THIS_FILE / 'mock_otlwizard_dir' / 'Projects' / 'project_1' / 'OTL_AllCasesTestClass.db'),
-        assets_path=Path(PARENT_OF_THIS_FILE / 'mock_otlwizard_dir' / 'Projects' / 'project_1' / 'assets.json'),
+        project_path=Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1'),
+        subset_path=Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' / 'OTL_AllCasesTestClass.db'),
+        assets_path=Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' / 'assets.json'),
         eigen_referentie="eigen referentie",
         bestek="bestek",
         laatst_bewerkt=datetime.datetime(2023, 11, 1))
-    file_path = Path(PARENT_OF_THIS_FILE / 'mock_otlwizard_dir' / 'Projects' / 'project_1.otlw')
+    file_path = Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1.otlw')
 
     ProjectFileManager.export_project_to_file(project=project, file_path=file_path)
 
@@ -126,15 +133,15 @@ def test_export_project_to_file(mock_get_otl_wizard_projects_dir):
     os.remove(file_path)
 
 
-def test_load_project_file(mock_get_otl_wizard_projects_dir):
+def test_load_project_file(mock_get_home_path):
     project = Project(
-        project_path=Path(PARENT_OF_THIS_FILE / 'mock_otlwizard_dir' / 'Projects' / 'project_1'),
-        subset_path=Path(PARENT_OF_THIS_FILE / 'mock_otlwizard_dir' / 'Projects' / 'project_1' / 'OTL_AllCasesTestClass.db'),
-        assets_path=Path(PARENT_OF_THIS_FILE / 'mock_otlwizard_dir' / 'Projects' / 'project_1' / 'assets.json'),
+        project_path=Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1'),
+        subset_path=Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' / 'OTL_AllCasesTestClass.db'),
+        assets_path=Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' / 'assets.json'),
         eigen_referentie="eigen referentie",
         bestek="bestek",
         laatst_bewerkt=datetime.datetime(2023, 11, 1))
-    file_path = Path(PARENT_OF_THIS_FILE / 'mock_otlwizard_dir' / 'Projects' / 'project_extract_and_load.otlw')
+    file_path = Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_extract_and_load.otlw')
 
     ProjectFileManager.export_project_to_file(project=project, file_path=file_path)
 
@@ -142,14 +149,14 @@ def test_load_project_file(mock_get_otl_wizard_projects_dir):
 
     project_loaded = ProjectFileManager.load_project_file(file_path=file_path)
     assert project_loaded.project_path == Path(
-        PARENT_OF_THIS_FILE / 'mock_otlwizard_dir' / 'Projects' / 'project_extract_and_load')
+        PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_extract_and_load')
     assert project_loaded.subset_path == Path(
-        PARENT_OF_THIS_FILE / 'mock_otlwizard_dir' / 'Projects' / 'project_extract_and_load' / 'OTL_AllCasesTestClass.db')
+        PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_extract_and_load' / 'OTL_AllCasesTestClass.db')
     assert project_loaded.assets_path == Path(
-        PARENT_OF_THIS_FILE / 'mock_otlwizard_dir' / 'Projects' / 'project_extract_and_load' / 'assets.json')
+        PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_extract_and_load' / 'assets.json')
     assert project_loaded.eigen_referentie == project.eigen_referentie
     assert project_loaded.bestek == project.bestek
     assert project_loaded.laatst_bewerkt == project.laatst_bewerkt
 
     os.remove(file_path)
-    shutil.rmtree(Path(PARENT_OF_THIS_FILE / 'mock_otlwizard_dir' / 'Projects' / 'project_extract_and_load'))
+    shutil.rmtree(Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_extract_and_load'))
