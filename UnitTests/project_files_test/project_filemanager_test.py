@@ -6,10 +6,12 @@ from pathlib import Path
 
 import pytest
 
+from Domain import gitdir
 from Domain.Project import Project
 from Domain.ProjectFileManager import ProjectFileManager
 
 PARENT_OF_THIS_FILE = Path(__file__).parent
+
 
 @pytest.fixture
 def mock_get_home_path(mocked_dir=Path(PARENT_OF_THIS_FILE)):
@@ -20,14 +22,19 @@ def mock_get_home_path(mocked_dir=Path(PARENT_OF_THIS_FILE)):
     yield
     ProjectFileManager.get_home_path = orig_get_home_path
 
+
 @pytest.fixture
-def mock_get_otl_wizard_projects_dir_orig(mocked_dir='mock_otlwizard_dir/Projects'):
-    # This fixture will mock the get_otl_wizard_projects_dir function to return a directory in the UnitTests directory
-    # and defaults to 'mock_otlwizard_dir' / 'Projects'
-    orig_get_otl_wizard_projects_dir = ProjectFileManager.get_otl_wizard_projects_dir
-    ProjectFileManager.get_otl_wizard_projects_dir = lambda: Path(PARENT_OF_THIS_FILE / mocked_dir)
+def mock_get_home_path_with_empty_directory(mock_get_home_path):
+    empty_dir = Path(PARENT_OF_THIS_FILE) / 'empty_dir'
+    empty_dir.mkdir()
+
+    orig_get_home_path = ProjectFileManager.get_home_path
+    ProjectFileManager.get_home_path = lambda: empty_dir
+
     yield
-    ProjectFileManager.get_otl_wizard_projects_dir = orig_get_otl_wizard_projects_dir
+
+    ProjectFileManager.get_home_path = orig_get_home_path
+    shutil.rmtree(empty_dir)
 
 
 def test_get_project_from_dir_given_project_dir_location():
@@ -38,7 +45,8 @@ def test_get_project_from_dir_given_project_dir_location():
     assert project.project_path == Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1')
     assert project.subset_path == Path(
         PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' / 'OTL_AllCasesTestClass.db')
-    assert project.assets_path == Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' / 'assets.json')
+    assert project.assets_path == Path(
+        PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' / 'assets.json')
     assert project.eigen_referentie == "eigen referentie"
     assert project.bestek == "bestek"
     assert project.laatst_bewerkt == datetime.datetime(2023, 11, 1)
@@ -64,7 +72,8 @@ def test_get_project_from_dir_details_missing():
 def test_save_project_given_details(mock_get_home_path):
     project = Project(
         project_path=Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_2'),
-        subset_path=Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' / 'OTL_AllCasesTestClass.db'),
+        subset_path=Path(
+            PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' / 'OTL_AllCasesTestClass.db'),
         assets_path=Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_2' / 'assets.json'),
         eigen_referentie="eigen referentie",
         bestek="bestek",
@@ -93,14 +102,14 @@ def test_get_all_otl_wizard_projects(caplog, mock_get_home_path):
     assert len(caplog.records) == 1
 
 
-def test_get_all_otl_wizard_projects_wrong_directory(mock_get_home_path):
-    orig_get_otl_wizard_projects_dir = ProjectFileManager.get_otl_wizard_projects_dir
-    ProjectFileManager.get_otl_wizard_projects_dir = lambda: Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'bad_dir')
+def test_create_otl_wizard_model_dir(mock_get_home_path_with_empty_directory):
+    path = ProjectFileManager.get_otl_wizard_model_dir()
+    assert path == Path(PARENT_OF_THIS_FILE / 'empty_dir' / 'OTLWizardProjects' / 'Model')
 
+
+def test_get_all_otl_wizard_projects_empty_directory(mock_get_home_path_with_empty_directory):
     projects = ProjectFileManager.get_all_otl_wizard_projects()
     assert projects == []
-
-    ProjectFileManager.get_otl_wizard_projects_dir = orig_get_otl_wizard_projects_dir
 
 
 def test_get_otl_wizard_projects_dir():
@@ -115,7 +124,8 @@ def test_get_otl_wizard_projects_dir():
 def test_export_project_to_file(mock_get_home_path):
     project = Project(
         project_path=Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1'),
-        subset_path=Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' / 'OTL_AllCasesTestClass.db'),
+        subset_path=Path(
+            PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' / 'OTL_AllCasesTestClass.db'),
         assets_path=Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' / 'assets.json'),
         eigen_referentie="eigen referentie",
         bestek="bestek",
@@ -136,7 +146,8 @@ def test_export_project_to_file(mock_get_home_path):
 def test_load_project_file(mock_get_home_path):
     project = Project(
         project_path=Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1'),
-        subset_path=Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' / 'OTL_AllCasesTestClass.db'),
+        subset_path=Path(
+            PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' / 'OTL_AllCasesTestClass.db'),
         assets_path=Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' / 'assets.json'),
         eigen_referentie="eigen referentie",
         bestek="bestek",

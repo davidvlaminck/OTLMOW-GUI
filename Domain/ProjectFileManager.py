@@ -7,7 +7,7 @@ from pathlib import Path
 
 from otlmow_converter.OtlmowConverter import OtlmowConverter
 
-from Domain import global_vars
+from Domain import global_vars, gitdir
 from Domain.Project import Project
 
 
@@ -57,13 +57,19 @@ class ProjectFileManager:
         model_dir_path = cls.get_otl_wizard_work_dir() / 'Model'
         if not model_dir_path.exists():
             model_dir_path.mkdir()
+
+            # gitdir.download_folder(repo='https://github.com/davidvlaminck/OTLMOW-Model/tree/master/otlmow_model/BaseClasses',
+            #                      out=model_dir_path)
+            # gitdir.download_file(
+            #     repo_url='davidvlaminck/OTLMOW-Model',
+            #     file_path='otlmow_model/version_info.json',
+            #     out=model_dir_path)
+
         return model_dir_path
 
     @classmethod
     def get_all_otl_wizard_projects(cls) -> [Project]:
         otl_wizard_project_dir = cls.get_otl_wizard_projects_dir()
-        if not otl_wizard_project_dir.exists():
-            return []
 
         project_dirs = [project_dir for project_dir in otl_wizard_project_dir.iterdir() if project_dir.is_dir()]
         projects = []
