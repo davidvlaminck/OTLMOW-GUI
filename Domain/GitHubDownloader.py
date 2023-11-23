@@ -1,10 +1,9 @@
-import logging
 import os
 from pathlib import Path
 from typing import List
 
 import requests
-from github import Github, ContentFile
+from github import Github
 
 
 class GitHubDownloader:
@@ -27,7 +26,7 @@ class GitHubDownloader:
         with open(destination_dir / 'full_repo_download.zip', 'wb') as f:
             f.write(resp.content)
 
-    def download_file(self, destination_dir: Path, file_path: str = None,  contents: ContentFile = None):
+    def download_file(self, destination_dir: Path, file_path: str = None,  contents = None):
         if contents is None:
             contents = self.get_repo().get_contents(file_path)
 
@@ -53,7 +52,7 @@ class GitHubDownloader:
         else:
             self.download_file(contents=contents, destination_dir=destination_dir)
 
-    def download_dir(self, destination_dir: Path, dir_path: str = None, contents: List[ContentFile] = None):
+    def download_dir(self, destination_dir: Path, dir_path: str = None, contents: List = None):
         if contents is None:
             contents = self.get_repo().get_contents(dir_path)
         for content in contents:
