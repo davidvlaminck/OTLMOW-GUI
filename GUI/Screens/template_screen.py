@@ -180,12 +180,11 @@ class TemplateScreen(Screen):
         frame.setLayout(vertical_layout)
         return frame
 
-    def fill_list(self, subset_path: Path = None):
-        print("the fuck" + str(subset_path))
+    def fill_list(self):
         self.all_classes.clear()
         try:
             self.all_classes.setEnabled(True)
-            values = ModelBuilder(subset_path).filter_relations_and_abstract()
+            values = ModelBuilder(self.project.subset_path).filter_relations_and_abstract()
             for value in values:
                 item = QListWidgetItem()
                 item.setText(value.name)

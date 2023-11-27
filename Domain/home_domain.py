@@ -33,8 +33,7 @@ class HomeDomain:
             ProjectFileManager.save_project_to_dir(project)
             # TODO: load projects from files from load_projects_from_file
         else:
-            logging.debug("Creating new project")
-            project.project_path = Path(ProjectFileManager.get_otl_wizard_projects_dir() / project.eigen_referentie)
+            project.project_path = Path(ProjectFileManager.get_otl_wizard_projects_dir() / 'Projects' / project.eigen_referentie)
             ProjectFileManager.save_project_to_dir(project)
         overview_table.draw_table()
         dlg.close()

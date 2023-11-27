@@ -46,8 +46,9 @@ class OverviewTable(QTableWidget):
         self.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows)
         # Zorgt ervoor dat de table niet editable is
         self.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
-
-        self.fill_table(projects=global_vars.projects)
+        projects = global_vars.projects
+        projects = self.filter_projects(projects, input_text)
+        self.fill_table(projects=projects)
 
     def fill_table(self, projects: [Project]):
         indices = self.selectionModel().selectedRows()
@@ -61,7 +62,8 @@ class OverviewTable(QTableWidget):
             logging.debug(element.subset_path)
             self.add_cell_to_table(self, count, 3, element.laatst_bewerkt)
             self.add_action_buttons(count, element, self)
-            self.doubleClicked.connect(lambda _, project=element: self.navigate_to_project(project))
+            # self.doubleClicked.connect(lambda _, project=element: self.navigate_to_project(project))
+        self.cellDoubleClicked.connect(self.navigate_to_project)
 
     @staticmethod
     def add_cell_to_table(table: QTableWidget, row: int, column: int, item: Union[str, datetime.datetime]) -> None:
@@ -99,9 +101,11 @@ class OverviewTable(QTableWidget):
                                    self.export_dialog_window(i))
         table.setCellWidget(count, 6, share_btn)
 
-    def navigate_to_project(self, project):
-        self.stacked_widget.widget(1).tab1.project = project
-        self.stacked_widget.widget(1).tab1.fill_list(project.subset_path)
+    def navigate_to_project(self, row, column):
+        project = self.item(row, 0).text()
+        p = next(k for k in global_vars.projects if k.eigen_referentie == project)
+        self.stacked_widget.widget(1).tab1.project = p
+        self.stacked_widget.widget(1).tab1.fill_list()
         self.stacked_widget.widget(1).tab1.update_project_info()
         self.stacked_widget.setCurrentIndex(1)
 
