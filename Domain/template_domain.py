@@ -1,4 +1,5 @@
 import logging
+import os
 from typing import List
 
 from otlmow_template.SubsetTemplateCreator import SubsetTemplateCreator
@@ -23,6 +24,7 @@ class TemplateDomain:
                         add_geo_artefact: bool, add_attribute_info: bool, highlight_deprecated_attributes: bool,
                         amount_of_examples: int):
         try:
+            logging.debug("Creating template")
             template_creator = SubsetTemplateCreator()
             template_creator.generate_template_from_subset(path_to_subset=subset_path,
                                                            path_to_template_file_and_extension=document_path,
@@ -32,5 +34,7 @@ class TemplateDomain:
                                                            add_attribute_info=add_attribute_info,
                                                            highlight_deprecated_attributes=highlight_deprecated_attributes,
                                                            amount_of_examples=amount_of_examples)
+            os.startfile(document_path)
         except Exception as e:
+            logging.debug("Error while creating template")
             logging.error(e)

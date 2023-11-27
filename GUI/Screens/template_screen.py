@@ -246,13 +246,14 @@ class TemplateScreen(Screen):
             selected_classes.append(item.data(1))
         document_path = DialogWindow(self._).export_window()
         if document_path is None:
+            logging.debug("feels like path is empty")
             return
+        logging.debug("Reached export function")
         TemplateDomain().create_template(self.project.subset_path, document_path, selected_classes,
                                          generate_choice_list, self.geometry_column_added.isChecked(),
                                          self.export_attribute_info.isChecked(),
                                          self.show_deprecated_attributes.isChecked(),
                                          self.amount_of_examples.value())
-        os.startfile(document_path)
 
     def change_subset(self):
         dialog_window = DialogWindow(self._)

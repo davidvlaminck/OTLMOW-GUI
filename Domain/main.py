@@ -41,7 +41,7 @@ def mockData(database):
 # Used to add demo data to the application for showcase purpose only
 def demo_data():
     project_1 = Project(
-        project_path=Path(Path.home() / 'OTLWizardProjects' / 'project_1'),
+        project_path=Path(Path.home() / 'OTLWizardProjects' / 'Projects' / 'project_1'),
         subset_path=Path(project_dir / 'project_1' / 'Flitspaal_noAgent3.0.db'),
         assets_path=Path(project_dir / 'project_1' / 'assets.json'),
         eigen_referentie="test1",

@@ -208,6 +208,7 @@ class DialogWindow:
         document_loc = file_picker.getSaveFileName(filter="Excel files (*.xlsx);;CSV files (*.csv)")
         if document_loc:
             logging.debug(document_loc)
+            return document_loc[0]
 
     @staticmethod
     def export_project_window(project: Project) -> None:
