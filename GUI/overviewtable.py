@@ -42,13 +42,6 @@ class OverviewTable(QTableWidget):
         self.horizontalHeader().setSectionResizeMode(5, QHeaderView.ResizeMode.ResizeToContents)
         self.horizontalHeader().setSectionResizeMode(6, QHeaderView.ResizeMode.ResizeToContents)
         self.setShowGrid(False)
-        try:
-            self.search_message.setText("")
-            self.projects = self.filter_projects(self._, input_text)
-        except EmptySearchWarning as e:
-            self.add_the_error_row(self)
-            return
-        self.setRowCount(len(self.projects))
         # Zorgt ervoor dat selectie op row is niet op cell
         self.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows)
         # Zorgt ervoor dat de table niet editable is
@@ -108,7 +101,7 @@ class OverviewTable(QTableWidget):
 
     def navigate_to_project(self, project):
         self.stacked_widget.widget(1).tab1.project = project
-        self.stacked_widget.widget(1).tab1.fill_list()
+        self.stacked_widget.widget(1).tab1.fill_list(project.subset_path)
         self.stacked_widget.widget(1).tab1.update_project_info()
         self.stacked_widget.setCurrentIndex(1)
 
@@ -131,6 +124,7 @@ class OverviewTable(QTableWidget):
     def start_dialog_window(self, project: Project = None, is_project=False) -> None:
         dialog_window = DialogWindow(self._)
         if is_project:
+            # TODO: return waarden uit dialog om daar dan alles af te handelen bv draw_table uit home_domain
             dialog_window.draw_upsert_project(project=project, overview_table=self)
 
     def reset_ui(self, lang_settings):

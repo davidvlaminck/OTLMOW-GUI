@@ -171,3 +171,17 @@ def test_load_project_file(mock_get_home_path):
 
     os.remove(file_path)
     shutil.rmtree(Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_extract_and_load'))
+
+
+def test_delete_project_removes_correct_project():
+    project = Project(
+        project_path=Path(ProjectFileManager.get_otl_wizard_projects_dir() / 'project_4'),
+        subset_path=Path(PARENT_OF_THIS_FILE / 'mock_otlwizard_project_dir' / 'project_1' / 'OTL_AllCasesTestClass.db'),
+        assets_path=Path(PARENT_OF_THIS_FILE / 'mock_otlwizard_project_dir' / 'project_1' / 'assets.json'),
+        eigen_referentie="eigen referentie",
+        bestek="bestek",
+        laatst_bewerkt=datetime.datetime(2023, 11, 1))
+    ProjectFileManager.save_project_to_dir(project)
+    assert project.project_path.exists()
+    ProjectFileManager.delete_project(project.project_path)
+    assert not project.project_path.exists()

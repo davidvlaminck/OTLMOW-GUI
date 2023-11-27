@@ -127,12 +127,10 @@ msgid "step4"
 msgstr "Export Asset Data"
 
 #: GUI/tab_widget.py:28 GUI/tab_widget.py:47
-#, fuzzy
 msgid "export_data"
 msgstr "Export Data"
 
 #: GUI/tab_widget.py:29 GUI/tab_widget.py:48
-#, fuzzy
 msgid "conversion"
 msgstr "File conversion"
 
@@ -260,17 +258,14 @@ msgid "step_1"
 msgstr "Create Template"
 
 #: Domain/main.py
-#, fuzzy
 msgid "step_2"
 msgstr "Insert Asset Data"
 
 #: Domain/main.py
-#, fuzzy
 msgid "step_3"
 msgstr "Change Asset Data/Relations"
 
 #: Domain/main.py
-#, fuzzy
 msgid "step_4"
 msgstr "Export/Convert Asset Data"
 
@@ -279,7 +274,6 @@ msgid "template"
 msgstr "Create Template"
 
 #: Domain/main.py
-#, fuzzy
 msgid "insert_data"
 msgstr "Insert Data"
 
@@ -288,12 +282,10 @@ msgid "data_change"
 msgstr "Change Data"
 
 #: GUI/Screens/template_screen.py:200
-#, fuzzy
 msgid "otl_version"
 msgstr "OTL version"
 
 #: GUI/Screens/template_screen.py:199
-#, fuzzy
 msgid "operator"
 msgstr "Operator"
 
@@ -302,12 +294,10 @@ msgid "relation_change"
 msgstr "Change Relations"
 
 #: GUI/Screens/export_data_screen.py:36
-#, fuzzy
 msgid "file_to_upload"
 msgstr "file to upload:"
 
 #: GUI/Screens/conversion_screen.py:36
-#, fuzzy
 msgid "file_to_convert"
 msgstr "File conversion"
 

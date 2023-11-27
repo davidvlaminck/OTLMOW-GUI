@@ -274,7 +274,6 @@ msgid "template"
 msgstr "Template aanmaken"
 
 #: Domain/main.py
-#, fuzzy
 msgid "insert_data"
 msgstr "Invoegen data"
 
@@ -283,7 +282,6 @@ msgid "data_change"
 msgstr "Data aanpassen"
 
 #: GUI/Screens/template_screen.py:200
-#, fuzzy
 msgid "otl_version"
 msgstr "OTL versie"
 
@@ -292,12 +290,10 @@ msgid "operator"
 msgstr "Operator"
 
 #: Domain/main.py
-#, fuzzy
 msgid "relation_change"
 msgstr "Relaties aanpassen"
 
 #: GUI/Screens/export_data_screen.py:36
-#, fuzzy
 msgid "file_to_upload"
 msgstr "Bestand om te uploaden"
 

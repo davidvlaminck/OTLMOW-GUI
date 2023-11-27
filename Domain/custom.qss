@@ -194,3 +194,29 @@ QTabBar::tab{
     width: 100px;
 }
 
+.settings-title{
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: 700;
+}
+
+.settings-checkbox{
+    font-family: Roboto;
+    padding-left: 20px;
+}
+
+.settings-label{
+    font-family: Roboto;
+    font-style: normal;
+    padding-left: 10px;
+}
+
+.info-label{
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: 700;
+}
+
+*{
+    font-family: Roboto;
+}

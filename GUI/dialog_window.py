@@ -22,6 +22,7 @@ LANG_DIR = ROOT_DIR.parent / 'locale/'
 
 class DialogWindow:
 
+    # TODO: Opsplitsen in verschillende aparte files in map 'Dialog Windows'
     def __init__(self, language_settings):
         self.home_domain = HomeDomain(language_settings)
         self.error_label = QLabel()
