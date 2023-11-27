@@ -8,6 +8,7 @@ from PyQt6.QtWidgets import QTableWidget, QHeaderView, QTableWidgetItem, QPushBu
 
 from Domain import global_vars
 from Domain.Project import Project
+from Domain.ProjectFileManager import ProjectFileManager
 from Domain.home_domain import HomeDomain
 from Domain.model_builder import ModelBuilder
 from Exceptions.EmptySearchWarning import EmptySearchWarning
@@ -103,7 +104,8 @@ class OverviewTable(QTableWidget):
 
     def navigate_to_project(self, row, column):
         project = self.item(row, 0).text()
-        p = next(k for k in global_vars.projects if k.eigen_referentie == project)
+        projects = ProjectFileManager.get_all_otl_wizard_projects()
+        p = next(k for k in projects if k.eigen_referentie == project)
         self.stacked_widget.widget(1).tab1.project = p
         self.stacked_widget.widget(1).tab1.fill_list()
         self.stacked_widget.widget(1).tab1.update_project_info()

@@ -28,7 +28,7 @@ class TemplateDomain:
             template_creator = SubsetTemplateCreator()
             template_creator.generate_template_from_subset(path_to_subset=subset_path,
                                                            path_to_template_file_and_extension=document_path,
-                                                           selected_classes=selected_classes,
+                                                           list_of_otl_objectUri=selected_classes,
                                                            generate_choice_list=generate_choice_list,
                                                            add_geo_artefact=add_geo_artefact,
                                                            add_attribute_info=add_attribute_info,

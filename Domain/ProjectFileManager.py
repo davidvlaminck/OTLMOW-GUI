@@ -102,6 +102,7 @@ class ProjectFileManager:
             # move subset to project dir
             new_subset_path = project_dir_path / project.subset_path.name
             shutil.copy(project.subset_path, new_subset_path)
+        global_vars.projects = cls.get_all_otl_wizard_projects()
 
     @classmethod
     def export_project_to_file(cls, project: Project, file_path: Path):
@@ -130,6 +131,7 @@ class ProjectFileManager:
     def delete_project_files_by_path(cls, file_path: Path):
         logging.debug("Deleting project %s", file_path)
         shutil.rmtree(file_path)
+        global_vars.projects = cls.get_all_otl_wizard_projects()
 
     @classmethod
     def load_projects_into_global(cls):

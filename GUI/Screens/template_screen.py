@@ -245,7 +245,6 @@ class TemplateScreen(Screen):
             selected_classes.append(item.data(1))
         document_path = DialogWindow(self._).export_window()
         if document_path is None:
-            logging.debug("feels like path is empty")
             return
         logging.debug("Reached export function")
         TemplateDomain().create_template(self.project.subset_path, document_path, selected_classes,
