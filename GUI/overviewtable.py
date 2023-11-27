@@ -12,6 +12,7 @@ from Domain.ProjectFileManager import ProjectFileManager
 from Domain.home_domain import HomeDomain
 from Domain.model_builder import ModelBuilder
 from Exceptions.EmptySearchWarning import EmptySearchWarning
+from GUI.ButtonWidget import ButtonWidget
 from GUI.dialog_window import DialogWindow
 
 
@@ -81,28 +82,28 @@ class OverviewTable(QTableWidget):
         table.setItem(0, 0, self.error_widget)
 
     def add_action_buttons(self, count: int, project: Project, table: QTableWidget) -> None:
-        edit = QPushButton()
+        edit = ButtonWidget()
         edit.setIcon(qta.icon('mdi.pencil'))
         edit.setProperty('class', 'alter-button')
         edit.clicked.connect(
             lambda _, project_details=project: self.start_dialog_window(project=project_details, is_project=True))
         table.setCellWidget(count, 4, edit)
 
-        delete_btn = QPushButton()
+        delete_btn = ButtonWidget()
         delete_btn.setIcon(qta.icon('mdi.trash-can'))
         delete_btn.setProperty('class', 'alter-button')
         delete_btn.clicked.connect(lambda _, i=project:
                                    self.message_box.draw_remove_project_screen(i, self))
         table.setCellWidget(count, 5, delete_btn)
 
-        share_btn = QPushButton()
+        share_btn = ButtonWidget()
         share_btn.setIcon(qta.icon("mdi.share"))
         share_btn.setProperty('class', 'alter-button')
         share_btn.clicked.connect(lambda _, i=project:
                                    self.export_dialog_window(i))
         table.setCellWidget(count, 6, share_btn)
 
-    def navigate_to_project(self, row, column):
+    def navigate_to_project(self, row):
         project = self.item(row, 0).text()
         projects = ProjectFileManager.get_all_otl_wizard_projects()
         p = next(k for k in projects if k.eigen_referentie == project)

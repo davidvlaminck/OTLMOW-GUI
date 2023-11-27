@@ -3,16 +3,18 @@ import qtawesome as qta
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QWidget, QPushButton, QHBoxLayout, QFrame
 
+from GUI.ButtonWidget import ButtonWidget
+
 
 class StepperWidget(QWidget):
     def __init__(self, _, step: int):
         super().__init__()
         self._ = _
         self.stacked_widget = None
-        self.step1 = QPushButton()
-        self.step2 = QPushButton()
-        self.step3 = QPushButton()
-        self.step4 = QPushButton()
+        self.step1 = ButtonWidget()
+        self.step2 = ButtonWidget()
+        self.step3 = ButtonWidget()
+        self.step4 = ButtonWidget()
         self.step_nr = step
 
     def stepper_widget(self):

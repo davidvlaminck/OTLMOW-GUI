@@ -9,6 +9,7 @@ from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QFra
 from Domain.language_settings import return_language
 from Domain.model_builder import ModelBuilder
 from Domain.template_domain import TemplateDomain
+from GUI.ButtonWidget import ButtonWidget
 from GUI.Screens.screen import Screen
 from GUI.dialog_window import DialogWindow
 
@@ -28,7 +29,7 @@ class TemplateScreen(Screen):
         self.export_attribute_info = QCheckBox()
         self.show_deprecated_attributes = QCheckBox()
         self.example_label = QLabel()
-        self.export_button = QPushButton()
+        self.export_button = ButtonWidget()
         self.project = None
         self.all_classes = QListWidget()
         self.selected = 0
@@ -38,7 +39,7 @@ class TemplateScreen(Screen):
         self.otl_version = QLabel()
         self.operator_title = QLabel()
         self.otl_title = QLabel()
-        self.change_subset_btn = QPushButton()
+        self.change_subset_btn = ButtonWidget()
         self.amount_of_examples = QSpinBox()
         self.example_settings_titel = QLabel()
         self.deprecated_titel = QLabel()

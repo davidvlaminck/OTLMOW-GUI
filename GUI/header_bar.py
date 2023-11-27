@@ -6,6 +6,7 @@ from PyQt6.QtWidgets import QFrame, QHBoxLayout, QLabel, QPushButton, QVBoxLayou
 import qtawesome as qta
 
 from Domain import global_vars
+from GUI.ButtonWidget import ButtonWidget
 from GUI.dialog_window import DialogWindow
 from GUI.overviewtable import OverviewTable
 
@@ -13,15 +14,15 @@ from GUI.overviewtable import OverviewTable
 class HeaderBar(QFrame):
     def __init__(self, language, database, stacked_widget=None, table: OverviewTable =None):
         super().__init__()
-        self.new_project_button = QPushButton()
+        self.new_project_button = ButtonWidget()
         self._ = language
         self.database = database
         self.table = table
         self.stacked_widget = stacked_widget
-        self.return_button = QPushButton()
+        self.return_button = ButtonWidget()
         self.subtitel = QLabel()
-        self.save_button = QPushButton()
-        self.import_button = QPushButton()
+        self.save_button = ButtonWidget()
+        self.import_button = ButtonWidget()
 
     def construct_header_bar(self):
         self.setProperty('class', 'header')
@@ -51,13 +52,13 @@ class HeaderBar(QFrame):
 
     def construct_settings_bar(self):
         user_pref_container = QHBoxLayout()
-        settings = QPushButton()
+        settings = ButtonWidget()
         settings.setIcon(qta.icon('mdi.cog',
                                   color="white"))
         settings.setProperty('class', 'settings')
         settings.clicked.connect(lambda: self.start_dialog_window())
         user_pref_container.addWidget(settings)
-        help_widget = QPushButton()
+        help_widget = ButtonWidget()
         help_icon = qta.icon('mdi.help-circle',
                              color='white')
         help_widget.setIcon(help_icon)
