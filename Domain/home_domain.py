@@ -21,6 +21,8 @@ class HomeDomain:
         ProjectFileManager.delete_project(project.project_path)
         table.removeRow(table.currentRow())
 
+    # TODO: Remove draw_table naar ergens anders
+    # TODO: Rename alter_table want je past geen table aan maar de projecten
     @staticmethod
     def alter_table(dlg, overview_table, project: Project = None):
         time_of_alter = datetime.now().date()
@@ -28,6 +30,7 @@ class HomeDomain:
         project_exists = project.project_path is not None
         if project_exists:
             ProjectFileManager.save_project_to_dir(project)
+            # TODO: load projects from files from load_projects_from_file
         else:
             logging.debug("Creating new project")
             project.project_path = Path(ProjectFileManager.get_otl_wizard_projects_dir() / project.eigen_referentie)

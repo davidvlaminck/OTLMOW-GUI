@@ -1,4 +1,5 @@
 import logging
+import os
 from pathlib import Path
 
 from PyQt6.QtCore import Qt
@@ -179,11 +180,12 @@ class TemplateScreen(Screen):
         frame.setLayout(vertical_layout)
         return frame
 
-    def fill_list(self):
+    def fill_list(self, subset_path: Path = None):
+        print("the fuck" + str(subset_path))
         self.all_classes.clear()
         try:
             self.all_classes.setEnabled(True)
-            values = ModelBuilder(self.project.subset_path).filter_relations_and_abstract()
+            values = ModelBuilder(subset_path).filter_relations_and_abstract()
             for value in values:
                 item = QListWidgetItem()
                 item.setText(value.name)
@@ -236,18 +238,21 @@ class TemplateScreen(Screen):
         else:
             self.all_classes.clearSelection()
 
+    # TODO: niet naar verdere functie gaan indien selected_classes leeg is
     def export_function(self):
         selected_classes = []
+        generate_choice_list = not self.no_choice_list.isChecked()
         for item in self.all_classes.selectedItems():
             selected_classes.append(item.data(1))
         document_path = DialogWindow(self._).export_window()
         if document_path is None:
             return
         TemplateDomain().create_template(self.project.subset_path, document_path, selected_classes,
-                                         self.no_choice_list.isChecked(), self.geometry_column_added.isChecked(),
+                                         generate_choice_list, self.geometry_column_added.isChecked(),
                                          self.export_attribute_info.isChecked(),
                                          self.show_deprecated_attributes.isChecked(),
                                          self.amount_of_examples.value())
+        os.startfile(document_path)
 
     def change_subset(self):
         dialog_window = DialogWindow(self._)
