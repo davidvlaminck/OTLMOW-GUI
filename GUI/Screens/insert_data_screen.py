@@ -1,7 +1,8 @@
 from pathlib import Path
 
 from PyQt6.QtCore import Qt, QSize
-from PyQt6.QtWidgets import QVBoxLayout, QWidget, QLabel, QPushButton, QFrame, QHBoxLayout, QLineEdit, QListWidget
+from PyQt6.QtWidgets import QVBoxLayout, QWidget, QLabel, QPushButton, QFrame, QHBoxLayout, QLineEdit, QListWidget, \
+    QFileDialog, QListWidgetItem, QTreeWidget, QTreeWidgetItem
 
 from Domain.language_settings import return_language
 from GUI.Screens.screen import Screen
@@ -23,6 +24,7 @@ class InsertDataScreen(Screen):
         self.message = QLabel()
         self.input_file_label = QLabel()
         self.control_button = QPushButton()
+        self.input_file_field = QTreeWidget()
 
         self.init_ui()
 
@@ -60,16 +62,18 @@ class InsertDataScreen(Screen):
         button_frame.setLayout(button_frame_layout)
         return button_frame
 
-    def input_file_field(self):
+    def add_input_file_field(self):
         input_file = QFrame()
         input_file_layout = QHBoxLayout()
         self.input_file_label.setText(self._('input_file'))
-        input_file_field = QLineEdit()
-        input_file_field.setReadOnly(True)
         input_file_button = QPushButton()
         input_file_button.setIcon(qta.icon('mdi.folder-open-outline'))
+        input_file_button.clicked.connect(lambda: self.open_file_picker())
+        self.input_file_field.setColumnCount(2)
+        self.input_file_field.setHeaderHidden(True)
+        # self.input_file_field.resizeColumnToContents(0)
         input_file_layout.addWidget(self.input_file_label)
-        input_file_layout.addWidget(input_file_field)
+        input_file_layout.addWidget(self.input_file_field)
         input_file_layout.addWidget(input_file_button)
         input_file.setLayout(input_file_layout)
         return input_file
@@ -78,7 +82,7 @@ class InsertDataScreen(Screen):
         left_side = QFrame()
         left_side_layout = QVBoxLayout()
         left_side_layout.addSpacing(100)
-        left_side_layout.addWidget(self.input_file_field(), alignment=Qt.AlignmentFlag.AlignBottom)
+        left_side_layout.addWidget(self.add_input_file_field(), alignment=Qt.AlignmentFlag.AlignBottom)
         left_side_layout.addWidget(self.button_set(), alignment=Qt.AlignmentFlag.AlignTop)
         left_side_layout.addSpacing(30)
         self.construct_feedback_message()
@@ -124,3 +128,26 @@ class InsertDataScreen(Screen):
         self._ = _
         self.input_file_label.setText(self._('input_file'))
         self.control_button.setText(self._('control_button'))
+
+    def open_file_picker(self):
+        file_path = str(Path.home())
+        file_picker = QFileDialog()
+        file_picker.setWindowTitle("Selecteer bestand")
+        file_picker.setDirectory(file_path)
+        if file_picker.exec():
+            self.add_file_to_list(file_picker.selectedFiles()[0])
+
+    def add_file_to_list(self, param):
+        test = QTreeWidgetItem()
+        test.setText(0, param)
+        self.input_file_field.addTopLevelItem(test)
+        self.input_file_field.resizeColumnToContents(0)
+        button = QPushButton()
+        button.clicked.connect(lambda: self.delete_file_from_list())
+        button.setIcon(qta.icon('mdi.close'))
+        self.input_file_field.setItemWidget(test, 1, button)
+
+    def delete_file_from_list(self):
+        items = self.input_file_field.selectedItems()
+        self.input_file_field.removeItemWidget(items[0], 1)
+        self.input_file_field.takeTopLevelItem(self.input_file_field.indexOfTopLevelItem(items[0]))
