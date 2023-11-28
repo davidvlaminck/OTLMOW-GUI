@@ -107,8 +107,11 @@ class OverviewTable(QTableWidget):
         project = self.item(row, 0).text()
         projects = ProjectFileManager.get_all_otl_wizard_projects()
         p = next(k for k in projects if k.eigen_referentie == project)
+        global_vars.single_project = p
+        print(global_vars.single_project)
         self.stacked_widget.widget(1).tab1.project = p
         self.stacked_widget.widget(1).tab1.fill_list()
+        self.stacked_widget.reset_ui(self._)
         self.stacked_widget.widget(1).tab1.update_project_info()
         self.stacked_widget.setCurrentIndex(1)
 

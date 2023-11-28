@@ -42,12 +42,12 @@ class TabWidget(Screen):
         self.init_ui()
 
     def init_ui(self):
-        button = self.header.header_bar_detail_screen(self.step_desc)
+        button = self.header.header_bar_detail_screen()
         button.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(0))
 
     def reset_ui(self, _):
         self._ = _
-        self.header.reset_ui(_, self.step_desc)
+        self.header.reset_ui(_)
         self.tabs.setTabText(0, self._(self.desc1))
         if hasattr(self, 'tab2'):
             self.tab2.reset_ui(_)

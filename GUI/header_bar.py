@@ -23,6 +23,7 @@ class HeaderBar(QFrame):
         self.subtitel = QLabel()
         self.save_button = ButtonWidget()
         self.import_button = ButtonWidget()
+        self.reference_title = QLabel()
 
     def construct_header_bar(self):
         self.setProperty('class', 'header')
@@ -73,7 +74,7 @@ class HeaderBar(QFrame):
         else:
             dialog_window.language_window(stacked_widget=self.stacked_widget)
 
-    def header_bar_detail_screen(self, page: str):
+    def header_bar_detail_screen(self):
         full_header = QVBoxLayout()
         header = QHBoxLayout()
         head_top = QWidget()
@@ -81,11 +82,19 @@ class HeaderBar(QFrame):
         title = QLabel('OTLWizard')
         title.setProperty('class', 'title')
         header.addWidget(title)
+        header.addSpacing(20)
         self.return_button.setProperty('class', 'return-button')
         self.return_button.setIcon(qta.icon('mdi.arrow-left',
-                                            color='white'))
+                                            color='#B35F35'))
         self.return_button.setText(self._('return_to_home_screen'))
-        header.addWidget(self.return_button)
+        if global_vars.single_project is not None:
+            print(global_vars.single_project.eigen_referentie)
+            self.reference_title.setText(global_vars.single_project.eigen_referentie)
+        else:
+            self.reference_title.setText("")
+        self.reference_title.setProperty('class', 'project-title')
+        header.addWidget(self.reference_title)
+        header.addStretch()
         header.setAlignment(self.return_button, Qt.AlignmentFlag.AlignLeft)
         settings = self.construct_settings_bar()
         header.addLayout(settings)
@@ -95,15 +104,12 @@ class HeaderBar(QFrame):
         header_sub_layout = QHBoxLayout()
         header_sub.setProperty('class', 'sub-header')
 
-        self.subtitel.setText(self._(page))
-        self.subtitel.setProperty('class', 'subtitle')
-
         self.save_button.setIcon(qta.icon('mdi.content-save',
                                           color='white'))
         self.save_button.setText(self._('save_button'))
         self.save_button.setProperty('class', 'primary-button')
 
-        header_sub_layout.addWidget(self.subtitel)
+        header_sub_layout.addWidget(self.return_button, alignment=Qt.AlignmentFlag.AlignLeft)
         header_sub_layout.addWidget(self.save_button)
         header_sub_layout.setAlignment(self.save_button, Qt.AlignmentFlag.AlignRight)
 
@@ -137,9 +143,14 @@ class HeaderBar(QFrame):
             logging.debug(p.eigen_referentie)
         self.table.reset_ui(self._)
 
-    def reset_ui(self, _, page=None):
+    def reset_ui(self, _):
         self._ = _
         self.new_project_button.setText(self._('new_project_button'))
         self.return_button.setText(self._('return_to_home_screen'))
         self.save_button.setText(self._('save_button'))
-        self.subtitel.setText(self._(page))
+        if global_vars.single_project is not None:
+            print(global_vars.single_project.eigen_referentie)
+            self.reference_title.setText(global_vars.single_project.eigen_referentie)
+        else:
+            self.reference_title.setText("")
+

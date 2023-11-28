@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-11-09 20:49+0100\n"
+"POT-Creation-Date: 2023-11-28 09:46+0100\n"
 "PO-Revision-Date: 2023-10-19 13:11+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en_US\n"
@@ -18,295 +18,307 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.13.0\n"
 
-#: Domain/home_domain.py:35
+#: Domain/home_domain.py:43
 msgid "own_reference_empty_error"
 msgstr "Own reference is empty"
 
-#: Domain/home_domain.py:37
+#: Domain/home_domain.py:45
 msgid "bestek_empty_error"
 msgstr "Subset is empty"
 
-#: GUI/dialog_window.py:36
+#: GUI/dialog_window.py:40
 msgid "alter_project_title"
 msgstr "Alter Project"
 
-#: GUI/dialog_window.py:38
+#: GUI/dialog_window.py:42
 msgid "new_project_title"
 msgstr "New Project"
 
-#: GUI/dialog_window.py:46 GUI/dialog_window.py:64 GUI/overviewtable.py:31
-#: GUI/overviewtable.py:119 UnitTests/domain_test/language_test.py:14
+#: GUI/dialog_window.py:50 GUI/dialog_window.py:68 GUI/overviewtable.py:38
+#: GUI/overviewtable.py:144 UnitTests/domain_test/language_test.py:14
 #: UnitTests/domain_test/language_test.py:19
 msgid "own_reference"
 msgstr "Own reference"
 
-#: GUI/dialog_window.py:48 GUI/dialog_window.py:65 GUI/overviewtable.py:31
-#: GUI/overviewtable.py:119
+#: GUI/dialog_window.py:52 GUI/dialog_window.py:69 GUI/overviewtable.py:38
+#: GUI/overviewtable.py:144
 msgid "service_order"
 msgstr "Service order"
 
-#: GUI/Screens/template_screen.py:108 GUI/dialog_window.py:50
-#: GUI/dialog_window.py:66 GUI/overviewtable.py:31 GUI/overviewtable.py:119
+#: GUI/Screens/template_screen.py:166 GUI/dialog_window.py:54
+#: GUI/dialog_window.py:70 GUI/dialog_window.py:176 GUI/overviewtable.py:38
+#: GUI/overviewtable.py:144
 msgid "subset"
 msgstr "Subset"
 
-#: GUI/dialog_window.py:90
+#: GUI/dialog_window.py:94 GUI/dialog_window.py:190
 msgid "submit"
 msgstr "Submit"
 
-#: GUI/dialog_window.py:92
+#: GUI/dialog_window.py:96 GUI/dialog_window.py:192
 msgid "cancel"
 msgstr "Cancel"
 
-#: GUI/dialog_window.py:116
+#: GUI/dialog_window.py:124
 msgid "change_language_title"
 msgstr "Change language"
 
-#: GUI/dialog_window.py:118
+#: GUI/dialog_window.py:126
 msgid "language_option_dutch"
-msgstr "Dutch"
+msgstr "Nederlands"
 
-#: GUI/dialog_window.py:119
+#: GUI/dialog_window.py:127
 msgid "language_option_english"
 msgstr "English"
 
-#: GUI/header_bar.py:43 GUI/header_bar.py:124
+#: GUI/Screens/template_screen.py:129 GUI/Screens/template_screen.py:274
+#: GUI/dialog_window.py:171
+msgid "change_subset"
+msgstr "Change subset"
+
+#: GUI/header_bar.py:49 GUI/header_bar.py:148
 msgid "new_project_button"
 msgstr "New Project"
 
-#: GUI/header_bar.py:82 GUI/header_bar.py:125
+#: GUI/header_bar.py:89 GUI/header_bar.py:149
 msgid "return_to_home_screen"
 msgstr "Back home"
 
-#: GUI/header_bar.py:98 GUI/header_bar.py:126
+#: GUI/header_bar.py:109 GUI/header_bar.py:150
 msgid "save_button"
 msgstr "Save"
 
-#: GUI/header_bar.py:119
+#: GUI/header_bar.py:130
 msgid "import"
 msgstr "Import"
 
-#: GUI/message_box.py:12
+#: GUI/message_box.py:16
 msgid "delete"
 msgstr "Delete project"
 
-#: GUI/message_box.py:13
+#: GUI/message_box.py:17
 msgid "project_deletion_question"
 msgstr "Are you sure you want to delete this project?"
 
-#: GUI/message_box.py:15
+#: GUI/message_box.py:19
 msgid "yes"
 msgstr "Yes"
 
-#: GUI/message_box.py:16
+#: GUI/message_box.py:20
 msgid "no"
 msgstr "No"
 
-#: GUI/overviewtable.py:31 GUI/overviewtable.py:119
+#: GUI/overviewtable.py:38 GUI/overviewtable.py:144
 msgid "last_edited"
 msgstr "Last edited"
 
-#: GUI/overviewtable.py:70 GUI/overviewtable.py:108 GUI/overviewtable.py:120
+#: GUI/overviewtable.py:81 GUI/overviewtable.py:127 GUI/overviewtable.py:145
 msgid "no_results"
 msgstr "No results found for this search value"
 
-#: GUI/stepper.py:31 GUI/stepper.py:62
+#: GUI/stepper.py:34 GUI/stepper.py:77
 msgid "step1"
 msgstr "Create Template"
 
-#: GUI/stepper.py:33 GUI/stepper.py:63
+#: GUI/stepper.py:36 GUI/stepper.py:78
 msgid "step2"
 msgstr "Insert Asset Data"
 
-#: GUI/stepper.py:35 GUI/stepper.py:64
+#: GUI/stepper.py:38 GUI/stepper.py:79
 msgid "step3"
 msgstr "Change Asset Data"
 
-#: GUI/stepper.py:37 GUI/stepper.py:65
+#: GUI/stepper.py:40 GUI/stepper.py:80
 msgid "step4"
 msgstr "Export Asset Data"
 
-#: GUI/tab_widget.py:28 GUI/tab_widget.py:47
-msgid "export_data"
-msgstr "Export Data"
-
-#: GUI/tab_widget.py:29 GUI/tab_widget.py:48
-msgid "conversion"
-msgstr "File conversion"
-
-#: GUI/Screens/asset_data_change_screen.py:58
-#: GUI/Screens/asset_data_change_screen.py:124
+#: GUI/Screens/asset_data_change_screen.py:64
+#: GUI/Screens/asset_data_change_screen.py:123
 msgid "original_file_load"
 msgstr "Original file to load:"
 
-#: GUI/Screens/asset_data_change_screen.py:72
-#: GUI/Screens/asset_data_change_screen.py:125
+#: GUI/Screens/asset_data_change_screen.py:78
+#: GUI/Screens/asset_data_change_screen.py:124
 msgid "new_file_load"
 msgstr "New file to load:"
 
-#: GUI/Screens/asset_data_change_screen.py:86
-#: GUI/Screens/asset_data_change_screen.py:126
+#: GUI/Screens/asset_data_change_screen.py:92
+#: GUI/Screens/asset_data_change_screen.py:125
 msgid "control"
 msgstr "Control"
 
-#: GUI/Screens/asset_data_change_screen.py:89
-#: GUI/Screens/asset_data_change_screen.py:127
-#: GUI/Screens/export_data_screen.py:51 GUI/Screens/export_data_screen.py:75
-#: GUI/Screens/template_screen.py:75 GUI/Screens/template_screen.py:174
+#: GUI/Screens/asset_data_change_screen.py:95
+#: GUI/Screens/asset_data_change_screen.py:126
+#: GUI/Screens/export_data_screen.py:52 GUI/Screens/export_data_screen.py:75
+#: GUI/Screens/template_screen.py:89 GUI/Screens/template_screen.py:273
 msgid "export"
 msgstr "Export"
 
-#: GUI/Screens/asset_data_change_screen.py:108
-#: GUI/Screens/asset_data_change_screen.py:129
-#: GUI/Screens/relation_change_screen.py:55
-msgid "update_files"
-msgstr "Update files"
+#: GUI/Screens/asset_data_change_screen.py:118
+msgid "id"
+msgstr "Id"
 
-#: GUI/Screens/asset_data_change_screen.py:112
-#: GUI/Screens/asset_data_change_screen.py:128
-#: GUI/Screens/relation_change_screen.py:60
+#: GUI/Screens/asset_data_change_screen.py:118
+msgid "action"
+msgstr "Action"
+
+#: GUI/Screens/asset_data_change_screen.py:127
 msgid "update_relations"
 msgstr "Update relations"
 
-#: GUI/Screens/conversion_screen.py:33
+#: GUI/Screens/asset_data_change_screen.py:128
+msgid "update_files"
+msgstr "Update files"
+
+#: GUI/Screens/conversion_screen.py:35
 msgid "file_conversion"
 msgstr "File conversion"
 
-#: GUI/Screens/conversion_screen.py:36 GUI/Screens/conversion_screen.py:52
-#: GUI/Screens/convert_screen.py
+#: GUI/Screens/conversion_screen.py:50 GUI/Screens/conversion_screen.py:74
 msgid "convert"
 msgstr "Convert"
 
-#: GUI/Screens/export_data_screen.py:36
+#: GUI/Screens/conversion_screen.py:60 GUI/Screens/conversion_screen.py:73
+#, fuzzy
+msgid "file_for_conversion"
+msgstr "File conversion"
+
+#: GUI/Screens/export_data_screen.py:37
 msgid "export_to_davie"
 msgstr "Export data to Davie"
+
+#: GUI/Screens/export_data_screen.py:62 GUI/Screens/export_data_screen.py:76
+msgid "file_to_upload"
+msgstr "file to upload:"
 
 #: GUI/Screens/home_screen.py:90 GUI/Screens/home_screen.py:97
 msgid "search_text"
 msgstr "Enter project or service order to search"
 
-#: GUI/Screens/insert_data_screen.py:61 GUI/Screens/insert_data_screen.py:137
+#: GUI/Screens/insert_data_screen.py:51 GUI/Screens/insert_data_screen.py:126
 msgid "control_button"
 msgstr "Control"
 
-#: GUI/Screens/insert_data_screen.py:76 GUI/Screens/insert_data_screen.py:136
+#: GUI/Screens/insert_data_screen.py:66 GUI/Screens/insert_data_screen.py:125
 msgid "input_file"
 msgstr "Load in file:"
 
-#: GUI/Screens/insert_data_screen.py:120
+#: GUI/Screens/insert_data_screen.py:110
 msgid "all_info_correct"
 msgstr "All provided information is correct"
 
-#: GUI/Screens/insert_data_screen.py:125
+#: GUI/Screens/insert_data_screen.py:115
 msgid "warning"
 msgstr "Warning"
 
-#: GUI/Screens/insert_data_screen.py:130
+#: GUI/Screens/insert_data_screen.py:120
 msgid "error"
 msgstr "Error"
 
-#: GUI/Screens/relation_change_screen.py:74
+#: GUI/Screens/relation_change_screen.py:46
 msgid "choose_file"
 msgstr "Pick your file..."
 
-#: GUI/Screens/relation_change_screen.py:87
+#: GUI/Screens/relation_change_screen.py:59
 msgid "class_list"
 msgstr "Classes:"
 
-#: GUI/Screens/relation_change_screen.py:100
+#: GUI/Screens/relation_change_screen.py:72
 msgid "relations_list"
 msgstr "Possible relations:"
 
-#: GUI/Screens/relation_change_screen.py:113
+#: GUI/Screens/relation_change_screen.py:85
 msgid "existing_relations_list"
 msgstr "Existing relations:"
 
-#: GUI/Screens/template_screen.py:58 GUI/Screens/template_screen.py:172
+#: GUI/Screens/template_screen.py:60 GUI/Screens/template_screen.py:203
+#: GUI/Screens/template_screen.py:271
 msgid "select_all_classes"
 msgstr "Select all classes"
 
-#: GUI/Screens/template_screen.py:60 GUI/Screens/template_screen.py:171
+#: GUI/Screens/template_screen.py:64 GUI/Screens/template_screen.py:277
+msgid "general_settings"
+msgstr "General settings"
+
+#: GUI/Screens/template_screen.py:65 GUI/Screens/template_screen.py:270
 msgid "no_choice_list"
 msgstr "Do not generate choice lists"
 
-#: GUI/Screens/template_screen.py:61 GUI/Screens/template_screen.py:170
+#: GUI/Screens/template_screen.py:67 GUI/Screens/template_screen.py:269
 msgid "geometry_column_added"
 msgstr "Add geometry column to the template"
 
-#: GUI/Screens/template_screen.py:62 GUI/Screens/template_screen.py:169
-msgid "export_attribute_info"
-msgstr "Export additional attribute information"
+#: GUI/Screens/template_screen.py:71 GUI/Screens/template_screen.py:278
+msgid "example_settings"
+msgstr "Example settings"
 
-#: GUI/Screens/template_screen.py:63 GUI/Screens/template_screen.py:168
-msgid "show_deprecated_attributes"
-msgstr "Highlight deprecated attributes in template"
-
-#: GUI/Screens/template_screen.py:66 GUI/Screens/template_screen.py:173
+#: GUI/Screens/template_screen.py:74 GUI/Screens/template_screen.py:272
 msgid "amount_of_examples"
 msgstr "Generate rows of example data"
 
-#: GUI/Screens/template_screen.py:111 GUI/Screens/template_screen.py:175
-msgid "change_subset"
-msgstr "Change subset"
+#: GUI/Screens/template_screen.py:78 GUI/Screens/template_screen.py:268
+msgid "export_attribute_info"
+msgstr "Export additional attribute information"
 
-#: GUI/Screens/template_screen.py:130
-msgid "no classes found in specified path"
-msgstr "No classes found in specified path"
+#: GUI/Screens/template_screen.py:80 GUI/Screens/template_screen.py:279
+msgid "deprecated_settings"
+msgstr "Settings for deprecated attributes"
 
-#: Domain/main.py
-msgid "step_1"
-msgstr "Create Template"
+#: GUI/Screens/template_screen.py:82 GUI/Screens/template_screen.py:267
+msgid "show_deprecated_attributes"
+msgstr "Highlight deprecated attributes in template"
 
-#: Domain/main.py
-msgid "step_2"
-msgstr "Insert Asset Data"
-
-#: Domain/main.py
-msgid "step_3"
-msgstr "Change Asset Data/Relations"
-
-#: Domain/main.py
-msgid "step_4"
-msgstr "Export/Convert Asset Data"
-
-#: Domain/main.py
-msgid "template"
-msgstr "Create Template"
-
-#: Domain/main.py
-msgid "insert_data"
-msgstr "Insert Data"
-
-#: Domain/main.py
-msgid "data_change"
-msgstr "Change Data"
-
-#: GUI/Screens/template_screen.py:200
-msgid "otl_version"
-msgstr "OTL version"
-
-#: GUI/Screens/template_screen.py:199
+#: GUI/Screens/template_screen.py:141 GUI/Screens/template_screen.py:275
 msgid "operator"
 msgstr "Operator"
 
-#: Domain/main.py
-msgid "relation_change"
-msgstr "Change Relations"
+#: GUI/Screens/template_screen.py:153 GUI/Screens/template_screen.py:276
+msgid "otl_version"
+msgstr "OTL version"
 
-#: GUI/Screens/export_data_screen.py:36
-msgid "file_to_upload"
-msgstr "file to upload:"
+#: GUI/Screens/template_screen.py:198
+msgid "no classes found in specified path"
+msgstr "No classes found in specified path"
 
-#: GUI/Screens/conversion_screen.py:36
-msgid "file_to_convert"
+msgid "empty_fields_error"
+msgstr "Fill in all fields"
+
+msgid "search_button"
+msgstr "Search"
+
+msgid "subtitle_page_1"
+msgstr "Specify which classes and settings you want to use in the template"
+
+msgid "export_data"
+msgstr "Export Data"
+
+msgid "conversion"
 msgstr "File conversion"
 
-#~ msgid "empty_fields_error"
-#~ msgstr "Fill in all fields"
+#~ msgid "step_1"
+#~ msgstr "Create Template"
 
-#~ msgid "search_button"
-#~ msgstr "Search"
+#~ msgid "step_2"
+#~ msgstr "Insert Asset Data"
 
-#~ msgid "subtitle_page_1"
-#~ msgstr "Specify which classes and settings you want to use in the template"
+#~ msgid "step_3"
+#~ msgstr "Change Asset Data/Relations"
+
+#~ msgid "step_4"
+#~ msgstr "Export/Convert Asset Data"
+
+#~ msgid "template"
+#~ msgstr "Create Template"
+
+#~ msgid "insert_data"
+#~ msgstr "Insert Data"
+
+#~ msgid "data_change"
+#~ msgstr "Change Data"
+
+#~ msgid "relation_change"
+#~ msgstr "Change Relations"
+
+#~ msgid "file_to_convert"
+#~ msgstr "File conversion"
 

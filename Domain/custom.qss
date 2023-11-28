@@ -96,7 +96,7 @@ QApplication{
 }
 
 .return-button[text]{
-    color: #FFFFFF;
+    color: #B35F35;
 }
 
 .stepper-line{
@@ -219,4 +219,10 @@ QTabBar::tab{
 
 *{
     font-family: Roboto;
+}
+
+.project-title{
+    color: #ffffff;
+    font-weight: 500;
+    font-size: 13px;
 }
