@@ -6,6 +6,7 @@ import warnings
 from PyQt6.QtCore import Qt, QSize
 from PyQt6.QtWidgets import QVBoxLayout, QWidget, QLabel, QPushButton, QFrame, QHBoxLayout, QLineEdit, QListWidget, \
     QFileDialog, QListWidgetItem, QTreeWidget, QTreeWidgetItem
+from otlmow_converter.Exceptions.ExceptionsGroup import ExceptionsGroup
 from otlmow_model.OtlmowModel.Helpers.OTLObjectHelper import count_assets_by_type
 from otlmow_model.OtlmowModel.warnings.IncorrectTypeWarning import IncorrectTypeWarning
 
@@ -93,10 +94,13 @@ class InsertDataScreen(Screen):
                 assets.append(asset)
                 print("Assets before transport" + str(assets))
                 self.positive_feedback_message()
-            except ValueError as e:
-                self.add_error_to_feedback_list(self._('not_otl_conform'), doc)
+            except ExceptionsGroup as e:
+                for ex in e.exceptions:
+                    self.add_error_to_feedback_list(ex, doc)
                 self.negative_feedback_message()
                 continue
+            except ValueError:
+                self.add_error_to_feedback_list("The document is not OTL conform", doc)
         self.fill_feedback_list(assets)
 
     def add_input_file_field(self):
@@ -226,6 +230,6 @@ class InsertDataScreen(Screen):
                 asset_widget.setText(f'{value} objecten van het type {key_split[-1]} ingeladen\n')
                 total_assets += value
                 self.asset_info.addItem(asset_widget)
-            asset_widget = QListWidgetItem()
-            asset_widget.setText(f'In het totaal zijn er {total_assets} objecten ingeladen die conform zijn met de OTL standaard\n')
-            self.asset_info.addItem(asset_widget)
+        asset_widget = QListWidgetItem()
+        asset_widget.setText(f'In het totaal zijn er {total_assets} objecten ingeladen die conform zijn met de OTL standaard\n')
+        self.asset_info.addItem(asset_widget)
