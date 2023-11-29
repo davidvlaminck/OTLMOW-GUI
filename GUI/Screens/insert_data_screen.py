@@ -1,18 +1,16 @@
 import logging
 import ntpath
 from pathlib import Path
-import warnings
+
 
 from PyQt6.QtCore import Qt, QSize
-from PyQt6.QtWidgets import QVBoxLayout, QWidget, QLabel, QPushButton, QFrame, QHBoxLayout, QLineEdit, QListWidget, \
+from PyQt6.QtWidgets import QVBoxLayout, QWidget, QLabel, QPushButton, QFrame, QHBoxLayout, QListWidget, \
     QFileDialog, QListWidgetItem, QTreeWidget, QTreeWidgetItem
 from otlmow_converter.Exceptions.ExceptionsGroup import ExceptionsGroup
 from otlmow_model.OtlmowModel.Helpers.OTLObjectHelper import count_assets_by_type
-from otlmow_model.OtlmowModel.warnings.IncorrectTypeWarning import IncorrectTypeWarning
 
 from Domain.insert_data_domain import InsertDataDomain
 from Domain.language_settings import return_language
-from Exceptions.NotOTLConformError import NotOTLConformError
 from GUI.ButtonWidget import ButtonWidget
 from GUI.Screens.screen import Screen
 import qtawesome as qta
@@ -51,7 +49,7 @@ class InsertDataScreen(Screen):
         window.setProperty('class', 'background-box')
         window_layout = QHBoxLayout()
         left_side = self.left_side()
-        right_side = self.add_list()
+        right_side = self.right_side()
         window_layout.setContentsMargins(32, 0, 16, 0)
         window_layout.addWidget(left_side)
         window_layout.addWidget(right_side)
@@ -92,7 +90,6 @@ class InsertDataScreen(Screen):
             try:
                 asset = domain.check_document(doc_location=temp_path)
                 assets.append(asset)
-                print("Assets before transport" + str(assets))
                 self.positive_feedback_message()
             except ExceptionsGroup as e:
                 for ex in e.exceptions:
@@ -101,6 +98,7 @@ class InsertDataScreen(Screen):
                 continue
             except ValueError:
                 self.add_error_to_feedback_list("The document is not OTL conform", doc)
+                self.negative_feedback_message()
         self.fill_feedback_list(assets)
 
     def add_input_file_field(self):
@@ -125,11 +123,19 @@ class InsertDataScreen(Screen):
         left_side_layout.addWidget(self.add_input_file_field(), alignment=Qt.AlignmentFlag.AlignBottom)
         left_side_layout.addWidget(self.button_set(), alignment=Qt.AlignmentFlag.AlignTop)
         left_side_layout.addSpacing(30)
-        self.construct_feedback_message()
-        left_side_layout.addWidget(self.feedback_message_box)
         left_side_layout.addStretch()
         left_side.setLayout(left_side_layout)
         return left_side
+
+    def right_side(self):
+        right_side = QFrame()
+        right_side_layout = QVBoxLayout()
+        list_item = self.add_list()
+        self.construct_feedback_message()
+        right_side_layout.addWidget(list_item)
+        right_side_layout.addWidget(self.feedback_message_box)
+        right_side.setLayout(right_side_layout)
+        return right_side
 
     def construct_feedback_message(self):
         frame_layout = QHBoxLayout()
@@ -210,7 +216,10 @@ class InsertDataScreen(Screen):
     def add_error_to_feedback_list(self, e, doc):
         doc_name = ntpath.basename(doc)
         error_widget = QListWidgetItem()
-        error_text = f'{doc_name}: {str(e)}\n'
+        if str(e) == "argument of type 'NoneType' is not iterable":
+            error_text = f'{doc_name}: Data nodig in een datasheet om objecten in te laden.\n'
+        else:
+            error_text = f'{doc_name}: {str(e)}\n'
         error_widget.setText(error_text)
         self.asset_info.addItem(error_widget)
         item = self.asset_info.findItems(error_text, Qt.MatchFlag.MatchExactly)
@@ -219,7 +228,6 @@ class InsertDataScreen(Screen):
 
     def fill_feedback_list(self, assets):
         total_assets = 0
-        print("assets:" + str(assets))
         if assets is None:
             return
         for asset in assets:

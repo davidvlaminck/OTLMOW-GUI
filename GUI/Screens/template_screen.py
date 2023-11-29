@@ -1,5 +1,3 @@
-import logging
-import os
 from pathlib import Path
 
 from PyQt6.QtCore import Qt
@@ -247,7 +245,6 @@ class TemplateScreen(Screen):
         document_path = DialogWindow(self._).export_window()
         if document_path is None:
             return
-        logging.debug("Reached export function")
         TemplateDomain().create_template(self.project.subset_path, document_path, selected_classes,
                                          generate_choice_list, self.geometry_column_added.isChecked(),
                                          self.export_attribute_info.isChecked(),

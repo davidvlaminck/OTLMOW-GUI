@@ -7,7 +7,7 @@ from Domain.language_settings import return_language
 from PyQt6.QtWidgets import QWidget, QPushButton, QLabel, QHBoxLayout, QVBoxLayout, \
     QLineEdit, QFrame
 from PyQt6.QtCore import Qt
-import Domain.home_domain as HomeDomain
+import Domain.home_domain as home_domain
 from GUI.Screens.screen import Screen
 from GUI.header_bar import HeaderBar
 from GUI.message_box import MessageBox
@@ -25,7 +25,7 @@ class HomeScreen(Screen):
         super().__init__()
         self.database = database
         self._ = return_language(LANG_DIR)
-        self.home_domain = HomeDomain.HomeDomain(self._)
+        self.home_domain = home_domain.HomeDomain(self._)
         self.container_home_screen = QVBoxLayout()
 
         self.message_box = MessageBox(self._, self.home_domain)
@@ -92,7 +92,7 @@ class HomeScreen(Screen):
     def reset_ui(self, lang_settings=None) -> None:
         if lang_settings is not None:
             self._ = lang_settings
-            self.home_domain = HomeDomain.HomeDomain(self._)
+            self.home_domain = home_domain.HomeDomain(self._)
         self.table.reset_ui(self._)
         self.input_field.setPlaceholderText(self._('search_text'))
         self.header.reset_ui(self._)
