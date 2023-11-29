@@ -1,10 +1,13 @@
 import logging
+import ntpath
 from pathlib import Path
+import warnings
 
 from PyQt6.QtCore import Qt, QSize
 from PyQt6.QtWidgets import QVBoxLayout, QWidget, QLabel, QPushButton, QFrame, QHBoxLayout, QLineEdit, QListWidget, \
     QFileDialog, QListWidgetItem, QTreeWidget, QTreeWidgetItem
 from otlmow_model.OtlmowModel.Helpers.OTLObjectHelper import count_assets_by_type
+from otlmow_model.OtlmowModel.warnings.IncorrectTypeWarning import IncorrectTypeWarning
 
 from Domain.insert_data_domain import InsertDataDomain
 from Domain.language_settings import return_language
@@ -31,6 +34,7 @@ class InsertDataScreen(Screen):
         self.control_button = ButtonWidget()
         self.input_file_field = QTreeWidget()
         self.asset_info = QListWidget()
+        self.assets = []
 
         self.init_ui()
 
@@ -71,14 +75,29 @@ class InsertDataScreen(Screen):
         return button_frame
 
     def validate_documents(self, documents):
+        domain = InsertDataDomain()
         self.asset_info.clear()
-        try:
-            assets = InsertDataDomain().check_data(documents)
-            self.fill_feedback_list(assets)
-            self.positive_feedback_message()
-        except NotOTLConformError as e:
-            self.negative_feedback_message()
-            self.add_error_to_feedback_list(e)
+        doc_list = []
+        assets = []
+        for i in range(documents.topLevelItemCount()):
+            item = documents.topLevelItem(i)
+            doc_list.append(item.text(0))
+        for doc in doc_list:
+            doc_split = doc.split('.')
+            if doc_split[-1] == 'xls' or doc_split[-1] == 'xlsx':
+                temp_path = domain.start_excel_changes(doc=doc)
+            elif doc_split[-1] == 'csv':
+                temp_path = Path(doc)
+            try:
+                asset = domain.check_document(doc_location=temp_path)
+                assets.append(asset)
+                print("Assets before transport" + str(assets))
+                self.positive_feedback_message()
+            except ValueError as e:
+                self.add_error_to_feedback_list(self._('not_otl_conform'), doc)
+                self.negative_feedback_message()
+                continue
+        self.fill_feedback_list(assets)
 
     def add_input_file_field(self):
         input_file = QFrame()
@@ -134,6 +153,10 @@ class InsertDataScreen(Screen):
         self.message.setText(self._('warning'))
         self.feedback_message_box.setStyleSheet('background-color: #F8AA62; border-radius: 10px;')
 
+    def clear_feedback_message(self):
+        self.message.setText('')
+        self.feedback_message_box.setStyleSheet('')
+
     def negative_feedback_message(self):
         self.message_icon.setPixmap(qta.icon('mdi.alert-circle-outline', color="white").pixmap(QSize(48, 48)))
         self.message.setText(self._('error'))
@@ -161,6 +184,7 @@ class InsertDataScreen(Screen):
         button = QPushButton()
         button.clicked.connect(lambda: self.delete_file_from_list())
         button.setIcon(qta.icon('mdi.close'))
+        self.clear_feedback_message()
         self.input_file_field.setItemWidget(test, 1, button)
 
     def delete_file_from_list(self):
@@ -172,25 +196,36 @@ class InsertDataScreen(Screen):
 
     def clear_list(self):
         self.input_file_field.clear()
-        self.asset_info.clear()
+        self.clear_feedback()
         self.control_button.setDisabled(True)
 
-    def add_error_to_feedback_list(self, e):
+    def clear_feedback(self):
+        self.asset_info.clear()
+        self.clear_feedback_message()
+
+    def add_error_to_feedback_list(self, e, doc):
+        doc_name = ntpath.basename(doc)
         error_widget = QListWidgetItem()
-        error_widget.setText(str(e))
+        error_text = f'{doc_name}: {str(e)}\n'
+        error_widget.setText(error_text)
         self.asset_info.addItem(error_widget)
+        item = self.asset_info.findItems(error_text, Qt.MatchFlag.MatchExactly)
+        for item in item:
+            self.asset_info.item(self.asset_info.row(item)).setForeground(Qt.GlobalColor.red)
 
     def fill_feedback_list(self, assets):
         total_assets = 0
+        print("assets:" + str(assets))
         if assets is None:
             return
-        asset_dict = count_assets_by_type(assets[0])
-        for key, value in asset_dict.items():
-            key_split = key.split('#')
+        for asset in assets:
+            asset_dict = count_assets_by_type(asset)
+            for key, value in asset_dict.items():
+                key_split = key.split('#')
+                asset_widget = QListWidgetItem()
+                asset_widget.setText(f'{value} objecten van het type {key_split[-1]} ingeladen\n')
+                total_assets += value
+                self.asset_info.addItem(asset_widget)
             asset_widget = QListWidgetItem()
-            asset_widget.setText(f'{value} objecten van het type {key_split[-1]} ingeladen\n')
-            total_assets += value
+            asset_widget.setText(f'In het totaal zijn er {total_assets} objecten ingeladen die conform zijn met de OTL standaard\n')
             self.asset_info.addItem(asset_widget)
-        asset_widget = QListWidgetItem()
-        asset_widget.setText(f'In het totaal zijn er {total_assets} objecten ingeladen die conform zijn met de OTL standaard\n')
-        self.asset_info.addItem(asset_widget)

@@ -1,7 +1,9 @@
+import logging
 import ntpath
 import os
 import tempfile
 from pathlib import Path
+import warnings
 
 from openpyxl.reader.excel import load_workbook
 from otlmow_converter.OtlmowConverter import OtlmowConverter
@@ -25,16 +27,20 @@ class InsertDataDomain:
                 temp_path = cls.start_excel_changes(doc=doc)
             elif doc_split[-1] == 'csv':
                 temp_path = Path(doc)
-            asset_list.append(cls.check_document(doc_location=temp_path))
-        return asset_list
+            try:
+                asset = cls.check_document(doc_location=temp_path)
+            except ValueError as e:
+                logging.debug("Reached")
+                warnings.warn("The document is not OTL conform", NotOTLConformError)
+                continue
+            asset_list.append(asset)
+            print(asset_list)
+            return asset_list
 
     @classmethod
     def check_document(cls, doc_location):
         converter = OtlmowConverter()
-        try:
-            assets = converter.create_assets_from_file(filepath=Path(doc_location))
-        except ValueError as e:
-            raise NotOTLConformError("The document is not OTL conform")
+        assets = converter.create_assets_from_file(filepath=Path(doc_location))
         return assets
 
     @classmethod
@@ -51,6 +57,6 @@ class InsertDataDomain:
         tempdir = Path(tempfile.gettempdir()) / 'temp-otlmow'
         if not tempdir.exists():
             os.makedirs(tempdir)
-        test = ntpath.basename(path_to_template_file_and_extension)
-        temporary_path = Path(tempdir) / test
+        doc_name = ntpath.basename(path_to_template_file_and_extension)
+        temporary_path = Path(tempdir) / doc_name
         return temporary_path

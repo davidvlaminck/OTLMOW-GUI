@@ -1,2 +1,2 @@
-class NotOTLConformError(Exception):
+class NotOTLConformError(Warning):
     pass
