@@ -83,7 +83,6 @@ class StepperWidget(QWidget):
             self.step4.setDisabled(True)
 
     def reset_ui(self, _):
-        print("reset stepper")
         self._ = _
         self.step1.setText(self._("step1"))
         self.step2.setText(self._("step2"))

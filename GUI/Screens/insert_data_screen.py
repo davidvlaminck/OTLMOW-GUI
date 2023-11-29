@@ -1,7 +1,6 @@
 import ntpath
 from pathlib import Path
 
-
 from PyQt6.QtCore import Qt, QSize
 from PyQt6.QtWidgets import QVBoxLayout, QWidget, QLabel, QPushButton, QFrame, QHBoxLayout, QListWidget, \
     QFileDialog, QListWidgetItem, QTreeWidget, QTreeWidgetItem
@@ -80,7 +79,7 @@ class InsertDataScreen(Screen):
         assets = []
         for i in range(documents.topLevelItemCount()):
             item = documents.topLevelItem(i)
-            doc_list.append(item.text(0))
+            doc_list.append(item.data(0, 1))
         for doc in doc_list:
             doc_split = doc.split('.')
             if doc_split[-1] == 'xls' or doc_split[-1] == 'xlsx':
@@ -134,9 +133,11 @@ class InsertDataScreen(Screen):
         right_side_layout = QVBoxLayout()
         list_item = self.add_list()
         self.construct_feedback_message()
+        right_side_layout.addSpacing(80)
         right_side_layout.addWidget(list_item)
-        right_side_layout.addWidget(self.feedback_message_box)
+        right_side_layout.addWidget(self.feedback_message_box, alignment=Qt.AlignmentFlag.AlignTop)
         right_side.setLayout(right_side_layout)
+        right_side_layout.addStretch()
         return right_side
 
     def construct_feedback_message(self):
@@ -192,7 +193,9 @@ class InsertDataScreen(Screen):
         self.control_button.setDisabled(False)
         for file in files:
             list_item = QTreeWidgetItem()
-            list_item.setText(0, file)
+            doc_name = ntpath.basename(file)
+            list_item.setText(0, doc_name)
+            list_item.setData(0, 1, file)
             self.input_file_field.addTopLevelItem(list_item)
             self.input_file_field.resizeColumnToContents(0)
             button = QPushButton()
@@ -207,6 +210,8 @@ class InsertDataScreen(Screen):
         self.input_file_field.takeTopLevelItem(self.input_file_field.indexOfTopLevelItem(items[0]))
         if self.input_file_field.topLevelItemCount() == 0:
             self.control_button.setDisabled(True)
+            self.clear_feedback()
+            self.clear_feedback_message()
 
     def clear_list(self):
         self.input_file_field.clear()
@@ -243,5 +248,6 @@ class InsertDataScreen(Screen):
                 total_assets += value
                 self.asset_info.addItem(asset_widget)
         asset_widget = QListWidgetItem()
-        asset_widget.setText(f'In het totaal zijn er {total_assets} objecten ingeladen die conform zijn met de OTL standaard\n')
+        asset_widget.setText(
+            f'In het totaal zijn er {total_assets} objecten ingeladen die conform zijn met de OTL standaard\n')
         self.asset_info.addItem(asset_widget)
