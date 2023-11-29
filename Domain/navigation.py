@@ -11,6 +11,9 @@ class Navigation(QStackedWidget):
         widget.header.stacked_widget = self
         if hasStepper:
             widget.stepper_widget.stacked_widget = self
+            widget.tab1.stacked_widget = self
+            if hasattr(widget, 'tab2'):
+                widget.tab2.stacked_widget = self
 
     def reset_ui(self, _):
         for i in range(self.count()):

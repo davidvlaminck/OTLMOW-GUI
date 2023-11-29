@@ -3,6 +3,7 @@ import qtawesome as qta
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QWidget, QPushButton, QHBoxLayout, QFrame
 
+from Domain.ProjectFileManager import ProjectFileManager
 from GUI.ButtonWidget import ButtonWidget
 
 
@@ -65,6 +66,7 @@ class StepperWidget(QWidget):
         horizontal_layout.addWidget(line_2)
         horizontal_layout.addWidget(self.step3, alignment=Qt.AlignmentFlag.AlignLeft)
         self.step3.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(3))
+        self.enable_steps()
         horizontal_layout.addWidget(line_3)
         horizontal_layout.addWidget(self.step4, alignment=Qt.AlignmentFlag.AlignLeft)
         self.step4.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(4))
@@ -72,9 +74,19 @@ class StepperWidget(QWidget):
         stepper_widget.setLayout(horizontal_layout)
         return stepper_widget
 
+    def enable_steps(self):
+        if ProjectFileManager().otl_conform_map_exists():
+            self.step3.setDisabled(False)
+            self.step4.setDisabled(False)
+        else:
+            self.step3.setDisabled(True)
+            self.step4.setDisabled(True)
+
     def reset_ui(self, _):
+        print("reset stepper")
         self._ = _
         self.step1.setText(self._("step1"))
         self.step2.setText(self._("step2"))
         self.step3.setText(self._("step3"))
         self.step4.setText(self._("step4"))
+        self.enable_steps()

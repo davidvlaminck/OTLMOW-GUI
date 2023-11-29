@@ -1,4 +1,3 @@
-import logging
 import ntpath
 from pathlib import Path
 
@@ -9,6 +8,7 @@ from PyQt6.QtWidgets import QVBoxLayout, QWidget, QLabel, QPushButton, QFrame, Q
 from otlmow_converter.Exceptions.ExceptionsGroup import ExceptionsGroup
 from otlmow_model.OtlmowModel.Helpers.OTLObjectHelper import count_assets_by_type
 
+from Domain.ProjectFileManager import ProjectFileManager
 from Domain.insert_data_domain import InsertDataDomain
 from Domain.language_settings import return_language
 from GUI.ButtonWidget import ButtonWidget
@@ -89,6 +89,8 @@ class InsertDataScreen(Screen):
                 temp_path = Path(doc)
             try:
                 asset = domain.check_document(doc_location=temp_path)
+                ProjectFileManager().add_otl_conform_data_to_project(Path(doc))
+                self.stacked_widget.reset_ui(self._)
                 assets.append(asset)
                 self.positive_feedback_message()
             except ExceptionsGroup as e:

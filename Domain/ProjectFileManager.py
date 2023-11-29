@@ -1,6 +1,7 @@
 import datetime
 import json
 import logging
+import ntpath
 import os
 import shutil
 import zipfile
@@ -151,6 +152,26 @@ class ProjectFileManager:
             version_info = json.load(json_file)
 
         return version_info['model_version']
+
+    @classmethod
+    def add_otl_conform_data_to_project(cls, filepath: Path):
+        project = global_vars.single_project
+        location_dir = project.project_path / 'OTL-conform-files'
+        if not location_dir.exists():
+            location_dir.mkdir()
+        doc_name = ntpath.basename(filepath)
+        end_location = location_dir / doc_name
+        if end_location.exists():
+            return
+        shutil.copy(filepath, end_location)
+
+    @classmethod
+    def otl_conform_map_exists(cls):
+        if global_vars.single_project is None:
+            return False
+        project = global_vars.single_project
+        location_dir = project.project_path / 'OTL-conform-files'
+        return location_dir.exists()
 
 
 
