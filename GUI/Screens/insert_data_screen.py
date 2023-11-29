@@ -184,20 +184,22 @@ class InsertDataScreen(Screen):
         file_picker = QFileDialog()
         file_picker.setWindowTitle("Selecteer bestand")
         file_picker.setDirectory(file_path)
+        file_picker.setFileMode(QFileDialog.FileMode.ExistingFiles)
         if file_picker.exec():
-            self.add_file_to_list(file_picker.selectedFiles()[0])
+            self.add_file_to_list(file_picker.selectedFiles())
 
-    def add_file_to_list(self, param):
+    def add_file_to_list(self, files):
         self.control_button.setDisabled(False)
-        test = QTreeWidgetItem()
-        test.setText(0, param)
-        self.input_file_field.addTopLevelItem(test)
-        self.input_file_field.resizeColumnToContents(0)
-        button = QPushButton()
-        button.clicked.connect(lambda: self.delete_file_from_list())
-        button.setIcon(qta.icon('mdi.close'))
-        self.clear_feedback_message()
-        self.input_file_field.setItemWidget(test, 1, button)
+        for file in files:
+            list_item = QTreeWidgetItem()
+            list_item.setText(0, file)
+            self.input_file_field.addTopLevelItem(list_item)
+            self.input_file_field.resizeColumnToContents(0)
+            button = QPushButton()
+            button.clicked.connect(lambda: self.delete_file_from_list())
+            button.setIcon(qta.icon('mdi.close'))
+            self.clear_feedback_message()
+            self.input_file_field.setItemWidget(list_item, 1, button)
 
     def delete_file_from_list(self):
         items = self.input_file_field.selectedItems()
