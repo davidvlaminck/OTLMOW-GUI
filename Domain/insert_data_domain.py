@@ -1,6 +1,7 @@
 import os
 import tempfile
 from pathlib import Path
+from typing import List
 
 from openpyxl.reader.excel import load_workbook
 from otlmow_converter.OtlmowConverter import OtlmowConverter
@@ -9,13 +10,12 @@ from otlmow_converter.OtlmowConverter import OtlmowConverter
 class InsertDataDomain:
 
     @classmethod
-    def check_document(cls, doc_location):
+    def check_document(cls, doc_location) -> List:
         converter = OtlmowConverter()
-        assets = converter.create_assets_from_file(filepath=Path(doc_location))
-        return assets
+        return converter.create_assets_from_file(filepath=Path(doc_location))
 
     @classmethod
-    def start_excel_changes(cls, doc):
+    def start_excel_changes(cls, doc) -> Path:
         wb = load_workbook(doc)
         temp_path = cls.return_temp_path(path_to_template_file_and_extension=doc)
         if 'Keuzelijsten' in wb.sheetnames:
