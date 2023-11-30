@@ -1,5 +1,6 @@
 import ntpath
 from pathlib import Path
+from typing import List
 
 from PyQt6.QtCore import Qt, QSize
 from PyQt6.QtWidgets import QVBoxLayout, QWidget, QLabel, QPushButton, QFrame, QHBoxLayout, QListWidget, \
@@ -30,7 +31,7 @@ class InsertDataScreen(Screen):
         self.message = QLabel()
         self.input_file_label = QLabel()
         self.control_button = ButtonWidget()
-        self.input_file_field = QTreeWidget()
+        self.input_file_field: QTreeWidget = QTreeWidget()
         self.asset_info = QListWidget()
         self.assets = []
 
@@ -72,14 +73,12 @@ class InsertDataScreen(Screen):
         button_frame.setLayout(button_frame_layout)
         return button_frame
 
-    def validate_documents(self, documents):
+    def validate_documents(self, documents: QTreeWidget):
         domain = InsertDataDomain()
         self.asset_info.clear()
-        doc_list = []
         assets = []
-        for i in range(documents.topLevelItemCount()):
-            item = documents.topLevelItem(i)
-            doc_list.append(item.data(0, 1))
+        doc_list = [documents.topLevelItem(i).data(0, 1) for i in range(documents.topLevelItemCount())]
+
         for doc in doc_list:
             doc_split = doc.split('.')
             if doc_split[-1] == 'xls' or doc_split[-1] == 'xlsx':
@@ -189,9 +188,12 @@ class InsertDataScreen(Screen):
         if file_picker.exec():
             self.add_file_to_list(file_picker.selectedFiles())
 
-    def add_file_to_list(self, files):
+    def add_file_to_list(self, files: List[str]):
         self.control_button.setDisabled(False)
         for file in files:
+            # TODO use Path instead
+            # name of file => file_path.name
+            # extension of file => file_path.stem
             list_item = QTreeWidgetItem()
             doc_name = ntpath.basename(file)
             list_item.setText(0, doc_name)
