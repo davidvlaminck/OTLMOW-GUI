@@ -6,6 +6,7 @@ from PyQt6.QtCore import Qt, QSize
 from PyQt6.QtWidgets import QVBoxLayout, QWidget, QLabel, QPushButton, QFrame, QHBoxLayout, QListWidget, \
     QFileDialog, QListWidgetItem, QTreeWidget, QTreeWidgetItem
 from otlmow_converter.Exceptions.ExceptionsGroup import ExceptionsGroup
+from otlmow_converter.Exceptions.InvalidColumnNamesInExcelTabError import InvalidColumnNamesInExcelTabError
 from otlmow_model.OtlmowModel.Helpers.OTLObjectHelper import count_assets_by_type
 
 from Domain.ProjectFileManager import ProjectFileManager
@@ -74,6 +75,7 @@ class InsertDataScreen(Screen):
         return button_frame
 
     def validate_documents(self, documents: QTreeWidget):
+        has_errors = False
         domain = InsertDataDomain()
         self.asset_info.clear()
         assets = []
@@ -88,17 +90,23 @@ class InsertDataScreen(Screen):
             try:
                 asset = domain.check_document(doc_location=temp_path)
                 ProjectFileManager().add_otl_conform_data_to_project(Path(doc))
-                self.stacked_widget.reset_ui(self._)
                 assets.append(asset)
-                self.positive_feedback_message()
             except ExceptionsGroup as e:
                 for ex in e.exceptions:
                     self.add_error_to_feedback_list(ex, doc)
-                self.negative_feedback_message()
+                has_errors = True
                 continue
             except ValueError:
                 self.add_error_to_feedback_list("The document is not OTL conform", doc)
-                self.negative_feedback_message()
+                has_errors = True
+                continue
+            except InvalidColumnNamesInExcelTabError as ex:
+                self.add_error_to_feedback_list(ex, doc)
+                has_errors = True
+        if has_errors:
+            self.negative_feedback_message()
+        else:
+            self.positive_feedback_message()
         self.fill_feedback_list(assets)
 
     def add_input_file_field(self):
@@ -178,6 +186,9 @@ class InsertDataScreen(Screen):
         self._ = _
         self.input_file_label.setText(self._('input_file'))
         self.control_button.setText(self._('control_button'))
+        self.clear_feedback_message()
+        self.clear_feedback()
+        self.clear_list()
 
     def open_file_picker(self):
         file_path = str(Path.home())

@@ -142,11 +142,8 @@ class OverviewTable(QTableWidget):
 
     def start_dialog_window(self, project: Project = None) -> None:
         upsert_project_window = UpsertProjectWindow(self._)
+        # TODO: return waarden uit dialog om daar dan alles af te handelen bv draw_table uit home_domain
         upsert_project_window.draw_upsert_project(project=project, overview_table=self)
-        # dialog_window = DialogWindow(self._)
-        # if is_project:
-        #    # TODO: return waarden uit dialog om daar dan alles af te handelen bv draw_table uit home_domain
-        #    dialog_window.draw_upsert_project(project=project, overview_table=self)
 
     def reset_ui(self, lang_settings):
         self._ = lang_settings

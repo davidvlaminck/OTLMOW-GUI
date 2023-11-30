@@ -28,6 +28,6 @@ class InsertDataDomain:
         tempdir = Path(tempfile.gettempdir()) / 'temp-otlmow'
         if not tempdir.exists():
             os.makedirs(tempdir)
-        doc_name = path_to_template_file_and_extension.name
+        doc_name = Path(path_to_template_file_and_extension) .name
         temporary_path = Path(tempdir) / doc_name
         return temporary_path
