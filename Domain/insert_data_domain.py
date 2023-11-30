@@ -1,4 +1,3 @@
-import ntpath
 import os
 import tempfile
 from pathlib import Path
@@ -25,10 +24,10 @@ class InsertDataDomain:
         return temp_path
 
     @classmethod
-    def return_temp_path(cls, path_to_template_file_and_extension: Path):
+    def return_temp_path(cls, path_to_template_file_and_extension: Path) -> Path:
         tempdir = Path(tempfile.gettempdir()) / 'temp-otlmow'
         if not tempdir.exists():
             os.makedirs(tempdir)
-        doc_name = ntpath.basename(path_to_template_file_and_extension)
+        doc_name = path_to_template_file_and_extension.name
         temporary_path = Path(tempdir) / doc_name
         return temporary_path
