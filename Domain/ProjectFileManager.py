@@ -159,7 +159,7 @@ class ProjectFileManager:
         location_dir = project.project_path / 'OTL-conform-files'
         if not location_dir.exists():
             location_dir.mkdir()
-        doc_name = ntpath.basename(filepath)
+        doc_name = filepath.name
         end_location = location_dir / doc_name
         if end_location.exists():
             return

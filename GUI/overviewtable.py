@@ -13,7 +13,8 @@ from Domain.home_domain import HomeDomain
 from Domain.model_builder import ModelBuilder
 from Exceptions.EmptySearchWarning import EmptySearchWarning
 from GUI.ButtonWidget import ButtonWidget
-from GUI.dialog_window import DialogWindow
+from GUI.DialogWindows.export_project_window import ExportProjectWindow
+from GUI.DialogWindows.upsert_project_window import UpsertProjectWindow
 
 
 class OverviewTable(QTableWidget):
@@ -49,8 +50,11 @@ class OverviewTable(QTableWidget):
         # Zorgt ervoor dat de table niet editable is
         self.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
         projects = global_vars.projects
-        projects = self.filter_projects(projects, input_text)
-        self.fill_table(projects=projects)
+        try:
+            projects = self.filter_projects(projects, input_text)
+            self.fill_table(projects=projects)
+        except EmptySearchWarning as e:
+            self.add_the_error_row(table=self)
 
     def fill_table(self, projects: [Project]):
         indices = self.selectionModel().selectedRows()
@@ -60,7 +64,8 @@ class OverviewTable(QTableWidget):
         for row_index, element in enumerate(projects):
             self.add_cell_to_table(self, row=row_index, column=0, item=element.eigen_referentie)
             self.add_cell_to_table(self, row=row_index, column=1, item=element.bestek)
-            self.add_cell_to_table(self, row=row_index, column=2, item=ModelBuilder(element.subset_path).get_name_project())
+            self.add_cell_to_table(self, row=row_index, column=2,
+                                   item=ModelBuilder(element.subset_path).get_name_project())
             logging.debug(element.subset_path)
             self.add_cell_to_table(self, row=row_index, column=3, item=element.laatst_bewerkt)
             self.add_action_buttons(row_index, element, self)
@@ -78,15 +83,16 @@ class OverviewTable(QTableWidget):
         table.setEnabled(False)
         table.setRowCount(1)
         table.clearContents()
-        self.error_widget.setText(self._('no_results'))
-        table.setItem(0, 0, self.error_widget)
+        error_widget = QTableWidgetItem()
+        error_widget.setText(self._("no_result"))
+        table.setItem(0, 0, error_widget)
 
     def add_action_buttons(self, row: int, project: Project, table: QTableWidget) -> None:
         edit_btn = ButtonWidget()
         edit_btn.setIcon(qta.icon('mdi.pencil'))
         edit_btn.setProperty('class', 'alter-button')
         edit_btn.clicked.connect(
-            lambda _, project_details=project: self.start_dialog_window(project=project_details, is_project=True))
+            lambda _, project_details=project: self.start_dialog_window(project=project_details))
         table.setCellWidget(row, 4, edit_btn)
 
         delete_btn = ButtonWidget()
@@ -100,7 +106,7 @@ class OverviewTable(QTableWidget):
         share_btn.setIcon(qta.icon("mdi.share"))
         share_btn.setProperty('class', 'alter-button')
         share_btn.clicked.connect(lambda _, i=project:
-                                   self.export_dialog_window(i))
+                                  ExportProjectWindow().export_project_window(project=i))
         table.setCellWidget(row, 6, share_btn)
 
     def navigate_to_project(self, row):
@@ -116,26 +122,25 @@ class OverviewTable(QTableWidget):
         self.stacked_widget.setCurrentIndex(1)
 
     @staticmethod
-    def filter_projects(_, input_text: str = None):
-        projects = HomeDomain.get_all_projects()
+    def filter_projects(projects, input_text: str = None):
+        projects = global_vars.projects
         if type(input_text) is str:
             input_text.strip()
             if len(input_text) != 0:
-                projects = [k for k in projects if k.eigen_referentie.startswith(input_text) or k.bestek.startswith(input_text)]
+                projects = [k for k in projects if
+                            k.eigen_referentie.startswith(input_text) or k.bestek.startswith(input_text)]
                 if len(projects) == 0:
-                    projects.append(HomeDomain.get_all_projects())
-                    raise EmptySearchWarning(_('no_results'))
+                    projects.append(global_vars.projects)
+                    raise EmptySearchWarning('no_results')
         return projects
 
-    def export_dialog_window(self, project: Project = None) -> None:
-        dialog_window = DialogWindow(self._)
-        dialog_window.export_project_window(project=project)
-
-    def start_dialog_window(self, project: Project = None, is_project=False) -> None:
-        dialog_window = DialogWindow(self._)
-        if is_project:
-            # TODO: return waarden uit dialog om daar dan alles af te handelen bv draw_table uit home_domain
-            dialog_window.draw_upsert_project(project=project, overview_table=self)
+    def start_dialog_window(self, project: Project = None) -> None:
+        upsert_project_window = UpsertProjectWindow(self._)
+        upsert_project_window.draw_upsert_project(project=project, overview_table=self)
+        # dialog_window = DialogWindow(self._)
+        # if is_project:
+        #    # TODO: return waarden uit dialog om daar dan alles af te handelen bv draw_table uit home_domain
+        #    dialog_window.draw_upsert_project(project=project, overview_table=self)
 
     def reset_ui(self, lang_settings):
         self._ = lang_settings

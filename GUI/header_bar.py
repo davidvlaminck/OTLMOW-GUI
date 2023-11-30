@@ -7,7 +7,9 @@ import qtawesome as qta
 
 from Domain import global_vars
 from GUI.ButtonWidget import ButtonWidget
-from GUI.dialog_window import DialogWindow
+from GUI.DialogWindows.language_window import LanguageWindow
+from GUI.DialogWindows.project_picker_window import ProjectPickerWindow
+from GUI.DialogWindows.upsert_project_window import UpsertProjectWindow
 from GUI.overviewtable import OverviewTable
 
 
@@ -68,11 +70,12 @@ class HeaderBar(QFrame):
         return user_pref_container
 
     def start_dialog_window(self, id_: int = None, is_project=False) -> None:
-        dialog_window = DialogWindow(self._)
         if is_project:
-            dialog_window.draw_upsert_project(project=id_, overview_table=self.table)
+            upsert_project_window = UpsertProjectWindow(self._)
+            upsert_project_window.draw_upsert_project(project=id_, overview_table=self.table)
         else:
-            dialog_window.language_window(stacked_widget=self.stacked_widget)
+            language_window = LanguageWindow(self._)
+            language_window.language_window(stacked_widget=self.stacked_widget)
 
     def header_bar_detail_screen(self):
         full_header = QVBoxLayout()
@@ -133,8 +136,7 @@ class HeaderBar(QFrame):
             lambda: self.import_project_window())
 
     def import_project_window(self):
-        dialog_window = DialogWindow(self._)
-        project = dialog_window.open_project_file_picker()
+        project = ProjectPickerWindow(self._).open_project_file_picker()
         if project is None:
             return
         global_vars.projects.append(project)

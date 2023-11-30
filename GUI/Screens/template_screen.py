@@ -8,8 +8,9 @@ from Domain.language_settings import return_language
 from Domain.model_builder import ModelBuilder
 from Domain.template_domain import TemplateDomain
 from GUI.ButtonWidget import ButtonWidget
+from GUI.DialogWindows.change_subset_window import ChangeSubsetWindow
+from GUI.DialogWindows.export_to_template_window import ExportToTemplateWindow
 from GUI.Screens.screen import Screen
-from GUI.dialog_window import DialogWindow
 
 ROOT_DIR = Path(__file__).parent
 LANG_DIR = ROOT_DIR.parent.parent / 'locale/'
@@ -242,7 +243,7 @@ class TemplateScreen(Screen):
         generate_choice_list = not self.no_choice_list.isChecked()
         for item in self.all_classes.selectedItems():
             selected_classes.append(item.data(1))
-        document_path = DialogWindow(self._).export_window()
+        document_path = ExportToTemplateWindow().export_to_template_window()
         if document_path is None:
             return
         TemplateDomain().create_template(self.project.subset_path, document_path, selected_classes,
@@ -252,8 +253,8 @@ class TemplateScreen(Screen):
                                          self.amount_of_examples.value())
 
     def change_subset(self):
-        dialog_window = DialogWindow(self._)
-        dialog_window.change_subset_window(self.project, self.stacked_widget)
+        change_subset_window = ChangeSubsetWindow(self._)
+        change_subset_window.change_subset_window(self.project, self.stacked_widget)
 
     def reset_ui(self, _):
         self._ = _
