@@ -1,18 +1,19 @@
 import logging
-import os
 import sqlite3
+from pathlib import Path
+from sqlite3 import Connection
 
 
 class SubsetDatabase:
 
-    def __init__(self, db_path):
-        self.db_path = db_path
-        self.connection = None
+    def __init__(self, db_path: Path):
+        self.db_path: Path = db_path
+        self.connection: Connection = None
 
         self.create_connection(self.db_path)
 
-    def create_connection(self, db_path):
-        if os.path.exists(db_path):
+    def create_connection(self, db_path: Path):
+        if db_path.exists():
             self.connection = sqlite3.connect(db_path)
         else:
             raise FileNotFoundError(f'{db_path} is not a valid path. File does not exist.')

@@ -77,6 +77,7 @@ if __name__ == '__main__':
         with open('custom.qss', 'r') as file:
             app.setStyleSheet(file.read())
         home_screen = HomeScreen(db)
+        # TODO all code below up till line 102 can probably move to HomeScreen
         step1 = TemplateScreen()
         step1_tabwidget = TabWidget(db, 1, step1, 'template', 'step_1')
         step2 = InsertDataScreen()
