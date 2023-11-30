@@ -8,7 +8,7 @@ from pathlib import Path
 
 from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import QApplication
-from qasync import QEventLoop
+from qasync import QEventLoop, asyncClose
 
 from Domain.Project import Project
 from Domain.ProjectFileManager import ProjectFileManager
@@ -59,11 +59,11 @@ class MyApplication(QApplication):
         self.db = db
         self.demo_project = demo_data()
 
-    def quit(self):
+    @asyncClose
+    async def quit(self):
+        logging.debug("closing application")
         ProjectFileManager().delete_project_files_by_path(self.demo_project.project_path)
         self.db.close_connection()
-        loop = asyncio.get_event_loop()
-        loop.close()
         super().quit()
 
 
@@ -103,14 +103,17 @@ if __name__ == '__main__':
         home_screen.table.stacked_widget = stacked_widget
         step1.stacked_widget = stacked_widget
         stacked_widget.show()
+        # event_loop.create_task(stacked_widget.show())
         # event_loop.create_task(stacked_widget.widget(0).main_content_ui())
-        # event_loop.run_until_complete(app.quit())
-        with event_loop:
-            event_loop.run_forever()
+        future = event_loop.create_future()
+        event_loop.run_until_complete(future)
+        # with event_loop:
+        #     event_loop.run_forever()
         stacked_widget.resize(1360, 768)
         stacked_widget.setWindowTitle('OTLWizard')
         stacked_widget.setMinimumSize(1280, 720)
         app.exec()
         app.quit()
+        event_loop.close()
     except Exception as e:
         logging.error(e)
