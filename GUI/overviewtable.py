@@ -57,13 +57,13 @@ class OverviewTable(QTableWidget):
         for index in sorted(indices):
             self.removeRow(index.row())
         self.setRowCount(len(projects))
-        for count, element in enumerate(projects):
-            self.add_cell_to_table(self, count, 0, element.eigen_referentie)
-            self.add_cell_to_table(self, count, 1, element.bestek)
-            self.add_cell_to_table(self, count, 2, ModelBuilder(element.subset_path).get_name_project())
+        for row_index, element in enumerate(projects):
+            self.add_cell_to_table(self, row=row_index, column=0, item=element.eigen_referentie)
+            self.add_cell_to_table(self, row=row_index, column=1, item=element.bestek)
+            self.add_cell_to_table(self, row=row_index, column=2, item=ModelBuilder(element.subset_path).get_name_project())
             logging.debug(element.subset_path)
-            self.add_cell_to_table(self, count, 3, element.laatst_bewerkt)
-            self.add_action_buttons(count, element, self)
+            self.add_cell_to_table(self, row=row_index, column=3, item=element.laatst_bewerkt)
+            self.add_action_buttons(row_index, element, self)
             # self.doubleClicked.connect(lambda _, project=element: self.navigate_to_project(project))
         self.cellDoubleClicked.connect(self.navigate_to_project)
 
@@ -81,27 +81,27 @@ class OverviewTable(QTableWidget):
         self.error_widget.setText(self._('no_results'))
         table.setItem(0, 0, self.error_widget)
 
-    def add_action_buttons(self, count: int, project: Project, table: QTableWidget) -> None:
-        edit = ButtonWidget()
-        edit.setIcon(qta.icon('mdi.pencil'))
-        edit.setProperty('class', 'alter-button')
-        edit.clicked.connect(
+    def add_action_buttons(self, row: int, project: Project, table: QTableWidget) -> None:
+        edit_btn = ButtonWidget()
+        edit_btn.setIcon(qta.icon('mdi.pencil'))
+        edit_btn.setProperty('class', 'alter-button')
+        edit_btn.clicked.connect(
             lambda _, project_details=project: self.start_dialog_window(project=project_details, is_project=True))
-        table.setCellWidget(count, 4, edit)
+        table.setCellWidget(row, 4, edit_btn)
 
         delete_btn = ButtonWidget()
         delete_btn.setIcon(qta.icon('mdi.trash-can'))
         delete_btn.setProperty('class', 'alter-button')
         delete_btn.clicked.connect(lambda _, i=project:
                                    self.message_box.draw_remove_project_screen(i, self))
-        table.setCellWidget(count, 5, delete_btn)
+        table.setCellWidget(row, 5, delete_btn)
 
         share_btn = ButtonWidget()
         share_btn.setIcon(qta.icon("mdi.share"))
         share_btn.setProperty('class', 'alter-button')
         share_btn.clicked.connect(lambda _, i=project:
                                    self.export_dialog_window(i))
-        table.setCellWidget(count, 6, share_btn)
+        table.setCellWidget(row, 6, share_btn)
 
     def navigate_to_project(self, row):
         project = self.item(row, 0).text()
