@@ -1,8 +1,10 @@
+import asyncio
 from pathlib import Path
 
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QFrame, QCheckBox, QSpinBox, \
     QLabel, QListWidget, QListWidgetItem
+from qasync import asyncSlot
 
 from Domain.language_settings import return_language
 from Domain.model_builder import ModelBuilder
@@ -180,11 +182,17 @@ class TemplateScreen(Screen):
         frame.setLayout(vertical_layout)
         return frame
 
-    def fill_list(self):
+    async def fill_list(self):
         self.all_classes.clear()
+        item = QListWidgetItem()
+        item.setText(self._("loading"))
+        self.all_classes.addItem(item)
         try:
+            await asyncio.sleep(1)
+            self.all_classes.clear()
             self.all_classes.setEnabled(True)
-            values = ModelBuilder(self.project.subset_path).filter_relations_and_abstract()
+            modelbuilder = ModelBuilder(self.project.subset_path)
+            values = modelbuilder.filter_relations_and_abstract()
             for value in values:
                 item = QListWidgetItem()
                 item.setText(value.name)

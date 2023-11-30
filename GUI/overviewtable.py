@@ -1,3 +1,4 @@
+import asyncio
 import logging
 from typing import Union
 import datetime
@@ -5,6 +6,7 @@ import qtawesome as qta
 from PyQt6.QtCore import Qt
 
 from PyQt6.QtWidgets import QTableWidget, QHeaderView, QTableWidgetItem, QPushButton
+from qasync import asyncSlot, QEventLoop
 
 from Domain import global_vars
 from Domain.Project import Project
@@ -70,7 +72,7 @@ class OverviewTable(QTableWidget):
             self.add_cell_to_table(self, row=row_index, column=3, item=element.laatst_bewerkt)
             self.add_action_buttons(row_index, element, self)
             # self.doubleClicked.connect(lambda _, project=element: self.navigate_to_project(project))
-        self.cellDoubleClicked.connect(self.navigate_to_project)
+        self.cellDoubleClicked.connect(self.create_async_task)
 
     @staticmethod
     def add_cell_to_table(table: QTableWidget, row: int, column: int, item: Union[str, datetime.datetime]) -> None:
@@ -109,17 +111,21 @@ class OverviewTable(QTableWidget):
                                   ExportProjectWindow().export_project_window(project=i))
         table.setCellWidget(row, 6, share_btn)
 
-    def navigate_to_project(self, row):
+    def create_async_task(self, row):
+        logging.debug("called this loopdieloop")
+        self.stacked_widget.setCurrentIndex(1)
         project = self.item(row, 0).text()
         projects = ProjectFileManager.get_all_otl_wizard_projects()
         p = next(k for k in projects if k.eigen_referentie == project)
-        global_vars.single_project = p
-        print(global_vars.single_project)
         self.stacked_widget.widget(1).tab1.project = p
-        self.stacked_widget.widget(1).tab1.fill_list()
-        self.stacked_widget.reset_ui(self._)
+        global_vars.single_project = p
         self.stacked_widget.widget(1).tab1.update_project_info()
-        self.stacked_widget.setCurrentIndex(1)
+        # self.stacked_widget.reset_ui(self._)
+        event_loop = asyncio.get_event_loop()
+        event_loop.create_task(self.navigate_to_project())
+
+    async def navigate_to_project(self):
+        await self.stacked_widget.widget(1).tab1.fill_list()
 
     @staticmethod
     def filter_projects(projects, input_text: str = None):
@@ -144,7 +150,7 @@ class OverviewTable(QTableWidget):
 
     def reset_ui(self, lang_settings):
         self._ = lang_settings
-        self.fill_table(projects=global_vars.projects)
+        # self.fill_table(projects=global_vars.projects)
         self.setHorizontalHeaderLabels(
             [self._('own_reference'), self._('service_order'), self._('subset'), self._('last_edited'), '', ''])
         self.error_widget.setText(self._('no_results'))

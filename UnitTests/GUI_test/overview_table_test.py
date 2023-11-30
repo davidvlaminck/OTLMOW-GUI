@@ -1,11 +1,10 @@
-import logging
 from pathlib import Path
 
 import pytest
 
 from Domain import global_vars
 from Domain.Project import Project
-from Domain.ProjectFileManager import ProjectFileManager
+
 from Domain.database import Database
 from Domain.home_domain import HomeDomain
 from Domain.language_settings import return_language

@@ -6,7 +6,7 @@ from PyQt6.QtWidgets import QDialog, QHBoxLayout, QPushButton
 from Domain.enums import Language
 from Domain.language_settings import return_language
 
-ROOT_DIR = Path(__file__).parent
+ROOT_DIR = Path(__file__).parent.parent
 
 LANG_DIR = ROOT_DIR.parent / 'locale/'
 
