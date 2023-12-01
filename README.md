@@ -8,8 +8,7 @@
 
 
 ## Summary
-<!-- The main use case of otlmow-model is to provide a class model, allowing instances of OTL compliant classes. The classes have data validation and automatic conversion for attributes and relations between objects. -->
-The main use case of the otlmow-gui is to provide a graphical user interface for the OTLMOW project. It is built using the [PyQt6 framework](https://www.riverbankcomputing.com/software/pyqt/intro) and is compatible with Python 3.6 and higher.
+The main use case of the otlmow-gui is to provide a graphical user interface for the OTLMOW project. It is built using the [PyQt6 framework](https://www.riverbankcomputing.com/software/pyqt/intro) and is compatible with Python 3.7 and higher. This will eventually replace the OTL wizard.
 
 ## OTLMOW Project 
 This project aims to implement the Flemish data standard OTL (https://wegenenverkeer.data.vlaanderen.be/) in Python.
@@ -24,4 +23,16 @@ It is split into different packages to reduce compatibility issues
 - [otlmow_gui](https://github.com/davidvlaminck/OTLMOW-GUI) (you are currently looking at this package)
 
 ## Installation guide
-TODO
+Currently, you need at least Python version 3.8 to use this library.
+
+To install the OTL MOW project into your Python project, use pip to install it:
+``` 
+pip install otlmow_gui
+```
+To upgrade an existing installation use:
+``` 
+pip install otlmow_gui --upgrade
+```
+Then you can run the main.py to see the GUI in action.
+
+We are working on a way to deploy this to the different operating systems. This is expected near the end of 2023.
