@@ -1,7 +1,6 @@
 # coding=utf-8
-import random
-from otlmow_model.BaseClasses.KeuzelijstField import KeuzelijstField
-from otlmow_model.BaseClasses.KeuzelijstWaarde import KeuzelijstWaarde
+from otlmow_model.OtlmowModel.BaseClasses.KeuzelijstField import KeuzelijstField
+from otlmow_model.OtlmowModel.BaseClasses.KeuzelijstWaarde import KeuzelijstWaarde
 
 
 # Generated with OTLEnumerationCreator. To modify: extend, do not edit
@@ -25,19 +24,19 @@ class KlAIMToestand(KeuzelijstField):
                                     definitie='gepland',
                                     objectUri='https://wegenenverkeer.data.vlaanderen.be/id/concept/KlAIMToestand/gepland'),
         'in-gebruik': KeuzelijstWaarde(invulwaarde='in-gebruik',
-                                       label='in-gebruik',
+                                       label='in gebruik',
                                        status='ingebruik',
-                                       definitie='in-gebruik',
+                                       definitie='in gebruik',
                                        objectUri='https://wegenenverkeer.data.vlaanderen.be/id/concept/KlAIMToestand/in-gebruik'),
         'in-ontwerp': KeuzelijstWaarde(invulwaarde='in-ontwerp',
-                                       label='in-ontwerp',
+                                       label='in ontwerp',
                                        status='ingebruik',
-                                       definitie='in-ontwerp',
+                                       definitie='in ontwerp',
                                        objectUri='https://wegenenverkeer.data.vlaanderen.be/id/concept/KlAIMToestand/in-ontwerp'),
         'in-opbouw': KeuzelijstWaarde(invulwaarde='in-opbouw',
-                                      label='in-opbouw',
+                                      label='in opbouw',
                                       status='ingebruik',
-                                      definitie='in-opbouw',
+                                      definitie='in opbouw',
                                       objectUri='https://wegenenverkeer.data.vlaanderen.be/id/concept/KlAIMToestand/in-opbouw'),
         'overgedragen': KeuzelijstWaarde(invulwaarde='overgedragen',
                                          label='overgedragen',
@@ -45,9 +44,9 @@ class KlAIMToestand(KeuzelijstField):
                                          definitie='overgedragen',
                                          objectUri='https://wegenenverkeer.data.vlaanderen.be/id/concept/KlAIMToestand/overgedragen'),
         'uit-gebruik': KeuzelijstWaarde(invulwaarde='uit-gebruik',
-                                        label='uit-gebruik',
+                                        label='uit gebruik',
                                         status='ingebruik',
-                                        definitie='uit-gebruik',
+                                        definitie='uit gebruik',
                                         objectUri='https://wegenenverkeer.data.vlaanderen.be/id/concept/KlAIMToestand/uit-gebruik'),
         'verwijderd': KeuzelijstWaarde(invulwaarde='verwijderd',
                                        label='verwijderd',

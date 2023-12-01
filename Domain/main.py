@@ -1,3 +1,4 @@
+import asyncio
 import logging
 import sys
 import typing
@@ -7,6 +8,7 @@ from pathlib import Path
 
 from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import QApplication
+from qasync import QEventLoop, asyncClose
 
 from Domain.Project import Project
 from Domain.ProjectFileManager import ProjectFileManager
@@ -57,7 +59,9 @@ class MyApplication(QApplication):
         self.db = db
         self.demo_project = demo_data()
 
-    def quit(self):
+    @asyncClose
+    async def quit(self):
+        logging.debug("closing application")
         ProjectFileManager().delete_project_files_by_path(self.demo_project.project_path)
         self.db.close_connection()
         super().quit()
@@ -71,12 +75,15 @@ if __name__ == '__main__':
             datefmt='%Y-%m-%d %H:%M:%S')
         db = initialize_database()
         app = MyApplication(sys.argv, db)
+        event_loop = QEventLoop(app)
+        asyncio.set_event_loop(event_loop)
         app_icon = QIcon('../img/wizard.ico')
         app.setWindowIcon(app_icon)
         mockData(db)
         with open('custom.qss', 'r') as file:
             app.setStyleSheet(file.read())
         home_screen = HomeScreen(db)
+        # TODO all code below up till line 102 can probably move to HomeScreen
         step1 = TemplateScreen()
         step1_tabwidget = TabWidget(db, 1, step1, 'template', 'step_1')
         step2 = InsertDataScreen()
@@ -96,10 +103,17 @@ if __name__ == '__main__':
         home_screen.table.stacked_widget = stacked_widget
         step1.stacked_widget = stacked_widget
         stacked_widget.show()
+        # event_loop.create_task(stacked_widget.show())
+        # event_loop.create_task(stacked_widget.widget(0).main_content_ui())
+        future = event_loop.create_future()
+        event_loop.run_until_complete(future)
+        # with event_loop:
+        #     event_loop.run_forever()
         stacked_widget.resize(1360, 768)
         stacked_widget.setWindowTitle('OTLWizard')
         stacked_widget.setMinimumSize(1280, 720)
         app.exec()
         app.quit()
+        event_loop.close()
     except Exception as e:
         logging.error(e)

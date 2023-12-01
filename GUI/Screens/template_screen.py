@@ -1,17 +1,21 @@
+import asyncio
 import logging
 import os
+import platform
 from pathlib import Path
 
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QFrame, QCheckBox, QSpinBox, \
     QLabel, QListWidget, QListWidgetItem
+from qasync import asyncSlot
 
 from Domain.language_settings import return_language
 from Domain.model_builder import ModelBuilder
 from Domain.template_domain import TemplateDomain
 from GUI.ButtonWidget import ButtonWidget
+from GUI.DialogWindows.change_subset_window import ChangeSubsetWindow
+from GUI.DialogWindows.export_to_template_window import ExportToTemplateWindow
 from GUI.Screens.screen import Screen
-from GUI.dialog_window import DialogWindow
 
 ROOT_DIR = Path(__file__).parent
 LANG_DIR = ROOT_DIR.parent.parent / 'locale/'
@@ -181,11 +185,17 @@ class TemplateScreen(Screen):
         frame.setLayout(vertical_layout)
         return frame
 
-    def fill_list(self):
+    async def fill_list(self):
         self.all_classes.clear()
+        item = QListWidgetItem()
+        item.setText(self._("loading"))
+        self.all_classes.addItem(item)
         try:
+            await asyncio.sleep(1)
+            self.all_classes.clear()
             self.all_classes.setEnabled(True)
-            values = ModelBuilder(self.project.subset_path).filter_relations_and_abstract()
+            modelbuilder = ModelBuilder(self.project.subset_path)
+            values = modelbuilder.filter_relations_and_abstract()
             for value in values:
                 item = QListWidgetItem()
                 item.setText(value.name)
@@ -244,19 +254,24 @@ class TemplateScreen(Screen):
         generate_choice_list = not self.no_choice_list.isChecked()
         for item in self.all_classes.selectedItems():
             selected_classes.append(item.data(1))
-        document_path = DialogWindow(self._).export_window()
+        document_path = ExportToTemplateWindow().export_to_template_window()
         if document_path is None:
             return
-        logging.debug("Reached export function")
         TemplateDomain().create_template(self.project.subset_path, document_path, selected_classes,
                                          generate_choice_list, self.geometry_column_added.isChecked(),
                                          self.export_attribute_info.isChecked(),
                                          self.show_deprecated_attributes.isChecked(),
                                          self.amount_of_examples.value())
+        if platform.system() == 'Linux':
+            os.open(document_path, os.O_WRONLY)
+        elif platform.system() == 'Windows':
+            os.startfile(document_path)
+        else:
+            logging.error("Opening a file on this OS is not implemented yet")
 
     def change_subset(self):
-        dialog_window = DialogWindow(self._)
-        dialog_window.change_subset_window(self.project, self.stacked_widget)
+        change_subset_window = ChangeSubsetWindow(self._)
+        change_subset_window.change_subset_window(self.project, self.stacked_widget)
 
     def reset_ui(self, _):
         self._ = _

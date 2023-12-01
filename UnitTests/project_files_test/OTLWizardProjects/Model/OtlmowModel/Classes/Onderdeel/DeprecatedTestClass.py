@@ -1,6 +1,6 @@
 # coding=utf-8
-from UnitTests.TestClasses.Classes.ImplementatieElement.AIMObject import AIMObject
-from otlmow_model.GeometrieTypes.VlakGeometrie import VlakGeometrie
+from ...Classes.ImplementatieElement.AIMObject import AIMObject
+from otlmow_model.OtlmowModel.GeometrieTypes.VlakGeometrie import VlakGeometrie
 
 
 # Generated with OTLClassCreator. To modify: extend, do not edit

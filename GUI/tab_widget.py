@@ -53,3 +53,4 @@ class TabWidget(Screen):
             self.tab2.reset_ui(_)
             self.tabs.setTabText(1, self._(self.desc2))
         self.tab1.reset_ui(_)
+        self.stepper_widget.reset_ui(_)

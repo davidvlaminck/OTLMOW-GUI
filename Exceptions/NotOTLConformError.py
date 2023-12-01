@@ -1,0 +1,2 @@
+class NotOTLConformError(Warning):
+    pass

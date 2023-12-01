@@ -1,10 +1,10 @@
 # coding=utf-8
-from otlmow_model.BaseClasses.OTLObject import OTLAttribuut
+from otlmow_model.OtlmowModel.BaseClasses.OTLObject import OTLAttribuut
 from abc import abstractmethod
-from UnitTests.TestClasses.Classes.ImplementatieElement.AIMDBStatus import AIMDBStatus
-from otlmow_model.BaseClasses.DavieRelatieAttributes import DavieRelatieAttributes
-from otlmow_model.BaseClasses.OTLObject import OTLObject
-from UnitTests.TestClasses.Datatypes.DtcIdentificator import DtcIdentificator, DtcIdentificatorWaarden
+from ...Classes.ImplementatieElement.AIMDBStatus import AIMDBStatus
+from otlmow_model.OtlmowModel.BaseClasses.DavieRelatieAttributes import DavieRelatieAttributes
+from otlmow_model.OtlmowModel.BaseClasses.OTLObject import OTLObject
+from ...Datatypes.DtcIdentificator import DtcIdentificator, DtcIdentificatorWaarden
 
 
 # Generated with OTLClassCreator. To modify: extend, do not edit

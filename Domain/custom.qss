@@ -226,3 +226,7 @@ QTabBar::tab{
     font-weight: 500;
     font-size: 13px;
 }
+
+.primary-button:disabled{
+    background-color: grey;
+}
