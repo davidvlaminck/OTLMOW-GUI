@@ -44,7 +44,8 @@ def test_get_project_from_dir_given_project_dir_location():
 
     assert project.project_path == Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1')
     assert project.subset_path == Path(
-        PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' / 'OTL_AllCasesTestClass.db')
+        PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' /
+        'OTL_AllCasesTestClass_no_double_kard.db')
     assert project.assets_path == Path(
         PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' / 'assets.json')
     assert project.eigen_referentie == "eigen referentie"
@@ -73,7 +74,8 @@ def test_save_project_given_details(mock_get_home_path):
     project = Project(
         project_path=Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_2'),
         subset_path=Path(
-            PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' / 'OTL_AllCasesTestClass.db'),
+            PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' /
+            'OTL_AllCasesTestClass_no_double_kard.db'),
         assets_path=Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_2' / 'assets.json'),
         eigen_referentie="eigen referentie",
         bestek="bestek",
@@ -84,7 +86,7 @@ def test_save_project_given_details(mock_get_home_path):
     project_dir_path = PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_2'
     assert project_dir_path.exists()
     assert (project_dir_path / 'project_details.json').exists()
-    assert (project_dir_path / 'OTL_AllCasesTestClass.db').exists()
+    assert (project_dir_path / 'OTL_AllCasesTestClass_no_double_kard.db').exists()
     assert (project_dir_path / 'assets.json').exists()
 
     generated_project = ProjectFileManager.get_project_from_dir(project_dir_path)
@@ -125,7 +127,8 @@ def test_export_project_to_file(mock_get_home_path):
     project = Project(
         project_path=Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1'),
         subset_path=Path(
-            PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' / 'OTL_AllCasesTestClass.db'),
+            PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' /
+            'OTL_AllCasesTestClass_no_double_kard.db'),
         assets_path=Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' / 'assets.json'),
         eigen_referentie="eigen referentie",
         bestek="bestek",
@@ -138,7 +141,7 @@ def test_export_project_to_file(mock_get_home_path):
 
     with zipfile.ZipFile(file_path) as project_zip:
         list_of_files = sorted(project_zip.namelist())
-    assert list_of_files == ['OTL_AllCasesTestClass.db', 'assets.json', 'project_details.json']
+    assert list_of_files == ['OTL_AllCasesTestClass_no_double_kard.db', 'assets.json', 'project_details.json']
 
     os.remove(file_path)
 
@@ -147,7 +150,8 @@ def test_load_project_file(mock_get_home_path):
     project = Project(
         project_path=Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1'),
         subset_path=Path(
-            PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' / 'OTL_AllCasesTestClass.db'),
+            PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' /
+            'OTL_AllCasesTestClass_no_double_kard.db'),
         assets_path=Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' / 'assets.json'),
         eigen_referentie="eigen referentie",
         bestek="bestek",
@@ -162,7 +166,8 @@ def test_load_project_file(mock_get_home_path):
     assert project_loaded.project_path == Path(
         PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_extract_and_load')
     assert project_loaded.subset_path == Path(
-        PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_extract_and_load' / 'OTL_AllCasesTestClass.db')
+        PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_extract_and_load' /
+        'OTL_AllCasesTestClass_no_double_kard.db')
     assert project_loaded.assets_path == Path(
         PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_extract_and_load' / 'assets.json')
     assert project_loaded.eigen_referentie == project.eigen_referentie
@@ -176,7 +181,8 @@ def test_load_project_file(mock_get_home_path):
 def test_delete_project_removes_correct_project():
     project = Project(
         project_path=Path(ProjectFileManager.get_otl_wizard_projects_dir() / 'project_4'),
-        subset_path=Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' / 'OTL_AllCasesTestClass.db'),
+        subset_path=Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' /
+                         'OTL_AllCasesTestClass_no_double_kard.db'),
         assets_path=Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' / 'assets.json'),
         eigen_referentie="eigen referentie",
         bestek="bestek",
