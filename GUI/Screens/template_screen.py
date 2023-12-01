@@ -1,4 +1,5 @@
 import asyncio
+import os
 from pathlib import Path
 
 from PyQt6.QtCore import Qt
@@ -259,6 +260,8 @@ class TemplateScreen(Screen):
                                          self.export_attribute_info.isChecked(),
                                          self.show_deprecated_attributes.isChecked(),
                                          self.amount_of_examples.value())
+        # TODO: this is OS specific
+        os.startfile(document_path)
 
     def change_subset(self):
         change_subset_window = ChangeSubsetWindow(self._)

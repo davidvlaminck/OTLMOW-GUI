@@ -1,21 +1,21 @@
 # coding=utf-8
 from datetime import date, datetime, time
 from typing import List
-from otlmow_model.BaseClasses.OTLObject import OTLAttribuut
-from UnitTests.TestClasses.Classes.ImplementatieElement.AIMObject import AIMObject
-from otlmow_model.BaseClasses.BooleanField import BooleanField
-from otlmow_model.BaseClasses.DateField import DateField
-from otlmow_model.BaseClasses.DateTimeField import DateTimeField
-from UnitTests.TestClasses.Datatypes.DtcTestComplexType import DtcTestComplexType, DtcTestComplexTypeWaarden
-from UnitTests.TestClasses.Datatypes.DteTestEenvoudigType import DteTestEenvoudigType, DteTestEenvoudigTypeWaarden
-from UnitTests.TestClasses.Datatypes.DtuTestUnionType import DtuTestUnionType, DtuTestUnionTypeWaarden
-from otlmow_model.BaseClasses.FloatOrDecimalField import FloatOrDecimalField
-from otlmow_model.BaseClasses.IntegerField import IntegerField
-from UnitTests.TestClasses.Datatypes.KlTestKeuzelijst import KlTestKeuzelijst
-from UnitTests.TestClasses.Datatypes.KwantWrdTest import KwantWrdTest, KwantWrdTestWaarden
-from otlmow_model.BaseClasses.StringField import StringField
-from otlmow_model.BaseClasses.TimeField import TimeField
-from otlmow_model.GeometrieTypes.PuntGeometrie import PuntGeometrie
+from otlmow_model.OtlmowModel.BaseClasses.OTLObject import OTLAttribuut
+from ...Classes.ImplementatieElement.AIMObject import AIMObject
+from otlmow_model.OtlmowModel.BaseClasses.BooleanField import BooleanField
+from otlmow_model.OtlmowModel.BaseClasses.DateField import DateField
+from otlmow_model.OtlmowModel.BaseClasses.DateTimeField import DateTimeField
+from ...Datatypes.DtcTestComplexType import DtcTestComplexType, DtcTestComplexTypeWaarden
+from ...Datatypes.DteTestEenvoudigType import DteTestEenvoudigType, DteTestEenvoudigTypeWaarden
+from ...Datatypes.DtuTestUnionType import DtuTestUnionType, DtuTestUnionTypeWaarden
+from otlmow_model.OtlmowModel.BaseClasses.FloatOrDecimalField import FloatOrDecimalField
+from otlmow_model.OtlmowModel.BaseClasses.IntegerField import IntegerField
+from ...Datatypes.KlTestKeuzelijst import KlTestKeuzelijst
+from ...Datatypes.KwantWrdTest import KwantWrdTest, KwantWrdTestWaarden
+from otlmow_model.OtlmowModel.BaseClasses.StringField import StringField
+from otlmow_model.OtlmowModel.BaseClasses.TimeField import TimeField
+from otlmow_model.OtlmowModel.GeometrieTypes.PuntGeometrie import PuntGeometrie
 
 
 # Generated with OTLClassCreator. To modify: extend, do not edit

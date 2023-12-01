@@ -1,16 +1,16 @@
 # coding=utf-8
 from datetime import date
 from typing import List
-from otlmow_model.BaseClasses.OTLObject import OTLAttribuut
+from otlmow_model.OtlmowModel.BaseClasses.OTLObject import OTLAttribuut
 from abc import abstractmethod
-from UnitTests.TestClasses.Classes.ImplementatieElement.AIMDBStatus import AIMDBStatus
-from UnitTests.TestClasses.Classes.ImplementatieElement.AIMToestand import AIMToestand
-from otlmow_model.BaseClasses.OTLAsset import OTLAsset
-from otlmow_model.BaseClasses.RelationInteractor import RelationInteractor
-from otlmow_model.BaseClasses.DateField import DateField
-from UnitTests.TestClasses.Datatypes.DtcIdentificator import DtcIdentificator, DtcIdentificatorWaarden
-from UnitTests.TestClasses.Datatypes.KwantWrdInMaand import KwantWrdInMaand, KwantWrdInMaandWaarden
-from otlmow_model.BaseClasses.StringField import StringField
+from ...Classes.ImplementatieElement.AIMDBStatus import AIMDBStatus
+from ...Classes.ImplementatieElement.AIMToestand import AIMToestand
+from otlmow_model.OtlmowModel.BaseClasses.OTLAsset import OTLAsset
+from otlmow_model.OtlmowModel.BaseClasses.RelationInteractor import RelationInteractor
+from otlmow_model.OtlmowModel.BaseClasses.DateField import DateField
+from ...Datatypes.DtcIdentificator import DtcIdentificator, DtcIdentificatorWaarden
+from ...Datatypes.KwantWrdInMaand import KwantWrdInMaand, KwantWrdInMaandWaarden
+from otlmow_model.OtlmowModel.BaseClasses.StringField import StringField
 
 
 # Generated with OTLClassCreator. To modify: extend, do not edit
