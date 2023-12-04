@@ -13,3 +13,4 @@ class Project:
         self.laatst_bewerkt: datetime.datetime = laatst_bewerkt
         self.assets_in_memory = []
         self.files_in_memory = []
+        self.templates_in_memory = []

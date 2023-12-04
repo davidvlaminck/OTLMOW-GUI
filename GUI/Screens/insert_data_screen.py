@@ -11,9 +11,12 @@ from otlmow_converter.Exceptions.NoTypeUriInExcelTabError import NoTypeUriInExce
 from otlmow_converter.Exceptions.TypeUriNotInFirstRowError import TypeUriNotInFirstRowError
 from otlmow_model.OtlmowModel.Helpers.OTLObjectHelper import count_assets_by_type
 
+from Domain import global_vars
 from Domain.ProjectFileManager import ProjectFileManager
+from Domain.enums import FileState
 from Domain.insert_data_domain import InsertDataDomain
 from Domain.language_settings import return_language
+from Domain.template_file import TemplateFile
 from GUI.ButtonWidget import ButtonWidget
 from GUI.Screens.screen import Screen
 import qtawesome as qta
@@ -86,7 +89,7 @@ class InsertDataScreen(Screen):
         return button_frame
 
     def validate_documents(self, documents: QTreeWidget):
-        has_errors = False
+        error_set = set()
         domain = InsertDataDomain()
         self.asset_info.clear()
         assets = []
@@ -99,35 +102,42 @@ class InsertDataScreen(Screen):
                 temp_path = Path(doc)
             try:
                 asset = domain.check_document(doc_location=temp_path)
-                ProjectFileManager().add_otl_conform_data_to_project(Path(doc))
+                ProjectFileManager().add_template_file_to_project(Path(doc))
                 assets.append(asset)
             except ExceptionsGroup as e:
                 for ex in e.exceptions:
                     self.add_error_to_feedback_list(ex, doc)
-                has_errors = True
-                continue
+                error_set.add(Path(doc).name)
             except ValueError:
                 self.add_error_to_feedback_list("The document is not OTL conform", doc)
-                has_errors = True
-                continue
+                error_set.add(Path(doc))
             except InvalidColumnNamesInExcelTabError as ex:
                 self.add_error_to_feedback_list(ex, doc)
-                has_errors = True
-                continue
+                error_set.add(Path(doc))
             except NoTypeUriInExcelTabError as ex:
                 self.add_error_to_feedback_list(ex, doc)
-                has_errors = True
+                error_set.add(Path(doc))
             except TypeUriNotInFirstRowError as ex:
                 self.add_error_to_feedback_list(ex, doc)
-                has_errors = True
+                error_set.add(Path(doc))
             except FailedToImportFileError as ex:
                 self.add_error_to_feedback_list(ex, doc)
-                has_errors = True
-        if has_errors:
+                error_set.add(Path(doc))
+            except Exception as ex:
+                self.add_error_to_feedback_list(ex, doc)
+                error_set.add(Path(doc))
+            else:
+                InsertDataDomain().add_template_file_to_project(project=global_vars.single_project, filepath=Path(doc),
+                                                                state=FileState.OK)
+        if error_set:
             self.negative_feedback_message()
+            for item in error_set:
+                InsertDataDomain().add_template_file_to_project(project=global_vars.single_project, filepath=Path(item),
+                                                                state=FileState.ERROR)
         else:
             self.positive_feedback_message()
         self.fill_feedback_list(assets)
+        ProjectFileManager().add_template_files_to_file(global_vars.single_project)
 
     def add_input_file_field(self):
         input_file = QFrame()
@@ -181,6 +191,10 @@ class InsertDataScreen(Screen):
         frame_layout.setContentsMargins(0, 30, 50, 85)
         frame.setLayout(frame_layout)
         return frame
+
+    def fill_list(self):
+        for asset in global_vars.single_project.templates_in_memory:
+            self.add_file_to_list(asset.file_path)
 
     def positive_feedback_message(self):
         self.message_icon.setPixmap(qta.icon('mdi.check', color="white").pixmap(QSize(48, 48)))
@@ -256,13 +270,15 @@ class InsertDataScreen(Screen):
         doc_name = Path(doc).name
         error_widget = QListWidgetItem()
         if str(e) == "argument of type 'NoneType' is not iterable":
-            error_text = self._("{doc_name}: Data nodig in een datasheet om objecten in te laden.\n".format(doc_name=doc_name))
+            error_text = self._("{doc_name}: Data nodig in een datasheet om objecten in te laden.\n").format(
+                doc_name=doc_name)
         elif issubclass(type(e), NoTypeUriInExcelTabError):
-            error_text = self._("{doc_name}: No type uri in {tab}\n".format(doc_name=doc_name, tab=e.tab))
+            error_text = self._("{doc_name}: No type uri in {tab}\n").format(doc_name=doc_name, tab=e.tab)
         elif issubclass(type(e), InvalidColumnNamesInExcelTabError):
-            error_text = self._("{doc_name}: invalid columns in {tab}, bad columns are {bad_columns} \n".format(doc_name=doc_name, tab=e.tab, bad_columns=str(e.bad_columns)))
+            error_text = self._("{doc_name}: invalid columns in {tab}, bad columns are {bad_columns} \n").format(
+                doc_name=doc_name, tab=e.tab, bad_columns=str(e.bad_columns))
         elif issubclass(type(e), TypeUriNotInFirstRowError):
-            error_text = self._("{doc_name}: type uri not in first row of {tab}\n".format(doc_name=doc_name, tab=e.tab))
+            error_text = self._("{doc_name}: type uri not in first row of {tab}\n").format(doc_name=doc_name, tab=e.tab)
         elif issubclass(type(e), ValueError):
             error_text = self._(f'{doc_name}: {e}\n')
         elif issubclass(type(e), FailedToImportFileError):
