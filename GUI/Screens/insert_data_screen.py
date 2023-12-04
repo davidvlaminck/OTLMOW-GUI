@@ -131,11 +131,13 @@ class InsertDataScreen(Screen):
                 InsertDataDomain().add_template_file_to_project(project=global_vars.single_project, filepath=Path(doc),
                                                                 state=FileState.OK)
         if error_set:
+            logging.debug('negative feedback needed')
             self.negative_feedback_message()
             for item in error_set:
                 InsertDataDomain().add_template_file_to_project(project=global_vars.single_project, filepath=Path(item),
                                                                 state=FileState.ERROR)
         else:
+            logging.debug('positive feedback needed')
             self.positive_feedback_message()
         self.fill_feedback_list(assets)
         ProjectFileManager().add_template_files_to_file(global_vars.single_project)
@@ -179,6 +181,7 @@ class InsertDataScreen(Screen):
         return right_side
 
     def construct_feedback_message(self):
+        logging.debug("constructing feedback message")
         frame_layout = QHBoxLayout()
         frame_layout.addWidget(self.message_icon)
         self.message.setProperty('class', 'feedback-message')
@@ -236,6 +239,7 @@ class InsertDataScreen(Screen):
         file_picker.setFileMode(QFileDialog.FileMode.ExistingFiles)
         if file_picker.exec():
             self.add_file_to_list(file_picker.selectedFiles())
+            self.clear_feedback_message()
 
     def add_file_to_list(self, files: List[str], asset_state: FileState = FileState.WARNING):
         self.control_button.setDisabled(False)
@@ -255,7 +259,6 @@ class InsertDataScreen(Screen):
             button = ButtonWidget()
             button.clicked.connect(lambda: self.delete_file_from_list())
             button.setIcon(qta.icon('mdi.close'))
-            self.clear_feedback_message()
             self.input_file_field.setItemWidget(list_item, 2, button)
 
     def delete_file_from_list(self):
