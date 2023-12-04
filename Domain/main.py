@@ -10,10 +10,12 @@ from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import QApplication
 from qasync import QEventLoop, asyncClose
 
+from Domain.ModelManager import ModelManager
 from Domain.Project import Project
 from Domain.ProjectFileManager import ProjectFileManager
 from Domain.database import Database
 from Domain.navigation import Navigation
+from GUI.Screens.SplashScreen import SplashScreen
 from GUI.Screens.asset_data_change_screen import AssetDataChangeScreen
 from GUI.Screens.conversion_screen import ConversionScreen
 from GUI.Screens.export_data_screen import ExportDataScreen
@@ -80,6 +82,9 @@ if __name__ == '__main__':
         app_icon = QIcon('../img/wizard.ico')
         app.setWindowIcon(app_icon)
         mockData(db)
+
+        ModelManager.get_valid_model_if_needed()
+
         with open('custom.qss', 'r') as file:
             app.setStyleSheet(file.read())
         home_screen = HomeScreen(db)
@@ -103,6 +108,7 @@ if __name__ == '__main__':
         home_screen.table.stacked_widget = stacked_widget
         step1.stacked_widget = stacked_widget
         stacked_widget.show()
+
         # event_loop.create_task(stacked_widget.show())
         # event_loop.create_task(stacked_widget.widget(0).main_content_ui())
         future = event_loop.create_future()

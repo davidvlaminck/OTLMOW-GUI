@@ -4,6 +4,8 @@ from typing import List
 
 from otlmow_template.SubsetTemplateCreator import SubsetTemplateCreator
 
+from Domain.ProjectFileManager import ProjectFileManager
+
 
 class TemplateDomain:
     @classmethod
@@ -17,6 +19,10 @@ class TemplateDomain:
     def create_template(cls, subset_path, document_path, selected_classes_dir: List, generate_choice_list: bool,
                         add_geo_artefact: bool, add_attribute_info: bool, highlight_deprecated_attributes: bool,
                         amount_of_examples: int, model_directory: Path = None):
+
+        if model_directory is None:
+            model_directory = ProjectFileManager.get_otl_wizard_model_dir()
+
         try:
             logging.debug("Creating template")
             template_creator = SubsetTemplateCreator()

@@ -1,8 +1,6 @@
 import datetime
 import json
 import logging
-import ntpath
-import os
 import shutil
 import zipfile
 from pathlib import Path
@@ -10,7 +8,6 @@ from pathlib import Path
 from otlmow_converter.OtlmowConverter import OtlmowConverter
 
 from Domain import global_vars
-from Domain.GitHubDownloader import GitHubDownloader
 from Domain.Project import Project
 
 
@@ -60,9 +57,6 @@ class ProjectFileManager:
         model_dir_path = cls.get_otl_wizard_work_dir() / 'Model'
         if not model_dir_path.exists():
             model_dir_path.mkdir()
-
-            # cls.download_fresh_otlmow_model(model_dir_path)
-            # cls.get_otlmow_model_version(model_dir_path)
         return model_dir_path
 
     @classmethod
@@ -137,21 +131,6 @@ class ProjectFileManager:
     @classmethod
     def load_projects_into_global(cls):
         global_vars.projects = ProjectFileManager.get_all_otl_wizard_projects()
-
-    @classmethod
-    def download_fresh_otlmow_model(cls, model_dir_path):
-        ghdl = GitHubDownloader('davidvlaminck/OTLMOW-Model')
-        ghdl.download_full_repo(model_dir_path / 'temp')
-        shutil.unpack_archive(model_dir_path / 'temp' / 'full_repo_download.zip', model_dir_path / 'temp' / 'downloaded_model')
-
-    @classmethod
-    def get_otlmow_model_version(cls, model_dir_path) -> str:
-        ghdl = GitHubDownloader('davidvlaminck/OTLMOW-Model')
-        ghdl.download_file(destination_dir=model_dir_path / 'temp', file_path='otlmow_model/version_info.json')
-        with open(model_dir_path / 'temp' / 'version_info.json') as json_file:
-            version_info = json.load(json_file)
-
-        return version_info['model_version']
 
     @classmethod
     def add_otl_conform_data_to_project(cls, filepath: Path):
