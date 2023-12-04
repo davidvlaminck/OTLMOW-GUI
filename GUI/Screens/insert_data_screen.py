@@ -1,3 +1,4 @@
+import logging
 from pathlib import Path
 from typing import List
 
@@ -94,7 +95,7 @@ class InsertDataScreen(Screen):
         self.asset_info.clear()
         assets = []
         doc_list = [documents.topLevelItem(i).data(1, 1) for i in range(documents.topLevelItemCount())]
-
+        global_vars.single_project.templates_in_memory = []
         for doc in doc_list:
             if Path(doc).suffix == '.xls' or Path(doc).suffix == '.xlsx':
                 temp_path = domain.start_excel_changes(doc=doc)
@@ -107,7 +108,7 @@ class InsertDataScreen(Screen):
             except ExceptionsGroup as e:
                 for ex in e.exceptions:
                     self.add_error_to_feedback_list(ex, doc)
-                error_set.add(Path(doc).name)
+                error_set.add(Path(doc))
             except ValueError:
                 self.add_error_to_feedback_list("The document is not OTL conform", doc)
                 error_set.add(Path(doc))
@@ -127,8 +128,7 @@ class InsertDataScreen(Screen):
                 self.add_error_to_feedback_list(ex, doc)
                 error_set.add(Path(doc))
             else:
-                InsertDataDomain().add_template_file_to_project(project=global_vars.single_project, filepath=Path(doc),
-                                                                state=FileState.OK)
+                InsertDataDomain().add_template_file_to_project(project=global_vars.single_project, filepath=Path(doc),                                                     state=FileState.OK)
         if error_set:
             self.negative_feedback_message()
             for item in error_set:
@@ -138,6 +138,7 @@ class InsertDataScreen(Screen):
             self.positive_feedback_message()
         self.fill_feedback_list(assets)
         ProjectFileManager().add_template_files_to_file(global_vars.single_project)
+        self.fill_list()
 
     def add_input_file_field(self):
         input_file = QFrame()
@@ -193,8 +194,10 @@ class InsertDataScreen(Screen):
         return frame
 
     def fill_list(self):
+        self.input_file_field.clear()
+        logging.debug("Filled list with " + str(len(global_vars.single_project.templates_in_memory)) + " items")
         for asset in global_vars.single_project.templates_in_memory:
-            self.add_file_to_list(asset.file_path)
+            self.add_file_to_list([asset.file_path], asset.state)
 
     def positive_feedback_message(self):
         self.message_icon.setPixmap(qta.icon('mdi.check', color="white").pixmap(QSize(48, 48)))
@@ -232,13 +235,18 @@ class InsertDataScreen(Screen):
         if file_picker.exec():
             self.add_file_to_list(file_picker.selectedFiles())
 
-    def add_file_to_list(self, files: List[str]):
+    def add_file_to_list(self, files: List[str], asset_state: FileState = FileState.WARNING):
         self.control_button.setDisabled(False)
         for file in files:
             list_item = QTreeWidgetItem()
             doc_name = Path(file).name
             list_item.setText(1, doc_name)
-            list_item.setIcon(0, qta.icon('mdi.alert', color="orange"))
+            if asset_state == FileState.OK:
+                list_item.setIcon(0, qta.icon('mdi.check', color="green"))
+            elif asset_state == FileState.WARNING:
+                list_item.setIcon(0, qta.icon('mdi.alert', color="orange"))
+            elif asset_state == FileState.ERROR:
+                list_item.setIcon(0, qta.icon('mdi.close', color="red"))
             list_item.setData(1, 1, file)
             list_item.setSizeHint(1, QSize(0, 30))
             self.input_file_field.addTopLevelItem(list_item)

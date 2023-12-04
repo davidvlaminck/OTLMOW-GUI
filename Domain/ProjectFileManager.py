@@ -183,6 +183,8 @@ class ProjectFileManager:
             location_dir.mkdir()
         doc_name = filepath.name
         end_location = location_dir / doc_name
+        if end_location == filepath:
+            return end_location
         shutil.copy(filepath, end_location)
         logging.debug("file manager" + str(end_location))
         return end_location
