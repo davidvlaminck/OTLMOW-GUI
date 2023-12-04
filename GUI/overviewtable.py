@@ -117,9 +117,12 @@ class OverviewTable(QTableWidget):
         projects = ProjectFileManager.get_all_otl_wizard_projects()
         p = next(k for k in projects if k.eigen_referentie == project)
         self.stacked_widget.widget(1).tab1.project = p
+        p = ProjectFileManager.get_templates_in_memory(p)
         global_vars.single_project = p
-        self.stacked_widget.widget(1).tab1.update_project_info()
         self.stacked_widget.reset_ui(self._)
+        self.stacked_widget.widget(2).tab1.fill_list()
+        self.stacked_widget.widget(1).tab1.update_project_info()
+        self.stacked_widget.widget(2).tab1.fill_list()
         event_loop = asyncio.get_event_loop()
         event_loop.create_task(self.navigate_to_project())
 

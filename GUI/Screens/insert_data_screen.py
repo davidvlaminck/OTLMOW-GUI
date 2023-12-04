@@ -128,7 +128,8 @@ class InsertDataScreen(Screen):
                 self.add_error_to_feedback_list(ex, doc)
                 error_set.add(Path(doc))
             else:
-                InsertDataDomain().add_template_file_to_project(project=global_vars.single_project, filepath=Path(doc),                                                     state=FileState.OK)
+                InsertDataDomain().add_template_file_to_project(project=global_vars.single_project, filepath=Path(doc),
+                                                                state=FileState.OK)
         if error_set:
             self.negative_feedback_message()
             for item in error_set:
@@ -195,6 +196,7 @@ class InsertDataScreen(Screen):
 
     def fill_list(self):
         self.input_file_field.clear()
+        logging.debug("list with " + str(global_vars.single_project.templates_in_memory))
         logging.debug("Filled list with " + str(len(global_vars.single_project.templates_in_memory)) + " items")
         for asset in global_vars.single_project.templates_in_memory:
             self.add_file_to_list([asset.file_path], asset.state)
@@ -241,11 +243,11 @@ class InsertDataScreen(Screen):
             list_item = QTreeWidgetItem()
             doc_name = Path(file).name
             list_item.setText(1, doc_name)
-            if asset_state == FileState.OK:
+            if asset_state == FileState.OK or asset_state == "OK":
                 list_item.setIcon(0, qta.icon('mdi.check', color="green"))
-            elif asset_state == FileState.WARNING:
+            elif asset_state == FileState.WARNING or asset_state == "WARNING":
                 list_item.setIcon(0, qta.icon('mdi.alert', color="orange"))
-            elif asset_state == FileState.ERROR:
+            elif asset_state == FileState.ERROR or asset_state == "ERROR":
                 list_item.setIcon(0, qta.icon('mdi.close', color="red"))
             list_item.setData(1, 1, file)
             list_item.setSizeHint(1, QSize(0, 30))

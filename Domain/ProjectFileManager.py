@@ -12,6 +12,7 @@ from otlmow_converter.OtlmowConverter import OtlmowConverter
 from Domain import global_vars
 from Domain.GitHubDownloader import GitHubDownloader
 from Domain.Project import Project
+from Domain.template_file import TemplateFile
 
 
 class ProjectFileManager:
@@ -129,9 +130,16 @@ class ProjectFileManager:
 
     @classmethod
     def get_templates_in_memory(cls, project: Project):
-        with open(project.project_path / "assets.json", "r") as project_details_file:
+        project_dir_path = cls.get_otl_wizard_projects_dir() / project.project_path.name
+        with open(project_dir_path / "assets.json", "r") as project_details_file:
             templates = json.load(project_details_file)
-        project.templates_in_memory = templates
+        logging.debug("templates from memory" + str(templates))
+        templates_array = []
+        for template in templates:
+            file = TemplateFile(file_path=template['file_path'], state=template['state'])
+            templates_array.append(file)
+        project.templates_in_memory = templates_array
+        return project
 
     @classmethod
     def load_project_file(cls, file_path) -> Project:
@@ -146,7 +154,6 @@ class ProjectFileManager:
             project_file.extractall(path=project_dir_path)
 
         project = cls.get_project_from_dir(project_dir_path)
-        cls.get_templates_in_memory(project)
         return project
 
     @classmethod
