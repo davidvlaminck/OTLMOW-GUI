@@ -12,3 +12,4 @@ class Project:
         self.bestek: str = bestek
         self.laatst_bewerkt: datetime.datetime = laatst_bewerkt
         self.assets_in_memory = []
+        self.files_in_memory = []

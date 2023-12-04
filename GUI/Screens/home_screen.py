@@ -21,9 +21,8 @@ LANG_DIR = ROOT_DIR.parent.parent / 'locale/'
 
 class HomeScreen(Screen):
 
-    def __init__(self, database):
+    def __init__(self):
         super().__init__()
-        self.database = database
         self._ = return_language(LANG_DIR)
         self.home_domain = home_domain.HomeDomain(self._)
         self.container_home_screen = QVBoxLayout()
@@ -33,8 +32,8 @@ class HomeScreen(Screen):
         self.input_field = QLineEdit()
         self.new_project_button = QPushButton()
         self.search_message = QLabel()
-        self.table = OverviewTable(self.search_message, self._, self.home_domain, self.message_box, self.database)
-        self.header = HeaderBar(language=self._, database=self.database, table=self.table)
+        self.table = OverviewTable(self.search_message, self._, self.home_domain, self.message_box)
+        self.header = HeaderBar(language=self._, table=self.table)
         self.stacked_widget = None
 
         ProjectFileManager.load_projects_into_global()

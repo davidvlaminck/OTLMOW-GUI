@@ -14,11 +14,10 @@ from GUI.overviewtable import OverviewTable
 
 
 class HeaderBar(QFrame):
-    def __init__(self, language, database, stacked_widget=None, table: OverviewTable =None):
+    def __init__(self, language, stacked_widget=None, table: OverviewTable =None):
         super().__init__()
         self.new_project_button = ButtonWidget()
         self._ = language
-        self.database = database
         self.table = table
         self.stacked_widget = stacked_widget
         self.return_button = ButtonWidget()
@@ -151,7 +150,6 @@ class HeaderBar(QFrame):
         self.return_button.setText(self._('return_to_home_screen'))
         self.save_button.setText(self._('save_button'))
         if global_vars.single_project is not None:
-            print(global_vars.single_project.eigen_referentie)
             self.reference_title.setText(global_vars.single_project.eigen_referentie)
         else:
             self.reference_title.setText("")

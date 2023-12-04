@@ -1,3 +1,5 @@
+import logging
+
 import qtawesome as qta
 
 from PyQt6.QtCore import Qt
@@ -79,6 +81,7 @@ class StepperWidget(QWidget):
             self.step3.setDisabled(False)
             self.step4.setDisabled(False)
         else:
+            logging.debug('set disabled')
             self.step3.setDisabled(True)
             self.step4.setDisabled(True)
 

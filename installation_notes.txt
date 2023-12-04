@@ -2,7 +2,7 @@ On Linux:
 sudo apt-get install '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxrender-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev
 
 Translation commands bij toevoegen van nieuwe strings:
-pybabel extract . -o locale/base.pot
+pybabel extract . -o locale/base.pot --ignore-dirs venv
  -> update het pot bestand met alle nieuwe strings
 pybabel update -i locale/base.pot -d locale
 -> update alle po bestanden met de nieuwe strings
