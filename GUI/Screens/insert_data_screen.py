@@ -93,9 +93,9 @@ class InsertDataScreen(Screen):
         doc_list = [documents.topLevelItem(i).data(1, 1) for i in range(documents.topLevelItemCount())]
 
         for doc in doc_list:
-            if Path(doc).stem == 'xls' or Path(doc).stem == 'xlsx':
+            if Path(doc).suffix == '.xls' or Path(doc).suffix == '.xlsx':
                 temp_path = domain.start_excel_changes(doc=doc)
-            elif Path(doc).stem == 'csv':
+            elif Path(doc).suffix == '.csv':
                 temp_path = Path(doc)
             try:
                 asset = domain.check_document(doc_location=temp_path)
@@ -224,7 +224,7 @@ class InsertDataScreen(Screen):
             list_item = QTreeWidgetItem()
             doc_name = Path(file).name
             list_item.setText(1, doc_name)
-            list_item.setIcon(0, qta.icon('mdi.alert'))
+            list_item.setIcon(0, qta.icon('mdi.alert', color="orange"))
             list_item.setData(1, 1, file)
             list_item.setSizeHint(1, QSize(0, 30))
             self.input_file_field.addTopLevelItem(list_item)
