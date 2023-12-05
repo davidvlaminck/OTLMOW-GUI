@@ -197,7 +197,7 @@ def test_add_template_file_generates_folder():
     project = Project(
         project_path=Path(ProjectFileManager.get_otl_wizard_projects_dir() / 'project_4'),
         subset_path=Path(
-            PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' / 'OTL_AllCasesTestClass.db'),
+            PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' / 'OTL_AllCasesTestClass_no_double_kard.db'),
         assets_path=Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' / 'assets.json'),
         eigen_referentie="eigen referentie",
         bestek="bestek",
@@ -216,7 +216,7 @@ def test_remove_template_folder_removes_folder():
     project = Project(
         project_path=Path(ProjectFileManager.get_otl_wizard_projects_dir() / 'project_4'),
         subset_path=Path(
-            PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' / 'OTL_AllCasesTestClass.db'),
+            PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' / 'OTL_AllCasesTestClass_no_double_kard.db'),
         assets_path=Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' / 'assets.json'),
         eigen_referentie="eigen referentie",
         bestek="bestek",
