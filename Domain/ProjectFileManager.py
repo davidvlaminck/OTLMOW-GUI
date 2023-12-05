@@ -12,6 +12,7 @@ from otlmow_converter.OtlmowConverter import OtlmowConverter
 from Domain import global_vars
 from Domain.GitHubDownloader import GitHubDownloader
 from Domain.Project import Project
+from Domain.enums import FileState
 from Domain.project_file import ProjectFile
 
 
@@ -115,7 +116,7 @@ class ProjectFileManager:
             project_zip.write(project.subset_path, arcname=project.subset_path.name)
 
     @classmethod
-    def add_template_files_to_file(cls, project: Project, ):
+    def add_project_files_to_file(cls, project: Project):
         otl_wizard_project_dir = cls.get_otl_wizard_projects_dir()
         object_array = []
         for template in project.templates_in_memory:
@@ -136,7 +137,8 @@ class ProjectFileManager:
         logging.debug("templates from memory" + str(templates))
         templates_array = []
         for template in templates:
-            file = ProjectFile(file_path=template['file_path'], state=template['state'])
+            state = FileState(template['state'])
+            file = ProjectFile(file_path=template['file_path'], state=state)
             templates_array.append(file)
         project.templates_in_memory = templates_array
         return project
@@ -211,3 +213,13 @@ class ProjectFileManager:
         if not location_dir.exists():
             return
         shutil.rmtree(location_dir)
+
+    @classmethod
+    def delete_template_file_from_project(cls, file_path):
+        try:
+            logging.debug("file path = "+ str(file_path))
+            Path.unlink(file_path)
+            return True
+        except FileNotFoundError as e:
+            logging.error(e)
+            return False

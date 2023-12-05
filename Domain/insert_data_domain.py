@@ -53,3 +53,12 @@ class InsertDataDomain:
         elif Path(file_path).suffix == '.csv':
             temp_path = cls.create_temp_path(path_to_template_file_and_extension=file_path)
         return temp_path
+
+    @classmethod
+    def delete_project_file_from_project(cls, project: Project, file_path: Path):
+        for file in project.templates_in_memory:
+            if file.file_path == file_path:
+                project.templates_in_memory.remove(file)
+                break
+        ProjectFileManager().delete_template_file_from_project(file_path=file_path)
+        ProjectFileManager().add_project_files_to_file(project=project)

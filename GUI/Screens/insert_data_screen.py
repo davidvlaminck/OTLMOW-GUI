@@ -17,7 +17,6 @@ from Domain.ProjectFileManager import ProjectFileManager
 from Domain.enums import FileState
 from Domain.insert_data_domain import InsertDataDomain
 from Domain.language_settings import return_language
-from Domain.project_file import ProjectFile
 from GUI.ButtonWidget import ButtonWidget
 from GUI.Screens.screen import Screen
 import qtawesome as qta
@@ -140,7 +139,7 @@ class InsertDataScreen(Screen):
             logging.debug('positive feedback needed')
             self.positive_feedback_message()
         self.fill_feedback_list(assets)
-        ProjectFileManager().add_template_files_to_file(global_vars.single_project)
+        ProjectFileManager().add_project_files_to_file(global_vars.single_project)
         self.fill_list()
 
     def add_input_file_field(self):
@@ -263,6 +262,11 @@ class InsertDataScreen(Screen):
 
     def delete_file_from_list(self):
         items = self.input_file_field.selectedItems()
+        item_data = items[0].data(1, 1)
+        file_in_memory = next((asset.file_path for asset in global_vars.single_project.templates_in_memory if asset.file_path == item_data), None)
+        if file_in_memory is not None:
+            logging.debug("We've struck gold")
+            InsertDataDomain().delete_project_file_from_project(global_vars.single_project, file_in_memory)
         self.input_file_field.removeItemWidget(items[0], 1)
         self.input_file_field.takeTopLevelItem(self.input_file_field.indexOfTopLevelItem(items[0]))
         if self.input_file_field.topLevelItemCount() == 0:
