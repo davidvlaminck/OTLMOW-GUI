@@ -6,7 +6,7 @@ from pathlib import Path
 
 import pytest
 
-from Domain import GitHubDownloader
+from Domain import GitHubDownloader, global_vars
 from Domain.Project import Project
 from Domain.ProjectFileManager import ProjectFileManager
 
@@ -191,3 +191,43 @@ def test_delete_project_removes_correct_project():
     assert project.project_path.exists()
     ProjectFileManager.delete_project_files_by_path(project.project_path)
     assert not project.project_path.exists()
+
+
+def test_add_template_file_generates_folder():
+    project = Project(
+        project_path=Path(ProjectFileManager.get_otl_wizard_projects_dir() / 'project_4'),
+        subset_path=Path(
+            PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' / 'OTL_AllCasesTestClass.db'),
+        assets_path=Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' / 'assets.json'),
+        eigen_referentie="eigen referentie",
+        bestek="bestek",
+        laatst_bewerkt=datetime.datetime(2023, 11, 1))
+    ProjectFileManager.save_project_to_dir(project)
+    global_vars.single_project = project
+    assert project.project_path.exists()
+    ProjectFileManager.add_template_file_to_project(Path(
+        PARENT_OF_THIS_FILE) / 'OTLWizardProjects' / 'TestFiles' / 'should_pass_implementatieelement_Derdenobject.csv')
+    assert (project.project_path / 'OTL-template-files').exists()
+    ProjectFileManager.delete_project_files_by_path(project.project_path)
+    global_vars.single_project = None
+
+
+def test_remove_template_folder_removes_folder():
+    project = Project(
+        project_path=Path(ProjectFileManager.get_otl_wizard_projects_dir() / 'project_4'),
+        subset_path=Path(
+            PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' / 'OTL_AllCasesTestClass.db'),
+        assets_path=Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' / 'assets.json'),
+        eigen_referentie="eigen referentie",
+        bestek="bestek",
+        laatst_bewerkt=datetime.datetime(2023, 11, 1))
+    ProjectFileManager.save_project_to_dir(project)
+    global_vars.single_project = project
+    assert project.project_path.exists()
+    ProjectFileManager.add_template_file_to_project(Path(
+        PARENT_OF_THIS_FILE) / 'OTLWizardProjects' / 'TestFiles' / 'should_pass_implementatieelement_Derdenobject.csv')
+    assert (project.project_path / 'OTL-template-files').exists()
+    ProjectFileManager.delete_template_folder()
+    assert not (project.project_path / 'OTL-template-files').exists()
+    ProjectFileManager.delete_project_files_by_path(project.project_path)
+    global_vars.single_project = None

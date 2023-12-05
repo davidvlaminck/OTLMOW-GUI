@@ -14,11 +14,10 @@ from GUI.overviewtable import OverviewTable
 
 
 class HeaderBar(QFrame):
-    def __init__(self, language, database, stacked_widget=None, table: OverviewTable =None):
+    def __init__(self, language, stacked_widget=None, table: OverviewTable =None, has_save_btn: bool = True):
         super().__init__()
         self.new_project_button = ButtonWidget()
         self._ = language
-        self.database = database
         self.table = table
         self.stacked_widget = stacked_widget
         self.return_button = ButtonWidget()
@@ -26,6 +25,7 @@ class HeaderBar(QFrame):
         self.save_button = ButtonWidget()
         self.import_button = ButtonWidget()
         self.reference_title = QLabel()
+        self.has_save_btn = has_save_btn
 
     def construct_header_bar(self):
         self.setProperty('class', 'header')
@@ -106,15 +106,16 @@ class HeaderBar(QFrame):
         header_sub = QFrame()
         header_sub_layout = QHBoxLayout()
         header_sub.setProperty('class', 'sub-header')
-
-        self.save_button.setIcon(qta.icon('mdi.content-save',
+        if self.has_save_btn:
+            self.save_button.setIcon(qta.icon('mdi.content-save',
                                           color='white'))
-        self.save_button.setText(self._('save_button'))
-        self.save_button.setProperty('class', 'primary-button')
+            self.save_button.setText(self._('save_button'))
+            self.save_button.setProperty('class', 'primary-button')
 
         header_sub_layout.addWidget(self.return_button, alignment=Qt.AlignmentFlag.AlignLeft)
-        header_sub_layout.addWidget(self.save_button)
-        header_sub_layout.setAlignment(self.save_button, Qt.AlignmentFlag.AlignRight)
+        if self.has_save_btn:
+            header_sub_layout.addWidget(self.save_button)
+            header_sub_layout.setAlignment(self.save_button, Qt.AlignmentFlag.AlignRight)
 
         header_sub.setLayout(header_sub_layout)
 
@@ -151,7 +152,6 @@ class HeaderBar(QFrame):
         self.return_button.setText(self._('return_to_home_screen'))
         self.save_button.setText(self._('save_button'))
         if global_vars.single_project is not None:
-            print(global_vars.single_project.eigen_referentie)
             self.reference_title.setText(global_vars.single_project.eigen_referentie)
         else:
             self.reference_title.setText("")

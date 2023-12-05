@@ -5,8 +5,8 @@ import datetime
 import qtawesome as qta
 from PyQt6.QtCore import Qt
 
-from PyQt6.QtWidgets import QTableWidget, QHeaderView, QTableWidgetItem, QPushButton
-from qasync import asyncSlot, QEventLoop
+from PyQt6.QtWidgets import QTableWidget, QHeaderView, QTableWidgetItem
+
 
 from Domain import global_vars
 from Domain.Project import Project
@@ -21,14 +21,13 @@ from GUI.DialogWindows.upsert_project_window import UpsertProjectWindow
 
 class OverviewTable(QTableWidget):
 
-    def __init__(self, search_message, language_settings, home_domain, message_box, database):
+    def __init__(self, search_message, language_settings, home_domain, message_box):
         super().__init__()
         self.search_message = search_message
         self._ = language_settings
         self.home_domain = home_domain
         self.projects: list
         self.message_box = message_box
-        self.database = database
         self.stacked_widget = None
         self.error_widget = QTableWidgetItem()
         self.projects = None
@@ -118,13 +117,17 @@ class OverviewTable(QTableWidget):
         projects = ProjectFileManager.get_all_otl_wizard_projects()
         p = next(k for k in projects if k.eigen_referentie == project)
         self.stacked_widget.widget(1).tab1.project = p
+        p = ProjectFileManager.get_templates_in_memory(p)
         global_vars.single_project = p
+        self.stacked_widget.reset_ui(self._)
+        self.stacked_widget.widget(2).tab1.fill_list()
         self.stacked_widget.widget(1).tab1.update_project_info()
-        # self.stacked_widget.reset_ui(self._)
+        self.stacked_widget.widget(2).tab1.fill_list()
         event_loop = asyncio.get_event_loop()
         event_loop.create_task(self.navigate_to_project())
 
     async def navigate_to_project(self):
+        logging.debug("called")
         await self.stacked_widget.widget(1).tab1.fill_list()
 
     @staticmethod

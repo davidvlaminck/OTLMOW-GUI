@@ -12,6 +12,8 @@ from otlmow_converter.OtlmowConverter import OtlmowConverter
 from Domain import global_vars
 from Domain.GitHubDownloader import GitHubDownloader
 from Domain.Project import Project
+from Domain.enums import FileState
+from Domain.project_file import ProjectFile
 
 
 class ProjectFileManager:
@@ -114,6 +116,33 @@ class ProjectFileManager:
             project_zip.write(project.subset_path, arcname=project.subset_path.name)
 
     @classmethod
+    def add_project_files_to_file(cls, project: Project):
+        otl_wizard_project_dir = cls.get_otl_wizard_projects_dir()
+        object_array = []
+        for template in project.templates_in_memory:
+            template_details = {
+                'file_path': str(template.file_path),
+                'state': template.state
+            }
+            object_array.append(template_details)
+        project_dir_path = otl_wizard_project_dir / project.project_path.name
+        with open(project_dir_path / "assets.json", "w") as project_details_file:
+            json.dump(object_array, project_details_file)
+
+    @classmethod
+    def get_templates_in_memory(cls, project: Project):
+        project_dir_path = cls.get_otl_wizard_projects_dir() / project.project_path.name
+        with open(project_dir_path / "assets.json", "r") as project_details_file:
+            templates = json.load(project_details_file)
+        logging.debug("templates from memory" + str(templates))
+        templates_array = []
+        for template in templates:
+            file = ProjectFile(file_path=template['file_path'], state=template['state'])
+            templates_array.append(file)
+        project.templates_in_memory = templates_array
+        return project
+
+    @classmethod
     def load_project_file(cls, file_path) -> Project:
         project_dir_path = Path(cls.get_otl_wizard_projects_dir() / file_path.stem)
         try:
@@ -142,7 +171,8 @@ class ProjectFileManager:
     def download_fresh_otlmow_model(cls, model_dir_path):
         ghdl = GitHubDownloader('davidvlaminck/OTLMOW-Model')
         ghdl.download_full_repo(model_dir_path / 'temp')
-        shutil.unpack_archive(model_dir_path / 'temp' / 'full_repo_download.zip', model_dir_path / 'temp' / 'downloaded_model')
+        shutil.unpack_archive(model_dir_path / 'temp' / 'full_repo_download.zip',
+                              model_dir_path / 'temp' / 'downloaded_model')
 
     @classmethod
     def get_otlmow_model_version(cls, model_dir_path) -> str:
@@ -154,24 +184,41 @@ class ProjectFileManager:
         return version_info['model_version']
 
     @classmethod
-    def add_otl_conform_data_to_project(cls, filepath: Path):
+    def add_template_file_to_project(cls, filepath: Path):
         project = global_vars.single_project
-        location_dir = project.project_path / 'OTL-conform-files'
+        location_dir = project.project_path / 'OTL-template-files'
         if not location_dir.exists():
             location_dir.mkdir()
         doc_name = filepath.name
         end_location = location_dir / doc_name
-        if end_location.exists():
-            return
+        if end_location == filepath:
+            return end_location
         shutil.copy(filepath, end_location)
+        logging.debug("file manager" + str(end_location))
+        return end_location
 
     @classmethod
-    def otl_conform_map_exists(cls):
+    def template_map_exists(cls):
         if global_vars.single_project is None:
             return False
         project = global_vars.single_project
-        location_dir = project.project_path / 'OTL-conform-files'
+        location_dir = project.project_path / 'OTL-template-files'
         return location_dir.exists()
 
+    @classmethod
+    def delete_template_folder(cls):
+        project = global_vars.single_project
+        location_dir = project.project_path / 'OTL-template-files'
+        if not location_dir.exists():
+            return
+        shutil.rmtree(location_dir)
 
-
+    @classmethod
+    def delete_template_file_from_project(cls, file_path):
+        try:
+            logging.debug("file path = "+ str(file_path))
+            Path.unlink(file_path)
+            return True
+        except FileNotFoundError as e:
+            logging.error(e)
+            return False

@@ -1,3 +1,5 @@
+import logging
+
 import qtawesome as qta
 
 from PyQt6.QtCore import Qt
@@ -75,10 +77,11 @@ class StepperWidget(QWidget):
         return stepper_widget
 
     def enable_steps(self):
-        if ProjectFileManager().otl_conform_map_exists():
+        if ProjectFileManager().template_map_exists():
             self.step3.setDisabled(False)
             self.step4.setDisabled(False)
         else:
+            logging.debug('set disabled')
             self.step3.setDisabled(True)
             self.step4.setDisabled(True)
 

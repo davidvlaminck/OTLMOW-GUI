@@ -14,16 +14,15 @@ LANG_DIR = ROOT_DIR.parent / 'locale/'
 
 class TabWidget(Screen):
 
-    def __init__(self, database, page_nr: int, widget1, description1: str, step_desc: str,widget2=None, description2: str = None):
+    def __init__(self, page_nr: int, widget1, description1: str, widget2=None, description2: str = None, has_save_btn: bool = True):
         super().__init__()
         self._ = return_language(LANG_DIR)
-        self.step_desc = step_desc
         self.tabs = QTabWidget()
         self.tab1 = widget1
         if widget2 is not None:
             self.tab2 = widget2
         self.stepper_widget = StepperWidget(self._, page_nr)
-        self.header = HeaderBar(database=database, language=self._)
+        self.header = HeaderBar(language=self._, has_save_btn=has_save_btn)
         self.stacked_widget = None
         self.tabs.addTab(self.tab1, self._(description1))
         self.desc1 = description1

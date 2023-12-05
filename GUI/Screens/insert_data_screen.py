@@ -1,18 +1,24 @@
-import ntpath
+import logging
 from pathlib import Path
 from typing import List
 
 from PyQt6.QtCore import Qt, QSize
 from PyQt6.QtWidgets import QVBoxLayout, QWidget, QLabel, QPushButton, QFrame, QHBoxLayout, QListWidget, \
-    QFileDialog, QListWidgetItem, QTreeWidget, QTreeWidgetItem
+    QFileDialog, QListWidgetItem, QTreeWidget, QTreeWidgetItem, QHeaderView
 from otlmow_converter.Exceptions.ExceptionsGroup import ExceptionsGroup
+from otlmow_converter.Exceptions.FailedToImportFileError import FailedToImportFileError
 from otlmow_converter.Exceptions.InvalidColumnNamesInExcelTabError import InvalidColumnNamesInExcelTabError
+from otlmow_converter.Exceptions.NoTypeUriInExcelTabError import NoTypeUriInExcelTabError
+from otlmow_converter.Exceptions.TypeUriNotInFirstRowError import TypeUriNotInFirstRowError
 from otlmow_model.OtlmowModel.Helpers.OTLObjectHelper import count_assets_by_type
 
+from Domain import global_vars
 from Domain.ProjectFileManager import ProjectFileManager
+from Domain.enums import FileState
 from Domain.insert_data_domain import InsertDataDomain
 from Domain.language_settings import return_language
 from GUI.ButtonWidget import ButtonWidget
+from GUI.DialogWindows.remove_project_files_window import RemoveProjectFilesWindow
 from GUI.Screens.screen import Screen
 import qtawesome as qta
 
@@ -35,6 +41,8 @@ class InsertDataScreen(Screen):
         self.input_file_field: QTreeWidget = QTreeWidget()
         self.asset_info = QListWidget()
         self.assets = []
+        self.input_file_button = ButtonWidget()
+        self.reset_button = ButtonWidget()
 
         self.init_ui()
 
@@ -64,63 +72,86 @@ class InsertDataScreen(Screen):
         self.control_button.setDisabled(True)
         self.control_button.clicked.connect(lambda: self.validate_documents(self.input_file_field))
         self.control_button.setProperty('class', 'primary-button')
+
         reset_button = QPushButton()
-        reset_button.setIcon(qta.icon('mdi.refresh', color='#0E5A69'))
+        reset_button.setText(self._('reset_fields'))
         reset_button.setProperty('class', 'secondary-button')
-        reset_button.clicked.connect(lambda: self.clear_list())
+        reset_button.clicked.connect(lambda: self.reset_button_functionality())
+
+        self.input_file_button.setText(self._('choose_file'))
+        self.input_file_button.setProperty('class', 'primary-button')
+        self.input_file_button.clicked.connect(lambda: self.open_file_picker())
+
+        button_frame_layout.addWidget(self.input_file_button)
+        button_frame_layout.addStretch()
         button_frame_layout.addWidget(self.control_button)
         button_frame_layout.addWidget(reset_button)
-        button_frame_layout.addStretch()
         button_frame.setLayout(button_frame_layout)
         return button_frame
 
     def validate_documents(self, documents: QTreeWidget):
-        has_errors = False
+        error_set = set()
         domain = InsertDataDomain()
         self.asset_info.clear()
         assets = []
-        doc_list = [documents.topLevelItem(i).data(0, 1) for i in range(documents.topLevelItemCount())]
-
+        doc_list = [documents.topLevelItem(i).data(1, 1) for i in range(documents.topLevelItemCount())]
+        global_vars.single_project.templates_in_memory = []
         for doc in doc_list:
-            doc_split = doc.split('.')
-            if doc_split[-1] == 'xls' or doc_split[-1] == 'xlsx':
+            if Path(doc).suffix == '.xls' or Path(doc).suffix == '.xlsx':
                 temp_path = domain.start_excel_changes(doc=doc)
-            elif doc_split[-1] == 'csv':
+            elif Path(doc).suffix == '.csv':
                 temp_path = Path(doc)
             try:
                 asset = domain.check_document(doc_location=temp_path)
-                ProjectFileManager().add_otl_conform_data_to_project(Path(doc))
+                ProjectFileManager().add_template_file_to_project(Path(doc))
                 assets.append(asset)
             except ExceptionsGroup as e:
                 for ex in e.exceptions:
                     self.add_error_to_feedback_list(ex, doc)
-                has_errors = True
-                continue
+                error_set.add(Path(doc))
             except ValueError:
                 self.add_error_to_feedback_list("The document is not OTL conform", doc)
-                has_errors = True
-                continue
+                error_set.add(Path(doc))
             except InvalidColumnNamesInExcelTabError as ex:
                 self.add_error_to_feedback_list(ex, doc)
-                has_errors = True
-        if has_errors:
+                error_set.add(Path(doc))
+            except NoTypeUriInExcelTabError as ex:
+                self.add_error_to_feedback_list(ex, doc)
+                error_set.add(Path(doc))
+            except TypeUriNotInFirstRowError as ex:
+                self.add_error_to_feedback_list(ex, doc)
+                error_set.add(Path(doc))
+            except FailedToImportFileError as ex:
+                self.add_error_to_feedback_list(ex, doc)
+                error_set.add(Path(doc))
+            except Exception as ex:
+                self.add_error_to_feedback_list(ex, doc)
+                error_set.add(Path(doc))
+            else:
+                InsertDataDomain().add_template_file_to_project(project=global_vars.single_project, filepath=Path(doc),
+                                                                state=FileState.OK.name)
+        if error_set:
+            logging.debug('negative feedback needed')
             self.negative_feedback_message()
+            for item in error_set:
+                InsertDataDomain().add_template_file_to_project(project=global_vars.single_project, filepath=Path(item),
+                                                                state=FileState.ERROR.name)
         else:
+            logging.debug('positive feedback needed')
             self.positive_feedback_message()
         self.fill_feedback_list(assets)
+        ProjectFileManager().add_project_files_to_file(global_vars.single_project)
+        self.fill_list()
 
     def add_input_file_field(self):
         input_file = QFrame()
         input_file_layout = QHBoxLayout()
-        self.input_file_label.setText(self._('input_file'))
-        input_file_button = QPushButton()
-        input_file_button.setIcon(qta.icon('mdi.folder-open-outline'))
-        input_file_button.clicked.connect(lambda: self.open_file_picker())
-        self.input_file_field.setColumnCount(2)
+        self.input_file_field.setColumnCount(3)
+        header = self.input_file_field.header()
+        header.setSectionResizeMode(1, QHeaderView.ResizeMode.Stretch)
+        header.setStretchLastSection(False)
         self.input_file_field.setHeaderHidden(True)
-        input_file_layout.addWidget(self.input_file_label)
         input_file_layout.addWidget(self.input_file_field)
-        input_file_layout.addWidget(input_file_button)
         input_file.setLayout(input_file_layout)
         return input_file
 
@@ -128,6 +159,8 @@ class InsertDataScreen(Screen):
         left_side = QFrame()
         left_side_layout = QVBoxLayout()
         left_side_layout.addSpacing(100)
+        self.input_file_label.setText(self._('input_file'))
+        left_side_layout.addWidget(self.input_file_label)
         left_side_layout.addWidget(self.add_input_file_field(), alignment=Qt.AlignmentFlag.AlignBottom)
         left_side_layout.addWidget(self.button_set(), alignment=Qt.AlignmentFlag.AlignTop)
         left_side_layout.addSpacing(30)
@@ -140,7 +173,7 @@ class InsertDataScreen(Screen):
         right_side_layout = QVBoxLayout()
         list_item = self.add_list()
         self.construct_feedback_message()
-        right_side_layout.addSpacing(80)
+        right_side_layout.addSpacing(100)
         right_side_layout.addWidget(list_item)
         right_side_layout.addWidget(self.feedback_message_box, alignment=Qt.AlignmentFlag.AlignTop)
         right_side.setLayout(right_side_layout)
@@ -148,6 +181,7 @@ class InsertDataScreen(Screen):
         return right_side
 
     def construct_feedback_message(self):
+        logging.debug("constructing feedback message")
         frame_layout = QHBoxLayout()
         frame_layout.addWidget(self.message_icon)
         self.message.setProperty('class', 'feedback-message')
@@ -162,6 +196,13 @@ class InsertDataScreen(Screen):
         frame_layout.setContentsMargins(0, 30, 50, 85)
         frame.setLayout(frame_layout)
         return frame
+
+    def fill_list(self):
+        self.input_file_field.clear()
+        logging.debug("list with " + str(global_vars.single_project.templates_in_memory))
+        logging.debug("Filled list with " + str(len(global_vars.single_project.templates_in_memory)) + " items")
+        for asset in global_vars.single_project.templates_in_memory:
+            self.add_file_to_list([asset.file_path], asset.state)
 
     def positive_feedback_message(self):
         self.message_icon.setPixmap(qta.icon('mdi.check', color="white").pixmap(QSize(48, 48)))
@@ -198,27 +239,35 @@ class InsertDataScreen(Screen):
         file_picker.setFileMode(QFileDialog.FileMode.ExistingFiles)
         if file_picker.exec():
             self.add_file_to_list(file_picker.selectedFiles())
+            self.clear_feedback_message()
 
-    def add_file_to_list(self, files: List[str]):
+    def add_file_to_list(self, files: List[str], asset_state: FileState = FileState.WARNING):
         self.control_button.setDisabled(False)
         for file in files:
-            # TODO use Path instead
-            # name of file => file_path.name
-            # extension of file => file_path.stem
             list_item = QTreeWidgetItem()
-            doc_name = ntpath.basename(file)
-            list_item.setText(0, doc_name)
-            list_item.setData(0, 1, file)
+            doc_name = Path(file).name
+            list_item.setText(1, doc_name)
+            if asset_state == FileState.OK or asset_state == "OK":
+                list_item.setIcon(0, qta.icon('mdi.check', color="green"))
+            elif asset_state == FileState.WARNING or asset_state == "WARNING":
+                list_item.setIcon(0, qta.icon('mdi.alert', color="orange"))
+            elif asset_state == FileState.ERROR or asset_state == "ERROR":
+                list_item.setIcon(0, qta.icon('mdi.close', color="red"))
+            list_item.setData(1, 1, file)
+            list_item.setSizeHint(1, QSize(0, 30))
             self.input_file_field.addTopLevelItem(list_item)
-            self.input_file_field.resizeColumnToContents(0)
-            button = QPushButton()
+            button = ButtonWidget()
             button.clicked.connect(lambda: self.delete_file_from_list())
             button.setIcon(qta.icon('mdi.close'))
-            self.clear_feedback_message()
-            self.input_file_field.setItemWidget(list_item, 1, button)
+            self.input_file_field.setItemWidget(list_item, 2, button)
 
     def delete_file_from_list(self):
         items = self.input_file_field.selectedItems()
+        item_data = items[0].data(1, 1)
+        file_in_memory = next((asset.file_path for asset in global_vars.single_project.templates_in_memory if asset.file_path == item_data), None)
+        if file_in_memory is not None:
+            logging.debug("We've struck gold")
+            InsertDataDomain().delete_project_file_from_project(global_vars.single_project, file_in_memory)
         self.input_file_field.removeItemWidget(items[0], 1)
         self.input_file_field.takeTopLevelItem(self.input_file_field.indexOfTopLevelItem(items[0]))
         if self.input_file_field.topLevelItemCount() == 0:
@@ -231,17 +280,33 @@ class InsertDataScreen(Screen):
         self.clear_feedback()
         self.control_button.setDisabled(True)
 
+    def reset_button_functionality(self):
+        RemoveProjectFilesWindow(project=global_vars.single_project, language_settings=self._)
+        self.fill_list()
+        self.clear_feedback()
+        self.clear_feedback_message()
+
     def clear_feedback(self):
         self.asset_info.clear()
         self.clear_feedback_message()
 
     def add_error_to_feedback_list(self, e, doc):
-        doc_name = ntpath.basename(doc)
+        doc_name = Path(doc).name
         error_widget = QListWidgetItem()
         if str(e) == "argument of type 'NoneType' is not iterable":
-            error_text = f'{doc_name}: Data nodig in een datasheet om objecten in te laden.\n'
-        else:
-            error_text = f'{doc_name}: {str(e)}\n'
+            error_text = self._("{doc_name}: Data nodig in een datasheet om objecten in te laden.\n").format(
+                doc_name=doc_name)
+        elif issubclass(type(e), NoTypeUriInExcelTabError):
+            error_text = self._("{doc_name}: No type uri in {tab}\n").format(doc_name=doc_name, tab=e.tab)
+        elif issubclass(type(e), InvalidColumnNamesInExcelTabError):
+            error_text = self._("{doc_name}: invalid columns in {tab}, bad columns are {bad_columns} \n").format(
+                doc_name=doc_name, tab=e.tab, bad_columns=str(e.bad_columns))
+        elif issubclass(type(e), TypeUriNotInFirstRowError):
+            error_text = self._("{doc_name}: type uri not in first row of {tab}\n").format(doc_name=doc_name, tab=e.tab)
+        elif issubclass(type(e), ValueError):
+            error_text = self._(f'{doc_name}: {e}\n')
+        elif issubclass(type(e), FailedToImportFileError):
+            error_text = self._(f'{doc_name}: {e}\n')
         error_widget.setText(error_text)
         self.asset_info.addItem(error_widget)
         item = self.asset_info.findItems(error_text, Qt.MatchFlag.MatchExactly)

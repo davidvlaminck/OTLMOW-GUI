@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-11-28 09:46+0100\n"
+"POT-Creation-Date: 2023-12-04 07:53+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -25,69 +25,19 @@ msgstr ""
 msgid "bestek_empty_error"
 msgstr ""
 
-#: GUI/dialog_window.py:40
-msgid "alter_project_title"
-msgstr ""
-
-#: GUI/dialog_window.py:42
-msgid "new_project_title"
-msgstr ""
-
-#: GUI/dialog_window.py:50 GUI/dialog_window.py:68 GUI/overviewtable.py:38
-#: GUI/overviewtable.py:144 UnitTests/domain_test/language_test.py:14
-#: UnitTests/domain_test/language_test.py:19
-msgid "own_reference"
-msgstr ""
-
-#: GUI/dialog_window.py:52 GUI/dialog_window.py:69 GUI/overviewtable.py:38
-#: GUI/overviewtable.py:144
-msgid "service_order"
-msgstr ""
-
-#: GUI/Screens/template_screen.py:166 GUI/dialog_window.py:54
-#: GUI/dialog_window.py:70 GUI/dialog_window.py:176 GUI/overviewtable.py:38
-#: GUI/overviewtable.py:144
-msgid "subset"
-msgstr ""
-
-#: GUI/dialog_window.py:94 GUI/dialog_window.py:190
-msgid "submit"
-msgstr ""
-
-#: GUI/dialog_window.py:96 GUI/dialog_window.py:192
-msgid "cancel"
-msgstr ""
-
-#: GUI/dialog_window.py:124
-msgid "change_language_title"
-msgstr ""
-
-#: GUI/dialog_window.py:126
-msgid "language_option_dutch"
-msgstr ""
-
-#: GUI/dialog_window.py:127
-msgid "language_option_english"
-msgstr ""
-
-#: GUI/Screens/template_screen.py:129 GUI/Screens/template_screen.py:274
-#: GUI/dialog_window.py:171
-msgid "change_subset"
-msgstr ""
-
-#: GUI/header_bar.py:49 GUI/header_bar.py:148
+#: GUI/header_bar.py:50 GUI/header_bar.py:149
 msgid "new_project_button"
 msgstr ""
 
-#: GUI/header_bar.py:89 GUI/header_bar.py:149
+#: GUI/header_bar.py:91 GUI/header_bar.py:150
 msgid "return_to_home_screen"
 msgstr ""
 
-#: GUI/header_bar.py:109 GUI/header_bar.py:150
+#: GUI/header_bar.py:111 GUI/header_bar.py:151
 msgid "save_button"
 msgstr ""
 
-#: GUI/header_bar.py:130
+#: GUI/header_bar.py:132
 msgid "import"
 msgstr ""
 
@@ -107,28 +57,92 @@ msgstr ""
 msgid "no"
 msgstr ""
 
-#: GUI/overviewtable.py:38 GUI/overviewtable.py:144
+#: GUI/DialogWindows/upsert_project_window.py:42
+#: GUI/DialogWindows/upsert_project_window.py:60 GUI/overviewtable.py:40
+#: GUI/overviewtable.py:152 UnitTests/domain_test/language_test.py:14
+#: UnitTests/domain_test/language_test.py:19
+msgid "own_reference"
+msgstr ""
+
+#: GUI/DialogWindows/upsert_project_window.py:44
+#: GUI/DialogWindows/upsert_project_window.py:61 GUI/overviewtable.py:40
+#: GUI/overviewtable.py:152
+msgid "service_order"
+msgstr ""
+
+#: GUI/DialogWindows/change_subset_window.py:26
+#: GUI/DialogWindows/upsert_project_window.py:46
+#: GUI/DialogWindows/upsert_project_window.py:62
+#: GUI/Screens/template_screen.py:167 GUI/overviewtable.py:40
+#: GUI/overviewtable.py:152
+msgid "subset"
+msgstr ""
+
+#: GUI/overviewtable.py:40 GUI/overviewtable.py:152
 msgid "last_edited"
 msgstr ""
 
-#: GUI/overviewtable.py:81 GUI/overviewtable.py:127 GUI/overviewtable.py:145
+#: GUI/overviewtable.py:88
+msgid "no_result"
+msgstr ""
+
+#: GUI/overviewtable.py:153
 msgid "no_results"
 msgstr ""
 
-#: GUI/stepper.py:34 GUI/stepper.py:77
+#: GUI/stepper.py:37 GUI/stepper.py:90
 msgid "step1"
 msgstr ""
 
-#: GUI/stepper.py:36 GUI/stepper.py:78
+#: GUI/stepper.py:39 GUI/stepper.py:91
 msgid "step2"
 msgstr ""
 
-#: GUI/stepper.py:38 GUI/stepper.py:79
+#: GUI/stepper.py:41 GUI/stepper.py:92
 msgid "step3"
 msgstr ""
 
-#: GUI/stepper.py:40 GUI/stepper.py:80
+#: GUI/stepper.py:43 GUI/stepper.py:93
 msgid "step4"
+msgstr ""
+
+#: GUI/DialogWindows/change_subset_window.py:21
+#: GUI/Screens/template_screen.py:130 GUI/Screens/template_screen.py:280
+msgid "change_subset"
+msgstr ""
+
+#: GUI/DialogWindows/change_subset_window.py:53
+#: GUI/DialogWindows/upsert_project_window.py:95
+msgid "submit"
+msgstr ""
+
+#: GUI/DialogWindows/change_subset_window.py:55
+#: GUI/DialogWindows/upsert_project_window.py:97
+msgid "cancel"
+msgstr ""
+
+#: GUI/DialogWindows/language_window.py:22
+msgid "change_language_title"
+msgstr ""
+
+#: GUI/DialogWindows/language_window.py:24
+msgid "language_option_dutch"
+msgstr ""
+
+#: GUI/DialogWindows/language_window.py:25
+msgid "language_option_english"
+msgstr ""
+
+#: GUI/DialogWindows/project_picker_window.py:17
+msgid "select_OTL_project"
+msgstr ""
+
+#: GUI/DialogWindows/upsert_project_window.py:32
+msgid "alter_project_title"
+msgstr ""
+
+#: GUI/DialogWindows/upsert_project_window.py:34
+msgid "new_project_title"
 msgstr ""
 
 #: GUI/Screens/asset_data_change_screen.py:64
@@ -149,7 +163,7 @@ msgstr ""
 #: GUI/Screens/asset_data_change_screen.py:95
 #: GUI/Screens/asset_data_change_screen.py:126
 #: GUI/Screens/export_data_screen.py:52 GUI/Screens/export_data_screen.py:75
-#: GUI/Screens/template_screen.py:89 GUI/Screens/template_screen.py:273
+#: GUI/Screens/template_screen.py:90 GUI/Screens/template_screen.py:279
 msgid "export"
 msgstr ""
 
@@ -189,32 +203,53 @@ msgstr ""
 msgid "file_to_upload"
 msgstr ""
 
-#: GUI/Screens/home_screen.py:90 GUI/Screens/home_screen.py:97
+#: GUI/Screens/home_screen.py:89 GUI/Screens/home_screen.py:96
 msgid "search_text"
 msgstr ""
 
-#: GUI/Screens/insert_data_screen.py:51 GUI/Screens/insert_data_screen.py:126
+#: GUI/Screens/insert_data_screen.py:67 GUI/Screens/insert_data_screen.py:207
 msgid "control_button"
 msgstr ""
 
-#: GUI/Screens/insert_data_screen.py:66 GUI/Screens/insert_data_screen.py:125
+#: GUI/Screens/insert_data_screen.py:73
+msgid "reset_fields"
+msgstr ""
+
+#: GUI/Screens/insert_data_screen.py:77
+#: GUI/Screens/relation_change_screen.py:46
+msgid "choose_file"
+msgstr ""
+
+#: GUI/Screens/insert_data_screen.py:148 GUI/Screens/insert_data_screen.py:206
 msgid "input_file"
 msgstr ""
 
-#: GUI/Screens/insert_data_screen.py:110
+#: GUI/Screens/insert_data_screen.py:187
 msgid "all_info_correct"
 msgstr ""
 
-#: GUI/Screens/insert_data_screen.py:115
+#: GUI/Screens/insert_data_screen.py:192
 msgid "warning"
 msgstr ""
 
-#: GUI/Screens/insert_data_screen.py:120
+#: GUI/Screens/insert_data_screen.py:201
 msgid "error"
 msgstr ""
 
-#: GUI/Screens/relation_change_screen.py:46
-msgid "choose_file"
+#: GUI/Screens/insert_data_screen.py:259
+msgid "{doc_name}: Data nodig in een datasheet om objecten in te laden.\n"
+msgstr ""
+
+#: GUI/Screens/insert_data_screen.py:261
+msgid "{doc_name}: No type uri in {tab}\n"
+msgstr ""
+
+#: GUI/Screens/insert_data_screen.py:263
+msgid "{doc_name}: invalid columns in {tab}, bad columns are {bad_columns} \n"
+msgstr ""
+
+#: GUI/Screens/insert_data_screen.py:265
+msgid "{doc_name}: type uri not in first row of {tab}\n"
 msgstr ""
 
 #: GUI/Screens/relation_change_screen.py:59
@@ -229,52 +264,56 @@ msgstr ""
 msgid "existing_relations_list"
 msgstr ""
 
-#: GUI/Screens/template_screen.py:60 GUI/Screens/template_screen.py:203
-#: GUI/Screens/template_screen.py:271
+#: GUI/Screens/template_screen.py:61 GUI/Screens/template_screen.py:210
+#: GUI/Screens/template_screen.py:277
 msgid "select_all_classes"
 msgstr ""
 
-#: GUI/Screens/template_screen.py:64 GUI/Screens/template_screen.py:277
+#: GUI/Screens/template_screen.py:65 GUI/Screens/template_screen.py:283
 msgid "general_settings"
 msgstr ""
 
-#: GUI/Screens/template_screen.py:65 GUI/Screens/template_screen.py:270
+#: GUI/Screens/template_screen.py:66 GUI/Screens/template_screen.py:276
 msgid "no_choice_list"
 msgstr ""
 
-#: GUI/Screens/template_screen.py:67 GUI/Screens/template_screen.py:269
+#: GUI/Screens/template_screen.py:68 GUI/Screens/template_screen.py:275
 msgid "geometry_column_added"
 msgstr ""
 
-#: GUI/Screens/template_screen.py:71 GUI/Screens/template_screen.py:278
+#: GUI/Screens/template_screen.py:72 GUI/Screens/template_screen.py:284
 msgid "example_settings"
 msgstr ""
 
-#: GUI/Screens/template_screen.py:74 GUI/Screens/template_screen.py:272
+#: GUI/Screens/template_screen.py:75 GUI/Screens/template_screen.py:278
 msgid "amount_of_examples"
 msgstr ""
 
-#: GUI/Screens/template_screen.py:78 GUI/Screens/template_screen.py:268
+#: GUI/Screens/template_screen.py:79 GUI/Screens/template_screen.py:274
 msgid "export_attribute_info"
 msgstr ""
 
-#: GUI/Screens/template_screen.py:80 GUI/Screens/template_screen.py:279
+#: GUI/Screens/template_screen.py:81 GUI/Screens/template_screen.py:285
 msgid "deprecated_settings"
 msgstr ""
 
-#: GUI/Screens/template_screen.py:82 GUI/Screens/template_screen.py:267
+#: GUI/Screens/template_screen.py:83 GUI/Screens/template_screen.py:273
 msgid "show_deprecated_attributes"
 msgstr ""
 
-#: GUI/Screens/template_screen.py:141 GUI/Screens/template_screen.py:275
+#: GUI/Screens/template_screen.py:142 GUI/Screens/template_screen.py:281
 msgid "operator"
 msgstr ""
 
-#: GUI/Screens/template_screen.py:153 GUI/Screens/template_screen.py:276
+#: GUI/Screens/template_screen.py:154 GUI/Screens/template_screen.py:282
 msgid "otl_version"
 msgstr ""
 
-#: GUI/Screens/template_screen.py:198
+#: GUI/Screens/template_screen.py:188
+msgid "loading"
+msgstr ""
+
+#: GUI/Screens/template_screen.py:205
 msgid "no classes found in specified path"
 msgstr ""
 
