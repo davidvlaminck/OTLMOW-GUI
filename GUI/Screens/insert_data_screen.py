@@ -18,6 +18,7 @@ from Domain.enums import FileState
 from Domain.insert_data_domain import InsertDataDomain
 from Domain.language_settings import return_language
 from GUI.ButtonWidget import ButtonWidget
+from GUI.DialogWindows.remove_project_files_window import RemoveProjectFilesWindow
 from GUI.Screens.screen import Screen
 import qtawesome as qta
 
@@ -75,7 +76,7 @@ class InsertDataScreen(Screen):
         reset_button = QPushButton()
         reset_button.setText(self._('reset_fields'))
         reset_button.setProperty('class', 'secondary-button')
-        reset_button.clicked.connect(lambda: self.clear_list())
+        reset_button.clicked.connect(lambda: self.reset_button_functionality())
 
         self.input_file_button.setText(self._('choose_file'))
         self.input_file_button.setProperty('class', 'primary-button')
@@ -128,13 +129,13 @@ class InsertDataScreen(Screen):
                 error_set.add(Path(doc))
             else:
                 InsertDataDomain().add_template_file_to_project(project=global_vars.single_project, filepath=Path(doc),
-                                                                state=FileState.OK)
+                                                                state=FileState.OK.name)
         if error_set:
             logging.debug('negative feedback needed')
             self.negative_feedback_message()
             for item in error_set:
                 InsertDataDomain().add_template_file_to_project(project=global_vars.single_project, filepath=Path(item),
-                                                                state=FileState.ERROR)
+                                                                state=FileState.ERROR.name)
         else:
             logging.debug('positive feedback needed')
             self.positive_feedback_message()
@@ -278,6 +279,12 @@ class InsertDataScreen(Screen):
         self.input_file_field.clear()
         self.clear_feedback()
         self.control_button.setDisabled(True)
+
+    def reset_button_functionality(self):
+        RemoveProjectFilesWindow(project=global_vars.single_project, language_settings=self._)
+        self.fill_list()
+        self.clear_feedback()
+        self.clear_feedback_message()
 
     def clear_feedback(self):
         self.asset_info.clear()

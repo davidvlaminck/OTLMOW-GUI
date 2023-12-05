@@ -9,6 +9,7 @@ from typing import List
 from openpyxl.reader.excel import load_workbook
 from otlmow_converter.OtlmowConverter import OtlmowConverter
 
+from Domain import global_vars
 from Domain.Project import Project
 from Domain.ProjectFileManager import ProjectFileManager
 from Domain.project_file import ProjectFile
@@ -61,4 +62,13 @@ class InsertDataDomain:
                 project.templates_in_memory.remove(file)
                 break
         ProjectFileManager().delete_template_file_from_project(file_path=file_path)
+        ProjectFileManager().add_project_files_to_file(project=project)
+
+    @classmethod
+    def remove_all_project_files(cls, project):
+        logging.debug("memory contains %s", project.templates_in_memory)
+        for file in project.templates_in_memory:
+            logging.debug("starting to delete file %s", file.file_path)
+            ProjectFileManager().delete_template_file_from_project(file_path=file.file_path)
+        project.templates_in_memory = []
         ProjectFileManager().add_project_files_to_file(project=project)

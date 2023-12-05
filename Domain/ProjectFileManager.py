@@ -122,7 +122,7 @@ class ProjectFileManager:
         for template in project.templates_in_memory:
             template_details = {
                 'file_path': str(template.file_path),
-                'state': template.state.name
+                'state': template.state
             }
             object_array.append(template_details)
         project_dir_path = otl_wizard_project_dir / project.project_path.name
@@ -137,8 +137,7 @@ class ProjectFileManager:
         logging.debug("templates from memory" + str(templates))
         templates_array = []
         for template in templates:
-            state = FileState(template['state'])
-            file = ProjectFile(file_path=template['file_path'], state=state)
+            file = ProjectFile(file_path=template['file_path'], state=template['state'])
             templates_array.append(file)
         project.templates_in_memory = templates_array
         return project
