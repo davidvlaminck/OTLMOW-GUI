@@ -1,7 +1,8 @@
 from pathlib import Path
 import qtawesome as qta
 
-from PyQt6.QtWidgets import QVBoxLayout, QFrame, QHBoxLayout, QLabel, QLineEdit, QPushButton, QWidget, QTableWidget
+from PyQt6.QtWidgets import QVBoxLayout, QFrame, QHBoxLayout, QLabel, QLineEdit, QPushButton, QWidget, QTableWidget, \
+    QHeaderView
 
 from Domain.language_settings import return_language
 from GUI.Screens.screen import Screen
@@ -35,13 +36,13 @@ class AssetDataChangeScreen(Screen):
     def create_menu(self):
         window = QWidget()
         window.setProperty('class', 'background-box')
-        window_layout = QHBoxLayout()
-        window_layout.addWidget(self.left_side())
-        window_layout.addWidget(self.right_side())
+        window_layout = QVBoxLayout()
+        window_layout.addWidget(self.upper_side())
+        window_layout.addWidget(self.lower_side())
         window.setLayout(window_layout)
         return window
 
-    def left_side(self):
+    def upper_side(self):
         frame = QFrame()
         frame_layout = QVBoxLayout()
         frame_layout.addWidget(self.input_original_file_field())
@@ -51,7 +52,7 @@ class AssetDataChangeScreen(Screen):
         frame.setLayout(frame_layout)
         return frame
 
-    def right_side(self):
+    def lower_side(self):
         frame = QFrame()
         frame_layout = QVBoxLayout()
         frame_layout.addWidget(self.change_table())
@@ -111,11 +112,13 @@ class AssetDataChangeScreen(Screen):
         table = QTableWidget()
         table.setProperty('class', 'change-table')
         table.setRowCount(5)
-        table.setColumnCount(2)
+        table.setColumnCount(7)
         table.verticalHeader().setVisible(False)
-        table.horizontalHeader().setStretchLastSection(True)
+        table.horizontalHeader().setStretchLastSection(False)
+        for i in range(0, 7):
+            table.horizontalHeader().setSectionResizeMode(i, QHeaderView.ResizeMode.Stretch)
         table.setHorizontalHeaderLabels(
-            [self._('id'), self._('action')])
+            [self._('id'), self._('action'), self._("type"), self._("attribuut"), self._("name_attribute"), self._("old_attribute"), self._("new_attribute")])
         return table
 
     def reset_ui(self, _):
