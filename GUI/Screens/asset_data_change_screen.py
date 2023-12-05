@@ -46,7 +46,6 @@ class AssetDataChangeScreen(Screen):
         frame = QFrame()
         frame_layout = QVBoxLayout()
         frame_layout.addWidget(self.input_original_file_field())
-        frame_layout.addWidget(self.input_new_file_field())
         frame_layout.addWidget(self.button_group())
         frame_layout.addStretch()
         frame.setLayout(frame_layout)
@@ -68,20 +67,6 @@ class AssetDataChangeScreen(Screen):
         input_file_button = QPushButton()
         input_file_button.setIcon(qta.icon('mdi.folder-open-outline'))
         input_file_layout.addWidget(self.original_file_label)
-        input_file_layout.addWidget(input_file_field)
-        input_file_layout.addWidget(input_file_button)
-        input_file.setLayout(input_file_layout)
-        return input_file
-
-    def input_new_file_field(self):
-        input_file = QFrame()
-        input_file_layout = QHBoxLayout()
-        self.new_file_label.setText(self._('new_file_load'))
-        input_file_field = QLineEdit()
-        input_file_field.setReadOnly(True)
-        input_file_button = QPushButton()
-        input_file_button.setIcon(qta.icon('mdi.folder-open-outline'))
-        input_file_layout.addWidget(self.new_file_label)
         input_file_layout.addWidget(input_file_field)
         input_file_layout.addWidget(input_file_button)
         input_file.setLayout(input_file_layout)
