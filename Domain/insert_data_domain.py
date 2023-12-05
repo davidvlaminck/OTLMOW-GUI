@@ -11,7 +11,7 @@ from otlmow_converter.OtlmowConverter import OtlmowConverter
 
 from Domain.Project import Project
 from Domain.ProjectFileManager import ProjectFileManager
-from Domain.template_file import TemplateFile
+from Domain.project_file import ProjectFile
 
 
 class InsertDataDomain:
@@ -43,7 +43,7 @@ class InsertDataDomain:
     def add_template_file_to_project(cls, filepath: Path, project: Project, state: Enum):
         end_loc = ProjectFileManager().add_template_file_to_project(filepath=filepath)
         logging.debug("test" + str(end_loc))
-        template_file = TemplateFile(file_path=end_loc, state=state)
+        template_file = ProjectFile(file_path=end_loc, state=state)
         project.templates_in_memory.append(template_file)
 
     @classmethod

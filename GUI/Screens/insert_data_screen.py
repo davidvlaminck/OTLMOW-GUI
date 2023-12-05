@@ -17,7 +17,7 @@ from Domain.ProjectFileManager import ProjectFileManager
 from Domain.enums import FileState
 from Domain.insert_data_domain import InsertDataDomain
 from Domain.language_settings import return_language
-from Domain.template_file import TemplateFile
+from Domain.project_file import ProjectFile
 from GUI.ButtonWidget import ButtonWidget
 from GUI.Screens.screen import Screen
 import qtawesome as qta

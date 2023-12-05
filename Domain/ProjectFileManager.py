@@ -12,7 +12,7 @@ from otlmow_converter.OtlmowConverter import OtlmowConverter
 from Domain import global_vars
 from Domain.GitHubDownloader import GitHubDownloader
 from Domain.Project import Project
-from Domain.template_file import TemplateFile
+from Domain.project_file import ProjectFile
 
 
 class ProjectFileManager:
@@ -136,7 +136,7 @@ class ProjectFileManager:
         logging.debug("templates from memory" + str(templates))
         templates_array = []
         for template in templates:
-            file = TemplateFile(file_path=template['file_path'], state=template['state'])
+            file = ProjectFile(file_path=template['file_path'], state=template['state'])
             templates_array.append(file)
         project.templates_in_memory = templates_array
         return project

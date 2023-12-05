@@ -32,9 +32,9 @@ class Navigation(QStackedWidget):
     def fill_stacked_widget(self):
         home_screen = HomeScreen()
         step1 = TemplateScreen()
-        step1_tabwidget = TabWidget(page_nr=1, widget1=step1, description1='template')
+        step1_tabwidget = TabWidget(page_nr=1, widget1=step1, description1='template', has_save_btn=False)
         step2 = InsertDataScreen()
-        step2_tabwidget = TabWidget(page_nr=2, widget1=step2, description1='insert_data')
+        step2_tabwidget = TabWidget(page_nr=2, widget1=step2, description1='insert_data', has_save_btn=False)
         step3_data = AssetDataChangeScreen()
         step3_relations = RelationChangeScreen()
         step_3_tabwidget = TabWidget(page_nr=3, widget1=step3_data, description1='data_change', widget2=step3_relations,
