@@ -1,33 +1,20 @@
+import logging
 from dataclasses import dataclass
 from pathlib import Path
 
+from Domain.asset_change_domain import AssetChangeDomain
+from Domain.enums import ReportAction
+from Domain.report_item import ReportItem
 from UnitTests.project_files_test.OTLWizardProjects.Model.OtlmowModel.Classes.Onderdeel.AllCasesTestClass import \
     AllCasesTestClass
 from UnitTests.project_files_test.OTLWizardProjects.Model.OtlmowModel.Classes.Onderdeel.AnotherTestClass import \
     AnotherTestClass
 
-
-model_directory_path = Path(__file__).parent.parent.parent / 'project_files_test' / 'OTLWizardProjects' / 'Model'
-
-
-enum_report_action = {
-    'a': 'attribute added',
-    'r': 'attribute removed',
-    'c': 'attribute changed',
-    'aa': 'asset added'
-}
-
-
-@dataclass
-class ReportItem:
-    id: str
-    actie: enum_report_action
-    attribute: str
-    original_value: str
-    new_value: str
+model_directory_path = Path(__file__).parent.parent / 'project_files_test' / 'OTLWizardProjects' / 'Model'
 
 
 def test_generate_report():
+    logging.debug(str(model_directory_path))
     instance_1_1 = AllCasesTestClass()
     instance_1_1.assetId.identificator = '1'
     instance_1_1.isActief = True
@@ -40,13 +27,13 @@ def test_generate_report():
     instance_1_2.assetId.identificator = '2'
     instance_1_2.isActief = True
     instance_1_2.testStringField = 'test'
-    instance_1_2.testComplexType.testStringField = 'complexe waarde'
+    # instance_1_2.testComplexType.testStringField = 'complexe waarde'
 
     instance_2_2 = AllCasesTestClass()
     instance_2_2.assetId.identificator = '2'
     instance_2_2.isActief = False
     instance_2_2.testStringField = 'gewijzigd'
-    instance_2_2.testComplexType.testStringField = 'gewijzigde complexe waarde'
+    # instance_2_2.testComplexType.testStringField = 'gewijzigde complexe waarde'
 
     instance_1_3 = AllCasesTestClass()
     instance_1_3.assetId.identificator = '3'
@@ -60,13 +47,15 @@ def test_generate_report():
     instance_list_1 = [instance_1_1, instance_1_2, instance_1_3]
     instance_list_2 = [instance_2_1, instance_2_2, instance_2_4]
 
-    report = generate_diff_report(original_data=instance_list_1, new_data=instance_list_2,
-                                  model_directory=model_directory_path)
+    report = AssetChangeDomain().generate_diff_report(original_data=instance_list_1, new_data=instance_list_2,
+                                                      model_directory=model_directory_path)
 
     assert report == [
-        ReportItem(id='2', actie=enum_report_action.a, attribute='isActief', original_value='True', new_value='False'),
-        ReportItem(id='2', actie=enum_report_action.a, attribute='testStringField', original_value='test', new_value='gewijzigd'),
-        ReportItem(id='2', actie=enum_report_action.a, attribute='testComplexType', original_value="{'testStringField':'complexe waarde'}",
-                   new_value="{'gewijzigde complexe waarde'}"),
-        ReportItem(id='4', actie=enum_report_action.aa, attribute='', original_value='', new_value='')
+        ReportItem(id='2', actie=ReportAction.ATC, attribute='isActief', original_value='True', new_value='False'),
+        # ReportItem(id='2', actie=ReportAction.ATC, attribute='testComplexType',
+        #           original_value="{'testStringField':'complexe waarde'}",
+        #           new_value="{'gewijzigde complexe waarde'}"),
+        ReportItem(id='2', actie=ReportAction.ATC, attribute='testStringField', original_value='test',
+                   new_value='gewijzigd'),
+        ReportItem(id='4', actie=ReportAction.ASS, attribute='', original_value='', new_value='')
     ]

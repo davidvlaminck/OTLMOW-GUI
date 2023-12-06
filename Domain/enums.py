@@ -11,3 +11,9 @@ class FileState(Enum):
     WARNING = 'warning'
     OK = 'ok'
 
+
+class ReportAction(Enum):
+    ATA = 'attribute added',
+    ATR = 'attribute removed',
+    ATC = 'attribute changed',
+    ASS = 'asset added'
