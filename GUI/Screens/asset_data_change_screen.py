@@ -93,6 +93,7 @@ class AssetDataChangeScreen(Screen):
         refresh_button = QPushButton()
         refresh_button.setText(self._('empty fields'))
         refresh_button.setProperty('class', 'secondary-button')
+        refresh_button.clicked.connect(lambda: self.clear_input_field())
 
         frame_layout.addWidget(self.control_button)
         frame_layout.addWidget(self.export_button)
@@ -154,4 +155,9 @@ class AssetDataChangeScreen(Screen):
         self.input_file_field.takeTopLevelItem(self.input_file_field.indexOfTopLevelItem(items[0]))
         if self.input_file_field.topLevelItemCount() == 0:
             self.control_button.setDisabled(True)
+
+    def clear_input_field(self):
+        self.input_file_field.clear()
+        self.control_button.setDisabled(True)
+        self.export_button.setDisabled(True)
 
