@@ -1,10 +1,12 @@
+import logging
 from pathlib import Path
 import qtawesome as qta
 
 from PyQt6.QtWidgets import QVBoxLayout, QFrame, QHBoxLayout, QLabel, QLineEdit, QPushButton, QWidget, QTableWidget, \
-    QHeaderView
+    QHeaderView, QTreeWidget, QFileDialog, QTreeWidgetItem
 
 from Domain.language_settings import return_language
+from GUI.ButtonWidget import ButtonWidget
 from GUI.Screens.screen import Screen
 
 ROOT_DIR = Path(__file__).parent
@@ -24,6 +26,7 @@ class AssetDataChangeScreen(Screen):
         self.export_button = QPushButton()
         self.page2_btn = QPushButton()
         self.page1_btn = QPushButton()
+        self.input_file_field = QTreeWidget()
         self.init_ui()
 
     def init_ui(self):
@@ -62,12 +65,16 @@ class AssetDataChangeScreen(Screen):
         input_file = QFrame()
         input_file_layout = QHBoxLayout()
         self.original_file_label.setText(self._('original_file_load'))
-        input_file_field = QLineEdit()
-        input_file_field.setReadOnly(True)
+
+        self.input_file_field.setHeaderHidden(True)
+        self.input_file_field.setColumnCount(2)
+        self.input_file_field.header().setStretchLastSection(False)
+        self.input_file_field.header().setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
         input_file_button = QPushButton()
         input_file_button.setIcon(qta.icon('mdi.folder-open-outline'))
+        input_file_button.clicked.connect(lambda: self.open_file_picker())
         input_file_layout.addWidget(self.original_file_label)
-        input_file_layout.addWidget(input_file_field)
+        input_file_layout.addWidget(self.input_file_field)
         input_file_layout.addWidget(input_file_button)
         input_file.setLayout(input_file_layout)
         return input_file
@@ -75,14 +82,16 @@ class AssetDataChangeScreen(Screen):
     def button_group(self):
         frame = QFrame()
         frame_layout = QHBoxLayout()
-        self.control_button.setText(self._('control'))
+        self.control_button.setText(self._('show differences'))
         self.control_button.setProperty('class', 'primary-button')
+        self.control_button.setDisabled(True)
 
-        self.export_button.setText(self._('export'))
+        self.export_button.setText(self._('apply differences'))
+        self.export_button.setDisabled(True)
         self.export_button.setProperty('class', 'secondary-button')
 
         refresh_button = QPushButton()
-        refresh_button.setIcon(qta.icon('mdi.refresh', color="#0E5A69"))
+        refresh_button.setText(self._('empty fields'))
         refresh_button.setProperty('class', 'secondary-button')
 
         frame_layout.addWidget(self.control_button)
@@ -97,20 +106,52 @@ class AssetDataChangeScreen(Screen):
         table = QTableWidget()
         table.setProperty('class', 'change-table')
         table.setRowCount(5)
-        table.setColumnCount(7)
+        table.setColumnCount(5)
         table.verticalHeader().setVisible(False)
         table.horizontalHeader().setStretchLastSection(False)
         for i in range(0, 7):
             table.horizontalHeader().setSectionResizeMode(i, QHeaderView.ResizeMode.Stretch)
         table.setHorizontalHeaderLabels(
-            [self._('id'), self._('action'), self._("type"), self._("attribuut"), self._("name_attribute"), self._("old_attribute"), self._("new_attribute")])
+            [self._('id'), self._('action'), self._("name_attribute"), self._("old_attribute"), self._("new_attribute")])
         return table
 
     def reset_ui(self, _):
         self._ = _
         self.original_file_label.setText(self._('original_file_load'))
         self.new_file_label.setText(self._('new_file_load'))
-        self.control_button.setText(self._('control'))
-        self.export_button.setText(self._('export'))
+        self.control_button.setText(self._('show differences'))
+        self.export_button.setText(self._('apply differences'))
         self.page2_btn.setText(self._('update_relations'))
         self.page1_btn.setText(self._('update_files'))
+
+    def open_file_picker(self):
+        file_path = str(Path.home())
+        file_picker = QFileDialog()
+        file_picker.setWindowTitle(self._('choose_file'))
+        file_picker.setDirectory(file_path)
+        file_picker.setFileMode(QFileDialog.FileMode.ExistingFiles)
+        if file_picker.exec():
+            logging.debug("file picker executed")
+            self.add_file_to_list(file_picker.selectedFiles())
+
+    def add_file_to_list(self, files):
+        self.control_button.setDisabled(False)
+        logging.debug("adding file to list" + str(files))
+        for file in files:
+            list_item = QTreeWidgetItem()
+            doc_name = Path(file).name
+            list_item.setText(0, doc_name)
+            list_item.setData(0, 1, file)
+            self.input_file_field.addTopLevelItem(list_item)
+            button = ButtonWidget()
+            button.clicked.connect(lambda: self.delete_file_from_list())
+            button.setIcon(qta.icon('mdi.close'))
+            self.input_file_field.setItemWidget(list_item, 1, button)
+
+    def delete_file_from_list(self):
+        items = self.input_file_field.selectedItems()
+        self.input_file_field.removeItemWidget(items[0], 1)
+        self.input_file_field.takeTopLevelItem(self.input_file_field.indexOfTopLevelItem(items[0]))
+        if self.input_file_field.topLevelItemCount() == 0:
+            self.control_button.setDisabled(True)
+

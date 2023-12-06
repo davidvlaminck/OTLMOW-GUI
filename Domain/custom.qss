@@ -230,3 +230,9 @@ QTabBar::tab{
 .primary-button:disabled{
     background-color: grey;
 }
+
+.secondary-button:disabled{
+    background-color: grey;
+    color: white;
+    border: 1px solid grey;
+}
