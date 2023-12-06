@@ -1,5 +1,3 @@
-import logging
-
 from otlmow_model.OtlmowModel.BaseClasses.OTLObject import create_dict_from_asset
 from otlmow_model.OtlmowModel.Helpers.OTLObjectHelper import compare_two_lists_of_objects_attribute_level
 
@@ -27,22 +25,30 @@ class AssetChangeDomain:
                 )
                 report.append(rep_item)
             else:
-                # orig_dict = create_dict_from_asset(original_data)
                 item_dict = create_dict_from_asset(item)
-                id_lib = item_dict.get('assetId')
-                item_id = id_lib.get('identificator')
+                old_item_dict = create_dict_from_asset(old_item)
+                item_id = item_dict.get('assetId').get('identificator')
                 for key, value in item_dict.items():
                     if key == 'assetId' or key == 'typeURI':
                         continue
                     else:
-                        original_value = getattr(old_item, key)
-                        rep_item = ReportItem(
-                            id=item_id,
-                            actie=ReportAction.ATC,
-                            attribute=str(key),
-                            original_value=str(original_value),
-                            new_value=str(value)
-                        )
-                        report.append(rep_item)
-
+                        if isinstance(value, dict):
+                            for k, v in value.items():
+                                rep_item = ReportItem(
+                                    id=item_id,
+                                    actie=ReportAction.ATC,
+                                    attribute=str(key),
+                                    original_value=str(k) + ": " + str(old_item_dict.get(key).get(k)),
+                                    new_value=str(k) + ": " + str(v)
+                                )
+                                report.append(rep_item)
+                        else:
+                            rep_item = ReportItem(
+                                id=item_id,
+                                actie=ReportAction.ATC,
+                                attribute=str(key),
+                                original_value=str(old_item_dict.get(key)),
+                                new_value=str(value)
+                            )
+                            report.append(rep_item)
         return report

@@ -27,13 +27,13 @@ def test_generate_report():
     instance_1_2.assetId.identificator = '2'
     instance_1_2.isActief = True
     instance_1_2.testStringField = 'test'
-    # instance_1_2.testComplexType.testStringField = 'complexe waarde'
+    instance_1_2.testComplexType.testStringField = 'complexe waarde'
 
     instance_2_2 = AllCasesTestClass()
     instance_2_2.assetId.identificator = '2'
     instance_2_2.isActief = False
     instance_2_2.testStringField = 'gewijzigd'
-    # instance_2_2.testComplexType.testStringField = 'gewijzigde complexe waarde'
+    instance_2_2.testComplexType.testStringField = 'gewijzigde complexe waarde'
 
     instance_1_3 = AllCasesTestClass()
     instance_1_3.assetId.identificator = '3'
@@ -44,17 +44,17 @@ def test_generate_report():
     instance_2_4.assetId.identificator = '4'
     instance_2_4.isActief = True
 
-    instance_list_1 = [instance_1_1, instance_1_2, instance_1_3]
-    instance_list_2 = [instance_2_1, instance_2_2, instance_2_4]
+    instance_list_1 = [ instance_1_2, instance_1_3]
+    instance_list_2 = [ instance_2_2, instance_2_4]
 
     report = AssetChangeDomain().generate_diff_report(original_data=instance_list_1, new_data=instance_list_2,
                                                       model_directory=model_directory_path)
 
     assert report == [
         ReportItem(id='2', actie=ReportAction.ATC, attribute='isActief', original_value='True', new_value='False'),
-        # ReportItem(id='2', actie=ReportAction.ATC, attribute='testComplexType',
-        #           original_value="{'testStringField':'complexe waarde'}",
-        #           new_value="{'gewijzigde complexe waarde'}"),
+        ReportItem(id='2', actie=ReportAction.ATC, attribute='testComplexType',
+                   original_value="testStringField: complexe waarde",
+                   new_value="testStringField: gewijzigde complexe waarde"),
         ReportItem(id='2', actie=ReportAction.ATC, attribute='testStringField', original_value='test',
                    new_value='gewijzigd'),
         ReportItem(id='4', actie=ReportAction.ASS, attribute='', original_value='', new_value='')
