@@ -1,7 +1,7 @@
 import PyInstaller.__main__
 
 PyInstaller.__main__.run([
-    r'Domain\mai.py',
+    r'Domain\main.py',
     '--distpath', r'c:\users\[Username]]\PycharmProjects\Installers',
     '--contents-directory', 'applicationdata',
     '--paths', r'C:\Users\[Username]]\[Path to Venv]\site-packages',
