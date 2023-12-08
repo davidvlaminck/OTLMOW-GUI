@@ -43,9 +43,8 @@ msgid "relation_change"
 msgstr "Aanpassen relaties"
 
 #: Domain/navigation.py:45
-#, fuzzy
 msgid "export_data"
-msgstr "Exporteren"
+msgstr "Export Data"
 
 #: GUI/header_bar.py:51 GUI/header_bar.py:151
 msgid "new_project_button"
