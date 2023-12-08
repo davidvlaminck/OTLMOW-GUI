@@ -12,6 +12,9 @@ class ExportToTemplateWindow:
         file_picker.setModal(True)
         file_picker.setDirectory(str(Path.home()))
         document_loc = file_picker.getSaveFileName(filter="Excel files (*.xlsx);;CSV files (*.csv)")
-        logging.debug(document_loc)
-        if document_loc:
+        if document_loc == ('', ''):
+            logging.debug("No file selected")
+            return None
+        elif document_loc:
             return document_loc[0]
+

@@ -4,7 +4,8 @@
     height: 25px;
     width: 100px;
     border-radius: 5px;
-    padding-left: 1Opx;
+    padding-left: 15px;
+    padding-right: 10px;
     font-family: Roboto;
 }
 
