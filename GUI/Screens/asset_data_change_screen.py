@@ -3,11 +3,12 @@ from pathlib import Path
 import qtawesome as qta
 
 from PyQt6.QtWidgets import QVBoxLayout, QFrame, QHBoxLayout, QLabel, QLineEdit, QPushButton, QWidget, QTableWidget, \
-    QHeaderView, QTreeWidget, QFileDialog, QTreeWidgetItem, QTableWidgetItem
+    QHeaderView, QTreeWidget, QFileDialog, QTreeWidgetItem, QTableWidgetItem, QTableView
 
 from Domain.asset_change_domain import AssetChangeDomain
 from GUI.ButtonWidget import ButtonWidget
 from GUI.Screens.screen import Screen
+from GUI.TableModel import TableModel
 
 
 class AssetDataChangeScreen(Screen):
@@ -23,7 +24,7 @@ class AssetDataChangeScreen(Screen):
         self.page2_btn = QPushButton()
         self.page1_btn = QPushButton()
         self.input_file_field = QTreeWidget()
-        self.table = QTableWidget()
+        self.table = QTableView()
         self.init_ui()
 
     def init_ui(self):
@@ -45,7 +46,7 @@ class AssetDataChangeScreen(Screen):
     def upper_side(self):
         frame = QFrame()
         frame_layout = QVBoxLayout()
-        # frame_layout.addWidget(self.input_original_file_field())
+        frame_layout.addWidget(self.input_original_file_field())
         frame_layout.addWidget(self.button_group())
         frame_layout.addStretch()
         frame.setLayout(frame_layout)
@@ -82,7 +83,7 @@ class AssetDataChangeScreen(Screen):
         frame_layout = QHBoxLayout()
         self.control_button.setText(self._('show differences'))
         self.control_button.setProperty('class', 'primary-button')
-        # self.control_button.setDisabled(True)
+        self.control_button.setDisabled(True)
         self.control_button.clicked.connect(lambda: self.navigate_to_diff_report(self.table))
 
         self.export_button.setText(self._('apply differences'))
@@ -104,15 +105,10 @@ class AssetDataChangeScreen(Screen):
 
     def change_table(self):
         self.table.setEnabled(True)
-        self.table.setColumnCount(5)
+        self.table.verticalHeader().setHidden(True)
         self.table.horizontalHeader().setStretchLastSection(False)
         self.table.setShowGrid(False)
         self.table.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
-        for i in range(0, 7):
-            self.table.horizontalHeader().setSectionResizeMode(i, QHeaderView.ResizeMode.Stretch)
-        self.table.setHorizontalHeaderLabels(
-            [self._('id'), self._('action'), self._("name_attribute"), self._("old_attribute"),
-             self._("new_attribute")])
 
     def reset_ui(self, _):
         self._ = _
@@ -155,29 +151,26 @@ class AssetDataChangeScreen(Screen):
             self.control_button.setDisabled(True)
 
     def clear_input_field(self):
-        # self.input_file_field.clear()
+        self.input_file_field.clear()
         self.control_button.setDisabled(True)
         self.export_button.setDisabled(True)
 
     def navigate_to_diff_report(self, table):
-        rep = [1, 2, 3, 4, 5, 6, 7, 8]
         original_documents = [self.input_file_field.topLevelItem(i).data(0, 1) for i in
                               range(self.input_file_field.topLevelItemCount())]
-        # report = AssetChangeDomain().get_diff_report(original_documents=original_documents)
-        self.fill_up_change_table(rep, table)
+        report = AssetChangeDomain().get_diff_report(original_documents=original_documents)
+        self.fill_up_change_table(report, table)
 
     def fill_up_change_table(self, report, table):
-        logging.debug(report)
-        logging.debug(table.rowCount())
-        logging.debug(table.columnCount())
-        for row_index, element in enumerate(report):
-            row = table.rowCount()
-            table.insertRow(row)
-            self.add_cell_to_table(table, row=row, column=0)
-            self.add_cell_to_table(table, row=row, column=1)
-            self.add_cell_to_table(table, row=row, column=2)
-            self.add_cell_to_table(table, row=row, column=3)
-            self.add_cell_to_table(table, row=row, column=4)
+        data = []
+        for rep in report:
+            data.append([str(rep.id), str(rep.actie.value), str(rep.attribute), str(rep.original_value), str(rep.new_value)])
+        model = TableModel(data, self._)
+        table.setModel(model)
 
     def add_cell_to_table(self, table: QTableWidget, row: int, column: int) -> None:
-        table.setItem(row, column, QTableWidgetItem("Test"))
+        logging.debug("row " + str(row))
+        logging.debug("column " + str(column))
+        item = QTableWidgetItem()
+        item.setText("Test")
+        table.setItem(row, column, item)

@@ -13,7 +13,7 @@ class FileState(Enum):
 
 
 class ReportAction(Enum):
-    ATA = 'attribute added',
-    ATR = 'attribute removed',
-    ATC = 'attribute changed',
+    ATA = 'attribute added'
+    ATR = 'attribute removed'
+    ATC = 'attribute changed'
     ASS = 'asset added'
