@@ -4,18 +4,13 @@ from PyQt6.QtGui import QPixmap
 
 from PyQt6.QtWidgets import QVBoxLayout, QFrame, QHBoxLayout, QPushButton, QWidget, QLineEdit, QLabel, QListWidget
 
-from Domain.language_settings import return_language
 from GUI.Screens.screen import Screen
-
-ROOT_DIR = Path(__file__).parent
-
-LANG_DIR = ROOT_DIR.parent.parent / 'locale/'
 
 
 class RelationChangeScreen(Screen):
-    def __init__(self):
+    def __init__(self, language_settings=None):
         super().__init__()
-        self._ = return_language(LANG_DIR)
+        self._ = language_settings
         self.container_insert_data_screen = QVBoxLayout()
         self.stacked_widget = None
         self.init_ui()

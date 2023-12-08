@@ -1,9 +1,9 @@
+import logging
 from pathlib import Path
 
 from PyQt6.QtGui import QPixmap
 
 from Domain.ProjectFileManager import ProjectFileManager
-from Domain.language_settings import return_language
 from PyQt6.QtWidgets import QWidget, QPushButton, QLabel, QHBoxLayout, QVBoxLayout, \
     QLineEdit, QFrame
 from PyQt6.QtCore import Qt
@@ -16,14 +16,13 @@ from GUI.overviewtable import OverviewTable
 ROOT_DIR = Path(__file__).parent
 
 IMG_DIR = ROOT_DIR.parent.parent / 'img/'
-LANG_DIR = ROOT_DIR.parent.parent / 'locale/'
 
 
 class HomeScreen(Screen):
 
-    def __init__(self):
+    def __init__(self, language_settings=None):
         super().__init__()
-        self._ = return_language(LANG_DIR)
+        self._ = language_settings
         self.home_domain = home_domain.HomeDomain(self._)
         self.container_home_screen = QVBoxLayout()
 

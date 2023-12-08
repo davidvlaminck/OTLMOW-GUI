@@ -1,20 +1,14 @@
-from pathlib import Path
-
 from PyQt6.QtWidgets import QVBoxLayout, QFrame, QLabel, QHBoxLayout, QLineEdit, QPushButton
 
-from Domain.language_settings import return_language
+
 from GUI.Screens.screen import Screen
 import qtawesome as qta
 
-ROOT_DIR = Path(__file__).parent
-
-LANG_DIR = ROOT_DIR.parent.parent / 'locale/'
-
 
 class ConversionScreen(Screen):
-    def __init__(self):
+    def __init__(self, language_settings=None):
         super().__init__()
-        self._ = return_language(LANG_DIR)
+        self._ = language_settings
         self.container_insert_data_screen = QVBoxLayout()
         self.input_file_label = QLabel()
         self.convert_btn = QPushButton()

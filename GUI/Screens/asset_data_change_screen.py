@@ -3,21 +3,17 @@ from pathlib import Path
 import qtawesome as qta
 
 from PyQt6.QtWidgets import QVBoxLayout, QFrame, QHBoxLayout, QLabel, QLineEdit, QPushButton, QWidget, QTableWidget, \
-    QHeaderView, QTreeWidget, QFileDialog, QTreeWidgetItem
+    QHeaderView, QTreeWidget, QFileDialog, QTreeWidgetItem, QTableWidgetItem
 
-from Domain.language_settings import return_language
+from Domain.asset_change_domain import AssetChangeDomain
 from GUI.ButtonWidget import ButtonWidget
 from GUI.Screens.screen import Screen
 
-ROOT_DIR = Path(__file__).parent
-
-LANG_DIR = ROOT_DIR.parent.parent / 'locale/'
-
 
 class AssetDataChangeScreen(Screen):
-    def __init__(self):
+    def __init__(self, language_settings=None):
         super().__init__()
-        self._ = return_language(LANG_DIR)
+        self._ = language_settings
         self.container_insert_data_screen = QVBoxLayout()
         self.stacked_widget = None
         self.original_file_label = QLabel()
@@ -27,6 +23,7 @@ class AssetDataChangeScreen(Screen):
         self.page2_btn = QPushButton()
         self.page1_btn = QPushButton()
         self.input_file_field = QTreeWidget()
+        self.table = QTableWidget()
         self.init_ui()
 
     def init_ui(self):
@@ -48,7 +45,7 @@ class AssetDataChangeScreen(Screen):
     def upper_side(self):
         frame = QFrame()
         frame_layout = QVBoxLayout()
-        frame_layout.addWidget(self.input_original_file_field())
+        # frame_layout.addWidget(self.input_original_file_field())
         frame_layout.addWidget(self.button_group())
         frame_layout.addStretch()
         frame.setLayout(frame_layout)
@@ -57,7 +54,8 @@ class AssetDataChangeScreen(Screen):
     def lower_side(self):
         frame = QFrame()
         frame_layout = QVBoxLayout()
-        frame_layout.addWidget(self.change_table())
+        self.change_table()
+        frame_layout.addWidget(self.table)
         frame.setLayout(frame_layout)
         return frame
 
@@ -84,7 +82,8 @@ class AssetDataChangeScreen(Screen):
         frame_layout = QHBoxLayout()
         self.control_button.setText(self._('show differences'))
         self.control_button.setProperty('class', 'primary-button')
-        self.control_button.setDisabled(True)
+        # self.control_button.setDisabled(True)
+        self.control_button.clicked.connect(lambda: self.navigate_to_diff_report(self.table))
 
         self.export_button.setText(self._('apply differences'))
         self.export_button.setDisabled(True)
@@ -104,17 +103,16 @@ class AssetDataChangeScreen(Screen):
         return frame
 
     def change_table(self):
-        table = QTableWidget()
-        table.setProperty('class', 'change-table')
-        table.setRowCount(5)
-        table.setColumnCount(5)
-        table.verticalHeader().setVisible(False)
-        table.horizontalHeader().setStretchLastSection(False)
+        self.table.setEnabled(True)
+        self.table.setColumnCount(5)
+        self.table.horizontalHeader().setStretchLastSection(False)
+        self.table.setShowGrid(False)
+        self.table.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
         for i in range(0, 7):
-            table.horizontalHeader().setSectionResizeMode(i, QHeaderView.ResizeMode.Stretch)
-        table.setHorizontalHeaderLabels(
-            [self._('id'), self._('action'), self._("name_attribute"), self._("old_attribute"), self._("new_attribute")])
-        return table
+            self.table.horizontalHeader().setSectionResizeMode(i, QHeaderView.ResizeMode.Stretch)
+        self.table.setHorizontalHeaderLabels(
+            [self._('id'), self._('action'), self._("name_attribute"), self._("old_attribute"),
+             self._("new_attribute")])
 
     def reset_ui(self, _):
         self._ = _
@@ -157,7 +155,29 @@ class AssetDataChangeScreen(Screen):
             self.control_button.setDisabled(True)
 
     def clear_input_field(self):
-        self.input_file_field.clear()
+        # self.input_file_field.clear()
         self.control_button.setDisabled(True)
         self.export_button.setDisabled(True)
 
+    def navigate_to_diff_report(self, table):
+        rep = [1, 2, 3, 4, 5, 6, 7, 8]
+        original_documents = [self.input_file_field.topLevelItem(i).data(0, 1) for i in
+                              range(self.input_file_field.topLevelItemCount())]
+        # report = AssetChangeDomain().get_diff_report(original_documents=original_documents)
+        self.fill_up_change_table(rep, table)
+
+    def fill_up_change_table(self, report, table):
+        logging.debug(report)
+        logging.debug(table.rowCount())
+        logging.debug(table.columnCount())
+        for row_index, element in enumerate(report):
+            row = table.rowCount()
+            table.insertRow(row)
+            self.add_cell_to_table(table, row=row, column=0)
+            self.add_cell_to_table(table, row=row, column=1)
+            self.add_cell_to_table(table, row=row, column=2)
+            self.add_cell_to_table(table, row=row, column=3)
+            self.add_cell_to_table(table, row=row, column=4)
+
+    def add_cell_to_table(self, table: QTableWidget, row: int, column: int) -> None:
+        table.setItem(row, column, QTableWidgetItem("Test"))

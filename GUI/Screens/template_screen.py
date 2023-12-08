@@ -7,9 +7,7 @@ from pathlib import Path
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QFrame, QCheckBox, QSpinBox, \
     QLabel, QListWidget, QListWidgetItem
-from qasync import asyncSlot
 
-from Domain.language_settings import return_language
 from Domain.model_builder import ModelBuilder
 from Domain.template_domain import TemplateDomain
 from GUI.ButtonWidget import ButtonWidget
@@ -17,14 +15,11 @@ from GUI.DialogWindows.change_subset_window import ChangeSubsetWindow
 from GUI.DialogWindows.export_to_template_window import ExportToTemplateWindow
 from GUI.Screens.screen import Screen
 
-ROOT_DIR = Path(__file__).parent
-LANG_DIR = ROOT_DIR.parent.parent / 'locale/'
-
 
 class TemplateScreen(Screen):
-    def __init__(self):
+    def __init__(self, language_settings=None):
         super().__init__()
-        self._ = return_language(LANG_DIR)
+        self._ = language_settings
         self.container_template_screen = QVBoxLayout()
         self.stacked_widget = None
         self.select_all_classes = QCheckBox()

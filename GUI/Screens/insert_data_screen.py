@@ -16,21 +16,16 @@ from Domain import global_vars
 from Domain.ProjectFileManager import ProjectFileManager
 from Domain.enums import FileState
 from Domain.insert_data_domain import InsertDataDomain
-from Domain.language_settings import return_language
 from GUI.ButtonWidget import ButtonWidget
 from GUI.DialogWindows.remove_project_files_window import RemoveProjectFilesWindow
 from GUI.Screens.screen import Screen
 import qtawesome as qta
 
-ROOT_DIR = Path(__file__).parent
-
-LANG_DIR = ROOT_DIR.parent.parent / 'locale/'
-
 
 class InsertDataScreen(Screen):
-    def __init__(self):
+    def __init__(self, language_settings=None):
         super().__init__()
-        self._ = return_language(LANG_DIR)
+        self._ = language_settings
         self.container_insert_data_screen = QVBoxLayout()
         self.feedback_message_box = QFrame()
         self.stacked_widget = None
@@ -138,6 +133,7 @@ class InsertDataScreen(Screen):
                                                                 state=FileState.ERROR.name)
         else:
             logging.debug('positive feedback needed')
+            self.stacked_widget.reset_ui(self._)
             self.positive_feedback_message()
         self.fill_feedback_list(assets)
         ProjectFileManager().add_project_files_to_file(global_vars.single_project)
@@ -264,7 +260,8 @@ class InsertDataScreen(Screen):
     def delete_file_from_list(self):
         items = self.input_file_field.selectedItems()
         item_data = items[0].data(1, 1)
-        file_in_memory = next((asset.file_path for asset in global_vars.single_project.templates_in_memory if asset.file_path == item_data), None)
+        file_in_memory = next((asset.file_path for asset in global_vars.single_project.templates_in_memory if
+                               asset.file_path == item_data), None)
         if file_in_memory is not None:
             logging.debug("We've struck gold")
             InsertDataDomain().delete_project_file_from_project(global_vars.single_project, file_in_memory)

@@ -12,11 +12,14 @@ from qasync import QEventLoop, asyncClose
 
 from Domain.Project import Project
 from Domain.ProjectFileManager import ProjectFileManager
+from Domain.language_settings import return_language
 from Domain.navigation import Navigation
 
 ROOT_DIR = Path(__file__).parent.parent
 
 project_dir = ROOT_DIR / 'demo_projects/'
+
+LANG_DIR = ROOT_DIR / 'locale/'
 
 
 # Used to add demo data to the application for showcase purpose only
@@ -35,7 +38,7 @@ def demo_data():
 class MyApplication(QApplication):
     def __init__(self, argv: typing.List[str]):
         super().__init__(argv)
-        self.demo_project = demo_data()
+        # self.demo_project = demo_data()
 
     @asyncClose
     async def quit(self):
@@ -50,6 +53,7 @@ if __name__ == '__main__':
             format='%(asctime)s %(levelname)-8s %(message)s',
             level=logging.DEBUG,
             datefmt='%Y-%m-%d %H:%M:%S')
+        language = return_language(LANG_DIR)
         app = MyApplication(sys.argv)
         event_loop = QEventLoop(app)
         asyncio.set_event_loop(event_loop)
@@ -57,7 +61,7 @@ if __name__ == '__main__':
         app.setWindowIcon(app_icon)
         with open('custom.qss', 'r') as file:
             app.setStyleSheet(file.read())
-        stacked_widget = Navigation()
+        stacked_widget = Navigation(language)
         stacked_widget.show()
         future = event_loop.create_future()
         stacked_widget.resize(1360, 768)

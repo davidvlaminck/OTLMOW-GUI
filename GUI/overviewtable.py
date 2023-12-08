@@ -67,10 +67,8 @@ class OverviewTable(QTableWidget):
             self.add_cell_to_table(self, row=row_index, column=1, item=element.bestek)
             self.add_cell_to_table(self, row=row_index, column=2,
                                    item=ModelBuilder(element.subset_path).get_name_project())
-            logging.debug(element.subset_path)
             self.add_cell_to_table(self, row=row_index, column=3, item=element.laatst_bewerkt)
             self.add_action_buttons(row_index, element, self)
-            # self.doubleClicked.connect(lambda _, project=element: self.navigate_to_project(project))
         self.cellDoubleClicked.connect(self.create_async_task)
 
     @staticmethod

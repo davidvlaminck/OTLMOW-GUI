@@ -28,10 +28,18 @@ QHeaderView::section{
     margin-left: 5px;
 }
 
+QTableWidget::item{
+    selection-background-color: #D3D3D3;
+    selection-color: #000000;
+
+}
+
 @QTableWidget{
     background-color: #ffffff;
     font-family: Roboto;
 }
+
+
 
 .header{
     background-color: #B35F35;
@@ -44,11 +52,7 @@ QHeaderView::section{
     border-radius: 5px;
 }
 
-QTableWidget::item{
-    selection-background-color: #D3D3D3;
-    selection-color: #000000;
 
-}
 
 .alter-button{
     icon-size: 25px;
