@@ -1,6 +1,7 @@
 import logging
 from pathlib import Path
 import qtawesome as qta
+from PyQt6.QtCore import QSize
 
 from PyQt6.QtWidgets import QVBoxLayout, QFrame, QHBoxLayout, QLabel, QLineEdit, QPushButton, QWidget, QTableWidget, \
     QHeaderView, QTreeWidget, QFileDialog, QTreeWidgetItem, QTableWidgetItem, QTableView
@@ -25,6 +26,9 @@ class AssetDataChangeScreen(Screen):
         self.export_button = ButtonWidget()
         self.input_file_field = QTreeWidget()
         self.table = QTableView()
+        self.message_icon = QLabel()
+        self.message = QLabel()
+        self.feedback_message_box = QFrame()
         self.init_ui()
 
     def init_ui(self):
@@ -57,6 +61,8 @@ class AssetDataChangeScreen(Screen):
         frame_layout = QVBoxLayout()
         self.change_table()
         frame_layout.addWidget(self.table)
+        self.construct_feedback_message()
+        frame_layout.addWidget(self.feedback_message_box)
         frame.setLayout(frame_layout)
         return frame
 
@@ -174,5 +180,32 @@ class AssetDataChangeScreen(Screen):
         logging.debug("original documents" + str(original_documents))
         project = global_vars.single_project
         dialog_window = ChooseFileNameWindow(self._, project, original_documents)
-        dialog_window.file_name_window()
+        try:
+            dialog_window.file_name_window()
+            self.positive_feedback_message()
+        except Exception as e:
+            logging.debug(e)
+            self.negative_feedback_message()
 
+    def construct_feedback_message(self):
+        logging.debug("constructing feedback message")
+        frame_layout = QHBoxLayout()
+        frame_layout.addWidget(self.message_icon)
+        self.message.setProperty('class', 'feedback-message')
+        frame_layout.addWidget(self.message)
+        frame_layout.addStretch()
+        self.feedback_message_box.setLayout(frame_layout)
+
+    def positive_feedback_message(self):
+        self.message_icon.setPixmap(qta.icon('mdi.check', color="white").pixmap(QSize(48, 48)))
+        self.message.setText(self._('the changes were correctly written to a new file'))
+        self.feedback_message_box.setStyleSheet('background-color: #1DCA94; border-radius: 10px;')
+
+    def clear_feedback_message(self):
+        self.message.setText('')
+        self.feedback_message_box.setStyleSheet('')
+
+    def negative_feedback_message(self):
+        self.message_icon.setPixmap(qta.icon('mdi.alert-circle-outline', color="white").pixmap(QSize(48, 48)))
+        self.message.setText(self._('error'))
+        self.feedback_message_box.setStyleSheet('background-color: #CC3300; border-radius: 10px;')

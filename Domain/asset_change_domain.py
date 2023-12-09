@@ -86,6 +86,7 @@ class AssetChangeDomain:
         logging.debug("tempdir" + str(tempdir))
         if not tempdir.exists():
             os.makedirs(tempdir)
+        [f.unlink() for f in Path(tempdir).glob("*") if f.is_file()]
         temp_loc = Path(tempdir) / final_file_name
         OtlmowConverter().create_file_from_assets(filepath=temp_loc, list_of_objects=diff_1)
         things_in_there = os.listdir(tempdir)
