@@ -1,4 +1,6 @@
 import logging
+import os
+import tempfile
 from pathlib import Path
 
 from otlmow_converter.OtlmowConverter import OtlmowConverter
@@ -7,7 +9,8 @@ from otlmow_model.OtlmowModel.Helpers.OTLObjectHelper import compare_two_lists_o
 
 from Domain import global_vars
 from Domain.ProjectFileManager import ProjectFileManager
-from Domain.enums import ReportAction
+from Domain.enums import ReportAction, FileState
+from Domain.project_file import ProjectFile
 from Domain.report_item import ReportItem
 
 
@@ -68,3 +71,31 @@ class AssetChangeDomain:
                       global_vars.single_project.templates_in_memory]
         report = cls.generate_diff_report(original_assets[0], new_assets[0], model_dir)
         return report
+
+    @classmethod
+    def replace_files_with_diff_report(cls, original_documents, project, file_name, extension):
+        changed_assets = [OtlmowConverter().create_assets_from_file(Path(x.file_path)) for x in
+                          project.templates_in_memory]
+        original_assets = [OtlmowConverter().create_assets_from_file(Path(x)) for x in original_documents]
+        diff_1 = compare_two_lists_of_objects_attribute_level(first_list=original_assets[0], second_list=changed_assets[0],
+                                                              model_directory=ProjectFileManager().get_otl_wizard_model_dir())
+        final_file_name = file_name + extension
+        ProjectFileManager.delete_template_folder()
+        project.templates_in_memory = []
+        tempdir = Path(tempfile.gettempdir()) / 'temp-otlmow'
+        logging.debug("tempdir" + str(tempdir))
+        if not tempdir.exists():
+            os.makedirs(tempdir)
+        temp_loc = Path(tempdir) / final_file_name
+        OtlmowConverter().create_file_from_assets(filepath=temp_loc, list_of_objects=diff_1)
+        things_in_there = os.listdir(tempdir)
+        files_created = [x for x in things_in_there if str(x).startswith(file_name)]
+        logging.debug("files created" + str(files_created))
+        for file in files_created:
+            temp_loc = Path(tempdir) / file
+            end_loc = ProjectFileManager().add_template_file_to_project(filepath=temp_loc)
+            template_file = ProjectFile(file_path=end_loc, state=FileState.OK.value)
+            project.templates_in_memory.append(template_file)
+        ProjectFileManager().add_project_files_to_file(project=project)
+
+

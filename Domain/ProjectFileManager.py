@@ -216,7 +216,7 @@ class ProjectFileManager:
     @classmethod
     def delete_template_file_from_project(cls, file_path):
         try:
-            logging.debug("file path = "+ str(file_path))
+            logging.debug("file path = " + str(file_path))
             Path.unlink(file_path)
             return True
         except FileNotFoundError as e:

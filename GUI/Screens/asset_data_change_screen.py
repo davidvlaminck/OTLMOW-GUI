@@ -5,8 +5,10 @@ import qtawesome as qta
 from PyQt6.QtWidgets import QVBoxLayout, QFrame, QHBoxLayout, QLabel, QLineEdit, QPushButton, QWidget, QTableWidget, \
     QHeaderView, QTreeWidget, QFileDialog, QTreeWidgetItem, QTableWidgetItem, QTableView
 
+from Domain import global_vars
 from Domain.asset_change_domain import AssetChangeDomain
 from GUI.ButtonWidget import ButtonWidget
+from GUI.DialogWindows.choose_file_name_window import ChooseFileNameWindow
 from GUI.Screens.screen import Screen
 from GUI.TableModel import TableModel
 
@@ -19,10 +21,8 @@ class AssetDataChangeScreen(Screen):
         self.stacked_widget = None
         self.original_file_label = QLabel()
         self.new_file_label = QLabel()
-        self.control_button = QPushButton()
-        self.export_button = QPushButton()
-        self.page2_btn = QPushButton()
-        self.page1_btn = QPushButton()
+        self.control_button = ButtonWidget()
+        self.export_button = ButtonWidget()
         self.input_file_field = QTreeWidget()
         self.table = QTableView()
         self.init_ui()
@@ -88,7 +88,8 @@ class AssetDataChangeScreen(Screen):
 
         self.export_button.setText(self._('apply differences'))
         self.export_button.setDisabled(True)
-        self.export_button.setProperty('class', 'secondary-button')
+        self.export_button.setProperty('class', 'primary-button')
+        self.export_button.clicked.connect(lambda: self.replace_file_with_diff_report(self.table))
 
         refresh_button = QPushButton()
         refresh_button.setText(self._('empty fields'))
@@ -116,8 +117,6 @@ class AssetDataChangeScreen(Screen):
         self.new_file_label.setText(self._('new_file_load'))
         self.control_button.setText(self._('show differences'))
         self.export_button.setText(self._('apply differences'))
-        self.page2_btn.setText(self._('update_relations'))
-        self.page1_btn.setText(self._('update_files'))
 
     def open_file_picker(self):
         file_path = str(Path.home())
@@ -160,6 +159,7 @@ class AssetDataChangeScreen(Screen):
                               range(self.input_file_field.topLevelItemCount())]
         report = AssetChangeDomain().get_diff_report(original_documents=original_documents)
         self.fill_up_change_table(report, table)
+        self.export_button.setDisabled(False)
 
     def fill_up_change_table(self, report, table):
         data = []
@@ -168,9 +168,11 @@ class AssetDataChangeScreen(Screen):
         model = TableModel(data, self._)
         table.setModel(model)
 
-    def add_cell_to_table(self, table: QTableWidget, row: int, column: int) -> None:
-        logging.debug("row " + str(row))
-        logging.debug("column " + str(column))
-        item = QTableWidgetItem()
-        item.setText("Test")
-        table.setItem(row, column, item)
+    def replace_file_with_diff_report(self, table):
+        original_documents = [self.input_file_field.topLevelItem(i).data(0, 1) for i in
+                              range(self.input_file_field.topLevelItemCount())]
+        logging.debug("original documents" + str(original_documents))
+        project = global_vars.single_project
+        dialog_window = ChooseFileNameWindow(self._, project, original_documents)
+        dialog_window.file_name_window()
+
