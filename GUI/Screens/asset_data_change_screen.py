@@ -114,6 +114,7 @@ class AssetDataChangeScreen(Screen):
         self.table.setEnabled(True)
         self.table.verticalHeader().setHidden(True)
         self.table.horizontalHeader().setStretchLastSection(False)
+        self.table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
         self.table.setShowGrid(False)
         self.table.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
 
