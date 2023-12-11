@@ -121,6 +121,7 @@ class AssetDataChangeScreen(Screen):
 
     def reset_ui(self, _):
         self._ = _
+        self.clear_user_fields()
         self.original_file_label.setText(self._('original_file_load'))
         self.new_file_label.setText(self._('new_file_load'))
         self.control_button.setText(self._('show differences'))
