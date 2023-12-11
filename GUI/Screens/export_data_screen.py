@@ -102,5 +102,5 @@ class ExportDataScreen(Screen):
         file_picker.setModal(True)
         file_picker.setDirectory(file_path)
         document_loc = file_picker.getSaveFileName(filter="Excel files (*.xlsx);;CSV files (*.csv)")
-        if document_loc:
+        if document_loc != ('', ''):
             ExportDataDomain().generate_files(document_loc[0], global_vars.single_project)
