@@ -181,7 +181,7 @@ class AssetDataChangeScreen(Screen):
         project = global_vars.single_project
         dialog_window = ChooseFileNameWindow(self._, project, original_documents)
         try:
-            dialog_window.file_name_window()
+            dialog_window.warning_overwrite_screen()
             self.positive_feedback_message()
         except Exception as e:
             logging.debug(e)

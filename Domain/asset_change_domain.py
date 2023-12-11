@@ -73,13 +73,13 @@ class AssetChangeDomain:
         return report
 
     @classmethod
-    def replace_files_with_diff_report(cls, original_documents, project, file_name, extension):
+    def replace_files_with_diff_report(cls, original_documents, project, file_name):
         changed_assets = [OtlmowConverter().create_assets_from_file(Path(x.file_path)) for x in
                           project.templates_in_memory]
         original_assets = [OtlmowConverter().create_assets_from_file(Path(x)) for x in original_documents]
         diff_1 = compare_two_lists_of_objects_attribute_level(first_list=original_assets[0], second_list=changed_assets[0],
                                                               model_directory=ProjectFileManager().get_otl_wizard_model_dir())
-        final_file_name = file_name + extension
+        final_file_name = file_name
         ProjectFileManager.delete_template_folder()
         project.templates_in_memory = []
         tempdir = Path(tempfile.gettempdir()) / 'temp-otlmow'
