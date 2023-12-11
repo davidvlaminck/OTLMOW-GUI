@@ -18,6 +18,7 @@ class ExportDataScreen(Screen):
         self.export_btn = QPushButton()
         self.input_file_label = QLabel()
         self.extra_option_csv = QCheckBox()
+        self.file_extension_selection = QComboBox()
         self.stacked_widget = None
         self.init_ui()
 
@@ -63,10 +64,9 @@ class ExportDataScreen(Screen):
         label = QLabel()
         label.setText(self._('select file type for export') + ":")
         frame_layout.addWidget(label)
-        combobox = QComboBox()
-        combobox.addItems(['Excel', 'CSV', 'JSON'])
-        combobox.currentTextChanged.connect(self.show_additional_options)
-        frame_layout.addWidget(combobox)
+        self.file_extension_selection.addItems(['Excel', 'CSV', 'JSON'])
+        self.file_extension_selection.currentTextChanged.connect(self.show_additional_options)
+        frame_layout.addWidget(self.file_extension_selection)
         frame_layout.addStretch()
         frame.setLayout(frame_layout)
         return frame
@@ -101,13 +101,20 @@ class ExportDataScreen(Screen):
         self.export_btn.setText(self._('export'))
         self.input_file_label.setText(self._('file_to_upload'))
 
-    @classmethod
-    def open_file_picker(cls):
+
+    def open_file_picker(self):
         file_path = str(Path.home())
         file_picker = QFileDialog()
         file_picker.setModal(True)
         file_picker.setDirectory(file_path)
-        document_loc = file_picker.getSaveFileName(filter="Excel files (*.xlsx);;CSV files (*.csv)")
+        if self.file_extension_selection.currentText() == 'Excel':
+            document_loc = file_picker.getSaveFileName(filter="Excel files (*.xlsx)")
+        elif self.file_extension_selection.currentText() == 'CSV':
+            document_loc = file_picker.getSaveFileName(filter="CSV files (*.csv)")
+        elif self.file_extension_selection.currentText() == 'JSON':
+            document_loc = file_picker.getSaveFileName(filter="JSON files (*.json)")
+        else:
+            document_loc = file_picker.getSaveFileName()
         if document_loc != ('', ''):
             ExportDataDomain().generate_files(document_loc[0], global_vars.single_project)
 
