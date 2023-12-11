@@ -1,3 +1,4 @@
+import logging
 from pathlib import Path
 import qtawesome as qta
 
@@ -16,7 +17,7 @@ class ExportDataScreen(Screen):
         self.container_insert_data_screen = QVBoxLayout()
         self.export_btn = QPushButton()
         self.input_file_label = QLabel()
-
+        self.extra_option_csv = QCheckBox()
         self.stacked_widget = None
         self.init_ui()
 
@@ -44,7 +45,11 @@ class ExportDataScreen(Screen):
         checkbox = QCheckBox()
         checkbox.setText(self._('export relations and assets in different files'))
 
+        self.extra_option_csv.setText(self._('export assets in different files'))
+        self.extra_option_csv.setHidden(True)
+
         window_layout.addWidget(checkbox)
+        window_layout.addWidget(self.extra_option_csv)
 
         window_layout.addSpacing(10)
         window_layout.addWidget(self.button_box())
@@ -60,6 +65,7 @@ class ExportDataScreen(Screen):
         frame_layout.addWidget(label)
         combobox = QComboBox()
         combobox.addItems(['Excel', 'CSV', 'JSON'])
+        combobox.currentTextChanged.connect(self.show_additional_options)
         frame_layout.addWidget(combobox)
         frame_layout.addStretch()
         frame.setLayout(frame_layout)
@@ -104,3 +110,9 @@ class ExportDataScreen(Screen):
         document_loc = file_picker.getSaveFileName(filter="Excel files (*.xlsx);;CSV files (*.csv)")
         if document_loc != ('', ''):
             ExportDataDomain().generate_files(document_loc[0], global_vars.single_project)
+
+    def show_additional_options(self, text):
+        if text == 'CSV':
+            self.extra_option_csv.setHidden(False)
+        else:
+            self.extra_option_csv.setHidden(True)
