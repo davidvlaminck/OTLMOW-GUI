@@ -29,6 +29,7 @@ class AssetDataChangeScreen(Screen):
         self.message_icon = QLabel()
         self.message = QLabel()
         self.feedback_message_box = QFrame()
+        self.model = None
         self.init_ui()
 
     def init_ui(self):
@@ -100,7 +101,7 @@ class AssetDataChangeScreen(Screen):
         refresh_button = QPushButton()
         refresh_button.setText(self._('empty fields'))
         refresh_button.setProperty('class', 'secondary-button')
-        refresh_button.clicked.connect(lambda: self.clear_input_field())
+        refresh_button.clicked.connect(lambda: self.clear_user_fields())
 
         frame_layout.addWidget(self.control_button)
         frame_layout.addWidget(self.export_button)
@@ -156,8 +157,11 @@ class AssetDataChangeScreen(Screen):
         if self.input_file_field.topLevelItemCount() == 0:
             self.control_button.setDisabled(True)
 
-    def clear_input_field(self):
+    def clear_user_fields(self):
         self.input_file_field.clear()
+        if self.model is not None:
+            self.model._data = []
+        self.table.clearSpans()
         self.control_button.setDisabled(True)
         self.export_button.setDisabled(True)
 
@@ -172,10 +176,10 @@ class AssetDataChangeScreen(Screen):
         data = []
         for rep in report:
             data.append([str(rep.id), str(rep.actie.value), str(rep.attribute), str(rep.original_value), str(rep.new_value)])
-        model = TableModel(data, self._)
-        table.setModel(model)
+        self.model = TableModel(data, self._)
+        table.setModel(self.model)
 
-    def replace_file_with_diff_report(self, table):
+    def replace_file_with_diff_report(self):
         original_documents = [self.input_file_field.topLevelItem(i).data(0, 1) for i in
                               range(self.input_file_field.topLevelItemCount())]
         logging.debug("original documents" + str(original_documents))
