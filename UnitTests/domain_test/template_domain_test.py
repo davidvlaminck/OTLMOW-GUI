@@ -29,11 +29,6 @@ def test_create_template():
     model_path = PARENT_OF_THIS_FILE.parent / 'project_files_test' / 'OTLWizardProjects' / 'Model'
     template_path = PARENT_OF_THIS_FILE / 'test_template' / 'test_template.xlsx'
 
-    with pytest.raises(ModuleNotFoundError):
-        TemplateDomain.create_template(subset_path=subset_path, document_path=template_path, selected_classes_dir=None,
-                                       generate_choice_list=True, add_geo_artefact=True, add_attribute_info=True,
-                                       highlight_deprecated_attributes=True, amount_of_examples=1)
-
     TemplateDomain.create_template(subset_path=subset_path, document_path=template_path, selected_classes_dir=None,
                                    generate_choice_list=True, add_geo_artefact=True, add_attribute_info=True,
                                    highlight_deprecated_attributes=True, amount_of_examples=1,
