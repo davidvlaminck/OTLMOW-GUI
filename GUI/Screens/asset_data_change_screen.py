@@ -76,18 +76,18 @@ class AssetDataChangeScreen(Screen):
         self.input_file_field.setColumnCount(2)
         self.input_file_field.header().setStretchLastSection(False)
         self.input_file_field.header().setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
-        input_file_button = QPushButton()
-        input_file_button.setIcon(qta.icon('mdi.folder-open-outline'))
-        input_file_button.clicked.connect(lambda: self.open_file_picker())
         input_file_layout.addWidget(self.original_file_label)
         input_file_layout.addWidget(self.input_file_field)
-        input_file_layout.addWidget(input_file_button)
         input_file.setLayout(input_file_layout)
         return input_file
 
     def button_group(self):
         frame = QFrame()
         frame_layout = QHBoxLayout()
+        input_file_button = QPushButton()
+        input_file_button.setText(self._('choose_file'))
+        input_file_button.setProperty('class', 'primary-button')
+        input_file_button.clicked.connect(lambda: self.open_file_picker())
         self.control_button.setText(self._('show differences'))
         self.control_button.setProperty('class', 'primary-button')
         self.control_button.setDisabled(True)
@@ -102,11 +102,11 @@ class AssetDataChangeScreen(Screen):
         refresh_button.setText(self._('empty fields'))
         refresh_button.setProperty('class', 'secondary-button')
         refresh_button.clicked.connect(lambda: self.clear_user_fields())
-
+        frame_layout.addWidget(input_file_button)
+        frame_layout.addStretch()
         frame_layout.addWidget(self.control_button)
         frame_layout.addWidget(self.export_button)
         frame_layout.addWidget(refresh_button)
-        frame_layout.addStretch()
 
         frame.setLayout(frame_layout)
         return frame
