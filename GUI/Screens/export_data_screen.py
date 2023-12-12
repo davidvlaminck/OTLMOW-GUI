@@ -20,6 +20,7 @@ class ExportDataScreen(Screen):
         self.extra_option_csv = QCheckBox()
         self.file_extension_selection = QComboBox()
         self.stacked_widget = None
+        self.relations_split_optionality = QCheckBox()
         self.init_ui()
 
     def init_ui(self):
@@ -43,13 +44,12 @@ class ExportDataScreen(Screen):
         combobox = self.create_combobox()
 
         window_layout.addWidget(combobox)
-        checkbox = QCheckBox()
-        checkbox.setText(self._('export relations and assets in different files'))
+        self.relations_split_optionality.setText(self._('export relations and assets in different files'))
 
         self.extra_option_csv.setText(self._('export assets in different files'))
         self.extra_option_csv.setHidden(True)
 
-        window_layout.addWidget(checkbox)
+        window_layout.addWidget(self.relations_split_optionality)
         window_layout.addWidget(self.extra_option_csv)
 
         window_layout.addSpacing(10)
@@ -101,7 +101,6 @@ class ExportDataScreen(Screen):
         self.export_btn.setText(self._('export'))
         self.input_file_label.setText(self._('file_to_upload'))
 
-
     def open_file_picker(self):
         file_path = str(Path.home())
         file_picker = QFileDialog()
@@ -116,7 +115,9 @@ class ExportDataScreen(Screen):
         else:
             document_loc = file_picker.getSaveFileName()
         if document_loc != ('', ''):
-            ExportDataDomain().generate_files(document_loc[0], global_vars.single_project)
+            csv_option = self.extra_option_csv.isChecked()
+            split_relations_and_objects = self.relations_split_optionality.isChecked()
+            ExportDataDomain().generate_files(document_loc[0], global_vars.single_project, csv_option, split_relations_and_objects)
 
     def show_additional_options(self, text):
         if text == 'CSV':
