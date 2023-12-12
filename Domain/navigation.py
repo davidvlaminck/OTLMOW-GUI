@@ -2,6 +2,7 @@ from PyQt6.QtWidgets import QStackedWidget, QWidget
 
 from GUI.Screens.asset_data_change_screen import AssetDataChangeScreen
 from GUI.Screens.conversion_screen import ConversionScreen
+from GUI.Screens.data_visualisation_screen import DataVisualisationScreen
 from GUI.Screens.export_data_screen import ExportDataScreen
 from GUI.Screens.home_screen import HomeScreen
 from GUI.Screens.insert_data_screen import InsertDataScreen
@@ -36,10 +37,12 @@ class Navigation(QStackedWidget):
         step1_tabwidget = TabWidget(page_nr=1, widget1=step1, description1="template", has_save_btn=False)
         step2 = InsertDataScreen(self._)
         step2_tabwidget = TabWidget(page_nr=2, widget1=step2, description1="insert_data", has_save_btn=False)
+        step3_visuals = DataVisualisationScreen(self._)
         step3_data = AssetDataChangeScreen(self._)
         step3_relations = RelationChangeScreen(self._)
         step_3_tabwidget = TabWidget(page_nr=3, widget1=step3_data, description1="data_change", widget2=step3_relations,
-                                     description2="relation_change", has_save_btn=False)
+                                     description2="relation_change", widget3=step3_visuals, description3="data visuals",
+                                     has_save_btn=False)
         step4_export = ExportDataScreen(self._)
         step4_tabwidget = TabWidget(page_nr=4, widget1=step4_export, description1="export_data",
                                     has_save_btn=False)

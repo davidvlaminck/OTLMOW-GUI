@@ -15,13 +15,16 @@ LANG_DIR = ROOT_DIR.parent / 'locale/'
 
 class TabWidget(Screen):
 
-    def __init__(self, page_nr: int, widget1, description1: str, widget2=None, description2: str = None, has_save_btn: bool = True):
+    def __init__(self, page_nr: int, widget1, description1: str, widget2=None, description2: str = None, widget3=None,
+                 description3: str = None, has_save_btn: bool = True):
         super().__init__()
         self._ = return_language(LANG_DIR)
         self.tabs = QTabWidget()
         self.tab1 = widget1
         if widget2 is not None:
             self.tab2 = widget2
+        if widget3 is not None:
+            self.tab3 = widget3
         self.stepper_widget = StepperWidget(self._, page_nr)
         self.header = HeaderBar(language=self._, has_save_btn=has_save_btn)
         self.stacked_widget = None
@@ -30,6 +33,9 @@ class TabWidget(Screen):
         if widget2 is not None:
             self.tabs.addTab(self.tab2, self._(description2))
             self.desc2 = description2
+        if widget3 is not None:
+            self.tabs.addTab(self.tab3, self._(description3))
+            self.desc3 = description3
         self.layout = QVBoxLayout(self)
         self.layout.addWidget(self.header)
         self.layout.addSpacing(10)
