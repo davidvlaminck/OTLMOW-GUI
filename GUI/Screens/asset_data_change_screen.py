@@ -96,7 +96,7 @@ class AssetDataChangeScreen(Screen):
         self.export_button.setText(self._('apply differences'))
         self.export_button.setDisabled(True)
         self.export_button.setProperty('class', 'primary-button')
-        self.export_button.clicked.connect(lambda: self.replace_file_with_diff_report(self.table))
+        self.export_button.clicked.connect(lambda: self.replace_file_with_diff_report())
 
         refresh_button = QPushButton()
         refresh_button.setText(self._('empty fields'))
