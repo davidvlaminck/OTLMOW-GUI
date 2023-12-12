@@ -188,6 +188,7 @@ class AssetDataChangeScreen(Screen):
         dialog_window = ChooseFileNameWindow(self._, project, original_documents)
         try:
             dialog_window.warning_overwrite_screen()
+            self.stacked_widget.widget(2).tab1.fill_list()
             self.positive_feedback_message()
         except Exception as e:
             logging.debug(e)
