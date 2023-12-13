@@ -33,8 +33,9 @@ class ExportDataDomain:
                 else:
                     assets_in_memory.append(obj)
             parent_directory = Path(end_file).parent
-            relations_file_name = Path(end_file).name + "_relations"
-            assets_file_name = Path(end_file).name + "_assets"
+            relations_file_name = Path(end_file).stem + "_relations" + Path(end_file).suffixes[0]
+            logging.debug(f'rel name: {relations_file_name}')
+            assets_file_name = Path(end_file).stem + "_assets" + Path(end_file).suffixes[0]
             relations_path = Path(parent_directory) / relations_file_name
             assets_path = Path(parent_directory) / assets_file_name
             if relations_in_memory:
