@@ -372,60 +372,60 @@ msgstr "Data aan het inladen..."
 msgid "no classes found in specified path"
 msgstr "Geen klassen gevonden in het opgegeven pad"
 
-#~ msgid "empty_fields_error"
-#~ msgstr "Gelieve alle velden in te vullen"
+msgid "empty_fields_error"
+msgstr "Gelieve alle velden in te vullen"
 
-#~ msgid "search_button"
-#~ msgstr "Zoeken"
+msgid "search_button"
+msgstr "Zoeken"
 
-#~ msgid "subtitle_page_1"
-#~ msgstr "Specifieer welke klassen en instellingen u in uw template wil verwerken"
+msgid "subtitle_page_1"
+msgstr "Specifieer welke klassen en instellingen u in uw template wil verwerken"
 
-#~ msgid "export_data"
-#~ msgstr "Export Data"
+msgid "export_data"
+msgstr "Export Data"
 
-#~ msgid "conversion"
-#~ msgstr "Bestand conversie"
+msgid "conversion"
+msgstr "Bestand conversie"
 
-#~ msgid "step_1"
-#~ msgstr "Aanmaken van template"
+msgid "step_1"
+msgstr "Aanmaken van template"
 
-#~ msgid "step_2"
-#~ msgstr "Asset Data invoeren"
+msgid "step_2"
+msgstr "Asset Data invoeren"
 
-#~ msgid "step_3"
-#~ msgstr "Asset Data/relaties bewerken"
+msgid "step_3"
+msgstr "Asset Data/relaties bewerken"
 
-#~ msgid "step_4"
-#~ msgstr "Asset Data exporteren/converteren"
+msgid "step_4"
+msgstr "Asset Data exporteren/converteren"
 
-#~ msgid "template"
-#~ msgstr "Aanmaken template"
+msgid "template"
+msgstr "Aanmaken template"
 
-#~ msgid "insert_data"
-#~ msgstr "Toevoegen Data"
+msgid "insert_data"
+msgstr "Toevoegen Data"
 
-#~ msgid "data_change"
-#~ msgstr "Data aanpassen"
+msgid "data_change"
+msgstr "Data aanpassen"
 
-#~ msgid "relation_change"
-#~ msgstr "Aanpassen relaties"
+msgid "relation_change"
+msgstr "Aanpassen relaties"
 
-#~ msgid "file_to_convert"
-#~ msgstr "Bestand om te converteren"
+msgid "file_to_convert"
+msgstr "Bestand om te converteren"
 
-#~ msgid "control"
-#~ msgstr "Controleren"
+msgid "control"
+msgstr "Controleren"
 
-#~ msgid "type"
-#~ msgstr "Type"
+msgid "type"
+msgstr "Type"
 
-#~ msgid "attribuut"
-#~ msgstr "Attribuut"
+msgid "attribuut"
+msgstr "Attribuut"
 
-#~ msgid "update_relations"
-#~ msgstr "Relaties updaten"
+msgid "update_relations"
+msgstr "Relaties updaten"
 
-#~ msgid "update_files"
-#~ msgstr "Bestanden updaten"
+msgid "update_files"
+msgstr "Bestanden updaten"
 

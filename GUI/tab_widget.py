@@ -28,7 +28,7 @@ class TabWidget(Screen):
         self.stepper_widget = StepperWidget(self._, page_nr)
         self.header = HeaderBar(language=self._, has_save_btn=has_save_btn)
         self.stacked_widget = None
-        self.tabs.addTab(self.tab1, description1)
+        self.tabs.addTab(self.tab1, self._(description1))
         self.desc1 = description1
         if widget2 is not None:
             self.tabs.addTab(self.tab2, self._(description2))
@@ -59,5 +59,8 @@ class TabWidget(Screen):
         if hasattr(self, 'tab2'):
             self.tab2.reset_ui(_)
             self.tabs.setTabText(1, self._(self.desc2))
+        if hasattr(self, 'tab3'):
+            self.tab3.reset_ui(_)
+            self.tabs.setTabText(2, self._(self.desc3))
         self.tab1.reset_ui(_)
         self.stepper_widget.reset_ui(_)

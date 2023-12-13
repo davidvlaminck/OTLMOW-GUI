@@ -1,9 +1,11 @@
+import qtawesome as qta
 from pathlib import Path
 
 from PyQt6.QtCore import QUrl
 from PyQt6.QtWebEngineWidgets import QWebEngineView
 from PyQt6.QtWidgets import QVBoxLayout, QLabel, QWidget
 
+from GUI.ButtonWidget import ButtonWidget
 from GUI.Screens.screen import Screen
 
 ROOT_DIR = Path(__file__).parent
@@ -31,7 +33,11 @@ class DataVisualisationScreen(Screen):
         view = QWebEngineView()
         html_loc = HTML_DIR / "visuals.html"
         view.setHtml(open(html_loc).read())
+        refresh_btn = ButtonWidget()
+        refresh_btn.setIcon(qta.icon('mdi.refresh'))
+        refresh_btn.clicked.connect(view.reload)
         window_layout.addWidget(view)
+        window_layout.addWidget(refresh_btn)
         window.setLayout(window_layout)
         return window
 

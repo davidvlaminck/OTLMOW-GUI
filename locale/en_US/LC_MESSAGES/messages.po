@@ -372,57 +372,57 @@ msgstr "Loading"
 msgid "no classes found in specified path"
 msgstr "No classes found in specified path"
 
-#~ msgid "step_1"
-#~ msgstr "Create Template"
+msgid "step_1"
+msgstr "Create Template"
 
-#~ msgid "step_2"
-#~ msgstr "Insert Asset Data"
+msgid "step_2"
+msgstr "Insert Asset Data"
 
-#~ msgid "step_3"
-#~ msgstr "Change Asset Data/Relations"
+msgid "step_3"
+msgstr "Change Asset Data/Relations"
 
-#~ msgid "step_4"
-#~ msgstr "Export/Convert Asset Data"
+msgid "step_4"
+msgstr "Export/Convert Asset Data"
 
-#~ msgid "template"
-#~ msgstr "Generate Template"
+msgid "template"
+msgstr "Generate Template"
 
-#~ msgid "insert_data"
-#~ msgstr "Add Asset Data"
+msgid "insert_data"
+msgstr "Add Asset Data"
 
-#~ msgid "data_change"
-#~ msgstr "Change Data"
+msgid "data_change"
+msgstr "Change Data"
 
-#~ msgid "relation_change"
-#~ msgstr "Change Relations"
+msgid "relation_change"
+msgstr "Change Relations"
 
-#~ msgid "file_to_convert"
-#~ msgstr "File conversion"
+msgid "file_to_convert"
+msgstr "File conversion"
 
-#~ msgid "search_button"
-#~ msgstr "Search"
+msgid "search_button"
+msgstr "Search"
 
-#~ msgid "subtitle_page_1"
-#~ msgstr "Specify which classes and settings you want to use in the template"
+msgid "subtitle_page_1"
+msgstr "Specify which classes and settings you want to use in the template"
 
-#~ msgid "export_data"
-#~ msgstr "Export Data"
+msgid "export_data"
+msgstr "Export Data"
 
-#~ msgid "conversion"
-#~ msgstr "File conversion"
+msgid "conversion"
+msgstr "File conversion"
 
-#~ msgid "control"
-#~ msgstr "Control"
+msgid "control"
+msgstr "Control"
 
-#~ msgid "type"
-#~ msgstr "Type"
+msgid "type"
+msgstr "Type"
 
-#~ msgid "attribuut"
-#~ msgstr "Attribute"
+msgid "attribuut"
+msgstr "Attribute"
 
-#~ msgid "update_relations"
-#~ msgstr "Update relations"
+msgid "update_relations"
+msgstr "Update relations"
 
-#~ msgid "update_files"
-#~ msgstr "Update files"
+msgid "update_files"
+msgstr "Update files"
 
