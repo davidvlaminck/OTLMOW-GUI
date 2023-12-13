@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-12-08 08:23+0100\n"
+"POT-Creation-Date: 2023-12-13 12:30+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -25,24 +25,24 @@ msgstr ""
 msgid "bestek_empty_error"
 msgstr ""
 
-#: Domain/navigation.py:36
-msgid "template"
+#: GUI/TableModel.py:10
+msgid "id"
 msgstr ""
 
-#: Domain/navigation.py:39
-msgid "insert_data"
+#: GUI/TableModel.py:10
+msgid "action"
 msgstr ""
 
-#: Domain/navigation.py:42
-msgid "data_change"
+#: GUI/TableModel.py:10
+msgid "name_attribute"
 msgstr ""
 
-#: Domain/navigation.py:43
-msgid "relation_change"
+#: GUI/TableModel.py:10
+msgid "old_attribute"
 msgstr ""
 
-#: Domain/navigation.py:45
-msgid "export_data"
+#: GUI/TableModel.py:11
+msgid "new_attribute"
 msgstr ""
 
 #: GUI/header_bar.py:51 GUI/header_bar.py:151
@@ -69,11 +69,11 @@ msgstr ""
 msgid "project_deletion_question"
 msgstr ""
 
-#: GUI/message_box.py:19
+#: GUI/DialogWindows/choose_file_name_window.py:25 GUI/message_box.py:19
 msgid "yes"
 msgstr ""
 
-#: GUI/message_box.py:20
+#: GUI/DialogWindows/choose_file_name_window.py:26 GUI/message_box.py:20
 msgid "no"
 msgstr ""
 
@@ -143,6 +143,14 @@ msgstr ""
 msgid "cancel"
 msgstr ""
 
+#: GUI/DialogWindows/choose_file_name_window.py:22
+msgid "warning overwriting files"
+msgstr ""
+
+#: GUI/DialogWindows/choose_file_name_window.py:23
+msgid "warning overwriting files text"
+msgstr ""
+
 #: GUI/DialogWindows/language_window.py:22
 msgid "change_language_title"
 msgstr ""
@@ -175,61 +183,42 @@ msgstr ""
 msgid "new_project_title"
 msgstr ""
 
-#: GUI/Screens/asset_data_change_screen.py:65
-#: GUI/Screens/asset_data_change_screen.py:119
+#: GUI/Screens/asset_data_change_screen.py:73
+#: GUI/Screens/asset_data_change_screen.py:125
 msgid "original_file_load"
 msgstr ""
 
-#: GUI/Screens/asset_data_change_screen.py:83
-#: GUI/Screens/asset_data_change_screen.py:121
+#: GUI/Screens/asset_data_change_screen.py:88
+#: GUI/Screens/asset_data_change_screen.py:133
+#: GUI/Screens/insert_data_screen.py:76
+msgid "choose_file"
+msgstr ""
+
+#: GUI/Screens/asset_data_change_screen.py:91
+#: GUI/Screens/asset_data_change_screen.py:127
 msgid "show differences"
 msgstr ""
 
-#: GUI/Screens/asset_data_change_screen.py:88
-#: GUI/Screens/asset_data_change_screen.py:122
+#: GUI/Screens/asset_data_change_screen.py:96
+#: GUI/Screens/asset_data_change_screen.py:128
 msgid "apply differences"
 msgstr ""
 
-#: GUI/Screens/asset_data_change_screen.py:93
+#: GUI/Screens/asset_data_change_screen.py:102
 msgid "empty fields"
 msgstr ""
 
-#: GUI/Screens/asset_data_change_screen.py:114
-msgid "id"
-msgstr ""
-
-#: GUI/Screens/asset_data_change_screen.py:114
-msgid "action"
-msgstr ""
-
-#: GUI/Screens/asset_data_change_screen.py:114
-msgid "name_attribute"
-msgstr ""
-
-#: GUI/Screens/asset_data_change_screen.py:114
-msgid "old_attribute"
-msgstr ""
-
-#: GUI/Screens/asset_data_change_screen.py:115
-msgid "new_attribute"
-msgstr ""
-
-#: GUI/Screens/asset_data_change_screen.py:120
+#: GUI/Screens/asset_data_change_screen.py:126
 msgid "new_file_load"
 msgstr ""
 
-#: GUI/Screens/asset_data_change_screen.py:123
-msgid "update_relations"
+#: GUI/Screens/asset_data_change_screen.py:208
+msgid "the changes were correctly written to a new file"
 msgstr ""
 
-#: GUI/Screens/asset_data_change_screen.py:124
-msgid "update_files"
-msgstr ""
-
-#: GUI/Screens/asset_data_change_screen.py:129
-#: GUI/Screens/insert_data_screen.py:76
-#: GUI/Screens/relation_change_screen.py:41
-msgid "choose_file"
+#: GUI/Screens/asset_data_change_screen.py:217
+#: GUI/Screens/insert_data_screen.py:219
+msgid "error"
 msgstr ""
 
 #: GUI/Screens/conversion_screen.py:29
@@ -244,24 +233,32 @@ msgstr ""
 msgid "file_for_conversion"
 msgstr ""
 
-#: GUI/Screens/export_data_screen.py:35
+#: GUI/Screens/data_visualisation_screen.py:30
+msgid "Data visualisation"
+msgstr ""
+
+#: GUI/Screens/export_data_screen.py:38
 msgid "export_to_davie"
 msgstr ""
 
-#: GUI/Screens/export_data_screen.py:45
+#: GUI/Screens/export_data_screen.py:47
 msgid "export relations and assets in different files"
 msgstr ""
 
-#: GUI/Screens/export_data_screen.py:59
+#: GUI/Screens/export_data_screen.py:49
+msgid "export assets in different files"
+msgstr ""
+
+#: GUI/Screens/export_data_screen.py:65
 msgid "select file type for export"
 msgstr ""
 
-#: GUI/Screens/export_data_screen.py:71 GUI/Screens/export_data_screen.py:95
+#: GUI/Screens/export_data_screen.py:77 GUI/Screens/export_data_screen.py:101
 #: GUI/Screens/template_screen.py:88 GUI/Screens/template_screen.py:283
 msgid "export"
 msgstr ""
 
-#: GUI/Screens/export_data_screen.py:82 GUI/Screens/export_data_screen.py:96
+#: GUI/Screens/export_data_screen.py:88 GUI/Screens/export_data_screen.py:102
 msgid "file_to_upload"
 msgstr ""
 
@@ -289,35 +286,35 @@ msgstr ""
 msgid "warning"
 msgstr ""
 
-#: GUI/Screens/insert_data_screen.py:219
-msgid "error"
-msgstr ""
-
-#: GUI/Screens/insert_data_screen.py:294
+#: GUI/Screens/insert_data_screen.py:295
 msgid "{doc_name}: Data nodig in een datasheet om objecten in te laden.\n"
 msgstr ""
 
-#: GUI/Screens/insert_data_screen.py:297
+#: GUI/Screens/insert_data_screen.py:298
 msgid "{doc_name}: No type uri in {tab}\n"
 msgstr ""
 
-#: GUI/Screens/insert_data_screen.py:299
+#: GUI/Screens/insert_data_screen.py:300
 msgid "{doc_name}: invalid columns in {tab}, bad columns are {bad_columns} \n"
 msgstr ""
 
-#: GUI/Screens/insert_data_screen.py:302
+#: GUI/Screens/insert_data_screen.py:303
 msgid "{doc_name}: type uri not in first row of {tab}\n"
 msgstr ""
 
-#: GUI/Screens/relation_change_screen.py:54
+#: GUI/Screens/relation_change_screen.py:41
+msgid "functionality under development"
+msgstr ""
+
+#: GUI/Screens/relation_change_screen.py:55
 msgid "class_list"
 msgstr ""
 
-#: GUI/Screens/relation_change_screen.py:67
+#: GUI/Screens/relation_change_screen.py:68
 msgid "relations_list"
 msgstr ""
 
-#: GUI/Screens/relation_change_screen.py:80
+#: GUI/Screens/relation_change_screen.py:81
 msgid "existing_relations_list"
 msgstr ""
 
