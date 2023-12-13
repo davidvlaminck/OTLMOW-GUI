@@ -38,17 +38,15 @@ class AssetChangeDomain:
                 old_item_dict = create_dict_from_asset(old_item)
                 item_id = item_dict.get('assetId').get('identificator')
                 for key, value in item_dict.items():
-                    if key == 'assetId' or key == 'typeURI':
-                        continue
-                    else:
+                    if key not in ['assetId', 'typeURI']:
                         if isinstance(value, dict):
                             for k, v in value.items():
                                 rep_item = ReportItem(
                                     id=item_id,
                                     actie=ReportAction.ATC,
-                                    attribute=str(key),
-                                    original_value=str(k) + ": " + str(old_item_dict.get(key).get(k)),
-                                    new_value=str(k) + ": " + str(v)
+                                    attribute=key,
+                                    original_value=f"{str(k)}: {str(str(old_item_dict.get(key).get(k)))}",
+                                    new_value=f"{str(k)}: {str(v)}"
                                 )
                                 report.append(rep_item)
                         else:
@@ -65,7 +63,7 @@ class AssetChangeDomain:
     @classmethod
     def get_diff_report(cls, original_documents):
         model_dir = ProjectFileManager().get_otl_wizard_model_dir()
-        logging.debug("original docs " + str(original_documents))
+        logging.debug(f"original docs {str(original_documents)}")
         original_assets = [OtlmowConverter().create_assets_from_file(Path(x)) for x in original_documents]
         new_assets = [OtlmowConverter().create_assets_from_file(Path(x.file_path)) for x in
                       global_vars.single_project.templates_in_memory]
@@ -83,7 +81,7 @@ class AssetChangeDomain:
         ProjectFileManager.delete_template_folder()
         project.templates_in_memory = []
         tempdir = Path(tempfile.gettempdir()) / 'temp-otlmow'
-        logging.debug("tempdir" + str(tempdir))
+        logging.debug(f"tempdir {str(tempdir)}")
         if not tempdir.exists():
             os.makedirs(tempdir)
         [f.unlink() for f in Path(tempdir).glob("*") if f.is_file()]
@@ -91,7 +89,7 @@ class AssetChangeDomain:
         OtlmowConverter().create_file_from_assets(filepath=temp_loc, list_of_objects=diff_1)
         things_in_there = os.listdir(tempdir)
         files_created = [x for x in things_in_there if str(x).startswith(file_name)]
-        logging.debug("files created" + str(files_created))
+        logging.debug(f"files created {files_created}")
         for file in files_created:
             temp_loc = Path(tempdir) / file
             end_loc = ProjectFileManager().add_template_file_to_project(filepath=temp_loc)

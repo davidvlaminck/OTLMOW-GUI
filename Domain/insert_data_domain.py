@@ -37,12 +37,11 @@ class InsertDataDomain:
         if not tempdir.exists():
             os.makedirs(tempdir)
         doc_name = Path(path_to_template_file_and_extension).name
-        temporary_path = Path(tempdir) / doc_name
-        return temporary_path
+        return Path(tempdir) / doc_name
 
     @classmethod
     def add_template_file_to_project(cls, filepath: Path, project: Project, state: Enum):
-        if Path(filepath).suffix == '.xls' or Path(filepath).suffix == '.xlsx':
+        if Path(filepath).suffix in ['.xls', '.xlsx']:
             filepath = cls.start_excel_changes(doc=filepath)
         end_loc = ProjectFileManager().add_template_file_to_project(filepath=filepath)
         template_file = ProjectFile(file_path=end_loc, state=state)
@@ -50,7 +49,7 @@ class InsertDataDomain:
 
     @classmethod
     def return_temporary_path(cls, file_path: Path) -> Path:
-        if Path(file_path).suffix == '.xls' or Path(file_path).suffix == '.xlsx':
+        if Path(file_path).suffix in ['.xls', '.xlsx']:
             temp_path = cls.start_excel_changes(doc=file_path)
         elif Path(file_path).suffix == '.csv':
             temp_path = cls.create_temp_path(path_to_template_file_and_extension=file_path)
@@ -67,9 +66,10 @@ class InsertDataDomain:
 
     @classmethod
     def remove_all_project_files(cls, project):
+        project_file_manager = ProjectFileManager()
         logging.debug("memory contains %s", project.templates_in_memory)
         for file in project.templates_in_memory:
             logging.debug("starting to delete file %s", file.file_path)
-            ProjectFileManager().delete_template_file_from_project(file_path=file.file_path)
+            project_file_manager.delete_template_file_from_project(file_path=file.file_path)
         project.templates_in_memory = []
         ProjectFileManager().add_project_files_to_file(project=project)
