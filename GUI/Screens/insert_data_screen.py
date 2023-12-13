@@ -233,6 +233,7 @@ class InsertDataScreen(Screen):
         file_picker.setWindowTitle("Selecteer bestand")
         file_picker.setDirectory(file_path)
         file_picker.setFileMode(QFileDialog.FileMode.ExistingFiles)
+        file_picker.setNameFilter("EXCEL files (*.xlsx);;CSV files (*.csv);;JSON files (*.json)")
         if file_picker.exec():
             self.add_file_to_list(file_picker.selectedFiles())
             self.clear_feedback_message()
