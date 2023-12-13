@@ -12,6 +12,8 @@ from GUI.Screens.screen import Screen
 ROOT_DIR = Path(__file__).parent
 
 HTML_DIR = ROOT_DIR.parent.parent / 'img' / 'html'
+
+
 class DataVisualisationScreen(Screen):
 
     def __init__(self, _):
@@ -40,9 +42,10 @@ class DataVisualisationScreen(Screen):
         return window
 
     def reset_ui(self, _):
-        self.load_assets_and_create_html()
+        pass
 
-    def load_assets_and_create_html(self):
+    @classmethod
+    def load_assets_and_create_html(cls):
         project = global_vars.single_project
         if project is None:
             return
@@ -55,4 +58,3 @@ class DataVisualisationScreen(Screen):
 
         html_loc = HTML_DIR / "visuals.html"
         PyVisWrapper().show(list_of_objects=objects_in_memory, html_path=html_loc, launch_html=False)
-

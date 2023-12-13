@@ -18,6 +18,7 @@ from Domain.enums import FileState
 from Domain.insert_data_domain import InsertDataDomain
 from GUI.ButtonWidget import ButtonWidget
 from GUI.DialogWindows.remove_project_files_window import RemoveProjectFilesWindow
+from GUI.Screens.data_visualisation_screen import DataVisualisationScreen
 from GUI.Screens.screen import Screen
 import qtawesome as qta
 
@@ -138,6 +139,8 @@ class InsertDataScreen(Screen):
         self.fill_feedback_list(assets)
         ProjectFileManager().add_project_files_to_file(global_vars.single_project)
         self.fill_list()
+
+        DataVisualisationScreen.load_assets_and_create_html()
 
     def add_input_file_field(self):
         input_file = QFrame()
