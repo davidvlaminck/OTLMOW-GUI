@@ -122,5 +122,7 @@ class ExportDataScreen(Screen):
     def show_additional_options(self, text):
         if text == 'CSV':
             self.extra_option_csv.setHidden(False)
+            self.extra_option_csv.setChecked(True)
         else:
+            self.extra_option_csv.setChecked(False)
             self.extra_option_csv.setHidden(True)
