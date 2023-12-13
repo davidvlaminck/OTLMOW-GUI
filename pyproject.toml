@@ -32,10 +32,12 @@ dependencies = [
     'PyQt6-Qt6 == 6.5.3',
     'otlmow-model >= 2.8.1',
     'otlmow-converter >= 0.12',
+    'otlmow-visuals >= 0.3',
     'pyqt6 == 6.5.3',
     'qtawesome >= 1.2.3',
     'PyGithub >= 2.1.1',
-    'requests >= 2.31.0'
+    'requests >= 2.31.0',
+    'PyQt6-WebEngine==6.6.0'
 ]
 
 
