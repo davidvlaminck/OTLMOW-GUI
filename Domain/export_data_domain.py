@@ -18,7 +18,8 @@ class ExportDataDomain:
             if file.state == 'OK' or file.state == 'ok':
                 valid_file_paths.append(file.file_path)
         for path in valid_file_paths:
-            objects_in_file = OtlmowConverter().create_assets_from_file(filepath=Path(path), path_to_subset=project.subset_path)
+            objects_in_file = OtlmowConverter().create_assets_from_file(filepath=Path(path),
+                                                                        path_to_subset=project.subset_path)
             logging.debug(f'objects in file: {objects_in_file}')
             for obj in objects_in_file:
                 objects_in_memory.append(obj)
@@ -32,13 +33,17 @@ class ExportDataDomain:
                 else:
                     assets_in_memory.append(obj)
             parent_directory = Path(end_file).parent
-            relations_file_name = "relations_" + Path(end_file).name
-            assets_file_name = "assets_" + Path(end_file).name
+            relations_file_name = Path(end_file).name + "_relations"
+            assets_file_name = Path(end_file).name + "_assets"
             relations_path = Path(parent_directory) / relations_file_name
             assets_path = Path(parent_directory) / assets_file_name
             if relations_in_memory:
-                OtlmowConverter().create_file_from_assets(filepath=Path(relations_path), list_of_objects=relations_in_memory, split_per_type=csv_option)
+                OtlmowConverter().create_file_from_assets(filepath=Path(relations_path),
+                                                          list_of_objects=relations_in_memory,
+                                                          split_per_type=csv_option)
             if assets_in_memory:
-                OtlmowConverter().create_file_from_assets(filepath=Path(assets_path), list_of_objects=assets_in_memory, split_per_type=csv_option)
+                OtlmowConverter().create_file_from_assets(filepath=Path(assets_path), list_of_objects=assets_in_memory,
+                                                          split_per_type=csv_option)
         else:
-            OtlmowConverter().create_file_from_assets(list_of_objects=objects_in_memory, filepath=Path(end_file), split_per_type=csv_option)
+            OtlmowConverter().create_file_from_assets(list_of_objects=objects_in_memory, filepath=Path(end_file),
+                                                      split_per_type=csv_option)
