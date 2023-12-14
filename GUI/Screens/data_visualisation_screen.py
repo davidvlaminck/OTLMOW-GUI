@@ -1,7 +1,6 @@
 import qtawesome as qta
 from pathlib import Path
 
-from PyQt6.QtCore import QUrl
 from PyQt6.QtWebEngineWidgets import QWebEngineView
 from PyQt6.QtWidgets import QVBoxLayout, QLabel, QWidget
 from otlmow_converter.OtlmowConverter import OtlmowConverter
@@ -22,6 +21,7 @@ class DataVisualisationScreen(Screen):
         super().__init__()
         self.container_insert_data_screen = QVBoxLayout()
         self._ = _
+        self.view = QWebEngineView()
         self.init_ui()
 
     def init_ui(self):
@@ -36,13 +36,12 @@ class DataVisualisationScreen(Screen):
         title_label = QLabel()
         title_label.setText(self._("Data visualisation"))
 
-        view = QWebEngineView()
         html_loc = HTML_DIR / "visuals.html"
-        view.setHtml(open(html_loc).read())
+        self.view.setHtml(open(html_loc).read())
         refresh_btn = ButtonWidget()
         refresh_btn.setIcon(qta.icon('mdi.refresh'))
-        refresh_btn.clicked.connect(view.reload)
-        window_layout.addWidget(view)
+        refresh_btn.clicked.connect(lambda: self.reload_html())
+        window_layout.addWidget(self.view)
         window_layout.addWidget(refresh_btn)
         window.setLayout(window_layout)
         return window
@@ -50,8 +49,11 @@ class DataVisualisationScreen(Screen):
     def reset_ui(self, _):
         pass
 
-    @classmethod
-    def load_assets_and_create_html(cls):
+    def reload_html(self):
+        self.load_assets_and_create_html()
+        # self.view.reload()
+
+    def load_assets_and_create_html(self):
         project = global_vars.single_project
         if project is None:
             return
@@ -64,3 +66,4 @@ class DataVisualisationScreen(Screen):
 
         html_loc = HTML_DIR / "visuals.html"
         PyVisWrapper().show(list_of_objects=objects_in_memory, html_path=html_loc, launch_html=False)
+        self.view.setHtml(open(html_loc).read())
