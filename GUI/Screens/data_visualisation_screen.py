@@ -2,7 +2,7 @@ import qtawesome as qta
 from pathlib import Path
 
 from PyQt6.QtWebEngineWidgets import QWebEngineView
-from PyQt6.QtWidgets import QVBoxLayout, QLabel, QWidget
+from PyQt6.QtWidgets import QVBoxLayout, QLabel, QWidget, QFrame, QHBoxLayout
 from otlmow_converter.OtlmowConverter import OtlmowConverter
 from otlmow_visuals.PyVisWrapper import PyVisWrapper
 
@@ -27,6 +27,7 @@ class DataVisualisationScreen(Screen):
     def init_ui(self):
         self.container_insert_data_screen.addSpacing(10)
         self.container_insert_data_screen.addWidget(self.create_html_container())
+        self.container_insert_data_screen.addStretch()
         self.setLayout(self.container_insert_data_screen)
 
     def create_html_container(self):
@@ -38,13 +39,23 @@ class DataVisualisationScreen(Screen):
 
         html_loc = HTML_DIR / "visuals.html"
         self.view.setHtml(open(html_loc).read())
+        window_layout.addWidget(self.create_button_container())
+        window_layout.addWidget(self.view)
+        window_layout.addSpacing(50)
+        window.setLayout(window_layout)
+        return window
+
+    def create_button_container(self):
+        frame = QFrame()
+        frame_layout = QHBoxLayout()
         refresh_btn = ButtonWidget()
         refresh_btn.setIcon(qta.icon('mdi.refresh'))
         refresh_btn.clicked.connect(lambda: self.reload_html())
-        window_layout.addWidget(self.view)
-        window_layout.addWidget(refresh_btn)
-        window.setLayout(window_layout)
-        return window
+        frame_layout.addWidget(refresh_btn)
+        frame_layout.addSpacing(10)
+        frame_layout.addStretch()
+        frame.setLayout(frame_layout)
+        return frame
 
     def reset_ui(self, _):
         pass
@@ -65,5 +76,5 @@ class DataVisualisationScreen(Screen):
                 filepath=Path(path), path_to_subset=project.subset_path))
 
         html_loc = HTML_DIR / "visuals.html"
-        PyVisWrapper().show(list_of_objects=objects_in_memory, html_path=html_loc, launch_html=False)
+        PyVisWrapper(True).show(list_of_objects=objects_in_memory, html_path=html_loc, launch_html=True)
         self.view.setHtml(open(html_loc).read())
