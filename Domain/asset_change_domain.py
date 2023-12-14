@@ -19,64 +19,51 @@ class AssetChangeDomain:
     @classmethod
     def generate_diff_report(cls, original_data, new_data, model_directory):
         report = []
-        diff_1 = compare_two_lists_of_objects_attribute_level(first_list=original_data, second_list=new_data,
-                                                              model_directory=model_directory)
-        diff_2 = compare_two_lists_of_objects_attribute_level(first_list=original_data, second_list=diff_1, )
-        for item in diff_2:
-            old_item = next((x for x in original_data if x.assetId.identificator == item.assetId.identificator), None)
+        diff_lists = cls.generate_difference_between_two_lists(list1=original_data, list2=new_data,
+                                                               model_directory=model_directory)
+        original_data_dict = {item.assetId.identificator: item for item in original_data}
+        for item in diff_lists:
+            old_item = original_data_dict.get(item.assetId.identificator)
             if old_item is None:
-                rep_item = ReportItem(
-                    id=item.assetId.identificator,
-                    actie=ReportAction.ASS,
-                    attribute="",
-                    original_value="",
-                    new_value=""
-                )
-                report.append(rep_item)
+                report.append(cls.generate_new_asset_report(item))
             else:
-                item_dict = create_dict_from_asset(item)
-                old_item_dict = create_dict_from_asset(old_item)
-                item_id = item_dict.get('assetId').get('identificator')
-                for key, value in item_dict.items():
-                    if key not in ['assetId', 'typeURI']:
-                        if isinstance(value, dict):
-                            for k, v in value.items():
-                                rep_item = ReportItem(
-                                    id=item_id,
-                                    actie=ReportAction.ATC,
-                                    attribute=key,
-                                    original_value=f"{str(k)}: {str(str(old_item_dict.get(key).get(k)))}",
-                                    new_value=f"{str(k)}: {str(v)}"
-                                )
-                                report.append(rep_item)
-                        else:
-                            rep_item = ReportItem(
-                                id=item_id,
-                                actie=ReportAction.ATC,
-                                attribute=str(key),
-                                original_value=str(old_item_dict.get(key)),
-                                new_value=str(value)
-                            )
-                            report.append(rep_item)
+                report.extend(cls.generate_asset_change_report(item, old_item))
+        return report
+
+    @classmethod
+    def generate_asset_change_report(cls, item, old_item):
+        report = []
+        item_dict = create_dict_from_asset(item)
+        old_item_dict = create_dict_from_asset(old_item)
+        for key, value in item_dict.items():
+            if key not in ['assetId', 'typeURI']:
+                if isinstance(value, dict):
+                    report.extend(cls.generate_complex_asset_report(item=item, attribute=key, old_item_dict=old_item_dict, complex_list=value))
+                else:
+                    report.append(cls.generate_simple_asset_report(item=item, key=key, value=value,
+                                                                   old_item_dict=old_item_dict))
         return report
 
     @classmethod
     def get_diff_report(cls, original_documents):
         model_dir = ProjectFileManager().get_otl_wizard_model_dir()
         logging.debug(f"original docs {str(original_documents)}")
-        original_assets = [OtlmowConverter().create_assets_from_file(Path(x)) for x in original_documents]
-        new_assets = [OtlmowConverter().create_assets_from_file(Path(x.file_path)) for x in
-                      global_vars.single_project.templates_in_memory]
-        report = cls.generate_diff_report(original_assets[0], new_assets[0], model_dir)
-        return report
+        original_assets = []
+        for x in original_documents:
+            original_assets.extend(OtlmowConverter().create_assets_from_file(Path(x)))
+        new_assets = []
+        for x in global_vars.single_project.templates_in_memory:
+            new_assets.extend(OtlmowConverter().create_assets_from_file(Path(x.file_path)))
+        return cls.generate_diff_report(original_assets, new_assets, model_dir)
 
     @classmethod
     def replace_files_with_diff_report(cls, original_documents, project, file_name):
-        changed_assets = [OtlmowConverter().create_assets_from_file(Path(x.file_path)) for x in
-                          project.templates_in_memory]
-        original_assets = [OtlmowConverter().create_assets_from_file(Path(x)) for x in original_documents]
-        diff_1 = compare_two_lists_of_objects_attribute_level(first_list=original_assets[0], second_list=changed_assets[0],
+        changed_assets = cls.generate_changed_assets_from_files(project=project)
+        original_assets = cls.generate_original_assets_from_files(original_documents=original_documents)
+        diff_1 = compare_two_lists_of_objects_attribute_level(first_list=original_assets,
+                                                              second_list=changed_assets,
                                                               model_directory=ProjectFileManager().get_otl_wizard_model_dir())
+        logging.debug(f"diff 1 {diff_1}")
         final_file_name = file_name
         ProjectFileManager.delete_template_folder()
         project.templates_in_memory = []
@@ -97,4 +84,59 @@ class AssetChangeDomain:
             project.templates_in_memory.append(template_file)
         ProjectFileManager().add_project_files_to_file(project=project)
 
+    @classmethod
+    def generate_changed_assets_from_files(cls, project):
+        changed_assets = []
+        for file in project.templates_in_memory:
+            logging.debug(f"file state {file.state}")
+            if file.state in ['OK', 'ok']:
+                changed_assets.extend(OtlmowConverter().create_assets_from_file(Path(file.file_path)))
+        return changed_assets
 
+    @classmethod
+    def generate_original_assets_from_files(cls, original_documents):
+        original_assets = []
+        for path in original_documents:
+            original_assets.extend(OtlmowConverter().create_assets_from_file(Path(path)))
+        return original_assets
+
+    @classmethod
+    def generate_new_asset_report(cls, item):
+        return ReportItem(
+            id=item.assetId.identificator,
+            actie=ReportAction.ASS,
+            attribute="",
+            original_value="",
+            new_value=""
+        )
+
+    @classmethod
+    def generate_complex_asset_report(cls, item, attribute, complex_list, old_item_dict):
+        report = []
+        for key, value in complex_list.items():
+            rep = ReportItem(
+                id=item.assetId.identificator,
+                actie=ReportAction.ATC,
+                attribute=attribute,
+                original_value=f"{str(key)}: {str(old_item_dict.get(attribute).get(key))}",
+                new_value=f"{str(key)}: {str(value)}"
+            )
+            report.append(rep)
+        return report
+
+    @classmethod
+    def generate_simple_asset_report(cls, item, key, value, old_item_dict):
+        return ReportItem(
+            id=item.assetId.identificator,
+            actie=ReportAction.ATC,
+            attribute=str(key),
+            original_value=str(old_item_dict.get(key)),
+            new_value=str(value)
+        )
+
+    @classmethod
+    def generate_difference_between_two_lists(cls, list1, list2, model_directory):
+        diff_1 = compare_two_lists_of_objects_attribute_level(first_list=list1, second_list=list2,
+                                                              model_directory=model_directory)
+        return compare_two_lists_of_objects_attribute_level(first_list=list1, second_list=diff_1,
+                                                            model_directory=model_directory)

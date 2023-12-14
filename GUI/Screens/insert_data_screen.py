@@ -140,7 +140,7 @@ class InsertDataScreen(Screen):
         ProjectFileManager().add_project_files_to_file(global_vars.single_project)
         self.fill_list()
 
-        DataVisualisationScreen.load_assets_and_create_html()
+        DataVisualisationScreen(self._).load_assets_and_create_html()
 
     def add_input_file_field(self):
         input_file = QFrame()

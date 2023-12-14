@@ -50,10 +50,9 @@ class InsertDataDomain:
     @classmethod
     def return_temporary_path(cls, file_path: Path) -> Path:
         if Path(file_path).suffix in ['.xls', '.xlsx']:
-            temp_path = cls.start_excel_changes(doc=file_path)
+            return cls.start_excel_changes(doc=file_path)
         elif Path(file_path).suffix == '.csv':
-            temp_path = cls.create_temp_path(path_to_template_file_and_extension=file_path)
-        return temp_path
+            return cls.create_temp_path(path_to_template_file_and_extension=file_path)
 
     @classmethod
     def delete_project_file_from_project(cls, project: Project, file_path: Path):
