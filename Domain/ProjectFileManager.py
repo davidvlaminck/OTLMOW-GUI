@@ -231,3 +231,13 @@ class ProjectFileManager:
             os.makedirs(tempdir)
         [f.unlink() for f in Path(tempdir).glob("*") if f.is_file()]
         return tempdir
+
+    @classmethod
+    def correct_project_files_in_memory(cls, project: Project):
+        if project is None:
+            return False
+        if not project.templates_in_memory:
+            return False
+        return any(
+            template.state in ['OK', 'ok'] for template in project.templates_in_memory
+        )

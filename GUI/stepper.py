@@ -5,6 +5,7 @@ import qtawesome as qta
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QWidget, QPushButton, QHBoxLayout, QFrame
 
+from Domain import global_vars
 from Domain.ProjectFileManager import ProjectFileManager
 from GUI.ButtonWidget import ButtonWidget
 
@@ -56,7 +57,7 @@ class StepperWidget(QWidget):
         return horizontal_layout
 
     def enable_steps(self):
-        if ProjectFileManager().template_map_exists():
+        if ProjectFileManager().correct_project_files_in_memory(global_vars.single_project):
             self.step3.setDisabled(False)
             self.step4.setDisabled(False)
         else:
