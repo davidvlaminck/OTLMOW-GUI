@@ -22,59 +22,38 @@ class StepperWidget(QWidget):
 
     def stepper_widget(self):
         stepper_widget = QWidget()
-        horizontal_layout = QHBoxLayout()
-        line_1 = QFrame()
-        line_1.setFrameShape(QFrame.Shape.HLine)
-        line_1.setProperty('class', 'stepper-line')
-        line_2 = QFrame()
-        line_2.setFrameShape(QFrame.Shape.HLine)
-        line_2.setProperty('class', 'stepper-line')
-        line_3 = QFrame()
-        line_3.setFrameShape(QFrame.Shape.HLine)
-        line_3.setProperty('class', 'stepper-line')
+        lines = [QFrame() for _ in range(3)]
+        for line in lines:
+            line.setFrameShape(QFrame.Shape.HLine)
+            line.setProperty('class', 'stepper-line')
 
         # sets the text for the stepper buttons and applies classes which hold the style
-        self.step1.setText(self._("step1"))
-        self.step1.setProperty('class', 'stepper-button')
-        self.step2.setText(self._("step2"))
-        self.step2.setProperty('class', 'stepper-button')
-        self.step3.setText(self._("step3"))
-        self.step3.setProperty('class', 'stepper-button')
-        self.step4.setText(self._("step4"))
-        self.step4.setProperty('class', 'stepper-button')
-        # sets the icons for the stepper buttons
-        if self.step_nr == 1:
-            self.step1.setIcon(qta.icon('mdi.numeric-1-circle', color="#B35F35"))
-        else:
-            self.step1.setIcon(qta.icon('mdi.numeric-1-circle', color="grey"))
-        if self.step_nr == 2:
-            self.step2.setIcon(qta.icon('mdi.numeric-2-circle', color="#B35F35"))
-        else:
-            self.step2.setIcon(qta.icon('mdi.numeric-2-circle', color="grey"))
-        if self.step_nr == 3:
-            self.step3.setIcon(qta.icon('mdi.numeric-3-circle', color="#B35F35"))
-        else:
-            self.step3.setIcon(qta.icon('mdi.numeric-3-circle', color="grey"))
-        if self.step_nr == 4:
-            self.step4.setIcon(qta.icon('mdi.numeric-4-circle', color="#B35F35"))
-        else:
-            self.step4.setIcon(qta.icon('mdi.numeric-4-circle', color="grey"))
-
-        horizontal_layout.addWidget(self.step1, alignment=Qt.AlignmentFlag.AlignCenter)
-        self.step1.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(1))
-        horizontal_layout.addWidget(line_1)
-        horizontal_layout.addWidget(self.step2, alignment=Qt.AlignmentFlag.AlignLeft)
-        self.step2.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(2))
-        horizontal_layout.addWidget(line_2)
-        horizontal_layout.addWidget(self.step3, alignment=Qt.AlignmentFlag.AlignLeft)
-        self.step3.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(3))
-        self.enable_steps()
-        horizontal_layout.addWidget(line_3)
-        horizontal_layout.addWidget(self.step4, alignment=Qt.AlignmentFlag.AlignLeft)
-        self.step4.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(4))
-        horizontal_layout.addSpacing(50)
-        stepper_widget.setLayout(horizontal_layout)
+        steps = [self.step1, self.step2, self.step3, self.step4]
+        self.populate_steps(steps)
+        layout = self.fill_up_layout(lines)
+        stepper_widget.setLayout(layout)
         return stepper_widget
+
+    def populate_steps(self, steps):
+        for i, step in enumerate(steps, start=1):
+            step.setText(self._(f"step{i}"))
+            step.setProperty('class', 'stepper-button')
+            color = "#B35F35" if self.step_nr == i else "grey"
+            step.setIcon(qta.icon(f'mdi.numeric-{i}-circle', color=color))
+            step.clicked.connect(lambda _, index=i: self.stacked_widget.setCurrentIndex(index))
+
+    def fill_up_layout(self, lines):
+        horizontal_layout = QHBoxLayout()
+        self.enable_steps()
+        horizontal_layout.addWidget(self.step1, alignment=Qt.AlignmentFlag.AlignCenter)
+        horizontal_layout.addWidget(lines[0])
+        horizontal_layout.addWidget(self.step2, alignment=Qt.AlignmentFlag.AlignLeft)
+        horizontal_layout.addWidget(lines[1])
+        horizontal_layout.addWidget(self.step3, alignment=Qt.AlignmentFlag.AlignLeft)
+        horizontal_layout.addWidget(lines[2])
+        horizontal_layout.addWidget(self.step4, alignment=Qt.AlignmentFlag.AlignLeft)
+        horizontal_layout.addSpacing(50)
+        return horizontal_layout
 
     def enable_steps(self):
         if ProjectFileManager().template_map_exists():
