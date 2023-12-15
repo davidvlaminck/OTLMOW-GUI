@@ -12,7 +12,7 @@ class ChooseFileNameWindow:
         self.new_files = new_files
 
     def accept(self, dialog_window):
-        file_name = "changed_files.json"
+        file_name = "changed_files.xlsx"
         AssetChangeDomain().replace_files_with_diff_report(project=self.project, original_documents=self.new_files,
                                                            file_name=file_name)
         dialog_window.close()

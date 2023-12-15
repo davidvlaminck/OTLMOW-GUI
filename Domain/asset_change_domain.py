@@ -38,7 +38,9 @@ class AssetChangeDomain:
         for key, value in item_dict.items():
             if key not in ['assetId', 'typeURI']:
                 if isinstance(value, dict):
-                    report.extend(cls.generate_complex_asset_report(item=item, attribute=key, old_item_dict=old_item_dict, complex_list=value))
+                    report.extend(
+                        cls.generate_complex_asset_report(item=item, attribute=key, old_item_dict=old_item_dict,
+                                                          complex_list=value))
                 else:
                     report.append(cls.generate_simple_asset_report(item=item, key=key, value=value,
                                                                    old_item_dict=old_item_dict))
@@ -63,25 +65,15 @@ class AssetChangeDomain:
         diff_1 = compare_two_lists_of_objects_attribute_level(first_list=original_assets,
                                                               second_list=changed_assets,
                                                               model_directory=ProjectFileManager().get_otl_wizard_model_dir())
-        logging.debug(f"diff 1 {diff_1}")
         final_file_name = file_name
         ProjectFileManager.delete_template_folder()
         project.templates_in_memory = []
-        tempdir = Path(tempfile.gettempdir()) / 'temp-otlmow'
-        logging.debug(f"tempdir {str(tempdir)}")
-        if not tempdir.exists():
-            os.makedirs(tempdir)
-        [f.unlink() for f in Path(tempdir).glob("*") if f.is_file()]
+        tempdir = ProjectFileManager().create_empty_temporary_map()
         temp_loc = Path(tempdir) / final_file_name
         OtlmowConverter().create_file_from_assets(filepath=temp_loc, list_of_objects=diff_1)
-        things_in_there = os.listdir(tempdir)
-        files_created = [x for x in things_in_there if str(x).startswith(file_name)]
-        logging.debug(f"files created {files_created}")
-        for file in files_created:
-            temp_loc = Path(tempdir) / file
-            end_loc = ProjectFileManager().add_template_file_to_project(filepath=temp_loc)
-            template_file = ProjectFile(file_path=end_loc, state=FileState.OK.value)
-            project.templates_in_memory.append(template_file)
+        end_loc = ProjectFileManager().add_template_file_to_project(filepath=temp_loc)
+        template_file = ProjectFile(file_path=end_loc, state=FileState.OK.value)
+        project.templates_in_memory.append(template_file)
         ProjectFileManager().add_project_files_to_file(project=project)
 
     @classmethod

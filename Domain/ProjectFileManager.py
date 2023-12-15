@@ -4,6 +4,7 @@ import logging
 import ntpath
 import os
 import shutil
+import tempfile
 import zipfile
 from pathlib import Path
 
@@ -134,7 +135,7 @@ class ProjectFileManager:
         project_dir_path = cls.get_otl_wizard_projects_dir() / project.project_path.name
         with open(project_dir_path / "assets.json", "r") as project_details_file:
             templates = json.load(project_details_file)
-        logging.debug("templates from memory" + str(templates))
+        logging.debug(f"templates from memory{str(templates)}")
         templates_array = []
         for template in templates:
             file = ProjectFile(file_path=template['file_path'], state=template['state'])
@@ -154,8 +155,7 @@ class ProjectFileManager:
         with zipfile.ZipFile(file_path) as project_file:
             project_file.extractall(path=project_dir_path)
 
-        project = cls.get_project_from_dir(project_dir_path)
-        return project
+        return cls.get_project_from_dir(project_dir_path)
 
     @classmethod
     def delete_project_files_by_path(cls, file_path: Path):
@@ -222,3 +222,12 @@ class ProjectFileManager:
         except FileNotFoundError as e:
             logging.error(e)
             return False
+
+    @classmethod
+    def create_empty_temporary_map(cls):
+        tempdir = Path(tempfile.gettempdir()) / 'temp-otlmow'
+        logging.debug(f"tempdir {str(tempdir)}")
+        if not tempdir.exists():
+            os.makedirs(tempdir)
+        [f.unlink() for f in Path(tempdir).glob("*") if f.is_file()]
+        return tempdir
