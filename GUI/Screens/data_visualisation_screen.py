@@ -1,4 +1,8 @@
+import logging
+
 import qtawesome as qta
+
+
 from pathlib import Path
 
 from PyQt6.QtWebEngineWidgets import QWebEngineView
@@ -41,18 +45,40 @@ class DataVisualisationScreen(Screen):
         self.view.setHtml(open(html_loc).read())
         window_layout.addWidget(self.create_button_container())
         window_layout.addWidget(self.view)
+        window_layout.addWidget(self.create_color_legend())
         window_layout.addSpacing(50)
         window.setLayout(window_layout)
         return window
+
+    @classmethod
+    def create_color_legend(cls):
+        relatie_color_dict = PyVisWrapper().relatie_color_dict
+        frame = QFrame()
+        frame_layout = QHBoxLayout()
+        for relatie, color in relatie_color_dict.items():
+            color_label = QLabel()
+            label = QLabel()
+            relatie_name = relatie.split('#')[-1]
+            label.setText(relatie_name)
+            color_label.setStyleSheet(f"background-color: #{color}")
+            frame_layout.addWidget(color_label)
+            frame_layout.addWidget(label)
+        frame.setLayout(frame_layout)
+        return frame
+
 
     def create_button_container(self):
         frame = QFrame()
         frame_layout = QHBoxLayout()
         refresh_btn = ButtonWidget()
         refresh_btn.setIcon(qta.icon('mdi.refresh'))
+        png_creator_button = ButtonWidget()
+        png_creator_button.setText(self._("create_png"))
+        png_creator_button.clicked.connect(lambda: self.create_png())
         refresh_btn.clicked.connect(lambda: self.reload_html())
         frame_layout.addWidget(refresh_btn)
         frame_layout.addSpacing(10)
+        frame_layout.addWidget(png_creator_button)
         frame_layout.addStretch()
         frame.setLayout(frame_layout)
         return frame
@@ -76,5 +102,11 @@ class DataVisualisationScreen(Screen):
                 filepath=Path(path), path_to_subset=project.subset_path))
 
         html_loc = HTML_DIR / "visuals.html"
+        relatie_color_dict = PyVisWrapper().relatie_color_dict
+        logging.debug(f"relatie_color_dict: {relatie_color_dict}")
         PyVisWrapper().show(list_of_objects=objects_in_memory, html_path=html_loc, launch_html=False)
         self.view.setHtml(open(html_loc).read())
+
+    @classmethod
+    def create_png(cls):
+        pass
