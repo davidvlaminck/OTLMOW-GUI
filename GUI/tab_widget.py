@@ -15,28 +15,35 @@ LANG_DIR = ROOT_DIR.parent / 'locale/'
 
 class TabWidget(Screen):
 
-    def __init__(self, page_nr: int, widget1, description1: str, widget2=None, description2: str = None, widget3=None,
-                 description3: str = None, has_save_btn: bool = True):
+    def __init__(self, page_nr: int, widget1, description1: str, has_save_btn: bool = True, **kwargs):
         super().__init__()
         self._ = return_language(LANG_DIR)
         self.tabs = QTabWidget()
         self.tab1 = widget1
-        if widget2 is not None:
-            self.tab2 = widget2
-        if widget3 is not None:
-            self.tab3 = widget3
+        self.desc1 = description1
         self.stepper_widget = StepperWidget(self._, page_nr)
         self.header = HeaderBar(language=self._, has_save_btn=has_save_btn)
         self.stacked_widget = None
-        self.tabs.addTab(self.tab1, self._(description1))
-        self.desc1 = description1
-        if widget2 is not None:
-            self.tabs.addTab(self.tab2, self._(description2))
-            self.desc2 = description2
-        if widget3 is not None:
-            self.tabs.addTab(self.tab3, self._(description3))
-            self.desc3 = description3
+        self.create_tab(widget1, **kwargs)
         self.layout = QVBoxLayout(self)
+        self.fill_up_layout()
+
+        self.init_ui()
+
+    def create_tab(self, main_widget, **kwargs):
+        self.tabs.addTab(main_widget, self._(self.desc1))
+        widget2 = kwargs.get('widget2', None)
+        widget3 = kwargs.get('widget3', None)
+        if widget2 is not None:
+            self.tab2 = widget2
+            self.desc2 = kwargs.get('description2', None)
+            self.tabs.addTab(self.tab2, self._(self.desc2))
+        if widget3 is not None:
+            self.tab3 = widget3
+            self.desc3 = kwargs.get('description3', None)
+            self.tabs.addTab(self.tab3, self._(self.desc3))
+
+    def fill_up_layout(self):
         self.layout.addWidget(self.header)
         self.layout.addSpacing(10)
         self.layout.addWidget(self.stepper_widget.stepper_widget())
@@ -44,8 +51,6 @@ class TabWidget(Screen):
         self.layout.addWidget(self.tabs)
         self.layout.setContentsMargins(0, 0, 0, 0)
         self.tabs.setProperty('class', 'tab-widget')
-
-        self.init_ui()
 
     def init_ui(self):
         button = self.header.header_bar_detail_screen()
@@ -55,7 +60,6 @@ class TabWidget(Screen):
         self._ = _
         logging.debug("resetting a tab widget")
         self.header.reset_ui(_)
-        self.tabs.setTabText(0, self._(self.desc1))
         if hasattr(self, 'tab2'):
             self.tab2.reset_ui(_)
             self.tabs.setTabText(1, self._(self.desc2))
@@ -63,4 +67,5 @@ class TabWidget(Screen):
             self.tab3.reset_ui(_)
             self.tabs.setTabText(2, self._(self.desc3))
         self.tab1.reset_ui(_)
+        self.tabs.setTabText(0, self._(self.desc1))
         self.stepper_widget.reset_ui(_)

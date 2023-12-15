@@ -34,9 +34,9 @@ class Navigation(QStackedWidget):
     def fill_stacked_widget(self):
         home_screen = HomeScreen(self._)
         step1 = TemplateScreen(self._)
-        step1_tabwidget = TabWidget(page_nr=1, widget1=step1, description1=self._("template"), has_save_btn=False)
+        step1_tabwidget = TabWidget(page_nr=1, widget1=step1, description1="template", has_save_btn=False)
         step2 = InsertDataScreen(self._)
-        step2_tabwidget = TabWidget(page_nr=2, widget1=step2, description1=self._("insert_data"), has_save_btn=False)
+        step2_tabwidget = TabWidget(page_nr=2, widget1=step2, description1="insert_data", has_save_btn=False)
         step3_visuals = DataVisualisationScreen(self._)
         step3_data = AssetDataChangeScreen(self._)
         step3_relations = RelationChangeScreen(self._)
@@ -47,9 +47,12 @@ class Navigation(QStackedWidget):
         step4_tabwidget = TabWidget(page_nr=4, widget1=step4_export, description1="export_data",
                                     has_save_btn=False)
         self.add_widget(home_screen)
-        self.add_widget(step1_tabwidget, True)
-        self.add_widget(step2_tabwidget, True)
-        self.add_widget(step_3_tabwidget, True)
-        self.add_widget(step4_tabwidget, True)
+        stepper_widgets = [step1_tabwidget, step2_tabwidget, step_3_tabwidget,
+                           step4_tabwidget]
+        self.add_tabs_with_stepper_to_widget(stepper_widgets)
         home_screen.table.stacked_widget = self
         step1.stacked_widget = self
+
+    def add_tabs_with_stepper_to_widget(self, tabs: list[TabWidget]):
+        for tab in tabs:
+            self.add_widget(tab, True)
