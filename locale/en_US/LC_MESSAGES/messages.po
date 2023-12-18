@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-12-18 08:25+0100\n"
+"POT-Creation-Date: 2023-12-18 14:07+0100\n"
 "PO-Revision-Date: 2023-10-19 13:11+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en_US\n"
@@ -58,7 +58,7 @@ msgstr "Back home"
 msgid "save_button"
 msgstr "Save"
 
-#: GUI/header_bar.py:134
+#: GUI/header_bar.py:134 GUI/header_bar.py:154
 msgid "import"
 msgstr "Import"
 
@@ -234,31 +234,24 @@ msgstr "Convert"
 msgid "file_for_conversion"
 msgstr "File conversion"
 
-#: GUI/Screens/data_visualisation_screen.py:42
-msgid "Data visualisation"
-msgstr "Data visualisation"
-
-#: GUI/Screens/data_visualisation_screen.py:49
+#: GUI/Screens/data_visualisation_screen.py:46
+#: GUI/Screens/data_visualisation_screen.py:84
 msgid "relations legend"
 msgstr "Color legend relations:"
 
-#: GUI/Screens/data_visualisation_screen.py:79
-msgid "create_png"
-msgstr "Create PNG"
-
-#: GUI/Screens/export_data_screen.py:37
+#: GUI/Screens/export_data_screen.py:38 GUI/Screens/export_data_screen.py:105
 msgid "export_to_davie"
 msgstr "Export data ready for Davie"
 
-#: GUI/Screens/export_data_screen.py:46
+#: GUI/Screens/export_data_screen.py:47 GUI/Screens/export_data_screen.py:102
 msgid "export relations and assets in different files"
 msgstr "Export relations and assets in different files"
 
-#: GUI/Screens/export_data_screen.py:48
+#: GUI/Screens/export_data_screen.py:49 GUI/Screens/export_data_screen.py:103
 msgid "export assets in different files"
 msgstr "Export asset classes in different files"
 
-#: GUI/Screens/export_data_screen.py:64
+#: GUI/Screens/export_data_screen.py:64 GUI/Screens/export_data_screen.py:101
 msgid "select file type for export"
 msgstr "Select file type for export"
 
@@ -267,7 +260,7 @@ msgstr "Select file type for export"
 msgid "export"
 msgstr "Export"
 
-#: GUI/Screens/export_data_screen.py:87 GUI/Screens/export_data_screen.py:101
+#: GUI/Screens/export_data_screen.py:87 GUI/Screens/export_data_screen.py:104
 msgid "file_to_upload"
 msgstr "file to upload:"
 
@@ -305,9 +298,7 @@ msgstr "{doc_name}: No TypeUri found in {tab}\n"
 
 #: GUI/Screens/insert_data_screen.py:303
 msgid "{doc_name}: invalid columns in {tab}, bad columns are {bad_columns} \n"
-msgstr ""
-"{doc_name}: invalid columns found in {tab}, bad columns are {bad_columns}"
-"\n"
+msgstr "{doc_name}: invalid columns found in {tab}, bad columns are {bad_columns}\n"
 
 #: GUI/Screens/insert_data_screen.py:306
 msgid "{doc_name}: type uri not in first row of {tab}\n"
@@ -382,6 +373,34 @@ msgstr "Loading"
 msgid "no classes found in specified path"
 msgstr "No classes found in specified path"
 
+#: GUI/Screens/template_screen.py:236 GUI/Screens/template_screen.py:290
+msgid "{selected} classes selected"
+msgstr "{selected} classes selected"
+
+msgid "conversion"
+msgstr "File conversion"
+
+msgid "control"
+msgstr "Control"
+
+msgid "type"
+msgstr "Type"
+
+msgid "attribuut"
+msgstr "Attribute"
+
+msgid "update_relations"
+msgstr "Update relations"
+
+msgid "update_files"
+msgstr "Update files"
+
+msgid "Data visualisation"
+msgstr "Data visualisation"
+
+msgid "create_png"
+msgstr "Create PNG"
+
 msgid "step_1"
 msgstr "Create Template"
 
@@ -418,21 +437,5 @@ msgstr "Specify which classes and settings you want to use in the template"
 msgid "export_data"
 msgstr "Export Data"
 
-#~ msgid "conversion"
-#~ msgstr "File conversion"
-
-#~ msgid "control"
-#~ msgstr "Control"
-
-#~ msgid "type"
-#~ msgstr "Type"
-
-#~ msgid "attribuut"
-#~ msgstr "Attribute"
-
-#~ msgid "update_relations"
-#~ msgstr "Update relations"
-
-#~ msgid "update_files"
-#~ msgstr "Update files"
-
+msgid "data visuals"
+msgstr "Data Visualisation"

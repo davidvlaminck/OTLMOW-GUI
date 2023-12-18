@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: jasper.berton@mow.vlaanderen.be\n"
-"POT-Creation-Date: 2023-12-18 08:25+0100\n"
+"POT-Creation-Date: 2023-12-18 14:07+0100\n"
 "PO-Revision-Date: 2023-10-19 13:13+0200\n"
 "Last-Translator: Jasper Berton <jasper.berton@mow.vlaanderen.be>\n"
 "Language: nl_BE\n"
@@ -58,7 +58,7 @@ msgstr "terug naar startscherm"
 msgid "save_button"
 msgstr "Bewaar"
 
-#: GUI/header_bar.py:134
+#: GUI/header_bar.py:134 GUI/header_bar.py:154
 msgid "import"
 msgstr "Importeren"
 
@@ -234,31 +234,24 @@ msgstr "Converteren"
 msgid "file_for_conversion"
 msgstr "Bestand voor conversie"
 
-#: GUI/Screens/data_visualisation_screen.py:42
-msgid "Data visualisation"
-msgstr "Data visualisatie"
-
-#: GUI/Screens/data_visualisation_screen.py:49
+#: GUI/Screens/data_visualisation_screen.py:46
+#: GUI/Screens/data_visualisation_screen.py:84
 msgid "relations legend"
 msgstr "Mogelijke relaties"
 
-#: GUI/Screens/data_visualisation_screen.py:79
-msgid "create_png"
-msgstr "Creëer PNG"
-
-#: GUI/Screens/export_data_screen.py:37
+#: GUI/Screens/export_data_screen.py:38 GUI/Screens/export_data_screen.py:105
 msgid "export_to_davie"
 msgstr "Data naar Davie exporteren"
 
-#: GUI/Screens/export_data_screen.py:46
+#: GUI/Screens/export_data_screen.py:47 GUI/Screens/export_data_screen.py:102
 msgid "export relations and assets in different files"
 msgstr "Exporteer relaties en assets in verschillende bestanden"
 
-#: GUI/Screens/export_data_screen.py:48
+#: GUI/Screens/export_data_screen.py:49 GUI/Screens/export_data_screen.py:103
 msgid "export assets in different files"
 msgstr "Exporteer aparte bestanden voor elke assetklasse"
 
-#: GUI/Screens/export_data_screen.py:64
+#: GUI/Screens/export_data_screen.py:64 GUI/Screens/export_data_screen.py:101
 msgid "select file type for export"
 msgstr "selecteer bestandstype voor export"
 
@@ -267,7 +260,7 @@ msgstr "selecteer bestandstype voor export"
 msgid "export"
 msgstr "Exporteren"
 
-#: GUI/Screens/export_data_screen.py:87 GUI/Screens/export_data_screen.py:101
+#: GUI/Screens/export_data_screen.py:87 GUI/Screens/export_data_screen.py:104
 msgid "file_to_upload"
 msgstr "Bestand om te uploaden"
 
@@ -305,7 +298,9 @@ msgstr "{doc_name}: Kolom TypeUri niet gevonden in {tab}\n"
 
 #: GUI/Screens/insert_data_screen.py:303
 msgid "{doc_name}: invalid columns in {tab}, bad columns are {bad_columns} \n"
-msgstr "{doc_name}: Foutieve kolommen in werkblad {tab}, desbetreffende kolommen zijn {bad_columns} \n"
+msgstr ""
+"{doc_name}: Foutieve kolommen in werkblad {tab}, desbetreffende kolommen "
+"zijn {bad_columns} \n"
 
 #: GUI/Screens/insert_data_screen.py:306
 msgid "{doc_name}: type uri not in first row of {tab}\n"
@@ -380,6 +375,16 @@ msgstr "Data aan het inladen..."
 msgid "no classes found in specified path"
 msgstr "Geen klassen gevonden in het opgegeven pad"
 
+#: GUI/Screens/template_screen.py:236 GUI/Screens/template_screen.py:290
+msgid "{selected} classes selected"
+msgstr "{selected} klassen geselecteerd"
+
+msgid "Data visualisation"
+msgstr "Data visualisatie"
+
+msgid "create_png"
+msgstr "Creëer PNG"
+
 msgid "empty_fields_error"
 msgstr "Gelieve alle velden in te vullen"
 
@@ -436,4 +441,7 @@ msgstr "Relaties updaten"
 
 msgid "update_files"
 msgstr "Bestanden updaten"
+
+msgid "data visuals"
+msgstr "Data visualisatie"
 

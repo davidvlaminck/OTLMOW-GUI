@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-12-18 08:25+0100\n"
+"POT-Creation-Date: 2023-12-18 14:07+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -57,7 +57,7 @@ msgstr ""
 msgid "save_button"
 msgstr ""
 
-#: GUI/header_bar.py:134
+#: GUI/header_bar.py:134 GUI/header_bar.py:154
 msgid "import"
 msgstr ""
 
@@ -233,31 +233,24 @@ msgstr ""
 msgid "file_for_conversion"
 msgstr ""
 
-#: GUI/Screens/data_visualisation_screen.py:42
-msgid "Data visualisation"
-msgstr ""
-
-#: GUI/Screens/data_visualisation_screen.py:49
+#: GUI/Screens/data_visualisation_screen.py:46
+#: GUI/Screens/data_visualisation_screen.py:84
 msgid "relations legend"
 msgstr ""
 
-#: GUI/Screens/data_visualisation_screen.py:79
-msgid "create_png"
-msgstr ""
-
-#: GUI/Screens/export_data_screen.py:37
+#: GUI/Screens/export_data_screen.py:38 GUI/Screens/export_data_screen.py:105
 msgid "export_to_davie"
 msgstr ""
 
-#: GUI/Screens/export_data_screen.py:46
+#: GUI/Screens/export_data_screen.py:47 GUI/Screens/export_data_screen.py:102
 msgid "export relations and assets in different files"
 msgstr ""
 
-#: GUI/Screens/export_data_screen.py:48
+#: GUI/Screens/export_data_screen.py:49 GUI/Screens/export_data_screen.py:103
 msgid "export assets in different files"
 msgstr ""
 
-#: GUI/Screens/export_data_screen.py:64
+#: GUI/Screens/export_data_screen.py:64 GUI/Screens/export_data_screen.py:101
 msgid "select file type for export"
 msgstr ""
 
@@ -266,7 +259,7 @@ msgstr ""
 msgid "export"
 msgstr ""
 
-#: GUI/Screens/export_data_screen.py:87 GUI/Screens/export_data_screen.py:101
+#: GUI/Screens/export_data_screen.py:87 GUI/Screens/export_data_screen.py:104
 msgid "file_to_upload"
 msgstr ""
 
@@ -377,5 +370,9 @@ msgstr ""
 
 #: GUI/Screens/template_screen.py:203
 msgid "no classes found in specified path"
+msgstr ""
+
+#: GUI/Screens/template_screen.py:236 GUI/Screens/template_screen.py:290
+msgid "{selected} classes selected"
 msgstr ""
 

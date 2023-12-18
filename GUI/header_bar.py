@@ -151,6 +151,7 @@ class HeaderBar(QFrame):
         self.new_project_button.setText(self._('new_project_button'))
         self.return_button.setText(self._('return_to_home_screen'))
         self.save_button.setText(self._('save_button'))
+        self.import_button.setText(self._("import"))
         if global_vars.single_project is not None:
             self.reference_title.setText(global_vars.single_project.eigen_referentie)
         else:

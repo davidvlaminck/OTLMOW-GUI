@@ -233,7 +233,7 @@ class TemplateScreen(Screen):
             if self.all_classes.item(i).isSelected():
                 counter += 1
         self.selected = counter
-        self.label_counter.setText(self._(f"{self.selected} classes selected"))
+        self.label_counter.setText(self._("{selected} classes selected").format(selected=self.selected))
 
     def select_all_classes_clicked(self):
         if not self.all_classes.isEnabled():
@@ -287,3 +287,4 @@ class TemplateScreen(Screen):
         self.general_settings_titel.setText(self._("general_settings"))
         self.example_settings_titel.setText(self._("example_settings"))
         self.deprecated_titel.setText(self._("deprecated_settings"))
+        self.label_counter.setText(self._("{selected} classes selected").format(selected=self.selected))
