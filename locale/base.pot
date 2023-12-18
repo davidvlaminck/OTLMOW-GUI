@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-12-13 12:30+0100\n"
+"POT-Creation-Date: 2023-12-18 08:25+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,11 +17,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.13.0\n"
 
-#: Domain/home_domain.py:43
+#: Domain/home_domain.py:39
 msgid "own_reference_empty_error"
 msgstr ""
 
-#: Domain/home_domain.py:45
+#: Domain/home_domain.py:41
 msgid "bestek_empty_error"
 msgstr ""
 
@@ -79,14 +79,14 @@ msgstr ""
 
 #: GUI/DialogWindows/upsert_project_window.py:42
 #: GUI/DialogWindows/upsert_project_window.py:60 GUI/overviewtable.py:40
-#: GUI/overviewtable.py:153 UnitTests/domain_test/language_test.py:14
+#: GUI/overviewtable.py:152 UnitTests/domain_test/language_test.py:14
 #: UnitTests/domain_test/language_test.py:19
 msgid "own_reference"
 msgstr ""
 
 #: GUI/DialogWindows/upsert_project_window.py:44
 #: GUI/DialogWindows/upsert_project_window.py:61 GUI/overviewtable.py:40
-#: GUI/overviewtable.py:153
+#: GUI/overviewtable.py:152
 msgid "service_order"
 msgstr ""
 
@@ -94,11 +94,11 @@ msgstr ""
 #: GUI/DialogWindows/upsert_project_window.py:46
 #: GUI/DialogWindows/upsert_project_window.py:62
 #: GUI/Screens/template_screen.py:165 GUI/overviewtable.py:40
-#: GUI/overviewtable.py:153
+#: GUI/overviewtable.py:152
 msgid "subset"
 msgstr ""
 
-#: GUI/overviewtable.py:40 GUI/overviewtable.py:153
+#: GUI/overviewtable.py:40 GUI/overviewtable.py:152
 msgid "last_edited"
 msgstr ""
 
@@ -106,23 +106,23 @@ msgstr ""
 msgid "no_result"
 msgstr ""
 
-#: GUI/overviewtable.py:154
+#: GUI/overviewtable.py:153
 msgid "no_results"
 msgstr ""
 
-#: GUI/stepper.py:37 GUI/stepper.py:90
+#: GUI/stepper.py:70
 msgid "step1"
 msgstr ""
 
-#: GUI/stepper.py:39 GUI/stepper.py:91
+#: GUI/stepper.py:71
 msgid "step2"
 msgstr ""
 
-#: GUI/stepper.py:41 GUI/stepper.py:92
+#: GUI/stepper.py:72
 msgid "step3"
 msgstr ""
 
-#: GUI/stepper.py:43 GUI/stepper.py:93
+#: GUI/stepper.py:73
 msgid "step4"
 msgstr ""
 
@@ -190,7 +190,7 @@ msgstr ""
 
 #: GUI/Screens/asset_data_change_screen.py:88
 #: GUI/Screens/asset_data_change_screen.py:133
-#: GUI/Screens/insert_data_screen.py:76
+#: GUI/Screens/insert_data_screen.py:77
 msgid "choose_file"
 msgstr ""
 
@@ -217,7 +217,7 @@ msgid "the changes were correctly written to a new file"
 msgstr ""
 
 #: GUI/Screens/asset_data_change_screen.py:217
-#: GUI/Screens/insert_data_screen.py:219
+#: GUI/Screens/insert_data_screen.py:222
 msgid "error"
 msgstr ""
 
@@ -233,32 +233,40 @@ msgstr ""
 msgid "file_for_conversion"
 msgstr ""
 
-#: GUI/Screens/data_visualisation_screen.py:30
+#: GUI/Screens/data_visualisation_screen.py:42
 msgid "Data visualisation"
 msgstr ""
 
-#: GUI/Screens/export_data_screen.py:38
+#: GUI/Screens/data_visualisation_screen.py:49
+msgid "relations legend"
+msgstr ""
+
+#: GUI/Screens/data_visualisation_screen.py:79
+msgid "create_png"
+msgstr ""
+
+#: GUI/Screens/export_data_screen.py:37
 msgid "export_to_davie"
 msgstr ""
 
-#: GUI/Screens/export_data_screen.py:47
+#: GUI/Screens/export_data_screen.py:46
 msgid "export relations and assets in different files"
 msgstr ""
 
-#: GUI/Screens/export_data_screen.py:49
+#: GUI/Screens/export_data_screen.py:48
 msgid "export assets in different files"
 msgstr ""
 
-#: GUI/Screens/export_data_screen.py:65
+#: GUI/Screens/export_data_screen.py:64
 msgid "select file type for export"
 msgstr ""
 
-#: GUI/Screens/export_data_screen.py:77 GUI/Screens/export_data_screen.py:101
+#: GUI/Screens/export_data_screen.py:76 GUI/Screens/export_data_screen.py:100
 #: GUI/Screens/template_screen.py:88 GUI/Screens/template_screen.py:283
 msgid "export"
 msgstr ""
 
-#: GUI/Screens/export_data_screen.py:88 GUI/Screens/export_data_screen.py:102
+#: GUI/Screens/export_data_screen.py:87 GUI/Screens/export_data_screen.py:101
 msgid "file_to_upload"
 msgstr ""
 
@@ -266,39 +274,39 @@ msgstr ""
 msgid "search_text"
 msgstr ""
 
-#: GUI/Screens/insert_data_screen.py:66 GUI/Screens/insert_data_screen.py:225
+#: GUI/Screens/insert_data_screen.py:67 GUI/Screens/insert_data_screen.py:228
 msgid "control_button"
 msgstr ""
 
-#: GUI/Screens/insert_data_screen.py:72
+#: GUI/Screens/insert_data_screen.py:73
 msgid "reset_fields"
 msgstr ""
 
-#: GUI/Screens/insert_data_screen.py:158 GUI/Screens/insert_data_screen.py:224
+#: GUI/Screens/insert_data_screen.py:161 GUI/Screens/insert_data_screen.py:227
 msgid "input_file"
 msgstr ""
 
-#: GUI/Screens/insert_data_screen.py:205
+#: GUI/Screens/insert_data_screen.py:208
 msgid "all_info_correct"
 msgstr ""
 
-#: GUI/Screens/insert_data_screen.py:210
+#: GUI/Screens/insert_data_screen.py:213
 msgid "warning"
 msgstr ""
 
-#: GUI/Screens/insert_data_screen.py:295
+#: GUI/Screens/insert_data_screen.py:298
 msgid "{doc_name}: Data nodig in een datasheet om objecten in te laden.\n"
 msgstr ""
 
-#: GUI/Screens/insert_data_screen.py:298
+#: GUI/Screens/insert_data_screen.py:301
 msgid "{doc_name}: No type uri in {tab}\n"
 msgstr ""
 
-#: GUI/Screens/insert_data_screen.py:300
+#: GUI/Screens/insert_data_screen.py:303
 msgid "{doc_name}: invalid columns in {tab}, bad columns are {bad_columns} \n"
 msgstr ""
 
-#: GUI/Screens/insert_data_screen.py:303
+#: GUI/Screens/insert_data_screen.py:306
 msgid "{doc_name}: type uri not in first row of {tab}\n"
 msgstr ""
 

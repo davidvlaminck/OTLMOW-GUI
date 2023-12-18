@@ -41,10 +41,13 @@ class DataVisualisationScreen(Screen):
         title_label = QLabel()
         title_label.setText(self._("Data visualisation"))
 
-        html_loc = HTML_DIR / "visuals.html"
+        html_loc = HTML_DIR / "basic.html"
         self.view.setHtml(open(html_loc).read())
         window_layout.addWidget(self.create_button_container())
         window_layout.addWidget(self.view)
+        color_label = QLabel()
+        color_label.setText(self._("relations legend") + ":")
+        window_layout.addWidget(color_label)
         window_layout.addWidget(self.create_color_legend())
         window_layout.addSpacing(50)
         window.setLayout(window_layout)
