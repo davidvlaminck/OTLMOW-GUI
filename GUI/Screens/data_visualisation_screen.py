@@ -4,6 +4,7 @@ import qtawesome as qta
 
 from pathlib import Path
 
+from PyQt6.QtWebEngineCore import QWebEngineSettings
 from PyQt6.QtWebEngineWidgets import QWebEngineView
 from PyQt6.QtWidgets import QVBoxLayout, QLabel, QWidget, QFrame, QHBoxLayout
 from otlmow_converter.OtlmowConverter import OtlmowConverter
@@ -42,6 +43,7 @@ class DataVisualisationScreen(Screen):
         html_loc = HTML_DIR / "basic.html"
         self.view.setHtml(open(html_loc).read())
         window_layout.addWidget(self.create_button_container())
+        self.view.settings().setAttribute(QWebEngineSettings.WebAttribute.ShowScrollBars, False)
         window_layout.addWidget(self.view)
         self.color_label_title.setText(self._("relations legend") + ":")
         window_layout.addWidget(self.color_label_title)
