@@ -21,6 +21,7 @@ class AssetChangeDomain:
         report = []
         diff_lists = cls.generate_difference_between_two_lists(list1=original_data, list2=new_data,
                                                                model_directory=model_directory)
+        logging.debug(f"diff lists {str(diff_lists)}")
         original_data_dict = {item.assetId.identificator: item for item in original_data}
         for item in diff_lists:
             old_item = original_data_dict.get(item.assetId.identificator)
