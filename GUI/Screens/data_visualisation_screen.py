@@ -2,7 +2,6 @@ import logging
 
 import qtawesome as qta
 
-
 from pathlib import Path
 
 from PyQt6.QtWebEngineWidgets import QWebEngineView
@@ -26,6 +25,7 @@ class DataVisualisationScreen(Screen):
         self.container_insert_data_screen = QVBoxLayout()
         self._ = _
         self.view = QWebEngineView()
+        self.color_label_title = QLabel()
         self.init_ui()
 
     def init_ui(self):
@@ -38,16 +38,13 @@ class DataVisualisationScreen(Screen):
         window = QWidget()
         window.setProperty('class', 'background-box')
         window_layout = QVBoxLayout()
-        title_label = QLabel()
-        title_label.setText(self._("Data visualisation"))
 
         html_loc = HTML_DIR / "basic.html"
         self.view.setHtml(open(html_loc).read())
         window_layout.addWidget(self.create_button_container())
         window_layout.addWidget(self.view)
-        color_label = QLabel()
-        color_label.setText(self._("relations legend") + ":")
-        window_layout.addWidget(color_label)
+        self.color_label_title.setText(self._("relations legend") + ":")
+        window_layout.addWidget(self.color_label_title)
         window_layout.addWidget(self.create_color_legend())
         window_layout.addSpacing(50)
         window.setLayout(window_layout)
@@ -69,25 +66,22 @@ class DataVisualisationScreen(Screen):
         frame.setLayout(frame_layout)
         return frame
 
-
     def create_button_container(self):
         frame = QFrame()
         frame_layout = QHBoxLayout()
         refresh_btn = ButtonWidget()
-        refresh_btn.setIcon(qta.icon('mdi.refresh'))
-        png_creator_button = ButtonWidget()
-        png_creator_button.setText(self._("create_png"))
-        png_creator_button.clicked.connect(lambda: self.create_png())
+        refresh_btn.setIcon(qta.icon('mdi.refresh', color='white'))
+        refresh_btn.setProperty('class', 'primary-button')
         refresh_btn.clicked.connect(lambda: self.reload_html())
         frame_layout.addWidget(refresh_btn)
         frame_layout.addSpacing(10)
-        frame_layout.addWidget(png_creator_button)
         frame_layout.addStretch()
         frame.setLayout(frame_layout)
         return frame
 
     def reset_ui(self, _):
-        pass
+        self._ = _
+        self.color_label_title.setText(self._("relations legend") + ":")
 
     def reload_html(self):
         self.load_assets_and_create_html()
@@ -105,11 +99,5 @@ class DataVisualisationScreen(Screen):
                 filepath=Path(path), path_to_subset=project.subset_path))
 
         html_loc = HTML_DIR / "visuals.html"
-        relatie_color_dict = PyVisWrapper().relatie_color_dict
-        logging.debug(f"relatie_color_dict: {relatie_color_dict}")
         PyVisWrapper().show(list_of_objects=objects_in_memory, html_path=html_loc, launch_html=False)
         self.view.setHtml(open(html_loc).read())
-
-    @classmethod
-    def create_png(cls):
-        pass

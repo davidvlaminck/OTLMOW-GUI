@@ -52,8 +52,6 @@ QTableWidget::item{
     border-radius: 5px;
 }
 
-
-
 .alter-button{
     icon-size: 25px;
     border: none;

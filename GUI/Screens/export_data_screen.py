@@ -18,6 +18,8 @@ class ExportDataScreen(Screen):
         self.input_file_label = QLabel()
         self.extra_option_csv = QCheckBox()
         self.file_extension_selection = QComboBox()
+        self.title = QLabel()
+        self.file_type_label = QLabel()
         self.stacked_widget = None
         self.relations_split_optionality = QCheckBox()
         self.init_ui()
@@ -33,11 +35,10 @@ class ExportDataScreen(Screen):
         window = QFrame()
         window_layout = QVBoxLayout()
         window.setProperty('class', 'background-box')
-        title = QLabel()
-        title.setText(self._('export_to_davie'))
-        title.setProperty('class', 'sub-title')
+        self.title.setText(self._('export_to_davie'))
+        self.title.setProperty('class', 'sub-title')
 
-        window_layout.addWidget(title)
+        window_layout.addWidget(self.title)
         window_layout.addSpacing(20)
 
         combobox = self.create_combobox()
@@ -60,9 +61,8 @@ class ExportDataScreen(Screen):
     def create_combobox(self):
         frame = QFrame()
         frame_layout = QHBoxLayout()
-        label = QLabel()
-        label.setText(self._('select file type for export') + ":")
-        frame_layout.addWidget(label)
+        self.file_type_label.setText(self._('select file type for export') + ":")
+        frame_layout.addWidget(self.file_type_label)
         self.file_extension_selection.addItems(['Excel', 'CSV', 'JSON'])
         self.file_extension_selection.currentTextChanged.connect(self.show_additional_options)
         frame_layout.addWidget(self.file_extension_selection)
@@ -98,7 +98,11 @@ class ExportDataScreen(Screen):
     def reset_ui(self, _):
         self._ = _
         self.export_btn.setText(self._('export'))
+        self.file_type_label.setText(self._('select file type for export') + ":")
+        self.relations_split_optionality.setText(self._('export relations and assets in different files'))
+        self.extra_option_csv.setText(self._('export assets in different files'))
         self.input_file_label.setText(self._('file_to_upload'))
+        self.title.setText(self._('export_to_davie'))
 
     def open_file_picker(self):
         file_path = str(Path.home())
