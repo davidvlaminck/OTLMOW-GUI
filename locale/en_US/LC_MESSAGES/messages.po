@@ -294,15 +294,15 @@ msgstr "{doc_name}: Data needed in datasheet to load in objects.\n"
 
 #: GUI/Screens/insert_data_screen.py:301
 msgid "{doc_name}: No type uri in {tab}\n"
-msgstr "{doc_name}: No TypeUri found in {tab}\n"
+msgstr "{doc_name}: No TypeUri found \n"
 
 #: GUI/Screens/insert_data_screen.py:303
 msgid "{doc_name}: invalid columns in {tab}, bad columns are {bad_columns} \n"
-msgstr "{doc_name}: invalid columns found in {tab}, bad columns are {bad_columns}\n"
+msgstr "{doc_name}: invalid columns found, bad columns are {bad_columns}\n"
 
 #: GUI/Screens/insert_data_screen.py:306
 msgid "{doc_name}: type uri not in first row of {tab}\n"
-msgstr "{doc_name}: TypeUri not found in first row of {tab}\n"
+msgstr "{doc_name}: TypeUri not found in first row \n"
 
 #: GUI/Screens/relation_change_screen.py:41
 msgid "functionality under development"

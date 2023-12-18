@@ -9,6 +9,7 @@ from otlmow_converter.Exceptions.ExceptionsGroup import ExceptionsGroup
 from otlmow_converter.Exceptions.FailedToImportFileError import FailedToImportFileError
 from otlmow_converter.Exceptions.InvalidColumnNamesInExcelTabError import InvalidColumnNamesInExcelTabError
 from otlmow_converter.Exceptions.NoTypeUriInExcelTabError import NoTypeUriInExcelTabError
+from otlmow_converter.Exceptions.NoTypeUriInTableError import NoTypeUriInTableError
 from otlmow_converter.Exceptions.TypeUriNotInFirstRowError import TypeUriNotInFirstRowError
 from otlmow_model.OtlmowModel.Helpers.OTLObjectHelper import count_assets_by_type
 
@@ -292,21 +293,24 @@ class InsertDataScreen(Screen):
         self.clear_feedback_message()
 
     def add_error_to_feedback_list(self, e, doc):
+        logging.debug(e)
         doc_name = Path(doc).name
         error_widget = QListWidgetItem()
         if str(e) == "argument of type 'NoneType' is not iterable":
             error_text = self._("{doc_name}: Data nodig in een datasheet om objecten in te laden.\n").format(
                 doc_name=doc_name)
-        elif issubclass(type(e), NoTypeUriInExcelTabError):
-            error_text = self._("{doc_name}: No type uri in {tab}\n").format(doc_name=doc_name, tab=e.tab)
+        elif issubclass(type(e), NoTypeUriInTableError):
+            error_text = self._("{doc_name}: No type uri in {tab}\n").format(doc_name=doc_name, tab=str(e.tab))
         elif issubclass(type(e), InvalidColumnNamesInExcelTabError):
             error_text = self._("{doc_name}: invalid columns in {tab}, bad columns are {bad_columns} \n").format(
                 doc_name=doc_name, tab=e.tab, bad_columns=str(e.bad_columns))
         elif issubclass(type(e), TypeUriNotInFirstRowError):
-            error_text = self._("{doc_name}: type uri not in first row of {tab}\n").format(doc_name=doc_name, tab=e.tab)
+            error_text = self._("{doc_name}: type uri not in first row of {tab}\n").format(doc_name=doc_name, tab=str(e.tab))
         elif issubclass(type(e), ValueError):
             error_text = self._(f'{doc_name}: {e}\n')
         elif issubclass(type(e), FailedToImportFileError):
+            error_text = self._(f'{doc_name}: {e}\n')
+        else:
             error_text = self._(f'{doc_name}: {e}\n')
         error_widget.setText(error_text)
         self.asset_info.addItem(error_widget)
