@@ -2,7 +2,6 @@
     background-color: #0E5A69;
     color: #ffffff;
     height: 25px;
-    width: 100px;
     border-radius: 5px;
     padding-left: 15px;
     padding-right: 10px;
