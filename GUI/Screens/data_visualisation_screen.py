@@ -101,5 +101,5 @@ class DataVisualisationScreen(Screen):
                 filepath=Path(path), path_to_subset=project.subset_path))
 
         html_loc = HTML_DIR / "visuals.html"
-        PyVisWrapper().show(list_of_objects=objects_in_memory, html_path=html_loc, launch_html=False)
+        PyVisWrapper().show(list_of_objects=objects_in_memory, html_path=Path(html_loc), launch_html=False)
         self.view.setHtml(open(html_loc).read())
