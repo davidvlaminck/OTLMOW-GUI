@@ -53,8 +53,8 @@ def excepthook(exc_type, exc_value, exc_tb):
     tb = "".join(traceback.format_exception(exc_type, exc_value, exc_tb))
     logging.error("error caught!")
     logging.error("error message: \n: " + tb)
-    # error_screen = ErrorScreen()
-    # error_screen.show()
+    error_screen = ErrorScreen(tb)
+    error_screen.show()
     # QApplication.quit()
 
 
