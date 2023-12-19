@@ -1,7 +1,7 @@
 import PyInstaller.__main__
 
 PyInstaller.__main__.run([
-    r'Domain\main.py',
+    r'Domain\OTLWizard.py',
     '--distpath', r'C:\users\jaspe\PycharmProjects\Installers',
     '--contents-directory', 'applicationdata',
     '--paths', r'C:\Users\jaspe\PycharmProjects\OTLMOW-GUI\venv\Lib\site-packages',
@@ -9,6 +9,7 @@ PyInstaller.__main__.run([
     '--collect-all', 'otlmow_model',
     '--collect-all', 'otlmow_template',
     '--collect-all', 'otlmow_modelbuilder',
+    '--collect-all', 'otlmow_visuals',
     '--add-data', 'locale:locale',
     '--add-data', r'Domain\custom.qss:.',
     '--add-data', 'demo_projects:demo_projects',
