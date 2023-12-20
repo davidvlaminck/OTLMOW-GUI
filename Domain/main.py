@@ -78,8 +78,10 @@ if __name__ == '__main__':
     stacked_widget.resize(1360, 768)
     stacked_widget.setWindowTitle('OTLWizard')
     stacked_widget.setMinimumSize(1280, 720)
-    event_loop.run_forever()
-    #event_loop.run_until_complete(future)
+    # Doesn't cause error but doesn't stop the event loop on close of the application
+    # event_loop.run_forever()
+    # Causes Error on close of the application but doesn't keep running the event loop
+    event_loop.run_until_complete(future)
     app.exec()
     # app.quit()
     # event_loop.close()
