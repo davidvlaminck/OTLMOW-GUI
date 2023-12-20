@@ -1,0 +1,69 @@
+from PyQt6.QtWidgets import QDialog, QLabel, QVBoxLayout, QFrame, QHBoxLayout
+
+
+class MenuActionsWindow:
+
+    def __init__(self, language):
+        self._ = language
+
+    def create_help_window(self):
+        window = QDialog()
+        window.setMinimumWidth(500)
+        window.setWindowTitle(self._('help'))
+        text_label = QLabel()
+        text_label.setText(self._('help_text'))
+        window_layout = QVBoxLayout()
+        window_layout.addWidget(text_label)
+        window.setLayout(window_layout)
+        window.exec()
+
+    def create_about_window(self):
+        window = QDialog()
+        window_layout = QVBoxLayout()
+        window.setMinimumWidth(500)
+        window.setWindowTitle(self._('about'))
+        version_box = self.version_box()
+        window_layout.addWidget(version_box)
+        mady_by_title = QLabel(self._('made_by') + ':')
+        window_layout.addWidget(mady_by_title)
+        window_layout.addWidget(self.creator_box('Jasper Berton', 'jasperberton1@telenet.be'))
+        window_layout.addWidget(self.creator_box('David Vlaminck', 'david.vlaminck@mow.vlaanderen.be'))
+        window_layout.addWidget(self.creator_box('Bert Van Overmeir','bert.vanovermeir@mow.vlaanderen.be'))
+        window.setLayout(window_layout)
+        window.exec()
+
+    def create_error_report_window(self):
+        window = QDialog()
+        window_layout = QVBoxLayout()
+        window.setMinimumWidth(500)
+        window.setWindowTitle(self._('report_error'))
+        error_title = QLabel(self._('error_title'))
+        contact = QLabel(self._('contact') + ':')
+        window_layout.addWidget(error_title)
+        window_layout.addWidget(contact)
+        window_layout.addWidget(self.creator_box('David Vlaminck', 'david.vlaminck@mow.vlaanderen.be'))
+        window_layout.addWidget(self.creator_box('Bert Van Overmeir', 'bert.vanovermeir@mow.vlaanderen.be'))
+        window.setLayout(window_layout)
+        window.exec()
+
+    def version_box(self):
+        version_box = QFrame()
+        version_box_layout = QHBoxLayout()
+        version_title = QLabel(self._('version') + ':')
+        version_number = QLabel('0.1.0')
+        version_box_layout.addWidget(version_title)
+        version_box_layout.addWidget(version_number)
+        version_box.setLayout(version_box_layout)
+        return version_box
+
+    @classmethod
+    def creator_box(cls, name, mail):
+        creator_box = QFrame()
+        creator_box_layout = QHBoxLayout()
+        creator_name = QLabel(name)
+        creator_mail = QLabel(mail)
+        creator_box_layout.addWidget(creator_name)
+        creator_box_layout.addWidget(creator_mail)
+        creator_box.setLayout(creator_box_layout)
+        return creator_box
+

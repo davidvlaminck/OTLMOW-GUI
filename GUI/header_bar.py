@@ -1,5 +1,6 @@
 import logging
 
+from PyQt5.QtWidgets import QAction
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QFrame, QHBoxLayout, QLabel, QPushButton, QVBoxLayout, QWidget, QMenu
 
@@ -8,6 +9,7 @@ import qtawesome as qta
 from Domain import global_vars
 from GUI.ButtonWidget import ButtonWidget
 from GUI.DialogWindows.language_window import LanguageWindow
+from GUI.DialogWindows.menu_actions_window import MenuActionsWindow
 from GUI.DialogWindows.project_picker_window import ProjectPickerWindow
 from GUI.DialogWindows.upsert_project_window import UpsertProjectWindow
 from GUI.overviewtable import OverviewTable
@@ -73,9 +75,12 @@ class HeaderBar(QFrame):
 
     def construct_menu(self):
         menu = QMenu()
-        menu.addAction(self._('help'))
-        menu.addAction(self._('about'))
-        menu.addAction(self._('report error'))
+        help_action = menu.addAction(self._('help'))
+        help_action.triggered.connect(lambda: MenuActionsWindow(self._).create_help_window())
+        about_action = menu.addAction(self._('about'))
+        about_action.triggered.connect(lambda: MenuActionsWindow(self._).create_about_window())
+        report_action = menu.addAction(self._('report error'))
+        report_action.triggered.connect(lambda: MenuActionsWindow(self._).create_error_report_window())
         return menu
 
     def start_dialog_window(self, id_: int = None, is_project=False) -> None:
