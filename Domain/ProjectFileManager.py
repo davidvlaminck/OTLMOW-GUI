@@ -1,7 +1,6 @@
 import datetime
 import json
 import logging
-import ntpath
 import os
 import shutil
 import tempfile
@@ -13,7 +12,6 @@ from otlmow_converter.OtlmowConverter import OtlmowConverter
 from Domain import global_vars
 from Domain.GitHubDownloader import GitHubDownloader
 from Domain.Project import Project
-from Domain.enums import FileState
 from Domain.project_file import ProjectFile
 
 
@@ -194,16 +192,7 @@ class ProjectFileManager:
         if end_location == filepath:
             return end_location
         shutil.copy(filepath, end_location)
-        logging.debug("file manager" + str(end_location))
         return end_location
-
-    @classmethod
-    def template_map_exists(cls):
-        if global_vars.single_project is None:
-            return False
-        project = global_vars.single_project
-        location_dir = project.project_path / 'OTL-template-files'
-        return location_dir.exists()
 
     @classmethod
     def delete_template_folder(cls):
@@ -216,7 +205,7 @@ class ProjectFileManager:
     @classmethod
     def delete_template_file_from_project(cls, file_path):
         try:
-            logging.debug("file path = " + str(file_path))
+            logging.debug(f"file path = {str(file_path)}")
             Path.unlink(file_path)
             return True
         except FileNotFoundError as e:

@@ -23,8 +23,10 @@ class AssetDataChangeScreen(Screen):
         self.original_file_label = QLabel()
         self.new_file_label = QLabel()
         self.control_button = ButtonWidget()
+        self.refresh_button = QPushButton()
         self.export_button = ButtonWidget()
         self.input_file_field = QTreeWidget()
+        self.input_file_button = QPushButton()
         self.table = QTableView()
         self.message_icon = QLabel()
         self.message = QLabel()
@@ -84,10 +86,9 @@ class AssetDataChangeScreen(Screen):
     def button_group(self):
         frame = QFrame()
         frame_layout = QHBoxLayout()
-        input_file_button = QPushButton()
-        input_file_button.setText(self._('choose_file'))
-        input_file_button.setProperty('class', 'primary-button')
-        input_file_button.clicked.connect(lambda: self.open_file_picker())
+        self.input_file_button.setText(self._('choose_file'))
+        self.input_file_button.setProperty('class', 'primary-button')
+        self.input_file_button.clicked.connect(lambda: self.open_file_picker())
         self.control_button.setText(self._('show differences'))
         self.control_button.setProperty('class', 'primary-button')
         self.control_button.setDisabled(True)
@@ -98,15 +99,14 @@ class AssetDataChangeScreen(Screen):
         self.export_button.setProperty('class', 'primary-button')
         self.export_button.clicked.connect(lambda: self.replace_file_with_diff_report())
 
-        refresh_button = QPushButton()
-        refresh_button.setText(self._('empty fields'))
-        refresh_button.setProperty('class', 'secondary-button')
-        refresh_button.clicked.connect(lambda: self.clear_user_fields())
-        frame_layout.addWidget(input_file_button)
+        self.refresh_button.setText(self._('empty fields'))
+        self.refresh_button.setProperty('class', 'secondary-button')
+        self.refresh_button.clicked.connect(lambda: self.clear_user_fields())
+        frame_layout.addWidget(self.input_file_button)
         frame_layout.addStretch()
         frame_layout.addWidget(self.control_button)
         frame_layout.addWidget(self.export_button)
-        frame_layout.addWidget(refresh_button)
+        frame_layout.addWidget(self.refresh_button)
 
         frame.setLayout(frame_layout)
         return frame
@@ -126,6 +126,8 @@ class AssetDataChangeScreen(Screen):
         self.new_file_label.setText(self._('new_file_load'))
         self.control_button.setText(self._('show differences'))
         self.export_button.setText(self._('apply differences'))
+        self.input_file_button.setText(self._('choose_file'))
+        self.refresh_button.setText(self._('empty fields'))
 
     def open_file_picker(self):
         file_path = str(Path.home())
@@ -139,7 +141,7 @@ class AssetDataChangeScreen(Screen):
 
     def add_file_to_list(self, files):
         self.control_button.setDisabled(False)
-        logging.debug("adding file to list" + str(files))
+        logging.debug(f"adding file to list {str(files)}")
         for file in files:
             list_item = QTreeWidgetItem()
             doc_name = Path(file).name
@@ -174,16 +176,23 @@ class AssetDataChangeScreen(Screen):
         self.export_button.setDisabled(False)
 
     def fill_up_change_table(self, report, table):
-        data = []
-        for rep in report:
-            data.append([str(rep.id), str(rep.actie.value), str(rep.attribute), str(rep.original_value), str(rep.new_value)])
+        data = [
+            [
+                str(rep.id),
+                str(rep.actie.value),
+                str(rep.attribute),
+                str(rep.original_value),
+                str(rep.new_value),
+            ]
+            for rep in report
+        ]
         self.model = TableModel(data, self._)
         table.setModel(self.model)
 
     def replace_file_with_diff_report(self):
         original_documents = [self.input_file_field.topLevelItem(i).data(0, 1) for i in
                               range(self.input_file_field.topLevelItemCount())]
-        logging.debug("original documents" + str(original_documents))
+        logging.debug(f"original documents {original_documents}")
         project = global_vars.single_project
         dialog_window = ChooseFileNameWindow(self._, project, original_documents)
         try:

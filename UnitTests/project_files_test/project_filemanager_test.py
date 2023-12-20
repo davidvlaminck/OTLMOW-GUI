@@ -1,6 +1,7 @@
 import datetime
 import os
 import shutil
+import tempfile
 import zipfile
 from pathlib import Path
 
@@ -9,6 +10,8 @@ import pytest
 from Domain import GitHubDownloader, global_vars
 from Domain.Project import Project
 from Domain.ProjectFileManager import ProjectFileManager
+from Domain.enums import FileState
+from Domain.project_file import ProjectFile
 
 PARENT_OF_THIS_FILE = Path(__file__).parent
 
@@ -231,3 +234,64 @@ def test_remove_template_folder_removes_folder():
     assert not (project.project_path / 'OTL-template-files').exists()
     ProjectFileManager.delete_project_files_by_path(project.project_path)
     global_vars.single_project = None
+
+
+def test_correct_project_files_in_memory_returns_false_if_none_given_as_param():
+    assert not ProjectFileManager.correct_project_files_in_memory(None)
+
+
+def test_correct_project_files_in_memory_returns_false_if_project_has_no_templates_in_memory():
+    project = Project(
+        project_path=Path(ProjectFileManager.get_otl_wizard_projects_dir() / 'project_4'),
+        subset_path=Path(
+            PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' / 'OTL_AllCasesTestClass_no_double_kard.db'),
+        assets_path=Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' / 'assets.json'),
+        eigen_referentie="eigen referentie",
+        bestek="bestek",
+        laatst_bewerkt=datetime.datetime(2023, 11, 1))
+    assert not ProjectFileManager.correct_project_files_in_memory(project)
+
+
+def test_correct_project_files_in_memory_returns_true_if_ok_files_in_memory():
+    project = Project(
+        project_path=Path(ProjectFileManager.get_otl_wizard_projects_dir() / 'project_4'),
+        subset_path=Path(
+            PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' / 'OTL_AllCasesTestClass_no_double_kard.db'),
+        assets_path=Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' / 'assets.json'),
+        eigen_referentie="eigen referentie",
+        bestek="bestek",
+        laatst_bewerkt=datetime.datetime(2023, 11, 1))
+    project_file = ProjectFile(file_path=Path(
+        PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'TestFiles' / 'should_pass_implementatieelement_Derdenobject.csv'),
+        state=FileState.OK.value)
+    project.templates_in_memory.append(project_file)
+    assert ProjectFileManager.correct_project_files_in_memory(project) is True
+
+
+def test_correct_project_files_in_memory_returns_false_if_no_ok_files_in_memory():
+    project = Project(
+        project_path=Path(ProjectFileManager.get_otl_wizard_projects_dir() / 'project_4'),
+        subset_path=Path(
+            PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' / 'OTL_AllCasesTestClass_no_double_kard.db'),
+        assets_path=Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' / 'assets.json'),
+        eigen_referentie="eigen referentie",
+        bestek="bestek",
+        laatst_bewerkt=datetime.datetime(2023, 11, 1))
+    project_file = ProjectFile(file_path=Path(
+        PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'TestFiles' / 'should_pass_implementatieelement_Derdenobject.csv'),
+        state=FileState.ERROR.value)
+    project.templates_in_memory.append(project_file)
+    assert ProjectFileManager.correct_project_files_in_memory(project) is False
+
+
+def test_create_empty_temporary_map_creates_map_in_correct_location():
+    temp_loc = Path(tempfile.gettempdir()) / 'temp-otlmow'
+    temp_loc.rmdir()
+    tempdir = ProjectFileManager.create_empty_temporary_map()
+    Path(tempfile.gettempdir()) / 'temp-otlmow'
+    assert tempdir == Path(tempfile.gettempdir()) / 'temp-otlmow'
+
+
+def test_create_empty_temporary_map_contains_no_files():
+    tempdir = ProjectFileManager.create_empty_temporary_map()
+    assert not os.listdir(tempdir)
