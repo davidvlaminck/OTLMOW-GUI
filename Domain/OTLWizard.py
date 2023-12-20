@@ -13,6 +13,7 @@ from qasync import QEventLoop, asyncClose
 
 from Domain.Project import Project
 from Domain.ProjectFileManager import ProjectFileManager
+from Domain.enums import Language
 from Domain.language_settings import return_language
 from Domain.navigation import Navigation
 from GUI.Screens.error_screen import ErrorScreen
@@ -63,7 +64,9 @@ if __name__ == '__main__':
         format='%(asctime)s %(levelname)-8s %(message)s',
         level=logging.DEBUG,
         datefmt='%Y-%m-%d %H:%M:%S')
-    language = return_language(LANG_DIR)
+    ProjectFileManager().create_settings_file()
+    lang = ProjectFileManager().get_language_from_settings()
+    language = return_language(LANG_DIR, lang)
     app = MyApplication(sys.argv)
     sys.excepthook = excepthook
     event_loop = QEventLoop(app)

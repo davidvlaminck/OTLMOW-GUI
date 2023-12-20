@@ -2,6 +2,7 @@ import datetime
 import json
 import logging
 import os
+import platform
 import shutil
 import tempfile
 import zipfile
@@ -12,6 +13,7 @@ from otlmow_converter.OtlmowConverter import OtlmowConverter
 from Domain import global_vars
 from Domain.GitHubDownloader import GitHubDownloader
 from Domain.Project import Project
+from Domain.enums import Language
 from Domain.project_file import ProjectFile
 
 
@@ -230,3 +232,42 @@ class ProjectFileManager:
         return any(
             template.state in ['OK', 'ok'] for template in project.templates_in_memory
         )
+
+    @classmethod
+    def create_settings_file(cls, language=None):
+        work_dir_path = cls.get_otl_wizard_work_dir()
+        settings_file = work_dir_path / 'settings.json'
+        operating_sys = platform.system()
+        if not settings_file.exists():
+            language = Language.DUTCH
+        else:
+            with open(settings_file) as json_file:
+                settings_details = json.load(json_file)
+                if language is None:
+                    language = settings_details['language']
+        settings_details = {
+            'language': str(language.name),
+            'OS': str(operating_sys)
+        }
+        with open(settings_file, 'w') as f:
+            json.dump(settings_details, f)
+
+    @classmethod
+    def change_language_on_settings_file(cls, lang):
+        work_dir_path = cls.get_otl_wizard_work_dir()
+        settings_file = work_dir_path / 'settings.json'
+        with open(settings_file) as json_file:
+            settings_details = json.load(json_file)
+        settings_details['language'] = str(lang)
+        with open(settings_file, 'w') as f:
+            json.dump(settings_details, f)
+
+    @classmethod
+    def get_language_from_settings(cls):
+        work_dir_path = cls.get_otl_wizard_work_dir()
+        settings_file = work_dir_path / 'settings.json'
+        with open(settings_file) as json_file:
+            settings_details = json.load(json_file)
+        return Language[settings_details['language']]
+
+
