@@ -9,7 +9,7 @@ from pathlib import Path
 
 from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import QApplication
-from qasync import QEventLoop, asyncClose
+from qasync import QEventLoop
 
 from Domain.Project import Project
 from Domain.ProjectFileManager import ProjectFileManager
@@ -40,10 +40,11 @@ def demo_data():
 class MyApplication(QApplication):
     def __init__(self, argv: typing.List[str]):
         super().__init__(argv)
+        self.event_loop = None
         # self.demo_project = demo_data()
 
-    @asyncClose
-    async def quit(self):
+    def quit(self):
+        self.event_loop.exit()
         logging.debug("closing application")
         ProjectFileManager().delete_project_files_by_path(self.demo_project.project_path)
         super().quit()
@@ -67,6 +68,7 @@ if __name__ == '__main__':
     app = MyApplication(sys.argv)
     sys.excepthook = excepthook
     event_loop = QEventLoop(app)
+    app.event_loop = event_loop
     asyncio.set_event_loop(event_loop)
     app_icon = QIcon('../img/wizard.ico')
     app.setWindowIcon(app_icon)
@@ -80,5 +82,5 @@ if __name__ == '__main__':
     stacked_widget.setMinimumSize(1280, 720)
     event_loop.run_until_complete(future)
     app.exec()
-    # app.quit()
+    app.quit()
     # event_loop.close()
