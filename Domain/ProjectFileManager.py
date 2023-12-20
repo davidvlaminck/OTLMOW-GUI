@@ -244,7 +244,7 @@ class ProjectFileManager:
             with open(settings_file) as json_file:
                 settings_details = json.load(json_file)
                 if language is None:
-                    language = settings_details['language']
+                    language = Language[settings_details['language']]
         settings_details = {
             'language': str(language.name),
             'OS': str(operating_sys)
@@ -258,7 +258,7 @@ class ProjectFileManager:
         settings_file = work_dir_path / 'settings.json'
         with open(settings_file) as json_file:
             settings_details = json.load(json_file)
-        settings_details['language'] = str(lang)
+        settings_details['language'] = str(lang.name)
         with open(settings_file, 'w') as f:
             json.dump(settings_details, f)
 
@@ -269,5 +269,3 @@ class ProjectFileManager:
         with open(settings_file) as json_file:
             settings_details = json.load(json_file)
         return Language[settings_details['language']]
-
-
