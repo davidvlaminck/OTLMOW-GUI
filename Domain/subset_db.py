@@ -23,8 +23,17 @@ class SubsetDatabase:
         cursor.execute("SELECT * FROM GeneralInfo")
         info = cursor.fetchall()
         cursor.close()
-        self.close_connection()
         return info
+
+    def is_valid_subset_database(self):
+        try:
+            cursor = self.connection.cursor()
+            cursor.execute("SELECT * FROM OSLOClass")
+            info = cursor.fetchall()
+            cursor.close()
+            return True
+        except sqlite3.OperationalError:
+            return False
 
     def close_connection(self):
         logging.debug("Closing connection to subset database")

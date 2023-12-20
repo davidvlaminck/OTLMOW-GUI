@@ -10,8 +10,10 @@ class ModelBuilder:
     def __init__(self, path):
         self.collector = OSLOCollector(Path(path))
         self.subset_db = SubsetDatabase(Path(path))
-        self.collector.collect_all()
         self.info_dict = dict(self.subset_db.get_general_info_project())
+        if self.subset_db.is_valid_subset_database():
+            self.collector.collect_all()
+        self.close_subset_db()
 
     def get_all_classes(self):
         return self.collector.classes
