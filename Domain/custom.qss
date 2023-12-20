@@ -238,3 +238,7 @@ QTabBar::tab{
     color: white;
     border: 1px solid grey;
 }
+
+.settings:menu-indicator{
+    image: none;
+}

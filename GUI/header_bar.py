@@ -1,7 +1,7 @@
 import logging
 
 from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QFrame, QHBoxLayout, QLabel, QPushButton, QVBoxLayout, QWidget
+from PyQt6.QtWidgets import QFrame, QHBoxLayout, QLabel, QPushButton, QVBoxLayout, QWidget, QMenu
 
 import qtawesome as qta
 
@@ -14,7 +14,7 @@ from GUI.overviewtable import OverviewTable
 
 
 class HeaderBar(QFrame):
-    def __init__(self, language, stacked_widget=None, table: OverviewTable =None, has_save_btn: bool = True):
+    def __init__(self, language, stacked_widget=None, table: OverviewTable = None, has_save_btn: bool = True):
         super().__init__()
         self.new_project_button = ButtonWidget()
         self._ = language
@@ -62,12 +62,21 @@ class HeaderBar(QFrame):
         settings.clicked.connect(lambda: self.start_dialog_window())
         user_pref_container.addWidget(settings)
         help_widget = ButtonWidget()
+        menu = self.construct_menu()
+        help_widget.setMenu(menu)
         help_icon = qta.icon('mdi.help-circle',
                              color='white')
         help_widget.setIcon(help_icon)
         help_widget.setProperty('class', 'settings')
         user_pref_container.addWidget(help_widget)
         return user_pref_container
+
+    def construct_menu(self):
+        menu = QMenu()
+        menu.addAction(self._('help'))
+        menu.addAction(self._('about'))
+        menu.addAction(self._('report error'))
+        return menu
 
     def start_dialog_window(self, id_: int = None, is_project=False) -> None:
         if is_project:
@@ -108,7 +117,7 @@ class HeaderBar(QFrame):
         header_sub.setProperty('class', 'sub-header')
         if self.has_save_btn:
             self.save_button.setIcon(qta.icon('mdi.content-save',
-                                          color='white'))
+                                              color='white'))
             self.save_button.setText(self._('save_button'))
             self.save_button.setProperty('class', 'primary-button')
 
@@ -156,4 +165,3 @@ class HeaderBar(QFrame):
             self.reference_title.setText(global_vars.single_project.eigen_referentie)
         else:
             self.reference_title.setText("")
-
