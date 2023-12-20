@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: jasper.berton@mow.vlaanderen.be\n"
-"POT-Creation-Date: 2023-12-18 14:07+0100\n"
+"POT-Creation-Date: 2023-12-20 17:37+0100\n"
 "PO-Revision-Date: 2023-10-19 13:13+0200\n"
 "Last-Translator: Jasper Berton <jasper.berton@mow.vlaanderen.be>\n"
 "Language: nl_BE\n"
@@ -46,19 +46,31 @@ msgstr "Oud attribuut"
 msgid "new_attribute"
 msgstr "Nieuw attribuut"
 
-#: GUI/header_bar.py:51 GUI/header_bar.py:151
+#: GUI/header_bar.py:53 GUI/header_bar.py:165
 msgid "new_project_button"
 msgstr "Nieuw Project"
 
-#: GUI/header_bar.py:92 GUI/header_bar.py:152
+#: GUI/DialogWindows/menu_actions_window.py:12 GUI/header_bar.py:78
+msgid "help"
+msgstr "Help"
+
+#: GUI/DialogWindows/menu_actions_window.py:24 GUI/header_bar.py:80
+msgid "about"
+msgstr "Over..."
+
+#: GUI/header_bar.py:82
+msgid "report error"
+msgstr "Rapporteer probleem"
+
+#: GUI/header_bar.py:106 GUI/header_bar.py:166
 msgid "return_to_home_screen"
 msgstr "terug naar startscherm"
 
-#: GUI/header_bar.py:112 GUI/header_bar.py:153
+#: GUI/header_bar.py:126 GUI/header_bar.py:167
 msgid "save_button"
 msgstr "Bewaar"
 
-#: GUI/header_bar.py:134 GUI/header_bar.py:154
+#: GUI/header_bar.py:148 GUI/header_bar.py:168
 msgid "import"
 msgstr "Importeren"
 
@@ -80,14 +92,14 @@ msgstr "Nee"
 
 #: GUI/DialogWindows/upsert_project_window.py:42
 #: GUI/DialogWindows/upsert_project_window.py:60 GUI/overviewtable.py:40
-#: GUI/overviewtable.py:152 UnitTests/domain_test/language_test.py:14
+#: GUI/overviewtable.py:153 UnitTests/domain_test/language_test.py:14
 #: UnitTests/domain_test/language_test.py:19
 msgid "own_reference"
 msgstr "Eigen referentie"
 
 #: GUI/DialogWindows/upsert_project_window.py:44
 #: GUI/DialogWindows/upsert_project_window.py:61 GUI/overviewtable.py:40
-#: GUI/overviewtable.py:152
+#: GUI/overviewtable.py:153
 msgid "service_order"
 msgstr "Bestek - (dienstbevel)"
 
@@ -95,11 +107,11 @@ msgstr "Bestek - (dienstbevel)"
 #: GUI/DialogWindows/upsert_project_window.py:46
 #: GUI/DialogWindows/upsert_project_window.py:62
 #: GUI/Screens/template_screen.py:165 GUI/overviewtable.py:40
-#: GUI/overviewtable.py:152
+#: GUI/overviewtable.py:153
 msgid "subset"
 msgstr "Subset"
 
-#: GUI/overviewtable.py:40 GUI/overviewtable.py:152
+#: GUI/overviewtable.py:40 GUI/overviewtable.py:153
 msgid "last_edited"
 msgstr "Laatst bewerkt"
 
@@ -107,7 +119,7 @@ msgstr "Laatst bewerkt"
 msgid "no_result"
 msgstr "Geen resultaten gevonden voor dit zoekresultaat"
 
-#: GUI/overviewtable.py:153
+#: GUI/overviewtable.py:154
 msgid "no_results"
 msgstr "Geen resultaten gevonden voor dit zoekresultaat"
 
@@ -152,17 +164,41 @@ msgstr "Waarschuwing: overschrijven bestanden"
 msgid "warning overwriting files text"
 msgstr "Bent u zeker dat u de bestanden van stap 2 wilt overschrijven?"
 
-#: GUI/DialogWindows/language_window.py:22
+#: GUI/DialogWindows/language_window.py:23
 msgid "change_language_title"
 msgstr "Taal veranderen"
 
-#: GUI/DialogWindows/language_window.py:24
+#: GUI/DialogWindows/language_window.py:25
 msgid "language_option_dutch"
 msgstr "Nederlands"
 
-#: GUI/DialogWindows/language_window.py:25
+#: GUI/DialogWindows/language_window.py:26
 msgid "language_option_english"
 msgstr "English"
+
+#: GUI/DialogWindows/menu_actions_window.py:14
+msgid "help_text"
+msgstr "Hier zou normaal een link moeten staan naar een tutorial"
+
+#: GUI/DialogWindows/menu_actions_window.py:27
+msgid "made_by"
+msgstr "Gemaakt door"
+
+#: GUI/DialogWindows/menu_actions_window.py:39
+msgid "report_error"
+msgstr "Indien u een fout vindt, gelieve deze te melden aan de ontwikkelaars die vermeld staan hieronder."
+
+#: GUI/DialogWindows/menu_actions_window.py:40
+msgid "error_title"
+msgstr "Probleem melden"
+
+#: GUI/DialogWindows/menu_actions_window.py:41
+msgid "contact"
+msgstr "Contact"
+
+#: GUI/DialogWindows/menu_actions_window.py:52
+msgid "version"
+msgstr "Versie"
 
 #: GUI/DialogWindows/project_picker_window.py:17
 msgid "select_OTL_project"
@@ -184,28 +220,30 @@ msgstr "Aanpassen project"
 msgid "new_project_title"
 msgstr "Nieuw Project"
 
-#: GUI/Screens/asset_data_change_screen.py:73
+#: GUI/Screens/asset_data_change_screen.py:75
 #: GUI/Screens/asset_data_change_screen.py:125
 msgid "original_file_load"
 msgstr "Origineel bestand inladen"
 
-#: GUI/Screens/asset_data_change_screen.py:88
-#: GUI/Screens/asset_data_change_screen.py:133
-#: GUI/Screens/insert_data_screen.py:77
+#: GUI/Screens/asset_data_change_screen.py:89
+#: GUI/Screens/asset_data_change_screen.py:129
+#: GUI/Screens/asset_data_change_screen.py:135
+#: GUI/Screens/insert_data_screen.py:78
 msgid "choose_file"
 msgstr "Kies uw bestand..."
 
-#: GUI/Screens/asset_data_change_screen.py:91
+#: GUI/Screens/asset_data_change_screen.py:92
 #: GUI/Screens/asset_data_change_screen.py:127
 msgid "show differences"
 msgstr "Toon verschillen"
 
-#: GUI/Screens/asset_data_change_screen.py:96
+#: GUI/Screens/asset_data_change_screen.py:97
 #: GUI/Screens/asset_data_change_screen.py:128
 msgid "apply differences"
 msgstr "Toepassen verschillen"
 
 #: GUI/Screens/asset_data_change_screen.py:102
+#: GUI/Screens/asset_data_change_screen.py:130
 msgid "empty fields"
 msgstr "Reset velden"
 
@@ -213,12 +251,12 @@ msgstr "Reset velden"
 msgid "new_file_load"
 msgstr "Nieuw bestand inladen"
 
-#: GUI/Screens/asset_data_change_screen.py:208
+#: GUI/Screens/asset_data_change_screen.py:217
 msgid "the changes were correctly written to a new file"
 msgstr "Veranderingen zijn succesvol weggeschreven naar een nieuw bestand"
 
-#: GUI/Screens/asset_data_change_screen.py:217
-#: GUI/Screens/insert_data_screen.py:222
+#: GUI/Screens/asset_data_change_screen.py:226
+#: GUI/Screens/insert_data_screen.py:223
 msgid "error"
 msgstr "Error"
 
@@ -234,8 +272,8 @@ msgstr "Converteren"
 msgid "file_for_conversion"
 msgstr "Bestand voor conversie"
 
-#: GUI/Screens/data_visualisation_screen.py:46
-#: GUI/Screens/data_visualisation_screen.py:84
+#: GUI/Screens/data_visualisation_screen.py:48
+#: GUI/Screens/data_visualisation_screen.py:86
 msgid "relations legend"
 msgstr "Mogelijke relaties"
 
@@ -268,41 +306,39 @@ msgstr "Bestand om te uploaden"
 msgid "search_text"
 msgstr "Geef een project of bestek in om te zoeken"
 
-#: GUI/Screens/insert_data_screen.py:67 GUI/Screens/insert_data_screen.py:228
+#: GUI/Screens/insert_data_screen.py:68 GUI/Screens/insert_data_screen.py:229
 msgid "control_button"
 msgstr "Valideren"
 
-#: GUI/Screens/insert_data_screen.py:73
+#: GUI/Screens/insert_data_screen.py:74
 msgid "reset_fields"
 msgstr "Reset velden"
 
-#: GUI/Screens/insert_data_screen.py:161 GUI/Screens/insert_data_screen.py:227
+#: GUI/Screens/insert_data_screen.py:162 GUI/Screens/insert_data_screen.py:228
 msgid "input_file"
 msgstr "Bestanden inladen:"
 
-#: GUI/Screens/insert_data_screen.py:208
+#: GUI/Screens/insert_data_screen.py:209
 msgid "all_info_correct"
 msgstr "Alle gegevens zijn correct"
 
-#: GUI/Screens/insert_data_screen.py:213
+#: GUI/Screens/insert_data_screen.py:214
 msgid "warning"
-msgstr "Waarshuwing"
+msgstr "Waarschuwing"
 
-#: GUI/Screens/insert_data_screen.py:298
+#: GUI/Screens/insert_data_screen.py:300
 msgid "{doc_name}: Data nodig in een datasheet om objecten in te laden.\n"
 msgstr "{doc_name}: Data nodig in een datasheet om objecten in te laden.\n"
 
-#: GUI/Screens/insert_data_screen.py:301
+#: GUI/Screens/insert_data_screen.py:303
 msgid "{doc_name}: No type uri in {tab}\n"
 msgstr "{doc_name}: Kolom TypeUri niet gevonden \n"
 
-#: GUI/Screens/insert_data_screen.py:303
+#: GUI/Screens/insert_data_screen.py:305
 msgid "{doc_name}: invalid columns in {tab}, bad columns are {bad_columns} \n"
-msgstr ""
-"{doc_name}: Foutieve kolommen in werkblad, desbetreffende kolommen "
-"zijn {bad_columns} \n"
+msgstr "{doc_name}: Foutieve kolommen in werkblad, desbetreffende kolommen zijn {bad_columns} \n"
 
-#: GUI/Screens/insert_data_screen.py:306
+#: GUI/Screens/insert_data_screen.py:308
 msgid "{doc_name}: type uri not in first row of {tab}\n"
 msgstr "{doc_name}: TypeUri staat niet in de eerste rij\n"
 
@@ -385,9 +421,6 @@ msgstr "Data visualisatie"
 msgid "create_png"
 msgstr "Creëer PNG"
 
-msgid "empty_fields_error"
-msgstr "Gelieve alle velden in te vullen"
-
 msgid "search_button"
 msgstr "Zoeken"
 
@@ -396,9 +429,6 @@ msgstr "Specifieer welke klassen en instellingen u in uw template wil verwerken"
 
 msgid "export_data"
 msgstr "Export Data"
-
-msgid "conversion"
-msgstr "Bestand conversie"
 
 msgid "step_1"
 msgstr "Aanmaken van template"

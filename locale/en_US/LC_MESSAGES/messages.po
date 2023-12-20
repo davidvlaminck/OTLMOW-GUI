@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-12-18 14:07+0100\n"
+"POT-Creation-Date: 2023-12-20 17:37+0100\n"
 "PO-Revision-Date: 2023-10-19 13:11+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en_US\n"
@@ -46,19 +46,31 @@ msgstr "Old attribute"
 msgid "new_attribute"
 msgstr "New attribute"
 
-#: GUI/header_bar.py:51 GUI/header_bar.py:151
+#: GUI/header_bar.py:53 GUI/header_bar.py:165
 msgid "new_project_button"
 msgstr "New Project"
 
-#: GUI/header_bar.py:92 GUI/header_bar.py:152
+#: GUI/DialogWindows/menu_actions_window.py:12 GUI/header_bar.py:78
+msgid "help"
+msgstr "Help"
+
+#: GUI/DialogWindows/menu_actions_window.py:24 GUI/header_bar.py:80
+msgid "about"
+msgstr "About"
+
+#: GUI/header_bar.py:82
+msgid "report error"
+msgstr "Report issue"
+
+#: GUI/header_bar.py:106 GUI/header_bar.py:166
 msgid "return_to_home_screen"
 msgstr "Back home"
 
-#: GUI/header_bar.py:112 GUI/header_bar.py:153
+#: GUI/header_bar.py:126 GUI/header_bar.py:167
 msgid "save_button"
 msgstr "Save"
 
-#: GUI/header_bar.py:134 GUI/header_bar.py:154
+#: GUI/header_bar.py:148 GUI/header_bar.py:168
 msgid "import"
 msgstr "Import"
 
@@ -80,14 +92,14 @@ msgstr "No"
 
 #: GUI/DialogWindows/upsert_project_window.py:42
 #: GUI/DialogWindows/upsert_project_window.py:60 GUI/overviewtable.py:40
-#: GUI/overviewtable.py:152 UnitTests/domain_test/language_test.py:14
+#: GUI/overviewtable.py:153 UnitTests/domain_test/language_test.py:14
 #: UnitTests/domain_test/language_test.py:19
 msgid "own_reference"
 msgstr "Own reference"
 
 #: GUI/DialogWindows/upsert_project_window.py:44
 #: GUI/DialogWindows/upsert_project_window.py:61 GUI/overviewtable.py:40
-#: GUI/overviewtable.py:152
+#: GUI/overviewtable.py:153
 msgid "service_order"
 msgstr "Service order"
 
@@ -95,11 +107,11 @@ msgstr "Service order"
 #: GUI/DialogWindows/upsert_project_window.py:46
 #: GUI/DialogWindows/upsert_project_window.py:62
 #: GUI/Screens/template_screen.py:165 GUI/overviewtable.py:40
-#: GUI/overviewtable.py:152
+#: GUI/overviewtable.py:153
 msgid "subset"
 msgstr "Subset"
 
-#: GUI/overviewtable.py:40 GUI/overviewtable.py:152
+#: GUI/overviewtable.py:40 GUI/overviewtable.py:153
 msgid "last_edited"
 msgstr "Last edited"
 
@@ -107,7 +119,7 @@ msgstr "Last edited"
 msgid "no_result"
 msgstr "No results found for this search value"
 
-#: GUI/overviewtable.py:153
+#: GUI/overviewtable.py:154
 msgid "no_results"
 msgstr "No results found for this search value"
 
@@ -152,17 +164,43 @@ msgstr "Warning: overwriting files"
 msgid "warning overwriting files text"
 msgstr "Are you sure you want to overwrite the files from step 2?"
 
-#: GUI/DialogWindows/language_window.py:22
+#: GUI/DialogWindows/language_window.py:23
 msgid "change_language_title"
 msgstr "Change language"
 
-#: GUI/DialogWindows/language_window.py:24
+#: GUI/DialogWindows/language_window.py:25
 msgid "language_option_dutch"
 msgstr "Nederlands"
 
-#: GUI/DialogWindows/language_window.py:25
+#: GUI/DialogWindows/language_window.py:26
 msgid "language_option_english"
 msgstr "English"
+
+#: GUI/DialogWindows/menu_actions_window.py:14
+msgid "help_text"
+msgstr "There should be a link to a tutorial here"
+
+#: GUI/DialogWindows/menu_actions_window.py:27
+msgid "made_by"
+msgstr "Mady by"
+
+#: GUI/DialogWindows/menu_actions_window.py:39
+msgid "report_error"
+msgstr "Report problem"
+
+#: GUI/DialogWindows/menu_actions_window.py:40
+#, fuzzy
+msgid "error_title"
+msgstr "Report problem"
+
+#: GUI/DialogWindows/menu_actions_window.py:41
+msgid "contact"
+msgstr "Contact"
+
+#: GUI/DialogWindows/menu_actions_window.py:52
+#, fuzzy
+msgid "version"
+msgstr "Version"
 
 #: GUI/DialogWindows/project_picker_window.py:17
 msgid "select_OTL_project"
@@ -184,28 +222,30 @@ msgstr "Alter Project"
 msgid "new_project_title"
 msgstr "New Project"
 
-#: GUI/Screens/asset_data_change_screen.py:73
+#: GUI/Screens/asset_data_change_screen.py:75
 #: GUI/Screens/asset_data_change_screen.py:125
 msgid "original_file_load"
 msgstr "Original file to load:"
 
-#: GUI/Screens/asset_data_change_screen.py:88
-#: GUI/Screens/asset_data_change_screen.py:133
-#: GUI/Screens/insert_data_screen.py:77
+#: GUI/Screens/asset_data_change_screen.py:89
+#: GUI/Screens/asset_data_change_screen.py:129
+#: GUI/Screens/asset_data_change_screen.py:135
+#: GUI/Screens/insert_data_screen.py:78
 msgid "choose_file"
 msgstr "Pick your file..."
 
-#: GUI/Screens/asset_data_change_screen.py:91
+#: GUI/Screens/asset_data_change_screen.py:92
 #: GUI/Screens/asset_data_change_screen.py:127
 msgid "show differences"
 msgstr "Show differences"
 
-#: GUI/Screens/asset_data_change_screen.py:96
+#: GUI/Screens/asset_data_change_screen.py:97
 #: GUI/Screens/asset_data_change_screen.py:128
 msgid "apply differences"
 msgstr "Apply differences"
 
 #: GUI/Screens/asset_data_change_screen.py:102
+#: GUI/Screens/asset_data_change_screen.py:130
 msgid "empty fields"
 msgstr "Reset fields"
 
@@ -213,12 +253,12 @@ msgstr "Reset fields"
 msgid "new_file_load"
 msgstr "New file to load:"
 
-#: GUI/Screens/asset_data_change_screen.py:208
+#: GUI/Screens/asset_data_change_screen.py:217
 msgid "the changes were correctly written to a new file"
 msgstr "Changes were correctly written to a new file"
 
-#: GUI/Screens/asset_data_change_screen.py:217
-#: GUI/Screens/insert_data_screen.py:222
+#: GUI/Screens/asset_data_change_screen.py:226
+#: GUI/Screens/insert_data_screen.py:223
 msgid "error"
 msgstr "Error"
 
@@ -234,8 +274,8 @@ msgstr "Convert"
 msgid "file_for_conversion"
 msgstr "File conversion"
 
-#: GUI/Screens/data_visualisation_screen.py:46
-#: GUI/Screens/data_visualisation_screen.py:84
+#: GUI/Screens/data_visualisation_screen.py:48
+#: GUI/Screens/data_visualisation_screen.py:86
 msgid "relations legend"
 msgstr "Color legend relations:"
 
@@ -268,39 +308,39 @@ msgstr "file to upload:"
 msgid "search_text"
 msgstr "Enter project or service order to search"
 
-#: GUI/Screens/insert_data_screen.py:67 GUI/Screens/insert_data_screen.py:228
+#: GUI/Screens/insert_data_screen.py:68 GUI/Screens/insert_data_screen.py:229
 msgid "control_button"
 msgstr "Control"
 
-#: GUI/Screens/insert_data_screen.py:73
+#: GUI/Screens/insert_data_screen.py:74
 msgid "reset_fields"
 msgstr "Reset fields"
 
-#: GUI/Screens/insert_data_screen.py:161 GUI/Screens/insert_data_screen.py:227
+#: GUI/Screens/insert_data_screen.py:162 GUI/Screens/insert_data_screen.py:228
 msgid "input_file"
 msgstr "Load in file:"
 
-#: GUI/Screens/insert_data_screen.py:208
+#: GUI/Screens/insert_data_screen.py:209
 msgid "all_info_correct"
 msgstr "All provided information is correct"
 
-#: GUI/Screens/insert_data_screen.py:213
+#: GUI/Screens/insert_data_screen.py:214
 msgid "warning"
 msgstr "Warning"
 
-#: GUI/Screens/insert_data_screen.py:298
+#: GUI/Screens/insert_data_screen.py:300
 msgid "{doc_name}: Data nodig in een datasheet om objecten in te laden.\n"
 msgstr "{doc_name}: Data needed in datasheet to load in objects.\n"
 
-#: GUI/Screens/insert_data_screen.py:301
+#: GUI/Screens/insert_data_screen.py:303
 msgid "{doc_name}: No type uri in {tab}\n"
 msgstr "{doc_name}: No TypeUri found \n"
 
-#: GUI/Screens/insert_data_screen.py:303
+#: GUI/Screens/insert_data_screen.py:305
 msgid "{doc_name}: invalid columns in {tab}, bad columns are {bad_columns} \n"
 msgstr "{doc_name}: invalid columns found, bad columns are {bad_columns}\n"
 
-#: GUI/Screens/insert_data_screen.py:306
+#: GUI/Screens/insert_data_screen.py:308
 msgid "{doc_name}: type uri not in first row of {tab}\n"
 msgstr "{doc_name}: TypeUri not found in first row \n"
 
@@ -377,9 +417,6 @@ msgstr "No classes found in specified path"
 msgid "{selected} classes selected"
 msgstr "{selected} classes selected"
 
-msgid "conversion"
-msgstr "File conversion"
-
 msgid "control"
 msgstr "Control"
 
@@ -439,3 +476,4 @@ msgstr "Export Data"
 
 msgid "data visuals"
 msgstr "Data Visualisation"
+
