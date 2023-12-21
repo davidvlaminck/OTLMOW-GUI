@@ -76,12 +76,12 @@ class HeaderBar(QFrame):
 
     def construct_menu(self):
         menu = QMenu()
-        help_action = menu.addAction(self._('help'))
-        help_action.triggered.connect(lambda: self.open_wiki())
-        about_action = menu.addAction(self._('about'))
-        about_action.triggered.connect(lambda: MenuActionsWindow(self._).create_about_window())
-        report_action = menu.addAction(self._('report error'))
-        report_action.triggered.connect(lambda: MenuActionsWindow(self._).create_error_report_window())
+        self.help_action = menu.addAction(self._('help'))
+        self.help_action.triggered.connect(lambda: self.open_wiki())
+        self.about_action = menu.addAction(self._('about'))
+        self.about_action.triggered.connect(lambda: MenuActionsWindow(self._).create_about_window())
+        self.report_action = menu.addAction(self._('report error'))
+        self.report_action.triggered.connect(lambda: MenuActionsWindow(self._).create_error_report_window())
         return menu
 
     @staticmethod
@@ -171,6 +171,9 @@ class HeaderBar(QFrame):
         self.return_button.setText(self._('return_to_home_screen'))
         self.save_button.setText(self._('save_button'))
         self.import_button.setText(self._("import"))
+        self.help_action.setText(self._('help'))
+        self.about_action.setText(self._('about'))
+        self.report_action.setText(self._('report error'))
         if global_vars.single_project is not None:
             self.reference_title.setText(global_vars.single_project.eigen_referentie)
         else:

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-12-20 17:37+0100\n"
+"POT-Creation-Date: 2023-12-21 11:22+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -45,31 +45,32 @@ msgstr ""
 msgid "new_attribute"
 msgstr ""
 
-#: GUI/header_bar.py:53 GUI/header_bar.py:165
+#: GUI/header_bar.py:54 GUI/header_bar.py:170
 msgid "new_project_button"
 msgstr ""
 
-#: GUI/DialogWindows/menu_actions_window.py:12 GUI/header_bar.py:78
+#: GUI/header_bar.py:79 GUI/header_bar.py:174
 msgid "help"
 msgstr ""
 
-#: GUI/DialogWindows/menu_actions_window.py:24 GUI/header_bar.py:80
+#: GUI/DialogWindows/menu_actions_window.py:13 GUI/header_bar.py:81
+#: GUI/header_bar.py:175
 msgid "about"
 msgstr ""
 
-#: GUI/header_bar.py:82
+#: GUI/header_bar.py:83 GUI/header_bar.py:176
 msgid "report error"
 msgstr ""
 
-#: GUI/header_bar.py:106 GUI/header_bar.py:166
+#: GUI/header_bar.py:111 GUI/header_bar.py:171
 msgid "return_to_home_screen"
 msgstr ""
 
-#: GUI/header_bar.py:126 GUI/header_bar.py:167
+#: GUI/header_bar.py:131 GUI/header_bar.py:172
 msgid "save_button"
 msgstr ""
 
-#: GUI/header_bar.py:148 GUI/header_bar.py:168
+#: GUI/header_bar.py:153 GUI/header_bar.py:173
 msgid "import"
 msgstr ""
 
@@ -175,27 +176,23 @@ msgstr ""
 msgid "language_option_english"
 msgstr ""
 
-#: GUI/DialogWindows/menu_actions_window.py:14
-msgid "help_text"
-msgstr ""
-
-#: GUI/DialogWindows/menu_actions_window.py:27
+#: GUI/DialogWindows/menu_actions_window.py:16
 msgid "made_by"
 msgstr ""
 
-#: GUI/DialogWindows/menu_actions_window.py:39
-msgid "report_error"
-msgstr ""
-
-#: GUI/DialogWindows/menu_actions_window.py:40
+#: GUI/DialogWindows/menu_actions_window.py:28
 msgid "error_title"
 msgstr ""
 
-#: GUI/DialogWindows/menu_actions_window.py:41
+#: GUI/DialogWindows/menu_actions_window.py:29
+msgid "error_report"
+msgstr ""
+
+#: GUI/DialogWindows/menu_actions_window.py:30
 msgid "contact"
 msgstr ""
 
-#: GUI/DialogWindows/menu_actions_window.py:52
+#: GUI/DialogWindows/menu_actions_window.py:41
 msgid "version"
 msgstr ""
 
