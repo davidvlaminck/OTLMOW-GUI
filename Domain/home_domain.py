@@ -3,7 +3,9 @@ from pathlib import Path
 
 from Domain.Project import Project
 from Domain.ProjectFileManager import ProjectFileManager
+from Domain.subset_db import SubsetDatabase
 from Exceptions.EmptyFieldError import EmptyFieldError
+from Exceptions.WrongDatabaseError import WrongDatabaseError
 
 
 class HomeDomain:
@@ -34,11 +36,13 @@ class HomeDomain:
         overview_table.draw_table()
         dlg.close()
 
-    def validate(self, input_eigen_ref: str, input_subset: str):
+    def validate(self, input_eigen_ref: str, input_subset: str, db_path: str):
         if not input_eigen_ref.strip():
             raise EmptyFieldError(self._('own_reference_empty_error'))
         elif not input_subset.strip():
             raise EmptyFieldError(self._('bestek_empty_error'))
+        elif SubsetDatabase(Path(db_path)).is_valid_subset_database() is False:
+            raise WrongDatabaseError(self._('wrong_database_error'))
         else:
             return True
 

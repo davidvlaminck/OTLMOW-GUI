@@ -11,6 +11,7 @@ from Domain.home_domain import HomeDomain
 import qtawesome as qta
 
 from Exceptions.EmptyFieldError import EmptyFieldError
+from Exceptions.WrongDatabaseError import WrongDatabaseError
 
 
 class UpsertProjectWindow:
@@ -101,8 +102,11 @@ class UpsertProjectWindow:
                                      overview_table,
                                      project: Project = None) -> None:
         try:
-            self.home_domain.validate(input_eigen_ref, input_subset)
+            self.home_domain.validate(input_eigen_ref, input_bestek, input_subset)
         except EmptyFieldError as e:
+            self.error_label.setText(str(e))
+            return
+        except WrongDatabaseError as e:
             self.error_label.setText(str(e))
             return
         self.error_label.setText("")
