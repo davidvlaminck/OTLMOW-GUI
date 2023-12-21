@@ -235,6 +235,7 @@ class ProjectFileManager:
 
     @classmethod
     def create_settings_file(cls, language=None):
+        timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         first_run = False
         work_dir_path = cls.get_otl_wizard_work_dir()
         settings_file = work_dir_path / 'settings.json'
@@ -250,7 +251,8 @@ class ProjectFileManager:
         settings_details = {
             'language': str(language.name),
             'OS': str(operating_sys),
-            'first_run': first_run
+            'first_run': first_run,
+            'last_run': timestamp
         }
         with open(settings_file, 'w') as f:
             json.dump(settings_details, f)
