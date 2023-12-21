@@ -6,17 +6,6 @@ class MenuActionsWindow:
     def __init__(self, language):
         self._ = language
 
-    def create_help_window(self):
-        window = QDialog()
-        window.setMinimumWidth(500)
-        window.setWindowTitle(self._('help'))
-        text_label = QLabel()
-        text_label.setText(self._('help_text'))
-        window_layout = QVBoxLayout()
-        window_layout.addWidget(text_label)
-        window.setLayout(window_layout)
-        window.exec()
-
     def create_about_window(self):
         window = QDialog()
         window_layout = QVBoxLayout()
@@ -61,8 +50,9 @@ class MenuActionsWindow:
         creator_box = QFrame()
         creator_box_layout = QHBoxLayout()
         creator_name = QLabel(name)
-        creator_mail = QLabel(mail)
         creator_box_layout.addWidget(creator_name)
+        creator_mail = QLabel(f"<a href='mailto:{mail}'>{mail}</a>")
+        creator_mail.setOpenExternalLinks(True)
         creator_box_layout.addWidget(creator_mail)
         creator_box.setLayout(creator_box_layout)
         return creator_box
