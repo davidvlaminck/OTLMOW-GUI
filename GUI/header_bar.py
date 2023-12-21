@@ -1,4 +1,5 @@
 import logging
+import webbrowser
 
 from PyQt5.QtWidgets import QAction
 from PyQt6.QtCore import Qt
@@ -76,12 +77,16 @@ class HeaderBar(QFrame):
     def construct_menu(self):
         menu = QMenu()
         help_action = menu.addAction(self._('help'))
-        help_action.triggered.connect(lambda: MenuActionsWindow(self._).create_help_window())
+        help_action.triggered.connect(lambda: self.open_wiki())
         about_action = menu.addAction(self._('about'))
         about_action.triggered.connect(lambda: MenuActionsWindow(self._).create_about_window())
         report_action = menu.addAction(self._('report error'))
         report_action.triggered.connect(lambda: MenuActionsWindow(self._).create_error_report_window())
         return menu
+
+    @staticmethod
+    def open_wiki():
+        webbrowser.open('https://github.com/davidvlaminck/OTLMOW-GUI/wiki')
 
     def start_dialog_window(self, id_: int = None, is_project=False) -> None:
         if is_project:
