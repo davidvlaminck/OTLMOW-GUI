@@ -69,7 +69,7 @@ if __name__ == '__main__':
     file_handler = logging.FileHandler(logging_file)
     file_handler.setLevel(logging.DEBUG)
     logging.getLogger().addHandler(file_handler)
-    logging.debug("Test")
+    logging.debug("Application started")
     lang = ProjectFileManager().get_language_from_settings()
     language = return_language(LANG_DIR, lang)
     app = MyApplication(sys.argv)

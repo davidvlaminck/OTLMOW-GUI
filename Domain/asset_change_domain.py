@@ -61,6 +61,7 @@ class AssetChangeDomain:
 
     @classmethod
     def replace_files_with_diff_report(cls, original_documents, project, file_name):
+        logging.debug("started replacing files with diff report")
         changed_assets = cls.generate_changed_assets_from_files(project=project)
         original_assets = cls.generate_original_assets_from_files(original_documents=original_documents)
         diff_1 = compare_two_lists_of_objects_attribute_level(first_list=original_assets,

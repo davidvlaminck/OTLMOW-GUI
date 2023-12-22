@@ -40,8 +40,8 @@ class ExportDataDomain:
 
     @classmethod
     def extract_objects_from_files(cls, project):
+        logging.debug("started extracting objects from files for export")
         valid_file_paths = [file.file_path for file in project.templates_in_memory if file.state in ['OK', 'ok']]
-
         objects_in_memory = []
         for path in valid_file_paths:
             objects_in_memory.extend(OtlmowConverter().create_assets_from_file(
@@ -50,6 +50,7 @@ class ExportDataDomain:
 
     @classmethod
     def split_relations_and_objects(cls, objects_in_memory):
+        logging.debug("started splitting relations and objects for export")
         assets_in_memory = []
         relations_in_memory = []
         logging.debug(f'objects in memory: {objects_in_memory}')
@@ -62,6 +63,7 @@ class ExportDataDomain:
 
     @classmethod
     def create_relation_and_class_path(cls, end_file):
+        logging.debug("started creating relation and class path for export")
         parent_directory = Path(end_file).parent
         file_stem = Path(end_file).stem
         file_suffix = Path(end_file).suffixes[0]

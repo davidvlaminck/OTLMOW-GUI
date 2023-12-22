@@ -24,6 +24,7 @@ class InsertDataDomain:
 
     @classmethod
     def start_excel_changes(cls, doc) -> Path:
+        logging.debug("starting excel changes")
         wb = load_workbook(doc)
         temp_path = cls.create_temp_path(path_to_template_file_and_extension=doc)
         if 'Keuzelijsten' in wb.sheetnames:

@@ -194,15 +194,18 @@ class ProjectFileManager:
         if end_location == filepath:
             return end_location
         shutil.copy(filepath, end_location)
+        logging.debug(f"Created a copy of the template file {filepath.name} in the project folder")
         return end_location
 
     @classmethod
     def delete_template_folder(cls):
+        logging.debug("Started clearing out the whole template folder")
         project = global_vars.single_project
         location_dir = project.project_path / 'OTL-template-files'
         if not location_dir.exists():
             return
         shutil.rmtree(location_dir)
+        logging.debug("Finished clearing out the whole template folder")
 
     @classmethod
     def delete_template_file_from_project(cls, file_path):
@@ -225,9 +228,12 @@ class ProjectFileManager:
 
     @classmethod
     def correct_project_files_in_memory(cls, project: Project):
+        logging.debug("Started searching for project files in memory that are OTL conform")
         if project is None:
+            logging.debug("No project found")
             return False
         if not project.templates_in_memory:
+            logging.debug("No project files in memory")
             return False
         return any(
             template.state in ['OK', 'ok'] for template in project.templates_in_memory
