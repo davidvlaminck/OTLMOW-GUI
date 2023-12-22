@@ -287,7 +287,18 @@ class ProjectFileManager:
         if not work_dir_path.exists():
             work_dir_path.mkdir()
         timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
-        logging_file = work_dir_path / f'logging{timestamp}.log'
+        logging_file = work_dir_path / f'logging_{timestamp}.log'
         if not logging_file.exists():
             open(Path(logging_file), 'w').close()
         return logging_file
+
+    @classmethod
+    def remove_old_logging_files(cls):
+        work_dir_path = cls.get_otl_wizard_work_dir() / 'logs'
+        for file in os.listdir(work_dir_path):
+            file_name = Path(file).stem
+            split_file = file_name.split('_')
+            logging.debug(f"split file date {str(split_file[-1])}")
+            datetime_obj = datetime.datetime.strptime(split_file[-1], "%Y%m%d%H%M%S")
+            if datetime_obj < datetime.datetime.now() - datetime.timedelta(days=7):
+                os.remove(work_dir_path / file)

@@ -66,6 +66,7 @@ if __name__ == '__main__':
         datefmt='%Y-%m-%d %H:%M:%S')
     ProjectFileManager().create_settings_file()
     logging_file = ProjectFileManager().create_logging_file()
+    ProjectFileManager().remove_old_logging_files()
     file_handler = logging.FileHandler(logging_file)
     file_handler.setLevel(logging.DEBUG)
     logging.getLogger().addHandler(file_handler)
