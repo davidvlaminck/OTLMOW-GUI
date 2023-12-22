@@ -47,10 +47,11 @@ class HomeDomain:
             return True
 
     @staticmethod
-    def change_subset(project, new_path, dialog, stacked_widget):
+    def change_subset(project, new_path, stacked_widget):
         time_of_alter = datetime.now().date()
         project.laatst_bewerkt = time_of_alter
+        if SubsetDatabase(Path(new_path)).is_valid_subset_database() is False:
+            raise WrongDatabaseError("Wrong database")
         project.subset_path = Path(new_path)
         ProjectFileManager.save_project_to_dir(project)
         stacked_widget.widget(1).tab1.project = project
-        dialog.close()
