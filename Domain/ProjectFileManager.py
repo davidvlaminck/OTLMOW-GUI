@@ -274,3 +274,14 @@ class ProjectFileManager:
         with open(settings_file) as json_file:
             settings_details = json.load(json_file)
         return Language[settings_details['language']]
+
+    @classmethod
+    def create_logging_file(cls):
+        work_dir_path = cls.get_otl_wizard_work_dir() / 'logs'
+        if not work_dir_path.exists():
+            work_dir_path.mkdir()
+        timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+        logging_file = work_dir_path / f'logging{timestamp}.log'
+        if not logging_file.exists():
+            open(Path(logging_file), 'w').close()
+        return logging_file

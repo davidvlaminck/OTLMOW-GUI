@@ -65,6 +65,11 @@ if __name__ == '__main__':
         level=logging.DEBUG,
         datefmt='%Y-%m-%d %H:%M:%S')
     ProjectFileManager().create_settings_file()
+    logging_file = ProjectFileManager().create_logging_file()
+    file_handler = logging.FileHandler(logging_file)
+    file_handler.setLevel(logging.DEBUG)
+    logging.getLogger().addHandler(file_handler)
+    logging.debug("Test")
     lang = ProjectFileManager().get_language_from_settings()
     language = return_language(LANG_DIR, lang)
     app = MyApplication(sys.argv)
