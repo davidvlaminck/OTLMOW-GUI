@@ -5,6 +5,7 @@ import pytest
 from Domain.language_settings import return_language
 from Domain.home_domain import HomeDomain
 from Exceptions.EmptyFieldError import EmptyFieldError
+from Exceptions.WrongDatabaseError import WrongDatabaseError
 
 ROOT_DIR = Path(__file__).parent
 
@@ -17,7 +18,8 @@ def home_domain():
 
 
 def test_validate_with_good_values(home_domain):
-    db_path = str(Path(__file__).parent.parent / 'project_files_test' / 'OTLWizardProjects' / 'Projects' / 'project_1' / 'OTL_AllCasesTestClass_no_double_kard.db')
+    db_path = str(Path(
+        __file__).parent.parent / 'project_files_test' / 'OTLWizardProjects' / 'Projects' / 'project_1' / 'OTL_AllCasesTestClass_no_double_kard.db')
     assert home_domain.validate('test', 'test', db_path) is True
 
 
@@ -33,3 +35,10 @@ def test_validate_with_empty_bestek(home_domain):
         __file__).parent.parent / 'project_files_test' / 'OTLWizardProjects' / 'Projects' / 'project_1' / 'OTL_AllCasesTestClass_no_double_kard.db')
     with pytest.raises(EmptyFieldError):
         home_domain.validate('test', '', db_path)
+
+
+def test_validate_with_bad_db(home_domain):
+    db_path = str(Path(
+        __file__).parent.parent / 'project_files_test' / 'OTLWizardProjects' / 'Projects' / 'bad_files' / 'bad.db')
+    with pytest.raises(WrongDatabaseError):
+        home_domain.validate('test', 'test', db_path)
