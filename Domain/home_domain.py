@@ -36,7 +36,7 @@ class HomeDomain:
         overview_table.draw_table()
         dlg.close()
 
-    def validate(self, input_eigen_ref: str, input_subset: str, db_path: str):
+    def validate(self, input_eigen_ref: str, input_subset: str, db_path: str) -> bool:
         if not input_eigen_ref.strip():
             raise EmptyFieldError(self._('own_reference_empty_error'))
         elif not input_subset.strip():
@@ -47,7 +47,7 @@ class HomeDomain:
             return True
 
     @staticmethod
-    def change_subset(project, new_path, stacked_widget):
+    def change_subset(project: Project, new_path, stacked_widget) -> None:
         time_of_alter = datetime.now().date()
         project.laatst_bewerkt = time_of_alter
         if SubsetDatabase(Path(new_path)).is_valid_subset_database() is False:

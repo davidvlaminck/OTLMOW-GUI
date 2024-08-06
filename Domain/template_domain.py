@@ -2,21 +2,19 @@ import logging
 from pathlib import Path
 from typing import List
 
+from otlmow_modelbuilder.SQLDataClasses.OSLOClass import OSLOClass
 from otlmow_template.SubsetTemplateCreator import SubsetTemplateCreator
 
 
 class TemplateDomain:
-    @classmethod
-    def check_for_no_deprecated_present(cls, values):
-        for value in values:
-            if len(value.deprecated_version) != 0:
-                return False
-        return True
+    @staticmethod
+    def check_for_no_deprecated_present(values: list[OSLOClass]) -> bool:
+        return all(len(value.deprecated_version) == 0 for value in values)
 
-    @classmethod
-    def create_template(cls, subset_path, document_path, selected_classes_dir: List, generate_choice_list: bool,
+    @staticmethod
+    def create_template(subset_path, document_path, selected_classes_dir: List, generate_choice_list: bool,
                         add_geo_artefact: bool, add_attribute_info: bool, highlight_deprecated_attributes: bool,
-                        amount_of_examples: int, model_directory: Path = None):
+                        amount_of_examples: int, model_directory: Path = None) -> None:
         try:
             logging.debug("Creating template")
             template_creator = SubsetTemplateCreator()
