@@ -16,7 +16,8 @@ class Database:
     def create_project_table(self) -> None:
         self.cursor = self.connection.cursor()
         self.cursor.execute(
-            '''CREATE TABLE IF NOT EXISTS projects(Id INTEGER PRIMARY KEY AUTOINCREMENT, Eigen_referentie TEXT, Bestek TEXT, Subset TEXT, Laatst_bewerkt TIMESTAMP)''')
+            '''CREATE TABLE IF NOT EXISTS projects(Id INTEGER PRIMARY KEY AUTOINCREMENT, Eigen_referentie TEXT, 
+            Bestek TEXT, Subset TEXT, Laatst_bewerkt TIMESTAMP)''')
         self.cursor.close()
 
     # Adds a project to the project table taking the parameters as values
@@ -24,13 +25,13 @@ class Database:
         self.cursor = self.connection.cursor()
         if not isinstance(eigen_referentie, str) or not isinstance(bestek, str) or not isinstance(subset, str):
             raise TypeError("Invalid type")
-        else:
-            self.cursor.execute(
-                '''INSERT INTO projects(Eigen_referentie, Bestek, Subset, Laatst_bewerkt) VALUES(?,?,?,?)''',
-                (eigen_referentie, bestek, subset, laatst_bewerkt))
-            id_ = self.cursor.lastrowid
-            self.cursor.close()
-            return id_
+
+        self.cursor.execute(
+            '''INSERT INTO projects(Eigen_referentie, Bestek, Subset, Laatst_bewerkt) VALUES(?,?,?,?)''',
+            (eigen_referentie, bestek, subset, laatst_bewerkt))
+        id_ = self.cursor.lastrowid
+        self.cursor.close()
+        return id_
 
     # Returns all projects in the project table
     def get_all_projects(self) -> list:
