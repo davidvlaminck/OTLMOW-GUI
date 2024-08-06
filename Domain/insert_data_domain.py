@@ -1,7 +1,6 @@
 import logging
 import os
 import tempfile
-from enum import Enum
 from pathlib import Path
 from typing import List
 
@@ -10,6 +9,7 @@ from otlmow_converter.OtlmowConverter import OtlmowConverter
 
 from Domain.Project import Project
 from Domain.ProjectFileManager import ProjectFileManager
+from Domain.enums import FileState
 from Domain.project_file import ProjectFile
 
 
@@ -39,11 +39,11 @@ class InsertDataDomain:
         return Path(tempdir) / doc_name
 
     @classmethod
-    def add_template_file_to_project(cls, filepath: Path, project: Project, state: Enum):
+    def add_template_file_to_project(cls, filepath: Path, project: Project, state: FileState):
         if Path(filepath).suffix in ['.xls', '.xlsx']:
             filepath = cls.start_excel_changes(doc=filepath)
         end_loc = ProjectFileManager().add_template_file_to_project(filepath=filepath)
-        template_file = ProjectFile(file_path=end_loc, state=state)
+        template_file = ProjectFile(file_path=end_loc, state=state.value)
         project.templates_in_memory.append(template_file)
 
     @classmethod
