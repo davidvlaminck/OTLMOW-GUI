@@ -83,7 +83,7 @@ class ProjectFileManager:
         return projects
 
     @classmethod
-    def save_project_to_dir(cls, project: Project):
+    def save_project_to_dir(cls, project: Project) -> None:
         otl_wizard_project_dir = cls.get_otl_wizard_projects_dir()
         project_dir_path = otl_wizard_project_dir / project.project_path.name
         logging.debug("Saving project to %s", project_dir_path)
@@ -109,7 +109,7 @@ class ProjectFileManager:
         global_vars.projects = cls.get_all_otl_wizard_projects()
 
     @classmethod
-    def export_project_to_file(cls, project: Project, file_path: Path):
+    def export_project_to_file(cls, project: Project, file_path: Path) -> None:
         with zipfile.ZipFile(file_path, 'w') as project_zip:
             project_zip.write(project.project_path / 'project_details.json', arcname='project_details.json',
                               compresslevel=zipfile.ZIP_DEFLATED)
@@ -117,7 +117,7 @@ class ProjectFileManager:
             project_zip.write(project.subset_path, arcname=project.subset_path.name)
 
     @classmethod
-    def add_project_files_to_file(cls, project: Project):
+    def add_project_files_to_file(cls, project: Project) -> None:
         otl_wizard_project_dir = cls.get_otl_wizard_projects_dir()
         object_array = []
         for template in project.templates_in_memory:
@@ -131,7 +131,7 @@ class ProjectFileManager:
             json.dump(object_array, project_details_file)
 
     @classmethod
-    def get_templates_in_memory(cls, project: Project):
+    def get_templates_in_memory(cls, project: Project) -> Project:
         project_dir_path = cls.get_otl_wizard_projects_dir() / project.project_path.name
         with open(project_dir_path / "assets.json", "r") as project_details_file:
             templates = json.load(project_details_file)
@@ -158,17 +158,17 @@ class ProjectFileManager:
         return cls.get_project_from_dir(project_dir_path)
 
     @classmethod
-    def delete_project_files_by_path(cls, file_path: Path):
+    def delete_project_files_by_path(cls, file_path: Path) -> None:
         logging.debug("Deleting project %s", file_path)
         shutil.rmtree(file_path)
         global_vars.projects = cls.get_all_otl_wizard_projects()
 
     @classmethod
-    def load_projects_into_global(cls):
+    def load_projects_into_global(cls) -> None:
         global_vars.projects = ProjectFileManager.get_all_otl_wizard_projects()
 
     @classmethod
-    def download_fresh_otlmow_model(cls, model_dir_path):
+    def download_fresh_otlmow_model(cls, model_dir_path) -> None:
         ghdl = GitHubDownloader('davidvlaminck/OTLMOW-Model')
         ghdl.download_full_repo(model_dir_path / 'temp')
         shutil.unpack_archive(model_dir_path / 'temp' / 'full_repo_download.zip',
@@ -184,7 +184,7 @@ class ProjectFileManager:
         return version_info['model_version']
 
     @classmethod
-    def add_template_file_to_project(cls, filepath: Path):
+    def add_template_file_to_project(cls, filepath: Path) -> Path:
         project = global_vars.single_project
         location_dir = project.project_path / 'OTL-template-files'
         if not location_dir.exists():
@@ -198,7 +198,7 @@ class ProjectFileManager:
         return end_location
 
     @classmethod
-    def delete_template_folder(cls):
+    def delete_template_folder(cls) -> None:
         logging.debug("Started clearing out the whole template folder")
         project = global_vars.single_project
         location_dir = project.project_path / 'OTL-template-files'
@@ -208,7 +208,7 @@ class ProjectFileManager:
         logging.debug("Finished clearing out the whole template folder")
 
     @classmethod
-    def delete_template_file_from_project(cls, file_path):
+    def delete_template_file_from_project(cls, file_path) -> bool:
         try:
             logging.debug(f"file path = {str(file_path)}")
             Path.unlink(file_path)
@@ -217,8 +217,8 @@ class ProjectFileManager:
             logging.error(e)
             return False
 
-    @classmethod
-    def create_empty_temporary_map(cls):
+    @staticmethod
+    def create_empty_temporary_map() -> Path:
         tempdir = Path(tempfile.gettempdir()) / 'temp-otlmow'
         logging.debug(f"tempdir {str(tempdir)}")
         if not tempdir.exists():
@@ -226,8 +226,8 @@ class ProjectFileManager:
         [f.unlink() for f in Path(tempdir).glob("*") if f.is_file()]
         return tempdir
 
-    @classmethod
-    def correct_project_files_in_memory(cls, project: Project):
+    @staticmethod
+    def correct_project_files_in_memory(project: Project) -> bool:
         logging.debug("Started searching for project files in memory that are OTL conform")
         if project is None:
             logging.debug("No project found")
@@ -240,7 +240,7 @@ class ProjectFileManager:
         )
 
     @classmethod
-    def create_settings_file(cls, language=None):
+    def create_settings_file(cls, language=None) -> None:
         timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         first_run = False
         work_dir_path = cls.get_otl_wizard_work_dir()
@@ -264,7 +264,7 @@ class ProjectFileManager:
             json.dump(settings_details, f)
 
     @classmethod
-    def change_language_on_settings_file(cls, lang):
+    def change_language_on_settings_file(cls, lang) -> None:
         work_dir_path = cls.get_otl_wizard_work_dir()
         settings_file = work_dir_path / 'settings.json'
         with open(settings_file) as json_file:
@@ -274,7 +274,7 @@ class ProjectFileManager:
             json.dump(settings_details, f)
 
     @classmethod
-    def get_language_from_settings(cls):
+    def get_language_from_settings(cls) -> Language:
         work_dir_path = cls.get_otl_wizard_work_dir()
         settings_file = work_dir_path / 'settings.json'
         with open(settings_file) as json_file:
@@ -282,7 +282,7 @@ class ProjectFileManager:
         return Language[settings_details['language']]
 
     @classmethod
-    def create_logging_file(cls):
+    def create_logging_file(cls) -> Path:
         work_dir_path = cls.get_otl_wizard_work_dir() / 'logs'
         if not work_dir_path.exists():
             work_dir_path.mkdir()
@@ -293,7 +293,7 @@ class ProjectFileManager:
         return logging_file
 
     @classmethod
-    def remove_old_logging_files(cls):
+    def remove_old_logging_files(cls) -> None:
         work_dir_path = cls.get_otl_wizard_work_dir() / 'logs'
         for file in os.listdir(work_dir_path):
             file_name = Path(file).stem
