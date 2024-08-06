@@ -123,7 +123,7 @@ class ProjectFileManager:
         for template in project.templates_in_memory:
             template_details = {
                 'file_path': str(template.file_path),
-                'state': template.state
+                'state': template.state.value
             }
             object_array.append(template_details)
         project_dir_path = otl_wizard_project_dir / project.project_path.name

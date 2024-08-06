@@ -94,7 +94,7 @@ class InsertDataScreen(Screen):
         doc_list = [documents.topLevelItem(i).data(1, 1) for i in range(documents.topLevelItemCount())]
         global_vars.single_project.templates_in_memory = []
         for doc in doc_list:
-            if Path(doc).suffix == '.xls' or Path(doc).suffix == '.xlsx':
+            if Path(doc).suffix in ['.xls', '.xlsx']:
                 temp_path = domain.start_excel_changes(doc=doc)
             elif Path(doc).suffix == '.csv':
                 temp_path = Path(doc)
@@ -126,13 +126,13 @@ class InsertDataScreen(Screen):
                 error_set.add(Path(doc))
             else:
                 InsertDataDomain().add_template_file_to_project(project=global_vars.single_project, filepath=Path(doc),
-                                                                state=FileState.OK.name)
+                                                                state=FileState.OK)
         if error_set:
             logging.debug('negative feedback needed')
             self.negative_feedback_message()
             for item in error_set:
                 InsertDataDomain().add_template_file_to_project(project=global_vars.single_project, filepath=Path(item),
-                                                                state=FileState.ERROR.name)
+                                                                state=FileState.ERROR)
         else:
             logging.debug('positive feedback needed')
             self.stacked_widget.reset_ui(self._)
@@ -248,11 +248,11 @@ class InsertDataScreen(Screen):
             list_item = QTreeWidgetItem()
             doc_name = Path(file).name
             list_item.setText(1, doc_name)
-            if asset_state == FileState.OK or asset_state == "OK":
+            if asset_state == FileState.OK:
                 list_item.setIcon(0, qta.icon('mdi.check', color="green"))
-            elif asset_state == FileState.WARNING or asset_state == "WARNING":
+            elif asset_state == FileState.WARNING:
                 list_item.setIcon(0, qta.icon('mdi.alert', color="orange"))
-            elif asset_state == FileState.ERROR or asset_state == "ERROR":
+            elif asset_state == FileState.ERROR:
                 list_item.setIcon(0, qta.icon('mdi.close', color="red"))
             list_item.setData(1, 1, file)
             list_item.setSizeHint(1, QSize(0, 30))
