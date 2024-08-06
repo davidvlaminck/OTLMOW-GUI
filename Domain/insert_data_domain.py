@@ -1,4 +1,3 @@
-import json
 import logging
 import os
 import tempfile
@@ -9,7 +8,6 @@ from typing import List
 from openpyxl.reader.excel import load_workbook
 from otlmow_converter.OtlmowConverter import OtlmowConverter
 
-from Domain import global_vars
 from Domain.Project import Project
 from Domain.ProjectFileManager import ProjectFileManager
 from Domain.project_file import ProjectFile
