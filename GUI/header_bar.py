@@ -1,11 +1,9 @@
 import logging
 import webbrowser
 
-from PyQt5.QtWidgets import QAction
-from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QFrame, QHBoxLayout, QLabel, QPushButton, QVBoxLayout, QWidget, QMenu
-
 import qtawesome as qta
+from PyQt6.QtCore import Qt
+from PyQt6.QtWidgets import QFrame, QHBoxLayout, QLabel, QVBoxLayout, QWidget, QMenu
 
 from Domain import global_vars
 from GUI.ButtonWidget import ButtonWidget
