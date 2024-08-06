@@ -77,7 +77,7 @@ class AssetChangeDomain:
         ProjectFileManager().add_project_files_to_file(project=project)
 
     @staticmethod
-    def generate_changed_assets_from_files(project: Project):
+    def generate_changed_assets_from_files(project: Project) -> list:
         changed_assets = []
         for file in project.templates_in_memory:
             logging.debug(f"file state {file.state}")
@@ -103,7 +103,7 @@ class AssetChangeDomain:
         )
 
     @staticmethod
-    def generate_complex_asset_report(item, attribute, complex_list, old_item_dict):
+    def generate_complex_asset_report(item, attribute, complex_list, old_item_dict) -> list[ReportItem]:
         return [ReportItem(
             id=item.assetId.identificator, actie=ReportAction.ATC, attribute=attribute,
             original_value=f"{str(key)}: {str(old_item_dict.get(attribute).get(key))}",
@@ -111,7 +111,7 @@ class AssetChangeDomain:
         ) for key, value in complex_list.items()]
 
     @staticmethod
-    def generate_simple_asset_report(item, key, value, old_item_dict):
+    def generate_simple_asset_report(item, key, value, old_item_dict) -> ReportItem:
         return ReportItem(
             id=item.assetId.identificator,
             actie=ReportAction.ATC,
@@ -121,7 +121,7 @@ class AssetChangeDomain:
         )
 
     @staticmethod
-    def generate_difference_between_two_lists(list1: list, list2: list, model_directory: Path):
+    def generate_difference_between_two_lists(list1: list, list2: list, model_directory: Path) -> list:
         diff_1 = compare_two_lists_of_objects_attribute_level(
             first_list=list1, second_list=list2, model_directory=model_directory)
         return compare_two_lists_of_objects_attribute_level(
