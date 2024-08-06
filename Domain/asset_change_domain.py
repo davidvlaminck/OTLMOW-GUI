@@ -74,7 +74,7 @@ class AssetChangeDomain:
         temp_loc = Path(tempdir) / final_file_name
         OtlmowConverter().create_file_from_assets(filepath=temp_loc, list_of_objects=diff_1)
         end_loc = ProjectFileManager().add_template_file_to_project(filepath=temp_loc)
-        template_file = ProjectFile(file_path=end_loc, state=FileState.OK.value)
+        template_file = ProjectFile(file_path=end_loc, state=FileState.OK)
         project.templates_in_memory.append(template_file)
         ProjectFileManager().add_project_files_to_file(project=project)
 
@@ -83,7 +83,7 @@ class AssetChangeDomain:
         changed_assets = []
         for file in project.templates_in_memory:
             logging.debug(f"file state {file.state}")
-            if file.state in ['OK', 'ok']:
+            if file.state == FileState.OK:
                 changed_assets.extend(OtlmowConverter().create_assets_from_file(Path(file.file_path)))
         return changed_assets
 

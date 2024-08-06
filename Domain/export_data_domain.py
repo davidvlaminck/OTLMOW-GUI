@@ -4,6 +4,8 @@ from pathlib import Path
 from otlmow_converter.OtlmowConverter import OtlmowConverter
 from otlmow_model.OtlmowModel.Classes.ImplementatieElement.RelatieObject import RelatieObject
 
+from Domain.enums import FileState
+
 
 class ExportDataDomain:
     @classmethod
@@ -40,7 +42,7 @@ class ExportDataDomain:
     @staticmethod
     def extract_objects_from_files(project):
         logging.debug("started extracting objects from files for export")
-        valid_file_paths = [file.file_path for file in project.templates_in_memory if file.state in ['OK', 'ok']]
+        valid_file_paths = [file.file_path for file in project.templates_in_memory if file.state == FileState.OK]
         objects_in_memory = []
         for path in valid_file_paths:
             objects_in_memory.extend(OtlmowConverter().create_assets_from_file(

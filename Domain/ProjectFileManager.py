@@ -13,7 +13,7 @@ from otlmow_converter.OtlmowConverter import OtlmowConverter
 from Domain import global_vars
 from Domain.GitHubDownloader import GitHubDownloader
 from Domain.Project import Project
-from Domain.enums import Language
+from Domain.enums import Language, FileState
 from Domain.project_file import ProjectFile
 
 
@@ -236,7 +236,7 @@ class ProjectFileManager:
             logging.debug("No project files in memory")
             return False
         return any(
-            template.state in ['OK', 'ok'] for template in project.templates_in_memory
+            template.state == FileState.OK for template in project.templates_in_memory
         )
 
     @classmethod

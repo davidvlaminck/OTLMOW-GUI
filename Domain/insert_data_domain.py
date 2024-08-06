@@ -43,7 +43,7 @@ class InsertDataDomain:
         if Path(filepath).suffix in ['.xls', '.xlsx']:
             filepath = cls.start_excel_changes(doc=filepath)
         end_loc = ProjectFileManager().add_template_file_to_project(filepath=filepath)
-        template_file = ProjectFile(file_path=end_loc, state=state.value)
+        template_file = ProjectFile(file_path=end_loc, state=state)
         project.templates_in_memory.append(template_file)
 
     @classmethod

@@ -7,7 +7,7 @@ from pathlib import Path
 
 import pytest
 
-from Domain import GitHubDownloader, global_vars
+from Domain import global_vars
 from Domain.Project import Project
 from Domain.ProjectFileManager import ProjectFileManager
 from Domain.enums import FileState
@@ -263,7 +263,7 @@ def test_correct_project_files_in_memory_returns_true_if_ok_files_in_memory():
         laatst_bewerkt=datetime.datetime(2023, 11, 1))
     project_file = ProjectFile(file_path=Path(
         PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'TestFiles' / 'should_pass_implementatieelement_Derdenobject.csv'),
-        state=FileState.OK.value)
+        state=FileState.OK)
     project.templates_in_memory.append(project_file)
     assert ProjectFileManager.correct_project_files_in_memory(project) is True
 
@@ -279,7 +279,7 @@ def test_correct_project_files_in_memory_returns_false_if_no_ok_files_in_memory(
         laatst_bewerkt=datetime.datetime(2023, 11, 1))
     project_file = ProjectFile(file_path=Path(
         PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'TestFiles' / 'should_pass_implementatieelement_Derdenobject.csv'),
-        state=FileState.ERROR.value)
+        state=FileState.ERROR)
     project.templates_in_memory.append(project_file)
     assert ProjectFileManager.correct_project_files_in_memory(project) is False
 

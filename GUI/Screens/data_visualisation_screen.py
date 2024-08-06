@@ -10,6 +10,7 @@ from PyQt6.QtWidgets import QVBoxLayout, QLabel, QWidget, QFrame, QHBoxLayout
 from otlmow_converter.OtlmowConverter import OtlmowConverter
 from otlmow_visuals.PyVisWrapper import PyVisWrapper
 
+from Domain.enums import FileState
 from GUI.ButtonWidget import ButtonWidget
 from Domain import global_vars
 from GUI.Screens.screen import Screen
@@ -93,7 +94,7 @@ class DataVisualisationScreen(Screen):
         project = global_vars.single_project
         if project is None:
             return
-        valid_file_paths = [file.file_path for file in project.templates_in_memory if file.state in ['OK', 'ok']]
+        valid_file_paths = [file.file_path for file in project.templates_in_memory if file.state == FileState.OK]
 
         objects_in_memory = []
         for path in valid_file_paths:

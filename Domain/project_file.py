@@ -1,9 +1,10 @@
-from enum import Enum
 from pathlib import Path
+
+from Domain.enums import FileState
 
 
 class ProjectFile:
 
-    def __init__(self, file_path: Path, state: str):
+    def __init__(self, file_path: Path, state: FileState):
         self.file_path: Path = file_path
-        self.state: str = state
+        self.state: FileState = state
