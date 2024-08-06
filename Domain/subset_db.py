@@ -8,33 +8,33 @@ class SubsetDatabase:
 
     def __init__(self, db_path: Path):
         self.db_path: Path = db_path
-        self.connection: Connection = None
+        self.connection: Connection | None = None
 
         self.create_connection(self.db_path)
 
-    def create_connection(self, db_path: Path):
+    def create_connection(self, db_path: Path) -> None:
         if db_path.exists():
             self.connection = sqlite3.connect(db_path)
         else:
             raise FileNotFoundError(f'{db_path} is not a valid path. File does not exist.')
 
-    def get_general_info_project(self):
+    def get_general_info_project(self) -> list:
         cursor = self.connection.cursor()
         cursor.execute("SELECT * FROM GeneralInfo")
         info = cursor.fetchall()
         cursor.close()
         return info
 
-    def is_valid_subset_database(self):
+    def is_valid_subset_database(self) -> bool:
         try:
             cursor = self.connection.cursor()
             cursor.execute("SELECT * FROM OSLOClass")
-            info = cursor.fetchall()
+            cursor.fetchall()
             cursor.close()
             return True
         except sqlite3.OperationalError:
             return False
 
-    def close_connection(self):
+    def close_connection(self) -> None:
         logging.debug("Closing connection to subset database")
         self.connection.close()
