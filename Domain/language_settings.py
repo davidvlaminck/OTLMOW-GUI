@@ -1,13 +1,12 @@
 import gettext
 import logging
-from enum import Enum
 from pathlib import Path
 
 from Domain.enums import Language
 
 
 # Switchen kan door in language en of nl_BE in te geven
-def return_language(locale_dir: Path, language: Enum = None):
+def return_language(locale_dir: Path, language: Language = None):
     logging.debug(f"Changing language to: {str(language)}")
     if language is None:
         language = Language.DUTCH
