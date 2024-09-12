@@ -8,7 +8,7 @@ from otlmow_template.SubsetTemplateCreator import SubsetTemplateCreator
 
 class TemplateDomain:
     @staticmethod
-    def check_for_no_deprecated_present(values: list[OSLOClass]) -> bool:
+    def check_for_no_deprecated_present(values: List[OSLOClass]) -> bool:
         return all(len(value.deprecated_version) == 0 for value in values)
 
     @staticmethod

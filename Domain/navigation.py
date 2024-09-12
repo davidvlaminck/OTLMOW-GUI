@@ -1,3 +1,5 @@
+from typing import List
+
 from PyQt6.QtWidgets import QStackedWidget, QWidget
 
 from GUI.Screens.asset_data_change_screen import AssetDataChangeScreen
@@ -52,6 +54,6 @@ class Navigation(QStackedWidget):
         home_screen.table.stacked_widget = self
         step1.stacked_widget = self
 
-    def add_tabs_with_stepper_to_widget(self, tabs: list[TabWidget]):
+    def add_tabs_with_stepper_to_widget(self, tabs: List[TabWidget]):
         for tab in tabs:
             self.add_widget(tab, True)
