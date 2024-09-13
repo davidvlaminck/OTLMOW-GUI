@@ -33,6 +33,10 @@ To upgrade an existing installation use:
 ``` 
 pip install otlmow_gui --upgrade
 ```
-Then you can run the main.py to see the GUI in action.
+To run the OTL-wizard do the following:
+```
+cd Domain
+python OTLWizard.py
+```
 
 We are working on a way to deploy this to the different operating systems. This is expected near the end of 2023.

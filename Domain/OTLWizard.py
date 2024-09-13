@@ -7,6 +7,9 @@ import typing
 from datetime import datetime
 from pathlib import Path
 
+ROOT_DIR =  Path(Path(__file__).absolute()).parent.parent
+sys.path.insert(0,str(ROOT_DIR.absolute()))
+
 from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import QApplication
 from qasync import QEventLoop, asyncClose
@@ -18,11 +21,11 @@ from Domain.language_settings import return_language
 from Domain.navigation import Navigation
 from GUI.Screens.error_screen import ErrorScreen
 
-ROOT_DIR = Path(__file__).parent.parent
 
 project_dir = ROOT_DIR / 'demo_projects/'
 
 LANG_DIR = ROOT_DIR / 'locale/'
+
 
 
 # Used to add demo data to the application for showcase purpose only
