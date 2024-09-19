@@ -14,6 +14,7 @@ from Domain import global_vars
 from Domain.GitHubDownloader import GitHubDownloader
 from Domain.Project import Project
 from Domain.enums import Language, FileState
+from Domain.logger.OTLLogger import OTLLogger
 from Domain.project_file import ProjectFile
 
 
@@ -22,10 +23,19 @@ class ProjectFileManager:
         Manager to manage OTL projects files on local computer
     """
 
+    settings_filename = 'settings.json'
+
+    @classmethod
+    def init(cls):
+        settings = cls.get_or_create_settings_file()
+        logging_file = cls.create_logging_file()
+        cls.remove_old_logging_files()
+        OTLLogger.init(logging_file)
+        return settings
 
     @classmethod
     def get_project_from_dir(cls, project_dir_path: Path) -> Project:
-        return Project.loadProject(project_dir_path)
+        return Project.load_project(project_dir_path)
 
     @classmethod
     def get_home_path(cls) -> Path:
@@ -227,33 +237,43 @@ class ProjectFileManager:
         )
 
     @classmethod
-    def create_settings_file(cls, language=None) -> None:
+    def get_or_create_settings_file(cls) -> None:
+
+        work_dir_path = cls.get_otl_wizard_work_dir()
+        settings_filepath = work_dir_path / 'settings.json'
+
         timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         first_run = False
-        work_dir_path = cls.get_otl_wizard_work_dir()
-        settings_file = work_dir_path / 'settings.json'
         operating_sys = platform.system()
-        if not settings_file.exists():
-            language = Language.DUTCH
+        language = Language.DUTCH
+        if not settings_filepath.exists():
             first_run = True
-        else:
-            with open(settings_file) as json_file:
+
+        with open(settings_filepath, 'w+') as json_file:
+            try:
                 settings_details = json.load(json_file)
-                if language is None:
-                    language = Language[settings_details['language']]
-        settings_details = {
-            'language': str(language.name),
-            'OS': str(operating_sys),
-            'first_run': first_run,
-            'last_run': timestamp
-        }
-        with open(settings_file, 'w') as f:
-            json.dump(settings_details, f)
+            except:
+                settings_details = {}
+
+            if settings_details.__contains__('language'):
+                settings_details['language'] = Language[settings_details['language']]
+            else:
+                settings_details['language'] = str(language.name)
+
+
+            settings_details['OS']= str(operating_sys)
+            settings_details['first_run']= first_run
+            settings_details['last_run']= timestamp
+
+            json.dump(settings_details, json_file)
+
+            return settings_details
+
 
     @classmethod
     def change_language_on_settings_file(cls, lang) -> None:
         work_dir_path = cls.get_otl_wizard_work_dir()
-        settings_file = work_dir_path / 'settings.json'
+        settings_file = work_dir_path / cls.settings_filename
         with open(settings_file) as json_file:
             settings_details = json.load(json_file)
         settings_details['language'] = str(lang.name)
@@ -263,7 +283,7 @@ class ProjectFileManager:
     @classmethod
     def get_language_from_settings(cls) -> Language:
         work_dir_path = cls.get_otl_wizard_work_dir()
-        settings_file = work_dir_path / 'settings.json'
+        settings_file = work_dir_path / cls.settings_filename
         with open(settings_file) as json_file:
             settings_details = json.load(json_file)
         return Language[settings_details['language']]
@@ -274,10 +294,10 @@ class ProjectFileManager:
         if not work_dir_path.exists():
             work_dir_path.mkdir()
         timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
-        logging_file = work_dir_path / f'logging_{timestamp}.log'
-        if not logging_file.exists():
-            open(Path(logging_file), 'w').close()
-        return logging_file
+        logging_filepath = work_dir_path / f'logging_{timestamp}.log'
+        if not logging_filepath.exists():
+            open(Path(logging_filepath), 'w').close()
+        return logging_filepath
 
     @classmethod
     def remove_old_logging_files(cls) -> None:

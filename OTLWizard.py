@@ -10,7 +10,7 @@ from pathlib import Path
 from Domain.project_file import ProjectFile
 
 ROOT_DIR =  Path(Path(__file__).absolute()).parent
-sys.path.insert(0,str(ROOT_DIR.absolute()))
+sys.path.insert(0,str(ROOT_DIR.absolute()))# needed for python to import project files
 
 from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import QApplication
@@ -43,10 +43,26 @@ def demo_data():
     return project_1
 
 
-class MyApplication(QApplication):
-    def __init__(self, argv: typing.List[str]):
+class OTLWizard(QApplication):
+    def __init__(self,settings: dict, argv: typing.List[str]):
         super().__init__(argv)
+
+        sys.excepthook = excepthook
+
+        app_icon = QIcon('img/wizard.ico')
+        self.setWindowIcon(app_icon)
+
+        with open('GUI/style/custom.qss', 'r') as file:
+            self.setStyleSheet(file.read())
+
         # self.demo_project = demo_data()
+
+        stacked_widget = Navigation(return_language(LANG_DIR,Language[settings["language"]]))
+
+        stacked_widget.resize(1360, 768)
+        stacked_widget.setWindowTitle('OTLWizard')
+        stacked_widget.setMinimumSize(1280, 720)
+        stacked_widget.show()
 
     @asyncClose
     async def quit(self):
@@ -65,35 +81,16 @@ def excepthook(exc_type, exc_value, exc_tb):
 
 
 if __name__ == '__main__':
-    logging.basicConfig(
-        format='%(asctime)s %(levelname)-8s %(message)s',
-        level=logging.DEBUG,
-        datefmt='%Y-%m-%d %H:%M:%S')
-    ProjectFileManager.create_settings_file()
-    logging_file = ProjectFileManager.create_logging_file()
-    ProjectFileManager.remove_old_logging_files()
-    file_handler = logging.FileHandler(logging_file)
-    file_handler.setLevel(logging.DEBUG)
-    logging.getLogger().addHandler(file_handler)
+
+    settings = ProjectFileManager.init()
+
     logging.debug("Application started")
-    lang = ProjectFileManager.get_language_from_settings()
-    language = return_language(LANG_DIR, lang)
-    app = MyApplication(sys.argv)
-    sys.excepthook = excepthook
+
+    app = OTLWizard(settings,sys.argv)
+
     event_loop = QEventLoop(app)
     asyncio.set_event_loop(event_loop)
-    app_icon = QIcon('img/wizard.ico')
-    app.setWindowIcon(app_icon)
-    with open('GUI/style/custom.qss', 'r') as file:
-        app.setStyleSheet(file.read())
-    stacked_widget = Navigation(language)
-    stacked_widget.show()
     future = event_loop.create_future()
-    stacked_widget.resize(1360, 768)
-    stacked_widget.setWindowTitle('OTLWizard')
-    stacked_widget.setMinimumSize(1280, 720)
-
-    print(ProjectFileManager.get_home_path())
 
     # Doesn't cause error but doesn't stop the event loop on close of the application
     # event_loop.run_forever()
