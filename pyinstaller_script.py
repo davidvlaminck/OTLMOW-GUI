@@ -6,7 +6,7 @@ import PyInstaller.__main__
 home_path = pathlib.Path.home()
 
 PyInstaller.__main__.run([
-    r'Domain\OTLWizard.py',
+    r'OTLWizard.py',
     '--distpath', str(home_path / 'PycharmProjects' / 'Installers'),
     '--contents-directory', 'applicationdata',
     '--paths', str(home_path / 'PycharmProjects' / 'OTLMOW-GUI' / 'venv' / 'Lib' / 'site-packages'),
