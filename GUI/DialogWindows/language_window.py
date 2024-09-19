@@ -33,7 +33,7 @@ class LanguageWindow:
         dialog.exec()
 
     def change_language(self, lang: Enum, dialog: QDialog, stacked_widget) -> None:
-        ProjectFileManager().change_language_on_settings_file(lang)
+        ProjectFileManager.change_language_on_settings_file(lang)
         self._ = return_language(LANG_DIR, lang)
         stacked_widget.reset_ui(self._)
         dialog.close()

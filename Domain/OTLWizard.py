@@ -7,6 +7,8 @@ import typing
 from datetime import datetime
 from pathlib import Path
 
+from Domain.project_file import ProjectFile
+
 ROOT_DIR =  Path(Path(__file__).absolute()).parent.parent
 sys.path.insert(0,str(ROOT_DIR.absolute()))
 
@@ -37,7 +39,7 @@ def demo_data():
         eigen_referentie="test1",
         bestek="test_bestek1",
         laatst_bewerkt=datetime(2021, 9, 11))
-    ProjectFileManager().save_project_to_dir(project_1)
+    ProjectFileManager.save_project_to_dir(project_1)
     return project_1
 
 
@@ -49,7 +51,7 @@ class MyApplication(QApplication):
     @asyncClose
     async def quit(self):
         logging.debug("closing application")
-        ProjectFileManager().delete_project_files_by_path(self.demo_project.project_path)
+        ProjectFileManager.delete_project_files_by_path(self.demo_project.project_path)
         super().quit()
 
 
@@ -67,14 +69,14 @@ if __name__ == '__main__':
         format='%(asctime)s %(levelname)-8s %(message)s',
         level=logging.DEBUG,
         datefmt='%Y-%m-%d %H:%M:%S')
-    ProjectFileManager().create_settings_file()
-    logging_file = ProjectFileManager().create_logging_file()
-    ProjectFileManager().remove_old_logging_files()
+    ProjectFileManager.create_settings_file()
+    logging_file = ProjectFileManager.create_logging_file()
+    ProjectFileManager.remove_old_logging_files()
     file_handler = logging.FileHandler(logging_file)
     file_handler.setLevel(logging.DEBUG)
     logging.getLogger().addHandler(file_handler)
     logging.debug("Application started")
-    lang = ProjectFileManager().get_language_from_settings()
+    lang = ProjectFileManager.get_language_from_settings()
     language = return_language(LANG_DIR, lang)
     app = MyApplication(sys.argv)
     sys.excepthook = excepthook
@@ -90,6 +92,9 @@ if __name__ == '__main__':
     stacked_widget.resize(1360, 768)
     stacked_widget.setWindowTitle('OTLWizard')
     stacked_widget.setMinimumSize(1280, 720)
+
+    print(ProjectFileManager.get_home_path())
+
     # Doesn't cause error but doesn't stop the event loop on close of the application
     # event_loop.run_forever()
     # Causes Error on close of the application but doesn't keep running the event loop
@@ -97,3 +102,5 @@ if __name__ == '__main__':
     app.exec()
     # app.quit()
     # event_loop.close()
+
+

@@ -42,7 +42,7 @@ class InsertDataDomain:
     def add_template_file_to_project(cls, filepath: Path, project: Project, state: FileState):
         if Path(filepath).suffix in ['.xls', '.xlsx']:
             filepath = cls.start_excel_changes(doc=filepath)
-        end_loc = ProjectFileManager().add_template_file_to_project(filepath=filepath)
+        end_loc = ProjectFileManager.add_template_file_to_project(filepath=filepath)
         template_file = ProjectFile(file_path=end_loc, state=state)
         project.templates_in_memory.append(template_file)
 
@@ -59,15 +59,15 @@ class InsertDataDomain:
             if file.file_path == file_path:
                 project.templates_in_memory.remove(file)
                 break
-        ProjectFileManager().delete_template_file_from_project(file_path=file_path)
-        ProjectFileManager().add_project_files_to_file(project=project)
+        ProjectFileManager.delete_template_file_from_project(file_path=file_path)
+        ProjectFileManager.add_project_files_to_file(project=project)
 
     @classmethod
     def remove_all_project_files(cls, project):
-        project_file_manager = ProjectFileManager()
+        project_file_manager = ProjectFileManager
         logging.debug("memory contains %s", project.templates_in_memory)
         for file in project.templates_in_memory:
             logging.debug("starting to delete file %s", file.file_path)
             project_file_manager.delete_template_file_from_project(file_path=file.file_path)
         project.templates_in_memory = []
-        ProjectFileManager().add_project_files_to_file(project=project)
+        ProjectFileManager.add_project_files_to_file(project=project)

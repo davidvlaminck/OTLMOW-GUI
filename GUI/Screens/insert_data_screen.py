@@ -100,7 +100,7 @@ class InsertDataScreen(Screen):
                 temp_path = Path(doc)
             try:
                 asset = domain.check_document(doc_location=temp_path)
-                ProjectFileManager().add_template_file_to_project(Path(doc))
+                ProjectFileManager.add_template_file_to_project(Path(doc))
                 assets.append(asset)
             except ExceptionsGroup as e:
                 for ex in e.exceptions:
@@ -138,7 +138,7 @@ class InsertDataScreen(Screen):
             self.stacked_widget.reset_ui(self._)
             self.positive_feedback_message()
         self.fill_feedback_list(assets)
-        ProjectFileManager().add_project_files_to_file(global_vars.single_project)
+        ProjectFileManager.add_project_files_to_file(global_vars.single_project)
         self.fill_list()
 
         DataVisualisationScreen(self._).load_assets_and_create_html()
