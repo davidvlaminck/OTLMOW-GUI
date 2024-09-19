@@ -18,6 +18,11 @@ from Domain.project_file import ProjectFile
 
 
 class ProjectFileManager:
+    """
+        Manager to manage OTL projects files on local computer
+    """
+
+
     @classmethod
     def get_project_from_dir(cls, project_dir_path: Path) -> Project:
         if not project_dir_path.exists():
