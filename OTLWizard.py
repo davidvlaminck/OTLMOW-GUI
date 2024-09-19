@@ -84,7 +84,7 @@ if __name__ == '__main__':
     asyncio.set_event_loop(event_loop)
     app_icon = QIcon('img/wizard.ico')
     app.setWindowIcon(app_icon)
-    with open('Domain/custom.qss', 'r') as file:
+    with open('GUI/style/custom.qss', 'r') as file:
         app.setStyleSheet(file.read())
     stacked_widget = Navigation(language)
     stacked_widget.show()

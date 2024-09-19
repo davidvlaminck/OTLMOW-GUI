@@ -17,7 +17,7 @@ PyInstaller.__main__.run([
     '--collect-all', 'otlmow_visuals',
     '--collect-all', 'pyvis',
     '--add-data', 'locale:locale',
-    '--add-data', r'Domain\custom.qss:.',
+    '--add-data', r'GUI\style\custom.qss:.',
     '--add-data', 'demo_projects:demo_projects',
     '--add-data', 'img:img',
     '--noconfirm',
