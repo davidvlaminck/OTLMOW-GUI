@@ -35,7 +35,6 @@ pip install otlmow_gui --upgrade
 ```
 To run the OTL-wizard do the following:
 ```
-cd Domain
 python OTLWizard.py
 ```
 

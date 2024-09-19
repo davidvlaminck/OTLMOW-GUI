@@ -9,7 +9,7 @@ from pathlib import Path
 
 from Domain.project_file import ProjectFile
 
-ROOT_DIR =  Path(Path(__file__).absolute()).parent.parent
+ROOT_DIR =  Path(Path(__file__).absolute()).parent
 sys.path.insert(0,str(ROOT_DIR.absolute()))
 
 from PyQt6.QtGui import QIcon
@@ -82,9 +82,9 @@ if __name__ == '__main__':
     sys.excepthook = excepthook
     event_loop = QEventLoop(app)
     asyncio.set_event_loop(event_loop)
-    app_icon = QIcon('../img/wizard.ico')
+    app_icon = QIcon('img/wizard.ico')
     app.setWindowIcon(app_icon)
-    with open('custom.qss', 'r') as file:
+    with open('Domain/custom.qss', 'r') as file:
         app.setStyleSheet(file.read())
     stacked_widget = Navigation(language)
     stacked_widget.show()
