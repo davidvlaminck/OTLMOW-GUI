@@ -13,4 +13,6 @@ class OTLLogger:
 
         file_handler = logging.FileHandler(logging_file)
         file_handler.setLevel(logging.DEBUG)
-        logging.getLogger().addHandler(file_handler)
+        logger = logging.getLogger()
+        logger.addHandler(file_handler)
+        logger.setLevel(logging.DEBUG)
