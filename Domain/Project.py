@@ -16,7 +16,7 @@ class Project:
         self.files_in_memory = []
         self.templates_in_memory = []
     
-    def __init__(self, project_details, project_path: Path = None):
+    def __init__(self, project_details: dict, project_path: Path = None):
         self.project_path = project_path
         self.bestek = project_details['bestek']
         self.eigen_referentie = project_details['eigen_referentie']
@@ -25,7 +25,7 @@ class Project:
         self.assets_path = project_path / 'assets.json'
 
     @classmethod
-    def loadProject(cls,project_path: Path = None):
+    def load_project(cls, project_path: Path = None):
         if not project_path.exists():
             raise FileNotFoundError(f"Project dir {project_path} does not exist")
 
