@@ -1,3 +1,6 @@
+import asyncio
+import logging
+from asyncio import sleep
 from typing import List
 
 from PyQt6.QtWidgets import QStackedWidget, QWidget
@@ -57,3 +60,17 @@ class Navigation(QStackedWidget):
     def add_tabs_with_stepper_to_widget(self, tabs: List[TabWidget]):
         for tab in tabs:
             self.add_widget(tab, True)
+
+    def closeEvent(self, event):
+        # Handle window close event
+        logging.debug("Window is closing...")
+
+        # Stop the asyncio event loop
+        loop = asyncio.get_event_loop()
+        if loop.is_running():
+            # Gather all pending tasks
+            pending = asyncio.all_tasks(loop)
+            for task in pending:
+                task.cancel()  # Cancel all pending tasks
+
+            loop.call_soon_threadsafe(loop.stop)

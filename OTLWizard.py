@@ -90,14 +90,8 @@ if __name__ == '__main__':
 
     event_loop = QEventLoop(app)
     asyncio.set_event_loop(event_loop)
-    future = event_loop.create_future()
 
-    # Doesn't cause error but doesn't stop the event loop on close of the application
-    # event_loop.run_forever()
-    # Causes Error on close of the application but doesn't keep running the event loop
-    event_loop.run_until_complete(future)
-    app.exec()
-    # app.quit()
-    # event_loop.close()
+    event_loop.run_forever()
+
 
 
