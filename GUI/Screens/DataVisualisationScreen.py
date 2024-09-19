@@ -13,7 +13,7 @@ from otlmow_visuals.PyVisWrapper import PyVisWrapper
 from Domain.enums import FileState
 from GUI.ButtonWidget import ButtonWidget
 from Domain import global_vars
-from GUI.Screens.screen import Screen
+from GUI.Screens.Screen import Screen
 
 ROOT_DIR = Path(__file__).parent
 

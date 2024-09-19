@@ -11,7 +11,7 @@ from GUI.DialogWindows.language_window import LanguageWindow
 from GUI.DialogWindows.menu_actions_window import MenuActionsWindow
 from GUI.DialogWindows.project_picker_window import ProjectPickerWindow
 from GUI.DialogWindows.upsert_project_window import UpsertProjectWindow
-from GUI.overviewtable import OverviewTable
+from GUI.OverviewTable import OverviewTable
 
 
 class HeaderBar(QFrame):

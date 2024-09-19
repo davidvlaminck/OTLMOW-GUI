@@ -5,14 +5,14 @@ from typing import List
 
 from PyQt6.QtWidgets import QStackedWidget, QWidget
 
-from GUI.Screens.asset_data_change_screen import AssetDataChangeScreen
-from GUI.Screens.data_visualisation_screen import DataVisualisationScreen
-from GUI.Screens.export_data_screen import ExportDataScreen
-from GUI.Screens.home_screen import HomeScreen
-from GUI.Screens.insert_data_screen import InsertDataScreen
-from GUI.Screens.relation_change_screen import RelationChangeScreen
-from GUI.Screens.template_screen import TemplateScreen
-from GUI.tab_widget import TabWidget
+from GUI.Screens.AssetDataChangeScreen import AssetDataChangeScreen
+from GUI.Screens.DataVisualisationScreen import DataVisualisationScreen
+from GUI.Screens.ExportDataScreen import ExportDataScreen
+from GUI.Screens.HomeScreen import HomeScreen
+from GUI.Screens.InsertDataScreen import InsertDataScreen
+from GUI.Screens.RelationChangeScreen import RelationChangeScreen
+from GUI.Screens.TemplateScreen import TemplateScreen
+from GUI.TabWidget import TabWidget
 
 
 class Navigation(QStackedWidget):

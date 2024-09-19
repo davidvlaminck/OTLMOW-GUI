@@ -9,7 +9,7 @@ from Domain.database import Database
 from Domain.home_domain import HomeDomain
 from Domain.language_settings import return_language
 from Exceptions.EmptySearchWarning import EmptySearchWarning
-from GUI.overviewtable import OverviewTable
+from GUI.OverviewTable import OverviewTable
 
 ROOT_DIR = Path(__file__).parent
 

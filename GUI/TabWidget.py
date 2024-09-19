@@ -4,9 +4,9 @@ from pathlib import Path
 from PyQt6.QtWidgets import QTabWidget, QVBoxLayout
 
 from Domain.language_settings import return_language
-from GUI.Screens.screen import Screen
-from GUI.header_bar import HeaderBar
-from GUI.stepper import StepperWidget
+from GUI.Screens.Screen import Screen
+from GUI.HeaderBar import HeaderBar
+from GUI.StepperWidget import StepperWidget
 
 ROOT_DIR = Path(__file__).parent
 

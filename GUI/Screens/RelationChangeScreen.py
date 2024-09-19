@@ -4,7 +4,7 @@ from PyQt6.QtGui import QPixmap
 
 from PyQt6.QtWidgets import QVBoxLayout, QFrame, QHBoxLayout, QPushButton, QWidget, QLineEdit, QLabel, QListWidget
 
-from GUI.Screens.screen import Screen
+from GUI.Screens.Screen import Screen
 
 
 class RelationChangeScreen(Screen):

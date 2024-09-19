@@ -13,7 +13,7 @@ from Domain.template_domain import TemplateDomain
 from GUI.ButtonWidget import ButtonWidget
 from GUI.DialogWindows.change_subset_window import ChangeSubsetWindow
 from GUI.DialogWindows.export_to_template_window import ExportToTemplateWindow
-from GUI.Screens.screen import Screen
+from GUI.Screens.Screen import Screen
 
 
 class TemplateScreen(Screen):

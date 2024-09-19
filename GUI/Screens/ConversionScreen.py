@@ -1,7 +1,7 @@
 from PyQt6.QtWidgets import QVBoxLayout, QFrame, QLabel, QHBoxLayout, QLineEdit, QPushButton
 
 
-from GUI.Screens.screen import Screen
+from GUI.Screens.Screen import Screen
 import qtawesome as qta
 
 

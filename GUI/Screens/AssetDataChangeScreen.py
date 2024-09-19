@@ -10,7 +10,7 @@ from Domain import global_vars
 from Domain.asset_change_domain import AssetChangeDomain
 from GUI.ButtonWidget import ButtonWidget
 from GUI.DialogWindows.choose_file_name_window import ChooseFileNameWindow
-from GUI.Screens.screen import Screen
+from GUI.Screens.Screen import Screen
 from GUI.TableModel import TableModel
 
 

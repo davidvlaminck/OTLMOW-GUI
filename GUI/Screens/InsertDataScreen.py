@@ -19,8 +19,8 @@ from Domain.enums import FileState
 from Domain.insert_data_domain import InsertDataDomain
 from GUI.ButtonWidget import ButtonWidget
 from GUI.DialogWindows.remove_project_files_window import RemoveProjectFilesWindow
-from GUI.Screens.data_visualisation_screen import DataVisualisationScreen
-from GUI.Screens.screen import Screen
+from GUI.Screens.DataVisualisationScreen import DataVisualisationScreen
+from GUI.Screens.Screen import Screen
 import qtawesome as qta
 
 

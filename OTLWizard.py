@@ -21,7 +21,7 @@ from Domain.ProjectFileManager import ProjectFileManager
 from Domain.enums import Language
 from Domain.language_settings import return_language
 from Domain.navigation import Navigation
-from GUI.Screens.error_screen import ErrorScreen
+from GUI.Screens.ErrorScreen import ErrorScreen
 
 
 project_dir = ROOT_DIR / 'demo_projects/'
