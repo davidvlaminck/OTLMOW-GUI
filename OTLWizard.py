@@ -56,6 +56,7 @@ class OTLWizard(QApplication):
             self.setStyleSheet(file.read())
 
         # self.demo_project = demo_data()
+        self.demo_project = None
 
         stacked_widget = Navigation(return_language(LANG_DIR,Language[settings["language"]]))
 
@@ -67,7 +68,8 @@ class OTLWizard(QApplication):
     @asyncClose
     async def quit(self):
         logging.debug("closing application")
-        ProjectFileManager.delete_project_files_by_path(self.demo_project.project_path)
+        if self.demo_project:
+            ProjectFileManager.delete_project_files_by_path(self.demo_project.project_path)
         super().quit()
 
 
