@@ -12,17 +12,10 @@ class Project:
         self.eigen_referentie: str = eigen_referentie
         self.bestek: str = bestek
         self.laatst_bewerkt: datetime.datetime = laatst_bewerkt
+
         self.assets_in_memory = []
         self.files_in_memory = []
         self.templates_in_memory = []
-    
-    def __init__(self, project_details: dict, project_path: Path = None):
-        self.project_path = project_path
-        self.bestek = project_details['bestek']
-        self.eigen_referentie = project_details['eigen_referentie']
-        self.laatst_bewerkt = datetime.datetime.strptime(project_details['laatst_bewerkt'], "%Y-%m-%d %H:%M:%S")
-        self.subset_path = project_path / project_details['subset']
-        self.assets_path = project_path / 'assets.json'
 
     @classmethod
     def load_project(cls, project_path: Path = None):
@@ -36,4 +29,9 @@ class Project:
         with open(project_details_file) as json_file:
             project_details = json.load(json_file)
 
-        return cls(project_details,project_path)
+        return cls(project_path,
+                   project_path / project_details['subset'],
+                   project_path / 'assets.json',
+                   project_details['eigen_referentie'],
+                   project_details['bestek'],
+                   datetime.datetime.strptime(project_details['laatst_bewerkt'], "%Y-%m-%d %H:%M:%S"))
