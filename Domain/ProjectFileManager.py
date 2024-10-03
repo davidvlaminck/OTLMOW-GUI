@@ -208,7 +208,7 @@ class ProjectFileManager:
     def delete_template_file_from_project(cls, file_path) -> bool:
         try:
             logging.debug(f"file path = {str(file_path)}")
-            Path.unlink(file_path)
+            Path(file_path).unlink()
             return True
         except FileNotFoundError as e:
             logging.error(e)
