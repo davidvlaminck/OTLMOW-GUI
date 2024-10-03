@@ -3,6 +3,8 @@ import sqlite3
 from pathlib import Path
 from sqlite3 import Connection
 
+from Exceptions.NotASqlliteFileError import NotASqlliteFileError
+
 
 class SubsetDatabase:
 
@@ -18,7 +20,7 @@ class SubsetDatabase:
                 self.connection = sqlite3.connect(db_path)
             except sqlite3.OperationalError as e:
                 print(e)
-                raise RuntimeError(e)
+                raise NotASqlliteFileError(e)
         else:
             raise FileNotFoundError(f'{db_path} is not a valid path. File does not exist.')
 

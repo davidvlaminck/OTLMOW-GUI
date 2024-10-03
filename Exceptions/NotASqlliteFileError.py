@@ -1,0 +1,2 @@
+class NotASqlliteFileError(Exception):
+    pass
