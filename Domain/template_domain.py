@@ -5,6 +5,8 @@ from typing import List
 from otlmow_modelbuilder.SQLDataClasses.OSLOClass import OSLOClass
 from otlmow_template.SubsetTemplateCreator import SubsetTemplateCreator
 
+from GUI.DialogWindows.NotificationWindow import NotificationWindow
+
 
 class TemplateDomain:
     @staticmethod
@@ -24,6 +26,9 @@ class TemplateDomain:
                 add_geo_artefact=add_geo_artefact, add_attribute_info=add_attribute_info,
                 highlight_deprecated_attributes=highlight_deprecated_attributes, amount_of_examples=amount_of_examples,
                 model_directory=model_directory)
+        except PermissionError as e:
+            logging.debug("Permission to file was denied: " + str(document_path))
+            NotificationWindow("permission_to_file_was_denied_likely_due_to_the_file_being_open_in_excel" + ":\n" + str(document_path),title="permission_denied")
         except Exception as e:
             logging.debug("Error while creating template")
             logging.error(e)
