@@ -42,3 +42,8 @@ def test_validate_with_bad_db(home_domain):
         __file__).parent.parent / 'project_files_test' / 'OTLWizardProjects' / 'Projects' / 'bad_files' / 'bad.db')
     with pytest.raises(WrongDatabaseError):
         home_domain.validate('test', 'test', db_path)
+
+def test_validate_with_empty_db(home_domain):
+
+    with pytest.raises(EmptyFieldError):
+        home_domain.validate('test', 'test', "")

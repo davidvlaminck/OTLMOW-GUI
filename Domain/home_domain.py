@@ -41,6 +41,8 @@ class HomeDomain:
             raise EmptyFieldError(self._('own_reference_empty_error'))
         elif not input_subset.strip():
             raise EmptyFieldError(self._('bestek_empty_error'))
+        elif not db_path.strip():
+            raise EmptyFieldError(self._('db_path_empty_error'))
         elif SubsetDatabase(Path(db_path)).is_valid_subset_database() is False:
             raise WrongDatabaseError(self._('wrong_database_error'))
         else:
