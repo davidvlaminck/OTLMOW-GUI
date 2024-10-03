@@ -7,6 +7,10 @@ from Domain.subset_db import SubsetDatabase
 ROOT_DIR = Path(__file__).parent.parent
 
 
+def test_subset_db_raises_file_runtime_error_when_path_is_empty():
+    with pytest.raises(RuntimeError):
+        SubsetDatabase(Path(''))
+
 def test_subset_db_raises_file_not_found_error_when_path_does_not_exist():
     with pytest.raises(FileNotFoundError):
         SubsetDatabase(Path('does_not_exist.db'))
