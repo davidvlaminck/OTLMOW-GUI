@@ -14,7 +14,11 @@ class SubsetDatabase:
 
     def create_connection(self, db_path: Path) -> None:
         if db_path.exists():
-            self.connection = sqlite3.connect(db_path)
+            try:
+                self.connection = sqlite3.connect(db_path)
+            except sqlite3.OperationalError as e:
+                print(e)
+                raise RuntimeError(e)
         else:
             raise FileNotFoundError(f'{db_path} is not a valid path. File does not exist.')
 
