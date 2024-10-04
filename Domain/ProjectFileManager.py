@@ -16,6 +16,7 @@ from Domain.Project import Project
 from Domain.enums import Language, FileState
 from Domain.logger.OTLLogger import OTLLogger
 from Domain.project_file import ProjectFile
+from GUI.DialogWindows.NotificationWindow import NotificationWindow
 
 
 class ProjectFileManager:
@@ -212,6 +213,12 @@ class ProjectFileManager:
             return True
         except FileNotFoundError as e:
             logging.error(e)
+            return False
+        except PermissionError as e:
+            logging.error(e)
+            NotificationWindow(
+                "permission_to_file_was_denied_likely_due_to_the_file_being_open_in_excel" + ":\n" + str(
+                    file_path), title="permission_denied")
             return False
 
     @staticmethod

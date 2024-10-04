@@ -6,6 +6,7 @@ import zipfile
 from pathlib import Path
 
 import pytest
+from _pytest.fixtures import fixture
 
 from Domain import global_vars
 from Domain.Project import Project
@@ -295,3 +296,72 @@ def test_create_empty_temporary_map_creates_map_in_correct_location():
 def test_create_empty_temporary_map_contains_no_files():
     tempdir = ProjectFileManager.create_empty_temporary_map()
     assert not os.listdir(tempdir)
+
+@fixture
+def cleanupAfterCreatingAFileToDelete():
+    to_delete = []
+    yield to_delete
+    for item in to_delete:
+        if os.path.exists(item):
+            os.remove(item)
+
+"""
+Test the deletion of a template file from a project. This function verifies 
+that a specified file is successfully removed from the project directory.
+
+It creates a temporary file, adds its path to a cleanup list, and then calls 
+the method responsible for deleting the file. After the deletion, it asserts 
+that the file no longer exists.
+
+Args:
+    cleanupAfterCreatingAFileToDelete (list):   A list that tracks files to be 
+                                                deleted after the test 
+                                                completes.
+
+Returns:
+    None
+"""
+
+def test_delete_template_file_from_project(cleanupAfterCreatingAFileToDelete):
+    testFilePath = Path(PARENT_OF_THIS_FILE.parent / 'project_files_test' /
+                        'OTLWizardProjects' / 'Projects' / 'project_1' /
+                        'testFileToRemove.txt')
+
+    with open(testFilePath , 'w+') as fp:
+        fp.write("This is a textfile not a sqllite file")
+
+    # add path to testfile to the to_delete list so it gets deleted
+    # after the test is done this fixture will continue running from the yield
+    cleanupAfterCreatingAFileToDelete.append(testFilePath)
+
+    assert ProjectFileManager.delete_template_file_from_project(testFilePath)
+
+    assert not os.path.exists(testFilePath)
+
+
+def test_delete_non_existent_file_from_project(
+                                            cleanupAfterCreatingAFileToDelete):
+    fakeTestFilePath = Path(PARENT_OF_THIS_FILE.parent / 'project_files_test' /
+                            'OTLWizardProjects' / 'Projects' / 'project_1' /
+                            'fakeTestFileToRemove.txt')
+
+    assert not ProjectFileManager.delete_template_file_from_project(
+        fakeTestFilePath)
+
+
+def test_delete_occupied_template_file_from_project(
+                                            cleanupAfterCreatingAFileToDelete):
+    testFilePath = Path(PARENT_OF_THIS_FILE.parent / 'project_files_test' /
+                        'OTLWizardProjects' / 'Projects' / 'project_1' /
+                        'testFileToRemove.txt')
+
+    # add path to testfile to the to_delete list so it gets deleted
+    # after the test is done this fixture will continue running from the yield
+    cleanupAfterCreatingAFileToDelete.append(testFilePath)
+
+    # TODO: figure out how pytest can deal with opening a PyQt.DialogWindow
+    # with open(testFilePath, 'w+') as fp:
+    #     fp.write("This is a textfile not a sqllite file")
+    #
+    #     assert not ProjectFileManager.delete_template_file_from_project(
+    #             testFilePath)
