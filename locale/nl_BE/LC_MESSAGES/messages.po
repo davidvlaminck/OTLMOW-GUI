@@ -472,3 +472,11 @@ msgstr "Bestanden updaten"
 msgid "data visuals"
 msgstr "Data visualisatie"
 
+msgid "db_path_empty_error"
+msgstr "Subset is leeg"
+
+msgid "permission_denied"
+msgstr "Geen toestemming om de file te openen"
+
+msgid "permission_to_file_was_denied_likely_due_to_the_file_being_open_in_excel"
+msgstr "U hebt geen toegang tot deze file! \nWaarschijnlijk omdat de file nog open is in excel"

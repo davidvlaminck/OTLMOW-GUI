@@ -39,3 +39,21 @@ python OTLWizard.py
 ```
 
 We are working on a way to deploy this to the different operating systems. This is expected near the end of 2023.
+
+## Translations guide
+
+1. Install babel in a seperate python environment so it doesn't end up in the requirements.txt  
+`pip install babel`
+2. Add your new text_key to locale\base.pot:
+    ```
+    msgid "new_text_key"
+    msgstr ""
+    ```
+2. Add translations for each language to locale\\<language_code>\LC_MESSAGES\message.po
+    ```
+    msgid "new_text_key"
+    msgstr "The translation for this new key"
+    ```
+3. Compile new translations into messages.mo files using the seperate python environment  
+    `pybabel compile -d locale`
+    

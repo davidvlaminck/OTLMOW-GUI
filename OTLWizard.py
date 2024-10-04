@@ -8,6 +8,7 @@ from datetime import datetime
 from pathlib import Path
 
 from Domain.project_file import ProjectFile
+from GUI.translation.GlobalTranslate import GlobalTranslate
 
 ROOT_DIR =  Path(Path(__file__).absolute()).parent
 sys.path.insert(0,str(ROOT_DIR.absolute()))# needed for python to import project files
@@ -58,7 +59,9 @@ class OTLWizard(QApplication):
         # self.demo_project = demo_data()
         self.demo_project = None
 
-        stacked_widget = Navigation(return_language(LANG_DIR,Language[settings["language"]]))
+        language = GlobalTranslate(settings,LANG_DIR).getAll()
+
+        stacked_widget = Navigation(language)
 
         stacked_widget.resize(1360, 768)
         stacked_widget.setWindowTitle('OTLWizard')

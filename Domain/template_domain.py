@@ -6,6 +6,7 @@ from otlmow_modelbuilder.SQLDataClasses.OSLOClass import OSLOClass
 from otlmow_template.SubsetTemplateCreator import SubsetTemplateCreator
 
 from GUI.DialogWindows.NotificationWindow import NotificationWindow
+from GUI.translation.GlobalTranslate import GlobalTranslate
 
 
 class TemplateDomain:
@@ -28,7 +29,7 @@ class TemplateDomain:
                 model_directory=model_directory)
         except PermissionError as e:
             logging.debug("Permission to file was denied: " + str(document_path))
-            NotificationWindow("permission_to_file_was_denied_likely_due_to_the_file_being_open_in_excel" + ":\n" + str(document_path),title="permission_denied")
+            NotificationWindow(GlobalTranslate._("permission_to_file_was_denied_likely_due_to_the_file_being_open_in_excel") + ":\n" + str(document_path),title=GlobalTranslate._("permission_denied"))
         except Exception as e:
             logging.debug("Error while creating template")
             logging.error(e)

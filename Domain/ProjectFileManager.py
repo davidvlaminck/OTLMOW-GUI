@@ -17,6 +17,7 @@ from Domain.enums import Language, FileState
 from Domain.logger.OTLLogger import OTLLogger
 from Domain.project_file import ProjectFile
 from GUI.DialogWindows.NotificationWindow import NotificationWindow
+from GUI.translation.GlobalTranslate import GlobalTranslate
 
 
 class ProjectFileManager:
@@ -217,8 +218,8 @@ class ProjectFileManager:
         except PermissionError as e:
             logging.error(e)
             NotificationWindow(
-                "permission_to_file_was_denied_likely_due_to_the_file_being_open_in_excel" + ":\n" + str(
-                    file_path), title="permission_denied")
+                GlobalTranslate._("permission_to_file_was_denied_likely_due_to_the_file_being_open_in_excel") + ":\n" + str(
+                    file_path), title=GlobalTranslate._("permission_denied"))
             return False
 
     @staticmethod
