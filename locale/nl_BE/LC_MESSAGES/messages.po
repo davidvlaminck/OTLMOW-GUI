@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: jasper.berton@mow.vlaanderen.be\n"
-"POT-Creation-Date: 2023-12-21 11:22+0100\n"
+"POT-Creation-Date: 2024-10-04 17:15+0200\n"
 "PO-Revision-Date: 2023-10-19 13:13+0200\n"
 "Last-Translator: Jasper Berton <jasper.berton@mow.vlaanderen.be>\n"
 "Language: nl_BE\n"
@@ -16,144 +16,160 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.13.0\n"
+"Generated-By: Babel 2.16.0\n"
 
-#: Domain/home_domain.py:39
+#: Domain/ProjectFileManager.py:221 Domain/template_domain.py:32
+msgid "permission_to_file_was_denied_likely_due_to_the_file_being_open_in_excel"
+msgstr ""
+"U hebt geen toegang tot deze file! \n"
+"Waarschijnlijk omdat de file nog open is in excel2"
+
+#: Domain/ProjectFileManager.py:222 Domain/template_domain.py:32
+msgid "permission_denied"
+msgstr "Geen toestemming om de file te openen"
+
+#: Domain/home_domain.py:41
 msgid "own_reference_empty_error"
 msgstr "Eigen referentie is leeg"
 
-#: Domain/home_domain.py:41
+#: Domain/home_domain.py:43
 msgid "bestek_empty_error"
 msgstr "Bestek is leeg"
 
-#: GUI/TableModel.py:10
-msgid "id"
-msgstr "Id"
+#: Domain/home_domain.py:45
+msgid "db_path_empty_error"
+msgstr "Subset is leeg"
 
-#: GUI/TableModel.py:10
-msgid "action"
-msgstr "Actie"
+#: Domain/home_domain.py:47
+msgid "wrong_database_error"
+msgstr ""
 
-#: GUI/TableModel.py:10
-msgid "name_attribute"
-msgstr "Naam attribuut"
-
-#: GUI/TableModel.py:10
-msgid "old_attribute"
-msgstr "Oud attribuut"
-
-#: GUI/TableModel.py:11
-msgid "new_attribute"
-msgstr "Nieuw attribuut"
-
-#: GUI/header_bar.py:54 GUI/header_bar.py:170
+#: GUI/HeaderBar.py:52 GUI/HeaderBar.py:168
 msgid "new_project_button"
 msgstr "Nieuw Project"
 
-#: GUI/header_bar.py:79 GUI/header_bar.py:174
+#: GUI/HeaderBar.py:77 GUI/HeaderBar.py:172
 msgid "help"
 msgstr "Help"
 
-#: GUI/DialogWindows/menu_actions_window.py:13 GUI/header_bar.py:81
-#: GUI/header_bar.py:175
+#: GUI/DialogWindows/menu_actions_window.py:13 GUI/HeaderBar.py:79
+#: GUI/HeaderBar.py:173
 msgid "about"
 msgstr "Over..."
 
-#: GUI/header_bar.py:83 GUI/header_bar.py:176
+#: GUI/HeaderBar.py:81 GUI/HeaderBar.py:174
 msgid "report error"
 msgstr "Rapporteer probleem"
 
-#: GUI/header_bar.py:111 GUI/header_bar.py:171
+#: GUI/HeaderBar.py:109 GUI/HeaderBar.py:169
 msgid "return_to_home_screen"
 msgstr "terug naar startscherm"
 
-#: GUI/header_bar.py:131 GUI/header_bar.py:172
+#: GUI/HeaderBar.py:129 GUI/HeaderBar.py:170
 msgid "save_button"
 msgstr "Bewaar"
 
-#: GUI/header_bar.py:153 GUI/header_bar.py:173
+#: GUI/HeaderBar.py:151 GUI/HeaderBar.py:171
 msgid "import"
 msgstr "Importeren"
 
-#: GUI/message_box.py:16
+#: GUI/MessageBox.py:16
 msgid "delete"
 msgstr "Verwijderen"
 
-#: GUI/message_box.py:17
+#: GUI/MessageBox.py:17
 msgid "project_deletion_question"
 msgstr "Bent u zeker dat u dit project wilt verwijderen?"
 
-#: GUI/DialogWindows/choose_file_name_window.py:25 GUI/message_box.py:19
+#: GUI/DialogWindows/choose_file_name_window.py:25 GUI/MessageBox.py:19
 msgid "yes"
 msgstr "Ja"
 
-#: GUI/DialogWindows/choose_file_name_window.py:26 GUI/message_box.py:20
+#: GUI/DialogWindows/choose_file_name_window.py:26 GUI/MessageBox.py:20
 msgid "no"
 msgstr "Nee"
 
-#: GUI/DialogWindows/upsert_project_window.py:42
-#: GUI/DialogWindows/upsert_project_window.py:60 GUI/overviewtable.py:40
-#: GUI/overviewtable.py:153 UnitTests/domain_test/language_test.py:14
-#: UnitTests/domain_test/language_test.py:19
+#: GUI/DialogWindows/upsert_project_window.py:43
+#: GUI/DialogWindows/upsert_project_window.py:61 GUI/OverviewTable.py:40
+#: GUI/OverviewTable.py:153
 msgid "own_reference"
 msgstr "Eigen referentie"
 
-#: GUI/DialogWindows/upsert_project_window.py:44
-#: GUI/DialogWindows/upsert_project_window.py:61 GUI/overviewtable.py:40
-#: GUI/overviewtable.py:153
+#: GUI/DialogWindows/upsert_project_window.py:45
+#: GUI/DialogWindows/upsert_project_window.py:62 GUI/OverviewTable.py:40
+#: GUI/OverviewTable.py:153
 msgid "service_order"
 msgstr "Bestek - (dienstbevel)"
 
-#: GUI/DialogWindows/change_subset_window.py:26
-#: GUI/DialogWindows/upsert_project_window.py:46
-#: GUI/DialogWindows/upsert_project_window.py:62
-#: GUI/Screens/template_screen.py:165 GUI/overviewtable.py:40
-#: GUI/overviewtable.py:153
+#: GUI/DialogWindows/change_subset_window.py:31
+#: GUI/DialogWindows/upsert_project_window.py:47
+#: GUI/DialogWindows/upsert_project_window.py:63 GUI/OverviewTable.py:40
+#: GUI/OverviewTable.py:153 GUI/Screens/TemplateScreen.py:165
 msgid "subset"
 msgstr "Subset"
 
-#: GUI/overviewtable.py:40 GUI/overviewtable.py:153
+#: GUI/OverviewTable.py:40 GUI/OverviewTable.py:153
 msgid "last_edited"
 msgstr "Laatst bewerkt"
 
-#: GUI/overviewtable.py:86
+#: GUI/OverviewTable.py:86
 msgid "no_result"
 msgstr "Geen resultaten gevonden voor dit zoekresultaat"
 
-#: GUI/overviewtable.py:154
+#: GUI/OverviewTable.py:154
 msgid "no_results"
 msgstr "Geen resultaten gevonden voor dit zoekresultaat"
 
-#: GUI/stepper.py:70
+#: GUI/StepperWidget.py:70
 msgid "step1"
 msgstr "Aanmaken van template"
 
-#: GUI/stepper.py:71
+#: GUI/StepperWidget.py:71
 msgid "step2"
 msgstr "Asset Data invoeren"
 
-#: GUI/stepper.py:72
+#: GUI/StepperWidget.py:72
 msgid "step3"
 msgstr "Asset Data bewerken"
 
-#: GUI/stepper.py:73
+#: GUI/StepperWidget.py:73
 msgid "step4"
 msgstr "Asset Data exporteren"
 
-#: GUI/DialogWindows/change_subset_window.py:21
-#: GUI/Screens/template_screen.py:128 GUI/Screens/template_screen.py:284
+#: GUI/TableModel.py:11
+msgid "id"
+msgstr "Id"
+
+#: GUI/TableModel.py:11
+msgid "action"
+msgstr "Actie"
+
+#: GUI/TableModel.py:11
+msgid "name_attribute"
+msgstr "Naam attribuut"
+
+#: GUI/TableModel.py:11
+msgid "old_attribute"
+msgstr "Oud attribuut"
+
+#: GUI/TableModel.py:12
+msgid "new_attribute"
+msgstr "Nieuw attribuut"
+
+#: GUI/DialogWindows/change_subset_window.py:26
+#: GUI/Screens/TemplateScreen.py:128 GUI/Screens/TemplateScreen.py:284
 msgid "change_subset"
 msgstr "Aanpassen subset"
 
-#: GUI/DialogWindows/change_subset_window.py:53
+#: GUI/DialogWindows/change_subset_window.py:68
 #: GUI/DialogWindows/remove_project_files_window.py:34
-#: GUI/DialogWindows/upsert_project_window.py:95
+#: GUI/DialogWindows/upsert_project_window.py:96
 msgid "submit"
 msgstr "Bevestigen"
 
-#: GUI/DialogWindows/change_subset_window.py:55
+#: GUI/DialogWindows/change_subset_window.py:70
 #: GUI/DialogWindows/remove_project_files_window.py:36
-#: GUI/DialogWindows/upsert_project_window.py:97
+#: GUI/DialogWindows/upsert_project_window.py:98
 msgid "cancel"
 msgstr "Annuleren"
 
@@ -187,7 +203,9 @@ msgstr "Probleem melden"
 
 #: GUI/DialogWindows/menu_actions_window.py:29
 msgid "error_report"
-msgstr "Indien u een probleem ondervindt, gelieve dit te melden aan de ontwikkelaars hieronder vermeld."
+msgstr ""
+"Indien u een probleem ondervindt, gelieve dit te melden aan de "
+"ontwikkelaars hieronder vermeld."
 
 #: GUI/DialogWindows/menu_actions_window.py:30
 msgid "contact"
@@ -209,274 +227,266 @@ msgstr "Verwijder project bestanden"
 msgid "remove_project_files_question"
 msgstr "Bent u zeker dat u dit project wilt verwijderen?"
 
-#: GUI/DialogWindows/upsert_project_window.py:32
+#: GUI/DialogWindows/upsert_project_window.py:33
 msgid "alter_project_title"
 msgstr "Aanpassen project"
 
-#: GUI/DialogWindows/upsert_project_window.py:34
+#: GUI/DialogWindows/upsert_project_window.py:35
 msgid "new_project_title"
 msgstr "Nieuw Project"
 
-#: GUI/Screens/asset_data_change_screen.py:75
-#: GUI/Screens/asset_data_change_screen.py:125
+#: GUI/Screens/AssetDataChangeScreen.py:75
+#: GUI/Screens/AssetDataChangeScreen.py:125
 msgid "original_file_load"
 msgstr "Origineel bestand inladen"
 
-#: GUI/Screens/asset_data_change_screen.py:89
-#: GUI/Screens/asset_data_change_screen.py:129
-#: GUI/Screens/asset_data_change_screen.py:135
-#: GUI/Screens/insert_data_screen.py:78
+#: GUI/Screens/AssetDataChangeScreen.py:89
+#: GUI/Screens/AssetDataChangeScreen.py:129
+#: GUI/Screens/AssetDataChangeScreen.py:135 GUI/Screens/InsertDataScreen.py:78
 msgid "choose_file"
 msgstr "Kies uw bestand..."
 
-#: GUI/Screens/asset_data_change_screen.py:92
-#: GUI/Screens/asset_data_change_screen.py:127
+#: GUI/Screens/AssetDataChangeScreen.py:92
+#: GUI/Screens/AssetDataChangeScreen.py:127
 msgid "show differences"
 msgstr "Toon verschillen"
 
-#: GUI/Screens/asset_data_change_screen.py:97
-#: GUI/Screens/asset_data_change_screen.py:128
+#: GUI/Screens/AssetDataChangeScreen.py:97
+#: GUI/Screens/AssetDataChangeScreen.py:128
 msgid "apply differences"
 msgstr "Toepassen verschillen"
 
-#: GUI/Screens/asset_data_change_screen.py:102
-#: GUI/Screens/asset_data_change_screen.py:130
+#: GUI/Screens/AssetDataChangeScreen.py:102
+#: GUI/Screens/AssetDataChangeScreen.py:130
 msgid "empty fields"
 msgstr "Reset velden"
 
-#: GUI/Screens/asset_data_change_screen.py:126
+#: GUI/Screens/AssetDataChangeScreen.py:126
 msgid "new_file_load"
 msgstr "Nieuw bestand inladen"
 
-#: GUI/Screens/asset_data_change_screen.py:217
+#: GUI/Screens/AssetDataChangeScreen.py:217
 msgid "the changes were correctly written to a new file"
 msgstr "Veranderingen zijn succesvol weggeschreven naar een nieuw bestand"
 
-#: GUI/Screens/asset_data_change_screen.py:226
-#: GUI/Screens/insert_data_screen.py:223
+#: GUI/Screens/AssetDataChangeScreen.py:226 GUI/Screens/InsertDataScreen.py:223
 msgid "error"
 msgstr "Error"
 
-#: GUI/Screens/conversion_screen.py:29
+#: GUI/Screens/ConversionScreen.py:29
 msgid "file_conversion"
 msgstr "Bestand conversie"
 
-#: GUI/Screens/conversion_screen.py:44 GUI/Screens/conversion_screen.py:68
+#: GUI/Screens/ConversionScreen.py:44 GUI/Screens/ConversionScreen.py:68
 msgid "convert"
 msgstr "Converteren"
 
-#: GUI/Screens/conversion_screen.py:54 GUI/Screens/conversion_screen.py:67
+#: GUI/Screens/ConversionScreen.py:54 GUI/Screens/ConversionScreen.py:67
 msgid "file_for_conversion"
 msgstr "Bestand voor conversie"
 
-#: GUI/Screens/data_visualisation_screen.py:48
-#: GUI/Screens/data_visualisation_screen.py:86
+#: GUI/Screens/DataVisualisationScreen.py:49
+#: GUI/Screens/DataVisualisationScreen.py:87
 msgid "relations legend"
 msgstr "Mogelijke relaties"
 
-#: GUI/Screens/export_data_screen.py:38 GUI/Screens/export_data_screen.py:105
+#: GUI/Screens/ExportDataScreen.py:38 GUI/Screens/ExportDataScreen.py:105
 msgid "export_to_davie"
 msgstr "Data naar Davie exporteren"
 
-#: GUI/Screens/export_data_screen.py:47 GUI/Screens/export_data_screen.py:102
+#: GUI/Screens/ExportDataScreen.py:47 GUI/Screens/ExportDataScreen.py:102
 msgid "export relations and assets in different files"
 msgstr "Exporteer relaties en assets in verschillende bestanden"
 
-#: GUI/Screens/export_data_screen.py:49 GUI/Screens/export_data_screen.py:103
+#: GUI/Screens/ExportDataScreen.py:49 GUI/Screens/ExportDataScreen.py:103
 msgid "export assets in different files"
 msgstr "Exporteer aparte bestanden voor elke assetklasse"
 
-#: GUI/Screens/export_data_screen.py:64 GUI/Screens/export_data_screen.py:101
+#: GUI/Screens/ExportDataScreen.py:64 GUI/Screens/ExportDataScreen.py:101
 msgid "select file type for export"
 msgstr "selecteer bestandstype voor export"
 
-#: GUI/Screens/export_data_screen.py:76 GUI/Screens/export_data_screen.py:100
-#: GUI/Screens/template_screen.py:88 GUI/Screens/template_screen.py:283
+#: GUI/Screens/ExportDataScreen.py:76 GUI/Screens/ExportDataScreen.py:100
+#: GUI/Screens/TemplateScreen.py:88 GUI/Screens/TemplateScreen.py:283
 msgid "export"
 msgstr "Exporteren"
 
-#: GUI/Screens/export_data_screen.py:87 GUI/Screens/export_data_screen.py:104
+#: GUI/Screens/ExportDataScreen.py:87 GUI/Screens/ExportDataScreen.py:104
 msgid "file_to_upload"
 msgstr "Bestand om te uploaden"
 
-#: GUI/Screens/home_screen.py:88 GUI/Screens/home_screen.py:95
+#: GUI/Screens/HomeScreen.py:88 GUI/Screens/HomeScreen.py:95
 msgid "search_text"
 msgstr "Geef een project of bestek in om te zoeken"
 
-#: GUI/Screens/insert_data_screen.py:68 GUI/Screens/insert_data_screen.py:229
+#: GUI/Screens/InsertDataScreen.py:68 GUI/Screens/InsertDataScreen.py:229
 msgid "control_button"
 msgstr "Valideren"
 
-#: GUI/Screens/insert_data_screen.py:74
+#: GUI/Screens/InsertDataScreen.py:74
 msgid "reset_fields"
 msgstr "Reset velden"
 
-#: GUI/Screens/insert_data_screen.py:162 GUI/Screens/insert_data_screen.py:228
+#: GUI/Screens/InsertDataScreen.py:162 GUI/Screens/InsertDataScreen.py:228
 msgid "input_file"
 msgstr "Bestanden inladen:"
 
-#: GUI/Screens/insert_data_screen.py:209
+#: GUI/Screens/InsertDataScreen.py:209
 msgid "all_info_correct"
 msgstr "Alle gegevens zijn correct"
 
-#: GUI/Screens/insert_data_screen.py:214
+#: GUI/Screens/InsertDataScreen.py:214
 msgid "warning"
 msgstr "Waarschuwing"
 
-#: GUI/Screens/insert_data_screen.py:300
+#: GUI/Screens/InsertDataScreen.py:303
 msgid "{doc_name}: Data nodig in een datasheet om objecten in te laden.\n"
 msgstr "{doc_name}: Data nodig in een datasheet om objecten in te laden.\n"
 
-#: GUI/Screens/insert_data_screen.py:303
+#: GUI/Screens/InsertDataScreen.py:306
 msgid "{doc_name}: No type uri in {tab}\n"
 msgstr "{doc_name}: Kolom TypeUri niet gevonden \n"
 
-#: GUI/Screens/insert_data_screen.py:305
+#: GUI/Screens/InsertDataScreen.py:308
 msgid "{doc_name}: invalid columns in {tab}, bad columns are {bad_columns} \n"
-msgstr "{doc_name}: Foutieve kolommen in werkblad, desbetreffende kolommen zijn {bad_columns} \n"
+msgstr ""
+"{doc_name}: Foutieve kolommen in werkblad, desbetreffende kolommen zijn "
+"{bad_columns} \n"
 
-#: GUI/Screens/insert_data_screen.py:308
+#: GUI/Screens/InsertDataScreen.py:311
 msgid "{doc_name}: type uri not in first row of {tab}\n"
 msgstr "{doc_name}: TypeUri staat niet in de eerste rij\n"
 
-#: GUI/Screens/relation_change_screen.py:41
+#: GUI/Screens/RelationChangeScreen.py:45
 msgid "functionality under development"
 msgstr "Functionaliteit in ontwikkeling"
 
-#: GUI/Screens/relation_change_screen.py:55
+#: GUI/Screens/RelationChangeScreen.py:59
 msgid "class_list"
 msgstr "Klassen"
 
-#: GUI/Screens/relation_change_screen.py:68
+#: GUI/Screens/RelationChangeScreen.py:72
 msgid "relations_list"
 msgstr "Mogelijke relaties"
 
-#: GUI/Screens/relation_change_screen.py:81
-msgid "existing_relations_list"
-msgstr "Bestaande relaties"
-
-#: GUI/Screens/template_screen.py:59 GUI/Screens/template_screen.py:208
-#: GUI/Screens/template_screen.py:281
-msgid "select_all_classes"
-msgstr "Selecteer alle klassen"
-
-#: GUI/Screens/template_screen.py:63 GUI/Screens/template_screen.py:287
-msgid "general_settings"
-msgstr "Algemene instellingen"
-
-#: GUI/Screens/template_screen.py:64 GUI/Screens/template_screen.py:280
-msgid "no_choice_list"
-msgstr "Geen keuzelijsten opmaken"
-
-#: GUI/Screens/template_screen.py:66 GUI/Screens/template_screen.py:279
-msgid "geometry_column_added"
-msgstr "Geometrie kolom toevoegen aan tabel"
-
-#: GUI/Screens/template_screen.py:70 GUI/Screens/template_screen.py:288
-msgid "example_settings"
-msgstr "Instellingen voor voorbeelden"
-
-#: GUI/Screens/template_screen.py:73 GUI/Screens/template_screen.py:282
-msgid "amount_of_examples"
-msgstr "Genereer voorbeeldrijen"
-
-#: GUI/Screens/template_screen.py:77 GUI/Screens/template_screen.py:278
-msgid "export_attribute_info"
-msgstr "Exporteer een omschrijving van elk attribuut"
-
-#: GUI/Screens/template_screen.py:79 GUI/Screens/template_screen.py:289
-msgid "deprecated_settings"
-msgstr "Instellingen voor deprecated attributen"
-
-#: GUI/Screens/template_screen.py:81 GUI/Screens/template_screen.py:277
-msgid "show_deprecated_attributes"
-msgstr "Deprecated attributen aanduiden"
-
-#: GUI/Screens/template_screen.py:140 GUI/Screens/template_screen.py:285
-msgid "operator"
-msgstr "Operator"
-
-#: GUI/Screens/template_screen.py:152 GUI/Screens/template_screen.py:286
-msgid "otl_version"
-msgstr "OTL versie"
-
-#: GUI/Screens/template_screen.py:186
+#: GUI/Screens/RelationChangeScreen.py:84 GUI/Screens/TemplateScreen.py:186
 msgid "loading"
 msgstr "Data aan het inladen..."
 
-#: GUI/Screens/template_screen.py:203
+#: GUI/Screens/RelationChangeScreen.py:91
+msgid "existing_relations_list"
+msgstr "Bestaande relaties"
+
+#: GUI/Screens/TemplateScreen.py:59 GUI/Screens/TemplateScreen.py:208
+#: GUI/Screens/TemplateScreen.py:281
+msgid "select_all_classes"
+msgstr "Selecteer alle klassen"
+
+#: GUI/Screens/TemplateScreen.py:63 GUI/Screens/TemplateScreen.py:287
+msgid "general_settings"
+msgstr "Algemene instellingen"
+
+#: GUI/Screens/TemplateScreen.py:64 GUI/Screens/TemplateScreen.py:280
+msgid "no_choice_list"
+msgstr "Geen keuzelijsten opmaken"
+
+#: GUI/Screens/TemplateScreen.py:66 GUI/Screens/TemplateScreen.py:279
+msgid "geometry_column_added"
+msgstr "Geometrie kolom toevoegen aan tabel"
+
+#: GUI/Screens/TemplateScreen.py:70 GUI/Screens/TemplateScreen.py:288
+msgid "example_settings"
+msgstr "Instellingen voor voorbeelden"
+
+#: GUI/Screens/TemplateScreen.py:73 GUI/Screens/TemplateScreen.py:282
+msgid "amount_of_examples"
+msgstr "Genereer voorbeeldrijen"
+
+#: GUI/Screens/TemplateScreen.py:77 GUI/Screens/TemplateScreen.py:278
+msgid "export_attribute_info"
+msgstr "Exporteer een omschrijving van elk attribuut"
+
+#: GUI/Screens/TemplateScreen.py:79 GUI/Screens/TemplateScreen.py:289
+msgid "deprecated_settings"
+msgstr "Instellingen voor deprecated attributen"
+
+#: GUI/Screens/TemplateScreen.py:81 GUI/Screens/TemplateScreen.py:277
+msgid "show_deprecated_attributes"
+msgstr "Deprecated attributen aanduiden"
+
+#: GUI/Screens/TemplateScreen.py:140 GUI/Screens/TemplateScreen.py:285
+msgid "operator"
+msgstr "Operator"
+
+#: GUI/Screens/TemplateScreen.py:152 GUI/Screens/TemplateScreen.py:286
+msgid "otl_version"
+msgstr "OTL versie"
+
+#: GUI/Screens/TemplateScreen.py:203
 msgid "no classes found in specified path"
 msgstr "Geen klassen gevonden in het opgegeven pad"
 
-#: GUI/Screens/template_screen.py:236 GUI/Screens/template_screen.py:290
+#: GUI/Screens/TemplateScreen.py:236 GUI/Screens/TemplateScreen.py:290
 msgid "{selected} classes selected"
 msgstr "{selected} klassen geselecteerd"
 
-msgid "Data visualisation"
-msgstr "Data visualisatie"
+#~ msgid "Data visualisation"
+#~ msgstr "Data visualisatie"
 
-msgid "create_png"
-msgstr "Creëer PNG"
+#~ msgid "create_png"
+#~ msgstr "Creëer PNG"
 
-msgid "search_button"
-msgstr "Zoeken"
+#~ msgid "search_button"
+#~ msgstr "Zoeken"
 
-msgid "subtitle_page_1"
-msgstr "Specifieer welke klassen en instellingen u in uw template wil verwerken"
+#~ msgid "subtitle_page_1"
+#~ msgstr "Specifieer welke klassen en instellingen u in uw template wil verwerken"
 
-msgid "export_data"
-msgstr "Export Data"
+#~ msgid "export_data"
+#~ msgstr "Export Data"
 
-msgid "step_1"
-msgstr "Aanmaken van template"
+#~ msgid "step_1"
+#~ msgstr "Aanmaken van template"
 
-msgid "step_2"
-msgstr "Asset Data invoeren"
+#~ msgid "step_2"
+#~ msgstr "Asset Data invoeren"
 
-msgid "step_3"
-msgstr "Asset Data/relaties bewerken"
+#~ msgid "step_3"
+#~ msgstr "Asset Data/relaties bewerken"
 
-msgid "step_4"
-msgstr "Asset Data exporteren/converteren"
+#~ msgid "step_4"
+#~ msgstr "Asset Data exporteren/converteren"
 
-msgid "template"
-msgstr "Aanmaken template"
+#~ msgid "template"
+#~ msgstr "Aanmaken template"
 
-msgid "insert_data"
-msgstr "Toevoegen Data"
+#~ msgid "insert_data"
+#~ msgstr "Toevoegen Data"
 
-msgid "data_change"
-msgstr "Data aanpassen"
+#~ msgid "data_change"
+#~ msgstr "Data aanpassen"
 
-msgid "relation_change"
-msgstr "Aanpassen relaties"
+#~ msgid "relation_change"
+#~ msgstr "Aanpassen relaties"
 
-msgid "file_to_convert"
-msgstr "Bestand om te converteren"
+#~ msgid "file_to_convert"
+#~ msgstr "Bestand om te converteren"
 
-msgid "control"
-msgstr "Controleren"
+#~ msgid "control"
+#~ msgstr "Controleren"
 
-msgid "type"
-msgstr "Type"
+#~ msgid "type"
+#~ msgstr "Type"
 
-msgid "attribuut"
-msgstr "Attribuut"
+#~ msgid "attribuut"
+#~ msgstr "Attribuut"
 
-msgid "update_relations"
-msgstr "Relaties updaten"
+#~ msgid "update_relations"
+#~ msgstr "Relaties updaten"
 
-msgid "update_files"
-msgstr "Bestanden updaten"
+#~ msgid "update_files"
+#~ msgstr "Bestanden updaten"
 
-msgid "data visuals"
-msgstr "Data visualisatie"
+#~ msgid "data visuals"
+#~ msgstr "Data visualisatie"
 
-msgid "db_path_empty_error"
-msgstr "Subset is leeg"
-
-msgid "permission_denied"
-msgstr "Geen toestemming om de file te openen"
-
-msgid "permission_to_file_was_denied_likely_due_to_the_file_being_open_in_excel"
-msgstr "U hebt geen toegang tot deze file! \nWaarschijnlijk omdat de file nog open is in excel"

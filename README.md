@@ -44,16 +44,19 @@ We are working on a way to deploy this to the different operating systems. This 
 
 1. Install babel in a seperate python environment so it doesn't end up in the requirements.txt  
 `pip install babel`
-2. Add your new text_key to locale\base.pot:
-    ```
-    msgid "new_text_key"
-    msgstr ""
-    ```
-2. Add translations for each language to locale\\<language_code>\LC_MESSAGES\message.po
+2. Generate the locale\base.pot file from the strings in your python code by running using the seperate python environment:  
+    `pybabel extract -F babel.cfg -o locale\base.pot .\Domain .\GUI`
+2. Update the `locale\\<language_code>\LC_MESSAGES\message.po` files to the new base.pot using the seperate python environment   with:  
+    `pybabel update -i .\locale\base.pot -d locale`
+3. Find your `new_text_key` in the `locale\\<language_code>\LC_MESSAGES\message.po` of each language and fill in the
+tranlation for that text in like:
     ```
     msgid "new_text_key"
     msgstr "The translation for this new key"
     ```
-3. Compile new translations into messages.mo files using the seperate python environment  
+   if you don't know all the text_keys you added you can search for `msgstr ""` to find all msgids that have no translation yet
+  
+
+4. Compile new translations into messages.mo files using the seperate python environment  
     `pybabel compile -d locale`
     
