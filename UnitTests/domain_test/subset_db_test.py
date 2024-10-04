@@ -9,7 +9,7 @@ from Exceptions.WrongDatabaseError import WrongDatabaseError
 
 ROOT_DIR = Path(__file__).parent.parent
 
-def test_subset_db_raises_file_runtime_error_when_path_is_db_file_but_not_subset():
+def subset_db_raises_file_runtime_error_when_path_is_db_file_but_not_subset():
     # UnitTests/domain_test/home_domain_test.py for test
     pass
 
