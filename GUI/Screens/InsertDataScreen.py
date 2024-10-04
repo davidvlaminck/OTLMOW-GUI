@@ -202,7 +202,7 @@ class InsertDataScreen(Screen):
         logging.debug("list with " + str(global_vars.single_project.templates_in_memory))
         logging.debug("Filled list with " + str(len(global_vars.single_project.templates_in_memory)) + " items")
         for asset in global_vars.single_project.templates_in_memory:
-            self.add_file_to_list([asset.file_path], asset.state)
+            self.add_file_to_list([asset.file_path], FileState(asset.state))
 
     def positive_feedback_message(self):
         self.message_icon.setPixmap(qta.icon('mdi.check', color="white").pixmap(QSize(48, 48)))
