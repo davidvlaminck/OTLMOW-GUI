@@ -33,7 +33,7 @@ class HomeScreen(Screen):
         self.search_message = QLabel()
         self.table = OverviewTable(self.search_message, self._, self.home_domain, self.message_box)
         self.header = HeaderBar(language=self._, table=self.table)
-        self.stacked_widget = None
+        self.main_window = None
 
         ProjectFileManager.load_projects_into_global()
         self.main_content_ui()

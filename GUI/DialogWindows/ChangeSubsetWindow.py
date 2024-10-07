@@ -17,7 +17,7 @@ class ChangeSubsetWindow:
         self.error_label = QLabel()
         self.input_subset = QLineEdit()
 
-    def change_subset_window(self, project, stacked_widget):
+    def change_subset_window(self, project, main_window):
         dialog = QDialog()
         self.error_label.setText("")
         self.error_label.setStyleSheet("color: red")
@@ -41,7 +41,7 @@ class ChangeSubsetWindow:
         frame.setLayout(horizontal_layout)
         button_box = self.create_button_box()
         button_box.accepted.connect(
-            lambda: self.validate_change_subset(project, dialog, stacked_widget, self.input_subset.text(), old_project_path))
+            lambda: self.validate_change_subset(project, dialog, main_window, self.input_subset.text(), old_project_path))
         button_box.rejected.connect(dialog.reject)
 
         layout.addWidget(frame)
@@ -50,11 +50,11 @@ class ChangeSubsetWindow:
         dialog.setLayout(layout)
         dialog.show()
         dialog.exec()
-        stacked_widget.reset_ui(self._)
+        main_window.reset_ui(self._)
 
-    def validate_change_subset(self, project, dialog, stacked_widget, input_subset: str, old_project_path: Path):
+    def validate_change_subset(self, project, dialog, main_window, input_subset: str, old_project_path: Path):
         try:
-            self.home_domain.change_subset(project=project, new_path=input_subset, stacked_widget=stacked_widget)
+            self.home_domain.change_subset(project=project, new_path=input_subset, main_window=main_window)
         except WrongDatabaseError as e:
             self.error_label.setText(str(e))
             self.input_subset.setText(str(old_project_path))

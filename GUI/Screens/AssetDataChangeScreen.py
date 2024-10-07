@@ -19,7 +19,7 @@ class AssetDataChangeScreen(Screen):
         super().__init__()
         self._ = language_settings
         self.container_insert_data_screen = QVBoxLayout()
-        self.stacked_widget = None
+        self.main_window = None
         self.original_file_label = QLabel()
         self.new_file_label = QLabel()
         self.control_button = ButtonWidget()
@@ -197,7 +197,7 @@ class AssetDataChangeScreen(Screen):
         dialog_window = ChooseFileNameWindow(self._, project, original_documents)
         try:
             dialog_window.warning_overwrite_screen()
-            self.stacked_widget.widget(2).tab1.fill_list()
+            self.main_window.widget(2).tab1.fill_list()
             self.positive_feedback_message()
         except Exception as e:
             logging.debug(e)

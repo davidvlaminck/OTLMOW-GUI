@@ -2,7 +2,8 @@ from pathlib import Path
 import qtawesome as qta
 from PyQt6.QtGui import QPixmap
 
-from PyQt6.QtWidgets import QVBoxLayout, QFrame, QHBoxLayout, QPushButton, QWidget, QLineEdit, QLabel, QListWidget
+from PyQt6.QtWidgets import QVBoxLayout, QFrame, QHBoxLayout, QPushButton, \
+    QWidget, QLineEdit, QLabel, QListWidget, QListWidgetItem
 
 from GUI.Screens.Screen import Screen
 
@@ -12,7 +13,7 @@ class RelationChangeScreen(Screen):
         super().__init__()
         self._ = language_settings
         self.container_insert_data_screen = QVBoxLayout()
-        self.stacked_widget = None
+        self.main_window = None
         self.init_ui()
 
     def init_ui(self):

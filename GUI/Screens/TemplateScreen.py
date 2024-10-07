@@ -21,7 +21,7 @@ class TemplateScreen(Screen):
         super().__init__()
         self._ = language_settings
         self.container_template_screen = QVBoxLayout()
-        self.stacked_widget = None
+        self.main_window = None
         self.select_all_classes = QCheckBox()
         self.no_choice_list = QCheckBox()
         self.geometry_column_added = QCheckBox()
@@ -266,7 +266,7 @@ class TemplateScreen(Screen):
 
     def change_subset(self):
         change_subset_window = ChangeSubsetWindow(self._)
-        change_subset_window.change_subset_window(self.project, self.stacked_widget)
+        change_subset_window.change_subset_window(self.project, self.main_window)
 
     def reset_ui(self, _):
         self._ = _

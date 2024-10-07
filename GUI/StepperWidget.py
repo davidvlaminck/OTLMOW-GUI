@@ -14,7 +14,7 @@ class StepperWidget(QWidget):
     def __init__(self, _, step: int):
         super().__init__()
         self._ = _
-        self.stacked_widget = None
+        self.main_window = None
         self.step1 = ButtonWidget()
         self.step2 = ButtonWidget()
         self.step3 = ButtonWidget()
@@ -41,7 +41,7 @@ class StepperWidget(QWidget):
             step.setProperty('class', 'stepper-button')
             color = "#B35F35" if self.step_nr == i else "grey"
             step.setIcon(qta.icon(f'mdi.numeric-{i}-circle', color=color))
-            step.clicked.connect(lambda _, index=i: self.stacked_widget.setCurrentIndex(index))
+            step.clicked.connect(lambda _, index=i: self.main_window.setCurrentIndex(index))
 
     def fill_up_layout(self, lines):
         horizontal_layout = QHBoxLayout()

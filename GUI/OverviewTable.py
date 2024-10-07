@@ -28,7 +28,7 @@ class OverviewTable(QTableWidget):
         self.home_domain = home_domain
         self.projects: list
         self.message_box = message_box
-        self.stacked_widget = None
+        self.main_window = None
         self.error_widget = QTableWidgetItem()
         self.projects = None
 
@@ -110,23 +110,23 @@ class OverviewTable(QTableWidget):
 
     def create_async_task(self, row):
         logging.debug("called this loopdieloop")
-        self.stacked_widget.setCurrentIndex(1)
+        self.main_window.setCurrentIndex(1)
         project = self.item(row, 0).text()
         projects = ProjectFileManager.get_all_otl_wizard_projects()
         p = next(k for k in projects if k.eigen_referentie == project)
-        self.stacked_widget.widget(1).tab1.project = p
+        self.main_window.widget(1).tab1.project = p
         p = ProjectFileManager.get_templates_in_memory(p)
         global_vars.single_project = p
-        self.stacked_widget.reset_ui(self._)
-        self.stacked_widget.widget(2).tab1.fill_list()
-        self.stacked_widget.widget(1).tab1.update_project_info()
-        self.stacked_widget.widget(2).tab1.fill_list()
+        self.main_window.reset_ui(self._)
+        self.main_window.widget(2).tab1.fill_list()
+        self.main_window.widget(1).tab1.update_project_info()
+        self.main_window.widget(2).tab1.fill_list()
         event_loop = asyncio.get_event_loop()
         event_loop.create_task(self.navigate_to_project())
 
     async def navigate_to_project(self):
         logging.debug("called")
-        await self.stacked_widget.widget(1).tab1.fill_list()
+        await self.main_window.widget(1).tab1.fill_list()
 
     @staticmethod
     def filter_projects(projects, input_text: str = None):

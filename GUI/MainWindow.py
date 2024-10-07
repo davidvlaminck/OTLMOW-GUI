@@ -11,6 +11,7 @@ from GUI.Screens.ExportDataScreen import ExportDataScreen
 from GUI.Screens.HomeScreen import HomeScreen
 from GUI.Screens.InsertDataScreen import InsertDataScreen
 from GUI.Screens.RelationChangeScreen import RelationChangeScreen
+from GUI.Screens.Screen import Screen
 from GUI.Screens.TemplateScreen import TemplateScreen
 from GUI.TabWidget import TabWidget
 
@@ -19,43 +20,51 @@ class MainWindow(QStackedWidget):
     def __init__(self, language):
         super().__init__()
         self._ = language
-        self.fill_stacked_widget()
+
+        self.home_screen:Screen = HomeScreen(self._)
+        self.step1:Screen = TemplateScreen(self._)
+        self.step1_tabwidget:Screen = TabWidget(page_nr=1, widget1=self.step1,
+                                         description1="template",
+                                         has_save_btn=False)
+        self.step2:Screen = InsertDataScreen(self._)
+        self.step2_tabwidget:Screen = TabWidget(page_nr=2, widget1=self.step2,
+                                         description1="insert_data",
+                                         has_save_btn=False)
+        self.step3_visuals:Screen = DataVisualisationScreen(self._)
+        self.step3_data:Screen = AssetDataChangeScreen(self._)
+        self.step3_relations:Screen = RelationChangeScreen(self._)
+        self.step_3_tabwidget:Screen = TabWidget(page_nr=3, widget1=self.step3_visuals,
+                                          description1="data visuals",
+                                          widget2=self.step3_data,
+                                          description2="data_change",
+                                          widget3=self.step3_relations,
+                                          description3="relation_change",
+                                          has_save_btn=False)
+        self.step4_export:Screen = ExportDataScreen(self._)
+        self.step4_tabwidget:Screen = TabWidget(page_nr=4,
+                                                widget1=self.step4_export,
+                                                description1="export_data",
+                                                has_save_btn=False)
+        self.add_widget(self.home_screen)
+        self.stepper_widgets:Screen = [self.step1_tabwidget, self.step2_tabwidget, self.step_3_tabwidget,
+                           self.step4_tabwidget]
+        self.add_tabs_with_stepper_to_widget(self.stepper_widgets)
+        self.home_screen.table.main_window = self
+        self.step1.main_window = self
 
     def add_widget(self, widget: QWidget, has_stepper: bool = False):
         self.addWidget(widget)
-        widget.stacked_widget = self
-        widget.header.stacked_widget = self
+        widget.main_window = self
+        widget.header.main_window = self
         if has_stepper:
-            widget.stepper_widget.stacked_widget = self
-            widget.tab1.stacked_widget = self
+            widget.stepper_widget.main_window = self
+            widget.tab1.main_window = self
             if hasattr(widget, 'tab2'):
-                widget.tab2.stacked_widget = self
+                widget.tab2.main_window = self
 
     def reset_ui(self, _):
         for i in range(self.count()):
             self.widget(i).reset_ui(_)
-
-    def fill_stacked_widget(self):
-        home_screen = HomeScreen(self._)
-        step1 = TemplateScreen(self._)
-        step1_tabwidget = TabWidget(page_nr=1, widget1=step1, description1="template", has_save_btn=False)
-        step2 = InsertDataScreen(self._)
-        step2_tabwidget = TabWidget(page_nr=2, widget1=step2, description1="insert_data", has_save_btn=False)
-        step3_visuals = DataVisualisationScreen(self._)
-        step3_data = AssetDataChangeScreen(self._)
-        step3_relations = RelationChangeScreen(self._)
-        step_3_tabwidget = TabWidget(page_nr=3, widget1=step3_visuals, description1="data visuals", widget2=step3_data,
-                                     description2="data_change", widget3=step3_relations,
-                                     description3="relation_change", has_save_btn=False)
-        step4_export = ExportDataScreen(self._)
-        step4_tabwidget = TabWidget(page_nr=4, widget1=step4_export, description1="export_data",
-                                    has_save_btn=False)
-        self.add_widget(home_screen)
-        stepper_widgets = [step1_tabwidget, step2_tabwidget, step_3_tabwidget,
-                           step4_tabwidget]
-        self.add_tabs_with_stepper_to_widget(stepper_widgets)
-        home_screen.table.stacked_widget = self
-        step1.stacked_widget = self
 
     def add_tabs_with_stepper_to_widget(self, tabs: List[TabWidget]):
         for tab in tabs:

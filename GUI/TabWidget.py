@@ -23,7 +23,7 @@ class TabWidget(Screen):
         self.desc1 = description1
         self.stepper_widget = StepperWidget(self._, page_nr)
         self.header = HeaderBar(language=self._, has_save_btn=has_save_btn)
-        self.stacked_widget = None
+        self.main_window = None
         self.create_tab(widget1, **kwargs)
         self.layout = QVBoxLayout(self)
         self.fill_up_layout()
@@ -54,7 +54,7 @@ class TabWidget(Screen):
 
     def init_ui(self):
         button = self.header.header_bar_detail_screen()
-        button.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(0))
+        button.clicked.connect(lambda: self.main_window.setCurrentIndex(0))
 
     def reset_ui(self, _):
         self._ = _

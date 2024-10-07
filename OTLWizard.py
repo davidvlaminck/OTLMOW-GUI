@@ -7,6 +7,7 @@ import typing
 from datetime import datetime
 from pathlib import Path
 
+from Domain import global_vars
 from GUI.translation.GlobalTranslate import GlobalTranslate
 
 ROOT_DIR =  Path(Path(__file__).absolute()).parent
@@ -42,6 +43,7 @@ def demo_data():
 
 
 class OTLWizard(QApplication):
+
     def __init__(self,settings: dict, argv: typing.List[str]):
         super().__init__(argv)
 
@@ -58,12 +60,13 @@ class OTLWizard(QApplication):
 
         language = GlobalTranslate(settings,LANG_DIR).getAll()
 
-        stacked_widget = MainWindow(language)
+        self.main_window = MainWindow(language)
 
-        stacked_widget.resize(1360, 768)
-        stacked_widget.setWindowTitle('OTLWizard')
-        stacked_widget.setMinimumSize(1280, 720)
-        stacked_widget.show()
+        self.main_window.resize(1360, 768)
+        self.main_window.setWindowTitle('OTLWizard')
+        self.main_window.setMinimumSize(1280, 720)
+        self.main_window.show()
+        global_vars.otl_wizard = self
 
     @asyncClose
     async def quit(self):

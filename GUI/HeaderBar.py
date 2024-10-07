@@ -15,12 +15,12 @@ from GUI.OverviewTable import OverviewTable
 
 
 class HeaderBar(QFrame):
-    def __init__(self, language, stacked_widget=None, table: OverviewTable = None, has_save_btn: bool = True):
+    def __init__(self, language, main_window=None, table: OverviewTable = None, has_save_btn: bool = True):
         super().__init__()
         self.new_project_button = ButtonWidget()
         self._ = language
         self.table = table
-        self.stacked_widget = stacked_widget
+        self.main_window = main_window
         self.return_button = ButtonWidget()
         self.subtitel = QLabel()
         self.save_button = ButtonWidget()
@@ -92,7 +92,7 @@ class HeaderBar(QFrame):
             upsert_project_window.draw_upsert_project(project=id_, overview_table=self.table)
         else:
             language_window = LanguageWindow(self._)
-            language_window.language_window(stacked_widget=self.stacked_widget)
+            language_window.language_window(main_window=self.main_window)
 
     def header_bar_detail_screen(self):
         full_header = QVBoxLayout()

@@ -11,6 +11,7 @@ from otlmow_converter.Exceptions.InvalidColumnNamesInExcelTabError import Invali
 from otlmow_converter.Exceptions.NoTypeUriInExcelTabError import NoTypeUriInExcelTabError
 from otlmow_converter.Exceptions.NoTypeUriInTableError import NoTypeUriInTableError
 from otlmow_converter.Exceptions.TypeUriNotInFirstRowError import TypeUriNotInFirstRowError
+from otlmow_model.OtlmowModel.BaseClasses.OTLObject import OTLObject
 from otlmow_model.OtlmowModel.Helpers.OTLObjectHelper import count_assets_by_type
 
 from Domain import global_vars
@@ -30,7 +31,7 @@ class InsertDataScreen(Screen):
         self._ = language_settings
         self.container_insert_data_screen = QVBoxLayout()
         self.feedback_message_box = QFrame()
-        self.stacked_widget = None
+        self.main_window = None
         self.message_icon = QLabel()
         self.message = QLabel()
         self.input_file_label = QLabel()
@@ -135,7 +136,7 @@ class InsertDataScreen(Screen):
                                                                 state=FileState.ERROR)
         else:
             logging.debug('positive feedback needed')
-            self.stacked_widget.reset_ui(self._)
+            self.main_window.reset_ui(self._)
             self.positive_feedback_message()
         self.fill_feedback_list(assets)
         ProjectFileManager.add_project_files_to_file(global_vars.single_project)

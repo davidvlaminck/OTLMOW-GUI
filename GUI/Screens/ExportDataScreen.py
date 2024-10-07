@@ -20,7 +20,7 @@ class ExportDataScreen(Screen):
         self.file_extension_selection = QComboBox()
         self.title = QLabel()
         self.file_type_label = QLabel()
-        self.stacked_widget = None
+        self.main_window = None
         self.relations_split_optionality = QCheckBox()
         self.init_ui()
 
