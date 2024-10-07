@@ -1,4 +1,5 @@
 import logging
+from typing import List
 
 import qtawesome as qta
 
@@ -8,8 +9,10 @@ from PyQt6.QtWebEngineCore import QWebEngineSettings
 from PyQt6.QtWebEngineWidgets import QWebEngineView
 from PyQt6.QtWidgets import QVBoxLayout, QLabel, QWidget, QFrame, QHBoxLayout
 from otlmow_converter.OtlmowConverter import OtlmowConverter
+from otlmow_model.OtlmowModel.BaseClasses.OTLObject import OTLObject
 from otlmow_visuals.PyVisWrapper import PyVisWrapper
 
+from Domain.Project import Project
 from Domain.enums import FileState
 from GUI.ButtonWidget import ButtonWidget
 from Domain import global_vars
@@ -87,20 +90,25 @@ class DataVisualisationScreen(Screen):
         self.color_label_title.setText(self._("relations legend") + ":")
 
     def reload_html(self):
-        self.load_assets_and_create_html()
+        objects_in_memory = self.load_assets()
+        self.create_html(objects_in_memory)
         # self.view.reload()
 
-    def load_assets_and_create_html(self):
-        project = global_vars.single_project
+    def load_assets(self) -> List[OTLObject]:
+        project: Project = global_vars.single_project
         if project is None:
             return
-        valid_file_paths = [file.file_path for file in project.templates_in_memory if file.state == FileState.OK]
+        valid_file_paths:List[Path] = [file.file_path for file in project.templates_in_memory if file.state == FileState.OK]
 
-        objects_in_memory = []
+        objects_in_memory: List[OTLObject] = []
         for path in valid_file_paths:
             objects_in_memory.extend(OtlmowConverter().from_file_to_objects(
                 file_path=Path(path), model_directory=project.subset_path))
 
+        return objects_in_memory
+
+    def create_html(self, objects_in_memory:List[OTLObject]):
         html_loc = HTML_DIR / "visuals.html"
-        PyVisWrapper().show(list_of_objects=objects_in_memory, html_path=Path(html_loc), launch_html=False)
+        PyVisWrapper().show(list_of_objects=objects_in_memory,
+                            html_path=Path(html_loc), launch_html=False)
         self.view.setHtml(open(html_loc).read())

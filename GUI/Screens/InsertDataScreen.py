@@ -142,7 +142,13 @@ class InsertDataScreen(Screen):
         ProjectFileManager.add_project_files_to_file(global_vars.single_project)
         self.fill_list()
 
-        DataVisualisationScreen(self._).load_assets_and_create_html()
+
+        objects_in_memory: List[OTLObject] = []
+        for assetList in assets:
+            objects_in_memory.extend(assetList)
+
+        global_vars.otl_wizard.main_window.step3_visuals.create_html(
+            objects_in_memory)
 
     def add_input_file_field(self):
         input_file = QFrame()
