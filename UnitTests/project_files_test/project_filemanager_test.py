@@ -13,6 +13,7 @@ from Domain.Project import Project
 from Domain.ProjectFileManager import ProjectFileManager
 from Domain.enums import FileState
 from Domain.project_file import ProjectFile
+from Exceptions.ExcelFileUnavailableError import ExcelFileUnavailableError
 
 PARENT_OF_THIS_FILE = Path(__file__).parent
 
@@ -361,8 +362,9 @@ def test_delete_occupied_template_file_from_project(
     cleanup_after_creating_a_file_to_delete.append(testFilePath)
 
     # TODO: figure out how pytest can deal with opening a PyQt.DialogWindow
-    # with open(testFilePath, 'w+') as fp:
-    #     fp.write("This is a textfile not a sqllite file")
-    #
-    #     assert not ProjectFileManager.delete_template_file_from_project(
-    #             testFilePath)
+    with open(testFilePath, 'w+') as fp:
+        fp.write("This is a textfile not a sqllite file")
+
+        with pytest.raises(ExcelFileUnavailableError):
+            ProjectFileManager.delete_template_file_from_project(
+                    testFilePath)

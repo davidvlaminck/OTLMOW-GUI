@@ -11,6 +11,9 @@ from Domain.Project import Project
 from Domain.ProjectFileManager import ProjectFileManager
 from Domain.enums import FileState
 from Domain.project_file import ProjectFile
+from Exceptions.ExcelFileUnavailableError import ExcelFileUnavailableError
+from GUI.DialogWindows.NotificationWindow import NotificationWindow
+from GUI.translation.GlobalTranslate import GlobalTranslate
 
 
 class InsertDataDomain:
@@ -55,23 +58,41 @@ class InsertDataDomain:
 
     @classmethod
     def delete_project_file_from_project(cls, project: Project, file_path: Path):
-        if (ProjectFileManager.delete_template_file_from_project(
-                file_path=file_path)):
-            for file in project.templates_in_memory:
-                if file.file_path == file_path:
-                    project.templates_in_memory.remove(file)
-                    break
-            ProjectFileManager.add_project_files_to_file(project=project)
-            return True
-        else:
-            return False
+        try:
+
+            if (ProjectFileManager.delete_template_file_from_project(
+                    file_path=file_path)):
+                for file in project.templates_in_memory:
+                    if file.file_path == file_path:
+                        project.templates_in_memory.remove(file)
+                        break
+                ProjectFileManager.add_project_files_to_file(project=project)
+                return True
+            else:
+                return False
+
+        except ExcelFileUnavailableError as e:
+            NotificationWindow( "{0}:\n{1}".format(
+                                GlobalTranslate._(
+                                    e.error_window_message_key),
+                                e.file_path),
+                                GlobalTranslate._(e.error_window_title_key))
 
     @classmethod
-    def remove_all_project_files(cls, project):
-        project_file_manager = ProjectFileManager
-        logging.debug("memory contains %s", project.templates_in_memory)
+    def remove_all_project_files(cls, project: Project):
+        logging.debug("memory contains %s",
+                      project.templates_in_memory)
         for file in project.templates_in_memory:
-            logging.debug("starting to delete file %s", file.file_path)
-            project_file_manager.delete_template_file_from_project(file_path=file.file_path)
+            logging.debug("starting to delete file %s",
+                          file.file_path)
+            try:
+                ProjectFileManager.delete_template_file_from_project(
+                    file_path=file.file_path)
+            except ExcelFileUnavailableError as e:
+                NotificationWindow("{0}:\n{1}".format(
+                        GlobalTranslate._(e.error_window_message_key),
+                        e.file_path),
+                        GlobalTranslate._(e.error_window_title_key))
+
         project.templates_in_memory = []
         ProjectFileManager.add_project_files_to_file(project=project)

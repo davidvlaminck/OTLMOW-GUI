@@ -22,7 +22,7 @@ msgstr ""
 msgid "permission_to_file_was_denied_likely_due_to_the_file_being_open_in_excel"
 msgstr ""
 "You don't have permission to edit this file! \n"
-" This is likely because it is is still open in excel."
+"This is likely because it is is still open in excel."
 
 #: Domain/ProjectFileManager.py:222 Domain/template_domain.py:32
 msgid "permission_denied"

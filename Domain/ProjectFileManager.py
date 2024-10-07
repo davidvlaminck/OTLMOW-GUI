@@ -16,6 +16,7 @@ from Domain.Project import Project
 from Domain.enums import Language, FileState
 from Domain.logger.OTLLogger import OTLLogger
 from Domain.project_file import ProjectFile
+from Exceptions.ExcelFileUnavailableError import ExcelFileUnavailableError
 from GUI.DialogWindows.NotificationWindow import NotificationWindow
 from GUI.translation.GlobalTranslate import GlobalTranslate
 
@@ -217,10 +218,7 @@ class ProjectFileManager:
             return False
         except PermissionError as e:
             logging.error(e)
-            NotificationWindow(
-                GlobalTranslate._("permission_to_file_was_denied_likely_due_to_the_file_being_open_in_excel") + ":\n" + str(
-                    file_path), title=GlobalTranslate._("permission_denied"))
-            return False
+            raise ExcelFileUnavailableError(file_path, e)
 
     @staticmethod
     def create_empty_temporary_map() -> Path:
