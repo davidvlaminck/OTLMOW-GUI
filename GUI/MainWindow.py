@@ -15,7 +15,7 @@ from GUI.Screens.TemplateScreen import TemplateScreen
 from GUI.TabWidget import TabWidget
 
 
-class Navigation(QStackedWidget):
+class MainWindow(QStackedWidget):
     def __init__(self, language):
         super().__init__()
         self._ = language

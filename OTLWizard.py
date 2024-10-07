@@ -7,7 +7,6 @@ import typing
 from datetime import datetime
 from pathlib import Path
 
-from Domain.project_file import ProjectFile
 from GUI.translation.GlobalTranslate import GlobalTranslate
 
 ROOT_DIR =  Path(Path(__file__).absolute()).parent
@@ -19,9 +18,7 @@ from qasync import QEventLoop, asyncClose
 
 from Domain.Project import Project
 from Domain.ProjectFileManager import ProjectFileManager
-from Domain.enums import Language
-from Domain.language_settings import return_language
-from Domain.navigation import Navigation
+from GUI.MainWindow import MainWindow
 from GUI.Screens.ErrorScreen import ErrorScreen
 
 
@@ -61,7 +58,7 @@ class OTLWizard(QApplication):
 
         language = GlobalTranslate(settings,LANG_DIR).getAll()
 
-        stacked_widget = Navigation(language)
+        stacked_widget = MainWindow(language)
 
         stacked_widget.resize(1360, 768)
         stacked_widget.setWindowTitle('OTLWizard')
