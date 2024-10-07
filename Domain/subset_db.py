@@ -10,8 +10,7 @@ class SubsetDatabase:
 
     def __init__(self, db_path: Path):
         self.db_path: Path = db_path
-        self.connection: Connection | None = None
-
+        self.connection: Connection
         self.create_connection(self.db_path)
 
     def create_connection(self, db_path: Path) -> None:
