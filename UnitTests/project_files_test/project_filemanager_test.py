@@ -298,7 +298,7 @@ def test_create_empty_temporary_map_contains_no_files():
     assert not os.listdir(tempdir)
 
 @fixture
-def cleanupAfterCreatingAFileToDelete():
+def cleanup_after_creating_a_file_to_delete():
     to_delete = []
     yield to_delete
     for item in to_delete:
@@ -322,7 +322,8 @@ Returns:
     None
 """
 
-def test_delete_template_file_from_project(cleanupAfterCreatingAFileToDelete):
+def test_delete_template_file_from_project(
+        cleanup_after_creating_a_file_to_delete):
     testFilePath = Path(PARENT_OF_THIS_FILE.parent / 'project_files_test' /
                         'OTLWizardProjects' / 'Projects' / 'project_1' /
                         'testFileToRemove.txt')
@@ -332,7 +333,7 @@ def test_delete_template_file_from_project(cleanupAfterCreatingAFileToDelete):
 
     # add path to testfile to the to_delete list so it gets deleted
     # after the test is done this fixture will continue running from the yield
-    cleanupAfterCreatingAFileToDelete.append(testFilePath)
+    cleanup_after_creating_a_file_to_delete.append(testFilePath)
 
     assert ProjectFileManager.delete_template_file_from_project(testFilePath)
 
@@ -340,7 +341,7 @@ def test_delete_template_file_from_project(cleanupAfterCreatingAFileToDelete):
 
 
 def test_delete_non_existent_file_from_project(
-                                            cleanupAfterCreatingAFileToDelete):
+        cleanup_after_creating_a_file_to_delete):
     fakeTestFilePath = Path(PARENT_OF_THIS_FILE.parent / 'project_files_test' /
                             'OTLWizardProjects' / 'Projects' / 'project_1' /
                             'fakeTestFileToRemove.txt')
@@ -350,14 +351,14 @@ def test_delete_non_existent_file_from_project(
 
 
 def test_delete_occupied_template_file_from_project(
-                                            cleanupAfterCreatingAFileToDelete):
+                                            cleanup_after_creating_a_file_to_delete):
     testFilePath = Path(PARENT_OF_THIS_FILE.parent / 'project_files_test' /
                         'OTLWizardProjects' / 'Projects' / 'project_1' /
                         'testFileToRemove.txt')
 
     # add path to testfile to the to_delete list so it gets deleted
     # after the test is done this fixture will continue running from the yield
-    cleanupAfterCreatingAFileToDelete.append(testFilePath)
+    cleanup_after_creating_a_file_to_delete.append(testFilePath)
 
     # TODO: figure out how pytest can deal with opening a PyQt.DialogWindow
     # with open(testFilePath, 'w+') as fp:

@@ -267,12 +267,12 @@ class InsertDataScreen(Screen):
         item_data = items[0].data(1, 1)
         file_in_memory = next((asset.file_path for asset in global_vars.single_project.templates_in_memory if
                                asset.file_path == item_data), None)
-        allowRemoval = True
+        allow_removal = True
         if file_in_memory is not None:
             logging.debug("We've struck gold")
-            allowRemoval = InsertDataDomain().delete_project_file_from_project(global_vars.single_project, file_in_memory)
+            allow_removal = InsertDataDomain().delete_project_file_from_project(global_vars.single_project, file_in_memory)
 
-        if allowRemoval:
+        if allow_removal:
             self.input_file_field.removeItemWidget(items[0], 1)
             self.input_file_field.takeTopLevelItem(self.input_file_field.indexOfTopLevelItem(items[0]))
             if self.input_file_field.topLevelItemCount() == 0:
