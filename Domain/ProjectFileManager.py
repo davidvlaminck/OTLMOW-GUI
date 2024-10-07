@@ -99,8 +99,8 @@ class ProjectFileManager:
         with open(project_dir_path / "project_details.json", "w") as project_details_file:
             json.dump(project_details_dict, project_details_file)
 
-        OtlmowConverter().create_file_from_assets(filepath=Path(project_dir_path / "assets.json"),
-                                                  list_of_objects=project.assets_in_memory)
+        OtlmowConverter().from_objects_to_file(file_path=Path(project_dir_path / "assets.json"),
+                                                  sequence_of_objects=project.assets_in_memory)
 
         if project.subset_path.parent.absolute() != project_dir_path.absolute():
             # move subset to project dir
