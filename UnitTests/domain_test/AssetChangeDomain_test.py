@@ -2,9 +2,9 @@ import logging
 from dataclasses import dataclass
 from pathlib import Path
 
-from Domain.asset_change_domain import AssetChangeDomain
+from Domain.AssetChangeDomain import AssetChangeDomain
 from Domain.enums import ReportAction
-from Domain.report_item import ReportItem
+from Domain.ReportItem import ReportItem
 from UnitTests.project_files_test.OTLWizardProjects.Model.OtlmowModel.Classes.Onderdeel.AllCasesTestClass import \
     AllCasesTestClass
 from UnitTests.project_files_test.OTLWizardProjects.Model.OtlmowModel.Classes.Onderdeel.AnotherTestClass import \

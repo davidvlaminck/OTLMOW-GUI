@@ -7,7 +7,7 @@ from Domain.ProjectFileManager import ProjectFileManager
 from PyQt6.QtWidgets import QWidget, QPushButton, QLabel, QHBoxLayout, QVBoxLayout, \
     QLineEdit, QFrame
 from PyQt6.QtCore import Qt
-import Domain.home_domain as home_domain
+import Domain.HomeDomain as home_domain
 from GUI.Screens.Screen import Screen
 from GUI.HeaderBar import HeaderBar
 from GUI.MessageBox import MessageBox

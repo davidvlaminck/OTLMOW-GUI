@@ -8,10 +8,10 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QFrame, QCheckBox, QSpinBox, \
     QLabel, QListWidget, QListWidgetItem
 
-from Domain.model_builder import ModelBuilder
-from Domain.template_domain import TemplateDomain
+from Domain.ModelBuilder import ModelBuilder
+from Domain.TemplateDomain import TemplateDomain
 from GUI.ButtonWidget import ButtonWidget
-from GUI.DialogWindows.change_subset_window import ChangeSubsetWindow
+from GUI.DialogWindows.ChangeSubsetWindow import ChangeSubsetWindow
 from GUI.DialogWindows.export_to_template_window import ExportToTemplateWindow
 from GUI.Screens.Screen import Screen
 

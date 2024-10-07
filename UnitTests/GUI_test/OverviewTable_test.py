@@ -5,8 +5,8 @@ import pytest
 from Domain import global_vars
 from Domain.Project import Project
 
-from Domain.database import Database
-from Domain.home_domain import HomeDomain
+from Domain.Database import Database
+from Domain.HomeDomain import HomeDomain
 from Domain.language_settings import return_language
 from Exceptions.EmptySearchWarning import EmptySearchWarning
 from GUI.OverviewTable import OverviewTable

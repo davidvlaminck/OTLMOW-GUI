@@ -16,9 +16,9 @@ from otlmow_model.OtlmowModel.Helpers.OTLObjectHelper import count_assets_by_typ
 from Domain import global_vars
 from Domain.ProjectFileManager import ProjectFileManager
 from Domain.enums import FileState
-from Domain.insert_data_domain import InsertDataDomain
+from Domain.InsertDataDomain import InsertDataDomain
 from GUI.ButtonWidget import ButtonWidget
-from GUI.DialogWindows.remove_project_files_window import RemoveProjectFilesWindow
+from GUI.DialogWindows.RemoveProjectFilesWindow import RemoveProjectFilesWindow
 from GUI.Screens.DataVisualisationScreen import DataVisualisationScreen
 from GUI.Screens.Screen import Screen
 import qtawesome as qta

@@ -1,7 +1,7 @@
 from PyQt6.QtWidgets import QDialog, QLabel, QVBoxLayout, QLineEdit, QFrame, QHBoxLayout, QComboBox, QDialogButtonBox, \
     QMessageBox, QPushButton
 
-from Domain.asset_change_domain import AssetChangeDomain
+from Domain.AssetChangeDomain import AssetChangeDomain
 
 
 class ChooseFileNameWindow:

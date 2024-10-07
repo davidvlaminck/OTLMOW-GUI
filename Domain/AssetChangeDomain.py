@@ -10,8 +10,8 @@ from Domain import global_vars
 from Domain.Project import Project
 from Domain.ProjectFileManager import ProjectFileManager
 from Domain.enums import ReportAction, FileState
-from Domain.project_file import ProjectFile
-from Domain.report_item import ReportItem
+from Domain.ProjectFile import ProjectFile
+from Domain.ReportItem import ReportItem
 
 
 class AssetChangeDomain:

@@ -5,7 +5,7 @@ from pathlib import Path
 import pytest
 from otlmow_modelbuilder.SQLDataClasses.OSLOClass import OSLOClass
 
-from Domain.template_domain import TemplateDomain
+from Domain.TemplateDomain import TemplateDomain
 
 PARENT_OF_THIS_FILE = Path(__file__).parent
 

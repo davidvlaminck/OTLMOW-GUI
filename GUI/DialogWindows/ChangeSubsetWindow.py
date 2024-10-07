@@ -5,7 +5,7 @@ from PyQt6.QtWidgets import QDialogButtonBox, QDialog, QVBoxLayout, QFrame, QHBo
     QFileDialog
 import qtawesome as qta
 
-from Domain.home_domain import HomeDomain
+from Domain.HomeDomain import HomeDomain
 from Exceptions.WrongDatabaseError import WrongDatabaseError
 
 

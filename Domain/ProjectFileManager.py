@@ -15,7 +15,7 @@ from Domain.GitHubDownloader import GitHubDownloader
 from Domain.Project import Project
 from Domain.enums import Language, FileState
 from Domain.logger.OTLLogger import OTLLogger
-from Domain.project_file import ProjectFile
+from Domain.ProjectFile import ProjectFile
 from Exceptions.ExcelFileUnavailableError import ExcelFileUnavailableError
 from GUI.DialogWindows.NotificationWindow import NotificationWindow
 from GUI.translation.GlobalTranslate import GlobalTranslate

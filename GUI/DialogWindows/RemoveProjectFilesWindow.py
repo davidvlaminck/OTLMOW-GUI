@@ -1,7 +1,7 @@
 from PyQt6.QtWidgets import QDialog, QVBoxLayout, QLabel, QDialogButtonBox
 
 from Domain.Project import Project
-from Domain.insert_data_domain import InsertDataDomain
+from Domain.InsertDataDomain import InsertDataDomain
 
 
 class RemoveProjectFilesWindow:

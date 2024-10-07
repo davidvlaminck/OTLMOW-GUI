@@ -4,7 +4,7 @@ from pathlib import Path
 import pytest
 from _pytest.fixtures import fixture
 
-from Domain.subset_db import SubsetDatabase
+from Domain.SubsetDatabase import SubsetDatabase
 from Exceptions.NotASqlliteFileError import NotASqlliteFileError
 from Exceptions.WrongDatabaseError import WrongDatabaseError
 
@@ -20,7 +20,7 @@ def cleanup_after_creating_a_file_to_delete():
 
 
 def subset_db_raises_file_runtime_error_when_path_is_db_file_but_not_subset():
-    # UnitTests/domain_test/home_domain_test.py for test
+    # UnitTests/domain_test/HomeDomain_test.py for test
     pass
 
 

@@ -12,7 +12,7 @@ from Domain import global_vars
 from Domain.Project import Project
 from Domain.ProjectFileManager import ProjectFileManager
 from Domain.enums import FileState
-from Domain.project_file import ProjectFile
+from Domain.ProjectFile import ProjectFile
 from Exceptions.ExcelFileUnavailableError import ExcelFileUnavailableError
 
 PARENT_OF_THIS_FILE = Path(__file__).parent

@@ -2,7 +2,7 @@ from pathlib import Path
 
 from otlmow_modelbuilder.OSLOCollector import OSLOCollector
 
-from Domain.subset_db import SubsetDatabase
+from Domain.SubsetDatabase import SubsetDatabase
 
 
 class ModelBuilder:

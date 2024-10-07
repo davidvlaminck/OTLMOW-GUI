@@ -7,10 +7,10 @@ from PyQt6.QtWidgets import QFrame, QHBoxLayout, QLabel, QVBoxLayout, QWidget, Q
 
 from Domain import global_vars
 from GUI.ButtonWidget import ButtonWidget
-from GUI.DialogWindows.language_window import LanguageWindow
-from GUI.DialogWindows.menu_actions_window import MenuActionsWindow
-from GUI.DialogWindows.project_picker_window import ProjectPickerWindow
-from GUI.DialogWindows.upsert_project_window import UpsertProjectWindow
+from GUI.DialogWindows.LanguageWindow import LanguageWindow
+from GUI.DialogWindows.MenuActionsWindow import MenuActionsWindow
+from GUI.DialogWindows.ProjectPickerWindow import ProjectPickerWindow
+from GUI.DialogWindows.UpsertProjectWindow import UpsertProjectWindow
 from GUI.OverviewTable import OverviewTable
 
 

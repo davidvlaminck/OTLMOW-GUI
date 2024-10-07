@@ -3,7 +3,7 @@ from pathlib import Path
 
 from Domain.Project import Project
 from Domain.ProjectFileManager import ProjectFileManager
-from Domain.subset_db import SubsetDatabase
+from Domain.SubsetDatabase import SubsetDatabase
 from Exceptions.EmptyFieldError import EmptyFieldError
 from Exceptions.WrongDatabaseError import WrongDatabaseError
 

@@ -5,7 +5,7 @@ from PyQt6.QtWidgets import QVBoxLayout, QPushButton, QFrame, QLabel, QHBoxLayou
     QCheckBox
 
 from Domain import global_vars
-from Domain.export_data_domain import ExportDataDomain
+from Domain.ExportDataDomain import ExportDataDomain
 from GUI.Screens.Screen import Screen
 
 

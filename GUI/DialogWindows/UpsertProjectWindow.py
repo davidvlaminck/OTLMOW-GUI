@@ -6,7 +6,7 @@ from PyQt6.QtWidgets import QDialog, QLabel, QVBoxLayout, QHBoxLayout, QLineEdit
     QFileDialog
 
 from Domain.Project import Project
-from Domain.home_domain import HomeDomain
+from Domain.HomeDomain import HomeDomain
 
 import qtawesome as qta
 

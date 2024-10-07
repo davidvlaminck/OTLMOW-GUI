@@ -11,12 +11,12 @@ from PyQt6.QtWidgets import QTableWidget, QHeaderView, QTableWidgetItem
 from Domain import global_vars
 from Domain.Project import Project
 from Domain.ProjectFileManager import ProjectFileManager
-from Domain.home_domain import HomeDomain
-from Domain.model_builder import ModelBuilder
+from Domain.HomeDomain import HomeDomain
+from Domain.ModelBuilder import ModelBuilder
 from Exceptions.EmptySearchWarning import EmptySearchWarning
 from GUI.ButtonWidget import ButtonWidget
-from GUI.DialogWindows.export_project_window import ExportProjectWindow
-from GUI.DialogWindows.upsert_project_window import UpsertProjectWindow
+from GUI.DialogWindows.ExportProjectWindow import ExportProjectWindow
+from GUI.DialogWindows.UpsertProjectWindow import UpsertProjectWindow
 
 
 class OverviewTable(QTableWidget):
