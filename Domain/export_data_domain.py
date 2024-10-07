@@ -18,25 +18,25 @@ class ExportDataDomain:
             relations_path, assets_path = cls.create_relation_and_class_path(end_file)
             if relations_in_memory:
                 if not csv_option:
-                    OtlmowConverter().create_file_from_assets(filepath=relations_path,
-                                                              list_of_objects=relations_in_memory,
+                    OtlmowConverter.from_objects_to_file(file_path=relations_path,
+                                                              sequence_of_objects=relations_in_memory,
                                                               )
                 else:
-                    OtlmowConverter().create_file_from_assets(filepath=relations_path,
-                                                              list_of_objects=relations_in_memory,
+                    OtlmowConverter.from_objects_to_file(file_path=relations_path,
+                                                              sequence_of_objects=relations_in_memory,
                                                               split_per_type=csv_option)
             if assets_in_memory:
                 if not csv_option:
-                    OtlmowConverter().create_file_from_assets(filepath=assets_path, list_of_objects=assets_in_memory,
+                    OtlmowConverter.from_objects_to_file(file_path=assets_path, sequence_of_objects=assets_in_memory,
                                                               )
                 else:
-                    OtlmowConverter().create_file_from_assets(filepath=assets_path, list_of_objects=assets_in_memory,
+                    OtlmowConverter.from_objects_to_file(file_path=assets_path, sequence_of_objects=assets_in_memory,
                                                               split_per_type=csv_option)
         else:
             if not csv_option:
-                OtlmowConverter().create_file_from_assets(list_of_objects=objects_in_memory, filepath=Path(end_file))
+                OtlmowConverter.from_objects_to_file(file_path=Path(end_file), sequence_of_objects=objects_in_memory )
             else:
-                OtlmowConverter().create_file_from_assets(list_of_objects=objects_in_memory, filepath=Path(end_file),
+                OtlmowConverter.from_objects_to_file(file_path=Path(end_file), sequence_of_objects=objects_in_memory,
                                                           split_per_type=csv_option)
 
     @staticmethod
@@ -45,8 +45,8 @@ class ExportDataDomain:
         valid_file_paths = [file.file_path for file in project.templates_in_memory if file.state == FileState.OK]
         objects_in_memory = []
         for path in valid_file_paths:
-            objects_in_memory.extend(OtlmowConverter().create_assets_from_file(
-                filepath=Path(path), path_to_subset=project.subset_path))
+            objects_in_memory.extend(OtlmowConverter.from_file_to_objects(
+                file_path=Path(path), model_directory=project.subset_path))
         return objects_in_memory
 
     @staticmethod

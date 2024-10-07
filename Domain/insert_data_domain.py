@@ -2,10 +2,11 @@ import logging
 import os
 import tempfile
 from pathlib import Path
-from typing import List
+from typing import List, Iterable
 
 from openpyxl.reader.excel import load_workbook
 from otlmow_converter.OtlmowConverter import OtlmowConverter
+from otlmow_model.OtlmowModel.BaseClasses.OTLObject import OTLObject
 
 from Domain.Project import Project
 from Domain.ProjectFileManager import ProjectFileManager
@@ -19,9 +20,9 @@ from GUI.translation.GlobalTranslate import GlobalTranslate
 class InsertDataDomain:
 
     @classmethod
-    def check_document(cls, doc_location) -> List:
+    def check_document(cls, doc_location) -> Iterable[OTLObject]:
         converter = OtlmowConverter()
-        return converter.create_assets_from_file(filepath=Path(doc_location))
+        return converter.from_file_to_objects(file_path=Path(doc_location))
 
     @classmethod
     def start_excel_changes(cls, doc) -> Path:

@@ -98,8 +98,8 @@ class DataVisualisationScreen(Screen):
 
         objects_in_memory = []
         for path in valid_file_paths:
-            objects_in_memory.extend(OtlmowConverter().create_assets_from_file(
-                filepath=Path(path), path_to_subset=project.subset_path))
+            objects_in_memory.extend(OtlmowConverter().from_file_to_objects(
+                file_path=Path(path), model_directory=project.subset_path))
 
         html_loc = HTML_DIR / "visuals.html"
         PyVisWrapper().show(list_of_objects=objects_in_memory, html_path=Path(html_loc), launch_html=False)

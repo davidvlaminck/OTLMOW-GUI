@@ -53,10 +53,10 @@ class AssetChangeDomain:
         logging.debug(f"original docs {original_documents}")
         original_assets = []
         for x in original_documents:
-            original_assets.extend(OtlmowConverter().create_assets_from_file(Path(x)))
+            original_assets.extend(OtlmowConverter().from_file_to_objects(file_path=Path(x)))
         new_assets = []
         for x in global_vars.single_project.templates_in_memory:
-            new_assets.extend(OtlmowConverter().create_assets_from_file(Path(x.file_path)))
+            new_assets.extend(OtlmowConverter().from_file_to_objects(file_path=Path(x.file_path)))
         return cls.generate_diff_report(original_assets, new_assets, model_dir)
 
     @classmethod
@@ -71,7 +71,7 @@ class AssetChangeDomain:
         project.templates_in_memory = []
         tempdir = ProjectFileManager.create_empty_temporary_map()
         temp_loc = Path(tempdir) / file_name
-        OtlmowConverter().create_file_from_assets(filepath=temp_loc, list_of_objects=diff_1)
+        OtlmowConverter().from_objects_to_file(file_path=temp_loc, sequence_of_objects=diff_1)
         end_loc = ProjectFileManager.add_template_file_to_project(filepath=temp_loc)
         template_file = ProjectFile(file_path=end_loc, state=FileState.OK)
         project.templates_in_memory.append(template_file)
@@ -83,14 +83,14 @@ class AssetChangeDomain:
         for file in project.templates_in_memory:
             logging.debug(f"file state {file.state}")
             if file.state == FileState.OK:
-                changed_assets.extend(OtlmowConverter().create_assets_from_file(Path(file.file_path)))
+                changed_assets.extend(OtlmowConverter().from_file_to_objects(file_path=Path(file.file_path)))
         return changed_assets
 
     @staticmethod
     def generate_original_assets_from_files(original_documents: List[str]) -> List[OTLObject]:
         original_assets = []
         for path in original_documents:
-            original_assets.extend(OtlmowConverter().create_assets_from_file(Path(path)))
+            original_assets.extend(OtlmowConverter().from_file_to_objects(file_path=Path(path)))
         return original_assets
 
     @staticmethod
