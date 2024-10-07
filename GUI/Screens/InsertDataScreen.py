@@ -12,9 +12,12 @@ from otlmow_converter.Exceptions.NoTypeUriInExcelTabError import NoTypeUriInExce
 from otlmow_converter.Exceptions.NoTypeUriInTableError import NoTypeUriInTableError
 from otlmow_converter.Exceptions.TypeUriNotInFirstRowError import TypeUriNotInFirstRowError
 from otlmow_model.OtlmowModel.BaseClasses.OTLObject import OTLObject
+from otlmow_model.OtlmowModel.Classes.ImplementatieElement.AIMObject import \
+    AIMObject
 from otlmow_model.OtlmowModel.Helpers.OTLObjectHelper import count_assets_by_type
 
 from Domain import global_vars
+from Domain.ChangeRelationDomain import ChangeRelationDomain
 from Domain.ProjectFileManager import ProjectFileManager
 from Domain.enums import FileState
 from Domain.InsertDataDomain import InsertDataDomain
@@ -143,12 +146,14 @@ class InsertDataScreen(Screen):
         self.fill_list()
 
 
-        objects_in_memory: List[OTLObject] = []
+        objects_in_memory: List[AIMObject] = []
         for assetList in assets:
             objects_in_memory.extend(assetList)
 
         global_vars.otl_wizard.main_window.step3_visuals.create_html(
             objects_in_memory)
+        ChangeRelationDomain.set_objects(objects_in_memory)
+
 
     def add_input_file_field(self):
         input_file = QFrame()

@@ -120,7 +120,7 @@ class ExportDataScreen(Screen):
         if document_loc != ('', ''):
             csv_option = self.extra_option_csv.isChecked()
             split_relations_and_objects = self.relations_split_optionality.isChecked()
-            ExportDataDomain().generate_files(document_loc[0], global_vars.single_project, csv_option, split_relations_and_objects)
+            ExportDataDomain.generate_files(document_loc[0], global_vars.single_project, csv_option, split_relations_and_objects)
 
     def show_additional_options(self, text):
         if text == 'CSV':

@@ -21,7 +21,6 @@ class InsertDataDomain:
 
     @classmethod
     def check_document(cls, doc_location) -> Iterable[OTLObject]:
-        converter = OtlmowConverter()
         return OtlmowConverter.from_file_to_objects(file_path=Path(doc_location))
 
     @classmethod
