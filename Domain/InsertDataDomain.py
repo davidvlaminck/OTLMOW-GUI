@@ -47,7 +47,7 @@ class InsertDataDomain:
             filepath = cls.start_excel_changes(doc=filepath)
         end_loc = ProjectFileManager.add_template_file_to_project(filepath=filepath)
         template_file = ProjectFile(file_path=end_loc, state=state)
-        project.templates_in_memory.append(template_file)
+        project.saved_objects_lists.append(template_file)
 
     @classmethod
     def return_temporary_path(cls, file_path: Path) -> Path:
@@ -62,9 +62,9 @@ class InsertDataDomain:
 
             if (ProjectFileManager.delete_template_file_from_project(
                     file_path=file_path)):
-                for file in project.templates_in_memory:
+                for file in project.saved_objects_lists:
                     if file.file_path == file_path:
-                        project.templates_in_memory.remove(file)
+                        project.saved_objects_lists.remove(file)
                         break
                 ProjectFileManager.add_project_files_to_file(project=project)
                 return True
@@ -79,8 +79,8 @@ class InsertDataDomain:
     @classmethod
     def remove_all_project_files(cls, project: Project):
         logging.debug("memory contains %s",
-                      project.templates_in_memory)
-        for file in project.templates_in_memory:
+                      project.saved_objects_lists)
+        for file in project.saved_objects_lists:
             logging.debug("starting to delete file %s",
                           file.file_path)
             try:
@@ -91,5 +91,5 @@ class InsertDataDomain:
                 title = GlobalTranslate._(e.error_window_title_key)
                 NotificationWindow("{0}:\n{1}".format(message, e.file_path), title)
 
-        project.templates_in_memory = []
+        project.saved_objects_lists = []
         ProjectFileManager.add_project_files_to_file(project=project)

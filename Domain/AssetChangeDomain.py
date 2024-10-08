@@ -55,7 +55,7 @@ class AssetChangeDomain:
         for x in original_documents:
             original_assets.extend(OtlmowConverter().from_file_to_objects(file_path=Path(x)))
         new_assets = []
-        for x in global_vars.single_project.templates_in_memory:
+        for x in global_vars.single_project.saved_objects_lists:
             new_assets.extend(OtlmowConverter().from_file_to_objects(file_path=Path(x.file_path)))
         return cls.generate_diff_report(original_assets, new_assets, model_dir)
 
@@ -68,19 +68,19 @@ class AssetChangeDomain:
                                                               second_list=changed_assets,
                                                               model_directory=ProjectFileManager.get_otl_wizard_model_dir())
         ProjectFileManager.delete_template_folder()
-        project.templates_in_memory = []
+        project.saved_objects_lists = []
         tempdir = ProjectFileManager.create_empty_temporary_map()
         temp_loc = Path(tempdir) / file_name
         OtlmowConverter().from_objects_to_file(file_path=temp_loc, sequence_of_objects=diff_1)
         end_loc = ProjectFileManager.add_template_file_to_project(filepath=temp_loc)
         template_file = ProjectFile(file_path=end_loc, state=FileState.OK)
-        project.templates_in_memory.append(template_file)
+        project.saved_objects_lists.append(template_file)
         ProjectFileManager.add_project_files_to_file(project=project)
 
     @staticmethod
     def generate_changed_assets_from_files(project: Project) -> list:
         changed_assets = []
-        for file in project.templates_in_memory:
+        for file in project.saved_objects_lists:
             logging.debug(f"file state {file.state}")
             if file.state == FileState.OK:
                 changed_assets.extend(OtlmowConverter().from_file_to_objects(file_path=Path(file.file_path)))

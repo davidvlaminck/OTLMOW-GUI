@@ -94,9 +94,9 @@ class InsertDataScreen(Screen):
         error_set = set()
         domain = InsertDataDomain()
         self.asset_info.clear()
-        assets = []
+        objects_lists = []
         doc_list = [documents.topLevelItem(i).data(1, 1) for i in range(documents.topLevelItemCount())]
-        global_vars.single_project.templates_in_memory = []
+        global_vars.single_project.saved_objects_lists = []
         for doc in doc_list:
             if Path(doc).suffix in ['.xls', '.xlsx']:
                 temp_path = domain.start_excel_changes(doc=doc)
@@ -105,7 +105,7 @@ class InsertDataScreen(Screen):
             try:
                 asset = domain.check_document(doc_location=temp_path)
                 ProjectFileManager.add_template_file_to_project(Path(doc))
-                assets.append(asset)
+                objects_lists.append(asset)
             except ExceptionsGroup as e:
                 for ex in e.exceptions:
                     self.add_error_to_feedback_list(ex, doc)
@@ -141,17 +141,16 @@ class InsertDataScreen(Screen):
             logging.debug('positive feedback needed')
             self.main_window.reset_ui(self._)
             self.positive_feedback_message()
-        self.fill_feedback_list(assets)
+        self.fill_feedback_list(objects_lists)
         ProjectFileManager.add_project_files_to_file(global_vars.single_project)
         self.fill_list()
 
 
         objects_in_memory: List[AIMObject] = []
-        for assetList in assets:
-            objects_in_memory.extend(assetList)
+        for objects_list in objects_lists:
+            objects_in_memory.extend(objects_list)
 
-        global_vars.otl_wizard.main_window.step3_visuals.create_html(
-            objects_in_memory)
+        global_vars.otl_wizard.main_window.step3_visuals.create_html(objects_in_memory)
         ChangeRelationDomain.set_objects(objects_in_memory)
 
 
@@ -211,10 +210,10 @@ class InsertDataScreen(Screen):
 
     def fill_list(self):
         self.input_file_field.clear()
-        logging.debug("list with " + str(global_vars.single_project.templates_in_memory))
-        logging.debug("Filled list with " + str(len(global_vars.single_project.templates_in_memory)) + " items")
-        for asset in global_vars.single_project.templates_in_memory:
-            self.add_file_to_list([asset.file_path], FileState(asset.state))
+        logging.debug("list with " + str(global_vars.single_project.saved_objects_lists))
+        logging.debug("Filled list with " + str(len(global_vars.single_project.saved_objects_lists)) + " items")
+        for asset in global_vars.single_project.saved_objects_lists:
+            self.add_file_to_list([asset.file_path], asset.state)
 
     def positive_feedback_message(self):
         self.message_icon.setPixmap(qta.icon('mdi.check', color="white").pixmap(QSize(48, 48)))
@@ -277,7 +276,7 @@ class InsertDataScreen(Screen):
     def delete_file_from_list(self):
         items = self.input_file_field.selectedItems()
         item_data = items[0].data(1, 1)
-        file_in_memory = next((asset.file_path for asset in global_vars.single_project.templates_in_memory if
+        file_in_memory = next((asset.file_path for asset in global_vars.single_project.saved_objects_lists if
                                asset.file_path == item_data), None)
         allow_removal = True
         if file_in_memory is not None:

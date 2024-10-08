@@ -120,27 +120,31 @@ class ProjectFileManager:
     def add_project_files_to_file(cls, project: Project) -> None:
         otl_wizard_project_dir = cls.get_otl_wizard_projects_dir()
         object_array = []
-        for template in project.templates_in_memory:
-            template_details = {
-                'file_path': str(template.file_path),
-                'state': template.state.value
+        for objects_list in project.saved_objects_lists:
+            objects_list_details = {
+                'file_path': str(objects_list.file_path),
+                'state': objects_list.state.value
             }
-            object_array.append(template_details)
+            object_array.append(objects_list_details)
         project_dir_path = otl_wizard_project_dir / project.project_path.name
         with open(project_dir_path / "assets.json", "w") as project_details_file:
             json.dump(object_array, project_details_file)
 
     @classmethod
-    def get_templates_in_memory(cls, project: Project) -> Project:
+    def get_objects_list_saved_in_project(cls, project: Project) -> Project:
         project_dir_path = cls.get_otl_wizard_projects_dir() / project.project_path.name
         with open(project_dir_path / "assets.json", "r") as project_details_file:
-            templates = json.load(project_details_file)
-        logging.debug(f"templates from memory{str(templates)}")
-        templates_array = []
-        for template in templates:
-            file = ProjectFile(file_path=template['file_path'], state=template['state'])
-            templates_array.append(file)
-        project.templates_in_memory = templates_array
+            objects_lists = json.load(project_details_file)
+        logging.debug(f"Loaded saved object lists: {str(objects_lists)}")
+        objects_lists_array = []
+        for objects_list in objects_lists:
+            file = ProjectFile(
+                file_path=objects_list['file_path'],
+                state=FileState.WARNING) # files loaded from memory storage need to be validated
+                                         # again
+                # state=template['state'])
+            objects_lists_array.append(file)
+        project.saved_objects_lists = objects_lists_array
         return project
 
     @classmethod
@@ -235,11 +239,11 @@ class ProjectFileManager:
         if project is None:
             logging.debug("No project found")
             return False
-        if not project.templates_in_memory:
+        if not project.saved_objects_lists:
             logging.debug("No project files in memory")
             return False
         return any(
-            template.state == FileState.OK for template in project.templates_in_memory
+            template.state == FileState.OK for template in project.saved_objects_lists
         )
 
     @classmethod

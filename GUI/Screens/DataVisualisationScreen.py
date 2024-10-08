@@ -98,7 +98,7 @@ class DataVisualisationScreen(Screen):
         project: Project = global_vars.single_project
         if project is None:
             return
-        valid_file_paths:List[Path] = [file.file_path for file in project.templates_in_memory if file.state == FileState.OK]
+        valid_file_paths:List[Path] = [file.file_path for file in project.saved_objects_lists if file.state == FileState.OK]
 
         objects_in_memory: List[OTLObject] = []
         for path in valid_file_paths:

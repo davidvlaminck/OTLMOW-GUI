@@ -15,7 +15,7 @@ class Project:
 
         self.assets_in_memory = []
         self.files_in_memory = []
-        self.templates_in_memory = []
+        self.saved_objects_lists = []
 
     @classmethod
     def load_project(cls, project_path: Path = None):
