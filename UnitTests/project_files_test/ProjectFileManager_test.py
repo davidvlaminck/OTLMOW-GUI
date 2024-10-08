@@ -353,18 +353,18 @@ def test_delete_non_existent_file_from_project(
 
 def test_delete_occupied_template_file_from_project(
                                             cleanup_after_creating_a_file_to_delete):
-    testFilePath = Path(PARENT_OF_THIS_FILE.parent / 'project_files_test' /
+    test_file_path = Path(PARENT_OF_THIS_FILE.parent / 'project_files_test' /
                         'OTLWizardProjects' / 'Projects' / 'project_1' /
                         'testFileToRemove.txt')
 
     # add path to testfile to the to_delete list so it gets deleted
     # after the test is done this fixture will continue running from the yield
-    cleanup_after_creating_a_file_to_delete.append(testFilePath)
+    cleanup_after_creating_a_file_to_delete.append(test_file_path)
 
-    # TODO: figure out how pytest can deal with opening a PyQt.DialogWindow
-    with open(testFilePath, 'w+') as fp:
+    with open(test_file_path, 'w+') as fp:
         fp.write("This is a textfile not a sqllite file")
 
-        with pytest.raises(ExcelFileUnavailableError):
-            ProjectFileManager.delete_template_file_from_project(
-                    testFilePath)
+        with pytest.raises(ExcelFileUnavailableError) as e:
+            ProjectFileManager.delete_template_file_from_project(test_file_path)
+
+        assert e.value.file_path ==  test_file_path
