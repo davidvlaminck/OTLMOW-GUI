@@ -218,7 +218,7 @@ class ProjectFileManager:
             return False
         except PermissionError as e:
             logging.error(e)
-            raise ExcelFileUnavailableError(file_path, e)
+            raise ExcelFileUnavailableError(file_path=file_path, exception=e)
 
     @staticmethod
     def create_empty_temporary_map() -> Path:
