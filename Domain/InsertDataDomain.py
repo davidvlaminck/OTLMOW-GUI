@@ -72,11 +72,9 @@ class InsertDataDomain:
                 return False
 
         except ExcelFileUnavailableError as e:
-            NotificationWindow( "{0}:\n{1}".format(
-                                GlobalTranslate._(
-                                    e.error_window_message_key),
-                                e.file_path),
-                                GlobalTranslate._(e.error_window_title_key))
+            message = GlobalTranslate._(e.error_window_message_key)
+            title = GlobalTranslate._(e.error_window_title_key)
+            NotificationWindow("{0}:\n{1}".format(message,e.file_path),title)
 
     @classmethod
     def remove_all_project_files(cls, project: Project):
@@ -89,10 +87,9 @@ class InsertDataDomain:
                 ProjectFileManager.delete_template_file_from_project(
                     file_path=file.file_path)
             except ExcelFileUnavailableError as e:
-                NotificationWindow("{0}:\n{1}".format(
-                        GlobalTranslate._(e.error_window_message_key),
-                        e.file_path),
-                        GlobalTranslate._(e.error_window_title_key))
+                message = GlobalTranslate._(e.error_window_message_key)
+                title = GlobalTranslate._(e.error_window_title_key)
+                NotificationWindow("{0}:\n{1}".format(message, e.file_path), title)
 
         project.templates_in_memory = []
         ProjectFileManager.add_project_files_to_file(project=project)
