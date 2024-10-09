@@ -1,7 +1,7 @@
 # coding=utf-8
-from otlmow_model.BaseClasses.OTLObject import OTLAttribuut
+from otlmow_model.OtlmowModel.BaseClasses.OTLObject import OTLAttribuut
 from abc import abstractmethod, ABC
-from UnitTests.TestClasses.Datatypes.KlAIMToestand import KlAIMToestand
+from ...Datatypes.KlAIMToestand import KlAIMToestand
 
 
 # Generated with OTLClassCreator. To modify: extend, do not edit
@@ -17,7 +17,7 @@ class AIMToestand(ABC):
 
         self._toestand = OTLAttribuut(field=KlAIMToestand,
                                       naam='toestand',
-                                      label='toestand',
+                                      label='AIM-toestand',
                                       objectUri='https://wegenenverkeer.data.vlaanderen.be/ns/implementatieelement#AIMToestand.toestand',
                                       definition='Geeft de actuele stand in de levenscyclus van het object.',
                                       owner=self)

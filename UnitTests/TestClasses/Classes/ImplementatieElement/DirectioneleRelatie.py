@@ -1,6 +1,6 @@
 # coding=utf-8
 from abc import abstractmethod
-from UnitTests.TestClasses.Classes.ImplementatieElement.RelatieObject import RelatieObject
+from ...Classes.ImplementatieElement.RelatieObject import RelatieObject
 
 
 # Generated with OTLClassCreator. To modify: extend, do not edit

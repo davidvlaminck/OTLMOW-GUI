@@ -17,7 +17,7 @@ from otlmow_model.OtlmowModel.Classes.ImplementatieElement.AIMObject import \
 from otlmow_model.OtlmowModel.Helpers.OTLObjectHelper import count_assets_by_type
 
 from Domain import global_vars
-from Domain.ChangeRelationDomain import ChangeRelationDomain
+from Domain.RelationChangeDomain import RelationChangeDomain
 from Domain.ProjectFileManager import ProjectFileManager
 from Domain.enums import FileState
 from Domain.InsertDataDomain import InsertDataDomain
@@ -92,18 +92,17 @@ class InsertDataScreen(Screen):
 
     def validate_documents(self, documents: QTreeWidget):
         error_set = set()
-        domain = InsertDataDomain()
         self.asset_info.clear()
         objects_lists = []
         doc_list = [documents.topLevelItem(i).data(1, 1) for i in range(documents.topLevelItemCount())]
         global_vars.single_project.saved_objects_lists = []
         for doc in doc_list:
             if Path(doc).suffix in ['.xls', '.xlsx']:
-                temp_path = domain.start_excel_changes(doc=doc)
+                temp_path = InsertDataDomain.start_excel_changes(doc=doc)
             elif Path(doc).suffix == '.csv':
                 temp_path = Path(doc)
             try:
-                asset = domain.check_document(doc_location=temp_path)
+                asset = InsertDataDomain.check_document(doc_location=temp_path)
                 ProjectFileManager.add_template_file_to_project(Path(doc))
                 objects_lists.append(asset)
             except ExceptionsGroup as e:
@@ -129,13 +128,13 @@ class InsertDataScreen(Screen):
                 self.add_error_to_feedback_list(ex, doc)
                 error_set.add(Path(doc))
             else:
-                InsertDataDomain().add_template_file_to_project(project=global_vars.single_project, filepath=Path(doc),
+                InsertDataDomain.add_template_file_to_project(project=global_vars.single_project, filepath=Path(doc),
                                                                 state=FileState.OK)
         if error_set:
             logging.debug('negative feedback needed')
             self.negative_feedback_message()
             for item in error_set:
-                InsertDataDomain().add_template_file_to_project(project=global_vars.single_project, filepath=Path(item),
+                InsertDataDomain.add_template_file_to_project(project=global_vars.single_project, filepath=Path(item),
                                                                 state=FileState.ERROR)
         else:
             logging.debug('positive feedback needed')
@@ -151,7 +150,7 @@ class InsertDataScreen(Screen):
             objects_in_memory.extend(objects_list)
 
         global_vars.otl_wizard.main_window.step3_visuals.create_html(objects_in_memory)
-        ChangeRelationDomain.set_objects(objects_in_memory)
+        RelationChangeDomain.set_objects(objects_in_memory)
 
 
     def add_input_file_field(self):
@@ -281,7 +280,7 @@ class InsertDataScreen(Screen):
         allow_removal = True
         if file_in_memory is not None:
             logging.debug("We've struck gold")
-            allow_removal = InsertDataDomain().delete_project_file_from_project(global_vars.single_project, file_in_memory)
+            allow_removal = (InsertDataDomain.delete_project_file_from_project(global_vars.single_project, file_in_memory))
 
         if allow_removal:
             self.input_file_field.removeItemWidget(items[0], 1)
