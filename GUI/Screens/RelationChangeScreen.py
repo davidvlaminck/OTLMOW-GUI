@@ -76,6 +76,7 @@ class RelationChangeScreen(Screen):
         for OTL_object in objects:
             item = QListWidgetItem()
             item.setText(self._(OTL_object.typeURI.replace("https://wegenenverkeer.data.vlaanderen.be/ns/","") +"/"+ str(OTL_object.assetId.identificator)))
+
             self.class_list.addItem(item)
 
     def relations_list(self):

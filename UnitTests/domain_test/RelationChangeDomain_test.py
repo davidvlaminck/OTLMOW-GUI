@@ -75,18 +75,22 @@ def create_translations():
     GlobalTranslate(settings=setting,lang_dir=str(lang_dir))
 
 @fixture
-def mock_setup():
-    relation_change_screen = RelationChangeScreen()
+def mock_screen(qtbot, create_translations):
+    relation_change_screen = RelationChangeScreen(GlobalTranslate.instance.get_all())
     relation_change_screen.fill_class_list = Mock()
     RelationChangeDomain.get_screen = Mock(return_value=relation_change_screen)
+    return relation_change_screen
 
+@fixture
+def mock_fill_class_list(mock_screen):
+    mock_screen.fill_class_list = Mock()
 
-def test_set_objects_empty_list(mock_setup):
+def test_set_objects_empty_list(mock_fill_class_list):
     RelationChangeDomain.set_objects([])
 
     assert len(RelationChangeDomain.objects) == 0
 
-def test_set_objects_single_item_list(mock_setup):
+def test_set_objects_single_item_list(mock_fill_class_list):
     test_object = AllCasesTestClass()
     test_object.assetId.identificator = "dummy_identificator"
     RelationChangeDomain.set_objects([test_object])
@@ -94,7 +98,7 @@ def test_set_objects_single_item_list(mock_setup):
     assert len(RelationChangeDomain.objects) == 1
     assert RelationChangeDomain.objects[0].assetId.identificator == "dummy_identificator"
 
-def test_set_objects_double_item_list(mock_setup):
+def test_set_objects_double_item_list(mock_fill_class_list):
     test_object = AllCasesTestClass()
     test_object.assetId.identificator = "dummy_identificator"
 
