@@ -58,7 +58,7 @@ class OTLWizard(QApplication):
         # self.demo_project = demo_data()
         self.demo_project = None
 
-        language = GlobalTranslate(settings,LANG_DIR).getAll()
+        language = GlobalTranslate(settings,LANG_DIR).get_all()
 
         self.main_window = MainWindow(language)
 

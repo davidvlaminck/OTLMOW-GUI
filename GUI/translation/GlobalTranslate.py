@@ -15,5 +15,5 @@ class GlobalTranslate:
     def _(cls,key:str) -> str:
         return cls.instance._(key)
 
-    def getAll(self):
+    def get_all(self):
         return self._

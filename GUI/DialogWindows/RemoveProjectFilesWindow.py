@@ -37,6 +37,6 @@ class RemoveProjectFilesWindow:
         return button_box
 
     def remove_project_files(self, dialog):
-        InsertDataDomain().remove_all_project_files(self.project)
+        InsertDataDomain.remove_all_project_files(self.project)
         dialog.close()
         pass
