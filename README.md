@@ -23,7 +23,7 @@ It is split into different packages to reduce compatibility issues
 - [otlmow_gui](https://github.com/davidvlaminck/OTLMOW-GUI) (you are currently looking at this package)
 
 ## Installation guide
-Currently, you need at least Python version 3.8 to use this library.
+Currently, you need at least Python version 3.9 to use this library.
 
 To install the OTL MOW project into your Python project, use pip to install it:
 ``` 
