@@ -8,13 +8,16 @@ from openpyxl.reader.excel import load_workbook
 from otlmow_converter.OtlmowConverter import OtlmowConverter
 from otlmow_model.OtlmowModel.BaseClasses.OTLObject import OTLObject
 
+from Domain import global_vars
 from Domain.Project import Project
 from Domain.ProjectFileManager import ProjectFileManager
+from Domain.RelationChangeDomain import RelationChangeDomain
 from Domain.enums import FileState
 from Domain.ProjectFile import ProjectFile
 from Exceptions.ExcelFileUnavailableError import ExcelFileUnavailableError
 from GUI.DialogWindows.NotificationWindow import NotificationWindow
 from GUI.translation.GlobalTranslate import GlobalTranslate
+from UnitTests.TestClasses.Classes.ImplementatieElement.AIMObject import AIMObject
 
 
 class InsertDataDomain:
@@ -93,3 +96,42 @@ class InsertDataDomain:
 
         project.saved_objects_lists = []
         ProjectFileManager.add_project_files_to_file(project=project)
+
+    @classmethod
+    def load_and_validate_document(cls, doc_list):
+        error_set: set[dict] = set()
+        objects_lists = []
+        global_vars.single_project.saved_objects_lists = []
+
+        for doc in doc_list:
+            if Path(doc).suffix in ['.xls', '.xlsx']:
+                temp_path = InsertDataDomain.start_excel_changes(doc=doc)
+            elif Path(doc).suffix == '.csv':
+                temp_path = Path(doc)
+
+            try:
+                asset = InsertDataDomain.check_document(doc_location=temp_path)
+                ProjectFileManager.add_template_file_to_project(Path(doc))
+                objects_lists.append(asset)
+            except Exception as ex:
+                error_set.add({"exception": ex, "path_str": doc})
+            else:
+                InsertDataDomain.add_template_file_to_project(project=global_vars.single_project,
+                                                              filepath=Path(doc),
+                                                              state=FileState.OK)
+
+        ProjectFileManager.add_project_files_to_file(global_vars.single_project)
+
+        objects_in_memory = cls.flatten_list(objects_lists)
+
+        global_vars.otl_wizard.main_window.step3_visuals.create_html(objects_in_memory)
+        RelationChangeDomain.set_objects(objects_in_memory)
+
+        return error_set, objects_lists
+
+    @classmethod
+    def flatten_list(cls, objects_lists):
+        objects_in_memory: List[AIMObject] = []
+        for objects_list in objects_lists:
+            objects_in_memory.extend(objects_list)
+        return objects_in_memory
