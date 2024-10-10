@@ -79,6 +79,14 @@ class RelationChangeScreen(Screen):
 
             self.class_list.addItem(item)
 
+    def fill_possible_relations_list(self, objects: List[AIMObject]):
+        self.relation_list.clear()
+        for OTL_object in objects:
+            item = QListWidgetItem()
+            item.setText(self._(
+                OTL_object.typeURI.replace("https://wegenenverkeer.data.vlaanderen.be/ns/",""))) #+ "/" + str(OTL_object.assetId.identificator)))
+            self.relation_list.addItem(item)
+
     def relations_list(self):
         frame = QFrame()
         frame_layout = QVBoxLayout()

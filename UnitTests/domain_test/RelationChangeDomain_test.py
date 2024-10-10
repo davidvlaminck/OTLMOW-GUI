@@ -110,3 +110,58 @@ def test_set_objects_double_item_list(mock_fill_class_list):
 
     assert RelationChangeDomain.objects[0].assetId.identificator == "dummy_identificator"
     assert RelationChangeDomain.objects[1].assetId.identificator == "dummy_identificator2"
+
+
+#################################################
+# RelationChangeDomain.set_possible_relations   #
+#################################################
+
+@fixture
+def mock_fill_possible_relations_list(mock_screen):
+    mock_screen.fill_possible_relations_list = Mock()
+
+@fixture
+def mock_OSLORelatie():
+    return Mock(spec=OSLORelatie)
+
+@fixture
+def mock_collector(mock_OSLORelatie):
+    mock_find_outgoing_relations = Mock(return_value=[mock_OSLORelatie])()
+    OSLOCollector.find_outgoing_relations = mock_find_outgoing_relations
+
+    RelationChangeDomain.collector = Mock(spec=OSLOCollector)
+
+    return mock_find_outgoing_relations
+
+def test_set_possible_relations_single_item_list(mock_fill_possible_relations_list
+                                                 ,mock_collector):
+    test_object = AllCasesTestClass()
+    test_object.assetId.identificator = "dummy_identificator"
+    RelationChangeDomain.set_possible_relations(test_object)
+
+    assert len(RelationChangeDomain.possible_relations_per_object.keys()) == 1
+    assert list(RelationChangeDomain.possible_relations_per_object.keys())[0] == test_object.typeURI
+    assert RelationChangeDomain.possible_relations_per_object[test_object.typeURI]
+
+def test_set_possible_relations_double_item_list(mock_fill_possible_relations_list
+                                                 ,mock_collector):
+    test_object = AllCasesTestClass()
+    test_object.assetId.identificator = "dummy_identificator"
+
+    test_object2 = AnotherTestClass()
+    test_object2.assetId.identificator = "dummy_identificator2"
+
+    RelationChangeDomain.set_possible_relations(test_object)
+    RelationChangeDomain.set_possible_relations(test_object2)
+    assert len(RelationChangeDomain.possible_relations_per_object.keys()) == 2
+
+    assert  list(RelationChangeDomain.possible_relations_per_object.keys())[0] == test_object.typeURI
+    assert  list(RelationChangeDomain.possible_relations_per_object.keys())[1] == test_object2.typeURI
+
+    # TODO: make this into a proper list of objects
+    assert RelationChangeDomain.possible_relations_per_object[test_object.typeURI]
+    # assert isinstance(RelationChangeDomain.possible_relations_per_object[test_object.typeURI][0],
+    #                   OSLORelatie)
+    assert RelationChangeDomain.possible_relations_per_object[test_object2.typeURI]
+    # assert isinstance(RelationChangeDomain.possible_relations_per_object[test_object2.typeURI][0],
+    #                   OSLORelatie)
