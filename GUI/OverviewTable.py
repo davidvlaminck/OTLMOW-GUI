@@ -9,6 +9,7 @@ from PyQt6.QtWidgets import QTableWidget, QHeaderView, QTableWidgetItem
 
 
 from Domain import global_vars
+from Domain.RelationChangeDomain import RelationChangeDomain
 from Domain.Project import Project
 from Domain.ProjectFileManager import ProjectFileManager
 from Domain.HomeDomain import HomeDomain
@@ -121,6 +122,7 @@ class OverviewTable(QTableWidget):
         self.main_window.widget(2).tab1.fill_list()
         self.main_window.widget(1).tab1.update_project_info()
         self.main_window.widget(2).tab1.fill_list()
+        RelationChangeDomain.init_static(global_vars.single_project)
         event_loop = asyncio.get_event_loop()
         event_loop.create_task(self.navigate_to_project())
 

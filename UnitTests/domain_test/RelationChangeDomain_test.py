@@ -1,13 +1,78 @@
-from unittest.mock import Mock
+import sqlite3
+from pathlib import Path
+from unittest.mock import Mock, patch, MagicMock
 
+import pytest
 from _pytest.fixtures import fixture
 from otlmow_model.OtlmowModel.BaseClasses.OTLObject import OTLAttribuut
+from otlmow_modelbuilder.OSLOCollector import OSLOCollector
+from otlmow_modelbuilder.SQLDataClasses.OSLORelatie import OSLORelatie
+from pytestqt.plugin import qtbot
 
+from Domain.Project import Project
 from Domain.RelationChangeDomain import RelationChangeDomain
 from GUI.Screens.RelationChangeScreen import RelationChangeScreen
+from GUI.translation.GlobalTranslate import GlobalTranslate
 from UnitTests.TestClasses.Classes.ImplementatieElement.AIMObject import AIMObject
 from UnitTests.TestClasses.Classes.Onderdeel.AllCasesTestClass import AllCasesTestClass
+from UnitTests.TestClasses.Classes.Onderdeel.AnotherTestClass import AnotherTestClass
 
+
+#################################################
+# RelationChangeDomain.init_static            #
+#################################################
+
+@pytest.fixture
+def mock_project():
+    return Project()
+
+@pytest.fixture
+def mock_oslo_collector():
+    with patch('otlmow_modelbuilder.OSLOCollector.OSLOCollector.__init__') as MockCollector:
+        MockCollector.return_value = None
+        yield MockCollector
+
+@pytest.fixture
+def mock_collect_all():
+    # with patch('otlmow_modelbuilder.OSLOCollector.collect_all') as Mock_collect_all:
+    #     yield Mock_collect_all
+    mock_collect_all = Mock()
+    OSLOCollector.collect_all = mock_collect_all
+    yield mock_collect_all
+
+@pytest.mark.parametrize("subset_path, expected_exception", [
+    (patch('pathlib.Path')("valid/path"), None),
+    ("valid/path", None),  # edge case: string instead of path
+    ("", None),      # edge case: empty path
+    (None, None),     # edge case: None path
+], ids=["valid_path", "string_path", "empty_path", "none_path"])
+def test_init_static(mock_project,mock_collect_all, mock_oslo_collector, subset_path, expected_exception):
+    # Arrange
+    mock_project.subset_path = subset_path
+
+    # Act
+    if expected_exception:
+        with pytest.raises(expected_exception):
+            RelationChangeDomain.init_static(mock_project)
+    else:
+        RelationChangeDomain.init_static(mock_project)
+
+    # Assert
+    if not expected_exception:
+        mock_oslo_collector.assert_called_once_with(subset_path)
+
+    if not expected_exception:
+        mock_collect_all.assert_called_once()
+
+#################################################
+# RelationChangeDomain.set_objects              #
+#################################################
+
+@fixture
+def create_translations():
+    lang_dir = Path(Path(__file__).absolute()).parent.parent.parent / 'locale/'
+    setting={"language": "DUTCH"}
+    GlobalTranslate(settings=setting,lang_dir=str(lang_dir))
 
 @fixture
 def mock_setup():

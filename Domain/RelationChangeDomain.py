@@ -17,6 +17,9 @@ class RelationChangeDomain:
     objects: List[AIMObject]
     possible_relations_per_object: dict = {}
 
+    """
+    Call this when the project or project.subset_path changes or everytime you go to the window
+    """
     @classmethod
     def init_static(cls, project:Project):
         cls.project = project

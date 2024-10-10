@@ -1,6 +1,7 @@
 from datetime import datetime
 from pathlib import Path
 
+from Domain.RelationChangeDomain import RelationChangeDomain
 from Domain.Project import Project
 from Domain.ProjectFileManager import ProjectFileManager
 from Domain.SubsetDatabase import SubsetDatabase
@@ -57,3 +58,4 @@ class HomeDomain:
         project.subset_path = Path(new_path)
         ProjectFileManager.save_project_to_dir(project)
         main_window.widget(1).tab1.project = project
+        RelationChangeDomain.init_static(project)
