@@ -99,7 +99,7 @@ class InsertDataScreen(Screen):
         self.clear_feedback()
         # doc_list: list[str] = [documents.topLevelItem(i).data(1, 1) for i in range(documents.topLevelItemCount())]
 
-        error_set, objects_lists = InsertDataDomain.load_and_validate_document()
+        error_set, objects_lists = InsertDataDomain.load_and_validate_documents()
 
         if error_set:
             logging.debug('negative feedback needed')

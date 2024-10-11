@@ -145,7 +145,7 @@ class InsertDataDomain:
         InsertDataDomain.load_saved_documents_in_project()
 
     @classmethod
-    def load_and_validate_document(cls):
+    def load_and_validate_documents(cls):
         error_set: list[dict] = []
         objects_lists = []
         global_vars.current_project.saved_objects_lists = []
