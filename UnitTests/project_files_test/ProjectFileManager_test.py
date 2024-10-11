@@ -208,13 +208,13 @@ def test_add_template_file_generates_folder():
         bestek="bestek",
         laatst_bewerkt=datetime.datetime(2023, 11, 1))
     ProjectFileManager.save_project_to_dir(project)
-    global_vars.single_project = project
+    global_vars.current_project = project
     assert project.project_path.exists()
     ProjectFileManager.add_template_file_to_project(Path(
         PARENT_OF_THIS_FILE) / 'OTLWizardProjects' / 'TestFiles' / 'should_pass_implementatieelement_Derdenobject.csv')
     assert (project.project_path / 'OTL-template-files').exists()
     ProjectFileManager.delete_project_files_by_path(project.project_path)
-    global_vars.single_project = None
+    global_vars.current_project = None
 
 
 def test_remove_template_folder_removes_folder():
@@ -227,7 +227,7 @@ def test_remove_template_folder_removes_folder():
         bestek="bestek",
         laatst_bewerkt=datetime.datetime(2023, 11, 1))
     ProjectFileManager.save_project_to_dir(project)
-    global_vars.single_project = project
+    global_vars.current_project = project
     assert project.project_path.exists()
     ProjectFileManager.add_template_file_to_project(Path(
         PARENT_OF_THIS_FILE) / 'OTLWizardProjects' / 'TestFiles' / 'should_pass_implementatieelement_Derdenobject.csv')
@@ -235,7 +235,7 @@ def test_remove_template_folder_removes_folder():
     ProjectFileManager.delete_template_folder()
     assert not (project.project_path / 'OTL-template-files').exists()
     ProjectFileManager.delete_project_files_by_path(project.project_path)
-    global_vars.single_project = None
+    global_vars.current_project = None
 
 
 def test_correct_project_files_in_memory_returns_false_if_none_given_as_param():

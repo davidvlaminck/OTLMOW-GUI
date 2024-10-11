@@ -57,7 +57,7 @@ class StepperWidget(QWidget):
         return horizontal_layout
 
     def enable_steps(self):
-        if ProjectFileManager.correct_project_files_in_memory(global_vars.single_project):
+        if ProjectFileManager.correct_project_files_in_memory(global_vars.current_project):
             self.step3.setDisabled(False)
             self.step4.setDisabled(False)
         else:

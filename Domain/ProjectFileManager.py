@@ -99,8 +99,13 @@ class ProjectFileManager:
         with open(project_dir_path / "project_details.json", "w") as project_details_file:
             json.dump(project_details_dict, project_details_file)
 
-        OtlmowConverter().from_objects_to_file(file_path=Path(project_dir_path / "assets.json"),
-                                                  sequence_of_objects=project.assets_in_memory)
+        # TODO: It seems the idea here was that validated assets are stored in the project and
+        #       and loaded again when you open the project so object_lists don't need to be
+        #       validated again? Implement this again later
+        #       The problem is that he would overwrite assets.json that now contains a list of
+        #       objects_list_files
+        # OtlmowConverter().from_objects_to_file(file_path=Path(project_dir_path / "assets.json"),
+        #                                           sequence_of_objects=project.assets_in_memory)
 
         if project.subset_path.parent.absolute() != project_dir_path.absolute():
             # move subset to project dir
@@ -189,7 +194,7 @@ class ProjectFileManager:
 
     @classmethod
     def add_template_file_to_project(cls, filepath: Path) -> Path:
-        project = global_vars.single_project
+        project = global_vars.current_project
         location_dir = project.project_path / 'OTL-template-files'
         if not location_dir.exists():
             location_dir.mkdir()
@@ -204,7 +209,7 @@ class ProjectFileManager:
     @classmethod
     def delete_template_folder(cls) -> None:
         logging.debug("Started clearing out the whole template folder")
-        project = global_vars.single_project
+        project = global_vars.current_project
         location_dir = project.project_path / 'OTL-template-files'
         if not location_dir.exists():
             return

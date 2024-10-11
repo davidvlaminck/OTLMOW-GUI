@@ -117,7 +117,7 @@ class InsertDataScreen(Screen):
         for item in error_set:
             exception = item["exception"]
             doc = item["path_str"]
-            InsertDataDomain.add_template_file_to_project(project=global_vars.single_project,
+            InsertDataDomain.add_template_file_to_project(project=global_vars.current_project,
                                                           filepath=Path(doc),
                                                           state=FileState.ERROR)
 
@@ -265,7 +265,7 @@ class InsertDataScreen(Screen):
         self.control_button.setDisabled(all_valid)
 
     def reset_button_functionality(self):
-        RemoveProjectFilesWindow(project=global_vars.single_project, language_settings=self._)
+        RemoveProjectFilesWindow(project=global_vars.current_project, language_settings=self._)
         InsertDataDomain.load_saved_documents_in_project()
         self.clear_feedback()
 

@@ -1,3 +1,3 @@
 projects = []
-single_project = None
+current_project = None
 otl_wizard = None

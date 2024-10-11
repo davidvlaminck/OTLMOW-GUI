@@ -107,9 +107,9 @@ class HeaderBar(QFrame):
         self.return_button.setIcon(qta.icon('mdi.arrow-left',
                                             color='#B35F35'))
         self.return_button.setText(self._('return_to_home_screen'))
-        if global_vars.single_project is not None:
-            print(global_vars.single_project.eigen_referentie)
-            self.reference_title.setText(global_vars.single_project.eigen_referentie)
+        if global_vars.current_project is not None:
+            print(global_vars.current_project.eigen_referentie)
+            self.reference_title.setText(global_vars.current_project.eigen_referentie)
         else:
             self.reference_title.setText("")
         self.reference_title.setProperty('class', 'project-title')
@@ -172,7 +172,7 @@ class HeaderBar(QFrame):
         self.help_action.setText(self._('help'))
         self.about_action.setText(self._('about'))
         self.report_action.setText(self._('report error'))
-        if global_vars.single_project is not None:
-            self.reference_title.setText(global_vars.single_project.eigen_referentie)
+        if global_vars.current_project is not None:
+            self.reference_title.setText(global_vars.current_project.eigen_referentie)
         else:
             self.reference_title.setText("")

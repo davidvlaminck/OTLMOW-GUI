@@ -55,7 +55,7 @@ class AssetChangeDomain:
         for x in original_documents:
             original_assets.extend(OtlmowConverter().from_file_to_objects(file_path=Path(x)))
         new_assets = []
-        for x in global_vars.single_project.saved_objects_lists:
+        for x in global_vars.current_project.saved_objects_lists:
             new_assets.extend(OtlmowConverter().from_file_to_objects(file_path=Path(x.file_path)))
         return cls.generate_diff_report(original_assets, new_assets, model_dir)
 

@@ -95,7 +95,7 @@ class DataVisualisationScreen(Screen):
         # self.view.reload()
 
     def load_assets(self) -> List[OTLObject]:
-        project: Project = global_vars.single_project
+        project: Project = global_vars.current_project
         if project is None:
             return
         valid_file_paths:List[Path] = [file.file_path for file in project.saved_objects_lists if file.state == FileState.OK]

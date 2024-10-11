@@ -26,13 +26,13 @@ class InsertDataDomain:
     @classmethod
     def load_saved_documents_in_project(cls):
         cls.clear_documents_in_memory()
-        logging.debug(f"list with {global_vars.single_project.saved_objects_lists}")
-        logging.debug(f"Filled list with {len(global_vars.single_project.saved_objects_lists)} "
+        logging.debug(f"list with {global_vars.current_project.saved_objects_lists}")
+        logging.debug(f"Filled list with {len(global_vars.current_project.saved_objects_lists)} "
                       f"items")
 
         files = []
         states = []
-        for asset in global_vars.single_project.saved_objects_lists:
+        for asset in global_vars.current_project.saved_objects_lists:
             files.append(asset.file_path)
             states.append(asset.state)
 
@@ -141,7 +141,7 @@ class InsertDataDomain:
     def load_and_validate_document(cls):
         error_set: list[dict] = []
         objects_lists = []
-        global_vars.single_project.saved_objects_lists = []
+        global_vars.current_project.saved_objects_lists = []
 
         for doc in cls.documents.keys():
 
@@ -157,11 +157,11 @@ class InsertDataDomain:
             except Exception as ex:
                 error_set.append({"exception": ex, "path_str": doc})
             else:
-                InsertDataDomain.add_template_file_to_project(project=global_vars.single_project,
+                InsertDataDomain.add_template_file_to_project(project=global_vars.current_project,
                                                               filepath=Path(doc),
                                                               state=FileState.OK)
 
-        ProjectFileManager.add_project_files_to_file(global_vars.single_project)
+        ProjectFileManager.add_project_files_to_file(global_vars.current_project)
 
         cls.load_saved_documents_in_project()
 

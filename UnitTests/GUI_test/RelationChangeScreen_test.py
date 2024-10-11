@@ -27,7 +27,7 @@ def create_translations():
 #######################################################
 @fixture
 def setup_demo_project_in_memory():
-    global_vars.single_project = Project(subset_path=Path("C:\\sers\\chris\\PycharmProjects\\OTLMOW-GUI\\demo_projects\\" +
+    global_vars.current_project = Project(subset_path=Path("C:\\sers\\chris\\PycharmProjects\\OTLMOW-GUI\\demo_projects\\" +
     "simpel_vergelijkings_project\\simpele_vergelijkings_subset.db"))
 
 def test_full_fill_possible_relations_list(qtbot,create_translations,setup_demo_project_in_memory):

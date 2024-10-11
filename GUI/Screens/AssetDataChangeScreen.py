@@ -193,7 +193,7 @@ class AssetDataChangeScreen(Screen):
         original_documents = [self.input_file_field.topLevelItem(i).data(0, 1) for i in
                               range(self.input_file_field.topLevelItemCount())]
         logging.debug(f"original documents {original_documents}")
-        project = global_vars.single_project
+        project = global_vars.current_project
         dialog_window = ChooseFileNameWindow(self._, project, original_documents)
         try:
             dialog_window.warning_overwrite_screen()
