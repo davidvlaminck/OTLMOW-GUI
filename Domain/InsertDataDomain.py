@@ -137,6 +137,13 @@ class InsertDataDomain:
 
         return all_valid
 
+    def delete_backend_document(self, item_file_path: str):
+        file_is_in_project = global_vars.current_project.is_in_project(item_file_path)
+        if file_is_in_project is not None:
+            InsertDataDomain.delete_project_file_from_project(global_vars.current_project,
+                                                              Path(item_file_path))
+        InsertDataDomain.load_saved_documents_in_project()
+
     @classmethod
     def load_and_validate_document(cls):
         error_set: list[dict] = []

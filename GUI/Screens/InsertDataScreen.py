@@ -242,20 +242,10 @@ class InsertDataScreen(Screen):
 
     def delete_file_from_list(self):
         items = self.input_file_field.selectedItems()
-        item_data = items[0].data(1, 1)
-        file_in_memory = next((asset.file_path for asset in global_vars.single_project.saved_objects_lists if
-                               asset.file_path == item_data), None)
-        allow_removal = True
-        if file_in_memory is not None:
-            logging.debug("We've struck gold")
-            allow_removal = (InsertDataDomain.delete_project_file_from_project(global_vars.single_project, file_in_memory))
+        item_file_path = items[0].data(1, 1)
 
-        if allow_removal:
-            self.input_file_field.removeItemWidget(items[0], 1)
-            self.input_file_field.takeTopLevelItem(self.input_file_field.indexOfTopLevelItem(items[0]))
-            if self.input_file_field.topLevelItemCount() == 0:
-                self.control_button.setDisabled(True)
-                self.clear_feedback()
+        InsertDataDomain.delete_backend_document(item_file_path)
+
 
 
     def update_file_list(self):

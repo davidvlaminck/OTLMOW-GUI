@@ -34,3 +34,6 @@ class Project:
                    project_details['eigen_referentie'],
                    project_details['bestek'],
                    datetime.datetime.strptime(project_details['laatst_bewerkt'], "%Y-%m-%d %H:%M:%S"))
+
+    def is_in_project(self, file_path):
+        return [project_file.file_path for project_file in self.saved_objects_lists].__contains__(file_path)
