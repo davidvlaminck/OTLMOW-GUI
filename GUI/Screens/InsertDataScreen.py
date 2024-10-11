@@ -33,17 +33,22 @@ class InsertDataScreen(Screen):
         super().__init__()
         self._ = language_settings
         self.container_insert_data_screen = QVBoxLayout()
-        self.feedback_message_box = QFrame()
-        self.main_window = None
+
+
         self.message_icon = QLabel()
         self.message = QLabel()
         self.input_file_label = QLabel()
-        self.control_button = ButtonWidget()
+
         self.input_file_field: QTreeWidget = QTreeWidget()
+        self.feedback_message_box = QFrame()
         self.asset_info = QListWidget()
-        self.assets = []
+
         self.input_file_button = ButtonWidget()
+        self.control_button = ButtonWidget()
         self.reset_button = ButtonWidget()
+
+        self.assets = []
+        self.main_window = None
 
         self.init_ui()
 
@@ -71,7 +76,7 @@ class InsertDataScreen(Screen):
         button_frame_layout = QHBoxLayout()
         self.control_button.setText(self._('control_button'))
         self.control_button.setDisabled(True)
-        self.control_button.clicked.connect(lambda: self.validate_documents(self.input_file_field))
+        self.control_button.clicked.connect(lambda: self.validate_documents())
         self.control_button.setProperty('class', 'primary-button')
 
         reset_button = QPushButton()
@@ -90,11 +95,11 @@ class InsertDataScreen(Screen):
         button_frame.setLayout(button_frame_layout)
         return button_frame
 
-    def validate_documents(self, documents: QTreeWidget):
-        self.asset_info.clear()
-        doc_list: list[str] = [documents.topLevelItem(i).data(1, 1) for i in range(documents.topLevelItemCount())]
+    def validate_documents(self):
+        self.clear_feedback()
+        # doc_list: list[str] = [documents.topLevelItem(i).data(1, 1) for i in range(documents.topLevelItemCount())]
 
-        error_set, objects_lists = InsertDataDomain.load_and_validate_document(doc_list)
+        error_set, objects_lists = InsertDataDomain.load_and_validate_document()
 
         if error_set:
             logging.debug('negative feedback needed')
@@ -106,7 +111,7 @@ class InsertDataScreen(Screen):
             self.positive_feedback_message()
 
         self.fill_feedback_list(objects_lists)
-        self.fill_list()
+        # self.fill_list()
 
     def fill_error_feedback_list(self, error_set):
         for item in error_set:
@@ -176,12 +181,6 @@ class InsertDataScreen(Screen):
         frame.setLayout(frame_layout)
         return frame
 
-    def fill_list(self):
-        self.input_file_field.clear()
-        logging.debug("list with " + str(global_vars.single_project.saved_objects_lists))
-        logging.debug("Filled list with " + str(len(global_vars.single_project.saved_objects_lists)) + " items")
-        for asset in global_vars.single_project.saved_objects_lists:
-            self.add_file_to_list([asset.file_path], asset.state)
 
     def positive_feedback_message(self):
         self.message_icon.setPixmap(qta.icon('mdi.check', color="white").pixmap(QSize(48, 48)))
@@ -206,9 +205,8 @@ class InsertDataScreen(Screen):
         self._ = _
         self.input_file_label.setText(self._('input_file'))
         self.control_button.setText(self._('control_button'))
-        self.clear_feedback_message()
         self.clear_feedback()
-        self.clear_list()
+        self.update_file_list()
 
     def open_file_picker(self):
         file_path = str(Path.home())
@@ -218,28 +216,29 @@ class InsertDataScreen(Screen):
         file_picker.setFileMode(QFileDialog.FileMode.ExistingFiles)
         file_picker.setNameFilter("EXCEL files (*.xlsx);;CSV files (*.csv);;JSON files (*.json)")
         if file_picker.exec():
-            self.add_file_to_list(file_picker.selectedFiles())
-            self.clear_feedback_message()
+            InsertDataDomain.add_files_to_backend_list(file_picker.selectedFiles())
+            self.clear_feedback()
 
-    def add_file_to_list(self, files: List[str], asset_state: FileState = FileState.WARNING):
+    def add_file_to_frontend_list(self, file: str, asset_state: FileState = FileState.WARNING):
         self.control_button.setDisabled(False)
-        for file in files:
-            list_item = QTreeWidgetItem()
-            doc_name = Path(file).name
-            list_item.setText(1, doc_name)
-            if asset_state == FileState.OK:
-                list_item.setIcon(0, qta.icon('mdi.check', color="green"))
-            elif asset_state == FileState.WARNING:
-                list_item.setIcon(0, qta.icon('mdi.alert', color="orange"))
-            elif asset_state == FileState.ERROR:
-                list_item.setIcon(0, qta.icon('mdi.close', color="red"))
-            list_item.setData(1, 1, file)
-            list_item.setSizeHint(1, QSize(0, 30))
-            self.input_file_field.addTopLevelItem(list_item)
-            button = ButtonWidget()
-            button.clicked.connect(lambda: self.delete_file_from_list())
-            button.setIcon(qta.icon('mdi.close'))
-            self.input_file_field.setItemWidget(list_item, 2, button)
+
+        list_item = QTreeWidgetItem()
+        doc_name = Path(file).name
+        list_item.setText(1, doc_name)
+        if asset_state == FileState.OK:
+            list_item.setIcon(0, qta.icon('mdi.check', color="green"))
+        elif asset_state == FileState.WARNING:
+            list_item.setIcon(0, qta.icon('mdi.alert', color="orange"))
+        elif asset_state == FileState.ERROR:
+            list_item.setIcon(0, qta.icon('mdi.close', color="red"))
+        list_item.setData(1, 1, file)
+        list_item.setSizeHint(1, QSize(0, 30))
+        self.input_file_field.addTopLevelItem(list_item)
+        button = ButtonWidget()
+        button.clicked.connect(lambda: self.delete_file_from_list())
+        button.setIcon(qta.icon('mdi.close'))
+        self.input_file_field.setItemWidget(list_item, 2, button)
+
 
     def delete_file_from_list(self):
         items = self.input_file_field.selectedItems()
@@ -257,20 +256,21 @@ class InsertDataScreen(Screen):
             if self.input_file_field.topLevelItemCount() == 0:
                 self.control_button.setDisabled(True)
                 self.clear_feedback()
-                self.clear_feedback_message()
 
-    def clear_list(self):
+
+    def update_file_list(self):
+        logging.debug("[CLEAR] update_file_list")
         self.input_file_field.clear()
-        self.clear_feedback()
-        self.control_button.setDisabled(True)
+        all_valid = InsertDataDomain.sync_backend_documents_with_frontend()
+        self.control_button.setDisabled(all_valid)
 
     def reset_button_functionality(self):
         RemoveProjectFilesWindow(project=global_vars.single_project, language_settings=self._)
-        self.fill_list()
+        InsertDataDomain.load_saved_documents_in_project()
         self.clear_feedback()
-        self.clear_feedback_message()
 
     def clear_feedback(self):
+        logging.debug("[CLEAR] clear_feedback")
         self.asset_info.clear()
         self.clear_feedback_message()
 

@@ -66,6 +66,6 @@ class TabWidget(Screen):
         if hasattr(self, 'tab3'):
             self.tab3.reset_ui(_)
             self.tabs.setTabText(2, self._(self.desc3))
-        self.tab1.reset_ui(_)
+        # self.tab1.reset_ui(_)
         self.tabs.setTabText(0, self._(self.desc1))
         self.stepper_widget.reset_ui(_)

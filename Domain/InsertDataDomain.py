@@ -21,6 +21,26 @@ from UnitTests.TestClasses.Classes.ImplementatieElement.AIMObject import AIMObje
 
 
 class InsertDataDomain:
+    documents: dict[str,FileState] = {}
+
+    @classmethod
+    def load_saved_documents_in_project(cls):
+        cls.clear_documents_in_memory()
+        logging.debug(f"list with {global_vars.single_project.saved_objects_lists}")
+        logging.debug(f"Filled list with {len(global_vars.single_project.saved_objects_lists)} "
+                      f"items")
+
+        files = []
+        states = []
+        for asset in global_vars.single_project.saved_objects_lists:
+            files.append(asset.file_path)
+            states.append(asset.state)
+
+        cls.add_files_to_backend_list(files, states)
+
+    @classmethod
+    def clear_documents_in_memory(cls):
+        cls.documents.clear()
 
     @classmethod
     def check_document(cls, doc_location) -> Iterable[OTLObject]:
@@ -98,12 +118,33 @@ class InsertDataDomain:
         ProjectFileManager.add_project_files_to_file(project=project)
 
     @classmethod
-    def load_and_validate_document(cls, doc_list):
-        error_set: set[dict] = set()
+    def add_files_to_backend_list(cls, files: list[str], states: list[FileState] | None = None):
+        if states is None:
+            states = [FileState.WARNING for _ in range(len(files))]
+
+        for i in range(len(files)):
+            cls.documents[files[i]] = states[i]
+
+        cls.get_screen().update_file_list()
+
+    @classmethod
+    def sync_backend_documents_with_frontend(cls) -> bool:
+        all_valid = True
+        for item in cls.documents.items():
+            cls.get_screen().add_file_to_frontend_list(item[0],item[1])
+            if item[0] != FileState.OK:
+                all_valid = False
+
+        return all_valid
+
+    @classmethod
+    def load_and_validate_document(cls):
+        error_set: list[dict] = []
         objects_lists = []
         global_vars.single_project.saved_objects_lists = []
 
-        for doc in doc_list:
+        for doc in cls.documents.keys():
+
             if Path(doc).suffix in ['.xls', '.xlsx']:
                 temp_path = InsertDataDomain.start_excel_changes(doc=doc)
             elif Path(doc).suffix == '.csv':
@@ -114,13 +155,15 @@ class InsertDataDomain:
                 ProjectFileManager.add_template_file_to_project(Path(doc))
                 objects_lists.append(asset)
             except Exception as ex:
-                error_set.add({"exception": ex, "path_str": doc})
+                error_set.append({"exception": ex, "path_str": doc})
             else:
                 InsertDataDomain.add_template_file_to_project(project=global_vars.single_project,
                                                               filepath=Path(doc),
                                                               state=FileState.OK)
 
         ProjectFileManager.add_project_files_to_file(global_vars.single_project)
+
+        cls.load_saved_documents_in_project()
 
         objects_in_memory = cls.flatten_list(objects_lists)
 
@@ -135,3 +178,7 @@ class InsertDataDomain:
         for objects_list in objects_lists:
             objects_in_memory.extend(objects_list)
         return objects_in_memory
+
+    @classmethod
+    def get_screen(cls):
+        return global_vars.otl_wizard.main_window.step2

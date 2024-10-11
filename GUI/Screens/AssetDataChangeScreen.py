@@ -197,7 +197,7 @@ class AssetDataChangeScreen(Screen):
         dialog_window = ChooseFileNameWindow(self._, project, original_documents)
         try:
             dialog_window.warning_overwrite_screen()
-            self.main_window.widget(2).tab1.fill_list()
+            self.main_window.widget(2).tab1.load_saved_documents_in_project()
             self.positive_feedback_message()
         except Exception as e:
             logging.debug(e)
