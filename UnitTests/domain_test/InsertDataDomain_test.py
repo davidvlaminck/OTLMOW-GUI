@@ -25,7 +25,32 @@ from UnitTests.general_fixtures.DomainFixtures import *
 #######################################################
 # InsertDataDomain.load_and_validate_document         #
 #######################################################
+@fixture
+def root_directory() -> Path:
+    return Path(__file__).parent.parent.parent
 
+@fixture
+def setup_test_project(root_directory: Path) -> None:
+    # test_subset_file_path: Path = Path(
+    #     "{0}\\demo_projects\\simpel_vergelijkings_project\\simpele_vergelijkings_subset.db".format(
+    #         str(root_directory)))
+    # project_file_path: Path = Path(
+    #     "{0}\\demo_projects\\simpel_vergelijkings_project\\wizardProject".format(
+    #         str(root_directory)))
+
+    test_subset_file_path: Path = (root_directory / "demo_projects"
+                                   /  "simpel_vergelijkings_project"
+                                   / "simpele_vergelijkings_subset.db")
+    project_file_path: Path = (root_directory / "demo_projects"  /  "simpel_vergelijkings_project"
+                               / "wizardProject")
+
+    global_vars.current_project = Project(project_path=project_file_path,
+                                          subset_path=Path(test_subset_file_path))
+    original_get_otl_wizard_projects_dir = ProjectFileManager.get_otl_wizard_projects_dir
+    ProjectFileManager.get_otl_wizard_projects_dir = Mock(
+        return_value=root_directory / "demo_projects" / "simpel_vergelijkings_project")
+    yield
+    ProjectFileManager.get_otl_wizard_projects_dir = original_get_otl_wizard_projects_dir
 
 @fixture
 def mock_screen(qtbot: QtBot, create_translations) -> InsertDataScreen:
@@ -53,7 +78,7 @@ def test_load_and_validate_document_good_path(mock_screen: InsertDataScreen,
                                               mock_rel_screen: RelationChangeScreen,
                                               mock_step3_visuals) -> None:
 
-    test_object_lists_file_path: list[str] = [str(Path("{0}\\demo_projects\\simpel_vergelijkings_project\\simpel_vergelijking_template2.xlsx".format(str())).absolute())]
+    test_object_lists_file_path: list[str] = [str(Path("{0}\\demo_projects\\simpel_vergelijkings_project\\simpel_vergelijking_template2.xlsx".format(str(root_directory))).absolute())]
 
     InsertDataDomain.add_files_to_backend_list(test_object_lists_file_path)
 
