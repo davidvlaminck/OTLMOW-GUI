@@ -21,7 +21,34 @@ from UnitTests.TestClasses.Classes.ImplementatieElement.AIMObject import AIMObje
 from UnitTests.TestClasses.Classes.Onderdeel.AllCasesTestClass import AllCasesTestClass
 from UnitTests.TestClasses.Classes.Onderdeel.AnotherTestClass import AnotherTestClass
 
+from UnitTests.general_fixtures.GUIFixtures import *
+from UnitTests.general_fixtures.DomainFixtures import *
+#################################################
+# FULL TESTS                                    #
+#################################################
+#################################################
+# RelationChangeDomain.set_possible_relations   #
+#################################################
 
+@fixture
+def mock_screen(qtbot: QtBot, create_translations) -> RelationChangeScreen:
+    relation_change_screen = RelationChangeScreen(GlobalTranslate.instance.get_all())
+    relation_change_screen.fill_class_list = Mock()
+    RelationChangeDomain.get_screen = Mock(return_value=relation_change_screen)
+    return relation_change_screen
+
+@fixture
+def mock_fill_possible_relations_list(mock_screen: RelationChangeScreen):
+    mock_screen.fill_possible_relations_list = Mock()
+
+def test_set_possible_relations(mock_fill_possible_relations_list: RelationChangeScreen
+                                                 ,mock_collector:Mock):
+    pass
+
+
+#################################################
+# UNIT TESTS                                    #
+#################################################
 #################################################
 # RelationChangeDomain.init_static            #
 #################################################
@@ -74,19 +101,6 @@ def test_init_static(mock_project: Project,mock_collect_all: Mock, mock_oslo_col
 # RelationChangeDomain.set_objects              #
 #################################################
 
-@fixture
-def create_translations() -> None:
-    lang_dir = Path(Path(__file__).absolute()).parent.parent.parent / 'locale/'
-    setting={"language": "DUTCH"}
-    GlobalTranslate(settings=setting,lang_dir=str(lang_dir))
-
-@fixture
-def mock_screen(qtbot: QtBot, create_translations) -> RelationChangeScreen:
-    relation_change_screen = RelationChangeScreen(GlobalTranslate.instance.get_all())
-    relation_change_screen.fill_class_list = Mock()
-    RelationChangeDomain.get_screen = Mock(return_value=relation_change_screen)
-    return relation_change_screen
-
 def test_set_objects_empty_list(mock_screen: RelationChangeScreen):
     RelationChangeDomain.set_objects([])
 
@@ -118,9 +132,7 @@ def test_set_objects_double_item_list(mock_screen):
 # RelationChangeDomain.set_possible_relations   #
 #################################################
 
-@fixture
-def mock_fill_possible_relations_list(mock_screen: RelationChangeScreen):
-    mock_screen.fill_possible_relations_list = Mock()
+
 
 @fixture
 def mock_OSLORelatie() -> Mock:
