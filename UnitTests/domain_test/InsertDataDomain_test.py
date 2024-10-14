@@ -87,4 +87,5 @@ def test_load_and_validate_document_good_path(mock_screen, root_directory, setup
 
     assert(len(error_set) == 0)
     assert(len(objects_lists) == 1)
-    assert (len(objects_lists[0]) == 8)
+    assert(len(objects_lists[0]) == 8)
+    assert (list(InsertDataDomain.documents.values())[0] == FileState.OK)
