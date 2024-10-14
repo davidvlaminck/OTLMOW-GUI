@@ -20,5 +20,8 @@ def setup_test_project(root_directory: Path) -> None:
         str(root_directory)))
     global_vars.current_project = Project(project_path=project_file_path,
                                           subset_path=Path(test_subset_file_path))
+    original_get_otl_wizard_projects_dir = ProjectFileManager.get_otl_wizard_projects_dir
     ProjectFileManager.get_otl_wizard_projects_dir = Mock(
         return_value=root_directory / "demo_projects" / "simpel_vergelijkings_project")
+    yield
+    ProjectFileManager.get_otl_wizard_projects_dir = original_get_otl_wizard_projects_dir
