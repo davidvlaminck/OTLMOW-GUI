@@ -38,13 +38,8 @@ def mock_screen(qtbot, create_translations):
     return relation_change_screen
 
 @fixture
-def root_directory():
-    path = Path(os.getcwd())
-
-    while str(path).split("\\").__reversed__().__next__() != 'OTLMOW-GUI':
-        path = path.parent
-
-    return path
+def root_directory() :
+    return Path(__file__).parent.parent.parent
 
 @fixture
 def setup_test_project(root_directory):
