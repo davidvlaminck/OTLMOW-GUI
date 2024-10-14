@@ -14,7 +14,7 @@ class Project:
         self.laatst_bewerkt: datetime.datetime = laatst_bewerkt
 
         self.assets_in_memory = [] #TODO: implement mechanisms to store, save and load validated assets
-        self.saved_objects_lists = []
+        self.saved_objects_list_file_paths: list[Path]= []
 
     @classmethod
     def load_project(cls, project_path: Path = None):
