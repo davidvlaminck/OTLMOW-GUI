@@ -36,9 +36,13 @@ def mock_oslo_collector():
 def mock_collect_all():
     # with patch('otlmow_modelbuilder.OSLOCollector.collect_all') as Mock_collect_all:
     #     yield Mock_collect_all
+    original_collect_all = OSLOCollector.collect_all
+
     mock_collect_all = Mock()
     OSLOCollector.collect_all = mock_collect_all
     yield mock_collect_all
+    # after the test the original collect_all is restored for other tests to use
+    OSLOCollector.collect_all = original_collect_all
 
 @pytest.mark.parametrize("subset_path, expected_exception", [
     (patch('pathlib.Path')("valid/path"), None),
