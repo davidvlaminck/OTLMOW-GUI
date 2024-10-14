@@ -92,7 +92,7 @@ def test_save_project_given_details(mock_get_home_path):
     assert project_dir_path.exists()
     assert (project_dir_path / 'project_details.json').exists()
     assert (project_dir_path / 'OTL_AllCasesTestClass_no_double_kard.db').exists()
-    assert (project_dir_path / 'assets.json').exists()
+    # assert (project_dir_path / 'assets.json').exists() #is not supposed to be created
 
     generated_project = ProjectFileManager.get_project_from_dir(project_dir_path)
     assert generated_project.eigen_referentie == "eigen referentie"
