@@ -4,6 +4,7 @@ from unittest.mock import Mock
 
 from _pytest.fixtures import fixture
 from pytestqt.plugin import qtbot
+from pytestqt.qtbot import QtBot
 
 from Domain import global_vars
 from Domain.InsertDataDomain import InsertDataDomain
@@ -25,24 +26,24 @@ from OTLWizard import OTLWizard
 # InsertDataDomain.load_and_validate_document         #
 #######################################################
 @fixture
-def create_translations():
+def create_translations() -> None:
     lang_dir = Path(Path(__file__).absolute()).parent.parent.parent / 'locale/'
     setting={"language": "DUTCH"}
     GlobalTranslate(settings=setting,lang_dir=str(lang_dir))
 
 @fixture
-def mock_screen(qtbot, create_translations):
+def mock_screen(qtbot: QtBot, create_translations) -> InsertDataScreen:
     relation_change_screen = InsertDataScreen(GlobalTranslate.instance.get_all())
     relation_change_screen.fill_class_list = Mock()
     InsertDataDomain.get_screen = Mock(return_value=relation_change_screen)
     return relation_change_screen
 
 @fixture
-def root_directory() :
+def root_directory() -> Path:
     return Path(__file__).parent.parent.parent
 
 @fixture
-def setup_test_project(root_directory):
+def setup_test_project(root_directory: Path) -> None:
     test_subset_file_path:Path = Path("{0}\\demo_projects\\simpel_vergelijkings_project\\simpele_vergelijkings_subset.db".format(
         str(root_directory)))
     project_file_path: Path = Path("{0}\\demo_projects\\simpel_vergelijkings_project\\wizardProject".format(
@@ -51,24 +52,28 @@ def setup_test_project(root_directory):
                                           subset_path=Path(test_subset_file_path))
 
 @fixture
-def mock_project_path(root_directory):
+def mock_project_path(root_directory: Path) -> None:
     ProjectFileManager.get_otl_wizard_projects_dir = Mock(return_value=root_directory / "demo_projects" /"simpel_vergelijkings_project")
 
 @fixture
-def mock_rel_screen(qtbot, create_translations):
+def mock_rel_screen(qtbot: QtBot, create_translations) -> RelationChangeScreen:
     relation_change_screen = RelationChangeScreen(GlobalTranslate.instance.get_all())
     relation_change_screen.fill_class_list = Mock()
     RelationChangeDomain.get_screen = Mock(return_value=relation_change_screen)
     return relation_change_screen
 
 @fixture
-def mock_step3_visuals():
+def mock_step3_visuals() -> None:
     step3_visuals = Mock(step3_visuals=DataVisualisationScreen)
     main_window =  Mock(step3_visuals=step3_visuals)
     global_vars.otl_wizard = Mock(main_window=main_window)
 
-def test_load_and_validate_document_good_path(mock_screen, root_directory, setup_test_project,
-                                              mock_project_path,mock_rel_screen,mock_step3_visuals):
+def test_load_and_validate_document_good_path(mock_screen: InsertDataScreen,
+                                              root_directory: Path,
+                                              setup_test_project,
+                                              mock_project_path,
+                                              mock_rel_screen: RelationChangeScreen,
+                                              mock_step3_visuals) -> None:
 
     test_object_lists_file_path: list[str] = ["{0}\\demo_projects\\simpel_vergelijkings_project\\simpel_vergelijking_template2.xlsx".format(str(root_directory))]
 

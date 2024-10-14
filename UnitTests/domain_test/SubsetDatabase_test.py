@@ -11,7 +11,7 @@ from Exceptions.WrongDatabaseError import WrongDatabaseError
 ROOT_DIR = Path(__file__).parent.parent
 
 @fixture
-def cleanup_after_creating_a_file_to_delete():
+def cleanup_after_creating_a_file_to_delete() -> list[Path]:
     to_delete = []
     yield to_delete
     for item in to_delete:
@@ -25,7 +25,7 @@ def subset_db_raises_file_runtime_error_when_path_is_db_file_but_not_subset():
 
 
 def test_subset_db_raises_file_runtime_error_when_path_is_bad_file(
-        cleanup_after_creating_a_file_to_delete):
+        cleanup_after_creating_a_file_to_delete: list[Path]):
     bad_file_path = Path(ROOT_DIR / 'project_files_test' / 'OTLWizardProjects'
                          / 'Projects' / 'project_1' / 'notSqlLiteFile.txt')
 

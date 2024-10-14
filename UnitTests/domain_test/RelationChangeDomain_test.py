@@ -1,4 +1,6 @@
 import sqlite3
+
+from ctypes.wintypes import PRECT
 from pathlib import Path
 from unittest.mock import Mock, patch, MagicMock
 
@@ -7,7 +9,9 @@ from _pytest.fixtures import fixture
 from otlmow_model.OtlmowModel.BaseClasses.OTLObject import OTLAttribuut
 from otlmow_modelbuilder.OSLOCollector import OSLOCollector
 from otlmow_modelbuilder.SQLDataClasses.OSLORelatie import OSLORelatie
+from parso.python.tree import Function
 from pytestqt.plugin import qtbot
+from pytestqt.qtbot import QtBot
 
 from Domain.Project import Project
 from Domain.RelationChangeDomain import RelationChangeDomain
@@ -23,17 +27,17 @@ from UnitTests.TestClasses.Classes.Onderdeel.AnotherTestClass import AnotherTest
 #################################################
 
 @pytest.fixture
-def mock_project():
+def mock_project() -> Project:
     return Project()
 
 @pytest.fixture
-def mock_oslo_collector():
-    with patch('otlmow_modelbuilder.OSLOCollector.OSLOCollector.__init__') as MockCollector:
-        MockCollector.return_value = None
-        yield MockCollector
+def mock_oslo_collector() -> Function:
+    with patch('otlmow_modelbuilder.OSLOCollector.OSLOCollector.__init__') as mock__init__OSLOColletor:
+        mock__init__OSLOColletor.return_value = None
+        yield mock__init__OSLOColletor
 
 @pytest.fixture
-def mock_collect_all():
+def mock_collect_all() -> Mock:
     # with patch('otlmow_modelbuilder.OSLOCollector.collect_all') as Mock_collect_all:
     #     yield Mock_collect_all
     original_collect_all = OSLOCollector.collect_all
@@ -50,7 +54,7 @@ def mock_collect_all():
     ("", None),      # edge case: empty path
     (None, None),     # edge case: None path
 ], ids=["valid_path", "string_path", "empty_path", "none_path"])
-def test_init_static(mock_project,mock_collect_all, mock_oslo_collector, subset_path, expected_exception):
+def test_init_static(mock_project: Project,mock_collect_all: Mock, mock_oslo_collector: Function, subset_path: str, expected_exception:Exception |None):
     # Arrange
     mock_project.subset_path = subset_path
 
@@ -73,28 +77,24 @@ def test_init_static(mock_project,mock_collect_all, mock_oslo_collector, subset_
 #################################################
 
 @fixture
-def create_translations():
+def create_translations() -> None:
     lang_dir = Path(Path(__file__).absolute()).parent.parent.parent / 'locale/'
     setting={"language": "DUTCH"}
     GlobalTranslate(settings=setting,lang_dir=str(lang_dir))
 
 @fixture
-def mock_screen(qtbot, create_translations):
+def mock_screen(qtbot: QtBot, create_translations) -> RelationChangeScreen:
     relation_change_screen = RelationChangeScreen(GlobalTranslate.instance.get_all())
     relation_change_screen.fill_class_list = Mock()
     RelationChangeDomain.get_screen = Mock(return_value=relation_change_screen)
     return relation_change_screen
 
-@fixture
-def mock_fill_class_list(mock_screen):
-    mock_screen.fill_class_list = Mock()
-
-def test_set_objects_empty_list(mock_fill_class_list):
+def test_set_objects_empty_list(mock_screen: RelationChangeScreen):
     RelationChangeDomain.set_objects([])
 
     assert len(RelationChangeDomain.objects) == 0
 
-def test_set_objects_single_item_list(mock_fill_class_list):
+def test_set_objects_single_item_list(mock_screen: RelationChangeScreen):
     test_object = AllCasesTestClass()
     test_object.assetId.identificator = "dummy_identificator"
     RelationChangeDomain.set_objects([test_object])
@@ -102,7 +102,7 @@ def test_set_objects_single_item_list(mock_fill_class_list):
     assert len(RelationChangeDomain.objects) == 1
     assert RelationChangeDomain.objects[0].assetId.identificator == "dummy_identificator"
 
-def test_set_objects_double_item_list(mock_fill_class_list):
+def test_set_objects_double_item_list(mock_screen):
     test_object = AllCasesTestClass()
     test_object.assetId.identificator = "dummy_identificator"
 
@@ -121,15 +121,15 @@ def test_set_objects_double_item_list(mock_fill_class_list):
 #################################################
 
 @fixture
-def mock_fill_possible_relations_list(mock_screen):
+def mock_fill_possible_relations_list(mock_screen: RelationChangeScreen):
     mock_screen.fill_possible_relations_list = Mock()
 
 @fixture
-def mock_OSLORelatie():
+def mock_OSLORelatie() -> Mock:
     return Mock(spec=OSLORelatie)
 
 @fixture
-def mock_collector(mock_OSLORelatie):
+def mock_collector(mock_OSLORelatie: Mock):
     mock_find_outgoing_relations = Mock(return_value=[mock_OSLORelatie])()
     OSLOCollector.find_outgoing_relations = mock_find_outgoing_relations
 
@@ -137,8 +137,8 @@ def mock_collector(mock_OSLORelatie):
 
     return mock_find_outgoing_relations
 
-def test_set_possible_relations_single_item_list(mock_fill_possible_relations_list
-                                                 ,mock_collector):
+def test_set_possible_relations_single_item_list(mock_fill_possible_relations_list: RelationChangeScreen
+                                                 ,mock_collector:Mock):
     test_object = AllCasesTestClass()
     test_object.assetId.identificator = "dummy_identificator"
     RelationChangeDomain.set_possible_relations(test_object)
@@ -147,8 +147,8 @@ def test_set_possible_relations_single_item_list(mock_fill_possible_relations_li
     assert list(RelationChangeDomain.possible_relations_per_object.keys())[0] == test_object.typeURI
     assert RelationChangeDomain.possible_relations_per_object[test_object.typeURI]
 
-def test_set_possible_relations_double_item_list(mock_fill_possible_relations_list
-                                                 ,mock_collector):
+def test_set_possible_relations_double_item_list(mock_fill_possible_relations_list: RelationChangeScreen
+                                                 ,mock_collector:Mock):
     test_object = AllCasesTestClass()
     test_object.assetId.identificator = "dummy_identificator"
 
