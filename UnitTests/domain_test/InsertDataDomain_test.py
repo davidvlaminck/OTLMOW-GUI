@@ -53,7 +53,7 @@ def test_load_and_validate_document_good_path(mock_screen: InsertDataScreen,
                                               mock_rel_screen: RelationChangeScreen,
                                               mock_step3_visuals) -> None:
 
-    test_object_lists_file_path: list[str] = ["{0}\\demo_projects\\simpel_vergelijkings_project\\simpel_vergelijking_template2.xlsx".format(str(root_directory))]
+    test_object_lists_file_path: list[str] = [str(Path("{0}\\demo_projects\\simpel_vergelijkings_project\\simpel_vergelijking_template2.xlsx".format(str(root_directory))))]
 
     InsertDataDomain.add_files_to_backend_list(test_object_lists_file_path)
 
