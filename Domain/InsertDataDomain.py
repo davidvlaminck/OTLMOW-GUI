@@ -26,13 +26,13 @@ class InsertDataDomain:
     @classmethod
     def load_saved_documents_in_project(cls):
         cls.clear_documents_in_memory()
-        logging.debug(f"list with {global_vars.current_project.saved_objects_lists}")
-        logging.debug(f"Filled list with {len(global_vars.current_project.saved_objects_lists)} "
+        logging.debug(f"list with {global_vars.current_project.saved_project_files}")
+        logging.debug(f"Filled list with {len(global_vars.current_project.saved_project_files)} "
                       f"items")
 
         files = []
         states = []
-        for asset in global_vars.current_project.saved_objects_lists:
+        for asset in global_vars.current_project.saved_project_files:
             files.append(asset.file_path)
             states.append(asset.state)
 
@@ -70,7 +70,7 @@ class InsertDataDomain:
             filepath = cls.start_excel_changes(doc=filepath)
         end_loc = ProjectFileManager.add_template_file_to_project(filepath=filepath)
         template_file = ProjectFile(file_path=end_loc, state=state)
-        project.saved_objects_lists.append(template_file)
+        project.saved_project_files.append(template_file)
 
     @classmethod
     def return_temporary_path(cls, file_path: Path) -> Path:
@@ -85,11 +85,11 @@ class InsertDataDomain:
 
             if (ProjectFileManager.delete_template_file_from_project(
                     file_path=file_path)):
-                for file in project.saved_objects_lists:
+                for file in project.saved_project_files:
                     if file.file_path == file_path:
-                        project.saved_objects_lists.remove(file)
+                        project.saved_project_files.remove(file)
                         break
-                ProjectFileManager.add_project_files_to_file(project=project)
+                ProjectFileManager.add_project_files_to_assets_file(project=project)
                 return True
             else:
                 return False
@@ -102,8 +102,8 @@ class InsertDataDomain:
     @classmethod
     def remove_all_project_files(cls, project: Project):
         logging.debug("memory contains %s",
-                      project.saved_objects_lists)
-        for file in project.saved_objects_lists:
+                      project.saved_project_files)
+        for file in project.saved_project_files:
             logging.debug("starting to delete file %s",
                           file.file_path)
             try:
@@ -114,8 +114,8 @@ class InsertDataDomain:
                 title = GlobalTranslate._(e.error_window_title_key)
                 NotificationWindow("{0}:\n{1}".format(message, e.file_path), title)
 
-        project.saved_objects_lists = []
-        ProjectFileManager.add_project_files_to_file(project=project)
+        project.saved_project_files = []
+        ProjectFileManager.add_project_files_to_assets_file(project=project)
 
     @classmethod
     def add_files_to_backend_list(cls, files: list[str], states: list[FileState] | None = None):
@@ -148,7 +148,7 @@ class InsertDataDomain:
     def load_and_validate_documents(cls):
         error_set: list[dict] = []
         objects_lists = []
-        global_vars.current_project.saved_objects_lists = []
+        global_vars.current_project.saved_project_files = []
 
         for doc in cls.documents.keys():
 
@@ -168,7 +168,7 @@ class InsertDataDomain:
                                                               filepath=Path(doc),
                                                               state=FileState.OK)
 
-        ProjectFileManager.add_project_files_to_file(global_vars.current_project)
+        ProjectFileManager.add_project_files_to_assets_file(global_vars.current_project)
 
         cls.load_saved_documents_in_project()
 

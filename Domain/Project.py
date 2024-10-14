@@ -14,7 +14,7 @@ class Project:
         self.laatst_bewerkt: datetime.datetime = laatst_bewerkt
 
         self.assets_in_memory = [] #TODO: implement mechanisms to store, save and load validated assets
-        self.saved_objects_list_file_paths: list[Path]= []
+        self.saved_project_files = []
 
     @classmethod
     def load_project(cls, project_path: Path = None):
@@ -36,4 +36,4 @@ class Project:
                    datetime.datetime.strptime(project_details['laatst_bewerkt'], "%Y-%m-%d %H:%M:%S"))
 
     def is_in_project(self, file_path):
-        return [project_file.file_path for project_file in self.saved_objects_lists].__contains__(file_path)
+        return [project_file.file_path for project_file in self.saved_project_files].__contains__(file_path)

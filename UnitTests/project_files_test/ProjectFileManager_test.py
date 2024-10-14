@@ -266,7 +266,7 @@ def test_correct_project_files_in_memory_returns_true_if_ok_files_in_memory():
     project_file = ProjectFile(file_path=Path(
         PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'TestFiles' / 'should_pass_implementatieelement_Derdenobject.csv'),
         state=FileState.OK)
-    project.saved_objects_lists.append(project_file)
+    project.saved_project_files.append(project_file)
     assert ProjectFileManager.correct_project_files_in_memory(project) is True
 
 
@@ -282,7 +282,7 @@ def test_correct_project_files_in_memory_returns_false_if_no_ok_files_in_memory(
     project_file = ProjectFile(file_path=Path(
         PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'TestFiles' / 'should_pass_implementatieelement_Derdenobject.csv'),
         state=FileState.ERROR)
-    project.saved_objects_lists.append(project_file)
+    project.saved_project_files.append(project_file)
     assert ProjectFileManager.correct_project_files_in_memory(project) is False
 
 
