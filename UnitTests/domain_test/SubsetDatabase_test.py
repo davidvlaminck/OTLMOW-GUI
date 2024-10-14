@@ -7,7 +7,6 @@ from _pytest.fixtures import fixture
 
 from Domain.SubsetDatabase import SubsetDatabase
 from Exceptions.NotASqlliteFileError import NotASqlliteFileError
-from Exceptions.WrongDatabaseError import WrongDatabaseError
 
 ROOT_DIR = Path(__file__).parent.parent
 
@@ -35,18 +34,20 @@ def test_subset_db_raises_file_runtime_error_when_path_is_bad_file(
 
     cleanup_after_creating_a_file_to_delete.append(bad_file_path)
 
-    # christiaan: This used to raise an error I don't know why it doesn't
-    # anymore
+    # christiaan: This used to raise an error I don't know why it doesn't anymore
     # with pytest.raises(NotASqlliteFileError):
-    SubsetDatabase(Path(bad_file_path))
+    db = SubsetDatabase(Path(bad_file_path))
+    db.close_connection()
 
 def test_subset_db_raises_file_runtime_error_when_path_is_empty():
     with pytest.raises(NotASqlliteFileError):
-        SubsetDatabase(Path(''))
+        db = SubsetDatabase(Path(''))
+        db.close_connection()
 
 def test_subset_db_raises_file_not_found_error_when_path_does_not_exist():
     with pytest.raises(FileNotFoundError):
-        SubsetDatabase(Path('does_not_exist.db'))
+        db = SubsetDatabase(Path('does_not_exist.db'))
+        db.close_connection()
 
 
 def test_subset_db_returns_correct_info_project():
@@ -55,6 +56,7 @@ def test_subset_db_returns_correct_info_project():
                                     'project_1' /
                                     'OTL_AllCasesTestClass_no_double_kard.db'))
     info = subset_db.get_general_info_project()
+    subset_db.close_connection()
     assert info == [('Filename', 'OSLO-AWV-VOC'),
                     ('Date', '1/04/2022 10:20:35'),
                     ('Operator', 'davyv'),
