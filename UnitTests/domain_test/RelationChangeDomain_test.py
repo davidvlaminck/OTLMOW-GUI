@@ -38,8 +38,6 @@ def mock_oslo_collector() -> Function:
 
 @pytest.fixture
 def mock_collect_all() -> Mock:
-    # with patch('otlmow_modelbuilder.OSLOCollector.collect_all') as Mock_collect_all:
-    #     yield Mock_collect_all
     original_collect_all = OSLOCollector.collect_all
 
     mock_collect_all = Mock()
