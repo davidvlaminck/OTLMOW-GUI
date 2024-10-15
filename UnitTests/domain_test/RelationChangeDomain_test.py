@@ -79,7 +79,7 @@ def mock_collect_all() -> Mock:
     ("", None),      # edge case: empty path
     (None, None),     # edge case: None path
 ], ids=["valid_path", "string_path", "empty_path", "none_path"])
-def test_init_static(mock_project: Project,mock_collect_all: Mock, mock_oslo_collector: Function, subset_path: str, expected_exception:Exception |None):
+def test_init_static(mock_project: Project,mock_collect_all: Mock, mock_oslo_collector: Function, subset_path: str, expected_exception:Exception ):
     # Arrange
     mock_project.subset_path = subset_path
 

@@ -118,7 +118,7 @@ class InsertDataDomain:
         ProjectFileManager.add_project_files_to_assets_file(project=project)
 
     @classmethod
-    def add_files_to_backend_list(cls, files: list[str], states: list[FileState] | None = None):
+    def add_files_to_backend_list(cls, files: list[str], states: list[FileState] = None):
         if states is None:
             states = [FileState.WARNING for _ in range(len(files))]
 
