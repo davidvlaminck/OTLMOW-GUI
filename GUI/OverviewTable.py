@@ -121,6 +121,7 @@ class OverviewTable(QTableWidget):
         global_vars.current_project = p
         self.main_window.reset_ui(self._)
         # self.main_window.widget(2).tab1.load_saved_documents_in_project()
+        InsertDataDomain.init_static()
         InsertDataDomain.load_saved_documents_in_project()
         self.main_window.widget(1).tab1.update_project_info()
         # self.main_window.widget(2).tab1.load_saved_documents_in_project()
