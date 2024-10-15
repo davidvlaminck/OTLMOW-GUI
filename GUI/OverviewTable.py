@@ -71,7 +71,7 @@ class OverviewTable(QTableWidget):
                                    item=ModelBuilder(element.subset_path).get_name_project())
             self.add_cell_to_table(self, row=row_index, column=3, item=element.laatst_bewerkt)
             self.add_action_buttons(row_index, element, self)
-        self.cellDoubleClicked.connect(self.create_async_task)
+        self.cellDoubleClicked.connect(self.open_project_async_task)
 
     @staticmethod
     def add_cell_to_table(table: QTableWidget, row: int, column: int, item: Union[str, datetime.datetime]) -> None:
@@ -110,7 +110,7 @@ class OverviewTable(QTableWidget):
                                   ExportProjectWindow().export_project_window(project=i))
         table.setCellWidget(row, 6, share_btn)
 
-    def create_async_task(self, row):
+    def open_project_async_task(self, row):
         logging.debug("called this loopdieloop")
         self.main_window.setCurrentIndex(1)
         project = self.item(row, 0).text()
