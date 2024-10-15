@@ -10,6 +10,7 @@ from otlmow_model.OtlmowModel.BaseClasses.OTLObject import OTLAttribuut
 from otlmow_modelbuilder.OSLOCollector import OSLOCollector
 from otlmow_modelbuilder.SQLDataClasses.OSLORelatie import OSLORelatie
 from parso.python.tree import Function
+from typing import Optional
 from pytestqt.plugin import qtbot
 from pytestqt.qtbot import QtBot
 
@@ -79,7 +80,7 @@ def mock_collect_all() -> Mock:
     ("", None),      # edge case: empty path
     (None, None),     # edge case: None path
 ], ids=["valid_path", "string_path", "empty_path", "none_path"])
-def test_init_static(mock_project: Project,mock_collect_all: Mock, mock_oslo_collector: Function, subset_path: str, expected_exception:Exception ):
+def test_init_static(mock_project: Project,mock_collect_all: Mock, mock_oslo_collector: Function, subset_path: str, expected_exception: Optional[Exception]):
     # Arrange
     mock_project.subset_path = subset_path
 

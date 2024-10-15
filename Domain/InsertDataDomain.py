@@ -2,7 +2,7 @@ import logging
 import os
 import tempfile
 from pathlib import Path
-from typing import List, Iterable
+from typing import List, Iterable, Optional
 
 from openpyxl.reader.excel import load_workbook
 from otlmow_converter.OtlmowConverter import OtlmowConverter
@@ -118,7 +118,7 @@ class InsertDataDomain:
         ProjectFileManager.add_project_files_to_assets_file(project=project)
 
     @classmethod
-    def add_files_to_backend_list(cls, files: list[str], states: list[FileState] = None):
+    def add_files_to_backend_list(cls, files: list[str], states: Optional[list[FileState]] = None):
         if states is None:
             states = [FileState.WARNING for _ in range(len(files))]
 
