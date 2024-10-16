@@ -59,6 +59,8 @@ def test_load_and_validate_document_good_path(mock_screen: InsertDataScreen,
 
     test_object_lists_file_path: list[str] = [str(root_directory / "demo_projects"  /  "simpel_vergelijkings_project" / "simpel_vergelijking_template2.xlsx")]
 
+    InsertDataDomain.clear_documents_in_memory()
+
     InsertDataDomain.add_files_to_backend_list(test_object_lists_file_path)
 
     assert(len(InsertDataDomain.documents) == 1)

@@ -7,7 +7,9 @@ from pytestqt.plugin import qtbot
 from pytestqt.qtbot import QtBot
 
 from Domain import global_vars
+from Domain.InsertDataDomain import InsertDataDomain
 from Domain.Project import Project
+from Domain.RelationChangeDomain import RelationChangeDomain
 from Domain.enums import Language
 from GUI.Screens.DataVisualisationScreen import DataVisualisationScreen
 from GUI.Screens.InsertDataScreen import InsertDataScreen
