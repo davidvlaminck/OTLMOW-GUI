@@ -75,7 +75,13 @@ class RelationChangeScreen(Screen):
         self.class_list.clear()
         for OTL_object in objects:
             item = QListWidgetItem()
-            item.setText(self._(OTL_object.typeURI.replace("https://wegenenverkeer.data.vlaanderen.be/ns/","") +"/"+ str(OTL_object.assetId.identificator)))
+            screen_name = str(OTL_object.assetId.identificator)
+            if hasattr(OTL_object, 'naam') and OTL_object.naam:
+                screen_name = OTL_object.naam
+
+            abbr_typeURI = OTL_object.typeURI.replace("https://wegenenverkeer.data.vlaanderen.be/ns/","")
+
+            item.setText("{0}/{1}".format(abbr_typeURI,screen_name))
 
             self.class_list.addItem(item)
 
