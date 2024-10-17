@@ -6,7 +6,7 @@ import PyInstaller.__main__
 home_path = pathlib.Path.home()
 
 PyInstaller.__main__.run([
-    r'Domain\OTLWizard.py',
+    r'OTLWizard.py',
     '--distpath', str(home_path / 'PycharmProjects' / 'Installers'),
     '--contents-directory', 'applicationdata',
     '--paths', str(home_path / 'PycharmProjects' / 'OTLMOW-GUI' / 'venv' / 'Lib' / 'site-packages'),
@@ -17,7 +17,7 @@ PyInstaller.__main__.run([
     '--collect-all', 'otlmow_visuals',
     '--collect-all', 'pyvis',
     '--add-data', 'locale:locale',
-    '--add-data', r'Domain\custom.qss:.',
+    '--add-data', r'GUI\style\custom.qss:.',
     '--add-data', 'demo_projects:demo_projects',
     '--add-data', 'img:img',
     '--noconfirm',

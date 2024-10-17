@@ -1,7 +1,7 @@
 # coding=utf-8
-from otlmow_model.BaseClasses.OTLObject import OTLAttribuut
+from otlmow_model.OtlmowModel.BaseClasses.OTLObject import OTLAttribuut
 from abc import abstractmethod, ABC
-from otlmow_model.BaseClasses.BooleanField import BooleanField
+from otlmow_model.OtlmowModel.BaseClasses.BooleanField import BooleanField
 
 
 # Generated with OTLClassCreator. To modify: extend, do not edit

@@ -2,7 +2,7 @@ import datetime
 
 import pytest
 
-from Domain.database import Database
+from Domain.Database import Database
 
 
 @pytest.fixture

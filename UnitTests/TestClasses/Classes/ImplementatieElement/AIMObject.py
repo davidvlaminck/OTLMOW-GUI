@@ -1,16 +1,16 @@
 # coding=utf-8
 from datetime import date
 from typing import List
-from otlmow_model.BaseClasses.OTLObject import OTLAttribuut
+from otlmow_model.OtlmowModel.BaseClasses.OTLObject import OTLAttribuut
 from abc import abstractmethod
-from UnitTests.TestClasses.Classes.ImplementatieElement.AIMDBStatus import AIMDBStatus
-from UnitTests.TestClasses.Classes.ImplementatieElement.AIMToestand import AIMToestand
-from otlmow_model.BaseClasses.OTLAsset import OTLAsset
-from otlmow_model.BaseClasses.RelationInteractor import RelationInteractor
-from otlmow_model.BaseClasses.DateField import DateField
-from UnitTests.TestClasses.Datatypes.DtcIdentificator import DtcIdentificator, DtcIdentificatorWaarden
-from UnitTests.TestClasses.Datatypes.KwantWrdInMaand import KwantWrdInMaand, KwantWrdInMaandWaarden
-from otlmow_model.BaseClasses.StringField import StringField
+from ...Classes.ImplementatieElement.AIMDBStatus import AIMDBStatus
+from ...Classes.ImplementatieElement.AIMToestand import AIMToestand
+from otlmow_model.OtlmowModel.BaseClasses.OTLAsset import OTLAsset
+from otlmow_model.OtlmowModel.BaseClasses.RelationInteractor import RelationInteractor
+from otlmow_model.OtlmowModel.BaseClasses.DateField import DateField
+from ...Datatypes.DtcIdentificator import DtcIdentificator, DtcIdentificatorWaarden
+from ...Datatypes.KwantWrdInMaand import KwantWrdInMaand, KwantWrdInMaandWaarden
+from otlmow_model.OtlmowModel.BaseClasses.StringField import StringField
 
 
 # Generated with OTLClassCreator. To modify: extend, do not edit
@@ -24,6 +24,16 @@ class AIMObject(AIMDBStatus, AIMToestand, OTLAsset, RelationInteractor):
     def __init__(self):
         super().__init__()
 
+        self.add_valid_relation(relation='https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Bevestiging', target='https://wegenenverkeer.data.vlaanderen.be/ns/implementatieelement#Derdenobject')
+        self.add_valid_relation(relation='https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#HeeftAanvullendeGeometrie', target='https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#AanvullendeGeometrie')
+        self.add_valid_relation(relation='https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#HeeftBetrokkene', target='http://purl.org/dc/terms/Agent')
+        self.add_valid_relation(relation='https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#HeeftBijlage', target='https://wegenenverkeer.data.vlaanderen.be/ns/implementatieelement#Bijlage')
+        self.add_valid_relation(relation='https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#HeeftToegangsprocedure', target='https://wegenenverkeer.data.vlaanderen.be/ns/implementatieelement#Toegangsprocedure')
+        self.add_valid_relation(relation='https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#LigtOp', target='https://wegenenverkeer.data.vlaanderen.be/ns/implementatieelement#Derdenobject')
+        self.add_valid_relation(relation='https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#SluitAanOp', target='https://wegenenverkeer.data.vlaanderen.be/ns/implementatieelement#Derdenobject')
+        self.add_valid_relation(relation='https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Sturing', target='https://wegenenverkeer.data.vlaanderen.be/ns/implementatieelement#Derdenobject')
+        self.add_valid_relation(relation='https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Voedt', target='https://wegenenverkeer.data.vlaanderen.be/ns/implementatieelement#Derdenobject')
+
         self._assetId = OTLAttribuut(field=DtcIdentificator,
                                      naam='assetId',
                                      label='asset-id',
@@ -35,6 +45,7 @@ class AIMObject(AIMDBStatus, AIMToestand, OTLAsset, RelationInteractor):
                                               naam='bestekPostNummer',
                                               label='bestekpostnummer',
                                               objectUri='https://wegenenverkeer.data.vlaanderen.be/ns/implementatieelement#AIMObject.bestekPostNummer',
+                                              usagenote='Bevat de specifieke identificatie binnen een bestek van een post in de meetstaat. De notatie kan eender welke codering aannemen, bv. in de vorm van een nummer, id of tekst naargelang de notatie in het specifieke bestek.',
                                               kardinaliteit_max='*',
                                               definition='Een verwijzing naar een postnummer uit het specifieke bestek waar het object mee verband houdt.',
                                               owner=self)
@@ -43,7 +54,7 @@ class AIMObject(AIMDBStatus, AIMToestand, OTLAsset, RelationInteractor):
                                                    naam='datumOprichtingObject',
                                                    label='datum oprichting object',
                                                    objectUri='https://wegenenverkeer.data.vlaanderen.be/ns/implementatieelement#AIMObject.datumOprichtingObject',
-                                                   definition='Datum van de oprichting van het object.',
+                                                   definition='De datum waarop het object op het terrein is beginnen bestaan, bv. de datum van aanleg.',
                                                    owner=self)
 
         self._notitie = OTLAttribuut(field=StringField,
@@ -65,7 +76,7 @@ class AIMObject(AIMDBStatus, AIMToestand, OTLAsset, RelationInteractor):
                                                     naam='theoretischeLevensduur',
                                                     label='theoretische levensduur',
                                                     objectUri='https://wegenenverkeer.data.vlaanderen.be/ns/implementatieelement#AIMObject.theoretischeLevensduur',
-                                                    definition=' De levensduur in aantal maanden die theoretisch mag verwacht worden voor een object.',
+                                                    definition='De levensduur in aantal maanden die theoretisch mag verwacht worden voor een object.',
                                                     owner=self)
 
     @property
@@ -88,7 +99,7 @@ class AIMObject(AIMDBStatus, AIMToestand, OTLAsset, RelationInteractor):
 
     @property
     def datumOprichtingObject(self) -> date:
-        """Datum van de oprichting van het object."""
+        """De datum waarop het object op het terrein is beginnen bestaan, bv. de datum van aanleg."""
         return self._datumOprichtingObject.get_waarde()
 
     @datumOprichtingObject.setter
@@ -115,7 +126,7 @@ class AIMObject(AIMDBStatus, AIMToestand, OTLAsset, RelationInteractor):
 
     @property
     def theoretischeLevensduur(self) -> KwantWrdInMaandWaarden:
-        """ De levensduur in aantal maanden die theoretisch mag verwacht worden voor een object."""
+        """De levensduur in aantal maanden die theoretisch mag verwacht worden voor een object."""
         return self._theoretischeLevensduur.get_waarde()
 
     @theoretischeLevensduur.setter

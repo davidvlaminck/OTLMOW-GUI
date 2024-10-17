@@ -14,31 +14,31 @@ from Domain import global_vars
 from Domain.GitHubDownloader import GitHubDownloader
 from Domain.Project import Project
 from Domain.enums import Language, FileState
-from Domain.project_file import ProjectFile
+from Domain.logger.OTLLogger import OTLLogger
+from Domain.ProjectFile import ProjectFile
+from Exceptions.ExcelFileUnavailableError import ExcelFileUnavailableError
+from GUI.DialogWindows.NotificationWindow import NotificationWindow
+from GUI.translation.GlobalTranslate import GlobalTranslate
 
 
 class ProjectFileManager:
+    """
+        Manager to manage OTL projects files on local computer
+    """
+
+    settings_filename = 'settings.json'
+
+    @classmethod
+    def init(cls):
+        settings = cls.get_or_create_settings_file()
+        logging_file = cls.create_logging_file()
+        cls.remove_old_logging_files()
+        OTLLogger.init(logging_file)
+        return settings
+
     @classmethod
     def get_project_from_dir(cls, project_dir_path: Path) -> Project:
-        if not project_dir_path.exists():
-            raise FileNotFoundError(f"Project dir {project_dir_path} does not exist")
-
-        project_details_file = project_dir_path / 'project_details.json'
-        if not project_details_file.exists():
-            raise FileNotFoundError(f"Project details file {project_details_file} does not exist")
-
-        with open(project_details_file) as json_file:
-            project_details = json.load(json_file)
-
-        project = Project()
-        project.project_path = project_dir_path
-        project.bestek = project_details['bestek']
-        project.eigen_referentie = project_details['eigen_referentie']
-        project.laatst_bewerkt = datetime.datetime.strptime(project_details['laatst_bewerkt'], "%Y-%m-%d %H:%M:%S")
-        project.subset_path = project_dir_path / project_details['subset']
-        project.assets_path = project_dir_path / 'assets.json'
-
-        return project
+        return Project.load_project(project_dir_path)
 
     @classmethod
     def get_home_path(cls) -> Path:
@@ -99,8 +99,13 @@ class ProjectFileManager:
         with open(project_dir_path / "project_details.json", "w") as project_details_file:
             json.dump(project_details_dict, project_details_file)
 
-        OtlmowConverter().create_file_from_assets(filepath=Path(project_dir_path / "assets.json"),
-                                                  list_of_objects=project.assets_in_memory)
+        # TODO: It seems the idea here was that validated assets are stored in the project and
+        #       and loaded again when you open the project so object_lists don't need to be
+        #       validated again? Implement this again later
+        #       The problem is that he would overwrite assets.json that now contains a list of
+        #       objects_list_files
+        # OtlmowConverter().from_objects_to_file(file_path=Path(project_dir_path / "assets.json"),
+        #                                           sequence_of_objects=project.assets_in_memory)
 
         if project.subset_path.parent.absolute() != project_dir_path.absolute():
             # move subset to project dir
@@ -117,30 +122,34 @@ class ProjectFileManager:
             project_zip.write(project.subset_path, arcname=project.subset_path.name)
 
     @classmethod
-    def add_project_files_to_file(cls, project: Project) -> None:
+    def add_project_files_to_assets_file(cls, project: Project) -> None:
         otl_wizard_project_dir = cls.get_otl_wizard_projects_dir()
         object_array = []
-        for template in project.templates_in_memory:
-            template_details = {
-                'file_path': str(template.file_path),
-                'state': template.state.value
+        for objects_list in project.saved_project_files:
+            objects_list_details = {
+                'file_path': str(objects_list.file_path),
+                'state': objects_list.state.value
             }
-            object_array.append(template_details)
+            object_array.append(objects_list_details)
         project_dir_path = otl_wizard_project_dir / project.project_path.name
         with open(project_dir_path / "assets.json", "w") as project_details_file:
             json.dump(object_array, project_details_file)
 
     @classmethod
-    def get_templates_in_memory(cls, project: Project) -> Project:
+    def get_objects_list_saved_in_project(cls, project: Project) -> Project:
         project_dir_path = cls.get_otl_wizard_projects_dir() / project.project_path.name
         with open(project_dir_path / "assets.json", "r") as project_details_file:
-            templates = json.load(project_details_file)
-        logging.debug(f"templates from memory{str(templates)}")
-        templates_array = []
-        for template in templates:
-            file = ProjectFile(file_path=template['file_path'], state=template['state'])
-            templates_array.append(file)
-        project.templates_in_memory = templates_array
+            objects_lists = json.load(project_details_file)
+        logging.debug(f"Loaded saved object lists: {str(objects_lists)}")
+        objects_lists_array = []
+        for objects_list in objects_lists:
+            file = ProjectFile(
+                file_path=objects_list['file_path'],
+                state=FileState.WARNING) # files loaded from memory storage need to be validated
+                                         # again
+                # state=template['state'])
+            objects_lists_array.append(file)
+        project.saved_project_files = objects_lists_array
         return project
 
     @classmethod
@@ -185,7 +194,7 @@ class ProjectFileManager:
 
     @classmethod
     def add_template_file_to_project(cls, filepath: Path) -> Path:
-        project = global_vars.single_project
+        project = global_vars.current_project
         location_dir = project.project_path / 'OTL-template-files'
         if not location_dir.exists():
             location_dir.mkdir()
@@ -200,7 +209,7 @@ class ProjectFileManager:
     @classmethod
     def delete_template_folder(cls) -> None:
         logging.debug("Started clearing out the whole template folder")
-        project = global_vars.single_project
+        project = global_vars.current_project
         location_dir = project.project_path / 'OTL-template-files'
         if not location_dir.exists():
             return
@@ -211,11 +220,14 @@ class ProjectFileManager:
     def delete_template_file_from_project(cls, file_path) -> bool:
         try:
             logging.debug(f"file path = {str(file_path)}")
-            Path.unlink(file_path)
+            Path(file_path).unlink()
             return True
         except FileNotFoundError as e:
             logging.error(e)
             return False
+        except PermissionError as e:
+            logging.error(e)
+            raise ExcelFileUnavailableError(file_path=file_path, exception=e)
 
     @staticmethod
     def create_empty_temporary_map() -> Path:
@@ -232,41 +244,51 @@ class ProjectFileManager:
         if project is None:
             logging.debug("No project found")
             return False
-        if not project.templates_in_memory:
+        if not project.saved_project_files:
             logging.debug("No project files in memory")
             return False
         return any(
-            template.state == FileState.OK for template in project.templates_in_memory
+            template.state == FileState.OK for template in project.saved_project_files
         )
 
     @classmethod
-    def create_settings_file(cls, language=None) -> None:
+    def get_or_create_settings_file(cls) -> None:
+
+        work_dir_path = cls.get_otl_wizard_work_dir()
+        settings_filepath = work_dir_path / 'settings.json'
+
         timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         first_run = False
-        work_dir_path = cls.get_otl_wizard_work_dir()
-        settings_file = work_dir_path / 'settings.json'
         operating_sys = platform.system()
-        if not settings_file.exists():
-            language = Language.DUTCH
+        language = Language.DUTCH
+        if not settings_filepath.exists():
             first_run = True
-        else:
-            with open(settings_file) as json_file:
+
+        with open(settings_filepath, 'w+') as json_file:
+            try:
                 settings_details = json.load(json_file)
-                if language is None:
-                    language = Language[settings_details['language']]
-        settings_details = {
-            'language': str(language.name),
-            'OS': str(operating_sys),
-            'first_run': first_run,
-            'last_run': timestamp
-        }
-        with open(settings_file, 'w') as f:
-            json.dump(settings_details, f)
+            except:
+                settings_details = {}
+
+            if settings_details.__contains__('language'):
+                settings_details['language'] = Language[settings_details['language']]
+            else:
+                settings_details['language'] = str(language.name)
+
+
+            settings_details['OS']= str(operating_sys)
+            settings_details['first_run']= first_run
+            settings_details['last_run']= timestamp
+
+            json.dump(settings_details, json_file)
+
+            return settings_details
+
 
     @classmethod
     def change_language_on_settings_file(cls, lang) -> None:
         work_dir_path = cls.get_otl_wizard_work_dir()
-        settings_file = work_dir_path / 'settings.json'
+        settings_file = work_dir_path / cls.settings_filename
         with open(settings_file) as json_file:
             settings_details = json.load(json_file)
         settings_details['language'] = str(lang.name)
@@ -276,7 +298,7 @@ class ProjectFileManager:
     @classmethod
     def get_language_from_settings(cls) -> Language:
         work_dir_path = cls.get_otl_wizard_work_dir()
-        settings_file = work_dir_path / 'settings.json'
+        settings_file = work_dir_path / cls.settings_filename
         with open(settings_file) as json_file:
             settings_details = json.load(json_file)
         return Language[settings_details['language']]
@@ -287,10 +309,10 @@ class ProjectFileManager:
         if not work_dir_path.exists():
             work_dir_path.mkdir()
         timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
-        logging_file = work_dir_path / f'logging_{timestamp}.log'
-        if not logging_file.exists():
-            open(Path(logging_file), 'w').close()
-        return logging_file
+        logging_filepath = work_dir_path / f'logging_{timestamp}.log'
+        if not logging_filepath.exists():
+            open(Path(logging_filepath), 'w').close()
+        return logging_filepath
 
     @classmethod
     def remove_old_logging_files(cls) -> None:
