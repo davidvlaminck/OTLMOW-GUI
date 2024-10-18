@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 from otlmow_model.OtlmowModel.Classes.ImplementatieElement.AIMObject import \
     AIMObject
@@ -45,7 +45,16 @@ class RelationChangeDomain:
         cls.get_screen().fill_object_list(cls.objects)
         cls.get_screen().fill_existing_relations_list(cls.existing_relation)
 
+    @classmethod
+    def get_object(cls,identificator:str) -> Optional[AIMObject]:
+        filtered_objects = list(filter(lambda aim_object: aim_object.assetId.identificator == identificator, cls.objects))
 
+        if filtered_objects:
+            if len(filtered_objects) > 1:
+                pass #TODO: raise error of 2 objects with the same identificator in the list
+            else:
+                return filtered_objects[0]
+        return None
 
     @classmethod
     def set_possible_relations(cls, selected_object:AIMObject):
@@ -56,24 +65,25 @@ class RelationChangeDomain:
         related_objects: list[AIMObject] = list(
             filter(RelationChangeDomain.filter_out(selected_object), cls.objects))
 
-        relation_list = cls.possible_relations_per_class[selected_object.typeURI]
-        for relation in relation_list:
-            if relation.bron_uri == selected_object.typeURI:
+        if selected_object.assetId.identificator not in cls.possible_object_to_object_relations.keys():
+            relation_list = cls.possible_relations_per_class[selected_object.typeURI]
+            for relation in relation_list:
+                if relation.bron_uri == selected_object.typeURI:
 
-                for related_object in related_objects:
-                    # if(related_object.assetId.identificator == 'dummy_TyBGmXfXC'):
-                    #     print(related_object.assetId.identificator  == 'dummy_TyBGmXfXC')
-                    if relation.doel_uri == related_object.typeURI:
-                        cls.add_relation_between(relation, selected_object, related_object)
+                    for related_object in related_objects:
+                        # if(related_object.assetId.identificator == 'dummy_TyBGmXfXC'):
+                        #     print(related_object.assetId.identificator  == 'dummy_TyBGmXfXC')
+                        if relation.doel_uri == related_object.typeURI:
+                            cls.add_relation_between(relation, selected_object, related_object)
 
-            elif relation.doel_uri == selected_object.typeURI:
-                for related_object in related_objects:
-                    # if(related_object.assetId.identificator == 'dummy_TyBGmXfXC'):
-                    #     print(related_object.assetId.identificator  == 'dummy_TyBGmXfXC')
-                    if relation.bron_uri == related_object.typeURI:
-                        cls.add_relation_between(cls.invert_relation(relation), selected_object, related_object)
+                elif relation.doel_uri == selected_object.typeURI:
+                    for related_object in related_objects:
+                        # if(related_object.assetId.identificator == 'dummy_TyBGmXfXC'):
+                        #     print(related_object.assetId.identificator  == 'dummy_TyBGmXfXC')
+                        if relation.bron_uri == related_object.typeURI:
+                            cls.add_relation_between(cls.invert_relation(relation), selected_object, related_object)
 
-        cls.get_screen().fill_possible_relations_list(cls.possible_relations_per_class[selected_object.typeURI])
+        cls.get_screen().fill_possible_relations_list(cls.possible_object_to_object_relations[selected_object.assetId.identificator])
 
     @classmethod
     def add_relation_between(cls, relation, selected_object, related_object):
