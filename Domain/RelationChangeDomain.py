@@ -15,10 +15,10 @@ class RelationChangeDomain:
 
     project:Project
     collector:OSLOCollector
-    objects: List[AIMObject]
-    possible_relations_per_object: dict = {}
     objects: list[AIMObject] = []
     existing_relation: list[AIMObject] = []
+    possible_relations_per_class: dict[str,list[OSLORelatie]] = {}
+    possible_object_to_object_relations: dict[str,dict[str,list[OSLORelatie]]] =  {}
 
     """
     Call this when the project or project.subset_path changes or everytime you go to the window
@@ -30,6 +30,7 @@ class RelationChangeDomain:
         cls.collector.collect_all()
         cls.objects = []
         cls.existing_relation = []
+        cls.possible_relations_per_class = {}
 
     @classmethod
     def set_instances(cls, objects_list: List[AIMObject]):

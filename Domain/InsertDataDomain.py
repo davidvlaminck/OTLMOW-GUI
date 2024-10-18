@@ -24,6 +24,11 @@ class InsertDataDomain:
     documents: dict[str,FileState] = {}
 
     @classmethod
+    def init_static(cls):
+        cls.documents = {}
+
+
+    @classmethod
     def load_saved_documents_in_project(cls):
         cls.clear_documents_in_memory()
         logging.debug(f"list with {global_vars.current_project.saved_project_files}")
@@ -33,7 +38,7 @@ class InsertDataDomain:
         files = []
         states = []
         for asset in global_vars.current_project.saved_project_files:
-            files.append(asset.file_path)
+            files.append(str(asset.file_path))
             states.append(asset.state)
 
         cls.add_files_to_backend_list(files, states)
