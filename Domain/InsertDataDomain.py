@@ -175,7 +175,7 @@ class InsertDataDomain:
         objects_in_memory = cls.flatten_list(objects_lists)
 
         global_vars.otl_wizard.main_window.step3_visuals.create_html(objects_in_memory)
-        RelationChangeDomain.set_objects(objects_in_memory)
+        RelationChangeDomain.set_instances(objects_in_memory)
 
         return error_set, objects_lists
 

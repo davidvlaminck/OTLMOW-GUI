@@ -33,17 +33,24 @@ def root_directory() -> Path:
 
 @fixture
 def mock_screen(qtbot: QtBot, create_translations) -> InsertDataScreen:
-    relation_change_screen = InsertDataScreen(GlobalTranslate.instance.get_all())
-    relation_change_screen.fill_class_list = Mock()
-    InsertDataDomain.get_screen = Mock(return_value=relation_change_screen)
-    return relation_change_screen
+    insert_data_screen = InsertDataScreen(GlobalTranslate.instance.get_all())
+    InsertDataDomain.get_screen = Mock(return_value=insert_data_screen)
+    return insert_data_screen
 
 @fixture
 def mock_rel_screen(qtbot: QtBot, create_translations) -> RelationChangeScreen:
     relation_change_screen = RelationChangeScreen(GlobalTranslate.instance.get_all())
-    relation_change_screen.fill_class_list = Mock()
+    original_fill_class_list = RelationChangeScreen.fill_object_list
+
+    RelationChangeScreen.fill_object_list = Mock()
+
+    original_get_screen = RelationChangeDomain.get_screen
     RelationChangeDomain.get_screen = Mock(return_value=relation_change_screen)
-    return relation_change_screen
+
+    yield relation_change_screen
+
+    RelationChangeScreen.fill_object_list = original_fill_class_list
+    RelationChangeDomain.get_screen = original_get_screen
 
 @fixture
 def mock_step3_visuals() -> None:

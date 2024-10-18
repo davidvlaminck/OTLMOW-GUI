@@ -68,14 +68,14 @@ def test_fill_class_list(root_directory:Path,
 
     error_set, objects_lists = InsertDataDomain.load_and_validate_documents()
 
-    assert mock_rel_screen.class_list.item(0).text() == "installatie#Verkeersbordopstelling/dummy_hxOTHWe"
-    assert mock_rel_screen.class_list.item(1).text() == "installatie#Verkeersbordopstelling/dummy_LGG"
-    assert mock_rel_screen.class_list.item(2).text() == "onderdeel#Funderingsmassief/dummy_TyBGmXfXC"
-    assert mock_rel_screen.class_list.item(3).text() == "onderdeel#Funderingsmassief/dummy_FNrHuPZCWV"
-    assert mock_rel_screen.class_list.item(4).text() == "onderdeel#Pictogram/dummy_a"
-    assert mock_rel_screen.class_list.item(5).text() == "onderdeel#Pictogram/dummy_C"
-    assert mock_rel_screen.class_list.item(6).text() == "onderdeel#Verkeersbordsteun/dummy_J"
-    assert mock_rel_screen.class_list.item(7).text() == "onderdeel#Verkeersbordsteun/dummy_s"
+    assert mock_rel_screen.object_list.item(0).text() == "installatie#Verkeersbordopstelling/dummy_hxOTHWe"
+    assert mock_rel_screen.object_list.item(1).text() == "installatie#Verkeersbordopstelling/dummy_LGG"
+    assert mock_rel_screen.object_list.item(2).text() == "onderdeel#Funderingsmassief/dummy_TyBGmXfXC"
+    assert mock_rel_screen.object_list.item(3).text() == "onderdeel#Funderingsmassief/dummy_FNrHuPZCWV"
+    assert mock_rel_screen.object_list.item(4).text() == "onderdeel#Pictogram/dummy_a"
+    assert mock_rel_screen.object_list.item(5).text() == "onderdeel#Pictogram/dummy_C"
+    assert mock_rel_screen.object_list.item(6).text() == "onderdeel#Verkeersbordsteun/dummy_J"
+    assert mock_rel_screen.object_list.item(7).text() == "onderdeel#Verkeersbordsteun/dummy_s"
 
 #######################################################
 # RelationChangeScreen.fill_possible_relations_list   #
@@ -100,9 +100,9 @@ def test_fill_class_list_empty_list(qtbot,create_translations):
     relation_change_screen = RelationChangeScreen(GlobalTranslate.instance.get_all())
 
     test_objects_list = []
-    relation_change_screen.fill_class_list(objects=test_objects_list)
+    relation_change_screen.fill_object_list(objects=test_objects_list)
 
-    assert len(relation_change_screen.class_list) == 0
+    assert len(relation_change_screen.object_list) == 0
 
 """
 Just adding the qtbot to the fixtures makes the test complete without a timeout when you call a PyQt element
@@ -114,10 +114,10 @@ def test_fill_class_list_single_item_list(qtbot,create_translations):
     relation_change_screen = RelationChangeScreen(GlobalTranslate.instance.get_all())
 
     test_objects_list = [test_object]
-    relation_change_screen.fill_class_list(objects=test_objects_list)
+    relation_change_screen.fill_object_list(objects=test_objects_list)
 
-    assert len(relation_change_screen.class_list) == 1
-    assert relation_change_screen.class_list.item(0).text() == "onderdeel#AllCasesTestClass/dummy_identificator"
+    assert len(relation_change_screen.object_list) == 1
+    assert relation_change_screen.object_list.item(0).text() == "onderdeel#AllCasesTestClass/dummy_identificator"
 
 """
 Just adding the qtbot to the fixtures makes the test complete without a timeout when you call a PyQt element
@@ -131,10 +131,10 @@ def test_fill_class_list_double_item_list(qtbot,create_translations):
 
     relation_change_screen = RelationChangeScreen(GlobalTranslate.instance.get_all())
     test_objects_list = [test_object, test_object2]
-    relation_change_screen.fill_class_list(objects=test_objects_list)
+    relation_change_screen.fill_object_list(objects=test_objects_list)
 
-    assert len(relation_change_screen.class_list) == 2
+    assert len(relation_change_screen.object_list) == 2
 
-    assert relation_change_screen.class_list.item(0).text() == "onderdeel#AllCasesTestClass/dummy_identificator"
-    assert relation_change_screen.class_list.item(1).text() == "onderdeel#AllCasesTestClass/dummy_identificator2"
+    assert relation_change_screen.object_list.item(0).text() == "onderdeel#AllCasesTestClass/dummy_identificator"
+    assert relation_change_screen.object_list.item(1).text() == "onderdeel#AllCasesTestClass/dummy_identificator2"
 

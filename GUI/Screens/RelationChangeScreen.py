@@ -63,16 +63,16 @@ class RelationChangeScreen(Screen):
         frame_layout = QVBoxLayout()
         class_label = QLabel()
         class_label.setText(self._('class_list'))
-        self.class_list = QListWidget()
-        self.class_list.setProperty('class', 'list')
+        self.object_list = QListWidget()
+        self.object_list.setProperty('class', 'list')
 
         frame_layout.addWidget(class_label)
-        frame_layout.addWidget(self.class_list)
+        frame_layout.addWidget(self.object_list)
         frame.setLayout(frame_layout)
         return frame
 
-    def fill_class_list(self,objects: List[AIMObject]):
-        self.class_list.clear()
+    def fill_object_list(self, objects: List[AIMObject]):
+        self.object_list.clear()
         for OTL_object in objects:
             item = QListWidgetItem()
             screen_name = str(OTL_object.assetId.identificator)
@@ -83,7 +83,11 @@ class RelationChangeScreen(Screen):
 
             item.setText("{0}/{1}".format(abbr_typeURI,screen_name))
 
-            self.class_list.addItem(item)
+            self.object_list.addItem(item)
+
+
+    def fill_existing_relations_list(self, relations: List[AIMObject]):
+        pass
 
     def fill_possible_relations_list(self, objects: List[AIMObject]):
         self.relation_list.clear()
