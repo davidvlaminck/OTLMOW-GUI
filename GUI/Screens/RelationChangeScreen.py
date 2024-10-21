@@ -149,7 +149,7 @@ class RelationChangeScreen(Screen):
                 richting = "<->"
                 if relation.richting == "Source -> Destination":
                     richting = "-->"
-                elif relation.richting == "Source -> Destination":
+                elif relation.richting == "Destination -> Source":
                     richting = "<--"
 
                 item.setText("{0} {1} {2} | {3}".format(abbr_relation_typeURI,richting, screen_name,abbr_target_object_typeURI))
