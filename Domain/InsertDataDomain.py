@@ -142,7 +142,8 @@ class InsertDataDomain:
 
         return all_valid
 
-    def delete_backend_document(self, item_file_path: str):
+    @classmethod
+    def delete_backend_document(cls, item_file_path: str):
         file_is_in_project = global_vars.current_project.is_in_project(item_file_path)
         if file_is_in_project is not None:
             InsertDataDomain.delete_project_file_from_project(global_vars.current_project,

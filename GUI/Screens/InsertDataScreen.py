@@ -235,16 +235,16 @@ class InsertDataScreen(Screen):
         list_item.setSizeHint(1, QSize(0, 30))
         self.input_file_field.addTopLevelItem(list_item)
         button = ButtonWidget()
-        button.clicked.connect(lambda: self.delete_file_from_list())
+        button.clicked.connect(self.delete_file_from_list)
         button.setIcon(qta.icon('mdi.close'))
         self.input_file_field.setItemWidget(list_item, 2, button)
 
 
     def delete_file_from_list(self):
         items = self.input_file_field.selectedItems()
-        item_file_path = items[0].data(1, 1)
+        item_file_path = items[0].data(1,1)
 
-        InsertDataDomain.delete_backend_document(item_file_path)
+        InsertDataDomain.delete_backend_document(item_file_path=item_file_path)
 
 
 

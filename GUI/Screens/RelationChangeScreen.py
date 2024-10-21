@@ -144,7 +144,7 @@ class RelationChangeScreen(Screen):
                     "https://wegenenverkeer.data.vlaanderen.be/ns/", "")
 
                 abbr_relation_typeURI = relation.objectUri.replace(
-                    "https://wegenenverkeer.data.vlaanderen.be/ns/", "")
+                    "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#", "")
 
                 richting = "<->"
                 if relation.richting == "Source -> Destination":
