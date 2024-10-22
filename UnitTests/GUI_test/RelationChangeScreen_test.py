@@ -83,11 +83,50 @@ def test_fill_class_list(root_directory:Path,
 @fixture
 def setup_demo_project_in_memory():
     global_vars.current_project = Project(subset_path=Path("C:\\sers\\chris\\PycharmProjects\\OTLMOW-GUI\\demo_projects\\" +
-    "simpel_vergelijkings_project\\simpele_vergelijkings_subset.db"))
+    "simpel_vergelijkings_project\\simpele_vergelijkings_subset2.db"))
 
-def test_full_fill_possible_relations_list(qtbot,create_translations,setup_demo_project_in_memory):
-    pass
+def test_full_fill_possible_relations_list(qtbot,root_directory:Path,
+                                mock_screen: InsertDataScreen,
+                                mock_rel_screen: RelationChangeScreen,
+                                setup_test_project,
+                                mock_step3_visuals):
+    test_object_lists_file_path: list[str] = [
+        str(root_directory / "demo_projects" / "simpel_vergelijkings_project" / "simpel_vergelijking_template2.xlsx")]
 
+    InsertDataDomain.add_files_to_backend_list(test_object_lists_file_path)
+
+    error_set, objects_lists = InsertDataDomain.load_and_validate_documents()
+
+    vopstel1 = InsertDataDomain.flatten_list(objects_lists)[0]
+    print("vopstel1 {0}".format(vopstel1.assetId.identificator))
+    RelationChangeDomain.set_possible_relations(selected_object=vopstel1)
+
+    vopstel1_possible_relations_gui =    [
+        'HoortBij <-- dummy_C | onderdeel#Pictogram',
+        'HoortBij <-- dummy_a | onderdeel#Pictogram',
+        'HoortBij <-- dummy_J | onderdeel#Verkeersbordsteun',
+        'HoortBij <-- dummy_s | onderdeel#Verkeersbordsteun']
+
+    real_vopstel1_possible_relations_gui =[RelationChangeDomain.get_screen().relation_list_gui.item(x).text() for x in
+            range(RelationChangeDomain.get_screen().relation_list_gui.count())]
+
+    assert real_vopstel1_possible_relations_gui == vopstel1_possible_relations_gui
+
+    fund1 = InsertDataDomain.flatten_list(objects_lists)[2]
+    print("fund1 {0}".format(fund1.assetId.identificator))
+    RelationChangeDomain.set_possible_relations(selected_object=fund1)
+    fund1_possible_relations_gui = [
+        'Bevestiging <-> dummy_FNrHuPZCWV | onderdeel#Funderingsmassief',
+        'LigtOp --> dummy_FNrHuPZCWV | onderdeel#Funderingsmassief',
+        'Bevestiging <-> dummy_C | onderdeel#Pictogram',
+        'Bevestiging <-> dummy_a | onderdeel#Pictogram',
+        'Bevestiging <-> dummy_J | onderdeel#Verkeersbordsteun',
+        'Bevestiging <-> dummy_s | onderdeel#Verkeersbordsteun']
+
+    real_fund1_possible_relations_gui = [RelationChangeDomain.get_screen().relation_list_gui.item(x).text() for x in
+     range(RelationChangeDomain.get_screen().relation_list_gui.count())]
+
+    assert real_fund1_possible_relations_gui == fund1_possible_relations_gui
 
 #################################################
 # UNIT TESTS                                    #
