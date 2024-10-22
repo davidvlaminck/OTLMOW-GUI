@@ -43,14 +43,14 @@ class RelationChangeScreen(Screen):
 
 
 
-    def init_ui(self):
+    def init_ui(self) -> None:
         self.container_insert_data_screen.addSpacing(10)
         self.container_insert_data_screen.addWidget(self.create_menu())
         self.container_insert_data_screen.addStretch()
         self.container_insert_data_screen.setContentsMargins(0, 0, 0, 0)
         self.setLayout(self.container_insert_data_screen)
 
-    def create_menu(self):
+    def create_menu(self) -> QWidget:
         self.window = QWidget()
         self.window.setProperty('class', 'background-box')
         self.window_layout = QVBoxLayout()
@@ -64,7 +64,7 @@ class RelationChangeScreen(Screen):
 
         return self.window
 
-    def input_file_field(self):
+    def input_file_field(self) -> QFrame:
         frame = QFrame()
         frame_layout = QHBoxLayout()
         self.input_field = QLineEdit()
@@ -79,7 +79,7 @@ class RelationChangeScreen(Screen):
         frame.setLayout(frame_layout)
         return frame
 
-    def create_object_list_gui(self):
+    def create_object_list_gui(self) -> QFrame:
         frame = QFrame()
         frame_layout = QVBoxLayout()
         class_label = QLabel()
@@ -93,7 +93,7 @@ class RelationChangeScreen(Screen):
         frame.setLayout(frame_layout)
         return frame
 
-    def fill_object_list(self, objects: List[AIMObject]):
+    def fill_object_list(self, objects: List[AIMObject]) -> None:
         self.object_list_gui.clear()
         for OTL_object in objects:
             item = QListWidgetItem()
@@ -109,7 +109,7 @@ class RelationChangeScreen(Screen):
             self.object_list_gui.addItem(item)
 
 
-    def object_selected(self):
+    def object_selected(self) -> None:
         
         for i in range(self.object_list_gui.count()):
             if self.object_list_gui.item(i).isSelected():
@@ -122,7 +122,7 @@ class RelationChangeScreen(Screen):
 
         
         
-    def fill_existing_relations_list(self, relations_objects: List[RelatieObject]):
+    def fill_existing_relations_list(self, relations_objects: List[RelatieObject]) -> None:
         self.existing_relation_list_gui.clear()
         for relation_object in relations_objects:
             item = QListWidgetItem()
@@ -145,7 +145,7 @@ class RelationChangeScreen(Screen):
             item.setText("{0} | {1} {2} {3}".format(abbr_typeURI, screen_name_source, direction, screen_name_target))
             self.existing_relation_list_gui.addItem(item)
 
-    def get_screen_name(self, OTL_object:AIMObject):
+    def get_screen_name(self, OTL_object:AIMObject) -> str:
         if OTL_object is None:
             return None
 
@@ -154,28 +154,51 @@ class RelationChangeScreen(Screen):
             screen_name = OTL_object.naam
         return screen_name
 
-    def fill_possible_relations_list(self, relations: dict[str,list[OSLORelatie]]):
+    def fill_possible_relations_list(self, relations: dict[str,list[RelatieObject]]) -> None:
 
         # sourcery skip: remove-dict-keys
         self.relation_list_gui.clear()
+
+        list_of_text_args: list[tuple[str]] = []
         for identificator in relations.keys():
-            OTL_object: AIMObject = RelationChangeDomain.get_object(identificator)
+
             for relation in relations[identificator]:
 
-                item = QListWidgetItem()
-                screen_name = self.get_screen_name(OTL_object)
+                target_object: AIMObject = RelationChangeDomain.get_object(
+                    relation.doelAssetId.identificator)
 
-                abbr_target_object_typeURI = OTL_object.typeURI.replace(
+                direction = ""
+                if (is_directional_relation(relation)):
+                    if (relation.bronAssetId.identificator == identificator):
+                        direction = self.get_screen_icon_direction("Destination -> Source")
+                        target_object = RelationChangeDomain.get_object(
+                    relation.bronAssetId.identificator)
+                    else:
+                        direction = self.get_screen_icon_direction("Source -> Destination")
+
+                else:
+                    direction = self.get_screen_icon_direction("Unspecified")
+
+                screen_name = self.get_screen_name(target_object)
+
+                abbr_target_object_typeURI = target_object.typeURI.replace(
                     "https://wegenenverkeer.data.vlaanderen.be/ns/", "")
 
-                abbr_relation_typeURI = relation.objectUri.replace(
+                abbr_relation_typeURI = relation.typeURI.replace(
                     "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#", "")
 
-                direction = self.get_screen_icon_direction(relation.richting)
 
-                item.setText("{0} {1} {2} | {3}".format(abbr_relation_typeURI,direction, screen_name,abbr_target_object_typeURI))
+                list_of_text_args.append((abbr_relation_typeURI, direction, screen_name,
+                                                      abbr_target_object_typeURI))
 
-                self.relation_list_gui.addItem(item)
+        list_of_text_args.sort(key=lambda args: (args[3],args[2],args[0]))
+
+        for text_args in list_of_text_args:
+            item = QListWidgetItem()
+            text = "{0} {1} {2} | {3}".format(text_args[0],text_args[1],text_args[2],text_args[3])
+            item.setText(text)
+
+            self.relation_list_gui.addItem(item)
 
     def get_screen_icon_direction(self, input_richting:str):
         richting = "<->"
