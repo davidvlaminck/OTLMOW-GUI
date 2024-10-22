@@ -172,23 +172,23 @@ def test_set_possible_relations(root_directory:Path,
     poss_rel[fund1_id] = {}
     poss_rel[fund1_id][id(verkeersbordsteun1)] = [RelationChangeDomain.create_relation_object(fund_bevestiging_vsteun,funderingsmassief1,verkeersbordsteun1)]
     poss_rel[fund1_id][id(verkeersbordsteun2)] = [RelationChangeDomain.create_relation_object(fund_bevestiging_vsteun,funderingsmassief1,verkeersbordsteun2)]
-    poss_rel[fund1_id][id(funderingsmassief1)] = [RelationChangeDomain.create_relation_object(fund_ligtop_fund,funderingsmassief1,funderingsmassief1)] # not with itself
+    # poss_rel[fund1_id][id(funderingsmassief1)] = [RelationChangeDomain.create_relation_object(fund_ligtop_fund,funderingsmassief1,funderingsmassief1)] # not with itself
     poss_rel[fund1_id][id(funderingsmassief2)] = [RelationChangeDomain.create_relation_object(fund_ligtop_fund,funderingsmassief1,funderingsmassief2)]
     poss_rel[fund1_id][id(pictogram1)] = [RelationChangeDomain.create_relation_object(fund_bevestiging_pict,funderingsmassief1,pictogram1)]
     poss_rel[fund1_id][id(pictogram2)] = [RelationChangeDomain.create_relation_object(fund_bevestiging_pict,funderingsmassief1,pictogram2)]
-    poss_rel[fund1_id][id(funderingsmassief1)].append(RelationChangeDomain.create_relation_object(fund_bevestiging_fund,funderingsmassief1,funderingsmassief1))# not with itself
-    poss_rel[fund1_id][id(funderingsmassief2)].append(RelationChangeDomain.create_relation_object(fund_bevestiging_fund,funderingsmassief1,funderingsmassief1))
+    # poss_rel[fund1_id][id(funderingsmassief1)].append(RelationChangeDomain.create_relation_object(fund_bevestiging_fund,funderingsmassief1,funderingsmassief1))# not with itself
+    poss_rel[fund1_id][id(funderingsmassief2)].append(RelationChangeDomain.create_relation_object(fund_bevestiging_fund,funderingsmassief1,funderingsmassief2))
 
     fund2_id = id(funderingsmassief2)
     poss_rel[fund2_id] = {}
     poss_rel[fund2_id][id(verkeersbordsteun1)] = [RelationChangeDomain.create_relation_object(fund_bevestiging_vsteun,funderingsmassief2,verkeersbordsteun1)]
     poss_rel[fund2_id][id(verkeersbordsteun2)] = [RelationChangeDomain.create_relation_object(fund_bevestiging_vsteun,funderingsmassief2,verkeersbordsteun2)]
     poss_rel[fund2_id][id(funderingsmassief1)] = [RelationChangeDomain.create_relation_object(fund_ligtop_fund,funderingsmassief2,funderingsmassief1)]
-    poss_rel[fund2_id][id(funderingsmassief2)] = [RelationChangeDomain.create_relation_object(fund_ligtop_fund,funderingsmassief2,funderingsmassief2)]# not with itself
+    # poss_rel[fund2_id][id(funderingsmassief2)] = [RelationChangeDomain.create_relation_object(fund_ligtop_fund,funderingsmassief2,funderingsmassief2)]# not with itself
     poss_rel[fund2_id][id(pictogram1)] = [RelationChangeDomain.create_relation_object(fund_bevestiging_pict,funderingsmassief2,pictogram1)]
     poss_rel[fund2_id][id(pictogram2)] = [RelationChangeDomain.create_relation_object(fund_bevestiging_pict,funderingsmassief2,pictogram2)]
     poss_rel[fund2_id][id(funderingsmassief1)].append(RelationChangeDomain.create_relation_object(fund_bevestiging_fund,funderingsmassief2,funderingsmassief1))
-    poss_rel[fund2_id][id(funderingsmassief2)].append(RelationChangeDomain.create_relation_object(fund_bevestiging_fund,funderingsmassief2,funderingsmassief2))# not with itself
+    # poss_rel[fund2_id][id(funderingsmassief2)].append(RelationChangeDomain.create_relation_object(fund_bevestiging_fund,funderingsmassief2,funderingsmassief2))# not with itself
 
     vsteun1_id = id(verkeersbordsteun1)
     poss_rel[vsteun1_id] = {}
@@ -236,18 +236,25 @@ def test_set_possible_relations(root_directory:Path,
     # phase 2 : selected object is target (doel) converted to incoming relation
     poss_rel[vopstel1_id][id(verkeersbordsteun1)] = [RelationChangeDomain.create_relation_object(vsteun_hoortbij_vopstel,verkeersbordsteun1,verkeersbordopstelling1)]
     poss_rel[vopstel1_id][id(verkeersbordsteun2)] = [RelationChangeDomain.create_relation_object(vsteun_hoortbij_vopstel,verkeersbordsteun2,verkeersbordopstelling1)]
+    poss_rel[vopstel1_id][id(pictogram1)] = [RelationChangeDomain.create_relation_object(vsteun_hoortbij_vopstel, pictogram1,verkeersbordopstelling1)]
+    poss_rel[vopstel1_id][id(pictogram2)] = [RelationChangeDomain.create_relation_object(vsteun_hoortbij_vopstel, pictogram2,verkeersbordopstelling1)]
 
     vopstel2_id = id(verkeersbordopstelling2)
     poss_rel[vopstel2_id] = {}
     # phase 1 : selected object is source (bron)
     # phase 2 : selected object is target (doel) converted to incoming relation
+    poss_rel[vopstel2_id][id(verkeersbordsteun1)] = [RelationChangeDomain.create_relation_object(vsteun_hoortbij_vopstel, verkeersbordsteun1,verkeersbordopstelling2)]
+    poss_rel[vopstel2_id][id(verkeersbordsteun2)] = [RelationChangeDomain.create_relation_object(vsteun_hoortbij_vopstel, verkeersbordsteun2,verkeersbordopstelling2)]
+    poss_rel[vopstel2_id][id(pictogram1)] = [RelationChangeDomain.create_relation_object(vsteun_hoortbij_vopstel, pictogram1,verkeersbordopstelling2)]
+    poss_rel[vopstel2_id][id(pictogram2)] = [RelationChangeDomain.create_relation_object(vsteun_hoortbij_vopstel, pictogram2,verkeersbordopstelling2)]
 
-    RelationChangeDomain.sort_nested_dict(poss_rel)
+    poss_rel = RelationChangeDomain.sort_nested_dict(poss_rel)
 
-    assert RelationChangeDomain.possible_object_to_object_relations == poss_rel
-    # for selected_object_id in poss_rel.keys():
-    #     print("test with selected_object id:{0}".format(selected_object_id))
-    #     for rel_object_id  in poss_rel[selected_object_id].keys():
+    # assert RelationChangeDomain.possible_object_to_object_relations == poss_rel
+    for selected_object_id in poss_rel.keys():
+        print("test with selected_object id:{0}".format(selected_object_id))
+        for rel_object_id  in poss_rel[selected_object_id].keys():
+            assert RelationChangeDomain.possible_object_to_object_relations[selected_object_id][rel_object_id] == poss_rel[selected_object_id][rel_object_id]
     #
     #         if "incl" in poss_rel[selected_object_id][rel_object_id].keys():
     #

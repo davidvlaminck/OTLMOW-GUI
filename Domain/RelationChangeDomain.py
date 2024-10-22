@@ -21,7 +21,7 @@ class RelationChangeDomain:
     objects: list[AIMObject] = []
     existing_relation: list[AIMObject] = []
     possible_relations_per_class: dict[str,list[OSLORelatie]] = {}
-    possible_object_to_object_relations: dict[str,dict[str,list[OSLORelatie]]] =  {}
+    possible_object_to_object_relations: dict[str,dict[str,list[RelatieObject]]] =  {}
 
     """
     Call this when the project or project.subset_path changes or everytime you go to the window
@@ -84,12 +84,14 @@ class RelationChangeDomain:
                         # if(related_object.assetId.identificator == 'dummy_TyBGmXfXC'):
                         #     print(related_object.assetId.identificator  == 'dummy_TyBGmXfXC')
                         if relation.bron_uri == related_object.typeURI:
-                            cls.add_relation_between(cls.invert_relation(relation), selected_object, related_object)
+                            cls.add_relation_between(relation, selected_object,related_object,True)
+
+        cls.possible_object_to_object_relations = cls.sort_nested_dict(cls.possible_object_to_object_relations)
 
         cls.get_screen().fill_possible_relations_list(cls.possible_object_to_object_relations[selected_object.assetId.identificator])
 
     @classmethod
-    def add_relation_between(cls, relation, selected_object, related_object):
+    def add_relation_between(cls, relation: OSLORelatie, selected_object: AIMObject, related_object:AIMObject, reversed:bool = False) -> None:
 
         selected_object_id = selected_object.assetId.identificator
         related_object_id = related_object.assetId.identificator
@@ -97,17 +99,23 @@ class RelationChangeDomain:
         # if ( related_object_id == 'dummy_TyBGmXfXC'):
         #     print( related_object_id == 'dummy_TyBGmXfXC')
 
+        relation_object = None
+        if reversed:
+            relation_object =  cls.create_relation_object(relation, related_object, selected_object)
+        else:
+            relation_object = cls.create_relation_object(relation,selected_object,related_object)
+
         if cls.possible_object_to_object_relations.__contains__(selected_object_id):
             if cls.possible_object_to_object_relations[selected_object_id].__contains__(
                     related_object_id):
                 cls.possible_object_to_object_relations[selected_object_id][
-                    related_object_id].append(relation)
+                    related_object_id].append(relation_object)
             else:
                 cls.possible_object_to_object_relations[selected_object_id][
-                    related_object_id] = [relation]
+                    related_object_id] = [relation_object]
         else:
             cls.possible_object_to_object_relations[selected_object_id] = {
-                related_object_id: [relation]}
+                related_object_id: [relation_object]}
 
     @classmethod
     def filter_out(cls, object_to_filter_for:AIMObject):
@@ -159,7 +167,7 @@ class RelationChangeDomain:
     def create_relation_object(cls,
                                OSLO_relation:OSLORelatie,
                                source_object:AIMObject,
-                               target_object:AIMObject):
+                               target_object:AIMObject) -> RelatieObject:
         relation_type = dynamic_create_type_from_uri(OSLO_relation.objectUri)
         return RelationCreator.create_relation(relation_type,source_object,target_object)
 
