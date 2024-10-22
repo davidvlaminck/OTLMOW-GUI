@@ -13,6 +13,7 @@ from otlmow_model.OtlmowModel.Classes.ImplementatieElement.DirectioneleRelatie i
     DirectioneleRelatie
 from otlmow_model.OtlmowModel.Classes.ImplementatieElement.RelatieObject import RelatieObject
 from otlmow_model.OtlmowModel.Classes.Onderdeel.HoortBij import HoortBij
+from otlmow_model.OtlmowModel.Helpers.OTLObjectHelper import is_directional_relation
 from otlmow_modelbuilder.SQLDataClasses.OSLORelatie import OSLORelatie
 
 from Domain.RelationChangeDomain import RelationChangeDomain
@@ -133,16 +134,13 @@ class RelationChangeScreen(Screen):
             screen_name_target = self.get_screen_name(target_object)
 
             abbr_typeURI = relation_object.typeURI.replace(
-                "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel", "")
+                "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#", "")
 
             direction = self.get_screen_icon_direction("Unspecified")
-            if isinstance(relation_object,HoortBij):
-                print("HoortBij relation")
-            if isinstance(relation_object,DirectioneleRelatie):
-                # if(source_object.typeURI == self.selected_object_col1.typeURI):
-                    direction = self.get_screen_icon_direction("Source -> Destination")
-                # else:
-                #     direction = self.get_screen_icon_direction("Destination -> Source")
+
+            if is_directional_relation(relation_object):
+                direction = self.get_screen_icon_direction("Source -> Destination")
+
 
             item.setText("{0} | {1} {2} {3}".format(abbr_typeURI, screen_name_source, direction, screen_name_target))
             self.existing_relation_list_gui.addItem(item)
