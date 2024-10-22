@@ -80,11 +80,6 @@ def test_fill_class_list(root_directory:Path,
 #######################################################
 # RelationChangeScreen.fill_possible_relations_list   #
 #######################################################
-@fixture
-def setup_demo_project_in_memory():
-    global_vars.current_project = Project(subset_path=Path("C:\\sers\\chris\\PycharmProjects\\OTLMOW-GUI\\demo_projects\\" +
-    "simpel_vergelijkings_project\\simpele_vergelijkings_subset2.db"))
-
 def test_full_fill_possible_relations_list(qtbot,root_directory:Path,
                                 mock_screen: InsertDataScreen,
                                 mock_rel_screen: RelationChangeScreen,
@@ -128,6 +123,33 @@ def test_full_fill_possible_relations_list(qtbot,root_directory:Path,
 
     assert real_fund1_possible_relations_gui == fund1_possible_relations_gui
 
+    #check the data that is stored in the list elements
+    data1 = [RelationChangeDomain.get_screen().relation_list_gui.item(x).data(3) for x in
+     range(RelationChangeDomain.get_screen().relation_list_gui.count())]
+
+    fund1_possible_relations_gui_data1 = [fund1.assetId.identificator for _ in fund1_possible_relations_gui]
+
+    assert data1 == fund1_possible_relations_gui_data1
+
+    data2 = [RelationChangeDomain.get_screen().relation_list_gui.item(x).data(4) for x in
+             range(RelationChangeDomain.get_screen().relation_list_gui.count())]
+
+    fund1_possible_relations_gui_data2 = [
+        'dummy_FNrHuPZCWV',
+        'dummy_FNrHuPZCWV',
+        'dummy_C',
+        'dummy_a',
+        'dummy_vbeo',
+        'dummy_TjwXqP']
+
+    assert data2 == fund1_possible_relations_gui_data2
+
+    fund1_possible_relations_gui_data3 = [0,1,0,0,0,0]
+
+    data3 = [RelationChangeDomain.get_screen().relation_list_gui.item(x).data(5) for x in
+             range(RelationChangeDomain.get_screen().relation_list_gui.count())]
+
+    assert data3 == fund1_possible_relations_gui_data3
 #################################################
 # UNIT TESTS                                    #
 #################################################

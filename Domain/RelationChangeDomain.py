@@ -91,7 +91,9 @@ class RelationChangeDomain:
 
         cls.possible_object_to_object_relations = cls.sort_nested_dict(cls.possible_object_to_object_relations)
 
-        cls.get_screen().fill_possible_relations_list(cls.possible_object_to_object_relations[selected_object.assetId.identificator])
+        cls.get_screen().fill_possible_relations_list(selected_object,
+                                                      cls.possible_object_to_object_relations[
+                                                          selected_object.assetId.identificator])
 
     @classmethod
     def add_relation_between(cls, relation: OSLORelatie, selected_object: AIMObject, related_object:AIMObject, reversed:bool = False) -> None:
@@ -202,5 +204,7 @@ class RelationChangeDomain:
                                                     relation_object_index):
         relation_object = cls.possible_object_to_object_relations[bron_asset_id][target_asset_id].pop(relation_object_index)
         cls.existing_relation.append(relation_object)
-        cls.get_screen().fill_possible_relations_list(cls.possible_object_to_object_relations[cls.selected_object.assetId.identificator])
+        cls.get_screen().fill_possible_relations_list(cls.selected_object,
+                                                      cls.possible_object_to_object_relations[
+                                                          cls.selected_object.assetId.identificator])
         cls.get_screen().fill_existing_relations_list(cls.existing_relation)
