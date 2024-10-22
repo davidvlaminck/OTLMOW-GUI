@@ -78,7 +78,7 @@ def mock_step3_visuals() -> None:
 def id(aim_object: AIMObject):
     return aim_object.assetId.identificator
 
-def test_set_possible_relations(root_directory:Path,
+def test_full_set_possible_relations(root_directory:Path,
                                 mock_screen: InsertDataScreen,
                                 mock_fill_possible_relations_list: RelationChangeScreen,
                                 setup_test_project,
@@ -165,8 +165,6 @@ def test_set_possible_relations(root_directory:Path,
         elif relation.usagenote == "dracon_bevestiging_pict":
              dracon_bevestiging_pict: OSLORelatie = relation
 
-    relationObject = RelationChangeDomain.create_relation_object(fund_bevestiging_vsteun,funderingsmassief1,verkeersbordsteun1)
-
     poss_rel = {}
     fund1_id = id(funderingsmassief1)
     poss_rel[fund1_id] = {}
@@ -250,30 +248,45 @@ def test_set_possible_relations(root_directory:Path,
 
     poss_rel = RelationChangeDomain.sort_nested_dict(poss_rel)
 
-    # assert RelationChangeDomain.possible_object_to_object_relations == poss_rel
     for selected_object_id in poss_rel.keys():
         print("test with selected_object id:{0}".format(selected_object_id))
         for rel_object_id  in poss_rel[selected_object_id].keys():
             assert RelationChangeDomain.possible_object_to_object_relations[selected_object_id][rel_object_id] == poss_rel[selected_object_id][rel_object_id]
-    #
-    #         if "incl" in poss_rel[selected_object_id][rel_object_id].keys():
-    #
-    #             for relation in poss_rel[selected_object_id][rel_object_id]["incl"]:
-    #                 print("test RelationChangeDomain.possible_object_to_object_relations['{0}']['{1}'] contain {2}".format(
-    #                         selected_object_id, rel_object_id, relation.objectUri))
-    #                 relations = RelationChangeDomain.possible_object_to_object_relations[selected_object_id][rel_object_id]
-    #
-    #                 assert  relations.__contains__(relation)
-    #
-    #         if  poss_rel[selected_object_id][rel_object_id].keys().__contains__("excl"):
-    #
-    #             for relation in poss_rel[selected_object_id][rel_object_id]["excl"]:
-    #                 print("test RelationChangeDomain.possible_object_to_object_relations['{0}']['{1}'] not contain {2}".format(selected_object_id, rel_object_id,relation.objectUri))
-    #
-    #                 assert not RelationChangeDomain.possible_object_to_object_relations[selected_object_id].keys().__contains__(rel_object_id) or \
-    #                        not RelationChangeDomain.possible_object_to_object_relations[selected_object_id][rel_object_id].__contains__(relation)
 
+def test_full_add_possible_relation_to_existing_relation(root_directory:Path,
+                                mock_screen: InsertDataScreen,
+                                mock_fill_possible_relations_list: RelationChangeScreen,
+                                setup_test_project,
+                                mock_step3_visuals):
+    test_object_lists_file_path: list[str] = [
+        str(root_directory / "demo_projects" / "simpel_vergelijkings_project" / "simpel_vergelijking_template2.xlsx")]
 
+    InsertDataDomain.add_files_to_backend_list(test_object_lists_file_path)
+
+    error_set, objects_lists = InsertDataDomain.load_and_validate_documents()
+
+    for objects_list in objects_lists:
+        for object in objects_list:
+            RelationChangeDomain.set_possible_relations(object)
+
+    bron_asset_id = list(RelationChangeDomain.possible_object_to_object_relations.keys())[0]
+    target_asset_id = list(RelationChangeDomain.possible_object_to_object_relations[bron_asset_id].keys())[0]
+    relation_object_index = 0
+
+    previous_possible_relations_list_length = len(RelationChangeDomain.possible_object_to_object_relations[bron_asset_id][target_asset_id])
+    relation_object = RelationChangeDomain.possible_object_to_object_relations[bron_asset_id][target_asset_id][relation_object_index]
+
+    RelationChangeDomain.add_possible_relation_to_existing_relations(bron_asset_id, target_asset_id, relation_object_index)
+
+    # is the correct relation object in the existing_relations list?
+    assert len(RelationChangeDomain.existing_relation) == 1
+    assert RelationChangeDomain.existing_relation[0].bronAssetId.identificator == bron_asset_id
+    assert RelationChangeDomain.existing_relation[0].doelAssetId.identificator == target_asset_id
+    assert RelationChangeDomain.existing_relation[0] == relation_object
+
+    # is the correct relation removed from the possible relation list?
+    assert previous_possible_relations_list_length == len(RelationChangeDomain.possible_object_to_object_relations[bron_asset_id][target_asset_id])+1
+    assert relation_object not in RelationChangeDomain.possible_object_to_object_relations[bron_asset_id][target_asset_id]
 #################################################
 # UNIT TESTS                                    #
 #################################################

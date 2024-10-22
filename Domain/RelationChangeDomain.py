@@ -19,10 +19,11 @@ class RelationChangeDomain:
     project:Project
     collector:OSLOCollector
     objects: list[AIMObject] = []
-    existing_relation: list[AIMObject] = []
+    existing_relation: list[RelatieObject] = []
     possible_relations_per_class: dict[str,list[OSLORelatie]] = {}
     possible_object_to_object_relations: dict[str,dict[str,list[RelatieObject]]] =  {}
 
+    selected_object: Optional[AIMObject] = None
     """
     Call this when the project or project.subset_path changes or everytime you go to the window
     """
@@ -61,6 +62,8 @@ class RelationChangeDomain:
 
     @classmethod
     def set_possible_relations(cls, selected_object:AIMObject):
+
+        cls.selected_object = selected_object
 
         if not cls.possible_relations_per_class.__contains__(selected_object.typeURI):
             cls.possible_relations_per_class[selected_object.typeURI] = cls.collector.find_all_concrete_relations(selected_object.typeURI, False)
@@ -193,3 +196,11 @@ class RelationChangeDomain:
             raise ValueError("Invalid sort parameter. Use 'keys' or 'values'.")
 
         return sorted_dict
+
+    @classmethod
+    def add_possible_relation_to_existing_relations(cls, bron_asset_id, target_asset_id,
+                                                    relation_object_index):
+        relation_object = cls.possible_object_to_object_relations[bron_asset_id][target_asset_id].pop(relation_object_index)
+        cls.existing_relation.append(relation_object)
+        cls.get_screen().fill_possible_relations_list(cls.possible_object_to_object_relations[cls.selected_object.assetId.identificator])
+        cls.get_screen().fill_existing_relations_list(cls.existing_relation)
