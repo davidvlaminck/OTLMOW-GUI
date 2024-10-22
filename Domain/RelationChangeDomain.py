@@ -1,7 +1,10 @@
-from typing import List, Optional
+from typing import List, Optional, cast
 
+from otlmow_model.OtlmowModel.BaseClasses.OTLObject import OTLObject, dynamic_create_type_from_uri
 from otlmow_model.OtlmowModel.Classes.ImplementatieElement.AIMObject import \
     AIMObject
+from otlmow_model.OtlmowModel.Classes.ImplementatieElement.RelatieObject import RelatieObject
+from otlmow_model.OtlmowModel.Helpers import RelationCreator
 from otlmow_model.OtlmowModel.Helpers.OTLObjectHelper import is_relation
 
 from otlmow_modelbuilder.OSLOCollector import OSLOCollector
@@ -151,3 +154,34 @@ class RelationChangeDomain:
                                deprecated_version=relation.deprecated_version,
                                bron_overerving = relation.doel_overerving,
                                doel_overerving = relation.bron_overerving)
+
+    @classmethod
+    def create_relation_object(cls,
+                               OSLO_relation:OSLORelatie,
+                               source_object:AIMObject,
+                               target_object:AIMObject):
+        relation_type = dynamic_create_type_from_uri(OSLO_relation.objectUri)
+        return RelationCreator.create_relation(relation_type,source_object,target_object)
+
+    @classmethod
+    def sort_nested_dict(cls,d, by='keys'):
+        """Recursively sorts a dictionary by keys or values."""
+        if not isinstance(d, dict):
+            if isinstance(d,list):
+                return sorted(d,key= lambda relation_object: relation_object.typeURI)
+            return d
+
+        # Sort the current dictionary
+        if by == 'keys':
+            sorted_dict = dict(
+                (k, cls.sort_nested_dict(v, by=by)) for k, v in sorted(d.items())
+            )
+        elif by == 'values':
+            sorted_dict = dict(
+                (k, cls.sort_nested_dict(v, by=by)) for k, v in
+                sorted(d.items(), key=lambda item: item[1])
+            )
+        else:
+            raise ValueError("Invalid sort parameter. Use 'keys' or 'values'.")
+
+        return sorted_dict

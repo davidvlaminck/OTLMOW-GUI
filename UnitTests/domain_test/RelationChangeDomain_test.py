@@ -165,102 +165,106 @@ def test_set_possible_relations(root_directory:Path,
         elif relation.usagenote == "dracon_bevestiging_pict":
              dracon_bevestiging_pict: OSLORelatie = relation
 
+    relationObject = RelationChangeDomain.create_relation_object(fund_bevestiging_vsteun,funderingsmassief1,verkeersbordsteun1)
 
     poss_rel = {}
     fund1_id = id(funderingsmassief1)
     poss_rel[fund1_id] = {}
-    poss_rel[fund1_id][id(verkeersbordsteun1)] = {"incl": [fund_bevestiging_vsteun]}
-    poss_rel[fund1_id][id(verkeersbordsteun2)] = {"incl": [fund_bevestiging_vsteun]}
-    poss_rel[fund1_id][id(funderingsmassief1)] = {"excl": [fund_ligtop_fund]} # not with itself
-    poss_rel[fund1_id][id(funderingsmassief2)] = {"incl": [fund_ligtop_fund]}
-    poss_rel[fund1_id][id(pictogram1)] = {"incl": [fund_bevestiging_pict]}
-    poss_rel[fund1_id][id(pictogram2)] = {"incl": [fund_bevestiging_pict]}
-    poss_rel[fund1_id][id(funderingsmassief1)]["excl"].append(fund_bevestiging_fund)# not with itself
-    poss_rel[fund1_id][id(funderingsmassief2)]["incl"].append(fund_bevestiging_fund)
+    poss_rel[fund1_id][id(verkeersbordsteun1)] = [RelationChangeDomain.create_relation_object(fund_bevestiging_vsteun,funderingsmassief1,verkeersbordsteun1)]
+    poss_rel[fund1_id][id(verkeersbordsteun2)] = [RelationChangeDomain.create_relation_object(fund_bevestiging_vsteun,funderingsmassief1,verkeersbordsteun2)]
+    poss_rel[fund1_id][id(funderingsmassief1)] = [RelationChangeDomain.create_relation_object(fund_ligtop_fund,funderingsmassief1,funderingsmassief1)] # not with itself
+    poss_rel[fund1_id][id(funderingsmassief2)] = [RelationChangeDomain.create_relation_object(fund_ligtop_fund,funderingsmassief1,funderingsmassief2)]
+    poss_rel[fund1_id][id(pictogram1)] = [RelationChangeDomain.create_relation_object(fund_bevestiging_pict,funderingsmassief1,pictogram1)]
+    poss_rel[fund1_id][id(pictogram2)] = [RelationChangeDomain.create_relation_object(fund_bevestiging_pict,funderingsmassief1,pictogram2)]
+    poss_rel[fund1_id][id(funderingsmassief1)].append(RelationChangeDomain.create_relation_object(fund_bevestiging_fund,funderingsmassief1,funderingsmassief1))# not with itself
+    poss_rel[fund1_id][id(funderingsmassief2)].append(RelationChangeDomain.create_relation_object(fund_bevestiging_fund,funderingsmassief1,funderingsmassief1))
 
     fund2_id = id(funderingsmassief2)
     poss_rel[fund2_id] = {}
-    poss_rel[fund2_id][id(verkeersbordsteun1)] = {"incl": [fund_bevestiging_vsteun]}
-    poss_rel[fund2_id][id(verkeersbordsteun2)] = {"incl": [fund_bevestiging_vsteun]}
-    poss_rel[fund2_id][id(funderingsmassief1)] = {"incl": [fund_ligtop_fund]}
-    poss_rel[fund2_id][id(funderingsmassief2)] = {"excl": [fund_ligtop_fund]}# not with itself
-    poss_rel[fund2_id][id(pictogram1)] = {"incl": [fund_bevestiging_pict]}
-    poss_rel[fund2_id][id(pictogram2)] = {"incl": [fund_bevestiging_pict]}
-    poss_rel[fund2_id][id(funderingsmassief1)]["incl"].append(fund_bevestiging_fund)
-    poss_rel[fund2_id][id(funderingsmassief2)]["excl"].append(fund_bevestiging_fund)# not with itself
+    poss_rel[fund2_id][id(verkeersbordsteun1)] = [RelationChangeDomain.create_relation_object(fund_bevestiging_vsteun,funderingsmassief2,verkeersbordsteun1)]
+    poss_rel[fund2_id][id(verkeersbordsteun2)] = [RelationChangeDomain.create_relation_object(fund_bevestiging_vsteun,funderingsmassief2,verkeersbordsteun2)]
+    poss_rel[fund2_id][id(funderingsmassief1)] = [RelationChangeDomain.create_relation_object(fund_ligtop_fund,funderingsmassief2,funderingsmassief1)]
+    poss_rel[fund2_id][id(funderingsmassief2)] = [RelationChangeDomain.create_relation_object(fund_ligtop_fund,funderingsmassief2,funderingsmassief2)]# not with itself
+    poss_rel[fund2_id][id(pictogram1)] = [RelationChangeDomain.create_relation_object(fund_bevestiging_pict,funderingsmassief2,pictogram1)]
+    poss_rel[fund2_id][id(pictogram2)] = [RelationChangeDomain.create_relation_object(fund_bevestiging_pict,funderingsmassief2,pictogram2)]
+    poss_rel[fund2_id][id(funderingsmassief1)].append(RelationChangeDomain.create_relation_object(fund_bevestiging_fund,funderingsmassief2,funderingsmassief1))
+    poss_rel[fund2_id][id(funderingsmassief2)].append(RelationChangeDomain.create_relation_object(fund_bevestiging_fund,funderingsmassief2,funderingsmassief2))# not with itself
 
     vsteun1_id = id(verkeersbordsteun1)
     poss_rel[vsteun1_id] = {}
     # phase 1 : selected object is source (bron)
-    poss_rel[vsteun1_id][id(funderingsmassief1)] = {"incl": [vsteun_bevestiging_fund]}
-    poss_rel[vsteun1_id][id(funderingsmassief2)] = {"incl": [vsteun_bevestiging_fund]}
-    poss_rel[vsteun1_id][id(pictogram1)] = {"incl": [vsteun_bevestiging_pict]}
-    poss_rel[vsteun1_id][id(pictogram2)] = {"incl": [vsteun_bevestiging_pict]}
-    poss_rel[vsteun1_id][id(verkeersbordopstelling1)] = {"incl": [vsteun_hoortbij_vopstel]}
-    poss_rel[vsteun1_id][id(verkeersbordopstelling2)] = {"incl": [vsteun_hoortbij_vopstel]}
+    poss_rel[vsteun1_id][id(funderingsmassief1)] = [RelationChangeDomain.create_relation_object(vsteun_bevestiging_fund,verkeersbordsteun1,funderingsmassief1)]
+    poss_rel[vsteun1_id][id(funderingsmassief2)] = [RelationChangeDomain.create_relation_object(vsteun_bevestiging_fund,verkeersbordsteun1,funderingsmassief2)]
+    poss_rel[vsteun1_id][id(pictogram1)] = [RelationChangeDomain.create_relation_object(vsteun_bevestiging_pict,verkeersbordsteun1,pictogram1)]
+    poss_rel[vsteun1_id][id(pictogram2)] = [RelationChangeDomain.create_relation_object(vsteun_bevestiging_pict,verkeersbordsteun1,pictogram2)]
+    poss_rel[vsteun1_id][id(verkeersbordopstelling1)] = [RelationChangeDomain.create_relation_object(vsteun_hoortbij_vopstel,verkeersbordsteun1,verkeersbordopstelling1)]
+    poss_rel[vsteun1_id][id(verkeersbordopstelling2)] = [RelationChangeDomain.create_relation_object(vsteun_hoortbij_vopstel,verkeersbordsteun1,verkeersbordopstelling2)]
 
-    vsteun2_id = id(verkeersbordsteun1)
+    vsteun2_id = id(verkeersbordsteun2)
     poss_rel[vsteun2_id] = {}
     # phase 1 : selected object is source (bron)
-    poss_rel[vsteun2_id][id(funderingsmassief1)] = {"incl": [vsteun_bevestiging_fund]}
-    poss_rel[vsteun2_id][id(funderingsmassief2)] = {"incl": [vsteun_bevestiging_fund]}
-    poss_rel[vsteun2_id][id(pictogram1)] = {"incl": [vsteun_bevestiging_pict]}
-    poss_rel[vsteun2_id][id(pictogram2)] = {"incl": [vsteun_bevestiging_pict]}
-    poss_rel[vsteun2_id][id(verkeersbordopstelling1)] = {"incl": [vsteun_hoortbij_vopstel]}
-    poss_rel[vsteun2_id][id(verkeersbordopstelling2)] = {"incl": [vsteun_hoortbij_vopstel]}
+    poss_rel[vsteun2_id][id(funderingsmassief1)] = [RelationChangeDomain.create_relation_object(vsteun_bevestiging_fund,verkeersbordsteun2,funderingsmassief1)]
+    poss_rel[vsteun2_id][id(funderingsmassief2)] = [RelationChangeDomain.create_relation_object(vsteun_bevestiging_fund,verkeersbordsteun2,funderingsmassief2)]
+    poss_rel[vsteun2_id][id(pictogram1)] = [RelationChangeDomain.create_relation_object(vsteun_bevestiging_pict,verkeersbordsteun2,pictogram1)]
+    poss_rel[vsteun2_id][id(pictogram2)] = [RelationChangeDomain.create_relation_object(vsteun_bevestiging_pict,verkeersbordsteun2,pictogram2)]
+    poss_rel[vsteun2_id][id(verkeersbordopstelling1)] = [RelationChangeDomain.create_relation_object(vsteun_hoortbij_vopstel,verkeersbordsteun2,verkeersbordopstelling1)]
+    poss_rel[vsteun2_id][id(verkeersbordopstelling2)] = [RelationChangeDomain.create_relation_object(vsteun_hoortbij_vopstel,verkeersbordsteun2,verkeersbordopstelling2)]
 
     pict1_id = id(pictogram1)
     poss_rel[pict1_id] = {}
     # phase 1 : selected object is source (bron)
-    poss_rel[pict1_id][id(verkeersbordopstelling1)] = {"incl": [pict_hoortbij_vopstel]}
-    poss_rel[pict1_id][id(verkeersbordopstelling2)] = {"incl": [pict_hoortbij_vopstel]}
-    poss_rel[pict1_id][id(funderingsmassief1)] = {"incl": [pict_bevestiging_fund]}
-    poss_rel[pict1_id][id(funderingsmassief2)] = {"incl": [pict_bevestiging_fund]}
-    poss_rel[pict1_id][id(verkeersbordsteun1)] = {"incl": [pict_bevestiging_vsteun]}
-    poss_rel[pict1_id][id(verkeersbordsteun2)] = {"incl": [pict_bevestiging_vsteun]}
+    poss_rel[pict1_id][id(verkeersbordopstelling1)] = [RelationChangeDomain.create_relation_object(pict_hoortbij_vopstel,pictogram1,verkeersbordopstelling1)]
+    poss_rel[pict1_id][id(verkeersbordopstelling2)] = [RelationChangeDomain.create_relation_object(pict_hoortbij_vopstel,pictogram1,verkeersbordopstelling2)]
+    poss_rel[pict1_id][id(funderingsmassief1)] = [RelationChangeDomain.create_relation_object(pict_bevestiging_fund,pictogram1,funderingsmassief1)]
+    poss_rel[pict1_id][id(funderingsmassief2)] = [RelationChangeDomain.create_relation_object(pict_bevestiging_fund,pictogram1,funderingsmassief2)]
+    poss_rel[pict1_id][id(verkeersbordsteun1)] = [RelationChangeDomain.create_relation_object(pict_bevestiging_vsteun,pictogram1,verkeersbordsteun1)]
+    poss_rel[pict1_id][id(verkeersbordsteun2)] = [RelationChangeDomain.create_relation_object(pict_bevestiging_vsteun,pictogram1,verkeersbordsteun2)]
 
     pict2_id = id(pictogram2)
     poss_rel[pict2_id] = {}
     #phase 1 : selected object is source (bron)
-    poss_rel[pict2_id][id(verkeersbordopstelling1)] = {"incl": [pict_hoortbij_vopstel]}
-    poss_rel[pict2_id][id(verkeersbordopstelling2)] = {"incl": [pict_hoortbij_vopstel]}
-    poss_rel[pict2_id][id(funderingsmassief1)] = {"incl": [pict_bevestiging_fund]}
-    poss_rel[pict2_id][id(funderingsmassief2)] = {"incl": [pict_bevestiging_fund]}
-    poss_rel[pict2_id][id(verkeersbordsteun1)] = {"incl": [pict_bevestiging_vsteun]}
-    poss_rel[pict2_id][id(verkeersbordsteun2)] = {"incl": [pict_bevestiging_vsteun]}
+    poss_rel[pict2_id][id(verkeersbordopstelling1)] = [RelationChangeDomain.create_relation_object(pict_hoortbij_vopstel,pictogram2,verkeersbordopstelling1)]
+    poss_rel[pict2_id][id(verkeersbordopstelling2)] = [RelationChangeDomain.create_relation_object(pict_hoortbij_vopstel,pictogram2,verkeersbordopstelling2)]
+    poss_rel[pict2_id][id(funderingsmassief1)] = [RelationChangeDomain.create_relation_object(pict_bevestiging_fund,pictogram2,funderingsmassief1)]
+    poss_rel[pict2_id][id(funderingsmassief2)] = [RelationChangeDomain.create_relation_object(pict_bevestiging_fund,pictogram2,funderingsmassief2)]
+    poss_rel[pict2_id][id(verkeersbordsteun1)] = [RelationChangeDomain.create_relation_object(pict_bevestiging_vsteun,pictogram2,verkeersbordsteun1)]
+    poss_rel[pict2_id][id(verkeersbordsteun2)] = [RelationChangeDomain.create_relation_object(pict_bevestiging_vsteun,pictogram2,verkeersbordsteun2)]
     
     vopstel1_id = id(verkeersbordopstelling1)
     poss_rel[vopstel1_id] = {}
     # phase 1 : selected object is source (bron)
     # phase 2 : selected object is target (doel) converted to incoming relation
-    poss_rel[vopstel1_id][id(verkeersbordsteun1)] = {"incl": [RelationChangeDomain.invert_relation(vsteun_hoortbij_vopstel)]}
-    poss_rel[vopstel1_id][id(verkeersbordsteun2)] = {"incl": [RelationChangeDomain.invert_relation(vsteun_hoortbij_vopstel)]}
+    poss_rel[vopstel1_id][id(verkeersbordsteun1)] = [RelationChangeDomain.create_relation_object(vsteun_hoortbij_vopstel,verkeersbordsteun1,verkeersbordopstelling1)]
+    poss_rel[vopstel1_id][id(verkeersbordsteun2)] = [RelationChangeDomain.create_relation_object(vsteun_hoortbij_vopstel,verkeersbordsteun2,verkeersbordopstelling1)]
 
     vopstel2_id = id(verkeersbordopstelling2)
     poss_rel[vopstel2_id] = {}
     # phase 1 : selected object is source (bron)
     # phase 2 : selected object is target (doel) converted to incoming relation
 
-    for selected_object_id in poss_rel.keys():
-        print("test with selected_object id:{0}".format(selected_object_id))
-        for rel_object_id  in poss_rel[selected_object_id].keys():
+    RelationChangeDomain.sort_nested_dict(poss_rel)
 
-            if "incl" in poss_rel[selected_object_id][rel_object_id].keys():
-
-                for relation in poss_rel[selected_object_id][rel_object_id]["incl"]:
-                    print("test RelationChangeDomain.possible_object_to_object_relations['{0}']['{1}'] contain {2}".format(
-                            selected_object_id, rel_object_id, relation.objectUri))
-                    relations = RelationChangeDomain.possible_object_to_object_relations[selected_object_id][rel_object_id]
-
-                    assert  relations.__contains__(relation)
-
-            if  poss_rel[selected_object_id][rel_object_id].keys().__contains__("excl"):
-
-                for relation in poss_rel[selected_object_id][rel_object_id]["excl"]:
-                    print("test RelationChangeDomain.possible_object_to_object_relations['{0}']['{1}'] not contain {2}".format(selected_object_id, rel_object_id,relation.objectUri))
-
-                    assert not RelationChangeDomain.possible_object_to_object_relations[selected_object_id].keys().__contains__(rel_object_id) or \
-                           not RelationChangeDomain.possible_object_to_object_relations[selected_object_id][rel_object_id].__contains__(relation)
+    assert RelationChangeDomain.possible_object_to_object_relations == poss_rel
+    # for selected_object_id in poss_rel.keys():
+    #     print("test with selected_object id:{0}".format(selected_object_id))
+    #     for rel_object_id  in poss_rel[selected_object_id].keys():
+    #
+    #         if "incl" in poss_rel[selected_object_id][rel_object_id].keys():
+    #
+    #             for relation in poss_rel[selected_object_id][rel_object_id]["incl"]:
+    #                 print("test RelationChangeDomain.possible_object_to_object_relations['{0}']['{1}'] contain {2}".format(
+    #                         selected_object_id, rel_object_id, relation.objectUri))
+    #                 relations = RelationChangeDomain.possible_object_to_object_relations[selected_object_id][rel_object_id]
+    #
+    #                 assert  relations.__contains__(relation)
+    #
+    #         if  poss_rel[selected_object_id][rel_object_id].keys().__contains__("excl"):
+    #
+    #             for relation in poss_rel[selected_object_id][rel_object_id]["excl"]:
+    #                 print("test RelationChangeDomain.possible_object_to_object_relations['{0}']['{1}'] not contain {2}".format(selected_object_id, rel_object_id,relation.objectUri))
+    #
+    #                 assert not RelationChangeDomain.possible_object_to_object_relations[selected_object_id].keys().__contains__(rel_object_id) or \
+    #                        not RelationChangeDomain.possible_object_to_object_relations[selected_object_id][rel_object_id].__contains__(relation)
 
 
 #################################################
