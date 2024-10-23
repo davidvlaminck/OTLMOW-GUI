@@ -102,8 +102,8 @@ def test_full_fill_possible_relations_list(qtbot,root_directory:Path,
         'HoortBij <-- dummy_J | onderdeel#Verkeersbordsteun',
         'HoortBij <-- dummy_s | onderdeel#Verkeersbordsteun']
 
-    real_vopstel1_possible_relations_gui =[RelationChangeDomain.get_screen().relation_list_gui.item(x).text() for x in
-            range(RelationChangeDomain.get_screen().relation_list_gui.count())]
+    real_vopstel1_possible_relations_gui =[RelationChangeDomain.get_screen().possible_relation_list_gui.item(x).text() for x in
+                                           range(RelationChangeDomain.get_screen().possible_relation_list_gui.count())]
 
     assert real_vopstel1_possible_relations_gui == vopstel1_possible_relations_gui
 
@@ -118,21 +118,21 @@ def test_full_fill_possible_relations_list(qtbot,root_directory:Path,
         'Bevestiging <-> dummy_J | onderdeel#Verkeersbordsteun',
         'Bevestiging <-> dummy_s | onderdeel#Verkeersbordsteun']
 
-    real_fund1_possible_relations_gui = [RelationChangeDomain.get_screen().relation_list_gui.item(x).text() for x in
-     range(RelationChangeDomain.get_screen().relation_list_gui.count())]
+    real_fund1_possible_relations_gui = [RelationChangeDomain.get_screen().possible_relation_list_gui.item(x).text() for x in
+                                         range(RelationChangeDomain.get_screen().possible_relation_list_gui.count())]
 
     assert real_fund1_possible_relations_gui == fund1_possible_relations_gui
 
     #check the data that is stored in the list elements
-    data1 = [RelationChangeDomain.get_screen().relation_list_gui.item(x).data(3) for x in
-     range(RelationChangeDomain.get_screen().relation_list_gui.count())]
+    data1 = [RelationChangeDomain.get_screen().possible_relation_list_gui.item(x).data(3) for x in
+             range(RelationChangeDomain.get_screen().possible_relation_list_gui.count())]
 
     fund1_possible_relations_gui_data1 = [fund1.assetId.identificator for _ in fund1_possible_relations_gui]
 
     assert data1 == fund1_possible_relations_gui_data1
 
-    data2 = [RelationChangeDomain.get_screen().relation_list_gui.item(x).data(4) for x in
-             range(RelationChangeDomain.get_screen().relation_list_gui.count())]
+    data2 = [RelationChangeDomain.get_screen().possible_relation_list_gui.item(x).data(4) for x in
+             range(RelationChangeDomain.get_screen().possible_relation_list_gui.count())]
 
     fund1_possible_relations_gui_data2 = [
         'dummy_FNrHuPZCWV',
@@ -146,10 +146,36 @@ def test_full_fill_possible_relations_list(qtbot,root_directory:Path,
 
     fund1_possible_relations_gui_data3 = [0,1,0,0,0,0]
 
-    data3 = [RelationChangeDomain.get_screen().relation_list_gui.item(x).data(5) for x in
-             range(RelationChangeDomain.get_screen().relation_list_gui.count())]
+    data3 = [RelationChangeDomain.get_screen().possible_relation_list_gui.item(x).data(5) for x in
+             range(RelationChangeDomain.get_screen().possible_relation_list_gui.count())]
 
     assert data3 == fund1_possible_relations_gui_data3
+
+
+#######################################################
+# RelationChangeScreen.fill_possible_relations_list   #
+#######################################################
+def test_full_fill_existing_relations_list(qtbot,root_directory:Path,
+                                mock_screen: InsertDataScreen,
+                                mock_rel_screen: RelationChangeScreen,
+                                setup_test_project,
+                                mock_step3_visuals):
+    test_object_lists_file_path: list[str] = [
+        str(root_directory / "demo_projects" / "simpel_vergelijkings_project" / "simpel_vergelijking_template2.xlsx")]
+
+    InsertDataDomain.add_files_to_backend_list(test_object_lists_file_path)
+
+    error_set, objects_lists = InsertDataDomain.load_and_validate_documents()
+
+    existing_relations_gui =    ['Bevestiging | dummy_a <-> dummy_TyBGmXfXC',
+                                          'Bevestiging | None <-> None',
+                                          'HoortBij | dummy_J --> dummy_LGG',
+                                          'LigtOp | dummy_FNrHuPZCWV --> dummy_TyBGmXfXC']
+
+    real_existing_relations_gui =[RelationChangeDomain.get_screen().existing_relation_list_gui.item(x).text() for x in range(RelationChangeDomain.get_screen().existing_relation_list_gui.count())]
+
+    assert real_existing_relations_gui == existing_relations_gui
+
 #################################################
 # UNIT TESTS                                    #
 #################################################

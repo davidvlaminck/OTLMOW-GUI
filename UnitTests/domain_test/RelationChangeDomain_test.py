@@ -12,6 +12,7 @@ from otlmow_model.OtlmowModel.Classes.Installatie.Verkeersbordopstelling import 
 from otlmow_model.OtlmowModel.Classes.Onderdeel.Funderingsmassief import Funderingsmassief
 from otlmow_model.OtlmowModel.Classes.Onderdeel.Pictogram import Pictogram
 from otlmow_model.OtlmowModel.Classes.Onderdeel.Verkeersbordsteun import Verkeersbordsteun
+from otlmow_model.OtlmowModel.Helpers.OTLObjectHelper import is_relation
 from otlmow_modelbuilder.OSLOCollector import OSLOCollector
 from otlmow_modelbuilder.SQLDataClasses.OSLORelatie import OSLORelatie
 from parso.python.tree import Function
@@ -91,9 +92,12 @@ def test_full_set_possible_relations(root_directory:Path,
 
     error_set, objects_lists = InsertDataDomain.load_and_validate_documents()
 
+
+
     for objects_list in objects_lists:
         for object in objects_list:
-            RelationChangeDomain.set_possible_relations(object)
+            if not is_relation(object):
+                RelationChangeDomain.set_possible_relations(object)
 
     assert len(RelationChangeDomain.possible_relations_per_class.keys()) == 4
     # search with regex for (#Verkeersbordopstelling'|#Pictogram'|#Funderingsmassief'|#verkeersbordsteun'|BevestigingGC'|#Draagconstructie'|#Fundering'|#ConstructieElement')

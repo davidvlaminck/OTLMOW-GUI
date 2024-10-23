@@ -1,3 +1,4 @@
+from collections import namedtuple
 from pathlib import Path
 from typing import List, Optional, cast
 
@@ -108,7 +109,6 @@ class RelationChangeScreen(Screen):
 
             self.object_list_gui.addItem(item)
 
-
     def object_selected(self) -> None:
         
         for i in range(self.object_list_gui.count()):
@@ -120,12 +120,17 @@ class RelationChangeScreen(Screen):
                         selected_object=self.selected_object_col1)
                 break
 
-        
-        
     def fill_existing_relations_list(self, relations_objects: List[RelatieObject]) -> None:
         self.existing_relation_list_gui.clear()
-        for relation_object in relations_objects:
-            item = QListWidgetItem()
+
+        Text = namedtuple('text', ['relation_typeURI', 'name_source', 'direction', 'name_target'])
+        Data = namedtuple('data', ["index"])
+
+        list_of_corresponding_values = []
+        for i  in range(len( relations_objects)):
+
+
+            relation_object = relations_objects[i]
 
             source_object = RelationChangeDomain.get_object(relation_object.bronAssetId.identificator)
             target_object = RelationChangeDomain.get_object(relation_object.doelAssetId.identificator)
@@ -140,8 +145,19 @@ class RelationChangeScreen(Screen):
             if is_directional_relation(relation_object):
                 direction = self.get_screen_icon_direction("Source -> Destination")
 
+            list_of_corresponding_values.append({
+                "text": Text(abbr_typeURI, screen_name_source, direction, screen_name_target),
+                "data": Data(i)
+            })
 
-            item.setText("{0} | {1} {2} {3}".format(abbr_typeURI, screen_name_source, direction, screen_name_target))
+        list_of_corresponding_values.sort(key=lambda val: (
+            val['text'].relation_typeURI if val['text'].relation_typeURI is not None else "xxx",
+            val['text'].name_source if val['text'].name_source is not None else "xxx",
+            val['text'].name_target if val['text'].name_target is not None else "xxx"))
+
+        for val in list_of_corresponding_values:
+            item = QListWidgetItem()
+            item.setText(f"{val['text'].relation_typeURI} | {val['text'].name_source} {val['text'].direction} {val['text'].name_target}")
             self.existing_relation_list_gui.addItem(item)
 
     def get_screen_name(self, OTL_object:AIMObject) -> str:
@@ -157,7 +173,10 @@ class RelationChangeScreen(Screen):
                                      relations: dict[str, list[RelatieObject]]) -> None:
 
         # sourcery skip: remove-dict-keys
-        self.relation_list_gui.clear()
+        self.possible_relation_list_gui.clear()
+
+        Text = namedtuple('text', ['source_typeURI', 'direction', 'screen_name','target_typeURI'])
+        Data = namedtuple('data', ['source_id','target_id',"index"])
 
         list_of_corresponding_values = []
         for target_identificator in relations.keys():
@@ -190,22 +209,24 @@ class RelationChangeScreen(Screen):
 
 
                 list_of_corresponding_values.append({
-                    "text":(abbr_relation_typeURI, direction, screen_name,abbr_target_object_typeURI),
-                    "data":(source_object.assetId.identificator,target_identificator,i)
+                    "text":Text(abbr_relation_typeURI, direction, screen_name,abbr_target_object_typeURI),
+                    "data":Data(source_object.assetId.identificator,target_identificator,i)
                 })
 
-        list_of_corresponding_values.sort(key=lambda args: (args['text'][3],args['text'][2],args['text'][0]))
+        list_of_corresponding_values.sort(key=lambda val: (val['text'].target_typeURI, val['text'].screen_name, val['text'].source_typeURI))
 
-        for text_args in list_of_corresponding_values:
+        for val in list_of_corresponding_values:
             item = QListWidgetItem()
-            text = f"{text_args['text'][0]} {text_args['text'][1]} {text_args['text'][2]} | {text_args['text'][3]}"
+            text = f"{val['text'].source_typeURI} {val['text'].direction} {val['text'].screen_name} | {val['text'].target_typeURI}"
             item.setText(text)
 
             # item.setData(1,text_args['data'][0])
             # item.setData(2, text_args['data'][1])
-            item.setData(3, text_args['data'][0])
-            item.setData(4, text_args['data'][1])
-            item.setData(5, text_args['data'][2])
+            item.setData(3, val['data'].source_id)
+            item.setData(4, val['data'].target_id)
+            item.setData(5, val['data'].index)
+
+            self.possible_relation_list_gui.addItem(item)
 
             self.relation_list_gui.addItem(item)
 
