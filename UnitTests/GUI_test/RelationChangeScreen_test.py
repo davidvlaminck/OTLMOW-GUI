@@ -93,7 +93,7 @@ def test_full_fill_possible_relations_list(qtbot,root_directory:Path,
     error_set, objects_lists = InsertDataDomain.load_and_validate_documents()
 
     vopstel1 = InsertDataDomain.flatten_list(objects_lists)[0]
-    print("vopstel1 {0}".format(vopstel1.assetId.identificator))
+
     RelationChangeDomain.set_possible_relations(selected_object=vopstel1)
 
     vopstel1_possible_relations_gui =    [
@@ -108,7 +108,7 @@ def test_full_fill_possible_relations_list(qtbot,root_directory:Path,
     assert real_vopstel1_possible_relations_gui == vopstel1_possible_relations_gui
 
     fund1 = InsertDataDomain.flatten_list(objects_lists)[2]
-    print("fund1 {0}".format(fund1.assetId.identificator))
+
     RelationChangeDomain.set_possible_relations(selected_object=fund1)
     fund1_possible_relations_gui = [
         'Bevestiging <-> dummy_FNrHuPZCWV | onderdeel#Funderingsmassief',
