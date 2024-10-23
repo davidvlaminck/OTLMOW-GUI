@@ -205,7 +205,21 @@ class RelationChangeDomain:
                                                     relation_object_index):
         relation_object = cls.possible_object_to_object_relations[bron_asset_id][target_asset_id].pop(relation_object_index)
         cls.existing_relation.append(relation_object)
-        cls.get_screen().fill_possible_relations_list(cls.selected_object,
-                                                      cls.possible_object_to_object_relations[
-                                                          cls.selected_object.assetId.identificator])
+
+        selected_object_id = cls.selected_object.assetId.identificator
+        possibleRelations = cls.possible_object_to_object_relations[selected_object_id]
+
+        cls.get_screen().fill_possible_relations_list(cls.selected_object,possibleRelations)
         cls.get_screen().fill_existing_relations_list(cls.existing_relation)
+
+    @classmethod
+    def remove_existing_relation(cls, index:int) -> RelatieObject:
+        removed_relation = cls.existing_relation.pop(index)
+
+        source = removed_relation.bronAssetId.identificator
+        target = removed_relation.doelAssetId.identificator
+
+        cls.possible_object_to_object_relations[source][target].append(removed_relation)
+        cls.possible_object_to_object_relations[target][source].append(removed_relation)
+
+        return removed_relation

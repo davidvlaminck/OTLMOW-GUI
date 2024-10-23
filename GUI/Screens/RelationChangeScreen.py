@@ -38,7 +38,6 @@ class RelationChangeScreen(Screen):
 
         self.frame_layout = None
         self.object_list_gui = None
-        self.relation_list_gui = None
         self.possible_relation_list_gui = None
         self.add_possible_relation_to_existing_button = ButtonWidget()
         self.existing_relation_list_gui = None

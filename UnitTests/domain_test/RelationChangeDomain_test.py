@@ -327,6 +327,50 @@ def test_full_add_possible_relation_to_existing_relation(root_directory:Path,
     # is the correct relation removed from the possible relation list?
     assert previous_possible_relations_list_length == len(RelationChangeDomain.possible_object_to_object_relations[bron_asset_id][target_asset_id])+1
     assert relation_object not in RelationChangeDomain.possible_object_to_object_relations[bron_asset_id][target_asset_id]
+
+def test_full_remove_existing_relation(root_directory:Path,
+                                mock_screen: InsertDataScreen,
+                                mock_fill_possible_relations_list: RelationChangeScreen,
+                                setup_test_project,
+                                mock_step3_visuals):
+    test_object_lists_file_path: list[str] = [
+        str(root_directory / "demo_projects" / "simpel_vergelijkings_project" / "simpel_vergelijking_template2.xlsx")]
+
+    InsertDataDomain.add_files_to_backend_list(test_object_lists_file_path)
+
+    error_set, objects_lists = InsertDataDomain.load_and_validate_documents()
+
+    for objects_list in objects_lists:
+        for object in objects_list:
+            if not is_relation(object):
+                RelationChangeDomain.set_possible_relations(object)
+
+    to_remove_index = 0
+
+    to_remove_relation = RelationChangeDomain.existing_relation[to_remove_index]
+
+    bron_asset_id =  to_remove_relation.bronAssetId.identificator
+    target_asset_id =  to_remove_relation.doelAssetId.identificator
+
+    previous_possible_relations_list_length = len(RelationChangeDomain.possible_object_to_object_relations[bron_asset_id][target_asset_id])
+    previous_possible_relations_list_length2 = len(RelationChangeDomain.possible_object_to_object_relations[target_asset_id][bron_asset_id])
+
+    # RelationChangeDomain.add_possible_relation_to_existing_relations(bron_asset_id, target_asset_id, relation_object_index)
+    removed_relation = RelationChangeDomain.remove_existing_relation(index=0)
+
+    # is the correct relation object in the existing_relations list?
+    assert len(RelationChangeDomain.existing_relation) == 3
+    assert removed_relation not in RelationChangeDomain.existing_relation
+
+    l1 = RelationChangeDomain.possible_object_to_object_relations[bron_asset_id][target_asset_id]
+    l2 = RelationChangeDomain.possible_object_to_object_relations[target_asset_id][bron_asset_id]
+
+    # is the correct relation removed from the possible relation list?
+    assert previous_possible_relations_list_length == len(l1)-1
+    assert previous_possible_relations_list_length2 == len(l1) - 1
+    assert l1[len(l1)-1] == removed_relation
+    assert l2[len(l2)-1] == removed_relation
+
 #################################################
 # UNIT TESTS                                    #
 #################################################
