@@ -41,6 +41,7 @@ class RelationChangeScreen(Screen):
         self.possible_relation_list_gui = None
         self.add_possible_relation_to_existing_button = ButtonWidget()
         self.existing_relation_list_gui = None
+        self.remove_existing_relation_button = ButtonWidget()
 
         self.init_ui()
 
@@ -160,6 +161,7 @@ class RelationChangeScreen(Screen):
         for val in list_of_corresponding_values:
             item = QListWidgetItem()
             item.setText(f"{val['text'].relation_typeURI} | {val['text'].name_source} {val['text'].direction} {val['text'].name_target}")
+            item.setData(3,val["data"].index)
             self.existing_relation_list_gui.addItem(item)
 
     def get_screen_name(self, OTL_object:AIMObject) -> str:
@@ -291,6 +293,15 @@ class RelationChangeScreen(Screen):
         elif self.add_possible_relation_to_existing_button.isEnabled():
             self.add_possible_relation_to_existing_button.setEnabled(False)
 
+    def enable_remove_relations_button_if_existing_relations_selected(self) -> None:
+
+        self.remove_existing_relation_button.isEnabled()
+        if len(list(self.existing_relation_list_gui.selectedItems())):
+            if not self.remove_existing_relation_button.isEnabled():
+                self.remove_existing_relation_button.setEnabled(True)
+        elif self.remove_existing_relation_button.isEnabled():
+            self.remove_existing_relation_button.setEnabled(False)
+
     def create_existing_relations_list_gui(self):
         frame = QFrame()
         frame_layout = QVBoxLayout()
@@ -298,12 +309,25 @@ class RelationChangeScreen(Screen):
         existing_rel_label.setText(self._('existing_relations_list'))
         self.existing_relation_list_gui = QListWidget()
         self.existing_relation_list_gui.setProperty('class', 'list')
+        self.existing_relation_list_gui.itemSelectionChanged.connect(
+            self.enable_remove_relations_button_if_existing_relations_selected)
+
+        self.remove_existing_relation_button.setText(self._('remove_relation'))
+        self.remove_existing_relation_button.setDisabled(True)
+        self.remove_existing_relation_button.clicked.connect(
+            self.remove_existing_relations)
+        self.remove_existing_relation_button.setProperty('class', 'primary-button')
 
         frame_layout.addWidget(existing_rel_label)
         frame_layout.addWidget(self.existing_relation_list_gui)
+        frame_layout.addWidget(self.remove_existing_relation_button)
 
         frame.setLayout(frame_layout)
         return frame
+
+    def remove_existing_relations(self):
+        for item in self.existing_relation_list_gui.selectedItems():
+            RelationChangeDomain.remove_existing_relation(item.data(3))
 
     def horizontal_layout(self):
         frame = QFrame()

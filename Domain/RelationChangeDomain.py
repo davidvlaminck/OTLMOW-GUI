@@ -206,10 +206,14 @@ class RelationChangeDomain:
         relation_object = cls.possible_object_to_object_relations[bron_asset_id][target_asset_id].pop(relation_object_index)
         cls.existing_relation.append(relation_object)
 
-        selected_object_id = cls.selected_object.assetId.identificator
-        possibleRelations = cls.possible_object_to_object_relations[selected_object_id]
+        cls.update_frontend()
 
-        cls.get_screen().fill_possible_relations_list(cls.selected_object,possibleRelations)
+    @classmethod
+    def update_frontend(cls):
+        if cls.selected_object:
+            selected_object_id = cls.selected_object.assetId.identificator
+            possibleRelations = cls.possible_object_to_object_relations[selected_object_id]
+            cls.get_screen().fill_possible_relations_list(cls.selected_object, possibleRelations)
         cls.get_screen().fill_existing_relations_list(cls.existing_relation)
 
     @classmethod
@@ -219,7 +223,17 @@ class RelationChangeDomain:
         source = removed_relation.bronAssetId.identificator
         target = removed_relation.doelAssetId.identificator
 
-        cls.possible_object_to_object_relations[source][target].append(removed_relation)
-        cls.possible_object_to_object_relations[target][source].append(removed_relation)
+        cls.if_possible_relations_list_exists_then_add(source, target, removed_relation)
+        cls.if_possible_relations_list_exists_then_add(target,source , removed_relation)
+
+        cls.update_frontend()
 
         return removed_relation
+
+    @classmethod
+    def if_possible_relations_list_exists_then_add(cls, source, target, removed_relation):
+        if cls.possible_object_to_object_relations.__contains__(source):
+            if cls.possible_object_to_object_relations[source].__contains__(
+                    target):
+                cls.possible_object_to_object_relations[source][
+                    target].append(removed_relation)

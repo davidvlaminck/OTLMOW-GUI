@@ -176,6 +176,13 @@ def test_full_fill_existing_relations_list(qtbot,root_directory:Path,
 
     assert real_existing_relations_gui == existing_relations_gui
 
+    fund1_possible_relations_gui_data3 = [0, 1, 2, 3]
+
+    data3 = [RelationChangeDomain.get_screen().existing_relation_list_gui.item(x).data(3) for x in
+             range(RelationChangeDomain.get_screen().existing_relation_list_gui.count())]
+
+    assert data3 == fund1_possible_relations_gui_data3
+
 #################################################
 # UNIT TESTS                                    #
 #################################################
