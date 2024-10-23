@@ -18,6 +18,7 @@ from otlmow_model.OtlmowModel.Helpers.OTLObjectHelper import is_directional_rela
 from otlmow_modelbuilder.SQLDataClasses.OSLORelatie import OSLORelatie
 
 from Domain.RelationChangeDomain import RelationChangeDomain
+from GUI.ButtonWidget import ButtonWidget
 from GUI.Screens.Screen import Screen
 
 
@@ -38,6 +39,8 @@ class RelationChangeScreen(Screen):
         self.frame_layout = None
         self.object_list_gui = None
         self.relation_list_gui = None
+        self.possible_relation_list_gui = None
+        self.add_possible_relation_to_existing_button = ButtonWidget()
         self.existing_relation_list_gui = None
 
         self.init_ui()
@@ -228,7 +231,10 @@ class RelationChangeScreen(Screen):
 
             self.possible_relation_list_gui.addItem(item)
 
-            self.relation_list_gui.addItem(item)
+    def add_possible_relation_to_existing_relations(self):
+
+        for item in self.possible_relation_list_gui.selectedItems():
+            RelationChangeDomain.add_possible_relation_to_existing_relations(item.data(3),item.data(4),item.data(5))
 
     def get_screen_icon_direction(self, input_richting:str):
         richting = "<->"
@@ -243,11 +249,19 @@ class RelationChangeScreen(Screen):
         frame_layout = QVBoxLayout()
         relations_label = QLabel()
         relations_label.setText(self._('relations_list'))
-        self.relation_list_gui = QListWidget()
-        self.relation_list_gui.setProperty('class', 'list')
+        self.possible_relation_list_gui = QListWidget()
+        self.possible_relation_list_gui.setProperty('class', 'list')
+        self.possible_relation_list_gui.itemSelectionChanged.connect(self.enable_add_relations_button_if_possible_relations_selected)
+
+        self.add_possible_relation_to_existing_button.setText(self._('add_relation'))
+        self.add_possible_relation_to_existing_button.setDisabled(True)
+        self.add_possible_relation_to_existing_button.clicked.connect(self.add_possible_relation_to_existing_relations)
+        self.add_possible_relation_to_existing_button.setProperty('class', 'primary-button')
 
         frame_layout.addWidget(relations_label)
-        frame_layout.addWidget(self.relation_list_gui)
+        frame_layout.addWidget(self.possible_relation_list_gui)
+        frame_layout.addWidget(self.add_possible_relation_to_existing_button)
+
         frame.setLayout(frame_layout)
         return frame
 
@@ -256,6 +270,27 @@ class RelationChangeScreen(Screen):
     #     item = QListWidgetItem()
     #     item.setText(self._("loading"))
     #     self.relation_list_gui.addItem(item)
+
+    def enable_add_relations_button_if_possible_relations_selected(self) -> None:
+        """Check the selection state of possible relations and update the button accordingly.
+
+        This function enables or disables the 'add possible relation to existing' button based on whether
+        any items are selected in the possible relation list. If items are selected, the button is enabled;
+        if no items are selected, the button is disabled.
+
+        Args:
+            self: The instance of the class.
+
+        Returns:
+            None
+        """
+
+        self.add_possible_relation_to_existing_button.isEnabled()
+        if len(list(self.possible_relation_list_gui.selectedItems())):
+            if not self.add_possible_relation_to_existing_button.isEnabled():
+                self.add_possible_relation_to_existing_button.setEnabled(True)
+        elif self.add_possible_relation_to_existing_button.isEnabled():
+            self.add_possible_relation_to_existing_button.setEnabled(False)
 
     def create_existing_relations_list_gui(self):
         frame = QFrame()
