@@ -105,3 +105,57 @@ def test_unedited_generate_files(root_directory: Path,
     list_values = [list(sh.iter_rows(0,4,0,26,True))for sh in expected_wb.worksheets]
 
     assert list_values == list_expected_values
+
+
+def test_add_remove_generate_files(root_directory: Path,
+                                 mock_screen: InsertDataScreen,
+                                mock_fill_possible_relations_list: RelationChangeScreen,
+                                setup_test_project,
+                                mock_step3_visuals,
+                                 get_export_path_with_cleanup:Path):
+
+    test_object_lists_file_path: list[str] = [
+        str(root_directory / "demo_projects" / "simpel_vergelijkings_project" /
+            "simpel_vergelijking_template2.xlsx")]
+
+    InsertDataDomain.add_files_to_backend_list(test_object_lists_file_path)
+
+    InsertDataDomain.load_and_validate_documents()
+
+    RelationChangeDomain.set_possible_relations(RelationChangeDomain.objects[0])
+
+    bron_id = 'dummy_hxOTHWe'
+    target_id = 'dummy_C'
+    index = 0
+    RelationChangeDomain.add_possible_relation_to_existing_relations(bron_id,target_id,index)
+
+    RelationChangeDomain.remove_existing_relation(0)
+
+    export_path = get_export_path_with_cleanup
+
+    ExportDataDomain.generate_files(export_path,global_vars.current_project,False,False)
+
+    assert export_path.exists()
+
+    wb = load_workbook(export_path)
+
+    ref_path_expected_workbook = (root_directory / "UnitTests" / "project_files_test" / "OTLWizardProjects" / "reference_files" / "ref_add_remove_test.xlsx")
+    expected_wb = load_workbook(Path(ref_path_expected_workbook))
+
+    if 'Keuzelijsten' in expected_wb.sheetnames:
+        expected_wb.remove(expected_wb['Keuzelijsten'])
+
+    expected_sheet_titles = ['ins#Verkeersbordopstelling',
+                             'ond#Funderingsmassief',
+                             'ond#Pictogram',
+                             'ond#Verkeersbordsteun',
+                             'ond#Bevestiging',
+                             'ond#HoortBij',
+                             'ond#LigtOp']
+
+    assert list(wb.sheetnames)  == expected_sheet_titles
+
+    list_expected_values = [list(sh.iter_rows(0,4,0,26,True)) for sh in  wb.worksheets]
+    list_values = [list(sh.iter_rows(0,4,0,26,True))for sh in expected_wb.worksheets]
+
+    assert list_values == list_expected_values

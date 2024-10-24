@@ -369,7 +369,7 @@ def test_full_remove_existing_relation(root_directory:Path,
 
     # is the correct relation removed from the possible relation list?
     assert previous_possible_relations_list_length == len(l1)-1
-    assert previous_possible_relations_list_length2 == len(l1) - 1
+    assert previous_possible_relations_list_length2 == len(l2) - 1
     assert l1[len(l1)-1] == removed_relation
     assert l2[len(l2)-1] == removed_relation
 

@@ -35,6 +35,7 @@ class RelationChangeDomain:
         cls.objects = []
         cls.existing_relations = []
         cls.possible_relations_per_class = {}
+        cls.possible_object_to_object_relations = {}
 
     @classmethod
     def set_instances(cls, objects_list: List[AIMObject]):
