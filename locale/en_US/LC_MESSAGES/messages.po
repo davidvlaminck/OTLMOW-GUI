@@ -300,7 +300,7 @@ msgstr "Export relations and assets in different files"
 
 #: GUI/Screens/ExportDataScreen.py:49 GUI/Screens/ExportDataScreen.py:103
 msgid "export assets in different files"
-msgstr "Export asset classes in different files"
+msgstr "Export asset types in different files"
 
 #: GUI/Screens/ExportDataScreen.py:64 GUI/Screens/ExportDataScreen.py:101
 msgid "select file type for export"
@@ -361,7 +361,7 @@ msgstr "Functionality under development"
 
 #: GUI/Screens/RelationChangeScreen.py:59
 msgid "class_list"
-msgstr "Classes:"
+msgstr "OTL-assets:"
 
 #: GUI/Screens/RelationChangeScreen.py:72
 msgid "relations_list"
@@ -378,7 +378,7 @@ msgstr "Existing relations:"
 #: GUI/Screens/TemplateScreen.py:59 GUI/Screens/TemplateScreen.py:208
 #: GUI/Screens/TemplateScreen.py:281
 msgid "select_all_classes"
-msgstr "Select all classes"
+msgstr "Select all asset types"
 
 #: GUI/Screens/TemplateScreen.py:63 GUI/Screens/TemplateScreen.py:287
 msgid "general_settings"
@@ -422,11 +422,11 @@ msgstr "OTL version"
 
 #: GUI/Screens/TemplateScreen.py:203
 msgid "no classes found in specified path"
-msgstr "No classes found in specified path"
+msgstr "No asset types found in specified path"
 
 #: GUI/Screens/TemplateScreen.py:236 GUI/Screens/TemplateScreen.py:290
 msgid "{selected} classes selected"
-msgstr "{selected} classes selected"
+msgstr "{selected} asset types selected"
 
 #~ msgid "control"
 #~ msgstr "Control"

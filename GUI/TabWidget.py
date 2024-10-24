@@ -52,9 +52,13 @@ class TabWidget(Screen):
         self.layout.setContentsMargins(0, 0, 0, 0)
         self.tabs.setProperty('class', 'tab-widget')
 
+    def onClickFunction(self):
+        self.main_window.setCurrentIndex(0)
+        print("click tabWidget")
+
     def init_ui(self):
         button = self.header.header_bar_detail_screen()
-        button.clicked.connect(lambda: self.main_window.setCurrentIndex(0))
+        button.clicked.connect(self.onClickFunction)
 
     def reset_ui(self, _):
         self._ = _

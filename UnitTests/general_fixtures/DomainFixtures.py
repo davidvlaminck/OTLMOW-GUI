@@ -4,8 +4,10 @@ from unittest.mock import Mock
 from _pytest.fixtures import fixture
 
 from Domain import global_vars
+from Domain.InsertDataDomain import InsertDataDomain
 from Domain.Project import Project
 from Domain.ProjectFileManager import ProjectFileManager
+from Domain.RelationChangeDomain import RelationChangeDomain
 
 
 @fixture
@@ -24,6 +26,7 @@ def setup_test_project(root_directory: Path) -> None:
         4. Verkeersbordsteun
         5. Bevestiging
         6. HoortBij
+        7. LigtOp
         Not all attributes of each class are required
 
        Args:
@@ -32,9 +35,12 @@ def setup_test_project(root_directory: Path) -> None:
        Returns:
            None
        """
+
+
+
     test_subset_file_path: Path = (root_directory / "demo_projects"
                                    /  "simpel_vergelijkings_project"
-                                   / "simpele_vergelijkings_subset.db")
+                                   / "simpele_vergelijkings_subset2.db")
     project_file_path: Path = (root_directory / "demo_projects"  /  "simpel_vergelijkings_project"
                                / "wizardProject")
 
@@ -43,5 +49,9 @@ def setup_test_project(root_directory: Path) -> None:
     original_get_otl_wizard_projects_dir = ProjectFileManager.get_otl_wizard_projects_dir
     ProjectFileManager.get_otl_wizard_projects_dir = Mock(
         return_value=root_directory / "demo_projects" / "simpel_vergelijkings_project")
+
+    InsertDataDomain.init_static()
+    RelationChangeDomain.init_static(global_vars.current_project)
+
     yield
     ProjectFileManager.get_otl_wizard_projects_dir = original_get_otl_wizard_projects_dir

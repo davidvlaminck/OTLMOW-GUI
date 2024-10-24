@@ -300,7 +300,7 @@ msgstr "Exporteer relaties en assets in verschillende bestanden"
 
 #: GUI/Screens/ExportDataScreen.py:49 GUI/Screens/ExportDataScreen.py:103
 msgid "export assets in different files"
-msgstr "Exporteer aparte bestanden voor elke assetklasse"
+msgstr "Exporteer aparte bestanden voor elke asset type"
 
 #: GUI/Screens/ExportDataScreen.py:64 GUI/Screens/ExportDataScreen.py:101
 msgid "select file type for export"
@@ -363,7 +363,7 @@ msgstr "Functionaliteit in ontwikkeling"
 
 #: GUI/Screens/RelationChangeScreen.py:59
 msgid "class_list"
-msgstr "Klassen"
+msgstr "OTL-assets"
 
 #: GUI/Screens/RelationChangeScreen.py:72
 msgid "relations_list"
@@ -380,7 +380,7 @@ msgstr "Bestaande relaties"
 #: GUI/Screens/TemplateScreen.py:59 GUI/Screens/TemplateScreen.py:208
 #: GUI/Screens/TemplateScreen.py:281
 msgid "select_all_classes"
-msgstr "Selecteer alle klassen"
+msgstr "Selecteer alle asset types"
 
 #: GUI/Screens/TemplateScreen.py:63 GUI/Screens/TemplateScreen.py:287
 msgid "general_settings"
@@ -424,11 +424,11 @@ msgstr "OTL versie"
 
 #: GUI/Screens/TemplateScreen.py:203
 msgid "no classes found in specified path"
-msgstr "Geen klassen gevonden in het opgegeven pad"
+msgstr "Geen asset types gevonden in het opgegeven pad"
 
 #: GUI/Screens/TemplateScreen.py:236 GUI/Screens/TemplateScreen.py:290
 msgid "{selected} classes selected"
-msgstr "{selected} klassen geselecteerd"
+msgstr "{selected} types geselecteerd"
 
 #~ msgid "Data visualisation"
 #~ msgstr "Data visualisatie"
@@ -440,7 +440,10 @@ msgstr "{selected} klassen geselecteerd"
 #~ msgstr "Zoeken"
 
 #~ msgid "subtitle_page_1"
-#~ msgstr "Specifieer welke klassen en instellingen u in uw template wil verwerken"
+#~ msgstr ""
+#~ "Specifieer welke asset types en "
+#~ "instellingen u in uw template wil "
+#~ "verwerken"
 
 #~ msgid "export_data"
 #~ msgstr "Export Data"

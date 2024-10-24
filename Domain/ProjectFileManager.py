@@ -138,18 +138,20 @@ class ProjectFileManager:
     @classmethod
     def get_objects_list_saved_in_project(cls, project: Project) -> Project:
         project_dir_path = cls.get_otl_wizard_projects_dir() / project.project_path.name
-        with open(project_dir_path / "assets.json", "r") as project_details_file:
-            objects_lists = json.load(project_details_file)
-        logging.debug(f"Loaded saved object lists: {str(objects_lists)}")
-        objects_lists_array = []
-        for objects_list in objects_lists:
-            file = ProjectFile(
-                file_path=objects_list['file_path'],
-                state=FileState.WARNING) # files loaded from memory storage need to be validated
-                                         # again
-                # state=template['state'])
-            objects_lists_array.append(file)
-        project.saved_project_files = objects_lists_array
+        assets_path:Path = project_dir_path / "assets.json"
+        if assets_path.exists():
+            with open(assets_path, "r") as project_details_file:
+                objects_lists = json.load(project_details_file)
+            logging.debug(f"Loaded saved object lists: {str(objects_lists)}")
+            objects_lists_array = []
+            for objects_list in objects_lists:
+                file = ProjectFile(
+                    file_path=objects_list['file_path'],
+                    state=FileState.WARNING) # files loaded from memory storage need to be validated
+                                             # again
+                    # state=template['state'])
+                objects_lists_array.append(file)
+            project.saved_project_files = objects_lists_array
         return project
 
     @classmethod
