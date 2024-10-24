@@ -175,21 +175,21 @@ def test_full_set_possible_relations(root_directory:Path,
     poss_rel[fund1_id][id(verkeersbordsteun1)] = [RelationChangeDomain.create_relation_object(fund_bevestiging_vsteun,funderingsmassief1,verkeersbordsteun1)]
     poss_rel[fund1_id][id(verkeersbordsteun2)] = [RelationChangeDomain.create_relation_object(fund_bevestiging_vsteun,funderingsmassief1,verkeersbordsteun2)]
     # poss_rel[fund1_id][id(funderingsmassief1)] = [RelationChangeDomain.create_relation_object(fund_ligtop_fund,funderingsmassief1,funderingsmassief1)] # not with itself
-    poss_rel[fund1_id][id(funderingsmassief2)] = [RelationChangeDomain.create_relation_object(fund_ligtop_fund,funderingsmassief1,funderingsmassief2)]
-    poss_rel[fund1_id][id(pictogram1)] = [RelationChangeDomain.create_relation_object(fund_bevestiging_pict,funderingsmassief1,pictogram1)]
+    # poss_rel[fund1_id][id(funderingsmassief2)] = [RelationChangeDomain.create_relation_object(fund_ligtop_fund,funderingsmassief1,funderingsmassief2)] # already in existing relations
+    # poss_rel[fund1_id][id(pictogram1)] = [RelationChangeDomain.create_relation_object(fund_bevestiging_pict,funderingsmassief1,pictogram1)]# already in existing relations
     poss_rel[fund1_id][id(pictogram2)] = [RelationChangeDomain.create_relation_object(fund_bevestiging_pict,funderingsmassief1,pictogram2)]
     # poss_rel[fund1_id][id(funderingsmassief1)].append(RelationChangeDomain.create_relation_object(fund_bevestiging_fund,funderingsmassief1,funderingsmassief1))# not with itself
-    poss_rel[fund1_id][id(funderingsmassief2)].append(RelationChangeDomain.create_relation_object(fund_bevestiging_fund,funderingsmassief1,funderingsmassief2))
+    poss_rel[fund1_id][id(funderingsmassief2)] = [RelationChangeDomain.create_relation_object(fund_bevestiging_fund,funderingsmassief1,funderingsmassief2)]
 
     fund2_id = id(funderingsmassief2)
     poss_rel[fund2_id] = {}
     poss_rel[fund2_id][id(verkeersbordsteun1)] = [RelationChangeDomain.create_relation_object(fund_bevestiging_vsteun,funderingsmassief2,verkeersbordsteun1)]
     poss_rel[fund2_id][id(verkeersbordsteun2)] = [RelationChangeDomain.create_relation_object(fund_bevestiging_vsteun,funderingsmassief2,verkeersbordsteun2)]
-    poss_rel[fund2_id][id(funderingsmassief1)] = [RelationChangeDomain.create_relation_object(fund_ligtop_fund,funderingsmassief2,funderingsmassief1)]
+    # poss_rel[fund2_id][id(funderingsmassief1)] = [RelationChangeDomain.create_relation_object(fund_ligtop_fund,funderingsmassief2,funderingsmassief1)] # already in existing relations
     # poss_rel[fund2_id][id(funderingsmassief2)] = [RelationChangeDomain.create_relation_object(fund_ligtop_fund,funderingsmassief2,funderingsmassief2)]# not with itself
     poss_rel[fund2_id][id(pictogram1)] = [RelationChangeDomain.create_relation_object(fund_bevestiging_pict,funderingsmassief2,pictogram1)]
     poss_rel[fund2_id][id(pictogram2)] = [RelationChangeDomain.create_relation_object(fund_bevestiging_pict,funderingsmassief2,pictogram2)]
-    poss_rel[fund2_id][id(funderingsmassief1)].append(RelationChangeDomain.create_relation_object(fund_bevestiging_fund,funderingsmassief2,funderingsmassief1))
+    poss_rel[fund2_id][id(funderingsmassief1)] = [RelationChangeDomain.create_relation_object(fund_bevestiging_fund,funderingsmassief2,funderingsmassief1)]
     # poss_rel[fund2_id][id(funderingsmassief2)].append(RelationChangeDomain.create_relation_object(fund_bevestiging_fund,funderingsmassief2,funderingsmassief2))# not with itself
 
     vsteun1_id = id(verkeersbordsteun1)
@@ -200,7 +200,7 @@ def test_full_set_possible_relations(root_directory:Path,
     poss_rel[vsteun1_id][id(pictogram1)] = [RelationChangeDomain.create_relation_object(vsteun_bevestiging_pict,verkeersbordsteun1,pictogram1)]
     poss_rel[vsteun1_id][id(pictogram2)] = [RelationChangeDomain.create_relation_object(vsteun_bevestiging_pict,verkeersbordsteun1,pictogram2)]
     poss_rel[vsteun1_id][id(verkeersbordopstelling1)] = [RelationChangeDomain.create_relation_object(vsteun_hoortbij_vopstel,verkeersbordsteun1,verkeersbordopstelling1)]
-    poss_rel[vsteun1_id][id(verkeersbordopstelling2)] = [RelationChangeDomain.create_relation_object(vsteun_hoortbij_vopstel,verkeersbordsteun1,verkeersbordopstelling2)]
+    # poss_rel[vsteun1_id][id(verkeersbordopstelling2)] = [RelationChangeDomain.create_relation_object(vsteun_hoortbij_vopstel,verkeersbordsteun1,verkeersbordopstelling2)] # already in existing relations
 
     vsteun2_id = id(verkeersbordsteun2)
     poss_rel[vsteun2_id] = {}
@@ -217,7 +217,7 @@ def test_full_set_possible_relations(root_directory:Path,
     # phase 1 : selected object is source (bron)
     poss_rel[pict1_id][id(verkeersbordopstelling1)] = [RelationChangeDomain.create_relation_object(pict_hoortbij_vopstel,pictogram1,verkeersbordopstelling1)]
     poss_rel[pict1_id][id(verkeersbordopstelling2)] = [RelationChangeDomain.create_relation_object(pict_hoortbij_vopstel,pictogram1,verkeersbordopstelling2)]
-    poss_rel[pict1_id][id(funderingsmassief1)] = [RelationChangeDomain.create_relation_object(pict_bevestiging_fund,pictogram1,funderingsmassief1)]
+    # poss_rel[pict1_id][id(funderingsmassief1)] = [RelationChangeDomain.create_relation_object(pict_bevestiging_fund,pictogram1,funderingsmassief1)] # already in existing relations
     poss_rel[pict1_id][id(funderingsmassief2)] = [RelationChangeDomain.create_relation_object(pict_bevestiging_fund,pictogram1,funderingsmassief2)]
     poss_rel[pict1_id][id(verkeersbordsteun1)] = [RelationChangeDomain.create_relation_object(pict_bevestiging_vsteun,pictogram1,verkeersbordsteun1)]
     poss_rel[pict1_id][id(verkeersbordsteun2)] = [RelationChangeDomain.create_relation_object(pict_bevestiging_vsteun,pictogram1,verkeersbordsteun2)]
@@ -245,7 +245,7 @@ def test_full_set_possible_relations(root_directory:Path,
     poss_rel[vopstel2_id] = {}
     # phase 1 : selected object is source (bron)
     # phase 2 : selected object is target (doel) converted to incoming relation
-    poss_rel[vopstel2_id][id(verkeersbordsteun1)] = [RelationChangeDomain.create_relation_object(vsteun_hoortbij_vopstel, verkeersbordsteun1,verkeersbordopstelling2)]
+    # poss_rel[vopstel2_id][id(verkeersbordsteun1)] = [RelationChangeDomain.create_relation_object(vsteun_hoortbij_vopstel, verkeersbordsteun1,verkeersbordopstelling2)] # already in existing relations
     poss_rel[vopstel2_id][id(verkeersbordsteun2)] = [RelationChangeDomain.create_relation_object(vsteun_hoortbij_vopstel, verkeersbordsteun2,verkeersbordopstelling2)]
     poss_rel[vopstel2_id][id(pictogram1)] = [RelationChangeDomain.create_relation_object(vsteun_hoortbij_vopstel, pictogram1,verkeersbordopstelling2)]
     poss_rel[vopstel2_id][id(pictogram2)] = [RelationChangeDomain.create_relation_object(vsteun_hoortbij_vopstel, pictogram2,verkeersbordopstelling2)]
@@ -283,10 +283,10 @@ def test_full_add_possible_relation_to_existing_relation(root_directory:Path,
     RelationChangeDomain.add_possible_relation_to_existing_relations(bron_asset_id, target_asset_id, relation_object_index)
 
     # is the correct relation object in the existing_relations list?
-    assert len(RelationChangeDomain.existing_relation) == 1
-    assert RelationChangeDomain.existing_relation[0].bronAssetId.identificator == bron_asset_id
-    assert RelationChangeDomain.existing_relation[0].doelAssetId.identificator == target_asset_id
-    assert RelationChangeDomain.existing_relation[0] == relation_object
+    assert len(RelationChangeDomain.existing_relations) == 1
+    assert RelationChangeDomain.existing_relations[0].bronAssetId.identificator == bron_asset_id
+    assert RelationChangeDomain.existing_relations[0].doelAssetId.identificator == target_asset_id
+    assert RelationChangeDomain.existing_relations[0] == relation_object
 
     # is the correct relation removed from the possible relation list?
     assert previous_possible_relations_list_length == len(RelationChangeDomain.possible_object_to_object_relations[bron_asset_id][target_asset_id])+1
@@ -319,10 +319,10 @@ def test_full_add_possible_relation_to_existing_relation(root_directory:Path,
     RelationChangeDomain.add_possible_relation_to_existing_relations(bron_asset_id, target_asset_id, relation_object_index)
 
     # is the correct relation object in the existing_relations list?
-    assert len(RelationChangeDomain.existing_relation) == 5
-    assert RelationChangeDomain.existing_relation[4].bronAssetId.identificator == bron_asset_id
-    assert RelationChangeDomain.existing_relation[4].doelAssetId.identificator == target_asset_id
-    assert RelationChangeDomain.existing_relation[4] == relation_object
+    assert len(RelationChangeDomain.existing_relations) == 5
+    assert RelationChangeDomain.existing_relations[4].bronAssetId.identificator == bron_asset_id
+    assert RelationChangeDomain.existing_relations[4].doelAssetId.identificator == target_asset_id
+    assert RelationChangeDomain.existing_relations[4] == relation_object
 
     # is the correct relation removed from the possible relation list?
     assert previous_possible_relations_list_length == len(RelationChangeDomain.possible_object_to_object_relations[bron_asset_id][target_asset_id])+1
@@ -347,20 +347,22 @@ def test_full_remove_existing_relation(root_directory:Path,
 
     to_remove_index = 0
 
-    to_remove_relation = RelationChangeDomain.existing_relation[to_remove_index]
+    to_remove_relation = RelationChangeDomain.existing_relations[to_remove_index]
 
     bron_asset_id =  to_remove_relation.bronAssetId.identificator
     target_asset_id =  to_remove_relation.doelAssetId.identificator
 
-    previous_possible_relations_list_length = len(RelationChangeDomain.possible_object_to_object_relations[bron_asset_id][target_asset_id])
-    previous_possible_relations_list_length2 = len(RelationChangeDomain.possible_object_to_object_relations[target_asset_id][bron_asset_id])
+    if(target_asset_id == 'dummy_TyBGmXfXC' and bron_asset_id == 'dummy_a'):
+        print("found")
+    previous_possible_relations_list_length = (len(RelationChangeDomain.possible_object_to_object_relations[bron_asset_id][target_asset_id]) if target_asset_id in RelationChangeDomain.possible_object_to_object_relations[bron_asset_id] else 0)
+    previous_possible_relations_list_length2 = len(RelationChangeDomain.possible_object_to_object_relations[target_asset_id][bron_asset_id])  if bron_asset_id in RelationChangeDomain.possible_object_to_object_relations[target_asset_id] else 0
 
     # RelationChangeDomain.add_possible_relation_to_existing_relations(bron_asset_id, target_asset_id, relation_object_index)
     removed_relation = RelationChangeDomain.remove_existing_relation(index=0)
 
     # is the correct relation object in the existing_relations list?
-    assert len(RelationChangeDomain.existing_relation) == 3
-    assert removed_relation not in RelationChangeDomain.existing_relation
+    assert len(RelationChangeDomain.existing_relations) == 3
+    assert removed_relation not in RelationChangeDomain.existing_relations
 
     l1 = RelationChangeDomain.possible_object_to_object_relations[bron_asset_id][target_asset_id]
     l2 = RelationChangeDomain.possible_object_to_object_relations[target_asset_id][bron_asset_id]

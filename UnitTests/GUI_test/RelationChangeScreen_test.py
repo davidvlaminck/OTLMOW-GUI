@@ -1,25 +1,13 @@
-from pathlib import Path
-from unittest.mock import Mock
-
-import pytest
-from _pytest.fixtures import fixture
 from pytestqt.plugin import qtbot
 from pytestqt.qtbot import QtBot
 
-from Domain import global_vars
-from Domain.InsertDataDomain import InsertDataDomain
-from Domain.Project import Project
-from Domain.RelationChangeDomain import RelationChangeDomain
-from Domain.enums import Language
 from GUI.Screens.DataVisualisationScreen import DataVisualisationScreen
 from GUI.Screens.InsertDataScreen import InsertDataScreen
 from GUI.Screens.RelationChangeScreen import RelationChangeScreen
-from GUI.Screens.Screen import Screen
-from GUI.translation.GlobalTranslate import GlobalTranslate
 from UnitTests.TestClasses.Classes.Onderdeel.AllCasesTestClass import AllCasesTestClass
-
-from UnitTests.general_fixtures.GUIFixtures import *
 from UnitTests.general_fixtures.DomainFixtures import *
+from UnitTests.general_fixtures.GUIFixtures import *
+
 
 #################################################
 # FULL TESTS                                    #
@@ -66,7 +54,7 @@ def test_fill_class_list(root_directory:Path,
 
     InsertDataDomain.add_files_to_backend_list(test_object_lists_file_path)
 
-    error_set, objects_lists = InsertDataDomain.load_and_validate_documents()
+    InsertDataDomain.load_and_validate_documents()
 
     assert mock_rel_screen.object_list_gui.item(0).text() == "installatie#Verkeersbordopstelling | dummy_hxOTHWe"
     assert mock_rel_screen.object_list_gui.item(1).text() == "installatie#Verkeersbordopstelling | dummy_LGG"
@@ -112,9 +100,7 @@ def test_full_fill_possible_relations_list(qtbot,root_directory:Path,
     RelationChangeDomain.set_possible_relations(selected_object=fund1)
     fund1_possible_relations_gui = [
         'Bevestiging <-> dummy_FNrHuPZCWV | onderdeel#Funderingsmassief',
-        'LigtOp --> dummy_FNrHuPZCWV | onderdeel#Funderingsmassief',
         'Bevestiging <-> dummy_C | onderdeel#Pictogram',
-        'Bevestiging <-> dummy_a | onderdeel#Pictogram',
         'Bevestiging <-> dummy_J | onderdeel#Verkeersbordsteun',
         'Bevestiging <-> dummy_s | onderdeel#Verkeersbordsteun']
 
@@ -136,15 +122,13 @@ def test_full_fill_possible_relations_list(qtbot,root_directory:Path,
 
     fund1_possible_relations_gui_data2 = [
         'dummy_FNrHuPZCWV',
-        'dummy_FNrHuPZCWV',
         'dummy_C',
-        'dummy_a',
         'dummy_vbeo',
         'dummy_TjwXqP']
 
     assert data2 == fund1_possible_relations_gui_data2
 
-    fund1_possible_relations_gui_data3 = [0,1,0,0,0,0]
+    fund1_possible_relations_gui_data3 = [0,0,0,0]
 
     data3 = [RelationChangeDomain.get_screen().possible_relation_list_gui.item(x).data(5) for x in
              range(RelationChangeDomain.get_screen().possible_relation_list_gui.count())]
@@ -165,12 +149,12 @@ def test_full_fill_existing_relations_list(qtbot,root_directory:Path,
 
     InsertDataDomain.add_files_to_backend_list(test_object_lists_file_path)
 
-    error_set, objects_lists = InsertDataDomain.load_and_validate_documents()
+    InsertDataDomain.load_and_validate_documents()
 
-    existing_relations_gui =    ['Bevestiging | dummy_a <-> dummy_TyBGmXfXC',
-                                          'Bevestiging | None <-> None',
-                                          'HoortBij | dummy_J --> dummy_LGG',
-                                          'LigtOp | dummy_FNrHuPZCWV --> dummy_TyBGmXfXC']
+    existing_relations_gui =    [ 'Bevestiging | dummy_a <-> dummy_TyBGmXfXC',
+                                  'Bevestiging | None <-> None',
+                                  'HoortBij | dummy_J --> dummy_LGG',
+                                  'LigtOp | dummy_FNrHuPZCWV --> dummy_TyBGmXfXC']
 
     real_existing_relations_gui =[RelationChangeDomain.get_screen().existing_relation_list_gui.item(x).text() for x in range(RelationChangeDomain.get_screen().existing_relation_list_gui.count())]
 

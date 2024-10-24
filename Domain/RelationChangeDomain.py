@@ -19,7 +19,7 @@ class RelationChangeDomain:
     project:Project
     collector:OSLOCollector
     objects: list[AIMObject] = []
-    existing_relation: list[RelatieObject] = []
+    existing_relations: list[RelatieObject] = []
     possible_relations_per_class: dict[str,list[OSLORelatie]] = {}
     possible_object_to_object_relations: dict[str,dict[str,list[RelatieObject]]] =  {}
 
@@ -33,7 +33,7 @@ class RelationChangeDomain:
         cls.collector = OSLOCollector(project.subset_path)
         cls.collector.collect_all()
         cls.objects = []
-        cls.existing_relation = []
+        cls.existing_relations = []
         cls.possible_relations_per_class = {}
 
     @classmethod
@@ -42,12 +42,12 @@ class RelationChangeDomain:
 
         for instance in objects_list:
             if is_relation(instance):
-                cls.existing_relation.append(instance)
+                cls.existing_relations.append(instance)
             else:
                 cls.objects.append(instance)
 
         cls.get_screen().fill_object_list(cls.objects)
-        cls.get_screen().fill_existing_relations_list(cls.existing_relation)
+        cls.get_screen().fill_existing_relations_list(cls.existing_relations)
 
     @classmethod
     def get_object(cls,identificator:str) -> Optional[AIMObject]:
@@ -71,12 +71,22 @@ class RelationChangeDomain:
         related_objects: list[AIMObject] = list(
             filter(RelationChangeDomain.filter_out(selected_object), cls.objects))
 
+
+
         if selected_object.assetId.identificator not in cls.possible_object_to_object_relations.keys():
             relation_list = cls.possible_relations_per_class[selected_object.typeURI]
             for relation in relation_list:
+
+
+
                 if relation.bron_uri == selected_object.typeURI:
 
                     for related_object in related_objects:
+                        if cls.get_same_existing_relations(relation_def= relation,
+                                                           selected_object=selected_object,
+                                                           related_object=related_object):
+                            continue
+
                         # if(related_object.assetId.identificator == 'dummy_TyBGmXfXC'):
                         #     print(related_object.assetId.identificator  == 'dummy_TyBGmXfXC')
                         if relation.doel_uri == related_object.typeURI:
@@ -84,8 +94,10 @@ class RelationChangeDomain:
 
                 elif relation.doel_uri == selected_object.typeURI:
                     for related_object in related_objects:
-                        # if(related_object.assetId.identificator == 'dummy_TyBGmXfXC'):
-                        #     print(related_object.assetId.identificator  == 'dummy_TyBGmXfXC')
+                        if cls.get_same_existing_relations(relation_def= relation,
+                                                           selected_object=selected_object,
+                                                           related_object=related_object):
+                            continue
                         if relation.bron_uri == related_object.typeURI:
                             cls.add_relation_between(relation, selected_object,related_object,True)
 
@@ -97,6 +109,25 @@ class RelationChangeDomain:
         cls.get_screen().fill_possible_relations_list(selected_object,possible_relations_for_this_object)
 
     @classmethod
+    def get_same_existing_relations(cls, relation_def: OSLORelatie,
+                                    selected_object: AIMObject,
+                                    related_object: AIMObject):
+        return list(filter(
+            lambda existed_relation: cls.is_same_relation(existed_relation,
+                                                        relation_def,
+                                                        selected_object,
+                                                        related_object),
+            cls.existing_relations))
+
+    @classmethod
+    def is_same_relation(cls, existing_relation:RelatieObject, relation_def: OSLORelatie, selected: AIMObject, related: AIMObject) -> bool:
+        return  (existing_relation.typeURI == relation_def.objectUri) and ((
+                existing_relation.bronAssetId.identificator == selected.assetId.identificator and
+                existing_relation.doelAssetId.identificator == related.assetId.identificator) or(
+                existing_relation.bronAssetId.identificator == related.assetId.identificator and
+                existing_relation.doelAssetId.identificator == selected.assetId.identificator))
+
+    @classmethod
     def add_relation_between(cls, relation: OSLORelatie, selected_object: AIMObject, related_object:AIMObject, reversed:bool = False) -> None:
 
         selected_object_id = selected_object.assetId.identificator
@@ -105,6 +136,7 @@ class RelationChangeDomain:
         # if ( related_object_id == 'dummy_TyBGmXfXC'):
         #     print( related_object_id == 'dummy_TyBGmXfXC')
 
+        # the relation object is reversed from the wrong direction to the right direction
         relation_object = None
         if reversed:
             relation_object =  cls.create_relation_object(relation, related_object, selected_object)
@@ -204,7 +236,7 @@ class RelationChangeDomain:
     def add_possible_relation_to_existing_relations(cls, bron_asset_id, target_asset_id,
                                                     relation_object_index):
         relation_object = cls.possible_object_to_object_relations[bron_asset_id][target_asset_id].pop(relation_object_index)
-        cls.existing_relation.append(relation_object)
+        cls.existing_relations.append(relation_object)
 
         cls.update_frontend()
 
@@ -214,11 +246,11 @@ class RelationChangeDomain:
             selected_object_id = cls.selected_object.assetId.identificator
             possibleRelations = cls.possible_object_to_object_relations[selected_object_id]
             cls.get_screen().fill_possible_relations_list(cls.selected_object, possibleRelations)
-        cls.get_screen().fill_existing_relations_list(cls.existing_relation)
+        cls.get_screen().fill_existing_relations_list(cls.existing_relations)
 
     @classmethod
     def remove_existing_relation(cls, index:int) -> RelatieObject:
-        removed_relation = cls.existing_relation.pop(index)
+        removed_relation = cls.existing_relations.pop(index)
 
         source = removed_relation.bronAssetId.identificator
         target = removed_relation.doelAssetId.identificator
@@ -232,8 +264,8 @@ class RelationChangeDomain:
 
     @classmethod
     def if_possible_relations_list_exists_then_add(cls, source, target, removed_relation):
-        if cls.possible_object_to_object_relations.__contains__(source):
-            if cls.possible_object_to_object_relations[source].__contains__(
-                    target):
-                cls.possible_object_to_object_relations[source][
-                    target].append(removed_relation)
+        if source in cls.possible_object_to_object_relations:
+            if target in cls.possible_object_to_object_relations[source]:
+                cls.possible_object_to_object_relations[source][target].append(removed_relation)
+            else:
+                cls.possible_object_to_object_relations[source][target] = [removed_relation]

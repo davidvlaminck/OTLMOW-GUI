@@ -1,21 +1,15 @@
 from collections import namedtuple
 from pathlib import Path
-from typing import List, Optional, cast
+from typing import List, Optional
 
 import qtawesome as qta
 from PyQt6.QtGui import QPixmap
-
 from PyQt6.QtWidgets import QVBoxLayout, QFrame, QHBoxLayout, QPushButton, \
     QWidget, QLineEdit, QLabel, QListWidget, QListWidgetItem
-from otlmow_model.OtlmowModel.BaseClasses.OTLObject import OTLObject
 from otlmow_model.OtlmowModel.Classes.ImplementatieElement.AIMObject import \
     AIMObject
-from otlmow_model.OtlmowModel.Classes.ImplementatieElement.DirectioneleRelatie import \
-    DirectioneleRelatie
 from otlmow_model.OtlmowModel.Classes.ImplementatieElement.RelatieObject import RelatieObject
-from otlmow_model.OtlmowModel.Classes.Onderdeel.HoortBij import HoortBij
 from otlmow_model.OtlmowModel.Helpers.OTLObjectHelper import is_directional_relation
-from otlmow_modelbuilder.SQLDataClasses.OSLORelatie import OSLORelatie
 
 from Domain.RelationChangeDomain import RelationChangeDomain
 from GUI.ButtonWidget import ButtonWidget
@@ -164,14 +158,15 @@ class RelationChangeScreen(Screen):
             item.setData(3,val["data"].index)
             self.existing_relation_list_gui.addItem(item)
 
-    def get_screen_name(self, OTL_object:AIMObject) -> str:
+    def get_screen_name(self, OTL_object:AIMObject) -> Optional[str]:
         if OTL_object is None:
             return None
 
-        screen_name = str(OTL_object.assetId.identificator)
-        if hasattr(OTL_object, 'naam') and OTL_object.naam:
-            screen_name = OTL_object.naam
-        return screen_name
+        return (
+            OTL_object.naam
+            if hasattr(OTL_object, 'naam') and OTL_object.naam
+            else str(OTL_object.assetId.identificator)
+        )
 
     def fill_possible_relations_list(self, source_object: AIMObject,
                                      relations: dict[str, list[RelatieObject]]) -> None:
