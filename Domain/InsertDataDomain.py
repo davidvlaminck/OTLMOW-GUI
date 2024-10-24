@@ -58,6 +58,9 @@ class InsertDataDomain:
         temp_path = cls.create_temp_path(path_to_template_file_and_extension=doc)
         if 'Keuzelijsten' in wb.sheetnames:
             wb.remove(wb['Keuzelijsten'])
+        if 'dropdownvalues' in wb.sheetnames:
+            wb.remove(wb['dropdownvalues'])
+
         wb.save(temp_path)
         return temp_path
 
