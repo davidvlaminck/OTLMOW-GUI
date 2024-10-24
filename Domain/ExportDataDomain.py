@@ -19,25 +19,33 @@ class ExportDataDomain:
             if relations_in_memory:
                 if not csv_option:
                     OtlmowConverter.from_objects_to_file(file_path=relations_path,
-                                                              sequence_of_objects=relations_in_memory,
-                                                              )
+                                                         sequence_of_objects=relations_in_memory,
+                                                         abbreviate_excel_sheettitles=True)
                 else:
                     OtlmowConverter.from_objects_to_file(file_path=relations_path,
-                                                              sequence_of_objects=relations_in_memory,
-                                                              split_per_type=csv_option)
+                                                         sequence_of_objects=relations_in_memory,
+                                                         split_per_type=csv_option,
+                                                         abbreviate_excel_sheettitles=True)
             if assets_in_memory:
                 if not csv_option:
-                    OtlmowConverter.from_objects_to_file(file_path=assets_path, sequence_of_objects=assets_in_memory,
-                                                              )
+                    OtlmowConverter.from_objects_to_file(file_path=assets_path,
+                                                         sequence_of_objects=assets_in_memory,
+                                                         abbreviate_excel_sheettitles = True)
                 else:
-                    OtlmowConverter.from_objects_to_file(file_path=assets_path, sequence_of_objects=assets_in_memory,
-                                                              split_per_type=csv_option)
+                    OtlmowConverter.from_objects_to_file(file_path=assets_path,
+                                                         sequence_of_objects=assets_in_memory,
+                                                         split_per_type=csv_option,
+                                                         abbreviate_excel_sheettitles=True)
         else:
             if not csv_option:
-                OtlmowConverter.from_objects_to_file(file_path=Path(end_file), sequence_of_objects=objects_in_memory )
+                OtlmowConverter.from_objects_to_file(file_path=Path(end_file),
+                                                     sequence_of_objects=objects_in_memory,
+                                                     abbreviate_excel_sheettitles=True )
             else:
-                OtlmowConverter.from_objects_to_file(file_path=Path(end_file), sequence_of_objects=objects_in_memory,
-                                                          split_per_type=csv_option)
+                OtlmowConverter.from_objects_to_file(file_path=Path(end_file),
+                                                     sequence_of_objects=objects_in_memory,
+                                                     split_per_type=csv_option,
+                                                     abbreviate_excel_sheettitles=True)
 
     @staticmethod
     def extract_objects_from_files(project):
