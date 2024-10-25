@@ -24,6 +24,11 @@ class InsertDataDomain:
     documents: dict[str,FileState] = {}
 
     @classmethod
+    def init_static(cls):
+        cls.documents = {}
+
+
+    @classmethod
     def load_saved_documents_in_project(cls):
         cls.clear_documents_in_memory()
         logging.debug(f"list with {global_vars.current_project.saved_project_files}")
@@ -33,7 +38,7 @@ class InsertDataDomain:
         files = []
         states = []
         for asset in global_vars.current_project.saved_project_files:
-            files.append(asset.file_path)
+            files.append(str(asset.file_path))
             states.append(asset.state)
 
         cls.add_files_to_backend_list(files, states)
@@ -53,6 +58,9 @@ class InsertDataDomain:
         temp_path = cls.create_temp_path(path_to_template_file_and_extension=doc)
         if 'Keuzelijsten' in wb.sheetnames:
             wb.remove(wb['Keuzelijsten'])
+        if 'dropdownvalues' in wb.sheetnames:
+            wb.remove(wb['dropdownvalues'])
+
         wb.save(temp_path)
         return temp_path
 
@@ -137,7 +145,8 @@ class InsertDataDomain:
 
         return all_valid
 
-    def delete_backend_document(self, item_file_path: str):
+    @classmethod
+    def delete_backend_document(cls, item_file_path: str):
         file_is_in_project = global_vars.current_project.is_in_project(item_file_path)
         if file_is_in_project is not None:
             InsertDataDomain.delete_project_file_from_project(global_vars.current_project,
@@ -175,7 +184,7 @@ class InsertDataDomain:
         objects_in_memory = cls.flatten_list(objects_lists)
 
         global_vars.otl_wizard.main_window.step3_visuals.create_html(objects_in_memory)
-        RelationChangeDomain.set_objects(objects_in_memory)
+        RelationChangeDomain.set_instances(objects_in_memory)
 
         return error_set, objects_lists
 
