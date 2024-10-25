@@ -20,7 +20,7 @@ class RelationChangeDomain:
     collector:OSLOCollector
     objects: list[AIMObject] = []
     existing_relations: list[RelatieObject] = []
-    possible_relations_per_class: dict[str,list[OSLORelatie]] = {}
+    possible_relations_per_class_dict: dict[str,list[OSLORelatie]] = {}
     possible_object_to_object_relations: dict[str,dict[str,list[RelatieObject]]] =  {}
 
     selected_object: Optional[AIMObject] = None
@@ -34,7 +34,7 @@ class RelationChangeDomain:
         cls.collector.collect_all()
         cls.objects = []
         cls.existing_relations = []
-        cls.possible_relations_per_class = {}
+        cls.possible_relations_per_class_dict = {}
         cls.possible_object_to_object_relations = {}
 
     @classmethod
@@ -66,20 +66,16 @@ class RelationChangeDomain:
 
         cls.selected_object = selected_object
 
-        if not cls.possible_relations_per_class.__contains__(selected_object.typeURI):
-            cls.possible_relations_per_class[selected_object.typeURI] = cls.collector.find_all_concrete_relations(selected_object.typeURI, False)
+        if  selected_object.typeURI not in cls.possible_relations_per_class_dict:
+            cls.possible_relations_per_class_dict[selected_object.typeURI] = cls.collector.find_all_concrete_relations(selected_object.typeURI, False)
 
         related_objects: list[AIMObject] = list(
             filter(RelationChangeDomain.filter_out(selected_object), cls.objects))
 
-
-
         if selected_object.assetId.identificator not in cls.possible_object_to_object_relations.keys():
-            relation_list = cls.possible_relations_per_class[selected_object.typeURI]
+            relation_list = cls.possible_relations_per_class_dict[selected_object.typeURI]
+
             for relation in relation_list:
-
-
-
                 if relation.bron_uri == selected_object.typeURI:
 
                     for related_object in related_objects:
@@ -88,8 +84,6 @@ class RelationChangeDomain:
                                                            related_object=related_object):
                             continue
 
-                        # if(related_object.assetId.identificator == 'dummy_TyBGmXfXC'):
-                        #     print(related_object.assetId.identificator  == 'dummy_TyBGmXfXC')
                         if relation.doel_uri == related_object.typeURI:
                             cls.add_relation_between(relation, selected_object, related_object)
 

@@ -99,23 +99,19 @@ def test_full_set_possible_relations(root_directory:Path,
             if not is_relation(object):
                 RelationChangeDomain.set_possible_relations(object)
 
-    assert len(RelationChangeDomain.possible_relations_per_class.keys()) == 4
+    assert len(RelationChangeDomain.possible_relations_per_class_dict.keys()) == 4
     # search with regex for (#Verkeersbordopstelling'|#Pictogram'|#Funderingsmassief'|#verkeersbordsteun'|BevestigingGC'|#Draagconstructie'|#Fundering'|#ConstructieElement')
     class1 = "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Verkeersbordsteun"
-    #TODO: update this when otlmow-converter is fixed
-    assert len(RelationChangeDomain.possible_relations_per_class[class1]) == 3
+    assert len(RelationChangeDomain.possible_relations_per_class_dict[class1]) == 3
 
     class2 = "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Funderingsmassief"
-    # TODO: update this when otlmow-converter is fixed
-    assert len(RelationChangeDomain.possible_relations_per_class[class2]) == 4
+    assert len(RelationChangeDomain.possible_relations_per_class_dict[class2]) == 4
 
     class3 = "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Pictogram"
-    # TODO: update this when otlmow-converter is fixed
-    assert len(RelationChangeDomain.possible_relations_per_class[class3]) == 3
+    assert len(RelationChangeDomain.possible_relations_per_class_dict[class3]) == 3
 
     class4 = "https://wegenenverkeer.data.vlaanderen.be/ns/installatie#Verkeersbordopstelling"
-    # TODO: update this when otlmow-converter is fixed
-    assert len(RelationChangeDomain.possible_relations_per_class[class4]) == 2
+    assert len(RelationChangeDomain.possible_relations_per_class_dict[class4]) == 2
 
     #define the objects of each class in the test set
     for objects_list in objects_lists:
@@ -484,19 +480,19 @@ def mock_collector(mock_OSLORelatie: Mock):
 @pytest.mark.skip
 def test_set_possible_relations_single_item_list(mock_fill_possible_relations_list: RelationChangeScreen
                                                  ,mock_collector:Mock):
-    #TODO: do proper mocking of  OSLOCollector.find_all_concrete_relations
+
     test_object = AllCasesTestClass()
     test_object.assetId.identificator = "dummy_identificator"
     RelationChangeDomain.set_possible_relations(test_object)
 
-    assert len(RelationChangeDomain.possible_relations_per_class.keys()) == 1
-    assert list(RelationChangeDomain.possible_relations_per_class.keys())[0] == test_object.typeURI
-    assert RelationChangeDomain.possible_relations_per_class[test_object.typeURI]
+    assert len(RelationChangeDomain.possible_relations_per_class_dict.keys()) == 1
+    assert list(RelationChangeDomain.possible_relations_per_class_dict.keys())[0] == test_object.typeURI
+    assert RelationChangeDomain.possible_relations_per_class_dict[test_object.typeURI]
 
 @pytest.mark.skip
 def test_set_possible_relations_double_item_list(mock_fill_possible_relations_list: RelationChangeScreen
                                                  ,mock_collector:Mock):
-    # TODO: do proper mocking of  OSLOCollector.find_all_concrete_relations
+
     test_object = AllCasesTestClass()
     test_object.assetId.identificator = "dummy_identificator"
 
@@ -505,15 +501,11 @@ def test_set_possible_relations_double_item_list(mock_fill_possible_relations_li
 
     RelationChangeDomain.set_possible_relations(test_object)
     RelationChangeDomain.set_possible_relations(test_object2)
-    assert len(RelationChangeDomain.possible_relations_per_class.keys()) == 2
 
-    assert list(RelationChangeDomain.possible_relations_per_class.keys())[0] == test_object.typeURI
-    assert list(RelationChangeDomain.possible_relations_per_class.keys())[1] == test_object2.typeURI
+    assert len(RelationChangeDomain.possible_relations_per_class_dict.keys()) == 2
 
-    # TODO: make this into a proper list of objects
-    assert RelationChangeDomain.possible_relations_per_class[test_object.typeURI]
-    # assert isinstance(RelationChangeDomain.possible_relations_per_object[test_object.typeURI][0],
-    #                   OSLORelatie)
-    assert RelationChangeDomain.possible_relations_per_class[test_object2.typeURI]
-    # assert isinstance(RelationChangeDomain.possible_relations_per_object[test_object2.typeURI][0],
-    #                   OSLORelatie)
+    assert list(RelationChangeDomain.possible_relations_per_class_dict.keys())[0] == test_object.typeURI
+    assert list(RelationChangeDomain.possible_relations_per_class_dict.keys())[1] == test_object2.typeURI
+
+    assert RelationChangeDomain.possible_relations_per_class_dict[test_object.typeURI]
+    assert RelationChangeDomain.possible_relations_per_class_dict[test_object2.typeURI]

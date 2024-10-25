@@ -124,10 +124,7 @@ class RelationChangeScreen(Screen):
         Data = namedtuple('data', ["index"])
 
         list_of_corresponding_values = []
-        for i  in range(len( relations_objects)):
-
-
-            relation_object = relations_objects[i]
+        for i,relation_object  in enumerate(relations_objects):
 
             source_object = RelationChangeDomain.get_object(relation_object.bronAssetId.identificator)
             target_object = RelationChangeDomain.get_object(relation_object.doelAssetId.identificator)
@@ -184,10 +181,9 @@ class RelationChangeScreen(Screen):
         Data = namedtuple('data', ['source_id','target_id',"index"])
 
         list_of_corresponding_values = []
-        for target_identificator in relations.keys():
+        for target_identificator, target_relations  in relations.items():
 
-            for i in range(len(relations[target_identificator])):
-                relation = relations[target_identificator][i]
+            for i, relation in  enumerate(target_relations):
 
                 target_object: AIMObject = RelationChangeDomain.get_object(
                     relation.doelAssetId.identificator)
