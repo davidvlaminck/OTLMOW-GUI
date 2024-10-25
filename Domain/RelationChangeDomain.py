@@ -104,8 +104,10 @@ class RelationChangeDomain:
 
         cls.possible_object_to_object_relations = cls.sort_nested_dict(cls.possible_object_to_object_relations)
 
-        possible_relations_for_this_object = cls.possible_object_to_object_relations[
-                                                          selected_object.assetId.identificator]
+        possible_relations_for_this_object = {}
+        if selected_object.assetId.identificator in cls.possible_object_to_object_relations:
+            possible_relations_for_this_object = cls.possible_object_to_object_relations[
+                                                              selected_object.assetId.identificator]
 
         cls.get_screen().fill_possible_relations_list(selected_object,possible_relations_for_this_object)
 
