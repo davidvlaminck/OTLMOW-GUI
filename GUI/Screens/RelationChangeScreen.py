@@ -234,9 +234,13 @@ class RelationChangeScreen(Screen):
             self.possible_relation_list_gui.addItem(item)
 
     def add_possible_relation_to_existing_relations(self):
+        Data = namedtuple('data', ['source_id', 'target_id', "index"])
+        data_list: list[Data] = [
+            Data(item.data(3), item.data(4), item.data(5))
+            for item in self.possible_relation_list_gui.selectedItems()]
 
-        for item in self.possible_relation_list_gui.selectedItems():
-            RelationChangeDomain.add_possible_relation_to_existing_relations(item.data(3),item.data(4),item.data(5))
+        for data in data_list:
+            RelationChangeDomain.add_possible_relation_to_existing_relations(data.source_id,data.target_id,data.index)
 
     def get_screen_icon_direction(self, input_richting:str):
         richting = "<->"
@@ -254,6 +258,7 @@ class RelationChangeScreen(Screen):
         self.possible_relation_list_gui = QListWidget()
         self.possible_relation_list_gui.setProperty('class', 'list')
         self.possible_relation_list_gui.itemSelectionChanged.connect(self.enable_add_relations_button_if_possible_relations_selected)
+        self.possible_relation_list_gui.setSelectionMode(QListWidget.SelectionMode.MultiSelection)
 
         self.add_possible_relation_to_existing_button.setText(self._('add_relation'))
         self.add_possible_relation_to_existing_button.setDisabled(True)
@@ -312,6 +317,7 @@ class RelationChangeScreen(Screen):
         self.existing_relation_list_gui.setProperty('class', 'list')
         self.existing_relation_list_gui.itemSelectionChanged.connect(
             self.enable_remove_relations_button_if_existing_relations_selected)
+        self.existing_relation_list_gui.setSelectionMode(QListWidget.SelectionMode.MultiSelection)
 
         self.remove_existing_relation_button.setText(self._('remove_relation'))
         self.remove_existing_relation_button.setDisabled(True)
@@ -327,8 +333,12 @@ class RelationChangeScreen(Screen):
         return frame
 
     def remove_existing_relations(self):
-        for item in self.existing_relation_list_gui.selectedItems():
-            RelationChangeDomain.remove_existing_relation(item.data(3))
+        indices: list[int] = [
+            item.data(3)
+            for item in self.existing_relation_list_gui.selectedItems()]
+
+        for index in indices:
+            RelationChangeDomain.remove_existing_relation(index)
 
     def horizontal_layout(self):
         frame = QFrame()
