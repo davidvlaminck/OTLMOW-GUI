@@ -102,7 +102,7 @@ class RelationChangeScreen(Screen):
 
             abbr_typeURI = OTL_object.typeURI.replace("https://wegenenverkeer.data.vlaanderen.be/ns/","")
 
-            item.setText("{0} | {1}".format(abbr_typeURI,screen_name))
+            item.setText(f"{screen_name} | {abbr_typeURI}")
 
             self.object_list_gui.addItem(item)
 
@@ -173,6 +173,12 @@ class RelationChangeScreen(Screen):
 
         # sourcery skip: remove-dict-keys
         self.possible_relation_list_gui.clear()
+
+        # if not relations:
+        #     item = QListWidgetItem()
+        #     item.
+        #     self.possible_relation_list_gui.addItem(item)
+
 
         Text = namedtuple('text', ['source_typeURI', 'direction', 'screen_name','target_typeURI'])
         Data = namedtuple('data', ['source_id','target_id',"index"])
