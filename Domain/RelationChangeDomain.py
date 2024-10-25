@@ -1,5 +1,6 @@
 from typing import List, Optional, cast
 
+from otlmow_converter.DotnotationDictConverter import DotnotationDictConverter
 from otlmow_model.OtlmowModel.BaseClasses.OTLObject import OTLObject, dynamic_create_type_from_uri
 from otlmow_model.OtlmowModel.Classes.ImplementatieElement.AIMObject import \
     AIMObject
@@ -104,6 +105,9 @@ class RelationChangeDomain:
                                                               selected_object.assetId.identificator]
 
         cls.get_screen().fill_possible_relations_list(selected_object,possible_relations_for_this_object)
+
+        object_attributes_dict = DotnotationDictConverter.to_dict(selected_object)
+        cls.get_screen().fill_object_attribute_field(object_attributes_dict)
 
     @classmethod
     def get_same_existing_relations(cls, relation_def: OSLORelatie,
@@ -266,3 +270,22 @@ class RelationChangeDomain:
                 cls.possible_object_to_object_relations[source][target].append(removed_relation)
             else:
                 cls.possible_object_to_object_relations[source][target] = [removed_relation]
+
+    @classmethod
+    def select_existing_relation_indices(cls, indices: list[int]) -> None:
+        if not indices:
+            return
+        
+        last_index = indices[-1]
+        last_selected_relation = cls.existing_relations[last_index]
+        cls.get_screen().fill_existing_relation_attribute_field(DotnotationDictConverter.to_dict(last_selected_relation))
+
+    @classmethod
+    def select_possible_relation_keys(cls, relation_keys: list) -> None:
+        if not relation_keys:
+            return
+
+        last_selected_keys = relation_keys[-1]
+        last_selected_relation = cls.possible_object_to_object_relations[last_selected_keys.source_id][last_selected_keys.target_id][last_selected_keys.index]
+        cls.get_screen().fill_possible_relation_attribute_field(
+            DotnotationDictConverter.to_dict(last_selected_relation))

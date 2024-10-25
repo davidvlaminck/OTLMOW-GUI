@@ -3,9 +3,11 @@ from pathlib import Path
 from typing import List, Optional
 
 import qtawesome as qta
-from PyQt6.QtGui import QPixmap
+from PyQt6.QtGui import QPixmap, QPalette, QColorConstants
 from PyQt6.QtWidgets import QVBoxLayout, QFrame, QHBoxLayout, QPushButton, \
-    QWidget, QLineEdit, QLabel, QListWidget, QListWidgetItem
+    QWidget, QLineEdit, QLabel, QListWidget, QListWidgetItem, QHeaderView, QTreeWidget, \
+    QTreeWidgetItem
+from otlmow_converter.DotnotationDictConverter import DotnotationDictConverter
 from otlmow_model.OtlmowModel.Classes.ImplementatieElement.AIMObject import \
     AIMObject
 from otlmow_model.OtlmowModel.Classes.ImplementatieElement.RelatieObject import RelatieObject
@@ -31,11 +33,18 @@ class RelationChangeScreen(Screen):
         self.input_field = None
 
         self.frame_layout = None
+
         self.object_list_gui = None
+        self.object_attribute_field: QTreeWidget = QTreeWidget()
+        self.hidden_object_list_button = ButtonWidget()
+
         self.possible_relation_list_gui = None
         self.add_possible_relation_to_existing_button = ButtonWidget()
+        self.possible_relation_attribute_field: QTreeWidget = QTreeWidget()
+
         self.existing_relation_list_gui = None
         self.remove_existing_relation_button = ButtonWidget()
+        self.existing_relation_attribute_field: QTreeWidget = QTreeWidget()
 
         self.init_ui()
 
@@ -53,16 +62,17 @@ class RelationChangeScreen(Screen):
         self.window.setProperty('class', 'background-box')
         self.window_layout = QVBoxLayout()
         self.window_layout.addSpacing(10)
-        self.window_layout.addWidget(self.input_file_field())
+        self.window_layout.addWidget(self.input_file_selector())
         self.window_layout.addSpacing(10)
         self.window_layout.addWidget(self.horizontal_layout())
         self.window.setLayout(self.window_layout)
+
 
         # self.fill_relations_list()
 
         return self.window
 
-    def input_file_field(self) -> QFrame:
+    def input_file_selector(self) -> QFrame:
         frame = QFrame()
         frame_layout = QHBoxLayout()
         self.input_field = QLineEdit()
@@ -88,8 +98,23 @@ class RelationChangeScreen(Screen):
 
         frame_layout.addWidget(class_label)
         frame_layout.addWidget(self.object_list_gui)
+
+        object_attribute_label = QLabel()
+        object_attribute_label.setText(self._('object_attributes'))
+        frame_layout.addWidget(self.create_hidden_button())
+        frame_layout.addWidget(object_attribute_label)
+
+
+        frame_layout.addWidget(self.create_object_attribute_field(self.object_attribute_field))
         frame.setLayout(frame_layout)
+
         return frame
+
+    def create_hidden_button(self):
+        self.hidden_object_list_button.setEnabled(False)
+        self.hidden_object_list_button.setText("hidden")
+        self.hidden_object_list_button.setProperty("class", "invisible")
+        return self.hidden_object_list_button
 
     def fill_object_list(self, objects: List[AIMObject]) -> None:
         self.object_list_gui.clear()
@@ -115,6 +140,8 @@ class RelationChangeScreen(Screen):
                 if self.selected_object_col1 is not None:
                     RelationChangeDomain.set_possible_relations(
                         selected_object=self.selected_object_col1)
+
+
                 break
 
     def fill_existing_relations_list(self, relations_objects: List[RelatieObject]) -> None:
@@ -170,12 +197,6 @@ class RelationChangeScreen(Screen):
 
         # sourcery skip: remove-dict-keys
         self.possible_relation_list_gui.clear()
-
-        # if not relations:
-        #     item = QListWidgetItem()
-        #     item.
-        #     self.possible_relation_list_gui.addItem(item)
-
 
         Text = namedtuple('text', ['source_typeURI', 'direction', 'screen_name','target_typeURI'])
         Data = namedtuple('data', ['source_id','target_id',"index"])
@@ -265,6 +286,11 @@ class RelationChangeScreen(Screen):
         frame_layout.addWidget(self.possible_relation_list_gui)
         frame_layout.addWidget(self.add_possible_relation_to_existing_button)
 
+        possible_relation_attribute_label = QLabel()
+        possible_relation_attribute_label.setText(self._('possible_relation_attributes'))
+        frame_layout.addWidget(possible_relation_attribute_label)
+        frame_layout.addWidget(self.create_object_attribute_field(self.possible_relation_attribute_field))
+
         frame.setLayout(frame_layout)
         return frame
 
@@ -295,6 +321,8 @@ class RelationChangeScreen(Screen):
         elif self.add_possible_relation_to_existing_button.isEnabled():
             self.add_possible_relation_to_existing_button.setEnabled(False)
 
+        self.possible_relations_selected()
+
     def enable_remove_relations_button_if_existing_relations_selected(self) -> None:
 
         self.remove_existing_relation_button.isEnabled()
@@ -303,6 +331,8 @@ class RelationChangeScreen(Screen):
                 self.remove_existing_relation_button.setEnabled(True)
         elif self.remove_existing_relation_button.isEnabled():
             self.remove_existing_relation_button.setEnabled(False)
+
+        self.existing_relations_selected()
 
     def create_existing_relations_list_gui(self):
         frame = QFrame()
@@ -324,6 +354,10 @@ class RelationChangeScreen(Screen):
         frame_layout.addWidget(existing_rel_label)
         frame_layout.addWidget(self.existing_relation_list_gui)
         frame_layout.addWidget(self.remove_existing_relation_button)
+        existing_relation_attribute_label = QLabel()
+        existing_relation_attribute_label.setText(self._('existing_relation_attributes'))
+        frame_layout.addWidget(existing_relation_attribute_label)
+        frame_layout.addWidget(self.create_object_attribute_field(self.existing_relation_attribute_field))
 
         frame.setLayout(frame_layout)
         return frame
@@ -335,6 +369,13 @@ class RelationChangeScreen(Screen):
 
         for index in indices:
             RelationChangeDomain.remove_existing_relation(index)
+
+    def existing_relations_selected(self):
+        indices: list[int] = [
+            item.data(3)
+            for item in self.existing_relation_list_gui.selectedItems()]
+
+        RelationChangeDomain.select_existing_relation_indices(indices)
 
     def horizontal_layout(self):
         frame = QFrame()
@@ -357,3 +398,41 @@ class RelationChangeScreen(Screen):
 
     def reset_ui(self, _):
         self._ = _
+
+    def create_object_attribute_field(self, attribute_field: QTreeWidget):
+
+        attribute_field.setColumnCount(2)
+        attribute_field.setProperty('class', 'list')
+        attribute_field.setHeaderHidden(True)
+
+        header = attribute_field.header()
+        header.setSectionResizeMode(1, QHeaderView.ResizeMode.ResizeToContents)
+        header.setSectionResizeMode(0, QHeaderView.ResizeMode.ResizeToContents)
+        header.setStretchLastSection(False)
+
+        return attribute_field
+
+    def fill_object_attribute_field(self, object_attribute_dict:dict):
+        self.fill_attribute_field(self.object_attribute_field, object_attribute_dict)
+
+    def fill_possible_relation_attribute_field(self, possible_relation_attribute_dict:dict):
+        self.fill_attribute_field(self.possible_relation_attribute_field, possible_relation_attribute_dict)
+
+    def fill_existing_relation_attribute_field(self, existing_relation_attribute_dict: dict):
+        self.fill_attribute_field(self.existing_relation_attribute_field, existing_relation_attribute_dict)
+
+    def fill_attribute_field(self, field, object_attribute_dict):
+        field.clear()
+        for attribute, value in object_attribute_dict.items():
+            list_item = QTreeWidgetItem()
+            list_item.setText(0, attribute)
+            list_item.setText(1, str(value))
+            field.addTopLevelItem(list_item)
+
+    def possible_relations_selected(self):
+        Data = namedtuple('data', ['source_id', 'target_id', "index"])
+        data_list: list[Data] = [
+            Data(item.data(3), item.data(4), item.data(5))
+            for item in self.possible_relation_list_gui.selectedItems()]
+
+        RelationChangeDomain.select_possible_relation_keys(data_list)
