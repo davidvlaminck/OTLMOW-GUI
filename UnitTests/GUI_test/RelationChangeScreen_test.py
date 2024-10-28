@@ -1,10 +1,15 @@
+from otlmow_modelbuilder.SQLDataClasses.OSLORelatie import OSLORelatie
 from pytestqt.plugin import qtbot
 from pytestqt.qtbot import QtBot
 
 from GUI.Screens.DataVisualisationScreen import DataVisualisationScreen
 from GUI.Screens.InsertDataScreen import InsertDataScreen
 from GUI.Screens.RelationChangeScreen import RelationChangeScreen
+from UnitTests.TestClasses.Classes.Installatie.AllCasesTestClassInstallatie import \
+    AllCasesTestClassInstallatie
 from UnitTests.TestClasses.Classes.Onderdeel.AllCasesTestClass import AllCasesTestClass
+from UnitTests.TestClasses.Classes.Onderdeel.AnotherTestClass import AnotherTestClass
+from UnitTests.TestClasses.Classes.Onderdeel.Bevestiging import Bevestiging
 from UnitTests.general_fixtures.DomainFixtures import *
 from UnitTests.general_fixtures.GUIFixtures import *
 
@@ -56,14 +61,14 @@ def test_fill_class_list(root_directory:Path,
 
     InsertDataDomain.load_and_validate_documents()
 
-    assert mock_rel_screen.object_list_gui.item(0).text() == "dummy_hxOTHWe | installatie#Verkeersbordopstelling"
-    assert mock_rel_screen.object_list_gui.item(1).text() == "dummy_LGG | installatie#Verkeersbordopstelling"
-    assert mock_rel_screen.object_list_gui.item(2).text() == "dummy_TyBGmXfXC | onderdeel#Funderingsmassief"
-    assert mock_rel_screen.object_list_gui.item(3).text() == "dummy_FNrHuPZCWV | onderdeel#Funderingsmassief"
-    assert mock_rel_screen.object_list_gui.item(4).text() == "dummy_a | onderdeel#Pictogram"
-    assert mock_rel_screen.object_list_gui.item(5).text() == "dummy_C | onderdeel#Pictogram"
-    assert mock_rel_screen.object_list_gui.item(6).text() == "dummy_J | onderdeel#Verkeersbordsteun"
-    assert mock_rel_screen.object_list_gui.item(7).text() == "dummy_s | onderdeel#Verkeersbordsteun"
+    assert mock_rel_screen.object_list_gui.item(0).text() == "dummy_hxOTHWe | Verkeersbordopstelling"
+    assert mock_rel_screen.object_list_gui.item(1).text() == "dummy_LGG | Verkeersbordopstelling"
+    assert mock_rel_screen.object_list_gui.item(2).text() == "dummy_TyBGmXfXC | Funderingsmassief"
+    assert mock_rel_screen.object_list_gui.item(3).text() == "dummy_FNrHuPZCWV | Funderingsmassief"
+    assert mock_rel_screen.object_list_gui.item(4).text() == "dummy_a | Pictogram"
+    assert mock_rel_screen.object_list_gui.item(5).text() == "dummy_C | Pictogram"
+    assert mock_rel_screen.object_list_gui.item(6).text() == "dummy_J | Verkeersbordsteun"
+    assert mock_rel_screen.object_list_gui.item(7).text() == "dummy_s | Verkeersbordsteun"
 
 #######################################################
 # RelationChangeScreen.fill_possible_relations_list   #
@@ -85,10 +90,10 @@ def test_full_fill_possible_relations_list(qtbot,root_directory:Path,
     RelationChangeDomain.set_possible_relations(selected_object=vopstel1)
 
     vopstel1_possible_relations_gui =    [
-        'HoortBij <-- dummy_C | onderdeel#Pictogram',
-        'HoortBij <-- dummy_a | onderdeel#Pictogram',
-        'HoortBij <-- dummy_J | onderdeel#Verkeersbordsteun',
-        'HoortBij <-- dummy_s | onderdeel#Verkeersbordsteun']
+        'HoortBij <-- dummy_C | Pictogram',
+        'HoortBij <-- dummy_a | Pictogram',
+        'HoortBij <-- dummy_J | Verkeersbordsteun',
+        'HoortBij <-- dummy_s | Verkeersbordsteun']
 
     real_vopstel1_possible_relations_gui =[RelationChangeDomain.get_screen().possible_relation_list_gui.item(x).text() for x in
                                            range(RelationChangeDomain.get_screen().possible_relation_list_gui.count())]
@@ -99,10 +104,10 @@ def test_full_fill_possible_relations_list(qtbot,root_directory:Path,
 
     RelationChangeDomain.set_possible_relations(selected_object=fund1)
     fund1_possible_relations_gui = [
-        'Bevestiging <-> dummy_FNrHuPZCWV | onderdeel#Funderingsmassief',
-        'Bevestiging <-> dummy_C | onderdeel#Pictogram',
-        'Bevestiging <-> dummy_J | onderdeel#Verkeersbordsteun',
-        'Bevestiging <-> dummy_s | onderdeel#Verkeersbordsteun']
+        'Bevestiging <-> dummy_FNrHuPZCWV | Funderingsmassief',
+        'Bevestiging <-> dummy_C | Pictogram',
+        'Bevestiging <-> dummy_J | Verkeersbordsteun',
+        'Bevestiging <-> dummy_s | Verkeersbordsteun']
 
     real_fund1_possible_relations_gui = [RelationChangeDomain.get_screen().possible_relation_list_gui.item(x).text() for x in
                                          range(RelationChangeDomain.get_screen().possible_relation_list_gui.count())]
@@ -195,7 +200,7 @@ def test_fill_class_list_single_item_list(qtbot,create_translations):
     relation_change_screen.fill_object_list(objects=test_objects_list)
 
     assert len(relation_change_screen.object_list_gui) == 1
-    assert relation_change_screen.object_list_gui.item(0).text() == "dummy_identificator | onderdeel#AllCasesTestClass"
+    assert relation_change_screen.object_list_gui.item(0).text() == "dummy_identificator | AllCasesTestClass"
 
 """
 Just adding the qtbot to the fixtures makes the test complete without a timeout when you call a PyQt element
@@ -213,6 +218,64 @@ def test_fill_class_list_double_item_list(qtbot,create_translations):
 
     assert len(relation_change_screen.object_list_gui) == 2
 
-    assert relation_change_screen.object_list_gui.item(0).text() == "dummy_identificator | onderdeel#AllCasesTestClass"
-    assert relation_change_screen.object_list_gui.item(1).text() == "dummy_identificator2 | onderdeel#AllCasesTestClass"
+    assert relation_change_screen.object_list_gui.item(0).text() == "dummy_identificator | AllCasesTestClass"
+    assert relation_change_screen.object_list_gui.item(1).text() == "dummy_identificator2 | AllCasesTestClass"
 
+def test_fill_class_list_with_2_same_name_but_diff_namespace_items(qtbot,create_translations,mock_rel_screen):
+    test_object = AllCasesTestClassInstallatie()
+    test_object.assetId.identificator = "dummy_identificator"
+
+    test_object2 = AllCasesTestClass()
+    test_object2.assetId.identificator = "dummy_identificator2"
+
+    test_object3 = AnotherTestClass
+    test_object3.assetId.identificator = "dummy_identificator3"
+
+
+    test_objects_list = [test_object, test_object2, test_object3]
+    mock_rel_screen.fill_object_list(objects=test_objects_list)
+
+    assert len(mock_rel_screen.object_list_gui) == 2
+
+    assert mock_rel_screen.object_list_gui.item(0).text() == "dummy_identificator | installatie#AllCasesTestClass"
+    assert mock_rel_screen.object_list_gui.item(1).text() == "dummy_identificator2 | onderdeel#AllCasesTestClass"
+    assert mock_rel_screen.object_list_gui.item(1).text() == "dummy_identificator3 | AnotherTestClass"
+
+@fixture
+def mock_OSLORelatie_test():
+    return [OSLORelatie("","",AllCasesTestClass.typeURI,AnotherTestClass.typeURI,Bevestiging.typeURI,"Unspecified","",""),OSLORelatie("","",AnotherTestClass.typeURI,AllCasesTestClass.typeURI,Bevestiging.typeURI,"Unspecified","","")]
+
+
+def test_fill_possible_relations_list_with_2_same_name_but_diff_namespace_items(
+        qtbot,
+        create_translations,
+        mock_OSLORelatie_test,
+        mock_rel_screen):
+    test_object = AllCasesTestClassInstallatie()
+    test_object.assetId.identificator = "dummy_identificator"
+
+    test_object2 = AllCasesTestClass()
+    test_object2.assetId.identificator = "dummy_identificator2"
+
+    test_object3 = AnotherTestClass()
+    test_object3.assetId.identificator = "dummy_identificator3"
+
+    test_objects_list = [test_object, test_object2, test_object3]
+
+    RelationChangeDomain.set_instances(test_objects_list)
+    mock_rel_screen.fill_object_list(objects=test_objects_list)
+
+    RelationChangeDomain.possible_relations_per_class_dict={test_object2.typeURI :[mock_OSLORelatie_test[0]],
+                                                            test_object3.typeURI :[mock_OSLORelatie_test[1]]}
+    RelationChangeDomain.set_possible_relations(test_object2)
+
+    assert len(mock_rel_screen.possible_relation_list_gui) == 1
+
+    assert mock_rel_screen.possible_relation_list_gui.item(0).text() == "Bevestiging <-> dummy_identificator3 | AnotherTestClass"
+
+    RelationChangeDomain.set_possible_relations(test_object3)
+
+    assert len(mock_rel_screen.possible_relation_list_gui) == 1
+
+    assert mock_rel_screen.possible_relation_list_gui.item(
+        0).text() == "Bevestiging <-> dummy_identificator2 | onderdeel#AllCasesTestClass"

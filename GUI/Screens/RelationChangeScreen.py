@@ -7,11 +7,10 @@ from PyQt6.QtGui import QPixmap, QPalette, QColorConstants
 from PyQt6.QtWidgets import QVBoxLayout, QFrame, QHBoxLayout, QPushButton, \
     QWidget, QLineEdit, QLabel, QListWidget, QListWidgetItem, QHeaderView, QTreeWidget, \
     QTreeWidgetItem
-from otlmow_converter.DotnotationDictConverter import DotnotationDictConverter
 from otlmow_model.OtlmowModel.Classes.ImplementatieElement.AIMObject import \
     AIMObject
 from otlmow_model.OtlmowModel.Classes.ImplementatieElement.RelatieObject import RelatieObject
-from otlmow_model.OtlmowModel.Helpers.OTLObjectHelper import is_directional_relation
+from otlmow_model.OtlmowModel.Helpers.OTLObjectHelper import is_directional_relation, is_relation
 
 from Domain.RelationChangeDomain import RelationChangeDomain
 from GUI.ButtonWidget import ButtonWidget
@@ -125,7 +124,7 @@ class RelationChangeScreen(Screen):
 
             screen_name = self.get_screen_name(OTL_object)
 
-            abbr_typeURI = OTL_object.typeURI.replace("https://wegenenverkeer.data.vlaanderen.be/ns/","")
+            abbr_typeURI = self.get_abbreviated_typeURI(OTL_object)
 
             item.setText(f"{screen_name} | {abbr_typeURI}")
 
@@ -158,8 +157,7 @@ class RelationChangeScreen(Screen):
             screen_name_source = self.get_screen_name(OTL_object=source_object)
             screen_name_target = self.get_screen_name(target_object)
 
-            abbr_typeURI = relation_object.typeURI.replace(
-                "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#", "")
+            abbr_typeURI = self.get_abbreviated_typeURI(relation_object)
 
             direction = self.get_screen_icon_direction("Unspecified")
 
@@ -181,6 +179,18 @@ class RelationChangeScreen(Screen):
             item.setText(f"{val['text'].relation_typeURI} | {val['text'].name_source} {val['text'].direction} {val['text'].name_target}")
             item.setData(3,val["data"].index)
             self.existing_relation_list_gui.addItem(item)
+
+    def get_abbreviated_typeURI(self, otl_object):
+        split_typeURI = otl_object.typeURI.split("#")
+        type_name = split_typeURI[-1]
+        if is_relation(otl_object):
+            return otl_object.typeURI.replace(
+                "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#", "")
+        elif self.is_unique_across_namespaces(type_name):
+            return otl_object.typeURI.replace(
+                "https://wegenenverkeer.data.vlaanderen.be/ns/", "")
+        else:
+            return type_name
 
     def get_screen_name(self, OTL_object:AIMObject) -> Optional[str]:
         if OTL_object is None:
@@ -223,11 +233,9 @@ class RelationChangeScreen(Screen):
 
                 screen_name = self.get_screen_name(target_object)
 
-                abbr_target_object_typeURI = target_object.typeURI.replace(
-                    "https://wegenenverkeer.data.vlaanderen.be/ns/", "")
+                abbr_target_object_typeURI = self.get_abbreviated_typeURI(target_object)
 
-                abbr_relation_typeURI = relation.typeURI.replace(
-                    "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#", "")
+                abbr_relation_typeURI = self.get_abbreviated_typeURI(relation)
 
 
                 list_of_corresponding_values.append({
@@ -436,3 +444,11 @@ class RelationChangeScreen(Screen):
             for item in self.possible_relation_list_gui.selectedItems()]
 
         RelationChangeDomain.select_possible_relation_keys(data_list)
+
+    def is_unique_across_namespaces(self, selected_type_name):
+        unique_typeURIs = {otl_object.typeURI for otl_object in RelationChangeDomain.objects}
+        list_type_names = [typeURI.split("#")[-1] for typeURI in unique_typeURIs]
+
+        list_of_non_unique_type_names = filter( lambda type_name: list_type_names.count(type_name) < 2, list_type_names)
+
+        return selected_type_name not in list_of_non_unique_type_names
