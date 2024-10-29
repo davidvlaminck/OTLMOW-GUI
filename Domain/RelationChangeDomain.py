@@ -22,7 +22,7 @@ class RelationChangeDomain:
     objects: list[AIMObject] = []
     existing_relations: list[RelatieObject] = []
     possible_relations_per_class_dict: dict[str,list[OSLORelatie]] = {}
-    possible_object_to_object_relations: dict[str,dict[str,list[RelatieObject]]] =  {}
+    possible_object_to_object_relations_dict: dict[str,dict[str,list[RelatieObject]]] =  {}
 
     selected_object: Optional[AIMObject] = None
     """
@@ -36,7 +36,7 @@ class RelationChangeDomain:
         cls.objects = []
         cls.existing_relations = []
         cls.possible_relations_per_class_dict = {}
-        cls.possible_object_to_object_relations = {}
+        cls.possible_object_to_object_relations_dict = {}
 
     @classmethod
     def set_instances(cls, objects_list: List[AIMObject]):
@@ -66,14 +66,13 @@ class RelationChangeDomain:
     def set_possible_relations(cls, selected_object:AIMObject):
 
         cls.selected_object = selected_object
-
         if  selected_object.typeURI not in cls.possible_relations_per_class_dict:
             cls.possible_relations_per_class_dict[selected_object.typeURI] = cls.collector.find_all_concrete_relations(selected_object.typeURI, False)
 
         related_objects: list[AIMObject] = list(
             filter(RelationChangeDomain.filter_out(selected_object), cls.objects))
 
-        if selected_object.assetId.identificator not in cls.possible_object_to_object_relations.keys():
+        if selected_object.assetId.identificator not in cls.possible_object_to_object_relations_dict.keys():
             relation_list = cls.possible_relations_per_class_dict[selected_object.typeURI]
 
             for relation in relation_list:
@@ -97,11 +96,11 @@ class RelationChangeDomain:
                         if relation.bron_uri == related_object.typeURI:
                             cls.add_relation_between(relation, selected_object,related_object,True)
 
-        cls.possible_object_to_object_relations = cls.sort_nested_dict(cls.possible_object_to_object_relations)
+        cls.possible_object_to_object_relations_dict = cls.sort_nested_dict(cls.possible_object_to_object_relations_dict)
 
         possible_relations_for_this_object = {}
-        if selected_object.assetId.identificator in cls.possible_object_to_object_relations:
-            possible_relations_for_this_object = cls.possible_object_to_object_relations[
+        if selected_object.assetId.identificator in cls.possible_object_to_object_relations_dict:
+            possible_relations_for_this_object = cls.possible_object_to_object_relations_dict[
                                                               selected_object.assetId.identificator]
 
         cls.get_screen().fill_possible_relations_list(selected_object,possible_relations_for_this_object)
@@ -144,16 +143,15 @@ class RelationChangeDomain:
         else:
             relation_object = cls.create_relation_object(relation,selected_object,related_object)
 
-        if cls.possible_object_to_object_relations.__contains__(selected_object_id):
-            if cls.possible_object_to_object_relations[selected_object_id].__contains__(
-                    related_object_id):
-                cls.possible_object_to_object_relations[selected_object_id][
+        if selected_object_id in cls.possible_object_to_object_relations_dict:
+            if related_object_id in cls.possible_object_to_object_relations_dict[selected_object_id]:
+                cls.possible_object_to_object_relations_dict[selected_object_id][
                     related_object_id].append(relation_object)
             else:
-                cls.possible_object_to_object_relations[selected_object_id][
+                cls.possible_object_to_object_relations_dict[selected_object_id][
                     related_object_id] = [relation_object]
         else:
-            cls.possible_object_to_object_relations[selected_object_id] = {
+            cls.possible_object_to_object_relations_dict[selected_object_id] = {
                 related_object_id: [relation_object]}
 
     @classmethod
@@ -201,7 +199,7 @@ class RelationChangeDomain:
     @classmethod
     def add_possible_relation_to_existing_relations(cls, bron_asset_id, target_asset_id,
                                                     relation_object_index):
-        relation_object = cls.possible_object_to_object_relations[bron_asset_id][target_asset_id].pop(relation_object_index)
+        relation_object = cls.possible_object_to_object_relations_dict[bron_asset_id][target_asset_id].pop(relation_object_index)
         cls.existing_relations.append(relation_object)
 
         cls.update_frontend()
@@ -210,7 +208,7 @@ class RelationChangeDomain:
     def update_frontend(cls):
         if cls.selected_object:
             selected_object_id = cls.selected_object.assetId.identificator
-            possibleRelations = cls.possible_object_to_object_relations[selected_object_id]
+            possibleRelations = cls.possible_object_to_object_relations_dict[selected_object_id]
             cls.get_screen().fill_possible_relations_list(cls.selected_object, possibleRelations)
         cls.get_screen().fill_object_list(cls.objects)
         cls.get_screen().fill_existing_relations_list(cls.existing_relations)
@@ -231,11 +229,11 @@ class RelationChangeDomain:
 
     @classmethod
     def if_possible_relations_list_exists_then_add(cls, source, target, removed_relation):
-        if source in cls.possible_object_to_object_relations:
-            if target in cls.possible_object_to_object_relations[source]:
-                cls.possible_object_to_object_relations[source][target].append(removed_relation)
+        if source in cls.possible_object_to_object_relations_dict:
+            if target in cls.possible_object_to_object_relations_dict[source]:
+                cls.possible_object_to_object_relations_dict[source][target].append(removed_relation)
             else:
-                cls.possible_object_to_object_relations[source][target] = [removed_relation]
+                cls.possible_object_to_object_relations_dict[source][target] = [removed_relation]
 
     @classmethod
     def select_existing_relation_indices(cls, indices: list[int]) -> None:
@@ -252,6 +250,6 @@ class RelationChangeDomain:
             return
 
         last_selected_keys = relation_keys[-1]
-        last_selected_relation = cls.possible_object_to_object_relations[last_selected_keys.source_id][last_selected_keys.target_id][last_selected_keys.index]
+        last_selected_relation = cls.possible_object_to_object_relations_dict[last_selected_keys.source_id][last_selected_keys.target_id][last_selected_keys.index]
         cls.get_screen().fill_possible_relation_attribute_field(
             DotnotationDictConverter.to_dict(last_selected_relation))

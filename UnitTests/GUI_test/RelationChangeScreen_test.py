@@ -1,4 +1,5 @@
 from openpyxl.descriptors.excel import Relation
+from otlmow_model.OtlmowModel.Classes.Onderdeel.LigtOp import LigtOp
 from otlmow_modelbuilder.OSLOCollector import OSLOCollector
 from otlmow_modelbuilder.SQLDataClasses.OSLORelatie import OSLORelatie
 from pytestqt.plugin import qtbot
@@ -282,7 +283,9 @@ def test_fill_class_list_with_2_same_name_but_diff_namespace_items(qtbot,
 
 @fixture
 def mock_OSLORelatie_test():
-    return [OSLORelatie("","",AllCasesTestClass.typeURI,AnotherTestClass.typeURI,Bevestiging.typeURI,"Unspecified","",""),OSLORelatie("","",AnotherTestClass.typeURI,AllCasesTestClass.typeURI,Bevestiging.typeURI,"Unspecified","","")]
+    return [OSLORelatie("","",AllCasesTestClass.typeURI,AnotherTestClass.typeURI,Bevestiging.typeURI,"Unspecified","",""),
+            OSLORelatie("","",AnotherTestClass.typeURI,AllCasesTestClass.typeURI,Bevestiging.typeURI,"Unspecified","",""),
+            OSLORelatie("","",AnotherTestClass.typeURI,AllCasesTestClass.typeURI,LigtOp.typeURI,"Unspecified","","")]
 
 
 def test_fill_possible_relations_list_with_2_same_name_but_diff_namespace_items(
