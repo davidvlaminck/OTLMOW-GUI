@@ -28,6 +28,7 @@ from GUI.Screens.InsertDataScreen import InsertDataScreen
 from GUI.Screens.RelationChangeScreen import RelationChangeScreen
 from GUI.translation.GlobalTranslate import GlobalTranslate
 from UnitTests.TestClasses.Classes.ImplementatieElement.AIMObject import AIMObject
+from UnitTests.TestClasses.Classes.ImplementatieElement.RelatieObject import RelatieObject
 from UnitTests.TestClasses.Classes.Onderdeel.AllCasesTestClass import AllCasesTestClass
 from UnitTests.TestClasses.Classes.Onderdeel.AnotherTestClass import AnotherTestClass
 
@@ -314,7 +315,7 @@ def test_full_set_possible_relations_unique_situations(root_directory: Path,
 
     fund1_id =fund1.assetId.identificator
     fund2_id = fund2.assetId.identificator
-    fund3_id = fund3.assertId.identificator
+    fund3_id = fund3.assetId.identificator
     assert len(RelationChangeDomain.possible_object_to_object_relations_dict[fund1_id][fund2_id]) == 2
     assert len(
         RelationChangeDomain.possible_object_to_object_relations_dict[fund1_id][fund3_id]) == 2
@@ -447,6 +448,23 @@ def test_full_remove_existing_relation(root_directory:Path,
     assert previous_possible_relations_list_length2 == len(l2) - 1
     assert l1[len(l1)-1] == removed_relation
     assert l2[len(l2)-1] == removed_relation
+
+    #find ligtOp relation between the 2 funderingsMassiven
+    for i, existing_relation in enumerate(RelationChangeDomain.existing_relations):
+        if existing_relation.typeURI == "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#LigtOp":
+            ligt_op_relatie_index = i
+            ligt_op_relatie = existing_relation
+
+    removed_relation: RelatieObject = RelationChangeDomain.remove_existing_relation(index=ligt_op_relatie_index)
+
+    assert removed_relation  == ligt_op_relatie
+
+    source_id = removed_relation.bronAssetId.identificator
+    doel_id = removed_relation.doelAssetId.identificator
+
+    assert removed_relation not in RelationChangeDomain.existing_relations
+    assert removed_relation in RelationChangeDomain.possible_object_to_object_relations_dict[source_id][doel_id]
+    assert removed_relation in RelationChangeDomain.possible_object_to_object_relations_dict[doel_id][source_id]
 
 #################################################
 # UNIT TESTS                                    #
