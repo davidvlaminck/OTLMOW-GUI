@@ -1,6 +1,8 @@
 import abc
 from typing import Optional, Collection
 
+from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QColor
 from PyQt6.QtWidgets import QTreeWidget, QFrame, QVBoxLayout, QLabel, QListWidget, QListWidgetItem, \
     QHeaderView, QTreeWidgetItem, QWidget, QHBoxLayout, QLineEdit, QPushButton
 from otlmow_model.OtlmowModel.Helpers.OTLObjectHelper import is_relation
@@ -57,9 +59,20 @@ class AbstractInstanceListWidget:
     def fill_list(self, source_object: Optional[AIMObject], objects: Collection) -> None:
         raise NotImplementedError
 
-    @abc.abstractmethod
+
     def object_selected_listener(self) -> None:
-        raise NotImplementedError
+        for item_index in range(self.object_list_gui.count()):
+            list_item: QListWidgetItem = self.object_list_gui.item(item_index)
+            if list_item.isSelected():
+                # Change style for selected item
+                # list_item.setData(Qt.ItemDataRole.UserRole, QColor(0, 0, 255))  # Change to blue
+                list_item.setBackground(QColor(0, 0, 255))
+                list_item.setForeground(QColor(255, 255, 255))  # Change text color to white
+            else:
+                # Reset style for unselected items
+                # list_item.setData(Qt.ItemDataRole.UserRole, )  # Change back to white
+                list_item.setBackground(QColor(255, 255, 255))
+                list_item.setForeground(QColor(0, 0, 0))  # Change text color to black
 
     @abc.abstractmethod
     def create_button(self):

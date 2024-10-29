@@ -182,6 +182,11 @@ QApplication{
     border: 1px solid #000000;
 }
 
+QListWidget::item:selected{
+    background-color:  #0E5A69;
+    color: white;
+}
+
 QTabBar::tab{
     height: 30px;
     width: 300px;

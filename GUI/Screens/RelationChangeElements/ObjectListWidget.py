@@ -38,6 +38,7 @@ class ObjectListWidget(AbstractInstanceListWidget):
 
 
     def object_selected_listener(self) -> None:
+        super().object_selected_listener()
         for i in range(self.object_list_gui.count()):
             if self.object_list_gui.item(i).isSelected():
                 self.selected_object_col1 = RelationChangeDomain.get_object(

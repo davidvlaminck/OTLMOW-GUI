@@ -92,6 +92,7 @@ class PossibleRelationListWidget(AbstractInstanceListWidget):
         Returns:
            None
         """
+        super().object_selected_listener()
         self.listButton.isEnabled()
         if len(list(self.object_list_gui.selectedItems())):
             if not self.listButton.isEnabled():
