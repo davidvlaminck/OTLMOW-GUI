@@ -180,6 +180,13 @@ QApplication{
 
 .list{
     border: 1px solid #000000;
+    background-color: #FFFFFF;
+}
+
+.attribute_field{
+    border: 1px solid #000000;
+    background-color: #DDDDDD;
+
 }
 
 QListWidget::item:selected{

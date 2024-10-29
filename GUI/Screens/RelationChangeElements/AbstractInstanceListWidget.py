@@ -29,6 +29,7 @@ class AbstractInstanceListWidget:
         self.list_label_text = self._(class_list_label_key)
         self.attribute_field_label_text = self._(attribute_field_label_key)
         self.attribute_field: QTreeWidget = QTreeWidget()
+        self.attribute_field.setSelectionMode(QTreeWidget.SelectionMode.NoSelection)
 
     def create_object_list_gui(self,multi_select: bool = False) -> QFrame:
         frame = QFrame()
@@ -81,7 +82,7 @@ class AbstractInstanceListWidget:
     def create_attribute_field(self):
 
         self.attribute_field.setColumnCount(2)
-        self.attribute_field.setProperty('class', 'list')
+        self.attribute_field.setProperty('class', 'attribute_field')
         self.attribute_field.setHeaderHidden(True)
 
         header = self.attribute_field.header()
