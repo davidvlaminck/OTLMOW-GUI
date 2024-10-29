@@ -1,6 +1,7 @@
 from typing import List, Optional, cast
 
 from otlmow_converter.DotnotationDictConverter import DotnotationDictConverter
+from otlmow_converter.OtlmowConverter import OtlmowConverter
 from otlmow_model.OtlmowModel.BaseClasses.OTLObject import OTLObject, dynamic_create_type_from_uri
 from otlmow_model.OtlmowModel.Classes.ImplementatieElement.AIMObject import \
     AIMObject
@@ -13,7 +14,17 @@ from otlmow_modelbuilder.SQLDataClasses.OSLORelatie import OSLORelatie
 
 from Domain import global_vars
 from Domain.Project import Project
+from Domain.ProjectFile import ProjectFile
+from Domain.ProjectFileManager import ProjectFileManager
 
+def save_assets(func):
+    def wrapper_func(*args, **kwargs):
+        func(*args, **kwargs)
+        global_vars.current_project.assets_in_memory = RelationChangeDomain.objects + RelationChangeDomain.existing_relations
+        ProjectFileManager.save_validated_assets(global_vars.current_project,
+                                                 global_vars.current_project.project_path)
+
+    return wrapper_func
 
 class RelationChangeDomain:
 
@@ -37,6 +48,10 @@ class RelationChangeDomain:
         cls.existing_relations = []
         cls.possible_relations_per_class_dict = {}
         cls.possible_object_to_object_relations_dict = {}
+
+
+        cls.set_instances(ProjectFileManager.load_validated_assets())
+
 
     @classmethod
     def set_instances(cls, objects_list: List[AIMObject]):
@@ -197,6 +212,7 @@ class RelationChangeDomain:
         return sorted_dict
 
     @classmethod
+    @save_assets
     def add_possible_relation_to_existing_relations(cls, bron_asset_id, target_asset_id,
                                                     relation_object_index):
         relation_object = cls.possible_object_to_object_relations_dict[bron_asset_id][target_asset_id].pop(relation_object_index)
@@ -213,7 +229,9 @@ class RelationChangeDomain:
         cls.get_screen().fill_object_list(cls.objects)
         cls.get_screen().fill_existing_relations_list(cls.existing_relations)
 
+
     @classmethod
+    @save_assets
     def remove_existing_relation(cls, index:int) -> RelatieObject:
         removed_relation = cls.existing_relations.pop(index)
 
@@ -253,3 +271,5 @@ class RelationChangeDomain:
         last_selected_relation = cls.possible_object_to_object_relations_dict[last_selected_keys.source_id][last_selected_keys.target_id][last_selected_keys.index]
         cls.get_screen().fill_possible_relation_attribute_field(
             DotnotationDictConverter.to_dict(last_selected_relation))
+
+

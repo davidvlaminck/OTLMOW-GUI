@@ -17,8 +17,7 @@ from Domain.enums import Language, FileState
 from Domain.logger.OTLLogger import OTLLogger
 from Domain.ProjectFile import ProjectFile
 from Exceptions.ExcelFileUnavailableError import ExcelFileUnavailableError
-from GUI.DialogWindows.NotificationWindow import NotificationWindow
-from GUI.translation.GlobalTranslate import GlobalTranslate
+from UnitTests.TestClasses.Classes.ImplementatieElement.AIMObject import AIMObject
 
 
 class ProjectFileManager:
@@ -93,7 +92,8 @@ class ProjectFileManager:
             'bestek': project.bestek,
             'eigen_referentie': project.eigen_referentie,
             'laatst_bewerkt': project.laatst_bewerkt.strftime("%Y-%m-%d %H:%M:%S"),
-            'subset': project.subset_path.name
+            'subset': project.subset_path.name,
+            'last_quick_save': str(project.last_quick_save)
         }
 
         with open(project_dir_path / "project_details.json", "w") as project_details_file:
@@ -104,14 +104,47 @@ class ProjectFileManager:
         #       validated again? Implement this again later
         #       The problem is that he would overwrite assets.json that now contains a list of
         #       objects_list_files
-        # OtlmowConverter().from_objects_to_file(file_path=Path(project_dir_path / "assets.json"),
-        #                                           sequence_of_objects=project.assets_in_memory)
+        # cls.save_validated_assets(project, project_dir_path)
 
         if project.subset_path.parent.absolute() != project_dir_path.absolute():
             # move subset to project dir
             new_subset_path = project_dir_path / project.subset_path.name
             shutil.copy(project.subset_path, new_subset_path)
         global_vars.projects = cls.get_all_otl_wizard_projects()
+
+    @classmethod
+    def load_validated_assets(cls) -> list[AIMObject]:
+        project_dir_path = global_vars.current_project.project_path
+        if global_vars.current_project.last_quick_save and global_vars.current_project.last_quick_save.exists():
+            return list(OtlmowConverter.from_file_to_objects(global_vars.current_project.last_quick_save))
+        else:
+            quick_save_path = Path(project_dir_path / "quick_saves")
+
+            file_list =  sorted(os.listdir(quick_save_path), reverse=True)
+            if file_list:
+                return list(OtlmowConverter.from_file_to_objects(Path(quick_save_path,file_list[0])))
+
+        return []
+
+    @classmethod
+    def save_validated_assets(cls, project, project_dir_path):
+        quick_save_path = Path(project_dir_path / "quick_saves")
+        save_number = 1
+        if quick_save_path.exists():
+            numbers = sorted([filename.split("quick_save")[-1].split(".json")[0] for filename in os.listdir(quick_save_path)],reverse=True)
+            if numbers and numbers[0].isnumeric():
+                save_number = int(numbers[0])+1
+            else:
+                save_number = len(numbers) +1
+        else:
+            os.mkdir(quick_save_path)
+
+        save_path = quick_save_path / f"quick_save{save_number}.json"
+        OtlmowConverter.from_objects_to_file(file_path=save_path,
+                                             sequence_of_objects=project.assets_in_memory)
+        global_vars.current_project.last_quick_save =save_path
+        cls.save_project_to_dir(global_vars.current_project)
+
 
     @classmethod
     def export_project_to_file(cls, project: Project, file_path: Path) -> None:
@@ -147,9 +180,9 @@ class ProjectFileManager:
             for objects_list in objects_lists:
                 file = ProjectFile(
                     file_path=objects_list['file_path'],
-                    state=FileState.WARNING) # files loaded from memory storage need to be validated
+                    # state=FileState.WARNING) # files loaded from memory storage need to be validated
                                              # again
-                    # state=template['state'])
+                    state=FileState(objects_list['state']))
                 objects_lists_array.append(file)
             project.saved_project_files = objects_lists_array
         return project
@@ -326,3 +359,4 @@ class ProjectFileManager:
             datetime_obj = datetime.datetime.strptime(split_file[-1], "%Y%m%d%H%M%S")
             if datetime_obj < datetime.datetime.now() - datetime.timedelta(days=7):
                 os.remove(work_dir_path / file)
+
