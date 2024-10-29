@@ -49,11 +49,17 @@ class ExistingRelationListWidget(AbstractInstanceListWidget):
             val['text'].name_source if val['text'].name_source is not None else "xxx",
             val['text'].name_target if val['text'].name_target is not None else "xxx"))
 
+
+        item_list = []
         for val in list_of_corresponding_values:
             item = QListWidgetItem()
-            item.setText(
-                f"{val['text'].relation_typeURI} | {val['text'].name_source} {val['text'].direction} {val['text'].name_target}")
+            item.setText(f"{val['text'].relation_typeURI} | {val['text'].name_source} {val['text'].direction} {val['text'].name_target}")
             item.setData(3, val["data"].index)
+            item_list.append(item)
+
+        item_list = self.filter_on_search_text(items=item_list)
+
+        for item in item_list:
             self.object_list_gui.addItem(item)
 
     def object_selected_listener(self) -> None:

@@ -59,6 +59,7 @@ class PossibleRelationListWidget(AbstractInstanceListWidget):
         list_of_corresponding_values.sort(key=lambda val: (
         val['text'].target_typeURI, val['text'].screen_name, val['text'].source_typeURI))
 
+        item_list = []
         for val in list_of_corresponding_values:
             item = QListWidgetItem()
             text = f"{val['text'].source_typeURI} {val['text'].direction} {val['text'].screen_name} | {val['text'].target_typeURI}"
@@ -70,7 +71,13 @@ class PossibleRelationListWidget(AbstractInstanceListWidget):
             item.setData(4, val['data'].target_id)
             item.setData(5, val['data'].index)
 
+            item_list.append(item)
+
+        item_list = self.filter_on_search_text(items=item_list)
+
+        for item in item_list:
             self.object_list_gui.addItem(item)
+
 
     def object_selected_listener(self) -> None:
         """Check the selection state of possible relations and update the button accordingly.

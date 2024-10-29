@@ -18,6 +18,7 @@ class ObjectListWidget(AbstractInstanceListWidget):
         # objects = RelationChangeDomain.objects
 
         self.object_list_gui.clear()
+        item_list = []
         for OTL_object in objects:
             item = QListWidgetItem()
             item.setData(1, OTL_object.assetId.identificator)
@@ -28,8 +29,13 @@ class ObjectListWidget(AbstractInstanceListWidget):
             abbr_typeURI = RelationChangeHelpers.get_abbreviated_typeURI(OTL_object)
 
             item.setText(f"{screen_name} | {abbr_typeURI}")
+            item_list.append(item)
 
+        item_list = self.filter_on_search_text(items=item_list)
+
+        for item in item_list:
             self.object_list_gui.addItem(item)
+
 
     def object_selected_listener(self) -> None:
         for i in range(self.object_list_gui.count()):

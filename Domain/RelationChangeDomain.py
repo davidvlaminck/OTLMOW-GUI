@@ -164,43 +164,8 @@ class RelationChangeDomain:
         return filter_func
 
     @classmethod
-    def get_all_relations(cls, class_type):
-        found_relations = []
-        try:
-            found_relations = cls.collector.find_all_relations(class_type.typeURI,False)
-            print(
-                "Add {1}  relations of {0} ".format(class_type.typeURI, len(found_relations)))
-        except AttributeError:
-            pass
-
-        print("found parents {0}".format(class_type.__bases__))
-
-        for parentClass in class_type.__bases__:
-            found_relations.extend(cls.get_all_relations(parentClass))
-
-        return found_relations
-
-    @classmethod
     def get_screen(cls):
         return global_vars.otl_wizard.main_window.step3_relations
-
-    @classmethod
-    def invert_relation(cls, relation):
-        if (relation.richting == "Source -> Destination"):
-            richting = "Destination -> Source"
-        elif (relation.richting == "Destination -> Source"):
-            richting = "Source -> Destination"
-        else:
-            richting = relation.richting
-
-        return OSLORelatie(bron_uri = relation.doel_uri,
-                               doel_uri = relation.bron_uri,
-                               objectUri = relation.objectUri,
-                               richting = richting,
-                               usagenote="",
-                               deprecated_version=relation.deprecated_version,
-                               bron_overerving = relation.doel_overerving,
-                               doel_overerving = relation.bron_overerving)
 
     @classmethod
     def create_relation_object(cls,
@@ -247,6 +212,7 @@ class RelationChangeDomain:
             selected_object_id = cls.selected_object.assetId.identificator
             possibleRelations = cls.possible_object_to_object_relations[selected_object_id]
             cls.get_screen().fill_possible_relations_list(cls.selected_object, possibleRelations)
+        cls.get_screen().fill_object_list(cls.objects)
         cls.get_screen().fill_existing_relations_list(cls.existing_relations)
 
     @classmethod

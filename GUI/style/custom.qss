@@ -92,6 +92,7 @@ HomeScreen{
     padding-left: 10px;
     padding-right: 10px;
     border: 1px solid #0E5A69;
+    cursor:pointer;
 }
 
 QApplication{
