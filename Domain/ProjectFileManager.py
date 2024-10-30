@@ -115,11 +115,11 @@ class ProjectFileManager:
     @classmethod
     def load_validated_assets(cls) -> list[AIMObject]:
         project_dir_path = global_vars.current_project.project_path
+
+        quick_save_path = Path(project_dir_path / "quick_saves")
         if global_vars.current_project.last_quick_save and global_vars.current_project.last_quick_save.exists():
             return list(OtlmowConverter.from_file_to_objects(global_vars.current_project.last_quick_save))
-        else:
-            quick_save_path = Path(project_dir_path / "quick_saves")
-
+        elif quick_save_path.exists():
             file_list =  sorted(os.listdir(quick_save_path), reverse=True)
             if file_list:
                 return list(OtlmowConverter.from_file_to_objects(Path(quick_save_path,file_list[0])))

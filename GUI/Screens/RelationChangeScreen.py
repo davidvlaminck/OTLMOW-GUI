@@ -1,27 +1,19 @@
-from collections import namedtuple
 from pathlib import Path
-from typing import List, Optional
+from typing import List
 
 import qtawesome as qta
-from PyQt6.QtGui import QPixmap, QPalette, QColorConstants
+from PyQt6.QtGui import QPixmap
 from PyQt6.QtWidgets import QVBoxLayout, QFrame, QHBoxLayout, QPushButton, \
-    QWidget, QLineEdit, QLabel, QListWidget, QListWidgetItem, QHeaderView, QTreeWidget, \
-    QTreeWidgetItem
+    QWidget, QLineEdit, QLabel
 from otlmow_model.OtlmowModel.Classes.ImplementatieElement.AIMObject import \
     AIMObject
 from otlmow_model.OtlmowModel.Classes.ImplementatieElement.RelatieObject import RelatieObject
-from otlmow_model.OtlmowModel.Helpers.OTLObjectHelper import is_directional_relation
-from pandas.errors import PossiblePrecisionLoss
 
-from Domain.RelationChangeDomain import RelationChangeDomain
-from GUI.ButtonWidget import ButtonWidget
-from GUI.Screens.RelationChangeElements.AbstractInstanceListWidget import \
-    AbstractInstanceListWidget
 from GUI.Screens.RelationChangeElements.ExistingRelationListWidget import \
     ExistingRelationListWidget
 from GUI.Screens.RelationChangeElements.ObjectListWidget import ObjectListWidget
-from GUI.Screens.RelationChangeElements.PossibleRelationListWidget import PossibleRelationListWidget
-from GUI.Screens.RelationChangeElements.RelationChangeHelpers import RelationChangeHelpers
+from GUI.Screens.RelationChangeElements.PossibleRelationListWidget import \
+    PossibleRelationListWidget
 from GUI.Screens.Screen import Screen
 
 
