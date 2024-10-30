@@ -122,7 +122,8 @@ class AbstractInstanceListWidget:
         RelationChangeDomain.update_frontend()
 
     def filter_on_search_text(self, items:list[QListWidgetItem]) -> list[QListWidgetItem]:
-        return  list(filter(lambda item: self.search_text in item.text().lower(),items))
+        return   [item for item in items
+                  if self.search_text in item.text().lower()]
 
     @classmethod
     def fill_attribute_field(cls, field, object_attribute_dict):
