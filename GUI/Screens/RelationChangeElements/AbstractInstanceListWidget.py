@@ -101,11 +101,11 @@ class AbstractInstanceListWidget:
         frame_layout = QHBoxLayout()
         self.search_bar = QLineEdit()
         self.search_bar.setPlaceholderText(self._('search'))
-        self.search_bar.textChanged.connect(self.search)
+        self.search_bar.textChanged.connect(self.search_listener)
 
         self.clear_search_bar_button = QPushButton()
         self.clear_search_bar_button.setIcon(qta.icon('mdi.close'))
-        self.clear_search_bar_button.clicked.connect(self.clear_search)
+        self.clear_search_bar_button.clicked.connect(self.clear_search_listener)
         self.clear_search_bar_button.setProperty('class', 'secondary-button')
 
         frame_layout.addWidget(self.search_bar)
@@ -113,11 +113,11 @@ class AbstractInstanceListWidget:
         frame.setLayout(frame_layout)
         return frame
 
-    def search(self,text:str):
+    def search_listener(self,text:str):
         self.search_text = text.lower()
         RelationChangeDomain.update_frontend()
 
-    def clear_search(self):
+    def clear_search_listener(self):
         self.search_bar.setText("")
         RelationChangeDomain.update_frontend()
 

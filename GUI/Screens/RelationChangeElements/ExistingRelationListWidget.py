@@ -77,7 +77,7 @@ class ExistingRelationListWidget(AbstractInstanceListWidget):
         self.listButton.setText(self._('remove_relation'))
         self.listButton.setDisabled(True)
         self.listButton.clicked.connect(
-            self.remove_existing_relations)
+            self.remove_existing_relations_listener)
         self.listButton.setProperty('class', 'primary-button')
         return self.listButton
 
@@ -88,7 +88,7 @@ class ExistingRelationListWidget(AbstractInstanceListWidget):
 
         RelationChangeDomain.select_existing_relation_indices(indices)
 
-    def remove_existing_relations(self):
+    def remove_existing_relations_listener(self):
         indices: list[int] = [
             item.data(3)
             for item in self.object_list_gui.selectedItems()]

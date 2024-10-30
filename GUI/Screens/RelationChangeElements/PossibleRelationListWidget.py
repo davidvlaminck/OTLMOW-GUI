@@ -106,11 +106,11 @@ class PossibleRelationListWidget(AbstractInstanceListWidget):
         self.listButton.setText(self._('add_relation'))
         self.listButton.setDisabled(True)
         self.listButton.clicked.connect(
-            self.add_possible_relation_to_existing_relations)
+            self.add_possible_relation_to_existing_relations_listener)
         self.listButton.setProperty('class', 'primary-button')
         return self.listButton
 
-    def add_possible_relation_to_existing_relations(self):
+    def add_possible_relation_to_existing_relations_listener(self):
         Data = namedtuple('data', ['source_id', 'target_id', "index"])
         data_list: list[Data] = [
             Data(item.data(3), item.data(4), item.data(5))
