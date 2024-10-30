@@ -89,9 +89,9 @@ class ExistingRelationListWidget(AbstractInstanceListWidget):
         RelationChangeDomain.select_existing_relation_indices(indices)
 
     def remove_existing_relations_listener(self):
-        indices: list[int] = [
+        indices: list[int] = sorted([
             item.data(3)
-            for item in self.object_list_gui.selectedItems()]
+            for item in self.object_list_gui.selectedItems()],reverse=True)
 
         for index in indices:
             RelationChangeDomain.remove_existing_relation(index)
