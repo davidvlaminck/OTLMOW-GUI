@@ -41,8 +41,9 @@ class ObjectListWidget(AbstractInstanceListWidget):
         super().object_selected_listener()
         for i in range(self.object_list_gui.count()):
             if self.object_list_gui.item(i).isSelected():
+                selected_object_id = self.object_list_gui.item(i).data(1)
                 self.selected_object_col1 = RelationChangeDomain.get_object(
-                    identificator=self.object_list_gui.item(i).data(1))
+                    identificator=selected_object_id)
                 if self.selected_object_col1 is not None:
                     RelationChangeDomain.set_possible_relations(
                         selected_object=self.selected_object_col1)
@@ -54,3 +55,8 @@ class ObjectListWidget(AbstractInstanceListWidget):
         self.listButton.setText("hidden")
         self.listButton.setProperty("class", "invisible")
         return self.listButton
+
+    def select_object_id(self, selected_object_id: str):
+        selected_item: list[QListWidgetItem] = [self.object_list_gui.item(i)  for i in range(self.object_list_gui.count()) if selected_object_id==self.object_list_gui.item(i).data(1)]
+        if selected_item:
+            selected_item[0].setSelected(True)

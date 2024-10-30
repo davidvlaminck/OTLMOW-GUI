@@ -224,12 +224,14 @@ class RelationChangeDomain:
 
     @classmethod
     def update_frontend(cls):
+        cls.get_screen().fill_object_list(cls.objects)
+        cls.get_screen().fill_existing_relations_list(cls.existing_relations)
         if cls.selected_object:
             selected_object_id = cls.selected_object.assetId.identificator
             possibleRelations = cls.possible_object_to_object_relations_dict[selected_object_id]
             cls.get_screen().fill_possible_relations_list(cls.selected_object, possibleRelations)
-        cls.get_screen().fill_object_list(cls.objects)
-        cls.get_screen().fill_existing_relations_list(cls.existing_relations)
+            cls.reselect_selected_object_in_frontend()
+
 
 
     @classmethod
@@ -274,4 +276,8 @@ class RelationChangeDomain:
         cls.get_screen().fill_possible_relation_attribute_field(
             DotnotationDictConverter.to_dict(last_selected_relation))
 
-
+    @classmethod
+    def reselect_selected_object_in_frontend(cls):
+        if cls.selected_object:
+            selected_object_id = cls.selected_object.assetId.identificator
+            cls.get_screen().select_object_id(selected_object_id)
