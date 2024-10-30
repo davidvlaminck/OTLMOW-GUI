@@ -14,8 +14,9 @@ from otlmow_modelbuilder.SQLDataClasses.OSLORelatie import OSLORelatie
 
 from Domain import global_vars
 from Domain.Project import Project
-from Domain.ProjectFile import ProjectFile
 from Domain.ProjectFileManager import ProjectFileManager
+
+
 
 def save_assets(func):
     def wrapper_func(*args, **kwargs):
@@ -50,7 +51,6 @@ class RelationChangeDomain:
         cls.possible_relations_per_class_dict = {}
         cls.possible_object_to_object_relations_dict = {}
 
-
         cls.set_instances(ProjectFileManager.load_validated_assets())
 
 
@@ -65,6 +65,7 @@ class RelationChangeDomain:
                 cls.objects.append(instance)
 
         cls.get_screen().fill_object_list(cls.objects)
+        cls.get_screen().fill_possible_relations_list(None, cls.possible_object_to_object_relations_dict)
         cls.get_screen().fill_existing_relations_list(cls.existing_relations)
 
     @classmethod
