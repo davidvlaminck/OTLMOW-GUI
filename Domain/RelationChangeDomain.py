@@ -23,6 +23,7 @@ def save_assets(func):
         global_vars.current_project.assets_in_memory = RelationChangeDomain.objects + RelationChangeDomain.existing_relations
         ProjectFileManager.save_validated_assets(global_vars.current_project,
                                                  global_vars.current_project.project_path)
+        global_vars.otl_wizard.main_window.step_3_tabwidget.header.start_event_loop()
 
     return wrapper_func
 

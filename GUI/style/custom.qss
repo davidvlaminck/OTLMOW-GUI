@@ -265,3 +265,8 @@ QTabBar::tab{
 .settings:menu-indicator{
     image: none;
 }
+
+.white_text
+{
+    color: #ffffff;
+}
