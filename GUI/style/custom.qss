@@ -184,8 +184,8 @@ QApplication{
 }
 
 .attribute_field{
-    border: 1px solid #000000;
-    background-color: #DDDDDD;
+    border: 1px solid #EEEEEE;
+    background-color: #EEEEEE;
 
 }
 
