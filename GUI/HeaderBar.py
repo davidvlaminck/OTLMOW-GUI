@@ -101,7 +101,7 @@ class HeaderBar(QFrame):
         count = 0
         time_string = datetime.now().strftime("%H:%M")
         self.saving_msg.setText("Saving")
-        while count < 360/10:
+        while count < (360/10): # about 1.8 seconds
             transform = QTransform()
             angle += 10
             count +=1
@@ -109,15 +109,15 @@ class HeaderBar(QFrame):
             transform.rotate(angle)
             rotation_pixmap = self.pixmap_icon.transformed(transform)
             self.loading_icon.setPixmap(rotation_pixmap)
-            # if(count%5 == 0):
-            #     self.saving_msg.setProperty("class", "white_text")
+            if(count == 20):
+                self.saving_msg.setText(f"Last Saved at {time_string}")
             # elif(count%5 == 3):
             #     self.saving_msg.setProperty("class", "black_text")
 
-            await sleep(0.1)
+            await sleep(0.05)
 
         self.loading_icon.setPixmap(self.pixmap_icon)
-        self.saving_msg.setText(f"Last Saved at {time_string}")
+        # self.saving_msg.setText(f"Last Saved at {time_string}")
 
     def construct_settings_bar(self):
         user_pref_container = QHBoxLayout()
