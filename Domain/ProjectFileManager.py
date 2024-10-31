@@ -153,7 +153,7 @@ class ProjectFileManager:
         """
         quick_save_dir_path = Path(project_dir_path / "quick_saves")
         save_number = 1
-        date_format = "%d_%m_%y"
+        date_format = "%y%m%d_%H%M%S"
         max_days_stored = 7
 
         if quick_save_dir_path.exists():
@@ -163,41 +163,29 @@ class ProjectFileManager:
                                           max_days_stored= max_days_stored,
                                           quick_save_dir_path= quick_save_dir_path,
                                           date_format= date_format)
-            save_number = cls.get_highest_number_in_quicksave_filename_for_today(
-                current_date= current_date,
-                quick_save_dir_path= quick_save_dir_path,
-                date_format= date_format)
         else:
             os.mkdir(quick_save_dir_path)
 
         current_date_str =  datetime.datetime.now().strftime(date_format)
 
-        save_path = quick_save_dir_path / f"quick_save{save_number}-{current_date_str}.json"
+        save_path = quick_save_dir_path / f"quick_save-{current_date_str}.json"
         OtlmowConverter.from_objects_to_file(file_path=save_path,
                                              sequence_of_objects=project.assets_in_memory)
         global_vars.current_project.last_quick_save =save_path
         cls.save_project_to_dir(global_vars.current_project)
 
-    @classmethod
-    def get_highest_number_in_quicksave_filename_for_today(cls, current_date, quick_save_dir_path, date_format):
-
-        new_number = 1
-        numbers = sorted([filename.split("quick_save")[-1].split(".json")[0]
-                          for filename in os.listdir(quick_save_dir_path)
-                          if datetime.datetime.strptime(filename.split("-")[-1].split(".json")[0],date_format).day == current_date.day], reverse=True)
-        # sourcery skip: assign-if-exp, inline-immediately-returned-variable, lift-return-into-if
-        if numbers and numbers[0].isnumeric():
-            new_number = int(numbers[0]) + 1
-        else:
-            new_number = len(numbers) + 1
-        return new_number
 
     @classmethod
     def remove_too_old_quicksaves(cls, current_date, max_days_stored, quick_save_dir_path, date_format):
         files = os.listdir(quick_save_dir_path)
         for filename in files:
-            file_date = datetime.datetime.strptime(filename.split("-")[-1].split(".json")[0],
-                                                   date_format)
+            try:
+                file_date = datetime.datetime.strptime(filename.split("-")[-1].split(".json")[0],
+                                                       date_format)
+            except ValueError:
+                # if the save file doesn't adhere to standard naming convention it is never deleted
+                file_date = current_date
+
             days_ago = (current_date - file_date).days
             if days_ago > max_days_stored:
                 file_to_remove_path = Path(quick_save_dir_path, filename)
