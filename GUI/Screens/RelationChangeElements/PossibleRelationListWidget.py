@@ -112,9 +112,9 @@ class PossibleRelationListWidget(AbstractInstanceListWidget):
 
     def add_possible_relation_to_existing_relations_listener(self):
         Data = namedtuple('data', ['source_id', 'target_id', "index"])
-        data_list: list[Data] = [
+        data_list: list[Data] = sorted([
             Data(item.data(3), item.data(4), item.data(5))
-            for item in self.object_list_gui.selectedItems()]
+            for item in self.object_list_gui.selectedItems()],reverse=True)
 
         for data in data_list:
             RelationChangeDomain.add_possible_relation_to_existing_relations(data.source_id,
