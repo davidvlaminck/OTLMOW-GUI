@@ -20,11 +20,12 @@ from Domain.ProjectFileManager import ProjectFileManager
 
 def save_assets(func):
     def wrapper_func(*args, **kwargs):
-        func(*args, **kwargs)
+        res = func(*args, **kwargs)
         global_vars.current_project.assets_in_memory = RelationChangeDomain.objects + RelationChangeDomain.existing_relations
         ProjectFileManager.save_validated_assets(global_vars.current_project,
                                                  global_vars.current_project.project_path)
         global_vars.otl_wizard.main_window.step_3_tabwidget.header.start_event_loop()
+        return res
 
     return wrapper_func
 
@@ -56,7 +57,8 @@ class RelationChangeDomain:
 
     @classmethod
     def set_instances(cls, objects_list: List[AIMObject]):
-
+        cls.existing_relations = []
+        cls.objects = []
 
         for instance in objects_list:
             if is_relation(instance):
@@ -281,3 +283,7 @@ class RelationChangeDomain:
         if cls.selected_object:
             selected_object_id = cls.selected_object.assetId.identificator
             cls.get_screen().select_object_id(selected_object_id)
+
+    @classmethod
+    def get_instances(cls) -> list[RelatieObject | AIMObject]:
+        return cls.objects + cls.existing_relations

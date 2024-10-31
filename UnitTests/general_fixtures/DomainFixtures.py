@@ -55,3 +55,18 @@ def setup_test_project(root_directory: Path) -> None:
 
     yield
     ProjectFileManager.get_otl_wizard_projects_dir = original_get_otl_wizard_projects_dir
+
+@fixture
+def mock_save_validated_assets_function() -> None:
+    original_save_validated_assets =  ProjectFileManager.save_validated_assets
+    ProjectFileManager.save_validated_assets  = Mock()
+    yield
+    ProjectFileManager.save_validated_assets = original_save_validated_assets
+
+@fixture
+def mock_load_validated_assets() -> None:
+    original_load_validated_assets = ProjectFileManager.load_validated_assets
+
+    ProjectFileManager.load_validated_assets = Mock(return_value=RelationChangeDomain.get_instances())
+    yield
+    ProjectFileManager.load_validated_assets = original_load_validated_assets

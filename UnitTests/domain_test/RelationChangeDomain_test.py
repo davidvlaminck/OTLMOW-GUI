@@ -84,7 +84,8 @@ def test_full_set_possible_relations(root_directory:Path,
                                 mock_screen: InsertDataScreen,
                                 mock_fill_possible_relations_list: RelationChangeScreen,
                                 setup_test_project,
-                                mock_step3_visuals):
+                                mock_step3_visuals,mock_save_validated_assets_function,
+                                 mock_load_validated_assets):
 
     test_object_lists_file_path: list[str] = [
         str(root_directory / "demo_projects" / "simpel_vergelijkings_project" / "simpel_vergelijking_template2.xlsx")]
@@ -258,7 +259,8 @@ def test_full_add_possible_relation_to_existing_relation(root_directory:Path,
                                 mock_screen: InsertDataScreen,
                                 mock_fill_possible_relations_list: RelationChangeScreen,
                                 setup_test_project,
-                                mock_step3_visuals):
+                                mock_step3_visuals,mock_save_validated_assets_function,
+                                 mock_load_validated_assets):
     test_object_lists_file_path: list[str] = [
         str(root_directory / "demo_projects" / "simpel_vergelijkings_project" / "simpel_vergelijking_template2.xlsx")]
 
@@ -325,7 +327,8 @@ def test_full_add_possible_relation_to_existing_relation(root_directory: Path,
                                                          mock_screen: InsertDataScreen,
                                                          mock_fill_possible_relations_list: RelationChangeScreen,
                                                          setup_test_project,
-                                                         mock_step3_visuals):
+                                                         mock_step3_visuals,mock_save_validated_assets_function,
+                                 mock_load_validated_assets):
     test_object_lists_file_path: list[str] = [
         str(root_directory / "demo_projects" / "simpel_vergelijkings_project" / "simpel_vergelijking_template2.xlsx")]
 
@@ -372,7 +375,10 @@ def test_full_add_possible_relation_to_existing_relation(root_directory:Path,
                                 mock_screen: InsertDataScreen,
                                 mock_fill_possible_relations_list: RelationChangeScreen,
                                 setup_test_project,
-                                mock_step3_visuals):
+                                mock_step3_visuals,
+                                mock_save_validated_assets_function,
+                                mock_load_validated_assets
+                                                         ):
     test_object_lists_file_path: list[str] = [
         str(root_directory / "demo_projects" / "simpel_vergelijkings_project" / "simpel_vergelijking_template2.xlsx")]
 
@@ -408,7 +414,8 @@ def test_full_remove_existing_relation(root_directory:Path,
                                 mock_screen: InsertDataScreen,
                                 mock_fill_possible_relations_list: RelationChangeScreen,
                                 setup_test_project,
-                                mock_step3_visuals):
+                                mock_step3_visuals,mock_save_validated_assets_function,
+                                 mock_load_validated_assets):
     test_object_lists_file_path: list[str] = [
         str(root_directory / "demo_projects" / "simpel_vergelijkings_project" / "simpel_vergelijking_template2.xlsx")]
 
@@ -493,13 +500,15 @@ def mock_collect_all() -> Mock:
     # after the test the original collect_all is restored for other tests to use
     OSLOCollector.collect_all = original_collect_all
 
+
 @pytest.mark.parametrize("subset_path, expected_exception", [
     (patch('pathlib.Path')("valid/path"), None),
     ("valid/path", None),  # edge case: string instead of path
     ("", None),      # edge case: empty path
     (None, None),     # edge case: None path
 ], ids=["valid_path", "string_path", "empty_path", "none_path"])
-def test_init_static(mock_project: Project,mock_collect_all: Mock, mock_oslo_collector: Function, subset_path: str, expected_exception: Optional[Exception]):
+def test_init_static(mock_project: Project,mock_collect_all: Mock, mock_oslo_collector: Function, subset_path: str, expected_exception: Optional[Exception],mock_save_validated_assets_function,
+                                 mock_load_validated_assets):
     # Arrange
     mock_project.subset_path = subset_path
 
@@ -521,12 +530,24 @@ def test_init_static(mock_project: Project,mock_collect_all: Mock, mock_oslo_col
 # RelationChangeDomain.set_objects              #
 #################################################
 
-def test_set_objects_empty_list(mock_screen: RelationChangeScreen):
+def test_set_objects_empty_list(mock_project: Project,
+                                mock_collect_all: Mock,
+                                mock_oslo_collector: Function,
+                                mock_screen: InsertDataScreen,
+                                mock_rel_screen: RelationChangeScreen,
+                                mock_save_validated_assets_function,
+                                 mock_load_validated_assets):
+    local_mock = RelationChangeDomain.set_instances
+    RelationChangeDomain.set_instances = Mock()
+    RelationChangeDomain.init_static(mock_project)
+    RelationChangeDomain.set_instances = local_mock
+
     RelationChangeDomain.set_instances([])
 
     assert len(RelationChangeDomain.objects) == 0
 
-def test_set_objects_single_item_list(mock_screen: RelationChangeScreen,mock_collect_all,mock_rel_screen):
+def test_set_objects_single_item_list(mock_screen: RelationChangeScreen,mock_collect_all,mock_rel_screen,mock_save_validated_assets_function,
+                                 mock_load_validated_assets):
     RelationChangeDomain.init_static(Project())
     test_object = AllCasesTestClass()
     test_object.assetId.identificator = "dummy_identificator"
@@ -535,7 +556,8 @@ def test_set_objects_single_item_list(mock_screen: RelationChangeScreen,mock_col
     assert len(RelationChangeDomain.objects) == 1
     assert RelationChangeDomain.objects[0].assetId.identificator == "dummy_identificator"
 
-def test_set_objects_double_item_list(mock_screen,mock_collect_all,mock_rel_screen):
+def test_set_objects_double_item_list(mock_screen,mock_collect_all,mock_rel_screen,mock_save_validated_assets_function,
+                                 mock_load_validated_assets):
     RelationChangeDomain.init_static(Project())
     test_object = AllCasesTestClass()
     test_object.assetId.identificator = "dummy_identificator"
@@ -588,7 +610,8 @@ def test_set_possible_relations_single_item_list(mock_fill_possible_relations_li
 
 @pytest.mark.skip
 def test_set_possible_relations_double_item_list(mock_fill_possible_relations_list: RelationChangeScreen
-                                                 ,mock_collector:Mock):
+                                                 ,mock_collector:Mock,mock_save_validated_assets_function,
+                                 mock_load_validated_assets):
 
     test_object = AllCasesTestClass()
     test_object.assetId.identificator = "dummy_identificator"
