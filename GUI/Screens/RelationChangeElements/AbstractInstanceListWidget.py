@@ -38,7 +38,7 @@ class AbstractInstanceListWidget:
         list_label.setText(self.list_label_text)
         self.list_gui = QListWidget()
         self.list_gui.setProperty('class', 'list')
-        self.list_gui.itemSelectionChanged.connect(self.object_selected_listener)
+        self.list_gui.itemClicked.connect(self.object_selected_listener)
         if multi_select:
             self.list_gui.setSelectionMode(QListWidget.SelectionMode.MultiSelection)
 
@@ -61,19 +61,26 @@ class AbstractInstanceListWidget:
         raise NotImplementedError
 
 
-    def object_selected_listener(self) -> None:
-        for item_index in range(self.list_gui.count()):
-            list_item: QListWidgetItem = self.list_gui.item(item_index)
-            if list_item.isSelected():
-                # Change style for selected item
-                # list_item.setData(Qt.ItemDataRole.UserRole, QColor(0, 0, 255))  # Change to blue
-                list_item.setBackground(QColor(0, 0, 255))
-                list_item.setForeground(QColor(255, 255, 255))  # Change text color to white
-            else:
-                # Reset style for unselected items
-                # list_item.setData(Qt.ItemDataRole.UserRole, )  # Change back to white
-                list_item.setBackground(QColor(255, 255, 255))
-                list_item.setForeground(QColor(0, 0, 0))  # Change text color to black
+    def getCheckedItems(self):
+        return [self.object_list_gui.item(i) for i in range(self.object_list_gui.count()) if self.object_list_gui.item(i).checkState() == Qt.CheckState.Checked]
+
+    def object_selected_listener(self,item) -> None:
+        pass
+        # if not self.multi_select:
+        #     return
+        #
+        #
+        # for item_index in range(self.object_list_gui.count()):
+        #     list_item: QListWidgetItem = self.object_list_gui.item(item_index)
+        #     if list_item.isSelected() :
+        #
+        #         if list_item.checkState() == Qt.CheckState.Unchecked:
+        #             list_item.setCheckState(Qt.CheckState.Checked)
+        #
+        #     else:
+        #         if list_item.checkState() == Qt.CheckState.Checked:
+        #             list_item.setSelected(True)
+
 
     @abc.abstractmethod
     def create_button(self):

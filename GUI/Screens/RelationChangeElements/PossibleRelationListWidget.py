@@ -79,7 +79,7 @@ class PossibleRelationListWidget(AbstractInstanceListWidget):
             self.list_gui.addItem(item)
 
 
-    def object_selected_listener(self) -> None:
+    def object_selected_listener(self,item) -> None:
         """Check the selection state of possible relations and update the button accordingly.
 
         This function enables or disables the 'add possible relation to existing' button based on whether
@@ -92,7 +92,7 @@ class PossibleRelationListWidget(AbstractInstanceListWidget):
         Returns:
            None
         """
-        super().object_selected_listener()
+        super().object_selected_listener(item)
         self.listButton.isEnabled()
         if len(list(self.list_gui.selectedItems())):
             if not self.listButton.isEnabled():

@@ -11,25 +11,50 @@ from UnitTests.TestClasses.Classes.ImplementatieElement.AIMObject import AIMObje
 
 
 class ObjectListWidget(AbstractInstanceListWidget):
+
     def __init__(self, language_settings):
         super().__init__(language_settings,'class_list','object_attributes')
+        self.type_to_items_dict = {}
+        self.type_open_status = {}
 
     def fill_list(self, source_object: Optional[AIMObject], objects: Collection) -> None:
+        # sourcery skip: remove-dict-keys
         # objects = RelationChangeDomain.objects
 
         self.list_gui.clear()
         item_list = []
-        for OTL_object in objects:
-            item = QListWidgetItem()
-            item.setData(1, OTL_object.assetId.identificator)
-            # item.clicked.connect(self.object_selected)
+        type_to_instance_dict = {}
 
-            screen_name = RelationChangeHelpers.get_screen_name(OTL_object)
+        for OTL_object in objects:
 
             abbr_typeURI = RelationChangeHelpers.get_abbreviated_typeURI(OTL_object)
 
-            item.setText(f"{screen_name} | {abbr_typeURI}")
+            if abbr_typeURI in type_to_instance_dict.keys():
+                type_to_instance_dict[abbr_typeURI].append(OTL_object)
+            else:
+                type_to_instance_dict[abbr_typeURI] = [OTL_object]
+
+        for asset_type, objects in type_to_instance_dict.items():
+            item = QListWidgetItem()
+            item.setText(f"{asset_type}")
+
+            item.setData(3, asset_type)
+            item.setData(4, "type")
+
             item_list.append(item)
+
+            self.type_to_items_dict[asset_type] = []
+            self.type_open_status[asset_type] = False
+            for OTL_object in objects:
+                item = QListWidgetItem()
+                screen_name = RelationChangeHelpers.get_screen_name(OTL_object)
+
+                item.setText(f"     {screen_name}")
+
+                item.setData(3, OTL_object.assetId.identificator)
+                item.setData(4, "instance")
+
+                self.type_to_items_dict[asset_type].append(item)
 
         item_list = self.filter_on_search_text(items=item_list)
 
@@ -37,18 +62,29 @@ class ObjectListWidget(AbstractInstanceListWidget):
             self.list_gui.addItem(item)
 
 
-    def object_selected_listener(self) -> None:
-        super().object_selected_listener()
-        for i in range(self.list_gui.count()):
-            if self.list_gui.item(i).isSelected():
-                selected_object_id = self.list_gui.item(i).data(1)
-                self.selected_object_col1 = RelationChangeDomain.get_object(
-                    identificator=selected_object_id)
-                if self.selected_object_col1 is not None:
-                    RelationChangeDomain.set_possible_relations(
-                        selected_object=self.selected_object_col1)
+    def object_selected_listener(self,item) -> None:
+        super().object_selected_listener(item)
 
-                break
+        type_of_item = item.data(4)
+        if type_of_item == "type":
+            asset_type = item.data(3)
+            self.type_open_status[asset_type] = not self.type_open_status[asset_type]
+            indexSelectedItem = self.list_gui.indexFromItem(item).row()
+
+            if self.type_open_status[asset_type]:
+                for i,instance_item in enumerate(self.type_to_items_dict[asset_type]):
+                    self.list_gui.insertItem(indexSelectedItem+i+1,instance_item)
+            else:
+                for instance_item in self.type_to_items_dict[asset_type]:
+                    self.list_gui.takeItem(self.list_gui.indexFromItem(instance_item).row())
+
+        if type_of_item == "instance":
+            selected_object_id = item.data(3)
+            self.selected_object_col1 = RelationChangeDomain.get_object(
+                identificator=selected_object_id)
+            if self.selected_object_col1 is not None:
+                RelationChangeDomain.set_possible_relations(
+                    selected_object=self.selected_object_col1)
 
     def create_button(self):
         self.listButton.setEnabled(False)

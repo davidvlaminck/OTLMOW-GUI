@@ -62,8 +62,8 @@ class ExistingRelationListWidget(AbstractInstanceListWidget):
         for item in item_list:
             self.list_gui.addItem(item)
 
-    def object_selected_listener(self) -> None:
-        super().object_selected_listener()
+    def object_selected_listener(self,item) -> None:
+        super().object_selected_listener(item)
         self.listButton.isEnabled()
         if len(list(self.list_gui.selectedItems())):
             if not self.listButton.isEnabled():
