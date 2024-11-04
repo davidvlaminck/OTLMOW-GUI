@@ -64,14 +64,14 @@ def test_fill_class_list(root_directory:Path,
 
     InsertDataDomain.load_and_validate_documents()
 
-    assert mock_rel_screen.objects_list_gui.object_list_gui.item(0).text() == "dummy_hxOTHWe | Verkeersbordopstelling"
-    assert mock_rel_screen.objects_list_gui.object_list_gui.item(1).text() == "dummy_LGG | Verkeersbordopstelling"
-    assert mock_rel_screen.objects_list_gui.object_list_gui.item(2).text() == "dummy_TyBGmXfXC | Funderingsmassief"
-    assert mock_rel_screen.objects_list_gui.object_list_gui.item(3).text() == "dummy_FNrHuPZCWV | Funderingsmassief"
-    assert mock_rel_screen.objects_list_gui.object_list_gui.item(4).text() == "dummy_a | Pictogram"
-    assert mock_rel_screen.objects_list_gui.object_list_gui.item(5).text() == "dummy_C | Pictogram"
-    assert mock_rel_screen.objects_list_gui.object_list_gui.item(6).text() == "dummy_J | Verkeersbordsteun"
-    assert mock_rel_screen.objects_list_gui.object_list_gui.item(7).text() == "dummy_s | Verkeersbordsteun"
+    assert mock_rel_screen.objects_list_gui.list_gui.item(0).text() == "dummy_hxOTHWe | Verkeersbordopstelling"
+    assert mock_rel_screen.objects_list_gui.list_gui.item(1).text() == "dummy_LGG | Verkeersbordopstelling"
+    assert mock_rel_screen.objects_list_gui.list_gui.item(2).text() == "dummy_TyBGmXfXC | Funderingsmassief"
+    assert mock_rel_screen.objects_list_gui.list_gui.item(3).text() == "dummy_FNrHuPZCWV | Funderingsmassief"
+    assert mock_rel_screen.objects_list_gui.list_gui.item(4).text() == "dummy_a | Pictogram"
+    assert mock_rel_screen.objects_list_gui.list_gui.item(5).text() == "dummy_C | Pictogram"
+    assert mock_rel_screen.objects_list_gui.list_gui.item(6).text() == "dummy_J | Verkeersbordsteun"
+    assert mock_rel_screen.objects_list_gui.list_gui.item(7).text() == "dummy_s | Verkeersbordsteun"
 
 #######################################################
 # RelationChangeScreen.fill_possible_relations_list   #
@@ -98,8 +98,8 @@ def test_full_fill_possible_relations_list(qtbot,root_directory:Path,
         'HoortBij <-- dummy_J | Verkeersbordsteun',
         'HoortBij <-- dummy_s | Verkeersbordsteun']
 
-    real_vopstel1_possible_relations_gui =[RelationChangeDomain.get_screen().possible_relation_list_gui.object_list_gui.item(x).text() for x in
-                                           range(RelationChangeDomain.get_screen().possible_relation_list_gui.object_list_gui.count())]
+    real_vopstel1_possible_relations_gui =[RelationChangeDomain.get_screen().possible_relation_list_gui.list_gui.item(x).text() for x in
+                                           range(RelationChangeDomain.get_screen().possible_relation_list_gui.list_gui.count())]
 
     assert real_vopstel1_possible_relations_gui == vopstel1_possible_relations_gui
 
@@ -112,21 +112,21 @@ def test_full_fill_possible_relations_list(qtbot,root_directory:Path,
         'Bevestiging <-> dummy_J | Verkeersbordsteun',
         'Bevestiging <-> dummy_s | Verkeersbordsteun']
 
-    real_fund1_possible_relations_gui = [RelationChangeDomain.get_screen().possible_relation_list_gui.object_list_gui.item(x).text() for x in
-                                         range(RelationChangeDomain.get_screen().possible_relation_list_gui.object_list_gui.count())]
+    real_fund1_possible_relations_gui = [RelationChangeDomain.get_screen().possible_relation_list_gui.list_gui.item(x).text() for x in
+                                         range(RelationChangeDomain.get_screen().possible_relation_list_gui.list_gui.count())]
 
     assert real_fund1_possible_relations_gui == fund1_possible_relations_gui
 
     #check the data that is stored in the list elements
-    data1 = [RelationChangeDomain.get_screen().possible_relation_list_gui.object_list_gui.item(x).data(3) for x in
-             range(RelationChangeDomain.get_screen().possible_relation_list_gui.object_list_gui.count())]
+    data1 = [RelationChangeDomain.get_screen().possible_relation_list_gui.list_gui.item(x).data(3) for x in
+             range(RelationChangeDomain.get_screen().possible_relation_list_gui.list_gui.count())]
 
     fund1_possible_relations_gui_data1 = [fund1.assetId.identificator for _ in fund1_possible_relations_gui]
 
     assert data1 == fund1_possible_relations_gui_data1
 
-    data2 = [RelationChangeDomain.get_screen().possible_relation_list_gui.object_list_gui.item(x).data(4) for x in
-             range(RelationChangeDomain.get_screen().possible_relation_list_gui.object_list_gui.count())]
+    data2 = [RelationChangeDomain.get_screen().possible_relation_list_gui.list_gui.item(x).data(4) for x in
+             range(RelationChangeDomain.get_screen().possible_relation_list_gui.list_gui.count())]
 
     fund1_possible_relations_gui_data2 = [
         'dummy_FNrHuPZCWV',
@@ -138,8 +138,8 @@ def test_full_fill_possible_relations_list(qtbot,root_directory:Path,
 
     fund1_possible_relations_gui_data3 = [0,0,0,0]
 
-    data3 = [RelationChangeDomain.get_screen().possible_relation_list_gui.object_list_gui.item(x).data(5) for x in
-             range(RelationChangeDomain.get_screen().possible_relation_list_gui.object_list_gui.count())]
+    data3 = [RelationChangeDomain.get_screen().possible_relation_list_gui.list_gui.item(x).data(5) for x in
+             range(RelationChangeDomain.get_screen().possible_relation_list_gui.list_gui.count())]
 
     assert data3 == fund1_possible_relations_gui_data3
 
@@ -164,14 +164,14 @@ def test_full_fill_existing_relations_list(qtbot,root_directory:Path,
                                   'HoortBij | dummy_J --> dummy_LGG',
                                   'LigtOp | dummy_FNrHuPZCWV --> dummy_TyBGmXfXC']
 
-    real_existing_relations_gui =[RelationChangeDomain.get_screen().existing_relation_list_gui.object_list_gui.item(x).text() for x in range(RelationChangeDomain.get_screen().existing_relation_list_gui.object_list_gui.count())]
+    real_existing_relations_gui =[RelationChangeDomain.get_screen().existing_relation_list_gui.list_gui.item(x).text() for x in range(RelationChangeDomain.get_screen().existing_relation_list_gui.list_gui.count())]
 
     assert real_existing_relations_gui == existing_relations_gui
 
     fund1_possible_relations_gui_data3 = [0, 1, 2, 3]
 
-    data3 = [RelationChangeDomain.get_screen().existing_relation_list_gui.object_list_gui.item(x).data(3) for x in
-             range(RelationChangeDomain.get_screen().existing_relation_list_gui.object_list_gui.count())]
+    data3 = [RelationChangeDomain.get_screen().existing_relation_list_gui.list_gui.item(x).data(3) for x in
+             range(RelationChangeDomain.get_screen().existing_relation_list_gui.list_gui.count())]
 
     assert data3 == fund1_possible_relations_gui_data3
 
@@ -208,7 +208,7 @@ def test_fill_class_list_empty_list(qtbot,
     RelationChangeDomain.set_instances(test_objects_list)
     # relation_change_screen.fill_object_list(objects=test_objects_list)
 
-    assert len(relation_change_screen.objects_list_gui.object_list_gui) == 0
+    assert len(relation_change_screen.objects_list_gui.list_gui) == 0
 
 """
 Just adding the qtbot to the fixtures makes the test complete without a timeout when you call a PyQt element
@@ -229,8 +229,8 @@ def test_fill_class_list_single_item_list(qtbot,
     RelationChangeDomain.set_instances(test_objects_list)
     # relation_change_screen.fill_object_list(objects=test_objects_list)
 
-    assert len(relation_change_screen.objects_list_gui.object_list_gui) == 1
-    assert relation_change_screen.objects_list_gui.object_list_gui.item(0).text() == "dummy_identificator | AllCasesTestClass"
+    assert len(relation_change_screen.objects_list_gui.list_gui) == 1
+    assert relation_change_screen.objects_list_gui.list_gui.item(0).text() == "dummy_identificator | AllCasesTestClass"
 
 """
 Just adding the qtbot to the fixtures makes the test complete without a timeout when you call a PyQt element
@@ -251,10 +251,10 @@ def test_fill_class_list_double_item_list(qtbot,
     RelationChangeDomain.set_instances(test_objects_list)
     # relation_change_screen.fill_object_list(objects=test_objects_list)
 
-    assert len(relation_change_screen.objects_list_gui.object_list_gui) == 2
+    assert len(relation_change_screen.objects_list_gui.list_gui) == 2
 
-    assert relation_change_screen.objects_list_gui.object_list_gui.item(0).text() == "dummy_identificator | AllCasesTestClass"
-    assert relation_change_screen.objects_list_gui.object_list_gui.item(1).text() == "dummy_identificator2 | AllCasesTestClass"
+    assert relation_change_screen.objects_list_gui.list_gui.item(0).text() == "dummy_identificator | AllCasesTestClass"
+    assert relation_change_screen.objects_list_gui.list_gui.item(1).text() == "dummy_identificator2 | AllCasesTestClass"
 
 def test_fill_class_list_with_2_same_name_but_diff_namespace_items(qtbot,
                                                                    create_translations,
@@ -275,11 +275,11 @@ def test_fill_class_list_with_2_same_name_but_diff_namespace_items(qtbot,
     RelationChangeDomain.set_instances(test_objects_list)
     # mock_rel_screen.fill_object_list(objects=test_objects_list)
 
-    assert len(mock_rel_screen.objects_list_gui.object_list_gui) == 3
+    assert len(mock_rel_screen.objects_list_gui.list_gui) == 3
 
-    assert mock_rel_screen.objects_list_gui.object_list_gui.item(0).text() == "dummy_identificator | installatie#AllCasesTestClass"
-    assert mock_rel_screen.objects_list_gui.object_list_gui.item(1).text() == "dummy_identificator2 | onderdeel#AllCasesTestClass"
-    assert mock_rel_screen.objects_list_gui.object_list_gui.item(2).text() == "dummy_identificator3 | AnotherTestClass"
+    assert mock_rel_screen.objects_list_gui.list_gui.item(0).text() == "dummy_identificator | installatie#AllCasesTestClass"
+    assert mock_rel_screen.objects_list_gui.list_gui.item(1).text() == "dummy_identificator2 | onderdeel#AllCasesTestClass"
+    assert mock_rel_screen.objects_list_gui.list_gui.item(2).text() == "dummy_identificator3 | AnotherTestClass"
 
 @fixture
 def mock_OSLORelatie_test():
@@ -313,13 +313,13 @@ def test_fill_possible_relations_list_with_2_same_name_but_diff_namespace_items(
                                                             test_object3.typeURI :[mock_OSLORelatie_test[1]]}
     RelationChangeDomain.set_possible_relations(test_object2)
 
-    assert len(mock_rel_screen.possible_relation_list_gui.object_list_gui) == 1
+    assert len(mock_rel_screen.possible_relation_list_gui.list_gui) == 1
 
-    assert mock_rel_screen.possible_relation_list_gui.object_list_gui.item(0).text() == "Bevestiging <-> dummy_identificator3 | AnotherTestClass"
+    assert mock_rel_screen.possible_relation_list_gui.list_gui.item(0).text() == "Bevestiging <-> dummy_identificator3 | AnotherTestClass"
 
     RelationChangeDomain.set_possible_relations(test_object3)
 
-    assert len(mock_rel_screen.possible_relation_list_gui.object_list_gui) == 1
+    assert len(mock_rel_screen.possible_relation_list_gui.list_gui) == 1
 
-    assert mock_rel_screen.possible_relation_list_gui.object_list_gui.item(
+    assert mock_rel_screen.possible_relation_list_gui.list_gui.item(
         0).text() == "Bevestiging <-> dummy_identificator2 | onderdeel#AllCasesTestClass"

@@ -17,7 +17,7 @@ class ObjectListWidget(AbstractInstanceListWidget):
     def fill_list(self, source_object: Optional[AIMObject], objects: Collection) -> None:
         # objects = RelationChangeDomain.objects
 
-        self.object_list_gui.clear()
+        self.list_gui.clear()
         item_list = []
         for OTL_object in objects:
             item = QListWidgetItem()
@@ -34,14 +34,14 @@ class ObjectListWidget(AbstractInstanceListWidget):
         item_list = self.filter_on_search_text(items=item_list)
 
         for item in item_list:
-            self.object_list_gui.addItem(item)
+            self.list_gui.addItem(item)
 
 
     def object_selected_listener(self) -> None:
         super().object_selected_listener()
-        for i in range(self.object_list_gui.count()):
-            if self.object_list_gui.item(i).isSelected():
-                selected_object_id = self.object_list_gui.item(i).data(1)
+        for i in range(self.list_gui.count()):
+            if self.list_gui.item(i).isSelected():
+                selected_object_id = self.list_gui.item(i).data(1)
                 self.selected_object_col1 = RelationChangeDomain.get_object(
                     identificator=selected_object_id)
                 if self.selected_object_col1 is not None:
@@ -57,6 +57,6 @@ class ObjectListWidget(AbstractInstanceListWidget):
         return self.listButton
 
     def select_object_id(self, selected_object_id: str):
-        selected_item: list[QListWidgetItem] = [self.object_list_gui.item(i)  for i in range(self.object_list_gui.count()) if selected_object_id==self.object_list_gui.item(i).data(1)]
+        selected_item: list[QListWidgetItem] = [self.list_gui.item(i) for i in range(self.list_gui.count()) if selected_object_id == self.list_gui.item(i).data(1)]
         if selected_item:
             selected_item[0].setSelected(True)

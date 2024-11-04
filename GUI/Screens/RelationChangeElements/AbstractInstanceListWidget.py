@@ -23,7 +23,7 @@ class AbstractInstanceListWidget:
         self.search_bar = None
         self.clear_search_bar_button = None
 
-        self.object_list_gui = None
+        self.list_gui = None
         self.listButton = ButtonWidget()
 
         self.list_label_text = self._(class_list_label_key)
@@ -36,15 +36,15 @@ class AbstractInstanceListWidget:
         frame_layout = QVBoxLayout()
         list_label = QLabel()
         list_label.setText(self.list_label_text)
-        self.object_list_gui = QListWidget()
-        self.object_list_gui.setProperty('class', 'list')
-        self.object_list_gui.itemSelectionChanged.connect(self.object_selected_listener)
+        self.list_gui = QListWidget()
+        self.list_gui.setProperty('class', 'list')
+        self.list_gui.itemSelectionChanged.connect(self.object_selected_listener)
         if multi_select:
-            self.object_list_gui.setSelectionMode(QListWidget.SelectionMode.MultiSelection)
+            self.list_gui.setSelectionMode(QListWidget.SelectionMode.MultiSelection)
 
         frame_layout.addWidget(list_label)
         frame_layout.addWidget(self.create_search_bar())
-        frame_layout.addWidget(self.object_list_gui)
+        frame_layout.addWidget(self.list_gui)
 
         object_attribute_label = QLabel()
         object_attribute_label.setText(self.attribute_field_label_text)
@@ -62,8 +62,8 @@ class AbstractInstanceListWidget:
 
 
     def object_selected_listener(self) -> None:
-        for item_index in range(self.object_list_gui.count()):
-            list_item: QListWidgetItem = self.object_list_gui.item(item_index)
+        for item_index in range(self.list_gui.count()):
+            list_item: QListWidgetItem = self.list_gui.item(item_index)
             if list_item.isSelected():
                 # Change style for selected item
                 # list_item.setData(Qt.ItemDataRole.UserRole, QColor(0, 0, 255))  # Change to blue

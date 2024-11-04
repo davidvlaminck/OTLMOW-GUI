@@ -16,7 +16,7 @@ class ExistingRelationListWidget(AbstractInstanceListWidget):
         super().__init__(language_settings,'existing_relations_list','existing_relation_attributes')
 
     def fill_list(self, source_object: Optional[AIMObject], objects: Collection) -> None:
-        self.object_list_gui.clear()
+        self.list_gui.clear()
 
         Text = namedtuple('text', ['relation_typeURI', 'name_source', 'direction', 'name_target'])
         Data = namedtuple('data', ["index"])
@@ -60,12 +60,12 @@ class ExistingRelationListWidget(AbstractInstanceListWidget):
         item_list = self.filter_on_search_text(items=item_list)
 
         for item in item_list:
-            self.object_list_gui.addItem(item)
+            self.list_gui.addItem(item)
 
     def object_selected_listener(self) -> None:
         super().object_selected_listener()
         self.listButton.isEnabled()
-        if len(list(self.object_list_gui.selectedItems())):
+        if len(list(self.list_gui.selectedItems())):
             if not self.listButton.isEnabled():
                 self.listButton.setEnabled(True)
         elif self.listButton.isEnabled():
@@ -84,14 +84,14 @@ class ExistingRelationListWidget(AbstractInstanceListWidget):
     def existing_relations_selected(self):
         indices: list[int] = [
             item.data(3)
-            for item in self.object_list_gui.selectedItems()]
+            for item in self.list_gui.selectedItems()]
 
         RelationChangeDomain.select_existing_relation_indices(indices)
 
     def remove_existing_relations_listener(self):
         indices: list[int] = sorted([
             item.data(3)
-            for item in self.object_list_gui.selectedItems()],reverse=True)
+            for item in self.list_gui.selectedItems()],reverse=True)
 
         for index in indices:
             RelationChangeDomain.remove_existing_relation(index)
