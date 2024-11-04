@@ -1,8 +1,7 @@
 from collections import namedtuple
 from typing import Optional, Collection
 
-from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QFrame, QListWidgetItem, QListWidget, QTreeWidget
+from PyQt6.QtWidgets import QFrame, QListWidgetItem, QListWidget
 from otlmow_model.OtlmowModel.Helpers.OTLObjectHelper import is_directional_relation
 
 from Domain.RelationChangeDomain import RelationChangeDomain
@@ -15,11 +14,6 @@ from UnitTests.TestClasses.Classes.ImplementatieElement.AIMObject import AIMObje
 class ExistingRelationListWidget(AbstractInstanceListWidget):
     def __init__(self, language_settings):
         super().__init__(language_settings,'existing_relations_list','existing_relation_attributes')
-
-    def create_object_list_gui(self, multi_select: bool = False) -> QFrame:
-        frame = super().create_object_list_gui( multi_select=multi_select)
-        self.object_list_gui.setSelectionMode(QTreeWidget.SelectionMode.NoSelection)
-        return frame
 
     def fill_list(self, source_object: Optional[AIMObject], objects: Collection) -> None:
         self.object_list_gui.clear()
@@ -61,7 +55,6 @@ class ExistingRelationListWidget(AbstractInstanceListWidget):
             item = QListWidgetItem()
             item.setText(f"{val['text'].relation_typeURI} | {val['text'].name_source} {val['text'].direction} {val['text'].name_target}")
             item.setData(3, val["data"].index)
-            item.setCheckState(Qt.CheckState.Unchecked)
             item_list.append(item)
 
         item_list = self.filter_on_search_text(items=item_list)
@@ -72,7 +65,7 @@ class ExistingRelationListWidget(AbstractInstanceListWidget):
     def object_selected_listener(self) -> None:
         super().object_selected_listener()
         self.listButton.isEnabled()
-        if len(self.getCheckedItems()):
+        if len(list(self.object_list_gui.selectedItems())):
             if not self.listButton.isEnabled():
                 self.listButton.setEnabled(True)
         elif self.listButton.isEnabled():
@@ -91,14 +84,14 @@ class ExistingRelationListWidget(AbstractInstanceListWidget):
     def existing_relations_selected(self):
         indices: list[int] = [
             item.data(3)
-            for item in self.getCheckedItems()]
+            for item in self.object_list_gui.selectedItems()]
 
         RelationChangeDomain.select_existing_relation_indices(indices)
 
     def remove_existing_relations_listener(self):
         indices: list[int] = sorted([
             item.data(3)
-            for item in self.getCheckedItems()],reverse=True)
+            for item in self.object_list_gui.selectedItems()],reverse=True)
 
         for index in indices:
             RelationChangeDomain.remove_existing_relation(index)

@@ -1,8 +1,7 @@
 from collections import namedtuple
 from typing import Optional, Collection
 
-from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QFrame, QListWidget, QListWidgetItem, QTreeWidget
+from PyQt6.QtWidgets import QFrame, QListWidget, QListWidgetItem
 from otlmow_model.OtlmowModel.Helpers.OTLObjectHelper import is_directional_relation
 
 from Domain.RelationChangeDomain import RelationChangeDomain
@@ -15,11 +14,6 @@ from UnitTests.TestClasses.Classes.ImplementatieElement.AIMObject import AIMObje
 class PossibleRelationListWidget(AbstractInstanceListWidget):
     def __init__(self, language_settings):
         super().__init__(language_settings,'relations_list','possible_relation_attributes')
-
-    def create_object_list_gui(self, multi_select: bool = False) -> QFrame:
-        frame = super().create_object_list_gui(multi_select=multi_select)
-        self.object_list_gui.setSelectionMode(QTreeWidget.SelectionMode.NoSelection)
-        return frame
 
     def fill_list(self, source_object: Optional[AIMObject], objects: Collection) -> None:
         # sourcery skip: remove-dict-keys
@@ -77,8 +71,6 @@ class PossibleRelationListWidget(AbstractInstanceListWidget):
             item.setData(4, val['data'].target_id)
             item.setData(5, val['data'].index)
 
-            item.setCheckState(Qt.CheckState.Unchecked)
-
             item_list.append(item)
 
         item_list = self.filter_on_search_text(items=item_list)
@@ -102,7 +94,7 @@ class PossibleRelationListWidget(AbstractInstanceListWidget):
         """
         super().object_selected_listener()
         self.listButton.isEnabled()
-        if len(list(self.getCheckedItems())):
+        if len(list(self.object_list_gui.selectedItems())):
             if not self.listButton.isEnabled():
                 self.listButton.setEnabled(True)
         elif self.listButton.isEnabled():
@@ -122,7 +114,7 @@ class PossibleRelationListWidget(AbstractInstanceListWidget):
         Data = namedtuple('data', ['source_id', 'target_id', "index"])
         data_list: list[Data] = sorted([
             Data(item.data(3), item.data(4), item.data(5))
-            for item in self.getCheckedItems()],reverse=True)
+            for item in self.object_list_gui.selectedItems()],reverse=True)
 
         for data in data_list:
             RelationChangeDomain.add_possible_relation_to_existing_relations(data.source_id,
@@ -133,6 +125,6 @@ class PossibleRelationListWidget(AbstractInstanceListWidget):
         Data = namedtuple('data', ['source_id', 'target_id', "index"])
         data_list: list[Data] = [
             Data(item.data(3), item.data(4), item.data(5))
-            for item in self.getCheckedItems()]
+            for item in self.object_list_gui.selectedItems()]
 
         RelationChangeDomain.select_possible_relation_keys(data_list)
