@@ -11,6 +11,7 @@ from otlmow_model.OtlmowModel.Classes.ImplementatieElement.RelatieObject import 
 
 from GUI.Screens.RelationChangeElements.ExistingRelationListWidget import \
     ExistingRelationListWidget
+from GUI.Screens.RelationChangeElements.NewObjectListWidget import NewObjectListWidget
 from GUI.Screens.RelationChangeElements.ObjectListWidget import ObjectListWidget
 from GUI.Screens.RelationChangeElements.PossibleRelationListWidget import \
     PossibleRelationListWidget

@@ -1,4 +1,4 @@
-from typing import List, Optional, cast
+from typing import List, Optional, cast, Union
 
 from otlmow_converter.DotnotationDictConverter import DotnotationDictConverter
 from otlmow_converter.OtlmowConverter import OtlmowConverter
@@ -222,7 +222,7 @@ class RelationChangeDomain:
         relation_object = cls.possible_object_to_object_relations_dict[bron_asset_id][target_asset_id].pop(relation_object_index)
         cls.existing_relations.append(relation_object)
 
-        cls.set_possible_relations(selected_object=cls.selected_object,force_update=True)
+        cls.set_possible_relations(selected_object=cls.selected_object)
 
         cls.update_frontend()
 
@@ -243,7 +243,7 @@ class RelationChangeDomain:
     def remove_existing_relation(cls, index:int) -> RelatieObject:
         removed_relation = cls.existing_relations.pop(index)
 
-        cls.set_possible_relations(selected_object=cls.selected_object,force_update=True)
+        cls.set_possible_relations(selected_object=cls.selected_object)
 
         cls.update_frontend()
 
@@ -283,5 +283,5 @@ class RelationChangeDomain:
             cls.get_screen().select_object_id(selected_object_id)
 
     @classmethod
-    def get_instances(cls) -> list[RelatieObject | AIMObject]:
+    def get_instances(cls) -> list[Union[RelatieObject, AIMObject]]:
         return cls.objects + cls.existing_relations

@@ -2,7 +2,7 @@ import abc
 from typing import Optional, Collection
 
 from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QColor
+from PyQt6.QtGui import QColor, QStandardItem
 from PyQt6.QtWidgets import QTreeWidget, QFrame, QVBoxLayout, QLabel, QListWidget, QListWidgetItem, \
     QHeaderView, QTreeWidgetItem, QWidget, QHBoxLayout, QLineEdit, QPushButton
 from otlmow_model.OtlmowModel.Helpers.OTLObjectHelper import is_relation
@@ -30,6 +30,14 @@ class AbstractInstanceListWidget:
         self.attribute_field_label_text = self._(attribute_field_label_key)
         self.attribute_field: QTreeWidget = QTreeWidget()
         self.attribute_field.setSelectionMode(QTreeWidget.SelectionMode.NoSelection)
+
+        self.type_to_items_dict = {}
+        self.type_open_status = {}
+
+        self.item_type_data_index = 3
+        self.data_1_index = 4
+        self.data_2_index = 5
+        self.data_3_index = 6
 
     def create_object_list_gui(self,multi_select: bool = False) -> QFrame:
         frame = QFrame()
@@ -80,6 +88,8 @@ class AbstractInstanceListWidget:
         #     else:
         #         if list_item.checkState() == Qt.CheckState.Checked:
         #             list_item.setSelected(True)
+
+
 
 
     @abc.abstractmethod
@@ -141,3 +151,9 @@ class AbstractInstanceListWidget:
             list_item.setText(1, str(value))
             field.addTopLevelItem(list_item)
 
+    def create_asset_type_item(self, asset_type):
+        item = QListWidgetItem()
+        item.setText(f"{asset_type}")
+        item.setData(self.data_1_index, asset_type)
+        item.setData(self.item_type_data_index, "type")
+        return item

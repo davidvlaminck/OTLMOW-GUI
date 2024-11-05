@@ -2,7 +2,6 @@ from typing import Optional, Collection
 
 from PyQt6.QtWidgets import QFrame, QListWidgetItem
 
-from Domain.InsertDataDomain import InsertDataDomain
 from Domain.RelationChangeDomain import RelationChangeDomain
 from GUI.Screens.RelationChangeElements.AbstractInstanceListWidget import \
     AbstractInstanceListWidget
@@ -14,8 +13,6 @@ class ObjectListWidget(AbstractInstanceListWidget):
 
     def __init__(self, language_settings):
         super().__init__(language_settings,'class_list','object_attributes')
-        self.type_to_items_dict = {}
-        self.type_open_status = {}
 
     def fill_list(self, source_object: Optional[AIMObject], objects: Collection) -> None:
         # sourcery skip: remove-dict-keys
@@ -35,11 +32,7 @@ class ObjectListWidget(AbstractInstanceListWidget):
                 type_to_instance_dict[abbr_typeURI] = [OTL_object]
 
         for asset_type, objects in type_to_instance_dict.items():
-            item = QListWidgetItem()
-            item.setText(f"{asset_type}")
-
-            item.setData(3, asset_type)
-            item.setData(4, "type")
+            item = self.create_asset_type_item(asset_type)
 
             item_list.append(item)
 
@@ -49,10 +42,10 @@ class ObjectListWidget(AbstractInstanceListWidget):
                 item = QListWidgetItem()
                 screen_name = RelationChangeHelpers.get_screen_name(OTL_object)
 
-                item.setText(f"     {screen_name}")
+                item.setText(f"{screen_name}")
 
-                item.setData(3, OTL_object.assetId.identificator)
-                item.setData(4, "instance")
+                item.setData(self.data_1_index, OTL_object.assetId.identificator)
+                item.setData(self.item_type_data_index, "instance")
 
                 self.type_to_items_dict[asset_type].append(item)
 
@@ -62,12 +55,13 @@ class ObjectListWidget(AbstractInstanceListWidget):
             self.list_gui.addItem(item)
 
 
+
     def object_selected_listener(self,item) -> None:
         super().object_selected_listener(item)
 
-        type_of_item = item.data(4)
+        type_of_item = item.data(self.item_type_data_index)
         if type_of_item == "type":
-            asset_type = item.data(3)
+            asset_type = item.data(self.data_1_index)
             self.type_open_status[asset_type] = not self.type_open_status[asset_type]
             indexSelectedItem = self.list_gui.indexFromItem(item).row()
 
@@ -79,7 +73,7 @@ class ObjectListWidget(AbstractInstanceListWidget):
                     self.list_gui.takeItem(self.list_gui.indexFromItem(instance_item).row())
 
         if type_of_item == "instance":
-            selected_object_id = item.data(3)
+            selected_object_id = item.data(self.data_1_index)
             self.selected_object_col1 = RelationChangeDomain.get_object(
                 identificator=selected_object_id)
             if self.selected_object_col1 is not None:
@@ -93,6 +87,6 @@ class ObjectListWidget(AbstractInstanceListWidget):
         return self.listButton
 
     def select_object_id(self, selected_object_id: str):
-        selected_item: list[QListWidgetItem] = [self.list_gui.item(i) for i in range(self.list_gui.count()) if selected_object_id == self.list_gui.item(i).data(1)]
+        selected_item: list[QListWidgetItem] = [self.list_gui.item(i) for i in range(self.list_gui.count()) if selected_object_id == self.list_gui.item(i).data(self.data_1_index)]
         if selected_item:
             selected_item[0].setSelected(True)

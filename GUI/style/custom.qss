@@ -194,6 +194,12 @@ QListWidget::item:selected{
     color: white;
 }
 
+QTreeView::item:selected{
+    background-color:  #0E5A69;
+    color: white;
+}
+
+
 QTabBar::tab{
     height: 30px;
     width: 300px;

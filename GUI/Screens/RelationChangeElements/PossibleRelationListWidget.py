@@ -15,14 +15,56 @@ class PossibleRelationListWidget(AbstractInstanceListWidget):
     def __init__(self, language_settings):
         super().__init__(language_settings,'relations_list','possible_relation_attributes')
 
+    Text = namedtuple('text', ['relation_typeURI', 'direction', 'screen_name', 'target_typeURI'])
+    Data = namedtuple('data', ['source_id', 'target_id', "index"])
+
     def fill_list(self, source_object: Optional[AIMObject], objects: Collection) -> None:
         # sourcery skip: remove-dict-keys
         self.list_gui.clear()
 
+        text_and_data_per_element = self.extract_text_and_data_per_item(source_object, objects)
 
-        Text = namedtuple('text', ['source_typeURI', 'direction', 'screen_name', 'target_typeURI'])
-        Data = namedtuple('data', ['source_id', 'target_id', "index"])
-        
+        item_list = []
+        type_to_instance_dict = {}
+
+        for text_and_data in text_and_data_per_element:
+
+            abbr_typeURI = text_and_data['text'].relation_typeURI
+
+            if abbr_typeURI in type_to_instance_dict.keys():
+                type_to_instance_dict[abbr_typeURI].append(text_and_data)
+            else:
+                type_to_instance_dict[abbr_typeURI] = [text_and_data]
+
+        for asset_type, text_and_data_list in type_to_instance_dict.items():
+
+            item = self.create_asset_type_item(asset_type)
+            item_list.append(item)
+         
+            self.type_to_items_dict[asset_type] = []
+            self.type_open_status[asset_type] = False
+            
+            for text_and_data in text_and_data_list:
+                instance_item = QListWidgetItem()
+
+                text = f"   {text_and_data['text'].relation_typeURI} {text_and_data['text'].direction} {text_and_data['text'].screen_name} | {text_and_data['text'].target_typeURI}"
+                instance_item.setText(text)
+    
+                # instance_item.setData(1,text_args['data'][0])
+                # instance_item.setData(2, text_args['data'][1])
+                instance_item.setData(self.data_1_index, text_and_data['data'].source_id)
+                instance_item.setData(self.data_2_index, text_and_data['data'].target_id)
+                instance_item.setData(self.data_3_index, text_and_data['data'].index)
+                instance_item.setData(self.item_type_data_index, "instance")
+
+                self.type_to_items_dict[asset_type].append(instance_item)
+
+        item_list = self.filter_on_search_text(items=item_list)
+
+        for item in item_list:
+            self.list_gui.addItem(item)
+
+    def extract_text_and_data_per_item(self, source_object, objects):
         list_of_corresponding_values = []
         for target_identificator, target_relations in objects.items():
 
@@ -34,11 +76,13 @@ class PossibleRelationListWidget(AbstractInstanceListWidget):
                 direction = ""
                 if is_directional_relation(relation):
                     if relation.bronAssetId.identificator == target_identificator:
-                        direction = RelationChangeHelpers.get_screen_icon_direction("Destination -> Source")
+                        direction = RelationChangeHelpers.get_screen_icon_direction(
+                            "Destination -> Source")
                         target_object = RelationChangeDomain.get_object(
                             relation.bronAssetId.identificator)
                     else:
-                        direction = RelationChangeHelpers.get_screen_icon_direction("Source -> Destination")
+                        direction = RelationChangeHelpers.get_screen_icon_direction(
+                            "Source -> Destination")
 
                 else:
                     direction = RelationChangeHelpers.get_screen_icon_direction("Unspecified")
@@ -51,33 +95,13 @@ class PossibleRelationListWidget(AbstractInstanceListWidget):
                 abbr_relation_typeURI = RelationChangeHelpers.get_abbreviated_typeURI(relation)
 
                 list_of_corresponding_values.append({
-                    "text": Text(abbr_relation_typeURI, direction, screen_name,
-                                 abbr_target_object_typeURI),
-                    "data": Data(source_object.assetId.identificator, target_identificator, i)
+                    "text": self.Text(abbr_relation_typeURI, direction, screen_name,
+                                      abbr_target_object_typeURI),
+                    "data": self.Data(source_object.assetId.identificator, target_identificator, i)
                 })
-
         list_of_corresponding_values.sort(key=lambda val: (
-        val['text'].target_typeURI, val['text'].screen_name, val['text'].source_typeURI))
-
-        item_list = []
-        for val in list_of_corresponding_values:
-            item = QListWidgetItem()
-            text = f"{val['text'].source_typeURI} {val['text'].direction} {val['text'].screen_name} | {val['text'].target_typeURI}"
-            item.setText(text)
-
-            # item.setData(1,text_args['data'][0])
-            # item.setData(2, text_args['data'][1])
-            item.setData(3, val['data'].source_id)
-            item.setData(4, val['data'].target_id)
-            item.setData(5, val['data'].index)
-
-            item_list.append(item)
-
-        item_list = self.filter_on_search_text(items=item_list)
-
-        for item in item_list:
-            self.list_gui.addItem(item)
-
+            val['text'].target_typeURI, val['text'].screen_name, val['text'].relation_typeURI))
+        return list_of_corresponding_values
 
     def object_selected_listener(self,item) -> None:
         """Check the selection state of possible relations and update the button accordingly.
@@ -93,14 +117,35 @@ class PossibleRelationListWidget(AbstractInstanceListWidget):
            None
         """
         super().object_selected_listener(item)
+
+        type_of_item = item.data(self.item_type_data_index)
+
+
+
         self.listButton.isEnabled()
-        if len(list(self.list_gui.selectedItems())):
+        if len([item for item in self.list_gui.selectedItems()
+                if item.data(self.item_type_data_index) == "instance"]):
             if not self.listButton.isEnabled():
                 self.listButton.setEnabled(True)
         elif self.listButton.isEnabled():
             self.listButton.setEnabled(False)
 
-        self.possible_relations_selected()
+        if type_of_item == "type":
+            asset_type = item.data(self.data_1_index)
+            self.type_open_status[asset_type] = not self.type_open_status[asset_type]
+            indexSelectedItem = self.list_gui.indexFromItem(item).row()
+
+            if self.type_open_status[asset_type]:
+                for i,instance_item in enumerate(self.type_to_items_dict[asset_type]):
+                    self.list_gui.insertItem(indexSelectedItem+i+1,instance_item)
+            else:
+                for instance_item in self.type_to_items_dict[asset_type]:
+                    self.list_gui.takeItem(self.list_gui.indexFromItem(instance_item).row())
+            if item.isSelected():
+                item.setSelected(False)
+
+        if type_of_item == "instance":
+            self.possible_relations_selected()
 
     def create_button(self):
         self.listButton.setText(self._('add_relation'))
@@ -111,10 +156,10 @@ class PossibleRelationListWidget(AbstractInstanceListWidget):
         return self.listButton
 
     def add_possible_relation_to_existing_relations_listener(self):
-        Data = namedtuple('data', ['source_id', 'target_id', "index"])
+        Data = self.Data
         data_list: list[Data] = sorted([
-            Data(item.data(3), item.data(4), item.data(5))
-            for item in self.list_gui.selectedItems()],reverse=True)
+            Data(item.data(self.data_1_index), item.data(self.data_2_index), item.data(self.data_3_index))
+            for item in self.list_gui.selectedItems() if item.data(self.item_type_data_index) == "instance"],reverse=True)
 
         for data in data_list:
             RelationChangeDomain.add_possible_relation_to_existing_relations(data.source_id,
@@ -122,9 +167,9 @@ class PossibleRelationListWidget(AbstractInstanceListWidget):
                                                                              data.index)
 
     def possible_relations_selected(self):
-        Data = namedtuple('data', ['source_id', 'target_id', "index"])
+        Data =self.Data
         data_list: list[Data] = [
-            Data(item.data(3), item.data(4), item.data(5))
-            for item in self.list_gui.selectedItems()]
+            self.Data(item.data(self.data_1_index), item.data(self.data_2_index), item.data(self.data_3_index))
+            for item in self.list_gui.selectedItems() if item.data(self.item_type_data_index) == "instance"]
 
         RelationChangeDomain.select_possible_relation_keys(data_list)
