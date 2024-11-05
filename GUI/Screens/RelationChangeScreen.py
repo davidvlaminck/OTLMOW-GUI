@@ -34,7 +34,7 @@ class RelationChangeScreen(Screen):
 
         self.frame_layout = None
 
-        self.objects_list_gui = ObjectListWidget(self._)
+        self.objects_list_gui = NewObjectListWidget(self._)
         self.possible_relation_list_gui = PossibleRelationListWidget(self._)
         self.existing_relation_list_gui = ExistingRelationListWidget(self._)
 

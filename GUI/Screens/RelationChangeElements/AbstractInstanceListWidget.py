@@ -157,3 +157,12 @@ class AbstractInstanceListWidget:
         item.setData(self.data_1_index, asset_type)
         item.setData(self.item_type_data_index, "type")
         return item
+
+    def create_asset_type_standard_item(self, asset_type):
+        item = QStandardItem(f"{asset_type}")
+        item.setEditable(False)  # Make the folder name non-editable
+        item.setSelectable(False)  # Optional: make the folder itself non-selectable
+
+        item.setData(asset_type,self.data_1_index)
+        item.setData("type", self.item_type_data_index)
+        return item
