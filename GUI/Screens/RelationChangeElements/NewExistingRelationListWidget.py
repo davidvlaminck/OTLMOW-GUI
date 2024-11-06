@@ -4,7 +4,6 @@ from typing import Optional, Collection
 from PyQt6.QtGui import QStandardItem
 from PyQt6.QtWidgets import QFrame, QVBoxLayout, QLabel, QTreeView
 from otlmow_model.OtlmowModel.Helpers import OTLObjectHelper
-from rdflib.plugins.sparql.parser import Object
 
 from Domain.RelationChangeDomain import RelationChangeDomain
 from GUI.Screens.RelationChangeElements.AbstractInstanceListWidget import \

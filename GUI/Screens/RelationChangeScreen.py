@@ -119,6 +119,3 @@ class RelationChangeScreen(Screen):
     def fill_existing_relation_attribute_field(self, existing_relation_attribute_dict: dict):
         self.existing_relation_list_gui.fill_object_attribute_field(
             existing_relation_attribute_dict)
-
-    def select_object_id(self,selected_object_id:str):
-        self.objects_list_gui.select_object_id(selected_object_id)

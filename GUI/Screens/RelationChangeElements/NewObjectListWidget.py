@@ -1,5 +1,6 @@
 from typing import Optional, Collection
 
+from PyQt6.QtCore import QItemSelectionModel
 from PyQt6.QtGui import QStandardItem
 from PyQt6.QtWidgets import QFrame, QVBoxLayout, QLabel, QTreeView
 
@@ -45,6 +46,8 @@ class NewObjectListWidget(AbstractInstanceListWidget):
         self.list_gui = FolderTreeView()
         self.list_gui.setProperty('class', 'list')
         self.list_gui.selectionModel().selectionChanged.connect(self.on_item_selected)
+        self.list_gui.expanded.connect(self.record_expanse)
+        self.list_gui.collapsed.connect(self.record_collapse)
         if multi_select:
             self.list_gui.setSelectionMode(QTreeView.SelectionMode.MultiSelection)
 
@@ -61,6 +64,16 @@ class NewObjectListWidget(AbstractInstanceListWidget):
         frame.setLayout(frame_layout)
 
         return frame
+
+    def record_expanse(self, index):
+
+        expanded_folder_item = self.list_gui.model.itemFromIndex(index)
+        self.type_open_status[expanded_folder_item.text()] = True
+
+    def record_collapse(self, index):
+
+        collapsed_folder_item = self.list_gui.model.itemFromIndex(index)
+        self.type_open_status[collapsed_folder_item.text()] = False
 
     def fill_list(self, source_object: Optional[AIMObject], objects: Collection) -> None:
         # sourcery skip: remove-dict-keys
@@ -79,22 +92,28 @@ class NewObjectListWidget(AbstractInstanceListWidget):
             else:
                 type_to_instance_dict[abbr_typeURI] = [OTL_object]
 
+
+        folder_items_expanded = []
+        previously_selected_item = None
         for asset_type, objects in type_to_instance_dict.items():
             folder_item = self.create_asset_type_standard_item(asset_type)
 
             item_list.append(folder_item)
 
             self.type_to_items_dict[asset_type] = []
-            self.type_open_status[asset_type] = False
+
+            if asset_type not in self.type_open_status:
+                self.type_open_status[asset_type] = False
+            elif self.type_open_status[asset_type]:
+                folder_items_expanded.append(folder_item)
+
             for OTL_object in objects:
 
-                screen_name = RelationChangeHelpers.get_screen_name(OTL_object)
-                instance_item = QStandardItem(f"     {screen_name}")
-
-                instance_item.setData(OTL_object.assetId.identificator, self.data_1_index)
-                instance_item.setData("instance",self.item_type_data_index)
+                instance_item = self.create_instance_standard_item(OTL_object)
 
                 self.type_to_items_dict[asset_type].append(instance_item)
+                if self.selected_object and self.selected_object == OTL_object:
+                    previously_selected_item = instance_item
 
                 instance_item.setEditable(False)  # Make the item name non-editable
                 folder_item.appendRow(instance_item)
@@ -105,10 +124,25 @@ class NewObjectListWidget(AbstractInstanceListWidget):
         for folder_item in item_list:
             self.list_gui.addItem(folder_item)
 
-    def select_object_id(self, selected_object_id: str):
-        indexes = self.list_gui.selectionModel().selectedIndexes()
-        if indexes:
-            index = indexes[0]
-            selected_item = self.list_gui.model.itemFromIndex(index)
-            if selected_item and selected_item.isSelectable():
-                selected_item[0].setSelected(True)
+        # expand previously expanded items
+        for folder_item in folder_items_expanded:
+            folder_item_index = self.list_gui.model.indexFromItem(folder_item)
+            self.list_gui.expand(folder_item_index)
+
+        # select previously selected item
+        self.select_object_id(previously_selected_item=previously_selected_item)
+
+    def create_instance_standard_item(self, OTL_object):
+        screen_name = RelationChangeHelpers.get_screen_name(OTL_object)
+        instance_item = QStandardItem(f"     {screen_name}")
+        instance_item.setData(OTL_object.assetId.identificator, self.data_1_index)
+        instance_item.setData("instance", self.item_type_data_index)
+        return instance_item
+
+    def select_object_id(self, previously_selected_item: QStandardItem):
+        if previously_selected_item:
+            previously_selected_item_index = self.list_gui.model.indexFromItem(
+                previously_selected_item)
+            if previously_selected_item_index:
+                self.list_gui.selectionModel().setCurrentIndex(previously_selected_item_index,
+                                                               QItemSelectionModel.SelectionFlag.SelectCurrent)

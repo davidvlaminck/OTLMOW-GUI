@@ -85,6 +85,11 @@ class RelationChangeDomain:
     def set_possible_relations(cls, selected_object:AIMObject):
 
         cls.selected_object = selected_object
+        if not selected_object:
+            cls.get_screen().fill_possible_relations_list(selected_object,{})
+            cls.get_screen().fill_object_attribute_field({})
+            return
+
         if selected_object.typeURI not in cls.possible_relations_per_class_dict:
             cls.possible_relations_per_class_dict[selected_object.typeURI] = cls.collector.find_all_concrete_relations(selected_object.typeURI, False)
 
@@ -234,7 +239,6 @@ class RelationChangeDomain:
             selected_object_id = cls.selected_object.assetId.identificator
             possibleRelations = cls.possible_object_to_object_relations_dict[selected_object_id]
             cls.get_screen().fill_possible_relations_list(cls.selected_object, possibleRelations)
-            cls.reselect_selected_object_in_frontend()
 
 
 
@@ -274,12 +278,6 @@ class RelationChangeDomain:
         last_selected_relation = cls.possible_object_to_object_relations_dict[last_selected_keys.source_id][last_selected_keys.target_id][last_selected_keys.index]
         cls.get_screen().fill_possible_relation_attribute_field(
             DotnotationDictConverter.to_dict(last_selected_relation))
-
-    @classmethod
-    def reselect_selected_object_in_frontend(cls):
-        if cls.selected_object:
-            selected_object_id = cls.selected_object.assetId.identificator
-            cls.get_screen().select_object_id(selected_object_id)
 
     @classmethod
     def get_instances(cls) -> list[Union[RelatieObject, AIMObject]]:

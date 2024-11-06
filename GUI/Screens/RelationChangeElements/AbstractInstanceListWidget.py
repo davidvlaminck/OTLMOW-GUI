@@ -166,3 +166,6 @@ class AbstractInstanceListWidget:
         item.setData(asset_type,self.data_1_index)
         item.setData("type", self.item_type_data_index)
         return item
+
+    def select_object_id(self, previously_selected_item: QStandardItem):
+        pass
