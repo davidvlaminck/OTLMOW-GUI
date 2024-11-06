@@ -267,11 +267,10 @@ class RelationChangeDomain:
         cls.get_screen().fill_existing_relation_attribute_field(DotnotationDictConverter.to_dict(last_selected_relation))
 
     @classmethod
-    def select_possible_relation_keys(cls, relation_keys: list) -> None:
-        if not relation_keys:
+    def select_possible_relation_data(cls, selected_relations_data: list) -> None:
+        if not selected_relations_data:
             return
-
-        last_selected_keys = relation_keys[-1]
+        last_selected_keys = selected_relations_data[-1]
         last_selected_relation = cls.possible_object_to_object_relations_dict[last_selected_keys.source_id][last_selected_keys.target_id][last_selected_keys.index]
         cls.get_screen().fill_possible_relation_attribute_field(
             DotnotationDictConverter.to_dict(last_selected_relation))

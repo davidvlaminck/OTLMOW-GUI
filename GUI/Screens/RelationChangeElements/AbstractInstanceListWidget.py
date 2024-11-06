@@ -24,7 +24,7 @@ class AbstractInstanceListWidget:
         self.clear_search_bar_button = None
 
         self.list_gui = None
-        self.listButton = ButtonWidget()
+        self.list_button = ButtonWidget()
 
         self.list_label_text = self._(class_list_label_key)
         self.attribute_field_label_text = self._(attribute_field_label_key)

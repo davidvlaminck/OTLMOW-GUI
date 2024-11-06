@@ -15,6 +15,7 @@ class NewObjectListWidget(AbstractInstanceListWidget):
 
     def __init__(self, language_settings):
         super().__init__(language_settings,'class_list','object_attributes')
+        self.selected_object = None
 
     def object_selected_listener(self, item) -> None:
       pass
@@ -25,17 +26,16 @@ class NewObjectListWidget(AbstractInstanceListWidget):
             item = self.list_gui.model.itemFromIndex(index)
             if item and item.isSelectable():
                 selected_object_id = item.data(self.data_1_index)
-                self.selected_object_col1 = RelationChangeDomain.get_object(
-                    identificator=selected_object_id)
-                if self.selected_object_col1 is not None:
-                    RelationChangeDomain.set_possible_relations(
-                        selected_object=self.selected_object_col1)
-
+                self.selected_object = RelationChangeDomain.get_object(identificator=
+                                                                       selected_object_id)
+                if self.selected_object is not None:
+                    RelationChangeDomain.set_possible_relations(selected_object=
+                                                                self.selected_object)
     def create_button(self):
-        self.listButton.setEnabled(False)
-        self.listButton.setText("hidden")
-        self.listButton.setProperty("class", "invisible")
-        return self.listButton
+        self.list_button.setEnabled(False)
+        self.list_button.setText("hidden")
+        self.list_button.setProperty("class", "invisible")
+        return self.list_button
 
     def create_object_list_gui(self, multi_select: bool = False) -> QFrame:
         frame = QFrame()
@@ -45,7 +45,6 @@ class NewObjectListWidget(AbstractInstanceListWidget):
         self.list_gui = FolderTreeView()
         self.list_gui.setProperty('class', 'list')
         self.list_gui.selectionModel().selectionChanged.connect(self.on_item_selected)
-        # self.list_gui.itemClicked.connect(self.on_item_selected)
         if multi_select:
             self.list_gui.setSelectionMode(QTreeView.SelectionMode.MultiSelection)
 
@@ -100,19 +99,16 @@ class NewObjectListWidget(AbstractInstanceListWidget):
                 instance_item.setEditable(False)  # Make the item name non-editable
                 folder_item.appendRow(instance_item)
 
-
+        # TODO: search is only on the top-level item now (folder name)
         item_list = self.filter_on_search_text(items=item_list)
 
         for folder_item in item_list:
             self.list_gui.addItem(folder_item)
 
     def select_object_id(self, selected_object_id: str):
-        items=    [self.list_gui.model.item(i) for i in range(self.list_gui.model.rowCount()) if
-             selected_object_id == self.list_gui.model.item(i).data(self.data_1_index)]
-        if items:
-            item = items[0]
-
-            index = self.list_gui.indexFromItem(item)
+        indexes = self.list_gui.selectionModel().selectedIndexes()
+        if indexes:
+            index = indexes[0]
             selected_item = self.list_gui.model.itemFromIndex(index)
             if selected_item and selected_item.isSelectable():
                 selected_item[0].setSelected(True)

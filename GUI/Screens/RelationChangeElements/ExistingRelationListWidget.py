@@ -64,22 +64,22 @@ class ExistingRelationListWidget(AbstractInstanceListWidget):
 
     def object_selected_listener(self,item) -> None:
         super().object_selected_listener(item)
-        self.listButton.isEnabled()
+        self.list_button.isEnabled()
         if len(list(self.list_gui.selectedItems())):
-            if not self.listButton.isEnabled():
-                self.listButton.setEnabled(True)
-        elif self.listButton.isEnabled():
-            self.listButton.setEnabled(False)
+            if not self.list_button.isEnabled():
+                self.list_button.setEnabled(True)
+        elif self.list_button.isEnabled():
+            self.list_button.setEnabled(False)
 
         self.existing_relations_selected()
 
     def create_button(self):
-        self.listButton.setText(self._('remove_relation'))
-        self.listButton.setDisabled(True)
-        self.listButton.clicked.connect(
+        self.list_button.setText(self._('remove_relation'))
+        self.list_button.setDisabled(True)
+        self.list_button.clicked.connect(
             self.remove_existing_relations_listener)
-        self.listButton.setProperty('class', 'primary-button')
-        return self.listButton
+        self.list_button.setProperty('class', 'primary-button')
+        return self.list_button
 
     def existing_relations_selected(self):
         indices: list[int] = [

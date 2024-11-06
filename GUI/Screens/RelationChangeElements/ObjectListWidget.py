@@ -81,10 +81,10 @@ class ObjectListWidget(AbstractInstanceListWidget):
                     selected_object=self.selected_object_col1)
 
     def create_button(self):
-        self.listButton.setEnabled(False)
-        self.listButton.setText("hidden")
-        self.listButton.setProperty("class", "invisible")
-        return self.listButton
+        self.list_button.setEnabled(False)
+        self.list_button.setText("hidden")
+        self.list_button.setProperty("class", "invisible")
+        return self.list_button
 
     def select_object_id(self, selected_object_id: str):
         selected_item: list[QListWidgetItem] = [self.list_gui.item(i) for i in range(self.list_gui.count()) if selected_object_id == self.list_gui.item(i).data(self.data_1_index)]

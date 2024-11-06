@@ -12,11 +12,12 @@ from UnitTests.TestClasses.Classes.ImplementatieElement.AIMObject import AIMObje
 
 
 class PossibleRelationListWidget(AbstractInstanceListWidget):
-    def __init__(self, language_settings):
-        super().__init__(language_settings,'relations_list','possible_relation_attributes')
 
     Text = namedtuple('text', ['relation_typeURI', 'direction', 'screen_name', 'target_typeURI'])
     Data = namedtuple('data', ['source_id', 'target_id', "index"])
+
+    def __init__(self, language_settings):
+        super().__init__(language_settings,'relations_list','possible_relation_attributes')
 
     def fill_list(self, source_object: Optional[AIMObject], objects: Collection) -> None:
         # sourcery skip: remove-dict-keys
@@ -120,15 +121,11 @@ class PossibleRelationListWidget(AbstractInstanceListWidget):
 
         type_of_item = item.data(self.item_type_data_index)
 
-
-
-        self.listButton.isEnabled()
         if len([item for item in self.list_gui.selectedItems()
                 if item.data(self.item_type_data_index) == "instance"]):
-            if not self.listButton.isEnabled():
-                self.listButton.setEnabled(True)
-        elif self.listButton.isEnabled():
-            self.listButton.setEnabled(False)
+            if not self.list_button.isEnabled():
+                self.list_button.setEnabled(True)
+
 
         if type_of_item == "type":
             asset_type = item.data(self.data_1_index)
@@ -148,12 +145,12 @@ class PossibleRelationListWidget(AbstractInstanceListWidget):
             self.possible_relations_selected()
 
     def create_button(self):
-        self.listButton.setText(self._('add_relation'))
-        self.listButton.setDisabled(True)
-        self.listButton.clicked.connect(
+        self.list_button.setText(self._('add_relation'))
+        self.list_button.setDisabled(True)
+        self.list_button.clicked.connect(
             self.add_possible_relation_to_existing_relations_listener)
-        self.listButton.setProperty('class', 'primary-button')
-        return self.listButton
+        self.list_button.setProperty('class', 'primary-button')
+        return self.list_button
 
     def add_possible_relation_to_existing_relations_listener(self):
         Data = self.Data
@@ -172,4 +169,4 @@ class PossibleRelationListWidget(AbstractInstanceListWidget):
             self.Data(item.data(self.data_1_index), item.data(self.data_2_index), item.data(self.data_3_index))
             for item in self.list_gui.selectedItems() if item.data(self.item_type_data_index) == "instance"]
 
-        RelationChangeDomain.select_possible_relation_keys(data_list)
+        RelationChangeDomain.select_possible_relation_data(data_list)
