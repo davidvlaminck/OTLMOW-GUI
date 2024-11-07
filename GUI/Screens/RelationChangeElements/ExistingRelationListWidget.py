@@ -2,15 +2,13 @@ from collections import namedtuple
 from typing import Optional, Collection
 
 from PyQt6.QtGui import QStandardItem
-from PyQt6.QtWidgets import QFrame, QVBoxLayout, QLabel, QTreeView
 from otlmow_model.OtlmowModel.Helpers import OTLObjectHelper
 
 from Domain.RelationChangeDomain import RelationChangeDomain
 from GUI.Screens.RelationChangeElements.AbstractInstanceListWidget import \
     AbstractInstanceListWidget
-from GUI.Screens.RelationChangeElements.FolderTreeView import FolderTreeView
+
 from GUI.Screens.RelationChangeElements.RelationChangeHelpers import RelationChangeHelpers
-from UnitTests.TestClasses.Classes.ImplementatieElement.AIMObject import AIMObject
 
 
 class ExistingRelationListWidget(AbstractInstanceListWidget):
@@ -85,7 +83,7 @@ class ExistingRelationListWidget(AbstractInstanceListWidget):
             screen_name_source = RelationChangeHelpers.get_screen_name(OTL_object=source_object)
             screen_name_target = RelationChangeHelpers.get_screen_name(target_object)
 
-            abbr_typeURI = RelationChangeHelpers.get_abbreviated_typeURI(relation_object)
+            abbr_typeURI = RelationChangeHelpers.get_abbreviated_typeURI(relation_object.typeURI,OTLObjectHelper.is_relation(relation_object))
 
             direction = RelationChangeHelpers.get_screen_icon_direction("Unspecified")
 

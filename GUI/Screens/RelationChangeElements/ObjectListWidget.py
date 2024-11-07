@@ -1,16 +1,14 @@
 from collections import namedtuple
-from typing import Optional, Collection
 
 from PyQt6.QtCore import QItemSelectionModel
 from PyQt6.QtGui import QStandardItem
-from PyQt6.QtWidgets import QFrame, QVBoxLayout, QLabel, QTreeView
+from otlmow_model.OtlmowModel.Helpers import OTLObjectHelper
 
 from Domain.RelationChangeDomain import RelationChangeDomain
 from GUI.Screens.RelationChangeElements.AbstractInstanceListWidget import \
     AbstractInstanceListWidget
-from GUI.Screens.RelationChangeElements.FolderTreeView import FolderTreeView
+
 from GUI.Screens.RelationChangeElements.RelationChangeHelpers import RelationChangeHelpers
-from UnitTests.TestClasses.Classes.ImplementatieElement.AIMObject import AIMObject
 
 
 class ObjectListWidget(AbstractInstanceListWidget):
@@ -46,7 +44,7 @@ class ObjectListWidget(AbstractInstanceListWidget):
 
         for OTL_object in objects:
             screen_name = RelationChangeHelpers.get_screen_name(OTL_object)
-            abbr_typeURI = RelationChangeHelpers.get_abbreviated_typeURI(OTL_object)
+            abbr_typeURI = RelationChangeHelpers.get_abbreviated_typeURI(OTL_object.typeURI,OTLObjectHelper.is_relation(OTL_object))
 
             list_of_corresponding_values.append({
                 "text": self.Text(abbr_typeURI,screen_name),

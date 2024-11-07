@@ -117,6 +117,10 @@ class RelationChangeScreen(Screen):
         self.existing_relation_list_gui.fill_object_attribute_field(
             existing_relation_attribute_dict)
 
-    def expand_existing_relations_folder_of(self,OTL_object:AIMObject):
-        abbr_relation_typeURI = RelationChangeHelpers.get_abbreviated_typeURI(otl_object=OTL_object)
+    def expand_existing_relations_folder_of(self, relation_typeURI:str):
+        abbr_relation_typeURI = RelationChangeHelpers.get_abbreviated_typeURI(typeURI=relation_typeURI,is_relation=True)
         self.existing_relation_list_gui.expand_folder_of(abbr_relation_typeURI)
+
+    def expand_possible_relations_folder_of(self, relation_typeURI:str):
+        abbr_relation_typeURI = RelationChangeHelpers.get_abbreviated_typeURI(typeURI=relation_typeURI,is_relation=True)
+        self.possible_relation_list_gui.expand_folder_of(abbr_relation_typeURI)

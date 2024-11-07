@@ -227,7 +227,7 @@ class RelationChangeDomain:
         relation_object = cls.possible_object_to_object_relations_dict[bron_asset_id][target_asset_id].pop(relation_object_index)
         cls.existing_relations.append(relation_object)
 
-        cls.get_screen().expand_existing_relations_folder_of(OTL_object=relation_object)
+        cls.get_screen().expand_existing_relations_folder_of(relation_object.typeURI)
 
         cls.update_frontend()
 
@@ -247,6 +247,14 @@ class RelationChangeDomain:
     @save_assets
     def remove_existing_relation(cls, index:int) -> RelatieObject:
         removed_relation = cls.existing_relations.pop(index)
+
+        if cls.selected_object:
+            selected_id = cls.selected_object.assetId.identificator
+            source_id = removed_relation.bronAssetId.identificator
+            target_id = removed_relation.doelAssetId.identificator
+
+            if selected_id in [source_id, target_id]:
+                cls.get_screen().expand_possible_relations_folder_of(removed_relation.typeURI)
 
         cls.update_frontend()
 

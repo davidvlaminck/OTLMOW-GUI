@@ -8,15 +8,15 @@ from UnitTests.TestClasses.Classes.ImplementatieElement.AIMObject import AIMObje
 
 class RelationChangeHelpers:
     @classmethod
-    def get_abbreviated_typeURI(cls, otl_object):
-        split_typeURI = otl_object.typeURI.split("#")
+    def get_abbreviated_typeURI(cls, typeURI, is_relation = False):
+        split_typeURI = typeURI.split("#")
         type_name = split_typeURI[-1]
 
-        if OTLObjectHelper.is_relation(otl_object):
-            return otl_object.typeURI.replace(
+        if is_relation:
+            return typeURI.replace(
                 "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#", "")
         elif cls.is_unique_across_namespaces(type_name):
-            return otl_object.typeURI.replace(
+            return typeURI.replace(
                 "https://wegenenverkeer.data.vlaanderen.be/ns/", "")
         else:
             return type_name
