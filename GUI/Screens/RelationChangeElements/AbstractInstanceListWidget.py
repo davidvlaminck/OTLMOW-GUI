@@ -90,10 +90,9 @@ class AbstractInstanceListWidget:
         folder_items_expanded = []
         previously_selected_item = None
         for asset_type, text_and_data_list in type_to_instance_dict.items():
+
+            add_folder_based_on_search_text = False
             folder_item = self.create_asset_type_standard_item(asset_type)
-
-            item_list.append(folder_item)
-
             self.type_to_items_dict[asset_type] = []
 
             if asset_type not in self.type_open_status:
@@ -105,16 +104,23 @@ class AbstractInstanceListWidget:
 
                 instance_item = self.create_instance_standard_item(text_and_data)
 
-                if self.is_previously_selected_requirement(text_and_data):
-                    previously_selected_item = instance_item
+                if self.search_text in instance_item.text().lower():
+                    if self.is_previously_selected_requirement(text_and_data):
+                        previously_selected_item = instance_item
 
-                self.type_to_items_dict[asset_type].append(instance_item)
+                    self.type_to_items_dict[asset_type].append(instance_item)
+                    instance_item.setEditable(False)  # Make the item name non-editable
 
-                instance_item.setEditable(False)  # Make the item name non-editable
-                folder_item.appendRow(instance_item)
+                    folder_item.appendRow(instance_item)
+                    add_folder_based_on_search_text = True
 
-        # TODO: search is only on the top-level item now (folder name)
-        item_list = self.filter_on_search_text(items=item_list)
+                    if self.search_text:
+                        #if you are searching then open all the folders that have the results
+                        folder_items_expanded.append(folder_item)
+
+            if add_folder_based_on_search_text:
+                item_list.append(folder_item)
+
 
         for folder_item in item_list:
             self.list_gui.addItem(folder_item)
@@ -188,6 +194,7 @@ class AbstractInstanceListWidget:
         RelationChangeDomain.update_frontend()
 
     def filter_on_search_text(self, items:list[QListWidgetItem]) -> list[QListWidgetItem]:
+
         return   [item for item in items
                   if self.search_text in item.text().lower()]
 
