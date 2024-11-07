@@ -1,7 +1,7 @@
 import abc
 from typing import Optional, Collection
 
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt, QModelIndex
 from PyQt6.QtGui import QColor, QStandardItem
 from PyQt6.QtWidgets import QTreeWidget, QFrame, QVBoxLayout, QLabel, QListWidget, QListWidgetItem, \
     QHeaderView, QTreeWidgetItem, QWidget, QHBoxLayout, QLineEdit, QPushButton, QTreeView
@@ -51,6 +51,8 @@ class AbstractInstanceListWidget:
         self.list_gui.selectionModel().selectionChanged.connect(self.on_item_selected_listener)
         self.list_gui.expanded.connect(self.record_expanse_listener)
         self.list_gui.collapsed.connect(self.record_collapse_listener)
+        self.list_gui.clicked.connect(self.clicked_item_listener)
+        self.list_gui.setExpandsOnDoubleClick(False)
         if multi_select:
             self.list_gui.setSelectionMode(QTreeView.SelectionMode.MultiSelection)
 
@@ -67,6 +69,13 @@ class AbstractInstanceListWidget:
         frame.setLayout(frame_layout)
 
         return frame
+
+    def clicked_item_listener(self, model_index: QModelIndex):
+        if self.list_gui.model.itemFromIndex(model_index).hasChildren():
+            if self.list_gui.isExpanded(model_index):
+                self.list_gui.collapse(model_index)
+            else:
+                self.list_gui.expand(model_index)
 
     def fill_list(self, source_object: Optional[AIMObject], objects: Collection) -> None:
         # sourcery skip: remove-dict-keys
