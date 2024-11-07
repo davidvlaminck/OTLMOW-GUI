@@ -1,3 +1,4 @@
+from collections import namedtuple
 from typing import Optional, Collection
 
 from PyQt6.QtCore import QItemSelectionModel
@@ -13,15 +14,14 @@ from UnitTests.TestClasses.Classes.ImplementatieElement.AIMObject import AIMObje
 
 
 class NewObjectListWidget(AbstractInstanceListWidget):
+    Text = namedtuple('text', ['typeURI', 'screen_name'])
+    Data = namedtuple('data', ['selected_object_id'])
 
     def __init__(self, language_settings):
         super().__init__(language_settings,'class_list','object_attributes')
-        self.selected_object = None
 
-    def object_selected_listener(self, item) -> None:
-      pass
 
-    def on_item_selected(self, selected, deselected):
+    def on_item_selected_listener(self, selected, deselected):
         # Get the currently selected indexes
         for index in selected.indexes():
             item = self.list_gui.model.itemFromIndex(index)
@@ -38,104 +38,25 @@ class NewObjectListWidget(AbstractInstanceListWidget):
         self.list_button.setProperty("class", "invisible")
         return self.list_button
 
-    def create_object_list_gui(self, multi_select: bool = False) -> QFrame:
-        frame = QFrame()
-        frame_layout = QVBoxLayout()
-        list_label = QLabel()
-        list_label.setText(self.list_label_text)
-        self.list_gui = FolderTreeView()
-        self.list_gui.setProperty('class', 'list')
-        self.list_gui.selectionModel().selectionChanged.connect(self.on_item_selected)
-        self.list_gui.expanded.connect(self.record_expanse)
-        self.list_gui.collapsed.connect(self.record_collapse)
-        if multi_select:
-            self.list_gui.setSelectionMode(QTreeView.SelectionMode.MultiSelection)
+    def is_previously_selected_requirement(self, text_and_data):
+        return self.selected_object and self.selected_object.assetId.identificator == text_and_data['data'].selected_object_id
 
-        frame_layout.addWidget(list_label)
-        frame_layout.addWidget(self.create_search_bar())
-        frame_layout.addWidget(self.list_gui)
-
-        object_attribute_label = QLabel()
-        object_attribute_label.setText(self.attribute_field_label_text)
-        frame_layout.addWidget(self.create_button())
-        frame_layout.addWidget(object_attribute_label)
-
-        frame_layout.addWidget(self.create_attribute_field())
-        frame.setLayout(frame_layout)
-
-        return frame
-
-    def record_expanse(self, index):
-
-        expanded_folder_item = self.list_gui.model.itemFromIndex(index)
-        self.type_open_status[expanded_folder_item.text()] = True
-
-    def record_collapse(self, index):
-
-        collapsed_folder_item = self.list_gui.model.itemFromIndex(index)
-        self.type_open_status[collapsed_folder_item.text()] = False
-
-    def fill_list(self, source_object: Optional[AIMObject], objects: Collection) -> None:
-        # sourcery skip: remove-dict-keys
-        # objects = RelationChangeDomain.objects
-
-        self.list_gui.clear()
-        item_list = []
-        type_to_instance_dict = {}
+    def extract_text_and_data_per_item(self, source_object, objects):
+        list_of_corresponding_values = []
 
         for OTL_object in objects:
-
+            screen_name = RelationChangeHelpers.get_screen_name(OTL_object)
             abbr_typeURI = RelationChangeHelpers.get_abbreviated_typeURI(OTL_object)
 
-            if abbr_typeURI in type_to_instance_dict.keys():
-                type_to_instance_dict[abbr_typeURI].append(OTL_object)
-            else:
-                type_to_instance_dict[abbr_typeURI] = [OTL_object]
-
-
-        folder_items_expanded = []
-        previously_selected_item = None
-        for asset_type, objects in type_to_instance_dict.items():
-            folder_item = self.create_asset_type_standard_item(asset_type)
-
-            item_list.append(folder_item)
-
-            self.type_to_items_dict[asset_type] = []
-
-            if asset_type not in self.type_open_status:
-                self.type_open_status[asset_type] = False
-            elif self.type_open_status[asset_type]:
-                folder_items_expanded.append(folder_item)
-
-            for OTL_object in objects:
-
-                instance_item = self.create_instance_standard_item(OTL_object)
-
-                self.type_to_items_dict[asset_type].append(instance_item)
-                if self.selected_object and self.selected_object == OTL_object:
-                    previously_selected_item = instance_item
-
-                instance_item.setEditable(False)  # Make the item name non-editable
-                folder_item.appendRow(instance_item)
-
-        # TODO: search is only on the top-level item now (folder name)
-        item_list = self.filter_on_search_text(items=item_list)
-
-        for folder_item in item_list:
-            self.list_gui.addItem(folder_item)
-
-        # expand previously expanded items
-        for folder_item in folder_items_expanded:
-            folder_item_index = self.list_gui.model.indexFromItem(folder_item)
-            self.list_gui.expand(folder_item_index)
-
-        # select previously selected item
-        self.select_object_id(previously_selected_item=previously_selected_item)
-
-    def create_instance_standard_item(self, OTL_object):
-        screen_name = RelationChangeHelpers.get_screen_name(OTL_object)
-        instance_item = QStandardItem(f"     {screen_name}")
-        instance_item.setData(OTL_object.assetId.identificator, self.data_1_index)
+            list_of_corresponding_values.append({
+                "text": self.Text(abbr_typeURI,screen_name),
+                "data": self.Data(OTL_object.assetId.identificator)
+            })
+        return list_of_corresponding_values
+    def create_instance_standard_item(self, text_and_data):
+        text = f"{text_and_data['text'].screen_name}"
+        instance_item = QStandardItem(text)
+        instance_item.setData(text_and_data['data'].selected_object_id, self.data_1_index)
         instance_item.setData("instance", self.item_type_data_index)
         return instance_item
 

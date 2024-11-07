@@ -227,7 +227,7 @@ class RelationChangeDomain:
         relation_object = cls.possible_object_to_object_relations_dict[bron_asset_id][target_asset_id].pop(relation_object_index)
         cls.existing_relations.append(relation_object)
 
-        cls.set_possible_relations(selected_object=cls.selected_object)
+        cls.get_screen().expand_existing_relations_folder_of(OTL_object=relation_object)
 
         cls.update_frontend()
 
@@ -236,6 +236,7 @@ class RelationChangeDomain:
         cls.get_screen().fill_object_list(cls.objects)
         cls.get_screen().fill_existing_relations_list(cls.existing_relations)
         if cls.selected_object:
+            cls.set_possible_relations(selected_object=cls.selected_object)
             selected_object_id = cls.selected_object.assetId.identificator
             possibleRelations = cls.possible_object_to_object_relations_dict[selected_object_id]
             cls.get_screen().fill_possible_relations_list(cls.selected_object, possibleRelations)
@@ -246,8 +247,6 @@ class RelationChangeDomain:
     @save_assets
     def remove_existing_relation(cls, index:int) -> RelatieObject:
         removed_relation = cls.existing_relations.pop(index)
-
-        cls.set_possible_relations(selected_object=cls.selected_object)
 
         cls.update_frontend()
 

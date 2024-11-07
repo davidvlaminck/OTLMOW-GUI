@@ -20,6 +20,7 @@ from GUI.Screens.RelationChangeElements.NewPossibleRelationListWidget import \
 from GUI.Screens.RelationChangeElements.ObjectListWidget import ObjectListWidget
 from GUI.Screens.RelationChangeElements.PossibleRelationListWidget import \
     PossibleRelationListWidget
+from GUI.Screens.RelationChangeElements.RelationChangeHelpers import RelationChangeHelpers
 from GUI.Screens.Screen import Screen
 
 
@@ -119,3 +120,7 @@ class RelationChangeScreen(Screen):
     def fill_existing_relation_attribute_field(self, existing_relation_attribute_dict: dict):
         self.existing_relation_list_gui.fill_object_attribute_field(
             existing_relation_attribute_dict)
+
+    def expand_existing_relations_folder_of(self,OTL_object:AIMObject):
+        abbr_relation_typeURI = RelationChangeHelpers.get_abbreviated_typeURI(otl_object=OTL_object)
+        self.existing_relation_list_gui.expand_folder_of(abbr_relation_typeURI)

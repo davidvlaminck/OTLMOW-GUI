@@ -4,12 +4,13 @@ from typing import Optional, Collection
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QColor, QStandardItem
 from PyQt6.QtWidgets import QTreeWidget, QFrame, QVBoxLayout, QLabel, QListWidget, QListWidgetItem, \
-    QHeaderView, QTreeWidgetItem, QWidget, QHBoxLayout, QLineEdit, QPushButton
+    QHeaderView, QTreeWidgetItem, QWidget, QHBoxLayout, QLineEdit, QPushButton, QTreeView
 from otlmow_model.OtlmowModel.Helpers.OTLObjectHelper import is_relation
 
 import qtawesome as qta
 from Domain.RelationChangeDomain import RelationChangeDomain
 from GUI.ButtonWidget import ButtonWidget
+from GUI.Screens.RelationChangeElements.FolderTreeView import FolderTreeView
 from GUI.Screens.RelationChangeElements.RelationChangeHelpers import RelationChangeHelpers
 from UnitTests.TestClasses.Classes.ImplementatieElement.AIMObject import AIMObject
 
@@ -33,22 +34,25 @@ class AbstractInstanceListWidget:
 
         self.type_to_items_dict = {}
         self.type_open_status = {}
+        self.selected_object = None
 
         self.item_type_data_index = 3
         self.data_1_index = 4
         self.data_2_index = 5
         self.data_3_index = 6
 
-    def create_object_list_gui(self,multi_select: bool = False) -> QFrame:
+    def create_object_list_gui(self, multi_select: bool = False) -> QFrame:
         frame = QFrame()
         frame_layout = QVBoxLayout()
         list_label = QLabel()
         list_label.setText(self.list_label_text)
-        self.list_gui = QListWidget()
+        self.list_gui = FolderTreeView()
         self.list_gui.setProperty('class', 'list')
-        self.list_gui.itemClicked.connect(self.object_selected_listener)
+        self.list_gui.selectionModel().selectionChanged.connect(self.on_item_selected_listener)
+        self.list_gui.expanded.connect(self.record_expanse_listener)
+        self.list_gui.collapsed.connect(self.record_collapse_listener)
         if multi_select:
-            self.list_gui.setSelectionMode(QListWidget.SelectionMode.MultiSelection)
+            self.list_gui.setSelectionMode(QTreeView.SelectionMode.MultiSelection)
 
         frame_layout.addWidget(list_label)
         frame_layout.addWidget(self.create_search_bar())
@@ -64,36 +68,79 @@ class AbstractInstanceListWidget:
 
         return frame
 
-    @abc.abstractmethod
     def fill_list(self, source_object: Optional[AIMObject], objects: Collection) -> None:
+        # sourcery skip: remove-dict-keys
+        # objects = RelationChangeDomain.objects
+
+        self.list_gui.clear()
+        item_list = []
+        type_to_instance_dict = {}
+
+        text_and_data_per_element = self.extract_text_and_data_per_item(source_object, objects)
+
+        for text_and_data in text_and_data_per_element:
+
+            abbr_typeURI = text_and_data['text'].typeURI
+
+            if abbr_typeURI in type_to_instance_dict.keys():
+                type_to_instance_dict[abbr_typeURI].append(text_and_data)
+            else:
+                type_to_instance_dict[abbr_typeURI] = [text_and_data]
+
+        folder_items_expanded = []
+        previously_selected_item = None
+        for asset_type, text_and_data_list in type_to_instance_dict.items():
+            folder_item = self.create_asset_type_standard_item(asset_type)
+
+            item_list.append(folder_item)
+
+            self.type_to_items_dict[asset_type] = []
+
+            if asset_type not in self.type_open_status:
+                self.type_open_status[asset_type] = False
+            elif self.type_open_status[asset_type]:
+                folder_items_expanded.append(folder_item)
+
+            for text_and_data in text_and_data_list:
+
+                instance_item = self.create_instance_standard_item(text_and_data)
+
+                if self.is_previously_selected_requirement(text_and_data):
+                    previously_selected_item = instance_item
+
+                self.type_to_items_dict[asset_type].append(instance_item)
+
+                instance_item.setEditable(False)  # Make the item name non-editable
+                folder_item.appendRow(instance_item)
+
+        # TODO: search is only on the top-level item now (folder name)
+        item_list = self.filter_on_search_text(items=item_list)
+
+        for folder_item in item_list:
+            self.list_gui.addItem(folder_item)
+
+        # expand previously expanded items
+        for folder_item in folder_items_expanded:
+            folder_item_index = self.list_gui.model.indexFromItem(folder_item)
+            self.list_gui.expand(folder_item_index)
+
+        # select previously selected item
+        self.select_object_id(previously_selected_item=previously_selected_item)
+
+    @abc.abstractmethod
+    def create_instance_standard_item(self, text_and_data):
         raise NotImplementedError
-
-
-    def getCheckedItems(self):
-        return [self.object_list_gui.item(i) for i in range(self.object_list_gui.count()) if self.object_list_gui.item(i).checkState() == Qt.CheckState.Checked]
-
-    def object_selected_listener(self,item) -> None:
-        pass
-        # if not self.multi_select:
-        #     return
-        #
-        #
-        # for item_index in range(self.object_list_gui.count()):
-        #     list_item: QListWidgetItem = self.object_list_gui.item(item_index)
-        #     if list_item.isSelected() :
-        #
-        #         if list_item.checkState() == Qt.CheckState.Unchecked:
-        #             list_item.setCheckState(Qt.CheckState.Checked)
-        #
-        #     else:
-        #         if list_item.checkState() == Qt.CheckState.Checked:
-        #             list_item.setSelected(True)
-
-
-
 
     @abc.abstractmethod
     def create_button(self):
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def extract_text_and_data_per_item(self, source_object, objects):
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def on_item_selected_listener(self, selected, deselected):
         raise NotImplementedError
 
     def create_attribute_field(self):
@@ -169,3 +216,20 @@ class AbstractInstanceListWidget:
 
     def select_object_id(self, previously_selected_item: QStandardItem):
         pass
+
+    def is_previously_selected_requirement(self, text_and_data):
+        return False
+
+    def record_expanse_listener(self, index):
+
+        expanded_folder_item = self.list_gui.model.itemFromIndex(index)
+        self.type_open_status[expanded_folder_item.text()] = True
+
+    def record_collapse_listener(self, index):
+
+        collapsed_folder_item = self.list_gui.model.itemFromIndex(index)
+        self.type_open_status[collapsed_folder_item.text()] = False
+
+
+    def expand_folder_of(self,typeURI: str):
+        self.type_open_status[typeURI] = True
