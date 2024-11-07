@@ -80,7 +80,7 @@ class AbstractInstanceListWidget:
     def fill_list(self, source_object: Optional[AIMObject], objects: Collection) -> None:
         # sourcery skip: remove-dict-keys
         # objects = RelationChangeDomain.objects
-
+        self.list_gui.setSortingEnabled(False)
         self.list_gui.clear()
         item_list = []
         type_to_instance_dict = {}
@@ -133,7 +133,11 @@ class AbstractInstanceListWidget:
 
 
         for folder_item in item_list:
+            folder_item.sortChildren(0,Qt.SortOrder.AscendingOrder)
             self.list_gui.addItem(folder_item)
+
+        self.list_gui.setSortingEnabled(True)
+        self.list_gui.sortByColumn(0, Qt.SortOrder.AscendingOrder)
 
         # expand previously expanded items
         for folder_item in folder_items_expanded:
@@ -197,6 +201,9 @@ class AbstractInstanceListWidget:
 
     def search_listener(self,text:str):
         self.search_text = text.lower()
+        if not self.search_text:
+            self.set_all_folder_items_collapsed()
+
         RelationChangeDomain.update_frontend()
 
     def clear_search_listener(self):
@@ -255,3 +262,6 @@ class AbstractInstanceListWidget:
 
     def set_list_button_enabled(self, item_selected:bool):
         pass
+
+    def set_all_folder_items_collapsed(self):
+        self.type_open_status.clear()
