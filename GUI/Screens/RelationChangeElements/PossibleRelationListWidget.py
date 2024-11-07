@@ -29,11 +29,12 @@ class PossibleRelationListWidget(AbstractInstanceListWidget):
     def on_item_selected_listener(self, selected, deselected):
         no_item_selected = True
         # Get the currently selected indexes
-        for index in selected.indexes():
+        for index in self.list_gui.selectionModel().selectedIndexes():
             item = self.list_gui.model.itemFromIndex(index)
             if item and item.isSelectable():
                 no_item_selected = False
-                self.possible_relations_selected()
+
+        self.possible_relations_selected()
 
         self.set_list_button_enabled(not no_item_selected)
 

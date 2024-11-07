@@ -21,15 +21,16 @@ class ObjectListWidget(AbstractInstanceListWidget):
 
     def on_item_selected_listener(self, selected, deselected):
         # Get the currently selected indexes
-        for index in selected.indexes():
+        self.selected_object = None
+        for index in self.list_gui.selectionModel().selectedIndexes():
             item = self.list_gui.model.itemFromIndex(index)
             if item and item.isSelectable():
                 selected_object_id = item.data(self.data_1_index)
                 self.selected_object = RelationChangeDomain.get_object(identificator=
                                                                        selected_object_id)
-                if self.selected_object is not None:
-                    RelationChangeDomain.set_possible_relations(selected_object=
-                                                                self.selected_object)
+
+        RelationChangeDomain.set_possible_relations(selected_object=self.selected_object)
+
     def create_button(self):
         self.list_button.setEnabled(False)
         self.list_button.setText("hidden")

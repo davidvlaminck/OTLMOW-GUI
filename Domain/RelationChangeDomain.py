@@ -271,6 +271,7 @@ class RelationChangeDomain:
     @classmethod
     def select_existing_relation_indices(cls, indices: list[int]) -> None:
         if not indices:
+            cls.get_screen().fill_existing_relation_attribute_field({})
             return
         
         last_index = indices[-1]
@@ -280,6 +281,7 @@ class RelationChangeDomain:
     @classmethod
     def select_possible_relation_data(cls, selected_relations_data: list) -> None:
         if not selected_relations_data:
+            cls.get_screen().fill_possible_relation_attribute_field({})
             return
         last_selected_keys = selected_relations_data[-1]
         last_selected_relation = cls.possible_object_to_object_relations_dict[last_selected_keys.source_id][last_selected_keys.target_id][last_selected_keys.index]
