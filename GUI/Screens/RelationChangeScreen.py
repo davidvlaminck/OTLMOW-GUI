@@ -11,15 +11,11 @@ from otlmow_model.OtlmowModel.Classes.ImplementatieElement.RelatieObject import 
 
 from GUI.Screens.RelationChangeElements.ExistingRelationListWidget import \
     ExistingRelationListWidget
-from GUI.Screens.RelationChangeElements.NewExistingRelationListWidget import \
-    NewExistingRelationListWidget
-from GUI.Screens.RelationChangeElements.NewObjectListWidget import NewObjectListWidget
-from GUI.Screens.RelationChangeElements.NewPossibleRelationListWidget import \
-    NewPossibleRelationListWidget
-
 from GUI.Screens.RelationChangeElements.ObjectListWidget import ObjectListWidget
 from GUI.Screens.RelationChangeElements.PossibleRelationListWidget import \
     PossibleRelationListWidget
+
+
 from GUI.Screens.RelationChangeElements.RelationChangeHelpers import RelationChangeHelpers
 from GUI.Screens.Screen import Screen
 
@@ -40,9 +36,9 @@ class RelationChangeScreen(Screen):
 
         self.frame_layout = None
 
-        self.objects_list_gui = NewObjectListWidget(self._)
-        self.possible_relation_list_gui = NewPossibleRelationListWidget(self._)
-        self.existing_relation_list_gui = NewExistingRelationListWidget(self._)
+        self.objects_list_gui = ObjectListWidget(self._)
+        self.possible_relation_list_gui = PossibleRelationListWidget(self._)
+        self.existing_relation_list_gui = ExistingRelationListWidget(self._)
 
         self.init_ui()
 

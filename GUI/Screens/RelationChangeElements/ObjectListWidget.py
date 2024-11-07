@@ -1,92 +1,69 @@
+from collections import namedtuple
 from typing import Optional, Collection
 
-from PyQt6.QtWidgets import QFrame, QListWidgetItem
+from PyQt6.QtCore import QItemSelectionModel
+from PyQt6.QtGui import QStandardItem
+from PyQt6.QtWidgets import QFrame, QVBoxLayout, QLabel, QTreeView
 
 from Domain.RelationChangeDomain import RelationChangeDomain
 from GUI.Screens.RelationChangeElements.AbstractInstanceListWidget import \
     AbstractInstanceListWidget
+from GUI.Screens.RelationChangeElements.FolderTreeView import FolderTreeView
 from GUI.Screens.RelationChangeElements.RelationChangeHelpers import RelationChangeHelpers
 from UnitTests.TestClasses.Classes.ImplementatieElement.AIMObject import AIMObject
 
 
 class ObjectListWidget(AbstractInstanceListWidget):
+    Text = namedtuple('text', ['typeURI', 'screen_name'])
+    Data = namedtuple('data', ['selected_object_id'])
 
     def __init__(self, language_settings):
         super().__init__(language_settings,'class_list','object_attributes')
 
-    def fill_list(self, source_object: Optional[AIMObject], objects: Collection) -> None:
-        # sourcery skip: remove-dict-keys
-        # objects = RelationChangeDomain.objects
 
-        self.list_gui.clear()
-        item_list = []
-        type_to_instance_dict = {}
-
-        for OTL_object in objects:
-
-            abbr_typeURI = RelationChangeHelpers.get_abbreviated_typeURI(OTL_object)
-
-            if abbr_typeURI in type_to_instance_dict.keys():
-                type_to_instance_dict[abbr_typeURI].append(OTL_object)
-            else:
-                type_to_instance_dict[abbr_typeURI] = [OTL_object]
-
-        for asset_type, objects in type_to_instance_dict.items():
-            item = self.create_asset_type_item(asset_type)
-
-            item_list.append(item)
-
-            self.type_to_items_dict[asset_type] = []
-            self.type_open_status[asset_type] = False
-            for OTL_object in objects:
-                item = QListWidgetItem()
-                screen_name = RelationChangeHelpers.get_screen_name(OTL_object)
-
-                item.setText(f"{screen_name}")
-
-                item.setData(self.data_1_index, OTL_object.assetId.identificator)
-                item.setData(self.item_type_data_index, "instance")
-
-                self.type_to_items_dict[asset_type].append(item)
-
-        item_list = self.filter_on_search_text(items=item_list)
-
-        for item in item_list:
-            self.list_gui.addItem(item)
-
-
-
-    def object_selected_listener(self,item) -> None:
-        super().object_selected_listener(item)
-
-        type_of_item = item.data(self.item_type_data_index)
-        if type_of_item == "type":
-            asset_type = item.data(self.data_1_index)
-            self.type_open_status[asset_type] = not self.type_open_status[asset_type]
-            indexSelectedItem = self.list_gui.indexFromItem(item).row()
-
-            if self.type_open_status[asset_type]:
-                for i,instance_item in enumerate(self.type_to_items_dict[asset_type]):
-                    self.list_gui.insertItem(indexSelectedItem+i+1,instance_item)
-            else:
-                for instance_item in self.type_to_items_dict[asset_type]:
-                    self.list_gui.takeItem(self.list_gui.indexFromItem(instance_item).row())
-
-        if type_of_item == "instance":
-            selected_object_id = item.data(self.data_1_index)
-            self.selected_object_col1 = RelationChangeDomain.get_object(
-                identificator=selected_object_id)
-            if self.selected_object_col1 is not None:
-                RelationChangeDomain.set_possible_relations(
-                    selected_object=self.selected_object_col1)
-
+    def on_item_selected_listener(self, selected, deselected):
+        # Get the currently selected indexes
+        for index in selected.indexes():
+            item = self.list_gui.model.itemFromIndex(index)
+            if item and item.isSelectable():
+                selected_object_id = item.data(self.data_1_index)
+                self.selected_object = RelationChangeDomain.get_object(identificator=
+                                                                       selected_object_id)
+                if self.selected_object is not None:
+                    RelationChangeDomain.set_possible_relations(selected_object=
+                                                                self.selected_object)
     def create_button(self):
         self.list_button.setEnabled(False)
         self.list_button.setText("hidden")
         self.list_button.setProperty("class", "invisible")
         return self.list_button
 
-    def select_object_id(self, selected_object_id: str):
-        selected_item: list[QListWidgetItem] = [self.list_gui.item(i) for i in range(self.list_gui.count()) if selected_object_id == self.list_gui.item(i).data(self.data_1_index)]
-        if selected_item:
-            selected_item[0].setSelected(True)
+    def is_previously_selected_requirement(self, text_and_data):
+        return self.selected_object and self.selected_object.assetId.identificator == text_and_data['data'].selected_object_id
+
+    def extract_text_and_data_per_item(self, source_object, objects):
+        list_of_corresponding_values = []
+
+        for OTL_object in objects:
+            screen_name = RelationChangeHelpers.get_screen_name(OTL_object)
+            abbr_typeURI = RelationChangeHelpers.get_abbreviated_typeURI(OTL_object)
+
+            list_of_corresponding_values.append({
+                "text": self.Text(abbr_typeURI,screen_name),
+                "data": self.Data(OTL_object.assetId.identificator)
+            })
+        return list_of_corresponding_values
+    def create_instance_standard_item(self, text_and_data):
+        text = f"{text_and_data['text'].screen_name}"
+        instance_item = QStandardItem(text)
+        instance_item.setData(text_and_data['data'].selected_object_id, self.data_1_index)
+        instance_item.setData("instance", self.item_type_data_index)
+        return instance_item
+
+    def select_object_id(self, previously_selected_item: QStandardItem):
+        if previously_selected_item:
+            previously_selected_item_index = self.list_gui.model.indexFromItem(
+                previously_selected_item)
+            if previously_selected_item_index:
+                self.list_gui.selectionModel().setCurrentIndex(previously_selected_item_index,
+                                                               QItemSelectionModel.SelectionFlag.SelectCurrent)
