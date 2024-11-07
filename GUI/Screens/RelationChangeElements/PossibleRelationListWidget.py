@@ -37,7 +37,7 @@ class PossibleRelationListWidget(AbstractInstanceListWidget):
 
         self.set_list_button_enabled(not no_item_selected)
 
-    def set_list_button_enabled(self, item_selected):
+    def set_list_button_enabled(self, item_selected:bool):
         if not item_selected:
             if self.list_button.isEnabled():
                 self.list_button.setEnabled(False)

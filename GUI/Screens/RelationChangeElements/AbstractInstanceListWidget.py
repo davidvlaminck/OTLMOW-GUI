@@ -126,6 +126,8 @@ class AbstractInstanceListWidget:
 
         # select previously selected item
         self.select_object_id(previously_selected_item=previously_selected_item)
+        if not previously_selected_item:
+            self.set_list_button_enabled( False)
 
     @abc.abstractmethod
     def create_instance_standard_item(self, text_and_data):
@@ -233,3 +235,6 @@ class AbstractInstanceListWidget:
 
     def expand_folder_of(self,typeURI: str):
         self.type_open_status[typeURI] = True
+
+    def set_list_button_enabled(self, item_selected:bool):
+        pass
