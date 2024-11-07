@@ -104,7 +104,8 @@ class AbstractInstanceListWidget:
 
                 instance_item = self.create_instance_standard_item(text_and_data)
 
-                if self.search_text in instance_item.text().lower():
+                if (    self.search_text in instance_item.text().lower() or
+                        self.search_text in folder_item.text().lower()):
                     if self.is_previously_selected_requirement(text_and_data):
                         previously_selected_item = instance_item
 
