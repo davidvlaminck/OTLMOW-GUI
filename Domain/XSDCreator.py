@@ -12,8 +12,11 @@ from otlmow_model.OtlmowModel.BaseClasses.KeuzelijstField import KeuzelijstField
 from otlmow_model.OtlmowModel.BaseClasses.OTLObject import dynamic_create_instance_from_uri, OTLAttribuut, OTLObject
 from otlmow_model.OtlmowModel.BaseClasses.StringField import StringField
 from otlmow_model.OtlmowModel.BaseClasses.TimeField import TimeField
+from otlmow_model.OtlmowModel.BaseClasses.URIField import URIField
 from otlmow_model.OtlmowModel.Helpers.OTLObjectHelper import is_relation
 from otlmow_modelbuilder.OSLOCollector import OSLOCollector
+
+
 
 
 def create_type_from_attribute_in_element(element: Element, attr_instance: OTLAttribuut):
@@ -25,7 +28,7 @@ def create_type_from_attribute_in_element(element: Element, attr_instance: OTLAt
     elif attr_instance.field == BooleanField:
         simple_type = ET.SubElement(element, "{http://www.w3.org/2001/XMLSchema}simpleType")
         ET.SubElement(simple_type, "{http://www.w3.org/2001/XMLSchema}restriction", base="xs:boolean")
-    elif attr_instance.field in {StringField, DateField, DateTimeField, TimeField}:
+    elif attr_instance.field in {StringField, DateField, DateTimeField, TimeField, URIField}:
         simple_type = ET.SubElement(element, "{http://www.w3.org/2001/XMLSchema}simpleType")
         restriction = ET.SubElement(simple_type, "{http://www.w3.org/2001/XMLSchema}restriction", base="xs:string")
         ET.SubElement(restriction, "{http://www.w3.org/2001/XMLSchema}maxLength", value="9999")
@@ -107,6 +110,8 @@ class XSDCreator:
 
         tree.write(xsd_path, encoding='utf-8', xml_declaration=True, method='xml')
 
+        cls._tweak_file(xsd_path)
+
     @classmethod
     def add_geometry_in_attribute_sequence(cls, attribute_sequence: Element, class_instance: OTLObject) -> None:
         geo_types = ' '.join(class_instance._geometry_types).replace(' Z', '').lower()
@@ -161,3 +166,31 @@ class XSDCreator:
             documentation.text = definition
 
             create_type_from_attribute_in_element(element, attr_instance)
+
+    @classmethod
+    def _tweak_file(cls, xsd_path):
+        # open file
+        with open(xsd_path, 'r') as file:
+            data = file.readlines()
+
+        new_data = []
+        for line in data:
+            line = line.replace('>', '>\n')
+            new_data.extend(line.split('\n'))
+
+        # tweak file
+        if new_data[3][:10] == '<xs:schema':
+            new_data[3] = ('<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://fdo.osgeo.org/schemas/feature/Schema1" '
+                           'xmlns:fdo="http://fdo.osgeo.org/schemas" xmlns:gml="http://www.opengis.net/gml" '
+                           'xmlns:Schema1="http://fdo.osgeo.org/schemas/feature/Schema1" elementFormDefault="qualified" '
+                           'attributeFormDefault="unqualified">')
+
+        for index, line in enumerate(new_data):
+            if line.startswith('<xs:element name='):
+                new_data[index] = line.replace('http://fdo.osgeo.org/schemas/feature/Schema1/', 'Schema1:').replace('http://www.opengis.net/gml/', 'gml:')
+            elif line.startswith('<xs:extension base="http://www.opengis.net/gml/AbstractFeatureType">'):
+                new_data[index] = '<xs:extension base="gml:AbstractFeatureType">'
+
+        # write file
+        with open(xsd_path, 'w') as file:
+            file.writelines(new_data)
