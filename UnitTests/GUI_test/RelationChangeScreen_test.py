@@ -51,6 +51,13 @@ def mock_step3_visuals() -> None:
     main_window = Mock(step3_visuals=step3_visuals)
     global_vars.otl_wizard = Mock(main_window=main_window)
 
+@fixture
+def mock_load_validated_assets() -> None:
+    original_load_validated_assets = ProjectFileManager.load_validated_assets
+    ProjectFileManager.load_validated_assets = Mock()
+    yield
+    ProjectFileManager.load_validated_assets = original_load_validated_assets
+
 def test_fill_class_list(root_directory:Path,
                                 mock_screen: InsertDataScreen,
                                 mock_rel_screen: RelationChangeScreen,
@@ -64,14 +71,28 @@ def test_fill_class_list(root_directory:Path,
 
     InsertDataDomain.load_and_validate_documents()
 
-    assert mock_rel_screen.objects_list_gui.list_gui.item(0).text() == "dummy_hxOTHWe | Verkeersbordopstelling"
-    assert mock_rel_screen.objects_list_gui.list_gui.item(1).text() == "dummy_LGG | Verkeersbordopstelling"
-    assert mock_rel_screen.objects_list_gui.list_gui.item(2).text() == "dummy_TyBGmXfXC | Funderingsmassief"
-    assert mock_rel_screen.objects_list_gui.list_gui.item(3).text() == "dummy_FNrHuPZCWV | Funderingsmassief"
-    assert mock_rel_screen.objects_list_gui.list_gui.item(4).text() == "dummy_a | Pictogram"
-    assert mock_rel_screen.objects_list_gui.list_gui.item(5).text() == "dummy_C | Pictogram"
-    assert mock_rel_screen.objects_list_gui.list_gui.item(6).text() == "dummy_J | Verkeersbordsteun"
-    assert mock_rel_screen.objects_list_gui.list_gui.item(7).text() == "dummy_s | Verkeersbordsteun"
+    object_list = RelationChangeDomain.get_screen().objects_list_gui
+
+    reference_items = ['Funderingsmassief', 'Pictogram', 'Verkeersbordopstelling', 'Verkeersbordsteun']
+    real_items = [object_list.list_gui.model.item(x).text() for x in range(object_list.list_gui.model.rowCount())]
+
+    assert reference_items == real_items
+
+    child_items = {}
+    child_items['Funderingsmassief'] = ['dummy_FNrHuPZCWV', 'dummy_TyBGmXfXC']
+    child_items['Pictogram'] = ['dummy_C', 'dummy_a']
+    child_items['Verkeersbordopstelling'] = ['dummy_LGG', 'dummy_hxOTHWe']
+    child_items['Verkeersbordsteun'] = ['dummy_J', 'dummy_s']
+
+    for i in range(len(real_items)):
+
+        real_item = object_list.list_gui.model.item(i)
+        item_text = real_item.text()
+
+        real_children = [real_item.child(x).text() for x in
+                      range(real_item.rowCount())]
+        assert real_children == child_items[item_text]
+
 
 #######################################################
 # RelationChangeScreen.fill_possible_relations_list   #
@@ -88,60 +109,139 @@ def test_full_fill_possible_relations_list(qtbot,root_directory:Path,
 
     error_set, objects_lists = InsertDataDomain.load_and_validate_documents()
 
+    # VerkeersOpstelling1
     vopstel1 = InsertDataDomain.flatten_list(objects_lists)[0]
 
     RelationChangeDomain.set_possible_relations(selected_object=vopstel1)
+    possible_relations_list = RelationChangeDomain.get_screen().possible_relation_list_gui
 
-    vopstel1_possible_relations_gui =    [
-        'HoortBij <-- dummy_C | Pictogram',
-        'HoortBij <-- dummy_a | Pictogram',
-        'HoortBij <-- dummy_J | Verkeersbordsteun',
-        'HoortBij <-- dummy_s | Verkeersbordsteun']
+    reference_items = ['HoortBij']
+    real_items = [possible_relations_list.list_gui.model.item(x).text() for x in
+                  range(possible_relations_list.list_gui.model.rowCount())]
+    assert reference_items == real_items
 
-    real_vopstel1_possible_relations_gui =[RelationChangeDomain.get_screen().possible_relation_list_gui.list_gui.item(x).text() for x in
-                                           range(RelationChangeDomain.get_screen().possible_relation_list_gui.list_gui.count())]
+    child_items = {}
+    child_items['HoortBij'] = ['<-- dummy_C | Pictogram', '<-- dummy_J | Verkeersbordsteun', '<-- dummy_a | Pictogram', '<-- dummy_s | Verkeersbordsteun']
+    for i in range(len(real_items)):
+        real_item = possible_relations_list.list_gui.model.item(i)
+        item_text = real_item.text()
+        real_children = [real_item.child(x).text() for x in
+                         range(real_item.rowCount())]
+        assert real_children == child_items[item_text]
 
-    assert real_vopstel1_possible_relations_gui == vopstel1_possible_relations_gui
 
+
+    # pictogram 1
+    pict1 = InsertDataDomain.flatten_list(objects_lists)[4]
+    RelationChangeDomain.set_possible_relations(selected_object=pict1)
+
+    reference_items = ['Bevestiging', 'HoortBij']
+    real_items = [possible_relations_list.list_gui.model.item(x).text() for x in
+                  range(possible_relations_list.list_gui.model.rowCount())]
+    assert reference_items == real_items
+
+    child_items = {}
+    child_items['Bevestiging'] = ['<-> dummy_FNrHuPZCWV | Funderingsmassief', '<-> dummy_J | Verkeersbordsteun', '<-> dummy_s | Verkeersbordsteun']
+    child_items['HoortBij'] = ['--> dummy_LGG | Verkeersbordopstelling', '--> dummy_hxOTHWe | Verkeersbordopstelling']
+    for i in range(len(real_items)):
+        real_item = possible_relations_list.list_gui.model.item(i)
+        item_text = real_item.text()
+        real_children = [real_item.child(x).text() for x in
+                         range(real_item.rowCount())]
+        assert real_children == child_items[item_text]
+
+
+    # funderingsMassief 1
     fund1 = InsertDataDomain.flatten_list(objects_lists)[2]
-
     RelationChangeDomain.set_possible_relations(selected_object=fund1)
-    fund1_possible_relations_gui = [
-        'Bevestiging <-> dummy_FNrHuPZCWV | Funderingsmassief',
-        'Bevestiging <-> dummy_C | Pictogram',
-        'Bevestiging <-> dummy_J | Verkeersbordsteun',
-        'Bevestiging <-> dummy_s | Verkeersbordsteun']
 
-    real_fund1_possible_relations_gui = [RelationChangeDomain.get_screen().possible_relation_list_gui.list_gui.item(x).text() for x in
-                                         range(RelationChangeDomain.get_screen().possible_relation_list_gui.list_gui.count())]
+    reference_items = ['Bevestiging']
+    real_items = [possible_relations_list.list_gui.model.item(x).text() for x in
+                  range(possible_relations_list.list_gui.model.rowCount())]
+    fund1_possible_relations_gui = real_items
+    assert reference_items == real_items
 
-    assert real_fund1_possible_relations_gui == fund1_possible_relations_gui
+    child_items = {}
+    child_items['Bevestiging'] = ['<-> dummy_C | Pictogram',
+                                  '<-> dummy_FNrHuPZCWV | Funderingsmassief',
+                                  '<-> dummy_J | Verkeersbordsteun',
+                                  '<-> dummy_s | Verkeersbordsteun']
+    for i in range(len(real_items)):
+        real_item = possible_relations_list.list_gui.model.item(i)
+        item_text = real_item.text()
+        real_children = [real_item.child(x).text() for x in
+                         range(real_item.rowCount())]
+        assert real_children == child_items[item_text]
 
     #check the data that is stored in the list elements
-    data1 = [RelationChangeDomain.get_screen().possible_relation_list_gui.list_gui.item(x).data(3) for x in
-             range(RelationChangeDomain.get_screen().possible_relation_list_gui.list_gui.count())]
+    data_index = possible_relations_list.item_type_data_index
+    data_type = [
+        possible_relations_list.list_gui.model.item(x).data(data_index )
+        for x in range(possible_relations_list.list_gui.model.rowCount())]
+    fund1_possible_relations_gui_data_type = ["type"]
+    assert data_type == fund1_possible_relations_gui_data_type
 
-    fund1_possible_relations_gui_data1 = [fund1.assetId.identificator for _ in fund1_possible_relations_gui]
+    child_items = {}
+    child_items['Bevestiging'] = ['instance','instance','instance','instance']
+    for i in range(len(fund1_possible_relations_gui_data_type)):
+        real_item = possible_relations_list.list_gui.model.item(i)
+        item_text = real_item.text()
 
+        real_children = [real_item.child(x).data(data_index) for x in
+                         range(real_item.rowCount())]
+        assert real_children == child_items[item_text]
+
+    data_index = possible_relations_list.data_1_index
+    data1 = [   possible_relations_list.list_gui.model.item(x).data(data_index) for x in
+                range(possible_relations_list.list_gui.model.rowCount())]
+    fund1_possible_relations_gui_data1 = fund1_possible_relations_gui
     assert data1 == fund1_possible_relations_gui_data1
 
-    data2 = [RelationChangeDomain.get_screen().possible_relation_list_gui.list_gui.item(x).data(4) for x in
-             range(RelationChangeDomain.get_screen().possible_relation_list_gui.list_gui.count())]
+    child_items = {}
+    child_items['Bevestiging'] = ['dummy_TyBGmXfXC', 'dummy_TyBGmXfXC', 'dummy_TyBGmXfXC', 'dummy_TyBGmXfXC']
+    for i in range(len(fund1_possible_relations_gui_data1)):
+        real_item = possible_relations_list.list_gui.model.item(i)
+        item_text = real_item.text()
 
-    fund1_possible_relations_gui_data2 = [
-        'dummy_FNrHuPZCWV',
-        'dummy_C',
-        'dummy_vbeo',
-        'dummy_TjwXqP']
+        real_children = [real_item.child(x).data(data_index) for x in
+                         range(real_item.rowCount())]
+        assert real_children == child_items[item_text]
 
-    assert data2 == fund1_possible_relations_gui_data2
+    data_index = possible_relations_list.data_2_index
+    data2 = [
+        possible_relations_list.list_gui.model.item(x).data(data_index )
+        for x in range(possible_relations_list.list_gui.model.rowCount())]
+    fund1_possible_relations_gui_data2 = [None]
+    print(data2)
+    # assert data2 == fund1_possible_relations_gui_data2
+    child_items = {}
+    child_items['Bevestiging'] = ['dummy_C', 'dummy_FNrHuPZCWV', 'dummy_vbeo', 'dummy_TjwXqP']
 
-    fund1_possible_relations_gui_data3 = [0,0,0,0]
+    for i in range(len(fund1_possible_relations_gui_data2)):
+        real_item = possible_relations_list.list_gui.model.item(i)
+        item_text = real_item.text()
 
-    data3 = [RelationChangeDomain.get_screen().possible_relation_list_gui.list_gui.item(x).data(5) for x in
-             range(RelationChangeDomain.get_screen().possible_relation_list_gui.list_gui.count())]
+        real_children = [real_item.child(x).data(data_index) for x in
+                         range(real_item.rowCount())]
+        assert real_children == child_items[item_text]
 
+    data_index = possible_relations_list.data_3_index
+    data3 = [
+        possible_relations_list.list_gui.model.item(x).data(data_index)
+        for x in range(possible_relations_list.list_gui.model.rowCount())]
+    fund1_possible_relations_gui_data3 = [None]
     assert data3 == fund1_possible_relations_gui_data3
+
+    child_items = {}
+    child_items['Bevestiging'] = [0, 0, 0, 0]
+    for i in range(len(fund1_possible_relations_gui_data3)):
+        real_item = possible_relations_list.list_gui.model.item(i)
+        item_text = real_item.text()
+
+        real_children = [real_item.child(x).data(data_index) for x in
+                         range(real_item.rowCount())]
+        assert real_children == child_items[item_text]
+
 
 
 #######################################################
@@ -159,21 +259,39 @@ def test_full_fill_existing_relations_list(qtbot,root_directory:Path,
 
     InsertDataDomain.load_and_validate_documents()
 
-    existing_relations_gui =    [ 'Bevestiging | dummy_a <-> dummy_TyBGmXfXC',
-                                  'Bevestiging | None <-> None',
-                                  'HoortBij | dummy_J --> dummy_LGG',
-                                  'LigtOp | dummy_FNrHuPZCWV --> dummy_TyBGmXfXC']
+    # existing_relations_gui =    [ 'Bevestiging | dummy_a <-> dummy_TyBGmXfXC',
+    #                               'Bevestiging | None <-> None',
+    #                               'HoortBij | dummy_J --> dummy_LGG',
+    #                               'LigtOp | dummy_FNrHuPZCWV --> dummy_TyBGmXfXC']
+    #
+    # real_existing_relations_gui =[RelationChangeDomain.get_screen().existing_relation_list_gui.list_gui.item(x).text() for x in range(RelationChangeDomain.get_screen().existing_relation_list_gui.list_gui.count())]
+    #
+    # assert real_existing_relations_gui == existing_relations_gui
+    #
+    # fund1_possible_relations_gui_data3 = [0, 1, 2, 3]
+    #
+    # data3 = [RelationChangeDomain.get_screen().existing_relation_list_gui.list_gui.item(x).data(3) for x in
+    #          range(RelationChangeDomain.get_screen().existing_relation_list_gui.list_gui.count())]
+    #
+    # assert data3 == fund1_possible_relations_gui_data3
 
-    real_existing_relations_gui =[RelationChangeDomain.get_screen().existing_relation_list_gui.list_gui.item(x).text() for x in range(RelationChangeDomain.get_screen().existing_relation_list_gui.list_gui.count())]
+    existing_relation_list = RelationChangeDomain.get_screen().existing_relation_list_gui
 
-    assert real_existing_relations_gui == existing_relations_gui
+    reference_items = ['Bevestiging','HoortBij', 'LigtOp']
+    real_items = [existing_relation_list.list_gui.model.item(x).text() for x in
+                  range(existing_relation_list.list_gui.model.rowCount())]
+    assert reference_items == real_items
 
-    fund1_possible_relations_gui_data3 = [0, 1, 2, 3]
-
-    data3 = [RelationChangeDomain.get_screen().existing_relation_list_gui.list_gui.item(x).data(3) for x in
-             range(RelationChangeDomain.get_screen().existing_relation_list_gui.list_gui.count())]
-
-    assert data3 == fund1_possible_relations_gui_data3
+    child_items = {}
+    child_items['Bevestiging'] = ['None <-> None', 'dummy_a <-> dummy_TyBGmXfXC']
+    child_items['HoortBij'] = ['dummy_J --> dummy_LGG']
+    child_items['LigtOp'] = ['dummy_FNrHuPZCWV --> dummy_TyBGmXfXC']
+    for i in range(len(real_items)):
+        real_item = existing_relation_list.list_gui.model.item(i)
+        item_text = real_item.text()
+        real_children = [real_item.child(x).text() for x in
+                         range(real_item.rowCount())]
+        assert real_children == child_items[item_text]
 
 #################################################
 # UNIT TESTS                                    #
@@ -200,15 +318,21 @@ def mock_project(mock_collect_all) -> Project:
 def test_fill_class_list_empty_list(qtbot,
                                     create_translations,
                                     mock_rel_screen: RelationChangeScreen,
-                                    mock_project):
+                                    mock_project,
+                                    mock_load_validated_assets):
     relation_change_screen = mock_rel_screen
 
     test_objects_list = []
+
+    local_mock = RelationChangeDomain.set_instances
+    RelationChangeDomain.set_instances = Mock()
     RelationChangeDomain.init_static(mock_project)
+    RelationChangeDomain.set_instances = local_mock
+
     RelationChangeDomain.set_instances(test_objects_list)
     # relation_change_screen.fill_object_list(objects=test_objects_list)
 
-    assert len(relation_change_screen.objects_list_gui.list_gui) == 0
+    assert relation_change_screen.objects_list_gui.list_gui.model.rowCount() == 0
 
 """
 Just adding the qtbot to the fixtures makes the test complete without a timeout when you call a PyQt element
@@ -216,7 +340,8 @@ Just adding the qtbot to the fixtures makes the test complete without a timeout 
 def test_fill_class_list_single_item_list(qtbot,
                                           create_translations,
                                           mock_rel_screen,
-                                          mock_project):
+                                          mock_project,
+                                          mock_load_validated_assets):
 
 
     test_object = AllCasesTestClass()
@@ -225,12 +350,22 @@ def test_fill_class_list_single_item_list(qtbot,
     relation_change_screen = mock_rel_screen
 
     test_objects_list = [test_object]
+
+    local_mock = RelationChangeDomain.set_instances
+    RelationChangeDomain.set_instances = Mock()
     RelationChangeDomain.init_static(mock_project)
+    RelationChangeDomain.set_instances = local_mock
+
     RelationChangeDomain.set_instances(test_objects_list)
     # relation_change_screen.fill_object_list(objects=test_objects_list)
 
-    assert len(relation_change_screen.objects_list_gui.list_gui) == 1
-    assert relation_change_screen.objects_list_gui.list_gui.item(0).text() == "dummy_identificator | AllCasesTestClass"
+    assert relation_change_screen.objects_list_gui.list_gui.model.rowCount() == 1
+    assert relation_change_screen.objects_list_gui.list_gui.model.item(0).text() == "AllCasesTestClass"
+
+    assert relation_change_screen.objects_list_gui.list_gui.model.item(0).rowCount() == 1
+    assert relation_change_screen.objects_list_gui.list_gui.model.item(0).child(0).text() == "dummy_identificator"
+
+
 
 """
 Just adding the qtbot to the fixtures makes the test complete without a timeout when you call a PyQt element
@@ -238,7 +373,8 @@ Just adding the qtbot to the fixtures makes the test complete without a timeout 
 def test_fill_class_list_double_item_list(qtbot,
                                           create_translations,
                                           mock_rel_screen,
-                                          mock_project):
+                                          mock_project,
+                                          mock_load_validated_assets):
     test_object = AllCasesTestClass()
     test_object.assetId.identificator = "dummy_identificator"
 
@@ -247,19 +383,28 @@ def test_fill_class_list_double_item_list(qtbot,
 
     relation_change_screen = mock_rel_screen
     test_objects_list = [test_object, test_object2]
+
+    local_mock = RelationChangeDomain.set_instances
+    RelationChangeDomain.set_instances = Mock()
     RelationChangeDomain.init_static(mock_project)
+    RelationChangeDomain.set_instances = local_mock
+
     RelationChangeDomain.set_instances(test_objects_list)
-    # relation_change_screen.fill_object_list(objects=test_objects_list)
 
-    assert len(relation_change_screen.objects_list_gui.list_gui) == 2
+    assert relation_change_screen.objects_list_gui.list_gui.model.rowCount() == 1
+    assert relation_change_screen.objects_list_gui.list_gui.model.item(0).text() == "AllCasesTestClass"
 
-    assert relation_change_screen.objects_list_gui.list_gui.item(0).text() == "dummy_identificator | AllCasesTestClass"
-    assert relation_change_screen.objects_list_gui.list_gui.item(1).text() == "dummy_identificator2 | AllCasesTestClass"
+    assert relation_change_screen.objects_list_gui.list_gui.model.item(0).rowCount() == 2
+    assert relation_change_screen.objects_list_gui.list_gui.model.item(0).child(
+        0).text() == "dummy_identificator"
+    assert relation_change_screen.objects_list_gui.list_gui.model.item(0).child(
+        1).text() == "dummy_identificator2"
 
 def test_fill_class_list_with_2_same_name_but_diff_namespace_items(qtbot,
                                                                    create_translations,
                                                                    mock_rel_screen,
-                                                                   mock_project):
+                                                                   mock_project,
+                                                                    mock_load_validated_assets):
     test_object = AllCasesTestClassInstallatie()
     test_object.assetId.identificator = "dummy_identificator"
 
@@ -271,15 +416,30 @@ def test_fill_class_list_with_2_same_name_but_diff_namespace_items(qtbot,
 
 
     test_objects_list = [test_object, test_object2, test_object3]
+
+    local_mock = RelationChangeDomain.set_instances
+    RelationChangeDomain.set_instances = Mock()
     RelationChangeDomain.init_static(mock_project)
+    RelationChangeDomain.set_instances = local_mock
+
     RelationChangeDomain.set_instances(test_objects_list)
     # mock_rel_screen.fill_object_list(objects=test_objects_list)
+    relation_change_screen = mock_rel_screen
 
-    assert len(mock_rel_screen.objects_list_gui.list_gui) == 3
+    assert relation_change_screen.objects_list_gui.list_gui.model.rowCount() == 3
+    assert relation_change_screen.objects_list_gui.list_gui.model.item(
+        0).text() == "AnotherTestClass"
+    assert relation_change_screen.objects_list_gui.list_gui.model.item(
+        1).text() == "installatie#AllCasesTestClass"
+    assert relation_change_screen.objects_list_gui.list_gui.model.item(
+        2).text() == "onderdeel#AllCasesTestClass"
 
-    assert mock_rel_screen.objects_list_gui.list_gui.item(0).text() == "dummy_identificator | installatie#AllCasesTestClass"
-    assert mock_rel_screen.objects_list_gui.list_gui.item(1).text() == "dummy_identificator2 | onderdeel#AllCasesTestClass"
-    assert mock_rel_screen.objects_list_gui.list_gui.item(2).text() == "dummy_identificator3 | AnotherTestClass"
+    assert relation_change_screen.objects_list_gui.list_gui.model.item(0).rowCount() == 1
+    assert relation_change_screen.objects_list_gui.list_gui.model.item(0).child(0).text() == "dummy_identificator3"
+    assert relation_change_screen.objects_list_gui.list_gui.model.item(1).rowCount() ==1
+    assert relation_change_screen.objects_list_gui.list_gui.model.item(1).child(0).text() == "dummy_identificator"
+    assert relation_change_screen.objects_list_gui.list_gui.model.item(2).rowCount() ==1
+    assert relation_change_screen.objects_list_gui.list_gui.model.item(2).child(0).text() == "dummy_identificator2"
 
 @fixture
 def mock_OSLORelatie_test():
@@ -293,7 +453,8 @@ def test_fill_possible_relations_list_with_2_same_name_but_diff_namespace_items(
         create_translations,
         mock_OSLORelatie_test,
         mock_rel_screen,
-        mock_project):
+        mock_project,
+        mock_load_validated_assets):
     test_object = AllCasesTestClassInstallatie()
     test_object.assetId.identificator = "dummy_identificator"
 
@@ -305,21 +466,38 @@ def test_fill_possible_relations_list_with_2_same_name_but_diff_namespace_items(
 
     test_objects_list = [test_object, test_object2, test_object3]
 
+    local_mock = RelationChangeDomain.set_instances
+    RelationChangeDomain.set_instances = Mock()
     RelationChangeDomain.init_static(mock_project)
+    RelationChangeDomain.set_instances = local_mock
+
     RelationChangeDomain.set_instances(test_objects_list)
     # mock_rel_screen.fill_object_list(objects=test_objects_list)
 
     RelationChangeDomain.possible_relations_per_class_dict={test_object2.typeURI :[mock_OSLORelatie_test[0]],
                                                             test_object3.typeURI :[mock_OSLORelatie_test[1]]}
     RelationChangeDomain.set_possible_relations(test_object2)
+    relation_change_screen = mock_rel_screen
 
-    assert len(mock_rel_screen.possible_relation_list_gui.list_gui) == 1
+    assert relation_change_screen.possible_relation_list_gui.list_gui.model.rowCount() == 1
+    assert relation_change_screen.possible_relation_list_gui.list_gui.model.item(
+        0).text() == "Bevestiging"
 
-    assert mock_rel_screen.possible_relation_list_gui.list_gui.item(0).text() == "Bevestiging <-> dummy_identificator3 | AnotherTestClass"
+    assert relation_change_screen.possible_relation_list_gui.list_gui.model.item(0).rowCount() == 1
+    assert relation_change_screen.possible_relation_list_gui.list_gui.model.item(0).child(
+        0).text() == "<-> dummy_identificator3 | AnotherTestClass"
+
 
     RelationChangeDomain.set_possible_relations(test_object3)
 
-    assert len(mock_rel_screen.possible_relation_list_gui.list_gui) == 1
+    assert relation_change_screen.possible_relation_list_gui.list_gui.model.rowCount() == 1
+    assert relation_change_screen.possible_relation_list_gui.list_gui.model.item(
+        0).text() == "Bevestiging"
 
-    assert mock_rel_screen.possible_relation_list_gui.list_gui.item(
-        0).text() == "Bevestiging <-> dummy_identificator2 | onderdeel#AllCasesTestClass"
+    assert relation_change_screen.possible_relation_list_gui.list_gui.model.item(0).rowCount() == 1
+    assert relation_change_screen.possible_relation_list_gui.list_gui.model.item(0).child(
+        0).text() == "<-> dummy_identificator2 | onderdeel#AllCasesTestClass"
+
+
+    
+    

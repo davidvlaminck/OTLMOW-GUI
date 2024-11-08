@@ -47,7 +47,7 @@ class ExistingRelationListWidget(AbstractInstanceListWidget):
         return self.list_button
 
     def create_instance_standard_item(self, text_and_data):
-        text = f"{text_and_data['text'].typeURI} | {text_and_data['text'].name_source} {text_and_data['text'].direction} {text_and_data['text'].name_target}"
+        text = f"{text_and_data['text'].name_source} {text_and_data['text'].direction} {text_and_data['text'].name_target}"
         instance_item = QStandardItem(f"{text}")
         instance_item.setData(text_and_data["data"].index, self.data_1_index)
         instance_item.setData("instance", self.item_type_data_index)
