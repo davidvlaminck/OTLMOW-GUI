@@ -1,0 +1,2 @@
+class WrongGeometryWarning(Warning):
+    pass
