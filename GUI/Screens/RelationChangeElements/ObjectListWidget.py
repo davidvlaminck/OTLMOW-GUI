@@ -2,6 +2,7 @@ from collections import namedtuple
 
 from PyQt6.QtCore import QItemSelectionModel
 from PyQt6.QtGui import QStandardItem
+from PyQt6.QtWidgets import QFrame
 from otlmow_model.OtlmowModel.Helpers import OTLObjectHelper
 
 from Domain.RelationChangeDomain import RelationChangeDomain
@@ -18,6 +19,11 @@ class ObjectListWidget(AbstractInstanceListWidget):
     def __init__(self, language_settings):
         super().__init__(language_settings,'class_list','object_attributes')
 
+    def create_object_list_gui(self, multi_select: bool = False) -> QFrame:
+        frame = super().create_object_list_gui(multi_select)
+        self.frame_layout.setContentsMargins(11,11,0,11)
+        self.list_gui.setProperty('class', 'object-list')
+        return frame
 
     def on_item_selected_listener(self, selected, deselected):
         # Get the currently selected indexes

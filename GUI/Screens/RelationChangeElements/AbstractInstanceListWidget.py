@@ -31,6 +31,7 @@ class AbstractInstanceListWidget:
         self.attribute_field_label_text = self._(attribute_field_label_key)
         self.attribute_field: QTreeWidget = QTreeWidget()
         self.attribute_field.setSelectionMode(QTreeWidget.SelectionMode.NoSelection)
+        self.frame_layout = None
 
         self.type_to_items_dict = {}
         self.type_open_status = {}
@@ -43,7 +44,8 @@ class AbstractInstanceListWidget:
 
     def create_object_list_gui(self, multi_select: bool = False) -> QFrame:
         frame = QFrame()
-        frame_layout = QVBoxLayout()
+        self.frame_layout = QVBoxLayout()
+        print(self.frame_layout.contentsMargins())
         list_label = QLabel()
         list_label.setText(self.list_label_text)
         self.list_gui = FolderTreeView()
@@ -56,17 +58,17 @@ class AbstractInstanceListWidget:
         if multi_select:
             self.list_gui.setSelectionMode(QTreeView.SelectionMode.MultiSelection)
 
-        frame_layout.addWidget(list_label)
-        frame_layout.addWidget(self.create_search_bar())
-        frame_layout.addWidget(self.list_gui)
+        self.frame_layout.addWidget(list_label)
+        self.frame_layout.addWidget(self.create_search_bar())
+        self.frame_layout.addWidget(self.list_gui)
 
         object_attribute_label = QLabel()
         object_attribute_label.setText(self.attribute_field_label_text)
-        frame_layout.addWidget(self.create_button())
-        frame_layout.addWidget(object_attribute_label)
+        self.frame_layout.addWidget(self.create_button())
+        self.frame_layout.addWidget(object_attribute_label)
 
-        frame_layout.addWidget(self.create_attribute_field())
-        frame.setLayout(frame_layout)
+        self.frame_layout.addWidget(self.create_attribute_field())
+        frame.setLayout(self.frame_layout)
 
         return frame
 

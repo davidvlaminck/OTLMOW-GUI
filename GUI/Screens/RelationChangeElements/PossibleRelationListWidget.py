@@ -21,10 +21,19 @@ class PossibleRelationListWidget(AbstractInstanceListWidget):
     def __init__(self, language_settings):
         super().__init__(language_settings,'relations_list','possible_relation_attributes')
 
+    def create_object_list_gui(self, multi_select: bool = False) -> QFrame:
+        frame = super().create_object_list_gui(multi_select)
+        self.frame_layout.setContentsMargins(0,11,11,11)
+        self.list_gui.setProperty('class', 'possible-relation-list')
+        return frame
 
+    def create_attribute_field(self):
+        attribute_field = super().create_attribute_field()
+        attribute_field.setProperty("class","attribute_field_possible_relation")
+        return attribute_field
 
     def object_selected_listener(self, item) -> None:
-      pass
+        pass
 
     def on_item_selected_listener(self, selected, deselected):
         no_item_selected = True

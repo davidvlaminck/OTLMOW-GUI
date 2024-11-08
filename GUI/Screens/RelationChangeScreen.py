@@ -88,11 +88,12 @@ class RelationChangeScreen(Screen):
     def horizontal_layout(self):
         frame = QFrame()
         self.frame_layout = QHBoxLayout()
+        self.frame_layout.setSpacing(0)
         self.frame_layout.addWidget(self.objects_list_gui.create_object_list_gui())
         self.frame_layout.addWidget(self.possible_relation_list_gui.create_object_list_gui(multi_select=True))
         self.frame_layout.addWidget(self.existing_relation_list_gui.create_object_list_gui(multi_select=True))
         # self.frame_layout.addWidget(self.map_widget())
-        self.frame_layout.addSpacing(20)
+        # self.frame_layout.addSpacing(20)
         frame.setLayout(self.frame_layout)
         return frame
 
