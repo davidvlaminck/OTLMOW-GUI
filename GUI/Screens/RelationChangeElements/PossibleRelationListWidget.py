@@ -1,13 +1,13 @@
 from collections import namedtuple
 from typing import Optional, Collection
 
-from PyQt6.QtGui import QStandardItem
+from PyQt6.QtGui import QStandardItem, QPixmap, QIcon
 from PyQt6.QtWidgets import QFrame, QVBoxLayout, QLabel, QTreeView
 from otlmow_model.OtlmowModel.Helpers import OTLObjectHelper
 
 from Domain.RelationChangeDomain import RelationChangeDomain
 from GUI.Screens.RelationChangeElements.AbstractInstanceListWidget import \
-    AbstractInstanceListWidget
+    AbstractInstanceListWidget, IMG_DIR
 from GUI.Screens.RelationChangeElements.FolderTreeView import FolderTreeView
 from GUI.Screens.RelationChangeElements.RelationChangeHelpers import RelationChangeHelpers
 from UnitTests.TestClasses.Classes.ImplementatieElement.AIMObject import AIMObject
@@ -15,11 +15,13 @@ from UnitTests.TestClasses.Classes.ImplementatieElement.AIMObject import AIMObje
 
 class PossibleRelationListWidget(AbstractInstanceListWidget):
 
-    Text = namedtuple('text', ['typeURI', 'direction', 'screen_name', 'target_typeURI'])
+    Text = namedtuple('text', ['typeURI', 'direction', 'screen_name', 'target_typeURI','full_typeURI'])
     Data = namedtuple('data', ['source_id', 'target_id', "index"])
 
     def __init__(self, language_settings):
-        super().__init__(language_settings,'relations_list','possible_relation_attributes')
+        super().__init__(language_settings,
+                         list_label_key='relations_list',
+                         attribute_field_label_key='possible_relation_attributes')
 
     def create_object_list_gui(self, multi_select: bool = False) -> QFrame:
         frame = super().create_object_list_gui(multi_select)
@@ -39,9 +41,10 @@ class PossibleRelationListWidget(AbstractInstanceListWidget):
         no_item_selected = True
         # Get the currently selected indexes
         for index in self.list_gui.selectionModel().selectedIndexes():
-            item = self.list_gui.model.itemFromIndex(index)
-            if item and item.isSelectable():
-                no_item_selected = False
+            if index.column() == 0:
+                item = self.list_gui.model.itemFromIndex(index)
+                if item and item.isSelectable():
+                    no_item_selected = False
 
         self.possible_relations_selected()
 
@@ -63,13 +66,26 @@ class PossibleRelationListWidget(AbstractInstanceListWidget):
         return self.list_button
 
     def create_instance_standard_item(self, text_and_data):
-        text = f"{text_and_data['text'].direction} {text_and_data['text'].screen_name} | {text_and_data['text'].target_typeURI}"
+        text = f"{text_and_data['text'].screen_name}"
         instance_item = QStandardItem(f"{text}")
         instance_item.setData(text_and_data['data'].source_id, self.data_1_index)
         instance_item.setData(text_and_data['data'].target_id, self.data_2_index)
         instance_item.setData(text_and_data['data'].index, self.data_3_index)
         instance_item.setData("instance", self.item_type_data_index)
-        return instance_item
+
+        text2 = f"{text_and_data['text'].target_typeURI}"
+        instance_item2 = QStandardItem(text2)
+
+        pixmap = QPixmap(f'{str(IMG_DIR)}/bar_pipe.png')
+        instance_item2.setIcon(QIcon(pixmap))
+
+        self.add_direction_icon_to_item(instance_item=instance_item,
+                                        direction=text_and_data['text'].direction,
+                                        typeURI=text_and_data['text'].full_typeURI)
+
+        return instance_item,instance_item2
+
+
 
     def add_possible_relation_to_existing_relations_listener(self):
         Data = self.Data
@@ -91,7 +107,8 @@ class PossibleRelationListWidget(AbstractInstanceListWidget):
             self.Data(self.list_gui.model.itemFromIndex(model_i).data(self.data_1_index),
                       self.list_gui.model.itemFromIndex(model_i).data(self.data_2_index),
                       self.list_gui.model.itemFromIndex(model_i).data(self.data_3_index))
-            for model_i in self.list_gui.selectionModel().selectedIndexes()]
+            for model_i in self.list_gui.selectionModel().selectedIndexes()
+            if model_i.column() == 0]
 
     def extract_text_and_data_per_item(self, source_object, objects):
         list_of_corresponding_values = []
@@ -126,7 +143,7 @@ class PossibleRelationListWidget(AbstractInstanceListWidget):
 
                 list_of_corresponding_values.append({
                     "text": self.Text(abbr_relation_typeURI, direction, screen_name,
-                                      abbr_target_object_typeURI),
+                                      abbr_target_object_typeURI,relation.typeURI),
                     "data": self.Data(source_object.assetId.identificator, target_identificator, i)
                 })
         list_of_corresponding_values.sort(key=lambda val: (

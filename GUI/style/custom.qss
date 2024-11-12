@@ -301,3 +301,8 @@ QTabBar::tab{
 {
     color: #ffffff;
 }
+
+
+QTreeView::item {
+    border-right: none;
+}

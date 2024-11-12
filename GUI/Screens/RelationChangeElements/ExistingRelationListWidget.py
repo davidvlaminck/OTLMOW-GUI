@@ -1,19 +1,20 @@
 from collections import namedtuple
 from typing import Optional, Collection
 
-from PyQt6.QtGui import QStandardItem
+from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QStandardItem, QPixmap, QIcon
 from otlmow_model.OtlmowModel.Helpers import OTLObjectHelper
 
 from Domain.RelationChangeDomain import RelationChangeDomain
 from GUI.Screens.RelationChangeElements.AbstractInstanceListWidget import \
-    AbstractInstanceListWidget
+    AbstractInstanceListWidget, IMG_DIR
 
 from GUI.Screens.RelationChangeElements.RelationChangeHelpers import RelationChangeHelpers
 
 
 class ExistingRelationListWidget(AbstractInstanceListWidget):
 
-    Text = namedtuple('text', ['typeURI', 'name_source', 'direction', 'name_target'])
+    Text = namedtuple('text', ['typeURI', 'name_source', 'direction', 'name_target','full_typeURI'])
     Data = namedtuple('data', ["index"])
 
     def __init__(self, language_settings):
@@ -24,9 +25,10 @@ class ExistingRelationListWidget(AbstractInstanceListWidget):
         no_item_selected = True
         # Get the currently selected indexes
         for index in self.list_gui.selectionModel().selectedIndexes():
-            item = self.list_gui.model.itemFromIndex(index)
-            if item and item.isSelectable():
-                no_item_selected = False
+            if index.column() == 0:
+                item = self.list_gui.model.itemFromIndex(index)
+                if item and item.isSelectable():
+                    no_item_selected = False
 
         self.existing_relations_selected()
         self.set_list_button_enabled(not no_item_selected)
@@ -47,11 +49,22 @@ class ExistingRelationListWidget(AbstractInstanceListWidget):
         return self.list_button
 
     def create_instance_standard_item(self, text_and_data):
-        text = f"{text_and_data['text'].name_source} {text_and_data['text'].direction} {text_and_data['text'].name_target}"
-        instance_item = QStandardItem(f"{text}")
+        text = f"{text_and_data['text'].name_source}"
+        instance_item = QStandardItem(text)
         instance_item.setData(text_and_data["data"].index, self.data_1_index)
         instance_item.setData("instance", self.item_type_data_index)
-        return instance_item
+        instance_item.setTextAlignment(Qt.AlignmentFlag.AlignRight)
+
+        text2 = f"{text_and_data['text'].name_target}"
+        instance_item2 = QStandardItem(text2)
+        # instance_item2.setData(text_and_data["data"].index, self.data_1_index)
+        # instance_item2.setData("instance", self.item_type_data_index)
+
+        self.add_direction_icon_to_item(instance_item=instance_item2,
+                                        direction=text_and_data['text'].direction,
+                                        typeURI= text_and_data['text'].full_typeURI)
+
+        return instance_item, instance_item2
 
     def existing_relations_selected(self):
         indices: list[int] = self.get_selected_data()
@@ -61,7 +74,7 @@ class ExistingRelationListWidget(AbstractInstanceListWidget):
     def get_selected_data(self):
         return [
             self.list_gui.model.itemFromIndex(model_i).data(self.data_1_index)
-            for model_i in self.list_gui.selectionModel().selectedIndexes()]
+            for model_i in self.list_gui.selectionModel().selectedIndexes() if model_i.column() == 0]
 
     def remove_existing_relations_listener(self):
         indices: list[int] = sorted(self.get_selected_data(), reverse=True)
@@ -92,7 +105,7 @@ class ExistingRelationListWidget(AbstractInstanceListWidget):
                     "Source -> Destination")
 
             list_of_corresponding_values.append({
-                "text": Text(abbr_typeURI, screen_name_source, direction, screen_name_target),
+                "text": Text(abbr_typeURI, screen_name_source, direction, screen_name_target,relation_object.typeURI),
                 "data": Data(i)
             })
 

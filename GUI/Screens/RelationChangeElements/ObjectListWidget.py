@@ -1,19 +1,19 @@
 from collections import namedtuple
 
 from PyQt6.QtCore import QItemSelectionModel
-from PyQt6.QtGui import QStandardItem
+from PyQt6.QtGui import QStandardItem, QPixmap, QIcon
 from PyQt6.QtWidgets import QFrame
 from otlmow_model.OtlmowModel.Helpers import OTLObjectHelper
 
 from Domain.RelationChangeDomain import RelationChangeDomain
 from GUI.Screens.RelationChangeElements.AbstractInstanceListWidget import \
-    AbstractInstanceListWidget
+    AbstractInstanceListWidget, IMG_DIR
 
 from GUI.Screens.RelationChangeElements.RelationChangeHelpers import RelationChangeHelpers
 
 
 class ObjectListWidget(AbstractInstanceListWidget):
-    Text = namedtuple('text', ['typeURI', 'screen_name'])
+    Text = namedtuple('text', ['typeURI', 'screen_name', 'full_typeURI'])
     Data = namedtuple('data', ['selected_object_id'])
 
     def __init__(self, language_settings):
@@ -29,10 +29,11 @@ class ObjectListWidget(AbstractInstanceListWidget):
         # Get the currently selected indexes
         self.selected_object = None
         for index in self.list_gui.selectionModel().selectedIndexes():
-            item = self.list_gui.model.itemFromIndex(index)
-            if item and item.isSelectable():
-                selected_object_id = item.data(self.data_1_index)
-                self.selected_object = RelationChangeDomain.get_object(identificator=
+            if index.column() == 0:
+                item = self.list_gui.model.itemFromIndex(index)
+                if item and item.isSelectable():
+                    selected_object_id = item.data(self.data_1_index)
+                    self.selected_object = RelationChangeDomain.get_object(identificator=
                                                                        selected_object_id)
 
         RelationChangeDomain.set_possible_relations(selected_object=self.selected_object)
@@ -54,7 +55,7 @@ class ObjectListWidget(AbstractInstanceListWidget):
             abbr_typeURI = RelationChangeHelpers.get_abbreviated_typeURI(OTL_object.typeURI,OTLObjectHelper.is_relation(OTL_object))
 
             list_of_corresponding_values.append({
-                "text": self.Text(abbr_typeURI,screen_name),
+                "text": self.Text(abbr_typeURI,screen_name,OTL_object.typeURI),
                 "data": self.Data(OTL_object.assetId.identificator)
             })
         return list_of_corresponding_values
@@ -63,7 +64,8 @@ class ObjectListWidget(AbstractInstanceListWidget):
         instance_item = QStandardItem(text)
         instance_item.setData(text_and_data['data'].selected_object_id, self.data_1_index)
         instance_item.setData("instance", self.item_type_data_index)
-        return instance_item
+
+        return instance_item,
 
     def select_object_id(self, previously_selected_item: QStandardItem):
         if previously_selected_item:

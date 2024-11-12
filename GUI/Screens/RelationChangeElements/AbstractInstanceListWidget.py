@@ -1,23 +1,27 @@
 import abc
+from pathlib import Path
 from typing import Optional, Collection
 
 from PyQt6.QtCore import Qt, QModelIndex
-from PyQt6.QtGui import QColor, QStandardItem
+from PyQt6.QtGui import QColor, QStandardItem, QPixmap, QIcon, QPainter, QBrush
 from PyQt6.QtWidgets import QTreeWidget, QFrame, QVBoxLayout, QLabel, QListWidget, QListWidgetItem, \
     QHeaderView, QTreeWidgetItem, QWidget, QHBoxLayout, QLineEdit, QPushButton, QTreeView
 from otlmow_model.OtlmowModel.Helpers.OTLObjectHelper import is_relation
 
 import qtawesome as qta
+from otlmow_visuals.PyVisWrapper import PyVisWrapper
+
 from Domain.RelationChangeDomain import RelationChangeDomain
 from GUI.ButtonWidget import ButtonWidget
 from GUI.Screens.RelationChangeElements.FolderTreeView import FolderTreeView
 from GUI.Screens.RelationChangeElements.RelationChangeHelpers import RelationChangeHelpers
 from UnitTests.TestClasses.Classes.ImplementatieElement.AIMObject import AIMObject
-
+ROOT_DIR = Path(__file__).parent.parent.parent.parent
+IMG_DIR = ROOT_DIR / 'img/'
 MULTI_SELECTION = QListWidget.SelectionMode.MultiSelection
 class AbstractInstanceListWidget:
 
-    def __init__(self,language_settings, class_list_label_key: str, attribute_field_label_key:str):
+    def __init__(self, language_settings, list_label_key: str, attribute_field_label_key:str, list_gui_style_class=None):
         self._ = language_settings
         self.search_text = ""
 
@@ -27,20 +31,23 @@ class AbstractInstanceListWidget:
         self.list_gui = None
         self.list_button = ButtonWidget()
 
-        self.list_label_text = self._(class_list_label_key)
+        self.list_label_text = self._(list_label_key)
         self.attribute_field_label_text = self._(attribute_field_label_key)
         self.attribute_field: QTreeWidget = QTreeWidget()
         self.attribute_field.setSelectionMode(QTreeWidget.SelectionMode.NoSelection)
         self.frame_layout = None
 
-        self.type_to_items_dict = {}
+        # self.type_to_items_dict = {}
         self.type_open_status = {}
         self.selected_object = None
+        self.list_gui_style_class = list_gui_style_class
 
         self.item_type_data_index = 3
         self.data_1_index = 4
         self.data_2_index = 5
         self.data_3_index = 6
+
+        self.color_legend = PyVisWrapper().relatie_color_dict
 
     def create_object_list_gui(self, multi_select: bool = False) -> QFrame:
         frame = QFrame()
@@ -57,6 +64,8 @@ class AbstractInstanceListWidget:
         self.list_gui.setExpandsOnDoubleClick(False)
         if multi_select:
             self.list_gui.setSelectionMode(QTreeView.SelectionMode.MultiSelection)
+        if self.list_gui_style_class:
+            self.list_gui.setObjectName(self.list_gui_style_class)
 
         self.frame_layout.addWidget(list_label)
         self.frame_layout.addWidget(self.create_search_bar())
@@ -73,6 +82,7 @@ class AbstractInstanceListWidget:
         return frame
 
     def clicked_item_listener(self, model_index: QModelIndex):
+        model_index = model_index.siblingAtColumn(0)
         if self.list_gui.model.itemFromIndex(model_index).hasChildren():
             if self.list_gui.isExpanded(model_index):
                 self.list_gui.collapse(model_index)
@@ -100,11 +110,12 @@ class AbstractInstanceListWidget:
 
         folder_items_expanded = []
         previously_selected_item = None
+        multi_col_list = False
         for asset_type, text_and_data_list in type_to_instance_dict.items():
 
             add_folder_based_on_search_text = False
             folder_item = self.create_asset_type_standard_item(asset_type)
-            self.type_to_items_dict[asset_type] = []
+            # self.type_to_items_dict[asset_type] = []
 
             if asset_type not in self.type_open_status:
                 self.type_open_status[asset_type] = False
@@ -113,17 +124,33 @@ class AbstractInstanceListWidget:
 
             for text_and_data in text_and_data_list:
 
-                instance_item = self.create_instance_standard_item(text_and_data)
+                instance_item_tuple: tuple[QStandardItem] = self.create_instance_standard_item(text_and_data)
+                search_match = False
 
-                if (    self.search_text in instance_item.text().lower() or
-                        self.search_text in folder_item.text().lower()):
+                # search on all columns
+                for instance_item in instance_item_tuple:
+                    if (    self.search_text in instance_item.text().lower() or
+                            self.search_text in folder_item.text().lower()):
+                        search_match = True
+
+                        # self.type_to_items_dict[asset_type].append(instance_item)
+                        instance_item.setEditable(False)  # Make the item name non-editable
+
+
+
+                if search_match:
                     if self.is_previously_selected_requirement(text_and_data):
-                        previously_selected_item = instance_item
+                        previously_selected_item = instance_item_tuple[0]
 
-                    self.type_to_items_dict[asset_type].append(instance_item)
-                    instance_item.setEditable(False)  # Make the item name non-editable
+                    if len(instance_item_tuple) > 1:
+                        instance_item_tuple[1].setData(instance_item_tuple[0].data(self.data_1_index), self.data_1_index)
+                        instance_item_tuple[1].setData(instance_item_tuple[0].data(self.data_2_index), self.data_2_index)
+                        instance_item_tuple[1].setData(instance_item_tuple[0].data(self.data_3_index), self.data_3_index)
+                        instance_item_tuple[1].setData(instance_item_tuple[0].data(self.item_type_data_index), self.item_type_data_index)
+                        instance_item_tuple[1].setEditable(False)
+                        multi_col_list = True
 
-                    folder_item.appendRow(instance_item)
+                    folder_item.appendRow(instance_item_tuple)
                     add_folder_based_on_search_text = True
 
                     if self.search_text:
@@ -136,10 +163,24 @@ class AbstractInstanceListWidget:
 
         for folder_item in item_list:
             folder_item.sortChildren(0,Qt.SortOrder.AscendingOrder)
-            self.list_gui.addItem(folder_item)
+            if multi_col_list:
+                padding_item = QStandardItem("")
+                padding_item.setData(folder_item.data(self.data_1_index), self.data_1_index)
+                padding_item.setData(folder_item.data(self.item_type_data_index), self.item_type_data_index)
+                padding_item.setEditable(False)  # Make the folder name non-editable
+                padding_item.setSelectable(False)  # Optional: make the folder itself non-selectable
+
+                self.list_gui.addItem((folder_item, padding_item))
+            else:
+                self.list_gui.addItem(folder_item)
 
         self.list_gui.setSortingEnabled(True)
         self.list_gui.sortByColumn(0, Qt.SortOrder.AscendingOrder)
+
+        self.list_gui.expandAll()
+        self.list_gui.resizeColumnToContents(0)  # Resizes the first column based on its content
+        # self.list_gui.setSizeAdjustPolicy(QTreeView.SizeAdjustPolicy.AdjustToContents)
+        self.list_gui.collapseAll()
 
         # expand previously expanded items
         for folder_item in folder_items_expanded:
@@ -267,3 +308,25 @@ class AbstractInstanceListWidget:
 
     def set_all_folder_items_collapsed(self):
         self.type_open_status.clear()
+
+    def add_direction_icon_to_item(self, instance_item: QStandardItem, direction: str, typeURI: str):
+        direction_icon_path = f'{str(IMG_DIR)}/bidirect.png'
+        if direction == "-->":
+            direction_icon_path = f'{str(IMG_DIR)}/right.png'
+        elif direction == "<--":
+            direction_icon_path = f'{str(IMG_DIR)}/left.png'
+
+        pixmap = QPixmap(direction_icon_path)
+        self.apply_relation_color(pixmap, typeURI)
+
+        instance_item.setIcon(QIcon(pixmap))
+
+    def apply_relation_color(self, pixmap, typeURI):
+        painter = QPainter(pixmap)
+        painter.setCompositionMode(QPainter.CompositionMode.CompositionMode_SourceIn)
+        color_code = self.color_legend[typeURI]
+        color = QColor(f"#{color_code}")  # Choose the color you want
+        painter.setBrush(color)
+        painter.setPen(color)
+        painter.drawRect(pixmap.rect())  # Draw over the pixmap with the chosen color
+        painter.end()

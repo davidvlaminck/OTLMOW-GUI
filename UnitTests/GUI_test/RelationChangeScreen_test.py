@@ -121,14 +121,18 @@ def test_full_fill_possible_relations_list(qtbot,root_directory:Path,
     assert reference_items == real_items
 
     child_items = {}
-    child_items['HoortBij'] = ['<-- dummy_C | Pictogram', '<-- dummy_J | Verkeersbordsteun', '<-- dummy_a | Pictogram', '<-- dummy_s | Verkeersbordsteun']
+    child_items_col_2 = {}
+    child_items['HoortBij'] = ['dummy_C', 'dummy_J', 'dummy_a', 'dummy_s']
+    child_items_col_2['HoortBij'] = ['Pictogram', 'Verkeersbordsteun', 'Pictogram', 'Verkeersbordsteun']
+
     for i in range(len(real_items)):
         real_item = possible_relations_list.list_gui.model.item(i)
         item_text = real_item.text()
         real_children = [real_item.child(x).text() for x in
                          range(real_item.rowCount())]
+        real_children_col_2 = [real_item.child(x, 1).text() for x in range(real_item.rowCount())]
         assert real_children == child_items[item_text]
-
+        assert real_children_col_2 == child_items_col_2[item_text]
 
 
     # pictogram 1
@@ -141,8 +145,14 @@ def test_full_fill_possible_relations_list(qtbot,root_directory:Path,
     assert reference_items == real_items
 
     child_items = {}
-    child_items['Bevestiging'] = ['<-> dummy_FNrHuPZCWV | Funderingsmassief', '<-> dummy_J | Verkeersbordsteun', '<-> dummy_s | Verkeersbordsteun']
-    child_items['HoortBij'] = ['--> dummy_LGG | Verkeersbordopstelling', '--> dummy_hxOTHWe | Verkeersbordopstelling']
+    # child_items['HoortBij'] = ['dummy_C', 'dummy_J', 'dummy_a', 'dummy_s']
+    # child_items_col_2['HoortBij'] = ['Pictogram', 'Verkeersbordsteun', 'Pictogram',
+    #                                  'Verkeersbordsteun']
+
+    child_items['Bevestiging'] = ['dummy_FNrHuPZCWV', 'dummy_J', 'dummy_s']
+    child_items_col_2['Bevestiging'] =['Funderingsmassief', 'Verkeersbordsteun', 'Verkeersbordsteun']
+    child_items['HoortBij'] = ['dummy_LGG', 'dummy_hxOTHWe']
+    child_items_col_2['HoortBij'] = ['Verkeersbordopstelling', 'Verkeersbordopstelling']
     for i in range(len(real_items)):
         real_item = possible_relations_list.list_gui.model.item(i)
         item_text = real_item.text()
@@ -162,10 +172,9 @@ def test_full_fill_possible_relations_list(qtbot,root_directory:Path,
     assert reference_items == real_items
 
     child_items = {}
-    child_items['Bevestiging'] = ['<-> dummy_C | Pictogram',
-                                  '<-> dummy_FNrHuPZCWV | Funderingsmassief',
-                                  '<-> dummy_J | Verkeersbordsteun',
-                                  '<-> dummy_s | Verkeersbordsteun']
+    child_items['Bevestiging'] = ['dummy_C', 'dummy_FNrHuPZCWV', 'dummy_J', 'dummy_s']
+    child_items_col_2['Bevestiging'] = ['Pictogram', 'Funderingsmassief', 'Verkeersbordsteun', 'Verkeersbordsteun']
+
     for i in range(len(real_items)):
         real_item = possible_relations_list.list_gui.model.item(i)
         item_text = real_item.text()
@@ -283,15 +292,20 @@ def test_full_fill_existing_relations_list(qtbot,root_directory:Path,
     assert reference_items == real_items
 
     child_items = {}
-    child_items['Bevestiging'] = ['None <-> None', 'dummy_a <-> dummy_TyBGmXfXC']
-    child_items['HoortBij'] = ['dummy_J --> dummy_LGG']
-    child_items['LigtOp'] = ['dummy_FNrHuPZCWV --> dummy_TyBGmXfXC']
+    child_items_col_2 = {}
+    child_items['Bevestiging'] = ['None', 'dummy_a']
+    child_items_col_2['Bevestiging'] = ['None', 'dummy_TyBGmXfXC']
+    child_items['HoortBij'] = ['dummy_J']
+    child_items_col_2['HoortBij'] = ['dummy_LGG']
+    child_items['LigtOp'] = ['dummy_FNrHuPZCWV']
+    child_items_col_2['LigtOp'] = ['dummy_TyBGmXfXC']
     for i in range(len(real_items)):
         real_item = existing_relation_list.list_gui.model.item(i)
         item_text = real_item.text()
-        real_children = [real_item.child(x).text() for x in
-                         range(real_item.rowCount())]
+        real_children = [real_item.child(x).text() for x in range(real_item.rowCount())]
+        real_children_col_2 = [real_item.child(x,1).text() for x in range(real_item.rowCount())]
         assert real_children == child_items[item_text]
+        assert real_children_col_2 == child_items_col_2[item_text]
 
 #################################################
 # UNIT TESTS                                    #
@@ -485,8 +499,9 @@ def test_fill_possible_relations_list_with_2_same_name_but_diff_namespace_items(
 
     assert relation_change_screen.possible_relation_list_gui.list_gui.model.item(0).rowCount() == 1
     assert relation_change_screen.possible_relation_list_gui.list_gui.model.item(0).child(
-        0).text() == "<-> dummy_identificator3 | AnotherTestClass"
-
+        0).text() == "dummy_identificator3"
+    assert relation_change_screen.possible_relation_list_gui.list_gui.model.item(0).child(
+        0,1).text() == "AnotherTestClass"
 
     RelationChangeDomain.set_possible_relations(test_object3)
 
@@ -496,7 +511,9 @@ def test_fill_possible_relations_list_with_2_same_name_but_diff_namespace_items(
 
     assert relation_change_screen.possible_relation_list_gui.list_gui.model.item(0).rowCount() == 1
     assert relation_change_screen.possible_relation_list_gui.list_gui.model.item(0).child(
-        0).text() == "<-> dummy_identificator2 | onderdeel#AllCasesTestClass"
+        0).text() == "dummy_identificator2"
+    assert relation_change_screen.possible_relation_list_gui.list_gui.model.item(0).child(0,
+        1).text() == "onderdeel#AllCasesTestClass"
 
 
     
