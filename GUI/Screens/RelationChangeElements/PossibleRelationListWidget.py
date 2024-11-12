@@ -16,7 +16,7 @@ from UnitTests.TestClasses.Classes.ImplementatieElement.AIMObject import AIMObje
 class PossibleRelationListWidget(AbstractInstanceListWidget):
 
     Text = namedtuple('text', ['typeURI', 'direction', 'screen_name', 'target_typeURI','full_typeURI'])
-    Data = namedtuple('data', ['source_id', 'target_id', "index"])
+    Data = namedtuple('data', ['source_id', 'target_id', "index", "last_added"])
 
     def __init__(self, language_settings):
         super().__init__(language_settings,
@@ -72,6 +72,7 @@ class PossibleRelationListWidget(AbstractInstanceListWidget):
         instance_item.setData(text_and_data['data'].target_id, self.data_2_index)
         instance_item.setData(text_and_data['data'].index, self.data_3_index)
         instance_item.setData("instance", self.item_type_data_index)
+        instance_item.setData(text_and_data["data"].last_added, self.data_last_added_index)
 
         text2 = f"{text_and_data['text'].target_typeURI}"
         instance_item2 = QStandardItem(text2)
@@ -91,10 +92,12 @@ class PossibleRelationListWidget(AbstractInstanceListWidget):
         Data = self.Data
         data_list: list[Data] = sorted(self.get_selected_data(), reverse=True)
 
-        for data in data_list:
-            RelationChangeDomain.add_possible_relation_to_existing_relations(data.source_id,
-                                                                             data.target_id,
-                                                                             data.index)
+        RelationChangeDomain.add_possible_relations_to_existing_relations(data_list=data_list)
+
+        # for data in data_list:
+        #     RelationChangeDomain.add_possible_relation_to_existing_relations(data.source_id,
+        #                                                                      data.target_id,
+        #                                                                      data.index)
 
     def possible_relations_selected(self):
         Data = self.Data
@@ -106,11 +109,11 @@ class PossibleRelationListWidget(AbstractInstanceListWidget):
         return [
             self.Data(self.list_gui.model.itemFromIndex(model_i).data(self.data_1_index),
                       self.list_gui.model.itemFromIndex(model_i).data(self.data_2_index),
-                      self.list_gui.model.itemFromIndex(model_i).data(self.data_3_index))
+                      self.list_gui.model.itemFromIndex(model_i).data(self.data_3_index),False)
             for model_i in self.list_gui.selectionModel().selectedIndexes()
             if model_i.column() == 0]
 
-    def extract_text_and_data_per_item(self, source_object, objects):
+    def extract_text_and_data_per_item(self, source_object, objects, last_added):
         list_of_corresponding_values = []
         for target_identificator, target_relations in objects.items():
 
@@ -144,8 +147,11 @@ class PossibleRelationListWidget(AbstractInstanceListWidget):
                 list_of_corresponding_values.append({
                     "text": self.Text(abbr_relation_typeURI, direction, screen_name,
                                       abbr_target_object_typeURI,relation.typeURI),
-                    "data": self.Data(source_object.assetId.identificator, target_identificator, i)
+                    "data": self.Data(source_object.assetId.identificator, target_identificator, i,relation in last_added)
                 })
         list_of_corresponding_values.sort(key=lambda val: (
             val['text'].target_typeURI, val['text'].screen_name, val['text'].typeURI))
         return list_of_corresponding_values
+
+    def is_last_added(self, text_and_data: dict):
+        return text_and_data["data"].last_added

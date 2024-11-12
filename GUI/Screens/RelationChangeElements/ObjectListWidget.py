@@ -3,6 +3,7 @@ from collections import namedtuple
 from PyQt6.QtCore import QItemSelectionModel
 from PyQt6.QtGui import QStandardItem, QPixmap, QIcon
 from PyQt6.QtWidgets import QFrame
+from otlmow_model.OtlmowModel.Classes.ImplementatieElement.AIMObject import AIMObject
 from otlmow_model.OtlmowModel.Helpers import OTLObjectHelper
 
 from Domain.RelationChangeDomain import RelationChangeDomain
@@ -14,7 +15,7 @@ from GUI.Screens.RelationChangeElements.RelationChangeHelpers import RelationCha
 
 class ObjectListWidget(AbstractInstanceListWidget):
     Text = namedtuple('text', ['typeURI', 'screen_name', 'full_typeURI'])
-    Data = namedtuple('data', ['selected_object_id'])
+    Data = namedtuple('data', ['selected_object_id','last_added'])
 
     def __init__(self, language_settings):
         super().__init__(language_settings,'class_list','object_attributes')
@@ -47,7 +48,7 @@ class ObjectListWidget(AbstractInstanceListWidget):
     def is_previously_selected_requirement(self, text_and_data):
         return self.selected_object and self.selected_object.assetId.identificator == text_and_data['data'].selected_object_id
 
-    def extract_text_and_data_per_item(self, source_object, objects):
+    def extract_text_and_data_per_item(self, source_object, objects, last_added):
         list_of_corresponding_values = []
 
         for OTL_object in objects:
@@ -56,7 +57,7 @@ class ObjectListWidget(AbstractInstanceListWidget):
 
             list_of_corresponding_values.append({
                 "text": self.Text(abbr_typeURI,screen_name,OTL_object.typeURI),
-                "data": self.Data(OTL_object.assetId.identificator)
+                "data": self.Data(OTL_object.assetId.identificator,False)
             })
         return list_of_corresponding_values
     def create_instance_standard_item(self, text_and_data):
@@ -64,6 +65,7 @@ class ObjectListWidget(AbstractInstanceListWidget):
         instance_item = QStandardItem(text)
         instance_item.setData(text_and_data['data'].selected_object_id, self.data_1_index)
         instance_item.setData("instance", self.item_type_data_index)
+        instance_item.setData(text_and_data["data"].last_added, self.data_last_added_index)
 
         return instance_item,
 
@@ -74,3 +76,6 @@ class ObjectListWidget(AbstractInstanceListWidget):
             if previously_selected_item_index:
                 self.list_gui.selectionModel().setCurrentIndex(previously_selected_item_index,
                                                                QItemSelectionModel.SelectionFlag.SelectCurrent)
+
+    def is_last_added(self, text_and_data: dict):
+        pass

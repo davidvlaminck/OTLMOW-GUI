@@ -10,12 +10,13 @@ from GUI.Screens.RelationChangeElements.AbstractInstanceListWidget import \
     AbstractInstanceListWidget, IMG_DIR
 
 from GUI.Screens.RelationChangeElements.RelationChangeHelpers import RelationChangeHelpers
+from UnitTests.TestClasses.Classes.ImplementatieElement.AIMObject import AIMObject
 
 
 class ExistingRelationListWidget(AbstractInstanceListWidget):
 
     Text = namedtuple('text', ['typeURI', 'name_source', 'direction', 'name_target','full_typeURI'])
-    Data = namedtuple('data', ["index"])
+    Data = namedtuple('data', ["index", "last_added"])
 
     def __init__(self, language_settings):
         super().__init__(language_settings, 'existing_relations_list',
@@ -53,6 +54,8 @@ class ExistingRelationListWidget(AbstractInstanceListWidget):
         instance_item = QStandardItem(text)
         instance_item.setData(text_and_data["data"].index, self.data_1_index)
         instance_item.setData("instance", self.item_type_data_index)
+        instance_item.setData(text_and_data["data"].last_added, self.data_last_added_index)
+
         instance_item.setTextAlignment(Qt.AlignmentFlag.AlignRight)
 
         text2 = f"{text_and_data['text'].name_target}"
@@ -79,10 +82,11 @@ class ExistingRelationListWidget(AbstractInstanceListWidget):
     def remove_existing_relations_listener(self):
         indices: list[int] = sorted(self.get_selected_data(), reverse=True)
 
-        for index in indices:
-            RelationChangeDomain.remove_existing_relation(index)
+        # for index in indices:
+        #     RelationChangeDomain.remove_existing_relation(index)
+        RelationChangeDomain.remove_existing_relations(indices)
 
-    def extract_text_and_data_per_item(self, source_object, objects):
+    def extract_text_and_data_per_item(self, source_object, objects, last_added):
         list_of_corresponding_values = []
         Text = self.Text
         Data = self.Data
@@ -106,7 +110,7 @@ class ExistingRelationListWidget(AbstractInstanceListWidget):
 
             list_of_corresponding_values.append({
                 "text": Text(abbr_typeURI, screen_name_source, direction, screen_name_target,relation_object.typeURI),
-                "data": Data(i)
+                "data": Data(i,relation_object in last_added)
             })
 
         list_of_corresponding_values.sort(key=lambda val: (
@@ -115,3 +119,7 @@ class ExistingRelationListWidget(AbstractInstanceListWidget):
             val['text'].name_target if val['text'].name_target is not None else "xxx"))
 
         return list_of_corresponding_values
+
+    def is_last_added(self, text_and_data: dict):
+        return text_and_data["data"].last_added
+

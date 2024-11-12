@@ -76,14 +76,18 @@ class RelationChangeScreen(Screen):
         return frame
 
     def fill_object_list(self, objects: List[AIMObject]) -> None:
-        self.objects_list_gui.fill_list(None,objects)
+        self.objects_list_gui.fill_list(None, objects, [])
         
-    def fill_existing_relations_list(self, relations_objects: List[RelatieObject]) -> None:
-        self.existing_relation_list_gui.fill_list(None,relations_objects)
+    def fill_existing_relations_list(self, relations_objects: List[RelatieObject], last_added: list[RelatieObject] = None) -> None:
+        if last_added is None:
+            last_added = []
+        self.existing_relation_list_gui.fill_list(None, relations_objects, last_added)
 
     def fill_possible_relations_list(self, source_object: AIMObject,
-                                     relations: dict[str, list[RelatieObject]]) -> None:
-        self.possible_relation_list_gui.fill_list(source_object,relations)
+                                     relations: dict[str, list[RelatieObject]], last_added=None) -> None:
+        if last_added is None:
+            last_added = []
+        self.possible_relation_list_gui.fill_list(source_object, relations,last_added)
 
     def horizontal_layout(self):
         frame = QFrame()

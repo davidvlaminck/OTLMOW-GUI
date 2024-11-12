@@ -5,7 +5,8 @@ from typing import Optional, Collection
 from PyQt6.QtCore import Qt, QModelIndex
 from PyQt6.QtGui import QColor, QStandardItem, QPixmap, QIcon, QPainter, QBrush
 from PyQt6.QtWidgets import QTreeWidget, QFrame, QVBoxLayout, QLabel, QListWidget, QListWidgetItem, \
-    QHeaderView, QTreeWidgetItem, QWidget, QHBoxLayout, QLineEdit, QPushButton, QTreeView
+    QHeaderView, QTreeWidgetItem, QWidget, QHBoxLayout, QLineEdit, QPushButton, QTreeView, \
+    QStyledItemDelegate
 from otlmow_model.OtlmowModel.Helpers.OTLObjectHelper import is_relation
 
 import qtawesome as qta
@@ -46,8 +47,26 @@ class AbstractInstanceListWidget:
         self.data_1_index = 4
         self.data_2_index = 5
         self.data_3_index = 6
+        self.data_last_added_index = 8
 
         self.color_legend = PyVisWrapper().relatie_color_dict
+        self.last_added_color = QColor("#d0ffcc")
+
+    class LastAddedHighlightDelegate(QStyledItemDelegate):
+
+        def __init__(self, list_widget):
+            super().__init__()
+            self.parent : AbstractInstanceListWidget = list_widget
+
+        def paint(self, painter: QPainter, option, index: QModelIndex):
+            painter.save()
+
+            # Apply custom background for specific rows or items
+            if  self.parent.list_gui.model.itemFromIndex(index).data(self.parent.data_last_added_index) :
+                painter.fillRect(option.rect, QBrush(self.parent.last_added_color))
+
+            painter.restore()
+            super().paint(painter, option, index)
 
     def create_object_list_gui(self, multi_select: bool = False) -> QFrame:
         frame = QFrame()
@@ -62,6 +81,7 @@ class AbstractInstanceListWidget:
         self.list_gui.collapsed.connect(self.record_collapse_listener)
         self.list_gui.clicked.connect(self.clicked_item_listener)
         self.list_gui.setExpandsOnDoubleClick(False)
+        self.list_gui.setItemDelegate(self.LastAddedHighlightDelegate(self))
         if multi_select:
             self.list_gui.setSelectionMode(QTreeView.SelectionMode.MultiSelection)
         if self.list_gui_style_class:
@@ -89,7 +109,7 @@ class AbstractInstanceListWidget:
             else:
                 self.list_gui.expand(model_index)
 
-    def fill_list(self, source_object: Optional[AIMObject], objects: Collection) -> None:
+    def fill_list(self, source_object: Optional[AIMObject], objects: Collection, last_added) -> None:
         # sourcery skip: remove-dict-keys
         # objects = RelationChangeDomain.objects
         self.list_gui.setSortingEnabled(False)
@@ -97,7 +117,8 @@ class AbstractInstanceListWidget:
         item_list = []
         type_to_instance_dict = {}
 
-        text_and_data_per_element = self.extract_text_and_data_per_item(source_object, objects)
+        text_and_data_per_element = self.extract_text_and_data_per_item(source_object, objects,
+                                                                        last_added)
 
         for text_and_data in text_and_data_per_element:
 
@@ -135,7 +156,8 @@ class AbstractInstanceListWidget:
 
                         # self.type_to_items_dict[asset_type].append(instance_item)
                         instance_item.setEditable(False)  # Make the item name non-editable
-
+                        if self.is_last_added(text_and_data):
+                            instance_item.setBackground(QBrush(QColor("#ecf0f1")))
 
 
                 if search_match:
@@ -201,11 +223,15 @@ class AbstractInstanceListWidget:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def extract_text_and_data_per_item(self, source_object, objects):
+    def extract_text_and_data_per_item(self, source_object, objects, last_added):
         raise NotImplementedError
 
     @abc.abstractmethod
     def on_item_selected_listener(self, selected, deselected):
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def is_last_added(self, text_and_data: dict):
         raise NotImplementedError
 
     def create_attribute_field(self):
@@ -281,6 +307,7 @@ class AbstractInstanceListWidget:
 
         item.setData(asset_type,self.data_1_index)
         item.setData("type", self.item_type_data_index)
+        item.setData(False, self.data_last_added_index)
         return item
 
     def select_object_id(self, previously_selected_item: QStandardItem):

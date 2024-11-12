@@ -39,6 +39,9 @@ class RelationChangeDomain:
     possible_object_to_object_relations_dict: dict[str,dict[str,list[RelatieObject]]] =  {}
 
     selected_object: Optional[AIMObject] = None
+    last_added_to_existing: Optional[list[AIMObject]] = []
+    last_added_to_possible: Optional[list[AIMObject]] = []
+
     """
     Call this when the project or project.subset_path changes or everytime you go to the window
     """
@@ -222,41 +225,42 @@ class RelationChangeDomain:
 
     @classmethod
     @save_assets
+    def add_possible_relations_to_existing_relations(cls,data_list):
+
+        cls.last_added_to_existing = [RelationChangeDomain.add_possible_relation_to_existing_relations(data.source_id,
+                                                                             data.target_id,
+                                                                             data.index) for data in data_list]
+        cls.update_frontend()
+
+    @classmethod
     def add_possible_relation_to_existing_relations(cls, bron_asset_id, target_asset_id,
                                                     relation_object_index):
         relation_object = cls.possible_object_to_object_relations_dict[bron_asset_id][target_asset_id].pop(relation_object_index)
         cls.existing_relations.append(relation_object)
-
         cls.get_screen().expand_existing_relations_folder_of(relation_object.typeURI)
+        return relation_object
 
-        cls.update_frontend()
+
 
     @classmethod
     def update_frontend(cls):
         cls.get_screen().fill_object_list(cls.objects)
-        cls.get_screen().fill_existing_relations_list(cls.existing_relations)
+        cls.get_screen().fill_existing_relations_list(cls.existing_relations, cls.last_added_to_existing)
         if cls.selected_object:
             cls.set_possible_relations(selected_object=cls.selected_object)
             selected_object_id = cls.selected_object.assetId.identificator
             possibleRelations = cls.possible_object_to_object_relations_dict[selected_object_id]
-            cls.get_screen().fill_possible_relations_list(cls.selected_object, possibleRelations)
-
-
+            cls.get_screen().fill_possible_relations_list(cls.selected_object, possibleRelations,last_added=cls.last_added_to_possible)
 
     @classmethod
     @save_assets
+    def remove_existing_relations(cls, indices: list[int]) -> RelatieObject:
+        cls.last_added_to_possible = [cls.remove_existing_relation(index) for index in indices]
+        cls.update_frontend()
+
+    @classmethod
     def remove_existing_relation(cls, index:int) -> RelatieObject:
         removed_relation = cls.existing_relations.pop(index)
-
-        if cls.selected_object:
-            selected_id = cls.selected_object.assetId.identificator
-            source_id = removed_relation.bronAssetId.identificator
-            target_id = removed_relation.doelAssetId.identificator
-
-            if selected_id in [source_id, target_id]:
-                cls.get_screen().expand_possible_relations_folder_of(removed_relation.typeURI)
-
-        cls.update_frontend()
 
         return removed_relation
 
