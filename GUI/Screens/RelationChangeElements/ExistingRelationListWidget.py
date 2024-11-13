@@ -63,6 +63,7 @@ class ExistingRelationListWidget(AbstractInstanceListWidget):
 
         text2 = f"{text_and_data['text'].name_target}"
         instance_item2 = QStandardItem(text2)
+        instance_item2.setTextAlignment(Qt.AlignmentFlag.AlignTop)
         # instance_item2.setData(text_and_data["data"].index, self.data_1_index)
         # instance_item2.setData("instance", self.item_type_data_index)
 
