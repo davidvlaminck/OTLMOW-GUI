@@ -49,7 +49,7 @@ class ExistingRelationListWidget(AbstractInstanceListWidget):
         self.list_button.setDisabled(True)
         self.list_button.clicked.connect(
             self.remove_existing_relations_listener)
-        self.list_button.setProperty('class', 'primary-button')
+        self.list_button.setProperty('class', 'remove_relation-button')
         return self.list_button
 
     def create_instance_standard_item(self, text_and_data):

@@ -306,3 +306,37 @@ QTabBar::tab{
 QTreeView::item {
     border-right: none;
 }
+
+.remove_relation-button{
+    background-color: #f8cecc;
+    color: #b85450;
+    height: 25px;
+    border-radius: 5px;
+    border: 1px solid #b85450;
+    padding-left: 15px;
+    padding-right: 10px;
+    font-family: Roboto;
+}
+
+.remove_relation-button:disabled{
+    background-color: grey;
+    color: white;
+    border: unset;
+}
+
+.add_relation-button{
+    background-color: #d5e8d4;
+    color: #689a4c;
+    height: 25px;
+    border-radius: 5px;
+    border: 1px solid #689a4c;
+    padding-left: 15px;
+    padding-right: 10px;
+    font-family: Roboto;
+}
+
+.add_relation-button:disabled{
+    background-color: grey;
+    color: white;
+    border: unset;
+}

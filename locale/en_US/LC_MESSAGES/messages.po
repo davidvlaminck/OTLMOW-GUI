@@ -443,9 +443,8 @@ msgid "existing_relation_attributes"
 msgstr "Existing relation attributes"
 
 #: GUI/Screens/RelationChangeElements/ExistingRelationListWidget.py:48
-#, fuzzy
 msgid "remove_relation"
-msgstr "Are you sure you want to delete these project files?"
+msgstr "Remove relations"
 
 #: GUI/Screens/RelationChangeElements/ObjectListWidget.py:23
 msgid "class_list"
