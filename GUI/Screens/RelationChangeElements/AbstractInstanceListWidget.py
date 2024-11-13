@@ -165,11 +165,12 @@ class AbstractInstanceListWidget:
         for asset_type, text_and_data_list in type_to_instance_dict.items():
 
             add_folder_based_on_search_text = False
-            folder_item = self.create_asset_type_standard_item(asset_type)
+            folder_item = self.create_asset_type_standard_item(asset_type,text_and_data_list)
             folder_item_font = QFont()
             folder_item_font.setBold(True)
             folder_item_font.setPointSize(10)
             folder_item.setFont(folder_item_font)
+
             # self.type_to_items_dict[asset_type] = []
 
             if asset_type not in self.type_open_status:
@@ -340,7 +341,7 @@ class AbstractInstanceListWidget:
         item.setData(self.item_type_data_index, "type")
         return item
 
-    def create_asset_type_standard_item(self, asset_type):
+    def create_asset_type_standard_item(self, asset_type, text_and_data_list):
         item = QStandardItem(f"{asset_type}")
         item.setEditable(False)  # Make the folder name non-editable
         item.setSelectable(False)  # Optional: make the folder itself non-selectable
@@ -382,6 +383,14 @@ class AbstractInstanceListWidget:
             direction_icon_path = f'{str(IMG_DIR)}/right.png'
         elif direction == "<--":
             direction_icon_path = f'{str(IMG_DIR)}/left.png'
+
+        pixmap = QPixmap(direction_icon_path)
+        self.apply_relation_color(pixmap, typeURI)
+
+        instance_item.setIcon(QIcon(pixmap))
+
+    def add_colored_relation_bol_icon_to_item(self, instance_item: QStandardItem, typeURI: str):
+        direction_icon_path = f'{str(IMG_DIR)}/bol.png'
 
         pixmap = QPixmap(direction_icon_path)
         self.apply_relation_color(pixmap, typeURI)

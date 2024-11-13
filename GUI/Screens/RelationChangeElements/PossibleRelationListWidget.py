@@ -178,3 +178,11 @@ class PossibleRelationListWidget(AbstractInstanceListWidget):
 
     def is_last_added(self, text_and_data: dict):
         return text_and_data["data"].last_added
+
+    def create_asset_type_standard_item(self, asset_type, text_and_data_list):
+        folder_item = super().create_asset_type_standard_item(asset_type,text_and_data_list)
+
+        if text_and_data_list:
+            full_typeURI = text_and_data_list[0]["text"].full_typeURI
+            self.add_colored_relation_bol_icon_to_item(folder_item, full_typeURI)
+        return folder_item
