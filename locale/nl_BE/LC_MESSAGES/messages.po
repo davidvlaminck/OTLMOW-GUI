@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: jasper.berton@mow.vlaanderen.be\n"
-"POT-Creation-Date: 2024-11-13 11:15+0100\n"
+"POT-Creation-Date: 2024-11-13 14:12+0100\n"
 "PO-Revision-Date: 2023-10-19 13:13+0200\n"
 "Last-Translator: Jasper Berton <jasper.berton@mow.vlaanderen.be>\n"
 "Language: nl_BE\n"
@@ -357,7 +357,7 @@ msgstr ""
 msgid "{doc_name}: type uri not in first row of {tab}\n"
 msgstr "{doc_name}: TypeUri staat niet in de eerste rij\n"
 
-#: GUI/Screens/RelationChangeScreen.py:68
+#: GUI/Screens/RelationChangeScreen.py:81
 msgid "functionality under development"
 msgstr "Functionaliteit in ontwikkeling"
 
@@ -418,33 +418,74 @@ msgstr "Geen asset types gevonden in het opgegeven pad"
 msgid "{selected} classes selected"
 msgstr "{selected} types geselecteerd"
 
-#: GUI/Screens/RelationChangeElements/AbstractInstanceListWidget.py:271
+#: GUI/Screens/RelationChangeElements/AbstractInstanceListWidget.py:288
 #, fuzzy
 msgid "search"
 msgstr "Geef een project of bestek in om te zoeken"
 
-#: GUI/Screens/RelationChangeElements/AbstractInstanceListWidget.py:383
-#: GUI/Screens/RelationChangeElements/ObjectListWidget.py:87
+#: GUI/Screens/RelationChangeElements/AbstractInstanceListWidget.py:400
+#: GUI/Screens/RelationChangeElements/ObjectListWidget.py:89
 msgid "no_options_available"
 msgstr "Geen opties beschikbaar"
 
-#: GUI/Screens/RelationChangeElements/AbstractInstanceListWidget.py:402
+#: GUI/Screens/RelationChangeElements/AbstractInstanceListWidget.py:419
 msgid "no_instance_selected"
 msgstr "Geen object geselecteerd"
 
-#: GUI/Screens/RelationChangeElements/ExistingRelationListWidget.py:45
+#: GUI/Screens/RelationChangeElements/ExistingRelationListWidget.py:24
+msgid "existing_relations_list"
+msgstr "Bestaande relaties"
+
+#: GUI/Screens/RelationChangeElements/ExistingRelationListWidget.py:25
+msgid "existing_relations_description"
+msgstr ""
+"Toont de bestaande relatie in het project"
+"                                                         "
+
+#: GUI/Screens/RelationChangeElements/ExistingRelationListWidget.py:26
+msgid "existing_relation_attributes"
+msgstr "Bestaande relatie attributen"
+
+#: GUI/Screens/RelationChangeElements/ExistingRelationListWidget.py:48
 #, fuzzy
 msgid "remove_relation"
 msgstr "Bent u zeker dat u dit project wilt verwijderen?"
 
-#: GUI/Screens/RelationChangeElements/PossibleRelationListWidget.py:38
+#: GUI/Screens/RelationChangeElements/ObjectListWidget.py:23
+msgid "class_list"
+msgstr "OTL-assets"
+
+#: GUI/Screens/RelationChangeElements/ObjectListWidget.py:24
+msgid "otl_asset_description"
+msgstr ""
+"Selecteer hier een OTL-asset om een relatie voor te maken"
+"                                         "
+
+#: GUI/Screens/RelationChangeElements/ObjectListWidget.py:25
+msgid "object_attributes"
+msgstr "OTL-asset attributen"
+
+#: GUI/Screens/RelationChangeElements/PossibleRelationListWidget.py:24
+msgid "relations_list"
+msgstr "Mogelijke relaties"
+
+#: GUI/Screens/RelationChangeElements/PossibleRelationListWidget.py:25
+msgid "possible_relation_subscription"
+msgstr ""
+"Hier worden alle mogelijke relaties tussen de geselecteerd OTL-asset en "
+"alle andere assets getoond"
+
+#: GUI/Screens/RelationChangeElements/PossibleRelationListWidget.py:26
+msgid "possible_relation_attributes"
+msgstr "Mogelijke relatie attributen"
+
+#: GUI/Screens/RelationChangeElements/PossibleRelationListWidget.py:39
 msgid "Select_an_OTL-asset_to_see_possible_relations"
 msgstr "Selecteer een OTL-asset om zijn mogelijke relaties te zien"
 
-#: GUI/Screens/RelationChangeElements/PossibleRelationListWidget.py:83
-#, fuzzy
+#: GUI/Screens/RelationChangeElements/PossibleRelationListWidget.py:84
 msgid "add_relation"
-msgstr "Mogelijke relaties"
+msgstr "Voeg relaties toe"
 
 #~ msgid "Data visualisation"
 #~ msgstr "Data visualisatie"

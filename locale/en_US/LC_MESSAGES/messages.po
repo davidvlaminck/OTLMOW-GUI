@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2024-11-13 11:15+0100\n"
+"POT-Creation-Date: 2024-11-13 14:12+0100\n"
 "PO-Revision-Date: 2023-10-19 13:11+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en_US\n"
@@ -355,7 +355,7 @@ msgstr "{doc_name}: invalid columns found, bad columns are {bad_columns}\n"
 msgid "{doc_name}: type uri not in first row of {tab}\n"
 msgstr "{doc_name}: TypeUri not found in first row \n"
 
-#: GUI/Screens/RelationChangeScreen.py:68
+#: GUI/Screens/RelationChangeScreen.py:81
 msgid "functionality under development"
 msgstr "Functionality under development"
 
@@ -416,30 +416,68 @@ msgstr "No asset types found in specified path"
 msgid "{selected} classes selected"
 msgstr "{selected} asset types selected"
 
-#: GUI/Screens/RelationChangeElements/AbstractInstanceListWidget.py:271
+#: GUI/Screens/RelationChangeElements/AbstractInstanceListWidget.py:288
 #, fuzzy
 msgid "search"
 msgstr "Enter project or service order to search"
 
-#: GUI/Screens/RelationChangeElements/AbstractInstanceListWidget.py:383
-#: GUI/Screens/RelationChangeElements/ObjectListWidget.py:87
+#: GUI/Screens/RelationChangeElements/AbstractInstanceListWidget.py:400
+#: GUI/Screens/RelationChangeElements/ObjectListWidget.py:89
 msgid "no_options_available"
 msgstr "No options available"
 
-#: GUI/Screens/RelationChangeElements/AbstractInstanceListWidget.py:402
+#: GUI/Screens/RelationChangeElements/AbstractInstanceListWidget.py:419
 msgid "no_instance_selected"
 msgstr "No object selected"
 
-#: GUI/Screens/RelationChangeElements/ExistingRelationListWidget.py:45
+#: GUI/Screens/RelationChangeElements/ExistingRelationListWidget.py:24
+msgid "existing_relations_list"
+msgstr "Existing relations"
+
+#: GUI/Screens/RelationChangeElements/ExistingRelationListWidget.py:25
+msgid "existing_relations_description"
+msgstr "Shows the existing relations in the project"
+
+#: GUI/Screens/RelationChangeElements/ExistingRelationListWidget.py:26
+msgid "existing_relation_attributes"
+msgstr "Existing relation attributes"
+
+#: GUI/Screens/RelationChangeElements/ExistingRelationListWidget.py:48
 #, fuzzy
 msgid "remove_relation"
 msgstr "Are you sure you want to delete these project files?"
 
-#: GUI/Screens/RelationChangeElements/PossibleRelationListWidget.py:38
+#: GUI/Screens/RelationChangeElements/ObjectListWidget.py:23
+msgid "class_list"
+msgstr "OTL-assets"
+
+#: GUI/Screens/RelationChangeElements/ObjectListWidget.py:24
+msgid "otl_asset_description"
+msgstr "Select an OTL-asset here to make a relation with it"
+
+#: GUI/Screens/RelationChangeElements/ObjectListWidget.py:25
+msgid "object_attributes"
+msgstr "OTL-asset attributes"
+
+#: GUI/Screens/RelationChangeElements/PossibleRelationListWidget.py:24
+msgid "relations_list"
+msgstr "Possible relations"
+
+#: GUI/Screens/RelationChangeElements/PossibleRelationListWidget.py:25
+msgid "possible_relation_subscription"
+msgstr ""
+"Shows the possible relations that the selected OTL-asset can have with "
+"all the other OTL-assets"
+
+#: GUI/Screens/RelationChangeElements/PossibleRelationListWidget.py:26
+msgid "possible_relation_attributes"
+msgstr "Possible relation attributes"
+
+#: GUI/Screens/RelationChangeElements/PossibleRelationListWidget.py:39
 msgid "Select_an_OTL-asset_to_see_possible_relations"
 msgstr "Select an OTL-asset to see it's possible relations"
 
-#: GUI/Screens/RelationChangeElements/PossibleRelationListWidget.py:83
+#: GUI/Screens/RelationChangeElements/PossibleRelationListWidget.py:84
 #, fuzzy
 msgid "add_relation"
 msgstr "Possible relations:"

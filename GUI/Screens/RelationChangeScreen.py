@@ -43,6 +43,23 @@ class RelationChangeScreen(Screen):
         self.init_ui()
 
 
+    def paintEvent(self, a0):
+
+        super().paintEvent(a0)
+
+        self.synchronize_subtext_label_heights()
+
+    def synchronize_subtext_label_heights(self):
+        frame_rect_height = self.possible_relation_list_gui.list_subtext_label.frameRect().height()
+        frame_rect_object = self.objects_list_gui.list_subtext_label.frameRect()
+        frame_rect_pos = self.existing_relation_list_gui.list_subtext_label.frameRect()
+        if frame_rect_height != frame_rect_object.height():
+            self.objects_list_gui.list_subtext_label.setFixedSize(frame_rect_object.width(),
+                                                                  frame_rect_height)
+        if frame_rect_height != frame_rect_pos.height():
+            self.existing_relation_list_gui.list_subtext_label.setFixedSize(
+                frame_rect_object.width(), frame_rect_height)
+
     def init_ui(self) -> None:
         self.container_insert_data_screen.addSpacing(10)
         self.container_insert_data_screen.addWidget(self.create_menu())
@@ -96,6 +113,11 @@ class RelationChangeScreen(Screen):
         self.frame_layout.addWidget(self.objects_list_gui.create_object_list_gui())
         self.frame_layout.addWidget(self.possible_relation_list_gui.create_object_list_gui(multi_select=True))
         self.frame_layout.addWidget(self.existing_relation_list_gui.create_object_list_gui(multi_select=True))
+
+        self.frame_layout.setStretch(0, 1)
+        self.frame_layout.setStretch(1, 1)
+        self.frame_layout.setStretch(2, 1)
+
         # self.frame_layout.addWidget(self.map_widget())
         # self.frame_layout.addSpacing(20)
         frame.setLayout(self.frame_layout)

@@ -23,8 +23,7 @@ IMG_DIR = ROOT_DIR / 'img/'
 MULTI_SELECTION = QListWidget.SelectionMode.MultiSelection
 class AbstractInstanceListWidget:
 
-    def __init__(self, language_settings, list_label_key: str, attribute_field_label_key:str,
-                 list_gui_style_class=None,needs_source_object= False):
+    def __init__(self, language_settings,list_gui_style_class=None,needs_source_object= False):
         self._ = language_settings
         self.search_text = ""
 
@@ -34,8 +33,8 @@ class AbstractInstanceListWidget:
         self.list_gui = None
         self.list_button = ButtonWidget()
 
-        self.list_label_text = self._(list_label_key)
-        self.attribute_field_label_text = self._(attribute_field_label_key)
+        self.list_label = None
+        self.list_subtext_label = None
         self.attribute_field: QTreeWidget = QTreeWidget()
         self.attribute_field.setSelectionMode(QTreeWidget.SelectionMode.NoSelection)
         self.frame_layout = None
@@ -75,8 +74,24 @@ class AbstractInstanceListWidget:
         frame = QFrame()
         self.frame_layout = QVBoxLayout()
         print(self.frame_layout.contentsMargins())
-        list_label = QLabel()
-        list_label.setText(self.list_label_text)
+        self.list_label = QLabel()
+        self.list_label.setText(self.list_label_text)
+
+        list_label_font = QFont()
+        list_label_font.setWeight(18)
+        list_label_font.setBold(True)
+        self.list_label.setFont(list_label_font)
+        self.list_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+        self.list_subtext_label = QLabel()
+        self.list_subtext_label.setText(self.list_subtext_label_text)
+        self.list_subtext_label.setAlignment(Qt.AlignmentFlag.AlignHCenter )
+
+        list_subtext_label_font = QFont()
+        list_subtext_label_font.setItalic(True)
+        self.list_subtext_label.setFont(list_subtext_label_font)
+        self.list_subtext_label.setWordWrap(True)
+
         self.list_gui = FolderTreeView()
         self.list_gui.setProperty('class', 'list')
         self.list_gui.selectionModel().selectionChanged.connect(self.on_item_selected_listener)
@@ -93,7 +108,8 @@ class AbstractInstanceListWidget:
 
 
 
-        self.frame_layout.addWidget(list_label)
+        self.frame_layout.addWidget(self.list_label)
+        self.frame_layout.addWidget(self.list_subtext_label)
         self.frame_layout.addWidget(self.create_search_bar())
         self.frame_layout.addWidget(self.list_gui)
 

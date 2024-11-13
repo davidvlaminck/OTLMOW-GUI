@@ -18,9 +18,11 @@ class ObjectListWidget(AbstractInstanceListWidget):
     Data = namedtuple('data', ['selected_object_id','last_added'])
 
     def __init__(self, language_settings):
-        super().__init__(language_settings=language_settings,
-                         list_label_key= 'class_list',
-                         attribute_field_label_key='object_attributes')
+        super().__init__(language_settings=language_settings)
+
+        self.list_label_text = self._('class_list')
+        self.list_subtext_label_text = self._("otl_asset_description")
+        self.attribute_field_label_text = self._("object_attributes")
 
     def create_object_list_gui(self, multi_select: bool = False) -> QFrame:
         frame = super().create_object_list_gui(multi_select)

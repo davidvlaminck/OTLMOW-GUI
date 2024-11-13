@@ -19,10 +19,11 @@ class PossibleRelationListWidget(AbstractInstanceListWidget):
     Data = namedtuple('data', ['source_id', 'target_id', "index", "last_added"])
 
     def __init__(self, language_settings):
-        super().__init__(language_settings=language_settings,
-                         list_label_key='relations_list',
-                         attribute_field_label_key='possible_relation_attributes',
-                         needs_source_object=True)
+        super().__init__(language_settings=language_settings,needs_source_object=True)
+
+        self.list_label_text = self._('relations_list')
+        self.list_subtext_label_text = self._("possible_relation_subscription")
+        self.attribute_field_label_text = self._("possible_relation_attributes")
 
     def create_object_list_gui(self, multi_select: bool = False) -> QFrame:
         frame = super().create_object_list_gui(multi_select)
