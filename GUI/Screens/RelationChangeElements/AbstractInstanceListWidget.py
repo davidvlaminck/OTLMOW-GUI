@@ -78,7 +78,7 @@ class AbstractInstanceListWidget:
         self.list_label.setText(self.list_label_text)
 
         list_label_font = QFont()
-        list_label_font.setWeight(18)
+        list_label_font.setPointSize(11)
         list_label_font.setBold(True)
         self.list_label.setFont(list_label_font)
         self.list_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -166,6 +166,10 @@ class AbstractInstanceListWidget:
 
             add_folder_based_on_search_text = False
             folder_item = self.create_asset_type_standard_item(asset_type)
+            folder_item_font = QFont()
+            folder_item_font.setBold(True)
+            folder_item_font.setPointSize(10)
+            folder_item.setFont(folder_item_font)
             # self.type_to_items_dict[asset_type] = []
 
             if asset_type not in self.type_open_status:
