@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import Optional, Collection
 
 from PyQt6.QtCore import Qt, QModelIndex
-from PyQt6.QtGui import QColor, QStandardItem, QPixmap, QIcon, QPainter, QBrush
+from PyQt6.QtGui import QColor, QStandardItem, QPixmap, QIcon, QPainter, QBrush, QFont
 from PyQt6.QtWidgets import QTreeWidget, QFrame, QVBoxLayout, QLabel, QListWidget, QListWidgetItem, \
     QHeaderView, QTreeWidgetItem, QWidget, QHBoxLayout, QLineEdit, QPushButton, QTreeView, \
     QStyledItemDelegate
@@ -16,13 +16,15 @@ from Domain.RelationChangeDomain import RelationChangeDomain
 from GUI.ButtonWidget import ButtonWidget
 from GUI.Screens.RelationChangeElements.FolderTreeView import FolderTreeView
 from GUI.Screens.RelationChangeElements.RelationChangeHelpers import RelationChangeHelpers
+from GUI.translation.GlobalTranslate import GlobalTranslate
 from UnitTests.TestClasses.Classes.ImplementatieElement.AIMObject import AIMObject
 ROOT_DIR = Path(__file__).parent.parent.parent.parent
 IMG_DIR = ROOT_DIR / 'img/'
 MULTI_SELECTION = QListWidget.SelectionMode.MultiSelection
 class AbstractInstanceListWidget:
 
-    def __init__(self, language_settings, list_label_key: str, attribute_field_label_key:str, list_gui_style_class=None):
+    def __init__(self, language_settings, list_label_key: str, attribute_field_label_key:str,
+                 list_gui_style_class=None,needs_source_object= False):
         self._ = language_settings
         self.search_text = ""
 
@@ -51,6 +53,7 @@ class AbstractInstanceListWidget:
 
         self.color_legend = PyVisWrapper().relatie_color_dict
         self.last_added_color = QColor("#d0ffcc")
+        self.needs_source_object= needs_source_object
 
     class LastAddedHighlightDelegate(QStyledItemDelegate):
 
@@ -87,6 +90,9 @@ class AbstractInstanceListWidget:
         if self.list_gui_style_class:
             self.list_gui.setObjectName(self.list_gui_style_class)
 
+
+
+
         self.frame_layout.addWidget(list_label)
         self.frame_layout.addWidget(self.create_search_bar())
         self.frame_layout.addWidget(self.list_gui)
@@ -106,8 +112,11 @@ class AbstractInstanceListWidget:
         if self.list_gui.model.itemFromIndex(model_index).hasChildren():
             if self.list_gui.isExpanded(model_index):
                 self.list_gui.collapse(model_index)
+
             else:
                 self.list_gui.expand(model_index)
+
+
 
     def fill_list(self, source_object: Optional[AIMObject], objects: Collection, last_added) -> None:
         # sourcery skip: remove-dict-keys
@@ -119,6 +128,11 @@ class AbstractInstanceListWidget:
 
         text_and_data_per_element = self.extract_text_and_data_per_item(source_object, objects,
                                                                         last_added)
+
+        if self.needs_source_object and not source_object:
+            self.add_no_asset_selected_placeholder()
+        elif not objects:
+            self.add_no_options_placeholder()
 
         for text_and_data in text_and_data_per_element:
 
@@ -245,6 +259,8 @@ class AbstractInstanceListWidget:
         header.setSectionResizeMode(0, QHeaderView.ResizeMode.ResizeToContents)
         header.setStretchLastSection(False)
 
+        self.add_attribute_field_placeholder(self.attribute_field)
+
         return self.attribute_field
 
     def fill_object_attribute_field(self, object_attribute_dict:dict):
@@ -287,6 +303,10 @@ class AbstractInstanceListWidget:
     @classmethod
     def fill_attribute_field(cls, field, object_attribute_dict):
         field.clear()
+
+        if not object_attribute_dict:
+            cls.add_attribute_field_placeholder(field)
+
         for attribute, value in object_attribute_dict.items():
             list_item = QTreeWidgetItem()
             list_item.setText(0, attribute)
@@ -357,3 +377,34 @@ class AbstractInstanceListWidget:
         painter.setPen(color)
         painter.drawRect(pixmap.rect())  # Draw over the pixmap with the chosen color
         painter.end()
+
+    def add_no_asset_selected_placeholder(self):
+        pass
+
+    def add_no_options_placeholder(self):
+        place_holder_item = QStandardItem(
+            self._("no_options_available"))
+        place_holder_item.setEditable(False)
+        place_holder_item.setEnabled(False)
+        place_holder_item.setSelectable(False)
+
+        placeholder_font = QFont()
+        placeholder_font.setItalic(True)
+        place_holder_item.setFont(placeholder_font)
+
+        padding_item = QStandardItem("")
+        padding_item.setEditable(False)
+        padding_item.setEnabled(False)
+        padding_item.setSelectable(False)
+
+        self.list_gui.addItem([place_holder_item, padding_item])
+
+    @classmethod
+    def add_attribute_field_placeholder(cls, field):
+        place_holder_item = QTreeWidgetItem()
+        place_holder_item.setText(0, GlobalTranslate._("no_instance_selected"))
+
+        placeholder_font = QFont()
+        placeholder_font.setItalic(True)
+        place_holder_item.setFont(0,placeholder_font)
+        field.addTopLevelItem(place_holder_item)

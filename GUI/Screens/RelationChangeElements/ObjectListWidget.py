@@ -1,7 +1,7 @@
 from collections import namedtuple
 
 from PyQt6.QtCore import QItemSelectionModel
-from PyQt6.QtGui import QStandardItem, QPixmap, QIcon
+from PyQt6.QtGui import QStandardItem, QPixmap, QIcon, QFont
 from PyQt6.QtWidgets import QFrame
 from otlmow_model.OtlmowModel.Classes.ImplementatieElement.AIMObject import AIMObject
 from otlmow_model.OtlmowModel.Helpers import OTLObjectHelper
@@ -18,7 +18,9 @@ class ObjectListWidget(AbstractInstanceListWidget):
     Data = namedtuple('data', ['selected_object_id','last_added'])
 
     def __init__(self, language_settings):
-        super().__init__(language_settings,'class_list','object_attributes')
+        super().__init__(language_settings=language_settings,
+                         list_label_key= 'class_list',
+                         attribute_field_label_key='object_attributes')
 
     def create_object_list_gui(self, multi_select: bool = False) -> QFrame:
         frame = super().create_object_list_gui(multi_select)
@@ -79,3 +81,16 @@ class ObjectListWidget(AbstractInstanceListWidget):
 
     def is_last_added(self, text_and_data: dict):
         pass
+
+    def add_no_options_placeholder(self):
+        place_holder_item = QStandardItem(
+            self._("no_options_available"))
+        place_holder_item.setEditable(False)
+        place_holder_item.setEnabled(False)
+        place_holder_item.setSelectable(False)
+
+        placeholder_font = QFont()
+        placeholder_font.setItalic(True)
+        place_holder_item.setFont(placeholder_font)
+
+        self.list_gui.addItem(place_holder_item)

@@ -91,6 +91,7 @@ class RelationChangeDomain:
         if not selected_object:
             cls.get_screen().fill_possible_relations_list(selected_object,{})
             cls.get_screen().fill_object_attribute_field({})
+            cls.get_screen().fill_possible_relation_attribute_field({})
             return
 
         if selected_object.typeURI not in cls.possible_relations_per_class_dict:

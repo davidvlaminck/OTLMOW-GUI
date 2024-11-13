@@ -1,7 +1,7 @@
 from collections import namedtuple
 from typing import Optional, Collection
 
-from PyQt6.QtGui import QStandardItem, QPixmap, QIcon
+from PyQt6.QtGui import QStandardItem, QPixmap, QIcon, QFont
 from PyQt6.QtWidgets import QFrame, QVBoxLayout, QLabel, QTreeView
 from otlmow_model.OtlmowModel.Helpers import OTLObjectHelper
 
@@ -19,15 +19,37 @@ class PossibleRelationListWidget(AbstractInstanceListWidget):
     Data = namedtuple('data', ['source_id', 'target_id', "index", "last_added"])
 
     def __init__(self, language_settings):
-        super().__init__(language_settings,
+        super().__init__(language_settings=language_settings,
                          list_label_key='relations_list',
-                         attribute_field_label_key='possible_relation_attributes')
+                         attribute_field_label_key='possible_relation_attributes',
+                         needs_source_object=True)
 
     def create_object_list_gui(self, multi_select: bool = False) -> QFrame:
         frame = super().create_object_list_gui(multi_select)
         self.frame_layout.setContentsMargins(0,11,11,11)
         self.list_gui.setProperty('class', 'possible-relation-list')
+
+        self.add_no_asset_selected_placeholder()
+
         return frame
+
+    def add_no_asset_selected_placeholder(self):
+        place_holder_item = QStandardItem(
+            self._("Select_an_OTL-asset_to_see_possible_relations"))
+        place_holder_item.setEditable(False)
+        place_holder_item.setEnabled(False)
+        place_holder_item.setSelectable(False)
+
+        placeholder_font = QFont()
+        placeholder_font.setItalic(True)
+        place_holder_item.setFont(placeholder_font)
+
+        padding_item = QStandardItem("")
+        padding_item.setEditable(False)
+        padding_item.setEnabled(False)
+        padding_item.setSelectable(False)
+
+        self.list_gui.addItem([place_holder_item,padding_item ])
 
     def create_attribute_field(self):
         attribute_field = super().create_attribute_field()

@@ -19,8 +19,8 @@ class ExistingRelationListWidget(AbstractInstanceListWidget):
     Data = namedtuple('data', ["index", "last_added"])
 
     def __init__(self, language_settings):
-        super().__init__(language_settings, 'existing_relations_list',
-                         'existing_relation_attributes')
+        super().__init__(language_settings=language_settings, list_label_key='existing_relations_list',
+                        attribute_field_label_key= 'existing_relation_attributes')
 
     def on_item_selected_listener(self, selected, deselected):
         no_item_selected = True
