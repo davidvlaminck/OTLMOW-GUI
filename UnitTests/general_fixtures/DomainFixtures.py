@@ -50,8 +50,31 @@ def setup_test_project(root_directory: Path) -> None:
     ProjectFileManager.get_otl_wizard_projects_dir = Mock(
         return_value=root_directory / "demo_projects" / "simpel_vergelijkings_project")
 
+    local_mock_InsertDataDomain_get_screen = InsertDataDomain.get_screen
+    InsertDataDomain.get_screen = Mock()
     InsertDataDomain.init_static()
+    InsertDataDomain.get_screen = local_mock_InsertDataDomain_get_screen
+
+    local_mock_RelationChangeDomain_get_screen = RelationChangeDomain.get_screen
+    RelationChangeDomain.get_screen = Mock()
     RelationChangeDomain.init_static(global_vars.current_project)
+    RelationChangeDomain.get_screen = local_mock_RelationChangeDomain_get_screen
+
 
     yield
     ProjectFileManager.get_otl_wizard_projects_dir = original_get_otl_wizard_projects_dir
+
+@fixture
+def mock_save_validated_assets_function() -> None:
+    original_save_validated_assets =  ProjectFileManager.save_validated_assets
+    ProjectFileManager.save_validated_assets  = Mock()
+    yield
+    ProjectFileManager.save_validated_assets = original_save_validated_assets
+
+@fixture
+def mock_load_validated_assets() -> None:
+    original_load_validated_assets = ProjectFileManager.load_validated_assets
+
+    ProjectFileManager.load_validated_assets = Mock(return_value=RelationChangeDomain.get_instances())
+    yield
+    ProjectFileManager.load_validated_assets = original_load_validated_assets

@@ -9,6 +9,7 @@ from pytestqt.plugin import qtbot
 
 from Domain.ExportDataDomain import ExportDataDomain
 from Domain.InsertDataDomain import InsertDataDomain
+from Domain.ProjectFile import ProjectFile
 from Domain.RelationChangeDomain import RelationChangeDomain
 from GUI.Screens.DataVisualisationScreen import DataVisualisationScreen
 from GUI.Screens.InsertDataScreen import InsertDataScreen
@@ -63,12 +64,16 @@ def get_export_path_with_cleanup(root_directory: Path) -> Path:
     if export_path.exists():
         os.remove(export_path)
 
+
+
 def test_unedited_generate_files(root_directory: Path,
                                  mock_screen: InsertDataScreen,
                                 mock_fill_possible_relations_list: RelationChangeScreen,
                                 setup_test_project,
                                 mock_step3_visuals,
-                                 get_export_path_with_cleanup:Path):
+                                 get_export_path_with_cleanup:Path,
+                                 mock_save_validated_assets_function,
+                                 mock_load_validated_assets):
 
     test_object_lists_file_path: list[str] = [
         str(root_directory / "demo_projects" / "simpel_vergelijkings_project" /
@@ -112,7 +117,9 @@ def test_add_remove_generate_files(root_directory: Path,
                                 mock_fill_possible_relations_list: RelationChangeScreen,
                                 setup_test_project,
                                 mock_step3_visuals,
-                                 get_export_path_with_cleanup:Path):
+                                 get_export_path_with_cleanup:Path,
+                                   mock_save_validated_assets_function,
+                                   mock_load_validated_assets):
 
     test_object_lists_file_path: list[str] = [
         str(root_directory / "demo_projects" / "simpel_vergelijkings_project" /

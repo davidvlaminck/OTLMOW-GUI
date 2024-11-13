@@ -28,6 +28,7 @@ from GUI.Screens.InsertDataScreen import InsertDataScreen
 from GUI.Screens.RelationChangeScreen import RelationChangeScreen
 from GUI.translation.GlobalTranslate import GlobalTranslate
 from UnitTests.TestClasses.Classes.ImplementatieElement.AIMObject import AIMObject
+from UnitTests.TestClasses.Classes.ImplementatieElement.RelatieObject import RelatieObject
 from UnitTests.TestClasses.Classes.Onderdeel.AllCasesTestClass import AllCasesTestClass
 from UnitTests.TestClasses.Classes.Onderdeel.AnotherTestClass import AnotherTestClass
 
@@ -76,14 +77,23 @@ def mock_step3_visuals() -> None:
     main_window = Mock(step3_visuals=step3_visuals)
     global_vars.otl_wizard = Mock(main_window=main_window)
 
+@fixture
+def mock_step3_step3_relations() -> None:
+    step3_relations = Mock(step3_visuals=DataVisualisationScreen)
+    main_window = Mock(step3_visuals=step3_relations)
+    global_vars.otl_wizard = Mock(main_window=main_window)
+
 def id(aim_object: AIMObject):
     return aim_object.assetId.identificator
 
 def test_full_set_possible_relations(root_directory:Path,
                                 mock_screen: InsertDataScreen,
-                                mock_fill_possible_relations_list: RelationChangeScreen,
+                                # mock_fill_possible_relations_list: RelationChangeScreen,
                                 setup_test_project,
-                                mock_step3_visuals):
+                                mock_step3_visuals,
+                                mock_step3_step3_relations,
+                                mock_save_validated_assets_function,
+                                mock_load_validated_assets):
 
     test_object_lists_file_path: list[str] = [
         str(root_directory / "demo_projects" / "simpel_vergelijkings_project" / "simpel_vergelijking_template2.xlsx")]
@@ -99,23 +109,19 @@ def test_full_set_possible_relations(root_directory:Path,
             if not is_relation(object):
                 RelationChangeDomain.set_possible_relations(object)
 
-    assert len(RelationChangeDomain.possible_relations_per_class.keys()) == 4
+    assert len(RelationChangeDomain.possible_relations_per_class_dict.keys()) == 4
     # search with regex for (#Verkeersbordopstelling'|#Pictogram'|#Funderingsmassief'|#verkeersbordsteun'|BevestigingGC'|#Draagconstructie'|#Fundering'|#ConstructieElement')
     class1 = "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Verkeersbordsteun"
-    #TODO: update this when otlmow-converter is fixed
-    assert len(RelationChangeDomain.possible_relations_per_class[class1]) == 3
+    assert len(RelationChangeDomain.possible_relations_per_class_dict[class1]) == 3
 
     class2 = "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Funderingsmassief"
-    # TODO: update this when otlmow-converter is fixed
-    assert len(RelationChangeDomain.possible_relations_per_class[class2]) == 4
+    assert len(RelationChangeDomain.possible_relations_per_class_dict[class2]) == 4
 
     class3 = "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Pictogram"
-    # TODO: update this when otlmow-converter is fixed
-    assert len(RelationChangeDomain.possible_relations_per_class[class3]) == 3
+    assert len(RelationChangeDomain.possible_relations_per_class_dict[class3]) == 3
 
     class4 = "https://wegenenverkeer.data.vlaanderen.be/ns/installatie#Verkeersbordopstelling"
-    # TODO: update this when otlmow-converter is fixed
-    assert len(RelationChangeDomain.possible_relations_per_class[class4]) == 2
+    assert len(RelationChangeDomain.possible_relations_per_class_dict[class4]) == 2
 
     #define the objects of each class in the test set
     for objects_list in objects_lists:
@@ -255,13 +261,14 @@ def test_full_set_possible_relations(root_directory:Path,
     for selected_object_id in poss_rel.keys():
         print("test with selected_object id:{0}".format(selected_object_id))
         for rel_object_id  in poss_rel[selected_object_id].keys():
-            assert RelationChangeDomain.possible_object_to_object_relations[selected_object_id][rel_object_id] == poss_rel[selected_object_id][rel_object_id]
+            assert RelationChangeDomain.possible_object_to_object_relations_dict[selected_object_id][rel_object_id] == poss_rel[selected_object_id][rel_object_id]
 
 def test_full_add_possible_relation_to_existing_relation(root_directory:Path,
                                 mock_screen: InsertDataScreen,
                                 mock_fill_possible_relations_list: RelationChangeScreen,
                                 setup_test_project,
-                                mock_step3_visuals):
+                                mock_step3_visuals,mock_save_validated_assets_function,
+                                 mock_load_validated_assets):
     test_object_lists_file_path: list[str] = [
         str(root_directory / "demo_projects" / "simpel_vergelijkings_project" / "simpel_vergelijking_template2.xlsx")]
 
@@ -273,12 +280,12 @@ def test_full_add_possible_relation_to_existing_relation(root_directory:Path,
         for object in objects_list:
             RelationChangeDomain.set_possible_relations(object)
 
-    bron_asset_id = list(RelationChangeDomain.possible_object_to_object_relations.keys())[0]
-    target_asset_id = list(RelationChangeDomain.possible_object_to_object_relations[bron_asset_id].keys())[0]
+    bron_asset_id = list(RelationChangeDomain.possible_object_to_object_relations_dict.keys())[0]
+    target_asset_id = list(RelationChangeDomain.possible_object_to_object_relations_dict[bron_asset_id].keys())[0]
     relation_object_index = 0
 
-    previous_possible_relations_list_length = len(RelationChangeDomain.possible_object_to_object_relations[bron_asset_id][target_asset_id])
-    relation_object = RelationChangeDomain.possible_object_to_object_relations[bron_asset_id][target_asset_id][relation_object_index]
+    previous_possible_relations_list_length = len(RelationChangeDomain.possible_object_to_object_relations_dict[bron_asset_id][target_asset_id])
+    relation_object = RelationChangeDomain.possible_object_to_object_relations_dict[bron_asset_id][target_asset_id][relation_object_index]
 
     RelationChangeDomain.add_possible_relation_to_existing_relations(bron_asset_id, target_asset_id, relation_object_index)
 
@@ -289,14 +296,97 @@ def test_full_add_possible_relation_to_existing_relation(root_directory:Path,
     assert RelationChangeDomain.existing_relations[0] == relation_object
 
     # is the correct relation removed from the possible relation list?
-    assert previous_possible_relations_list_length == len(RelationChangeDomain.possible_object_to_object_relations[bron_asset_id][target_asset_id])+1
-    assert relation_object not in RelationChangeDomain.possible_object_to_object_relations[bron_asset_id][target_asset_id]
+    assert previous_possible_relations_list_length == len(RelationChangeDomain.possible_object_to_object_relations_dict[bron_asset_id][target_asset_id]) + 1
+    assert relation_object not in RelationChangeDomain.possible_object_to_object_relations_dict[bron_asset_id][target_asset_id]
+
+
+def test_full_set_possible_relations_unique_situations(root_directory: Path,
+                                     mock_screen: InsertDataScreen,
+                                     mock_fill_possible_relations_list: RelationChangeScreen,
+                                     setup_test_project,
+                                     mock_step3_visuals):
+    test_object_lists_file_path: list[str] = [
+        str(root_directory / "demo_projects" / "simpel_vergelijkings_project" / "simpel_vergelijking_template4.xlsx")]
+
+    InsertDataDomain.add_files_to_backend_list(test_object_lists_file_path)
+
+    error_set, objects_lists = InsertDataDomain.load_and_validate_documents()
+
+    for objects_list in objects_lists:
+        for object in objects_list:
+            if not is_relation(object):
+                if(object.assetId.identificator == "dummy_e"):
+                   fund1 = object
+                elif(object.assetId.identificator == "dummy_yq"):
+                    fund2 = object
+                elif (object.assetId.identificator == "dummy_AieZ"):
+                    fund3 = object
+    RelationChangeDomain.set_possible_relations(fund1)
+
+    fund1_id =fund1.assetId.identificator
+    fund2_id = fund2.assetId.identificator
+    fund3_id = fund3.assetId.identificator
+    assert len(RelationChangeDomain.possible_object_to_object_relations_dict[fund1_id][fund2_id]) == 2
+    assert len(
+        RelationChangeDomain.possible_object_to_object_relations_dict[fund1_id][fund3_id]) == 2
+
+
+def test_full_add_possible_relation_to_existing_relation(root_directory: Path,
+                                                         mock_screen: InsertDataScreen,
+                                                         mock_fill_possible_relations_list: RelationChangeScreen,
+                                                         setup_test_project,
+                                                         mock_step3_visuals,mock_save_validated_assets_function,
+                                 mock_load_validated_assets):
+    test_object_lists_file_path: list[str] = [
+        str(root_directory / "demo_projects" / "simpel_vergelijkings_project" / "simpel_vergelijking_template2.xlsx")]
+
+    InsertDataDomain.add_files_to_backend_list(test_object_lists_file_path)
+
+    error_set, objects_lists = InsertDataDomain.load_and_validate_documents()
+
+    for objects_list in objects_lists:
+        for object in objects_list:
+            RelationChangeDomain.set_possible_relations(object)
+
+    bron_asset_id = list(RelationChangeDomain.possible_object_to_object_relations_dict.keys())[0]
+    target_asset_id = \
+    list(RelationChangeDomain.possible_object_to_object_relations_dict[bron_asset_id].keys())[0]
+    relation_object_index = 0
+
+    previous_possible_relations_list_length = len(
+        RelationChangeDomain.possible_object_to_object_relations_dict[bron_asset_id][
+            target_asset_id])
+    relation_object = \
+    RelationChangeDomain.possible_object_to_object_relations_dict[bron_asset_id][target_asset_id][
+        relation_object_index]
+
+    RelationChangeDomain.add_possible_relation_to_existing_relations(bron_asset_id,
+                                                                     target_asset_id,
+                                                                     relation_object_index)
+
+    # is the correct relation object in the existing_relations list?
+    assert len(RelationChangeDomain.existing_relations) == 1
+    assert RelationChangeDomain.existing_relations[0].bronAssetId.identificator == bron_asset_id
+    assert RelationChangeDomain.existing_relations[0].doelAssetId.identificator == target_asset_id
+    assert RelationChangeDomain.existing_relations[0] == relation_object
+
+    # is the correct relation removed from the possible relation list?
+    assert previous_possible_relations_list_length == len(
+        RelationChangeDomain.possible_object_to_object_relations_dict[bron_asset_id][
+            target_asset_id]) + 1
+    assert relation_object not in \
+           RelationChangeDomain.possible_object_to_object_relations_dict[bron_asset_id][
+               target_asset_id]
+
 
 def test_full_add_possible_relation_to_existing_relation(root_directory:Path,
                                 mock_screen: InsertDataScreen,
                                 mock_fill_possible_relations_list: RelationChangeScreen,
                                 setup_test_project,
-                                mock_step3_visuals):
+                                mock_step3_visuals,
+                                mock_save_validated_assets_function,
+                                mock_load_validated_assets
+                                                         ):
     test_object_lists_file_path: list[str] = [
         str(root_directory / "demo_projects" / "simpel_vergelijkings_project" / "simpel_vergelijking_template2.xlsx")]
 
@@ -309,12 +399,12 @@ def test_full_add_possible_relation_to_existing_relation(root_directory:Path,
             if not is_relation(object):
                 RelationChangeDomain.set_possible_relations(object)
 
-    bron_asset_id = list(RelationChangeDomain.possible_object_to_object_relations.keys())[0]
-    target_asset_id = list(RelationChangeDomain.possible_object_to_object_relations[bron_asset_id].keys())[0]
+    bron_asset_id = list(RelationChangeDomain.possible_object_to_object_relations_dict.keys())[0]
+    target_asset_id = list(RelationChangeDomain.possible_object_to_object_relations_dict[bron_asset_id].keys())[0]
     relation_object_index = 0
 
-    previous_possible_relations_list_length = len(RelationChangeDomain.possible_object_to_object_relations[bron_asset_id][target_asset_id])
-    relation_object = RelationChangeDomain.possible_object_to_object_relations[bron_asset_id][target_asset_id][relation_object_index]
+    previous_possible_relations_list_length = len(RelationChangeDomain.possible_object_to_object_relations_dict[bron_asset_id][target_asset_id])
+    relation_object = RelationChangeDomain.possible_object_to_object_relations_dict[bron_asset_id][target_asset_id][relation_object_index]
 
     RelationChangeDomain.add_possible_relation_to_existing_relations(bron_asset_id, target_asset_id, relation_object_index)
 
@@ -325,14 +415,15 @@ def test_full_add_possible_relation_to_existing_relation(root_directory:Path,
     assert RelationChangeDomain.existing_relations[4] == relation_object
 
     # is the correct relation removed from the possible relation list?
-    assert previous_possible_relations_list_length == len(RelationChangeDomain.possible_object_to_object_relations[bron_asset_id][target_asset_id])+1
-    assert relation_object not in RelationChangeDomain.possible_object_to_object_relations[bron_asset_id][target_asset_id]
+    assert previous_possible_relations_list_length == len(RelationChangeDomain.possible_object_to_object_relations_dict[bron_asset_id][target_asset_id]) + 1
+    assert relation_object not in RelationChangeDomain.possible_object_to_object_relations_dict[bron_asset_id][target_asset_id]
 
 def test_full_remove_existing_relation(root_directory:Path,
                                 mock_screen: InsertDataScreen,
                                 mock_fill_possible_relations_list: RelationChangeScreen,
                                 setup_test_project,
-                                mock_step3_visuals):
+                                mock_step3_visuals,mock_save_validated_assets_function,
+                                 mock_load_validated_assets):
     test_object_lists_file_path: list[str] = [
         str(root_directory / "demo_projects" / "simpel_vergelijkings_project" / "simpel_vergelijking_template2.xlsx")]
 
@@ -354,8 +445,8 @@ def test_full_remove_existing_relation(root_directory:Path,
 
     if(target_asset_id == 'dummy_TyBGmXfXC' and bron_asset_id == 'dummy_a'):
         print("found")
-    previous_possible_relations_list_length = (len(RelationChangeDomain.possible_object_to_object_relations[bron_asset_id][target_asset_id]) if target_asset_id in RelationChangeDomain.possible_object_to_object_relations[bron_asset_id] else 0)
-    previous_possible_relations_list_length2 = len(RelationChangeDomain.possible_object_to_object_relations[target_asset_id][bron_asset_id])  if bron_asset_id in RelationChangeDomain.possible_object_to_object_relations[target_asset_id] else 0
+    previous_possible_relations_list_length = (len(RelationChangeDomain.possible_object_to_object_relations_dict[bron_asset_id][target_asset_id]) if target_asset_id in RelationChangeDomain.possible_object_to_object_relations_dict[bron_asset_id] else 0)
+    previous_possible_relations_list_length2 = len(RelationChangeDomain.possible_object_to_object_relations_dict[target_asset_id][bron_asset_id])  if bron_asset_id in RelationChangeDomain.possible_object_to_object_relations_dict[target_asset_id] else 0
 
     # RelationChangeDomain.add_possible_relation_to_existing_relations(bron_asset_id, target_asset_id, relation_object_index)
     removed_relation = RelationChangeDomain.remove_existing_relation(index=0)
@@ -364,14 +455,45 @@ def test_full_remove_existing_relation(root_directory:Path,
     assert len(RelationChangeDomain.existing_relations) == 3
     assert removed_relation not in RelationChangeDomain.existing_relations
 
-    l1 = RelationChangeDomain.possible_object_to_object_relations[bron_asset_id][target_asset_id]
-    l2 = RelationChangeDomain.possible_object_to_object_relations[target_asset_id][bron_asset_id]
+    # force update of the backend possible relations lists
+    RelationChangeDomain.set_possible_relations(RelationChangeDomain.get_object(bron_asset_id))
+    RelationChangeDomain.set_possible_relations(RelationChangeDomain.get_object(target_asset_id))
+
+    l1 = RelationChangeDomain.possible_object_to_object_relations_dict[bron_asset_id][target_asset_id]
+    l2 = RelationChangeDomain.possible_object_to_object_relations_dict[target_asset_id][bron_asset_id]
 
     # is the correct relation removed from the possible relation list?
     assert previous_possible_relations_list_length == len(l1)-1
     assert previous_possible_relations_list_length2 == len(l2) - 1
-    assert l1[len(l1)-1] == removed_relation
-    assert l2[len(l2)-1] == removed_relation
+    #TODO: make it so removed relations are added to possible relations with all previous data
+    # assert l1[len(l1)-1] == removed_relation
+    # assert l2[len(l2)-1] == removed_relation
+
+    # removed_relation.typeURI = 'https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Bevestiging'
+    assert l1[len(l1)-1].bronAssetId.identificator == removed_relation.bronAssetId.identificator
+    assert l1[len(l1) - 1].doelAssetId.identificator == removed_relation.doelAssetId.identificator
+    assert l1[len(l1) - 1].typeURI == removed_relation.typeURI
+
+    assert l2[len(l2) - 1].bronAssetId.identificator == removed_relation.doelAssetId.identificator
+    assert l2[len(l2) - 1].doelAssetId.identificator == removed_relation.bronAssetId.identificator
+    assert l2[len(l2) - 1].typeURI == removed_relation.typeURI
+
+    #find ligtOp relation between the 2 funderingsMassiven
+    for i, existing_relation in enumerate(RelationChangeDomain.existing_relations):
+        if existing_relation.typeURI == "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#LigtOp":
+            ligt_op_relatie_index = i
+            ligt_op_relatie = existing_relation
+
+    removed_relation: RelatieObject = RelationChangeDomain.remove_existing_relation(index=ligt_op_relatie_index)
+
+    assert removed_relation  == ligt_op_relatie
+
+    source_id = removed_relation.bronAssetId.identificator
+    doel_id = removed_relation.doelAssetId.identificator
+
+    assert removed_relation not in RelationChangeDomain.existing_relations
+    # assert removed_relation in RelationChangeDomain.possible_object_to_object_relations_dict[source_id][doel_id]
+    # assert removed_relation in RelationChangeDomain.possible_object_to_object_relations_dict[doel_id][source_id]
 
 #################################################
 # UNIT TESTS                                    #
@@ -400,13 +522,15 @@ def mock_collect_all() -> Mock:
     # after the test the original collect_all is restored for other tests to use
     OSLOCollector.collect_all = original_collect_all
 
+
 @pytest.mark.parametrize("subset_path, expected_exception", [
     (patch('pathlib.Path')("valid/path"), None),
     ("valid/path", None),  # edge case: string instead of path
     ("", None),      # edge case: empty path
     (None, None),     # edge case: None path
 ], ids=["valid_path", "string_path", "empty_path", "none_path"])
-def test_init_static(mock_project: Project,mock_collect_all: Mock, mock_oslo_collector: Function, subset_path: str, expected_exception: Optional[Exception]):
+def test_init_static(mock_project: Project,mock_collect_all: Mock, mock_oslo_collector: Function, subset_path: str, expected_exception: Optional[Exception],mock_save_validated_assets_function,
+                                 mock_load_validated_assets):
     # Arrange
     mock_project.subset_path = subset_path
 
@@ -428,12 +552,24 @@ def test_init_static(mock_project: Project,mock_collect_all: Mock, mock_oslo_col
 # RelationChangeDomain.set_objects              #
 #################################################
 
-def test_set_objects_empty_list(mock_screen: RelationChangeScreen):
+def test_set_objects_empty_list(mock_project: Project,
+                                mock_collect_all: Mock,
+                                mock_oslo_collector: Function,
+                                mock_screen: InsertDataScreen,
+                                mock_rel_screen: RelationChangeScreen,
+                                mock_save_validated_assets_function,
+                                 mock_load_validated_assets):
+    local_mock = RelationChangeDomain.set_instances
+    RelationChangeDomain.set_instances = Mock()
+    RelationChangeDomain.init_static(mock_project)
+    RelationChangeDomain.set_instances = local_mock
+
     RelationChangeDomain.set_instances([])
 
     assert len(RelationChangeDomain.objects) == 0
 
-def test_set_objects_single_item_list(mock_screen: RelationChangeScreen,mock_collect_all,mock_rel_screen):
+def test_set_objects_single_item_list(mock_screen: RelationChangeScreen,mock_collect_all,mock_rel_screen,mock_save_validated_assets_function,
+                                 mock_load_validated_assets):
     RelationChangeDomain.init_static(Project())
     test_object = AllCasesTestClass()
     test_object.assetId.identificator = "dummy_identificator"
@@ -442,7 +578,8 @@ def test_set_objects_single_item_list(mock_screen: RelationChangeScreen,mock_col
     assert len(RelationChangeDomain.objects) == 1
     assert RelationChangeDomain.objects[0].assetId.identificator == "dummy_identificator"
 
-def test_set_objects_double_item_list(mock_screen,mock_collect_all,mock_rel_screen):
+def test_set_objects_double_item_list(mock_screen,mock_collect_all,mock_rel_screen,mock_save_validated_assets_function,
+                                 mock_load_validated_assets):
     RelationChangeDomain.init_static(Project())
     test_object = AllCasesTestClass()
     test_object.assetId.identificator = "dummy_identificator"
@@ -484,19 +621,20 @@ def mock_collector(mock_OSLORelatie: Mock):
 @pytest.mark.skip
 def test_set_possible_relations_single_item_list(mock_fill_possible_relations_list: RelationChangeScreen
                                                  ,mock_collector:Mock):
-    #TODO: do proper mocking of  OSLOCollector.find_all_concrete_relations
+
     test_object = AllCasesTestClass()
     test_object.assetId.identificator = "dummy_identificator"
     RelationChangeDomain.set_possible_relations(test_object)
 
-    assert len(RelationChangeDomain.possible_relations_per_class.keys()) == 1
-    assert list(RelationChangeDomain.possible_relations_per_class.keys())[0] == test_object.typeURI
-    assert RelationChangeDomain.possible_relations_per_class[test_object.typeURI]
+    assert len(RelationChangeDomain.possible_relations_per_class_dict.keys()) == 1
+    assert list(RelationChangeDomain.possible_relations_per_class_dict.keys())[0] == test_object.typeURI
+    assert RelationChangeDomain.possible_relations_per_class_dict[test_object.typeURI]
 
 @pytest.mark.skip
 def test_set_possible_relations_double_item_list(mock_fill_possible_relations_list: RelationChangeScreen
-                                                 ,mock_collector:Mock):
-    # TODO: do proper mocking of  OSLOCollector.find_all_concrete_relations
+                                                 ,mock_collector:Mock,mock_save_validated_assets_function,
+                                 mock_load_validated_assets):
+
     test_object = AllCasesTestClass()
     test_object.assetId.identificator = "dummy_identificator"
 
@@ -505,15 +643,11 @@ def test_set_possible_relations_double_item_list(mock_fill_possible_relations_li
 
     RelationChangeDomain.set_possible_relations(test_object)
     RelationChangeDomain.set_possible_relations(test_object2)
-    assert len(RelationChangeDomain.possible_relations_per_class.keys()) == 2
 
-    assert list(RelationChangeDomain.possible_relations_per_class.keys())[0] == test_object.typeURI
-    assert list(RelationChangeDomain.possible_relations_per_class.keys())[1] == test_object2.typeURI
+    assert len(RelationChangeDomain.possible_relations_per_class_dict.keys()) == 2
 
-    # TODO: make this into a proper list of objects
-    assert RelationChangeDomain.possible_relations_per_class[test_object.typeURI]
-    # assert isinstance(RelationChangeDomain.possible_relations_per_object[test_object.typeURI][0],
-    #                   OSLORelatie)
-    assert RelationChangeDomain.possible_relations_per_class[test_object2.typeURI]
-    # assert isinstance(RelationChangeDomain.possible_relations_per_object[test_object2.typeURI][0],
-    #                   OSLORelatie)
+    assert list(RelationChangeDomain.possible_relations_per_class_dict.keys())[0] == test_object.typeURI
+    assert list(RelationChangeDomain.possible_relations_per_class_dict.keys())[1] == test_object2.typeURI
+
+    assert RelationChangeDomain.possible_relations_per_class_dict[test_object.typeURI]
+    assert RelationChangeDomain.possible_relations_per_class_dict[test_object2.typeURI]

@@ -1,3 +1,4 @@
+import argparse
 import asyncio
 import logging
 import sys
@@ -8,6 +9,7 @@ from datetime import datetime
 from pathlib import Path
 
 from Domain import global_vars
+from Domain.InsertDataDomain import InsertDataDomain
 from GUI.translation.GlobalTranslate import GlobalTranslate
 
 ROOT_DIR =  Path(Path(__file__).absolute()).parent
@@ -68,13 +70,22 @@ class OTLWizard(QApplication):
         self.main_window.show()
         global_vars.otl_wizard = self
 
+        if "--test" in argv:
+            self.test_setup()
+
+    def test_setup(self):
+        self.main_window.home_screen.table.open_project_async_task(2)
+        InsertDataDomain.load_and_validate_documents()
+        self.main_window.setCurrentIndex(3)
+        self.main_window.reset_ui(self.main_window._)
+        self.main_window.step_3_tabwidget.tabs.setCurrentWidget(self.main_window.step3_relations)
+
     @asyncClose
     async def quit(self):
         logging.debug("closing application")
         if self.demo_project:
             ProjectFileManager.delete_project_files_by_path(self.demo_project.project_path)
         super().quit()
-
 
 def excepthook(exc_type, exc_value, exc_tb):
     tb = "".join(traceback.format_exception(exc_type, exc_value, exc_tb))
@@ -86,7 +97,6 @@ def excepthook(exc_type, exc_value, exc_tb):
 
 
 if __name__ == '__main__':
-
     settings = ProjectFileManager.init()
 
     logging.debug("Application started")

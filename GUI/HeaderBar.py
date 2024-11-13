@@ -1,9 +1,14 @@
+import asyncio
 import logging
 import webbrowser
+from asyncio import sleep
+from pathlib import Path
 
 import qtawesome as qta
 from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QPixmap, QTransform
 from PyQt6.QtWidgets import QFrame, QHBoxLayout, QLabel, QVBoxLayout, QWidget, QMenu
+from win32ctypes.pywin32.pywintypes import datetime
 
 from Domain import global_vars
 from GUI.ButtonWidget import ButtonWidget
@@ -13,6 +18,10 @@ from GUI.DialogWindows.ProjectPickerWindow import ProjectPickerWindow
 from GUI.DialogWindows.UpsertProjectWindow import UpsertProjectWindow
 from GUI.OverviewTable import OverviewTable
 
+
+ROOT_DIR = Path(__file__).parent.parent
+
+IMG_DIR = ROOT_DIR / 'img/'
 
 class HeaderBar(QFrame):
     def __init__(self, language, main_window=None, table: OverviewTable = None, has_save_btn: bool = True):
@@ -27,6 +36,12 @@ class HeaderBar(QFrame):
         self.import_button = ButtonWidget()
         self.reference_title = QLabel()
         self.has_save_btn = has_save_btn
+        self.loading_icon = QLabel()
+        self.saving_msg = QLabel()
+        self.animation_event_loop = None
+        self.pixmap_icon = None
+        self.initialised = False
+        self.quick_save_animation_task = None
 
     def construct_header_bar(self):
         self.setProperty('class', 'header')
@@ -39,12 +54,21 @@ class HeaderBar(QFrame):
         self.create_import_button()
         header.addWidget(self.new_project_button)
         header.addWidget(self.import_button)
+        # header.addWidget(self.create_loading_icon())
         header.addStretch()
         header.setAlignment(self.new_project_button, Qt.AlignmentFlag.AlignLeft)
         user_settings = self.construct_settings_bar()
         header.addLayout(user_settings)
         header.setAlignment(user_settings, Qt.AlignmentFlag.AlignRight)
         self.setLayout(header)
+
+    def start_event_loop(self):
+
+        self.animation_event_loop = asyncio.get_event_loop()
+        if self.quick_save_animation_task and self.animation_event_loop.is_running():
+            self.quick_save_animation_task.cancel()
+
+        self.quick_save_animation_task = self.animation_event_loop.create_task(self.rotate_icon())
 
     def create_new_project_button(self):
         self.new_project_button.setIcon(qta.icon("mdi.plus",
@@ -53,6 +77,47 @@ class HeaderBar(QFrame):
         self.new_project_button.setProperty('class', 'new-project-btn')
         self.new_project_button.clicked.connect(
             lambda: self.start_dialog_window(is_project=True))
+
+    def create_loading_icon(self):
+        self.pixmap_icon = QPixmap(f'{str(IMG_DIR)}/wizard.ico')
+
+        header_sub = QFrame()
+        header_sub_layout = QHBoxLayout()
+
+        self.loading_icon.setPixmap(self.pixmap_icon )
+        self.loading_icon.setFixedHeight(30)
+        self.loading_icon.setFixedWidth(30)
+        self.loading_icon.setScaledContents(True)
+        self.saving_msg.setText("Unsaved")
+        self.saving_msg.setProperty("class","white_text")
+        header_sub_layout.addWidget(self.loading_icon)
+        header_sub_layout.addWidget(self.saving_msg)
+        header_sub.setLayout(header_sub_layout)
+
+        return header_sub
+
+    async def rotate_icon(self):
+        angle = 0
+        count = 0
+        time_string = datetime.now().strftime("%H:%M")
+        self.saving_msg.setText("Saving")
+        while count < (360/10): # about 1.8 seconds
+            transform = QTransform()
+            angle += 10
+            count +=1
+            angle = angle % 360
+            transform.rotate(angle)
+            rotation_pixmap = self.pixmap_icon.transformed(transform)
+            self.loading_icon.setPixmap(rotation_pixmap)
+            if(count == 20):
+                self.saving_msg.setText(f"Last Saved at {time_string}")
+            # elif(count%5 == 3):
+            #     self.saving_msg.setProperty("class", "black_text")
+
+            await sleep(0.05)
+
+        self.loading_icon.setPixmap(self.pixmap_icon)
+        # self.saving_msg.setText(f"Last Saved at {time_string}")
 
     def construct_settings_bar(self):
         user_pref_container = QHBoxLayout()
@@ -95,6 +160,10 @@ class HeaderBar(QFrame):
             language_window.language_window(main_window=self.main_window)
 
     def header_bar_detail_screen(self):
+        if self.initialised:
+            return self.return_button
+
+        self.return_button = ButtonWidget()
         full_header = QVBoxLayout()
         header = QHBoxLayout()
         head_top = QWidget()
@@ -114,6 +183,7 @@ class HeaderBar(QFrame):
             self.reference_title.setText("")
         self.reference_title.setProperty('class', 'project-title')
         header.addWidget(self.reference_title)
+        header.addWidget(self.create_loading_icon())
         header.addStretch()
         header.setAlignment(self.return_button, Qt.AlignmentFlag.AlignLeft)
         settings = self.construct_settings_bar()
@@ -143,7 +213,10 @@ class HeaderBar(QFrame):
         full_header.addWidget(header_sub)
         full_header.setContentsMargins(0, 0, 0, 0)
         self.setLayout(full_header)
+        self.initialised = True
         return self.return_button
+
+
 
     def create_import_button(self):
         self.import_button.setIcon(qta.icon("mdi.download",
