@@ -2,7 +2,7 @@ from collections import namedtuple
 from typing import Optional, Collection
 
 from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QStandardItem, QPixmap, QIcon
+from PyQt6.QtGui import QStandardItem
 from otlmow_model.OtlmowModel.Helpers import OTLObjectHelper
 
 from Domain.RelationChangeDomain import RelationChangeDomain
