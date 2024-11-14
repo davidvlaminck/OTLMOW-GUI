@@ -1,6 +1,7 @@
 import argparse
 import asyncio
 import logging
+import os
 import sys
 import traceback
 import typing
@@ -54,8 +55,15 @@ class OTLWizard(QApplication):
         app_icon = QIcon('img/wizard.ico')
         self.setWindowIcon(app_icon)
 
-        with open('GUI/style/custom.qss', 'r') as file:
+        style_path = Path('style/custom.qss')
+
+        if hasattr(sys, '_MEIPASS'): # when in .exe file
+            style_path = Path(os.path.join(sys._MEIPASS,'style/custom.qss'))
+
+        with open(style_path, 'r') as file:
             self.setStyleSheet(file.read())
+
+        logging.debug(f"style sheet found in: {str(style_path.absolute())}")
 
         # self.demo_project = demo_data()
         self.demo_project = None
