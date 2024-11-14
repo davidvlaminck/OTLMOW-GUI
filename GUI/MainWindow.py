@@ -52,6 +52,14 @@ class MainWindow(QStackedWidget):
         self.home_screen.table.main_window = self
         self.step1.main_window = self
 
+        # dummy translation so the pybabel system doesn't remove them
+        self._("template")
+        self._("insert_data")
+        self._("data visuals")
+        self._("data_change")
+        self._("relation_change")
+        self._("export_data")
+
     def add_widget(self, widget: QWidget, has_stepper: bool = False):
         self.addWidget(widget)
         widget.main_window = self

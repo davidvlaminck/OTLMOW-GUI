@@ -44,21 +44,17 @@ class RelationChangeScreen(Screen):
 
 
     def paintEvent(self, a0):
-
-        super().paintEvent(a0)
-
         self.synchronize_subtext_label_heights()
+        super().paintEvent(a0)
 
     def synchronize_subtext_label_heights(self):
         frame_rect_height = self.possible_relation_list_gui.list_subtext_label.frameRect().height()
         frame_rect_object = self.objects_list_gui.list_subtext_label.frameRect()
-        frame_rect_pos = self.existing_relation_list_gui.list_subtext_label.frameRect()
+        frame_rect_exist = self.existing_relation_list_gui.list_subtext_label.frameRect()
         if frame_rect_height != frame_rect_object.height():
-            self.objects_list_gui.list_subtext_label.setFixedSize(frame_rect_object.width(),
-                                                                  frame_rect_height)
-        if frame_rect_height != frame_rect_pos.height():
-            self.existing_relation_list_gui.list_subtext_label.setFixedSize(
-                frame_rect_object.width(), frame_rect_height)
+            self.objects_list_gui.list_subtext_label.setMinimumHeight(frame_rect_height)
+        if frame_rect_height != frame_rect_exist.height():
+            self.existing_relation_list_gui.list_subtext_label.setMinimumHeight(frame_rect_height)
 
     def init_ui(self) -> None:
         # self.container_insert_data_screen.addSpacing(5)

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: jasper.berton@mow.vlaanderen.be\n"
-"POT-Creation-Date: 2024-11-13 14:12+0100\n"
+"POT-Creation-Date: 2024-11-13 15:52+0100\n"
 "PO-Revision-Date: 2023-10-19 13:13+0200\n"
 "Last-Translator: Jasper Berton <jasper.berton@mow.vlaanderen.be>\n"
 "Language: nl_BE\n"
@@ -72,6 +72,30 @@ msgstr "Bewaar"
 #: GUI/HeaderBar.py:224 GUI/HeaderBar.py:244
 msgid "import"
 msgstr "Importeren"
+
+#: GUI/MainWindow.py:59
+msgid "template"
+msgstr "Aanmaken template"
+
+#: GUI/MainWindow.py:60
+msgid "insert_data"
+msgstr ""
+
+#: GUI/MainWindow.py:61
+msgid "data visuals"
+msgstr ""
+
+#: GUI/MainWindow.py:62
+msgid "data_change"
+msgstr ""
+
+#: GUI/MainWindow.py:63
+msgid "relation_change"
+msgstr ""
+
+#: GUI/MainWindow.py:64
+msgid "export_data"
+msgstr ""
 
 #: GUI/MessageBox.py:16
 msgid "delete"
@@ -357,7 +381,7 @@ msgstr ""
 msgid "{doc_name}: type uri not in first row of {tab}\n"
 msgstr "{doc_name}: TypeUri staat niet in de eerste rij\n"
 
-#: GUI/Screens/RelationChangeScreen.py:81
+#: GUI/Screens/RelationChangeScreen.py:85
 msgid "functionality under development"
 msgstr "Functionaliteit in ontwikkeling"
 
@@ -418,17 +442,17 @@ msgstr "Geen asset types gevonden in het opgegeven pad"
 msgid "{selected} classes selected"
 msgstr "{selected} types geselecteerd"
 
-#: GUI/Screens/RelationChangeElements/AbstractInstanceListWidget.py:288
+#: GUI/Screens/RelationChangeElements/AbstractInstanceListWidget.py:295
 #, fuzzy
 msgid "search"
 msgstr "Geef een project of bestek in om te zoeken"
 
-#: GUI/Screens/RelationChangeElements/AbstractInstanceListWidget.py:400
+#: GUI/Screens/RelationChangeElements/AbstractInstanceListWidget.py:415
 #: GUI/Screens/RelationChangeElements/ObjectListWidget.py:89
 msgid "no_options_available"
 msgstr "Geen opties beschikbaar"
 
-#: GUI/Screens/RelationChangeElements/AbstractInstanceListWidget.py:419
+#: GUI/Screens/RelationChangeElements/AbstractInstanceListWidget.py:434
 msgid "no_instance_selected"
 msgstr "Geen object geselecteerd"
 
@@ -486,72 +510,69 @@ msgstr "Selecteer een OTL-asset om zijn mogelijke relaties te zien"
 msgid "add_relation"
 msgstr "Voeg relaties toe"
 
-#~ msgid "Data visualisation"
-#~ msgstr "Data visualisatie"
+msgid "Data visualisation"
+msgstr "Data visualisatie"
 
-#~ msgid "create_png"
-#~ msgstr "Creëer PNG"
+msgid "create_png"
+msgstr "Creëer PNG"
 
-#~ msgid "search_button"
-#~ msgstr "Zoeken"
+msgid "search_button"
+msgstr "Zoeken"
 
-#~ msgid "subtitle_page_1"
-#~ msgstr ""
-#~ "Specifieer welke asset types en "
-#~ "instellingen u in uw template wil "
-#~ "verwerken"
+msgid "subtitle_page_1"
+msgstr ""
+"Specifieer welke asset types en "
+"instellingen u in uw template wil "
+"verwerken"
 
-#~ msgid "export_data"
-#~ msgstr "Export Data"
+msgid "export_data"
+msgstr "Export Data"
 
-#~ msgid "step_1"
-#~ msgstr "Aanmaken van template"
+msgid "step_1"
+msgstr "Aanmaken van template"
 
-#~ msgid "step_2"
-#~ msgstr "Asset Data invoeren"
+msgid "step_2"
+msgstr "Asset Data invoeren"
 
-#~ msgid "step_3"
-#~ msgstr "Asset Data/relaties bewerken"
+msgid "step_3"
+msgstr "Asset Data/relaties bewerken"
 
-#~ msgid "step_4"
-#~ msgstr "Asset Data exporteren/converteren"
+msgid "step_4"
+msgstr "Asset Data exporteren/converteren"
 
-#~ msgid "template"
-#~ msgstr "Aanmaken template"
+msgid "insert_data"
+msgstr "Toevoegen Data"
 
-#~ msgid "insert_data"
-#~ msgstr "Toevoegen Data"
+msgid "data_change"
+msgstr "Data aanpassen"
 
-#~ msgid "data_change"
-#~ msgstr "Data aanpassen"
+msgid "relation_change"
+msgstr "Aanpassen relaties"
 
-#~ msgid "relation_change"
-#~ msgstr "Aanpassen relaties"
+msgid "file_to_convert"
+msgstr "Bestand om te converteren"
 
-#~ msgid "file_to_convert"
-#~ msgstr "Bestand om te converteren"
+msgid "control"
+msgstr "Controleren"
 
-#~ msgid "control"
-#~ msgstr "Controleren"
+msgid "type"
+msgstr "Type"
 
-#~ msgid "type"
-#~ msgstr "Type"
+msgid "attribuut"
+msgstr "Attribuut"
 
-#~ msgid "attribuut"
-#~ msgstr "Attribuut"
+msgid "update_relations"
+msgstr "Relaties updaten"
 
-#~ msgid "update_relations"
-#~ msgstr "Relaties updaten"
+msgid "update_files"
+msgstr "Bestanden updaten"
 
-#~ msgid "update_files"
-#~ msgstr "Bestanden updaten"
+msgid "data visuals"
+msgstr "Data visualisatie"
 
-#~ msgid "data visuals"
-#~ msgstr "Data visualisatie"
+msgid "class_list"
+msgstr "OTL-assets"
 
-#~ msgid "class_list"
-#~ msgstr "OTL-assets"
-
-#~ msgid "existing_relations_list"
-#~ msgstr "Bestaande relaties"
+msgid "existing_relations_list"
+msgstr "Bestaande relaties"
 

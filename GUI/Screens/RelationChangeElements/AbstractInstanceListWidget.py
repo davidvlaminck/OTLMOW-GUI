@@ -289,8 +289,8 @@ class AbstractInstanceListWidget:
 
     def create_search_bar(self) -> QFrame:
         frame = QFrame()
-        frame.setContentsMargins(0, 0, 0, 0)
         frame_layout = QHBoxLayout()
+        frame_layout.setContentsMargins(5, 11, 0, 11)
         self.search_bar = QLineEdit()
         self.search_bar.setPlaceholderText(self._('search'))
         self.search_bar.textChanged.connect(self.search_listener)

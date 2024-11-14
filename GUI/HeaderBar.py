@@ -2,13 +2,14 @@ import asyncio
 import logging
 import webbrowser
 from asyncio import sleep
+from datetime import datetime
 from pathlib import Path
 
 import qtawesome as qta
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QPixmap, QTransform
 from PyQt6.QtWidgets import QFrame, QHBoxLayout, QLabel, QVBoxLayout, QWidget, QMenu
-from win32ctypes.pywin32.pywintypes import datetime
+
 
 from Domain import global_vars
 from GUI.ButtonWidget import ButtonWidget
