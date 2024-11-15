@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2024-11-13 15:52+0100\n"
+"POT-Creation-Date: 2024-11-15 13:43+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -41,56 +41,56 @@ msgstr ""
 msgid "permission_denied"
 msgstr ""
 
-#: GUI/HeaderBar.py:76 GUI/HeaderBar.py:241
+#: GUI/HeaderBar.py:77 GUI/HeaderBar.py:242
 msgid "new_project_button"
 msgstr ""
 
-#: GUI/HeaderBar.py:142 GUI/HeaderBar.py:245
+#: GUI/HeaderBar.py:143 GUI/HeaderBar.py:246
 msgid "help"
 msgstr ""
 
-#: GUI/DialogWindows/MenuActionsWindow.py:13 GUI/HeaderBar.py:144
-#: GUI/HeaderBar.py:246
+#: GUI/DialogWindows/MenuActionsWindow.py:13 GUI/HeaderBar.py:145
+#: GUI/HeaderBar.py:247
 msgid "about"
 msgstr ""
 
-#: GUI/HeaderBar.py:146 GUI/HeaderBar.py:247
+#: GUI/HeaderBar.py:147 GUI/HeaderBar.py:248
 msgid "report error"
 msgstr ""
 
-#: GUI/HeaderBar.py:178 GUI/HeaderBar.py:242
+#: GUI/HeaderBar.py:179 GUI/HeaderBar.py:243
 msgid "return_to_home_screen"
 msgstr ""
 
-#: GUI/HeaderBar.py:199 GUI/HeaderBar.py:243
+#: GUI/HeaderBar.py:200 GUI/HeaderBar.py:244
 msgid "save_button"
 msgstr ""
 
-#: GUI/HeaderBar.py:224 GUI/HeaderBar.py:244
+#: GUI/HeaderBar.py:225 GUI/HeaderBar.py:245
 msgid "import"
 msgstr ""
 
-#: GUI/MainWindow.py:59
+#: GUI/MainWindow.py:56
 msgid "template"
 msgstr ""
 
-#: GUI/MainWindow.py:60
+#: GUI/MainWindow.py:57
 msgid "insert_data"
 msgstr ""
 
-#: GUI/MainWindow.py:61
+#: GUI/MainWindow.py:58
 msgid "data visuals"
 msgstr ""
 
-#: GUI/MainWindow.py:62
+#: GUI/MainWindow.py:59
 msgid "data_change"
 msgstr ""
 
-#: GUI/MainWindow.py:63
+#: GUI/MainWindow.py:60
 msgid "relation_change"
 msgstr ""
 
-#: GUI/MainWindow.py:64
+#: GUI/MainWindow.py:61
 msgid "export_data"
 msgstr ""
 
@@ -184,12 +184,14 @@ msgstr ""
 
 #: GUI/DialogWindows/ChangeSubsetWindow.py:68
 #: GUI/DialogWindows/RemoveProjectFilesWindow.py:34
+#: GUI/DialogWindows/SuggestUpdateWindow.py:37
 #: GUI/DialogWindows/UpsertProjectWindow.py:96
 msgid "submit"
 msgstr ""
 
 #: GUI/DialogWindows/ChangeSubsetWindow.py:70
 #: GUI/DialogWindows/RemoveProjectFilesWindow.py:36
+#: GUI/DialogWindows/SuggestUpdateWindow.py:39
 #: GUI/DialogWindows/UpsertProjectWindow.py:98
 msgid "cancel"
 msgstr ""
@@ -244,6 +246,14 @@ msgstr ""
 
 #: GUI/DialogWindows/RemoveProjectFilesWindow.py:20
 msgid "remove_project_files_question"
+msgstr ""
+
+#: GUI/DialogWindows/SuggestUpdateWindow.py:20
+msgid "update_available_title"
+msgstr ""
+
+#: GUI/DialogWindows/SuggestUpdateWindow.py:23
+msgid "update_available_text"
 msgstr ""
 
 #: GUI/DialogWindows/UpsertProjectWindow.py:33
@@ -334,7 +344,7 @@ msgstr ""
 msgid "file_to_upload"
 msgstr ""
 
-#: GUI/Screens/HomeScreen.py:88 GUI/Screens/HomeScreen.py:95
+#: GUI/Screens/HomeScreen.py:92 GUI/Screens/HomeScreen.py:99
 msgid "search_text"
 msgstr ""
 
@@ -374,7 +384,7 @@ msgstr ""
 msgid "{doc_name}: type uri not in first row of {tab}\n"
 msgstr ""
 
-#: GUI/Screens/RelationChangeScreen.py:85
+#: GUI/Screens/RelationChangeScreen.py:81
 msgid "functionality under development"
 msgstr ""
 

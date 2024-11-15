@@ -20,6 +20,7 @@ PyInstaller.__main__.run([
     '--add-data', 'style:style',
     '--add-data', 'demo_projects:demo_projects',
     '--add-data', 'img:img',
+    '--add-data', 'pyproject.toml:.',
     '--icon','img/wizard.png',
     '--noconfirm',
     # '--onefile',  # All files packed together in one executable file

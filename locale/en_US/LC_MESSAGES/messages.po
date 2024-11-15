@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2024-11-13 15:52+0100\n"
+"POT-Creation-Date: 2024-11-15 13:43+0100\n"
 "PO-Revision-Date: 2023-10-19 13:11+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en_US\n"
@@ -44,56 +44,56 @@ msgstr ""
 msgid "permission_denied"
 msgstr "No permission to open the file"
 
-#: GUI/HeaderBar.py:76 GUI/HeaderBar.py:241
+#: GUI/HeaderBar.py:77 GUI/HeaderBar.py:242
 msgid "new_project_button"
 msgstr "New Project"
 
-#: GUI/HeaderBar.py:142 GUI/HeaderBar.py:245
+#: GUI/HeaderBar.py:143 GUI/HeaderBar.py:246
 msgid "help"
 msgstr "Help"
 
-#: GUI/DialogWindows/MenuActionsWindow.py:13 GUI/HeaderBar.py:144
-#: GUI/HeaderBar.py:246
+#: GUI/DialogWindows/MenuActionsWindow.py:13 GUI/HeaderBar.py:145
+#: GUI/HeaderBar.py:247
 msgid "about"
 msgstr "About"
 
-#: GUI/HeaderBar.py:146 GUI/HeaderBar.py:247
+#: GUI/HeaderBar.py:147 GUI/HeaderBar.py:248
 msgid "report error"
 msgstr "Report issue"
 
-#: GUI/HeaderBar.py:178 GUI/HeaderBar.py:242
+#: GUI/HeaderBar.py:179 GUI/HeaderBar.py:243
 msgid "return_to_home_screen"
 msgstr "Back home"
 
-#: GUI/HeaderBar.py:199 GUI/HeaderBar.py:243
+#: GUI/HeaderBar.py:200 GUI/HeaderBar.py:244
 msgid "save_button"
 msgstr "Save"
 
-#: GUI/HeaderBar.py:224 GUI/HeaderBar.py:244
+#: GUI/HeaderBar.py:225 GUI/HeaderBar.py:245
 msgid "import"
 msgstr "Import"
 
-#: GUI/MainWindow.py:59
+#: GUI/MainWindow.py:56
 msgid "template"
 msgstr ""
 
-#: GUI/MainWindow.py:60
+#: GUI/MainWindow.py:57
 msgid "insert_data"
 msgstr ""
 
-#: GUI/MainWindow.py:61
+#: GUI/MainWindow.py:58
 msgid "data visuals"
 msgstr ""
 
-#: GUI/MainWindow.py:62
+#: GUI/MainWindow.py:59
 msgid "data_change"
 msgstr ""
 
-#: GUI/MainWindow.py:63
+#: GUI/MainWindow.py:60
 msgid "relation_change"
 msgstr ""
 
-#: GUI/MainWindow.py:64
+#: GUI/MainWindow.py:61
 msgid "export_data"
 msgstr ""
 
@@ -187,12 +187,14 @@ msgstr "Change subset"
 
 #: GUI/DialogWindows/ChangeSubsetWindow.py:68
 #: GUI/DialogWindows/RemoveProjectFilesWindow.py:34
+#: GUI/DialogWindows/SuggestUpdateWindow.py:37
 #: GUI/DialogWindows/UpsertProjectWindow.py:96
 msgid "submit"
 msgstr "Submit"
 
 #: GUI/DialogWindows/ChangeSubsetWindow.py:70
 #: GUI/DialogWindows/RemoveProjectFilesWindow.py:36
+#: GUI/DialogWindows/SuggestUpdateWindow.py:39
 #: GUI/DialogWindows/UpsertProjectWindow.py:98
 msgid "cancel"
 msgstr "Cancel"
@@ -250,6 +252,14 @@ msgstr "Remove project files"
 #: GUI/DialogWindows/RemoveProjectFilesWindow.py:20
 msgid "remove_project_files_question"
 msgstr "Are you sure you want to delete these project files?"
+
+#: GUI/DialogWindows/SuggestUpdateWindow.py:20
+msgid "update_available_title"
+msgstr ""
+
+#: GUI/DialogWindows/SuggestUpdateWindow.py:23
+msgid "update_available_text"
+msgstr ""
 
 #: GUI/DialogWindows/UpsertProjectWindow.py:33
 msgid "alter_project_title"
@@ -339,7 +349,7 @@ msgstr "Export"
 msgid "file_to_upload"
 msgstr "file to upload:"
 
-#: GUI/Screens/HomeScreen.py:88 GUI/Screens/HomeScreen.py:95
+#: GUI/Screens/HomeScreen.py:92 GUI/Screens/HomeScreen.py:99
 msgid "search_text"
 msgstr "Enter project or service order to search"
 
@@ -379,7 +389,7 @@ msgstr "{doc_name}: invalid columns found, bad columns are {bad_columns}\n"
 msgid "{doc_name}: type uri not in first row of {tab}\n"
 msgstr "{doc_name}: TypeUri not found in first row \n"
 
-#: GUI/Screens/RelationChangeScreen.py:85
+#: GUI/Screens/RelationChangeScreen.py:81
 msgid "functionality under development"
 msgstr "Functionality under development"
 
@@ -505,68 +515,45 @@ msgstr "Select an OTL-asset to see it's possible relations"
 msgid "add_relation"
 msgstr "Possible relations:"
 
-msgid "control"
-msgstr "Control"
+#~ msgid "control"
+#~ msgstr "Control"
 
-msgid "type"
-msgstr "Type"
+#~ msgid "type"
+#~ msgstr "Type"
 
-msgid "attribuut"
-msgstr "Attribute"
+#~ msgid "attribuut"
+#~ msgstr "Attribute"
 
-msgid "update_relations"
-msgstr "Update relations"
+#~ msgid "update_relations"
+#~ msgstr "Update relations"
 
-msgid "update_files"
-msgstr "Update files"
+#~ msgid "update_files"
+#~ msgstr "Update files"
 
-msgid "Data visualisation"
-msgstr "Data visualisation"
+#~ msgid "Data visualisation"
+#~ msgstr "Data visualisation"
 
-msgid "create_png"
-msgstr "Create PNG"
+#~ msgid "create_png"
+#~ msgstr "Create PNG"
 
-msgid "step_1"
-msgstr "Create Template"
+#~ msgid "step_1"
+#~ msgstr "Create Template"
 
-msgid "step_2"
-msgstr "Insert Asset Data"
+#~ msgid "step_2"
+#~ msgstr "Insert Asset Data"
 
-msgid "step_3"
-msgstr "Change Asset Data/Relations"
+#~ msgid "step_3"
+#~ msgstr "Change Asset Data/Relations"
 
-msgid "step_4"
-msgstr "Export/Convert Asset Data"
+#~ msgid "step_4"
+#~ msgstr "Export/Convert Asset Data"
 
+#~ msgid "file_to_convert"
+#~ msgstr "File conversion"
 
+#~ msgid "search_button"
+#~ msgstr "Search"
 
-msgid "insert_data"
-msgstr "Add Asset Data"
-
-msgid "data_change"
-msgstr "Change Data"
-
-msgid "relation_change"
-msgstr "Change Relations"
-
-msgid "file_to_convert"
-msgstr "File conversion"
-
-msgid "search_button"
-msgstr "Search"
-
-msgid "subtitle_page_1"
-msgstr "Specify which classes and settings you want to use in the template"
-
-msgid "export_data"
-msgstr "Export Data"
-
-msgid "data visuals"
-msgstr "Data Visualisation"
-
-#: GUI/MainWindow.py:59
-msgid "template"
-msgstr "Generate Template"
-
-
+#~ msgid "subtitle_page_1"
+#~ msgstr "Specify which classes and settings you want to use in the template"
 

@@ -12,6 +12,7 @@ from pathlib import Path
 
 from Domain import global_vars
 from Domain.InsertDataDomain import InsertDataDomain
+from Domain.Updater import Updater
 from GUI.translation.GlobalTranslate import GlobalTranslate
 
 ROOT_DIR =  Path(Path(__file__).absolute()).parent
@@ -52,6 +53,8 @@ class OTLWizard(QApplication):
         super().__init__(argv)
 
         sys.excepthook = excepthook
+
+        Updater.check_for_updates()
 
         app_icon = QIcon('img/wizard.ico')
         self.setWindowIcon(app_icon)

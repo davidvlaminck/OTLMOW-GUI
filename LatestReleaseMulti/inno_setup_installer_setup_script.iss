@@ -46,8 +46,8 @@ Name: "dutch"; MessagesFile: "compiler:Languages\Dutch.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "C:\Users\chris\PycharmProjects\OTLMOW-GUI\LatestReleaseMulti\OTLWizard\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\chris\PycharmProjects\OTLMOW-GUI\LatestReleaseMulti\OTLWizard\data\*"; DestDir: "{app}\data"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "C:\Users\chris\PycharmProjects\OTLMOW-GUI\LatestReleaseMulti\OTL Wizard 2\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\chris\PycharmProjects\OTLMOW-GUI\LatestReleaseMulti\OTL Wizard 2\data\*"; DestDir: "{app}\data"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
