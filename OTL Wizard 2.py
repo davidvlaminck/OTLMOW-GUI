@@ -1,5 +1,6 @@
 import argparse
 import asyncio
+import importlib
 import logging
 import os
 import sys
@@ -59,6 +60,9 @@ class OTLWizard(QApplication):
 
         if hasattr(sys, '_MEIPASS'): # when in .exe file
             style_path = Path(os.path.join(sys._MEIPASS,'style/custom.qss'))
+        elif not style_path.exists():
+            style_path = Path('data/style/custom.qss')
+
 
         with open(style_path, 'r') as file:
             self.setStyleSheet(file.read())
@@ -110,6 +114,13 @@ if __name__ == '__main__':
     logging.debug("Application started")
 
     app = OTLWizard(settings,sys.argv)
+
+    if '_PYI_SPLASH_IPC' in os.environ and importlib.util.find_spec("pyi_splash"):
+        import pyi_splash
+
+        pyi_splash.update_text('UI Loaded ...')
+        pyi_splash.close()
+        logging.info('Splash screen closed.')
 
     event_loop = QEventLoop(app)
     asyncio.set_event_loop(event_loop)

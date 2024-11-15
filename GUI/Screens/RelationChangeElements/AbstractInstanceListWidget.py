@@ -81,11 +81,11 @@ class AbstractInstanceListWidget:
         list_label_font.setPointSize(11)
         list_label_font.setBold(True)
         self.list_label.setFont(list_label_font)
-        self.list_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        # self.list_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.list_subtext_label = QLabel()
         self.list_subtext_label.setText(self.list_subtext_label_text)
-        self.list_subtext_label.setAlignment(Qt.AlignmentFlag.AlignHCenter )
+        # self.list_subtext_label.setAlignment(Qt.AlignmentFlag.AlignHCenter )
 
         list_subtext_label_font = QFont()
         list_subtext_label_font.setItalic(True)

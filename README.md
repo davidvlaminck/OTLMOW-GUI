@@ -60,3 +60,14 @@ tranlation for that text in like:
 4. Compile new translations into messages.mo files using the seperate python environment  
     `pybabel compile -d locale`
     
+## exe and installer creation guide
+
+1. Make sure you have a python 3.13 environment with the requirements.txt installed set up
+2. Run the `pyinstaller_script.py` in that environment  
+    This will make the `OTL Wizard 2.exe` in the LatestReleaseMulti folder 
+3. Download and install [Inno Setup Compiler](https://jrsoftware.org/isinfo.php)
+4. In the `LatestReleaseMulti/inno_setup_installer_setup_script.iss` script replace all occurrences of:  
+    `C:\Users\chris\PycharmProjects\OTLMOW-GUI`  
+    with the absolute path to the root of your project
+5. Open `LatestReleaseMulti/inno_setup_installer_setup_script.iss` with Inno Setup Compiler and compile.  
+    This should create `LatestReleaseMulti/OTL wizard 2 installer.exe`

@@ -6,9 +6,9 @@ import PyInstaller.__main__
 home_path = pathlib.Path.home()
 
 PyInstaller.__main__.run([
-    r'OTLWizard.py',
-    '--distpath', str(home_path / 'PycharmProjects'/ 'OTLMOW-GUI' /  'LatestRelease'),
-    '--contents-directory', 'applicationdata',
+    r'OTL Wizard 2.py',
+    '--distpath', str(home_path / 'PycharmProjects'/ 'OTLMOW-GUI' /  'LatestReleaseMulti'),
+    '--contents-directory', 'data',
     '--paths', str(home_path / 'PycharmProjects' / 'OTLMOW-GUI' / 'venv3-13' / 'Lib' / 'site-packages'),
     '--collect-all', 'otlmow_converter',
     '--collect-all', 'otlmow_model',
@@ -22,7 +22,7 @@ PyInstaller.__main__.run([
     '--add-data', 'img:img',
     '--icon','img/wizard.png',
     '--noconfirm',
-    '--onefile',  # All files packed together in one executable file
+    # '--onefile',  # All files packed together in one executable file
     '--noconsole', # no cmd/powershell window with debug output
     '--clean'
 ])
