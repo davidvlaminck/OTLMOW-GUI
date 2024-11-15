@@ -47,8 +47,8 @@ class AbstractInstanceListWidget:
         self.item_type_data_index = 3
         self.data_1_index = 4
         self.data_2_index = 5
-        self.data_3_index = 6
-        self.data_last_added_index = 8
+        self.data_3_index = 8
+        self.data_last_added_index = 9
 
         self.color_legend = PyVisWrapper().relatie_color_dict
         self.last_added_color = QColor("#d0ffcc")

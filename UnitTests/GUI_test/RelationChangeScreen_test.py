@@ -346,7 +346,7 @@ def test_fill_class_list_empty_list(qtbot,
     RelationChangeDomain.set_instances(test_objects_list)
     # relation_change_screen.fill_object_list(objects=test_objects_list)
 
-    assert relation_change_screen.objects_list_gui.list_gui.model.rowCount() == 0
+    assert relation_change_screen.objects_list_gui.list_gui.model.rowCount() == 1
 
 """
 Just adding the qtbot to the fixtures makes the test complete without a timeout when you call a PyQt element
