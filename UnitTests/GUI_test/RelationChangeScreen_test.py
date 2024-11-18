@@ -207,7 +207,10 @@ def test_full_fill_possible_relations_list(qtbot,root_directory:Path,
     assert data1 == fund1_possible_relations_gui_data1
 
     child_items = {}
-    child_items['Bevestiging'] = ['dummy_TyBGmXfXC', 'dummy_TyBGmXfXC', 'dummy_TyBGmXfXC', 'dummy_TyBGmXfXC']
+    child_items['Bevestiging'] = [['dummy_TyBGmXfXC', 'dummy_C', 0],
+ ['dummy_TyBGmXfXC', 'dummy_FNrHuPZCWV', 0],
+ ['dummy_TyBGmXfXC', 'dummy_vbeo', 0],
+ ['dummy_TyBGmXfXC', 'dummy_TjwXqP', 0]]
     for i in range(len(fund1_possible_relations_gui_data1)):
         real_item = possible_relations_list.list_gui.model.item(i)
         item_text = real_item.text()
@@ -215,42 +218,6 @@ def test_full_fill_possible_relations_list(qtbot,root_directory:Path,
         real_children = [real_item.child(x).data(data_index) for x in
                          range(real_item.rowCount())]
         assert real_children == child_items[item_text]
-
-    data_index = possible_relations_list.data_2_index
-    data2 = [
-        possible_relations_list.list_gui.model.item(x).data(data_index )
-        for x in range(possible_relations_list.list_gui.model.rowCount())]
-    fund1_possible_relations_gui_data2 = [None]
-    print(data2)
-    # assert data2 == fund1_possible_relations_gui_data2
-    child_items = {}
-    child_items['Bevestiging'] = ['dummy_C', 'dummy_FNrHuPZCWV', 'dummy_vbeo', 'dummy_TjwXqP']
-
-    for i in range(len(fund1_possible_relations_gui_data2)):
-        real_item = possible_relations_list.list_gui.model.item(i)
-        item_text = real_item.text()
-
-        real_children = [real_item.child(x).data(data_index) for x in
-                         range(real_item.rowCount())]
-        assert real_children == child_items[item_text]
-
-    data_index = possible_relations_list.data_3_index
-    data3 = [
-        possible_relations_list.list_gui.model.item(x).data(data_index)
-        for x in range(possible_relations_list.list_gui.model.rowCount())]
-    fund1_possible_relations_gui_data3 = [None]
-    assert data3 == fund1_possible_relations_gui_data3
-
-    child_items = {}
-    child_items['Bevestiging'] = [0, 0, 0, 0]
-    for i in range(len(fund1_possible_relations_gui_data3)):
-        real_item = possible_relations_list.list_gui.model.item(i)
-        item_text = real_item.text()
-
-        real_children = [real_item.child(x).data(data_index) for x in
-                         range(real_item.rowCount())]
-        assert real_children == child_items[item_text]
-
 
 
 #######################################################
