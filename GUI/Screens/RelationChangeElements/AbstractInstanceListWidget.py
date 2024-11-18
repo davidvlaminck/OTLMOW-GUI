@@ -46,9 +46,12 @@ class AbstractInstanceListWidget:
 
         self.item_type_data_index = 3
         self.data_1_index = 4
-        self.data_2_index = 5
-        self.data_3_index = 8
-        self.data_last_added_index = 9
+        self.data_last_added_index = 5
+
+        # self.data_1_index = 4
+        # self.data_2_index = 5
+        # self.data_3_index = 8
+        # self.data_last_added_index = 9
 
         self.color_legend = PyVisWrapper().relatie_color_dict
         self.last_added_color = QColor("#d0ffcc")
@@ -201,8 +204,8 @@ class AbstractInstanceListWidget:
 
                     if len(instance_item_tuple) > 1:
                         instance_item_tuple[1].setData(instance_item_tuple[0].data(self.data_1_index), self.data_1_index)
-                        instance_item_tuple[1].setData(instance_item_tuple[0].data(self.data_2_index), self.data_2_index)
-                        instance_item_tuple[1].setData(instance_item_tuple[0].data(self.data_3_index), self.data_3_index)
+                        # instance_item_tuple[1].setData(instance_item_tuple[0].data(self.data_2_index), self.data_2_index)
+                        # instance_item_tuple[1].setData(instance_item_tuple[0].data(self.data_3_index), self.data_3_index)
                         instance_item_tuple[1].setData(instance_item_tuple[0].data(self.item_type_data_index), self.item_type_data_index)
                         instance_item_tuple[1].setEditable(False)
                         multi_col_list = True

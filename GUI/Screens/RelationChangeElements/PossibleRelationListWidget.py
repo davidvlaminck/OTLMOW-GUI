@@ -91,9 +91,10 @@ class PossibleRelationListWidget(AbstractInstanceListWidget):
     def create_instance_standard_item(self, text_and_data):
         text = f"{text_and_data['text'].screen_name}"
         instance_item = QStandardItem(f"{text}")
-        instance_item.setData(text_and_data['data'].source_id, self.data_1_index)
-        instance_item.setData(text_and_data['data'].target_id, self.data_2_index)
-        instance_item.setData(text_and_data['data'].index, self.data_3_index)
+        instance_item.setData([text_and_data['data'].source_id,text_and_data['data'].target_id,text_and_data['data'].index], self.data_1_index)
+        # instance_item.setData(text_and_data['data'].source_id, self.data_1_index)
+        # instance_item.setData(text_and_data['data'].target_id, self.data_2_index)
+        # instance_item.setData(text_and_data['data'].index, self.data_3_index)
         instance_item.setData("instance", self.item_type_data_index)
         instance_item.setData(text_and_data["data"].last_added, self.data_last_added_index)
 
@@ -130,9 +131,12 @@ class PossibleRelationListWidget(AbstractInstanceListWidget):
 
     def get_selected_data(self):
         return [
-            self.Data(self.list_gui.model.itemFromIndex(model_i).data(self.data_1_index),
-                      self.list_gui.model.itemFromIndex(model_i).data(self.data_2_index),
-                      self.list_gui.model.itemFromIndex(model_i).data(self.data_3_index),False)
+            self.Data(self.list_gui.model.itemFromIndex(model_i).data(self.data_1_index)[0],
+                      self.list_gui.model.itemFromIndex(model_i).data(self.data_1_index)[1],
+                      self.list_gui.model.itemFromIndex(model_i).data(self.data_1_index)[2], False)
+            # self.Data(self.list_gui.model.itemFromIndex(model_i).data(self.data_1_index),
+            #           self.list_gui.model.itemFromIndex(model_i).data(self.data_2_index),
+            #           self.list_gui.model.itemFromIndex(model_i).data(self.data_3_index),False)
             for model_i in self.list_gui.selectionModel().selectedIndexes()
             if model_i.column() == 0]
 
