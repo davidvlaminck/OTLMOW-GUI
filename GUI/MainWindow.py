@@ -33,12 +33,12 @@ class MainWindow(QStackedWidget):
         self.step3_visuals:Screen = DataVisualisationScreen(self._)
         self.step3_data:Screen = AssetDataChangeScreen(self._)
         self.step3_relations:Screen = RelationChangeScreen(self._)
-        self.step_3_tabwidget:Screen = TabWidget(page_nr=3, widget1=self.step3_visuals,
-                                          description1="data visuals",
-                                          widget2=self.step3_data,
-                                          description2="data_change",
-                                          widget3=self.step3_relations,
-                                          description3="relation_change",
+        self.step_3_tabwidget:Screen = TabWidget(page_nr=3, widget1=self.step3_relations,
+                                          description1="relation_change",
+                                          widget2=self.step3_visuals,
+                                          description2="data visuals",
+                                          widget3=self.step3_data,
+                                          description3="data_change",
                                           has_save_btn=False)
         self.step4_export:Screen = ExportDataScreen(self._)
         self.step4_tabwidget:Screen = TabWidget(page_nr=4,
