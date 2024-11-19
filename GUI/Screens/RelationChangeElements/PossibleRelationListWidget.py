@@ -149,6 +149,17 @@ class PossibleRelationListWidget(AbstractInstanceListWidget):
                 target_object: AIMObject = RelationChangeDomain.get_object(
                     relation.doelAssetId.identificator)
 
+                # if the target of the relation is the current selected object then you should
+                # display the source object of the relation
+                if target_object == source_object:
+                    target_object =  RelationChangeDomain.get_object(
+                    relation.bronAssetId.identificator)
+
+                #  if the new target_object is still the same as the source_object something is wrong
+                if target_object == source_object:
+                    raise ValueError()
+
+
                 direction = ""
                 if OTLObjectHelper.is_directional_relation(relation):
                     if relation.bronAssetId.identificator == target_identificator:
