@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2024-11-15 13:43+0100\n"
+"POT-Creation-Date: 2024-11-19 17:41+0100\n"
 "PO-Revision-Date: 2023-10-19 13:11+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en_US\n"
@@ -105,11 +105,13 @@ msgstr "Delete project"
 msgid "project_deletion_question"
 msgstr "Are you sure you want to delete this project?"
 
-#: GUI/DialogWindows/ChooseFileNameWindow.py:25 GUI/MessageBox.py:19
+#: GUI/DialogWindows/ChooseFileNameWindow.py:25
+#: GUI/DialogWindows/SuggestUpdateWindow.py:37 GUI/MessageBox.py:19
 msgid "yes"
 msgstr "Yes"
 
-#: GUI/DialogWindows/ChooseFileNameWindow.py:26 GUI/MessageBox.py:20
+#: GUI/DialogWindows/ChooseFileNameWindow.py:26
+#: GUI/DialogWindows/SuggestUpdateWindow.py:39 GUI/MessageBox.py:20
 msgid "no"
 msgstr "No"
 
@@ -187,14 +189,12 @@ msgstr "Change subset"
 
 #: GUI/DialogWindows/ChangeSubsetWindow.py:68
 #: GUI/DialogWindows/RemoveProjectFilesWindow.py:34
-#: GUI/DialogWindows/SuggestUpdateWindow.py:37
 #: GUI/DialogWindows/UpsertProjectWindow.py:96
 msgid "submit"
 msgstr "Submit"
 
 #: GUI/DialogWindows/ChangeSubsetWindow.py:70
 #: GUI/DialogWindows/RemoveProjectFilesWindow.py:36
-#: GUI/DialogWindows/SuggestUpdateWindow.py:39
 #: GUI/DialogWindows/UpsertProjectWindow.py:98
 msgid "cancel"
 msgstr "Cancel"
@@ -299,11 +299,11 @@ msgstr "Reset fields"
 msgid "new_file_load"
 msgstr "New file to load:"
 
-#: GUI/Screens/AssetDataChangeScreen.py:217
+#: GUI/Screens/AssetDataChangeScreen.py:227
 msgid "the changes were correctly written to a new file"
 msgstr "Changes were correctly written to a new file"
 
-#: GUI/Screens/AssetDataChangeScreen.py:226 GUI/Screens/InsertDataScreen.py:201
+#: GUI/Screens/AssetDataChangeScreen.py:236 GUI/Screens/InsertDataScreen.py:201
 msgid "error"
 msgstr "Error"
 
@@ -373,19 +373,19 @@ msgstr "All provided information is correct"
 msgid "warning"
 msgstr "Warning"
 
-#: GUI/Screens/InsertDataScreen.py:272
+#: GUI/Screens/InsertDataScreen.py:282
 msgid "{doc_name}: Data nodig in een datasheet om objecten in te laden.\n"
 msgstr "{doc_name}: Data needed in datasheet to load in objects.\n"
 
-#: GUI/Screens/InsertDataScreen.py:275
+#: GUI/Screens/InsertDataScreen.py:285
 msgid "{doc_name}: No type uri in {tab}\n"
 msgstr "{doc_name}: No TypeUri found \n"
 
-#: GUI/Screens/InsertDataScreen.py:277
+#: GUI/Screens/InsertDataScreen.py:287
 msgid "{doc_name}: invalid columns in {tab}, bad columns are {bad_columns} \n"
 msgstr "{doc_name}: invalid columns found, bad columns are {bad_columns}\n"
 
-#: GUI/Screens/InsertDataScreen.py:280
+#: GUI/Screens/InsertDataScreen.py:290
 msgid "{doc_name}: type uri not in first row of {tab}\n"
 msgstr "{doc_name}: TypeUri not found in first row \n"
 
@@ -450,17 +450,17 @@ msgstr "No asset types found in specified path"
 msgid "{selected} classes selected"
 msgstr "{selected} asset types selected"
 
-#: GUI/Screens/RelationChangeElements/AbstractInstanceListWidget.py:295
+#: GUI/Screens/RelationChangeElements/AbstractInstanceListWidget.py:298
 #, fuzzy
 msgid "search"
 msgstr "Enter project or service order to search"
 
-#: GUI/Screens/RelationChangeElements/AbstractInstanceListWidget.py:415
-#: GUI/Screens/RelationChangeElements/ObjectListWidget.py:89
+#: GUI/Screens/RelationChangeElements/AbstractInstanceListWidget.py:418
+#: GUI/Screens/RelationChangeElements/ObjectListWidget.py:94
 msgid "no_options_available"
 msgstr "No options available"
 
-#: GUI/Screens/RelationChangeElements/AbstractInstanceListWidget.py:434
+#: GUI/Screens/RelationChangeElements/AbstractInstanceListWidget.py:437
 msgid "no_instance_selected"
 msgstr "No object selected"
 
@@ -491,6 +491,10 @@ msgstr "Select an OTL-asset here to make a relation with it"
 #: GUI/Screens/RelationChangeElements/ObjectListWidget.py:25
 msgid "object_attributes"
 msgstr "OTL-asset attributes"
+
+#: GUI/Screens/RelationChangeElements/ObjectListWidget.py:48
+msgid "add_external_asset"
+msgstr "Add external OTL-asset"
 
 #: GUI/Screens/RelationChangeElements/PossibleRelationListWidget.py:24
 msgid "relations_list"

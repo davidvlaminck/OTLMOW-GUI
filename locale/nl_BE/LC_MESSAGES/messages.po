@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: jasper.berton@mow.vlaanderen.be\n"
-"POT-Creation-Date: 2024-11-15 13:43+0100\n"
+"POT-Creation-Date: 2024-11-19 17:41+0100\n"
 "PO-Revision-Date: 2023-10-19 13:13+0200\n"
 "Last-Translator: Jasper Berton <jasper.berton@mow.vlaanderen.be>\n"
 "Language: nl_BE\n"
@@ -105,11 +105,13 @@ msgstr "Verwijderen"
 msgid "project_deletion_question"
 msgstr "Bent u zeker dat u dit project wilt verwijderen?"
 
-#: GUI/DialogWindows/ChooseFileNameWindow.py:25 GUI/MessageBox.py:19
+#: GUI/DialogWindows/ChooseFileNameWindow.py:25
+#: GUI/DialogWindows/SuggestUpdateWindow.py:37 GUI/MessageBox.py:19
 msgid "yes"
 msgstr "Ja"
 
-#: GUI/DialogWindows/ChooseFileNameWindow.py:26 GUI/MessageBox.py:20
+#: GUI/DialogWindows/ChooseFileNameWindow.py:26
+#: GUI/DialogWindows/SuggestUpdateWindow.py:39 GUI/MessageBox.py:20
 msgid "no"
 msgstr "Nee"
 
@@ -187,14 +189,12 @@ msgstr "Aanpassen subset"
 
 #: GUI/DialogWindows/ChangeSubsetWindow.py:68
 #: GUI/DialogWindows/RemoveProjectFilesWindow.py:34
-#: GUI/DialogWindows/SuggestUpdateWindow.py:37
 #: GUI/DialogWindows/UpsertProjectWindow.py:96
 msgid "submit"
 msgstr "Bevestigen"
 
 #: GUI/DialogWindows/ChangeSubsetWindow.py:70
 #: GUI/DialogWindows/RemoveProjectFilesWindow.py:36
-#: GUI/DialogWindows/SuggestUpdateWindow.py:39
 #: GUI/DialogWindows/UpsertProjectWindow.py:98
 msgid "cancel"
 msgstr "Annuleren"
@@ -259,7 +259,13 @@ msgstr "Nieuwe versie van OTL-Wizard 2 beschikbaar"
 
 #: GUI/DialogWindows/SuggestUpdateWindow.py:23
 msgid "update_available_text"
-msgstr "Er is een nieuwe versie van OTL wizard 2 beschikbaar.\n\nDe nieuwe versie is versie {1}\nUw programme zit op versie {0}\n\nWilt u deze nieuwe versie nu downloaden en installeren?"
+msgstr ""
+"Er is een nieuwe versie van OTL wizard 2 beschikbaar.\n"
+"\n"
+"De nieuwe versie is versie {1}\n"
+"Uw programme zit op versie {0}\n"
+"\n"
+"Wilt u deze nieuwe versie nu downloaden en installeren?"
 
 #: GUI/DialogWindows/UpsertProjectWindow.py:33
 msgid "alter_project_title"
@@ -299,11 +305,11 @@ msgstr "Reset velden"
 msgid "new_file_load"
 msgstr "Nieuw bestand inladen"
 
-#: GUI/Screens/AssetDataChangeScreen.py:217
+#: GUI/Screens/AssetDataChangeScreen.py:227
 msgid "the changes were correctly written to a new file"
 msgstr "Veranderingen zijn succesvol weggeschreven naar een nieuw bestand"
 
-#: GUI/Screens/AssetDataChangeScreen.py:226 GUI/Screens/InsertDataScreen.py:201
+#: GUI/Screens/AssetDataChangeScreen.py:236 GUI/Screens/InsertDataScreen.py:201
 msgid "error"
 msgstr "Error"
 
@@ -373,21 +379,21 @@ msgstr "Alle gegevens zijn correct"
 msgid "warning"
 msgstr "Waarschuwing"
 
-#: GUI/Screens/InsertDataScreen.py:272
+#: GUI/Screens/InsertDataScreen.py:282
 msgid "{doc_name}: Data nodig in een datasheet om objecten in te laden.\n"
 msgstr "{doc_name}: Data nodig in een datasheet om objecten in te laden.\n"
 
-#: GUI/Screens/InsertDataScreen.py:275
+#: GUI/Screens/InsertDataScreen.py:285
 msgid "{doc_name}: No type uri in {tab}\n"
 msgstr "{doc_name}: Kolom TypeUri niet gevonden \n"
 
-#: GUI/Screens/InsertDataScreen.py:277
+#: GUI/Screens/InsertDataScreen.py:287
 msgid "{doc_name}: invalid columns in {tab}, bad columns are {bad_columns} \n"
 msgstr ""
 "{doc_name}: Foutieve kolommen in werkblad, desbetreffende kolommen zijn "
 "{bad_columns} \n"
 
-#: GUI/Screens/InsertDataScreen.py:280
+#: GUI/Screens/InsertDataScreen.py:290
 msgid "{doc_name}: type uri not in first row of {tab}\n"
 msgstr "{doc_name}: TypeUri staat niet in de eerste rij\n"
 
@@ -452,17 +458,17 @@ msgstr "Geen asset types gevonden in het opgegeven pad"
 msgid "{selected} classes selected"
 msgstr "{selected} types geselecteerd"
 
-#: GUI/Screens/RelationChangeElements/AbstractInstanceListWidget.py:295
+#: GUI/Screens/RelationChangeElements/AbstractInstanceListWidget.py:298
 #, fuzzy
 msgid "search"
 msgstr "Geef een project of bestek in om te zoeken"
 
-#: GUI/Screens/RelationChangeElements/AbstractInstanceListWidget.py:415
-#: GUI/Screens/RelationChangeElements/ObjectListWidget.py:89
+#: GUI/Screens/RelationChangeElements/AbstractInstanceListWidget.py:418
+#: GUI/Screens/RelationChangeElements/ObjectListWidget.py:94
 msgid "no_options_available"
 msgstr "Geen opties beschikbaar"
 
-#: GUI/Screens/RelationChangeElements/AbstractInstanceListWidget.py:434
+#: GUI/Screens/RelationChangeElements/AbstractInstanceListWidget.py:437
 msgid "no_instance_selected"
 msgstr "Geen object geselecteerd"
 
@@ -497,6 +503,10 @@ msgstr ""
 #: GUI/Screens/RelationChangeElements/ObjectListWidget.py:25
 msgid "object_attributes"
 msgstr "OTL-asset attributen"
+
+#: GUI/Screens/RelationChangeElements/ObjectListWidget.py:48
+msgid "add_external_asset"
+msgstr "Voeg extern OTL-asset toe"
 
 #: GUI/Screens/RelationChangeElements/PossibleRelationListWidget.py:24
 msgid "relations_list"

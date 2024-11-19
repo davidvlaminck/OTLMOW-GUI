@@ -44,10 +44,15 @@ class ObjectListWidget(AbstractInstanceListWidget):
         RelationChangeDomain.set_possible_relations(selected_object=self.selected_object)
 
     def create_button(self):
-        self.list_button.setEnabled(False)
-        self.list_button.setText("hidden")
-        self.list_button.setProperty("class", "invisible")
+        self.list_button.setEnabled(True)
+        self.list_button.setText(self._("add_external_asset"))
+        self.list_button.clicked.connect(
+            self.add_external_asset)
+        self.list_button.setProperty("class", "primary-button")
         return self.list_button
+
+    def add_external_asset(self):
+        pass
 
     def is_previously_selected_requirement(self, text_and_data):
         return self.selected_object and self.selected_object.assetId.identificator == text_and_data['data'].selected_object_id
