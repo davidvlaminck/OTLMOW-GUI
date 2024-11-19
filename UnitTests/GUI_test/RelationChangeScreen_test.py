@@ -149,8 +149,8 @@ def test_full_fill_possible_relations_list(qtbot,root_directory:Path,
     # child_items_col_2['HoortBij'] = ['Pictogram', 'Verkeersbordsteun', 'Pictogram',
     #                                  'Verkeersbordsteun']
 
-    child_items['Bevestiging'] = ['dummy_FNrHuPZCWV', 'dummy_J', 'dummy_s']
-    child_items_col_2['Bevestiging'] =['Funderingsmassief', 'Verkeersbordsteun', 'Verkeersbordsteun']
+    child_items['Bevestiging'] = ['dummy_FNrHuPZCWV', 'dummy_J', 'dummy_TyBGmXfXC', 'dummy_s']
+    child_items_col_2['Bevestiging'] =['Funderingsmassief', 'Verkeersbordsteun','Funderingsmassief', 'Verkeersbordsteun']
     child_items['HoortBij'] = ['dummy_LGG', 'dummy_hxOTHWe']
     child_items_col_2['HoortBij'] = ['Verkeersbordopstelling', 'Verkeersbordopstelling']
     for i in range(len(real_items)):
@@ -160,20 +160,26 @@ def test_full_fill_possible_relations_list(qtbot,root_directory:Path,
                          range(real_item.rowCount())]
         assert real_children == child_items[item_text]
 
+        real_children_col_2 = [real_item.child(x,1).text() for x in
+                         range(real_item.rowCount())]
+        assert real_children_col_2 == child_items_col_2[item_text]
 
     # funderingsMassief 1
     fund1 = InsertDataDomain.flatten_list(objects_lists)[2]
     RelationChangeDomain.set_possible_relations(selected_object=fund1)
 
-    reference_items = ['Bevestiging']
+    reference_items = ['Bevestiging','LigtOp']
     real_items = [possible_relations_list.list_gui.model.item(x).text() for x in
                   range(possible_relations_list.list_gui.model.rowCount())]
     fund1_possible_relations_gui = real_items
-    assert reference_items == real_items
+    assert real_items == reference_items
 
     child_items = {}
-    child_items['Bevestiging'] = ['dummy_C', 'dummy_FNrHuPZCWV', 'dummy_J', 'dummy_s']
-    child_items_col_2['Bevestiging'] = ['Pictogram', 'Funderingsmassief', 'Verkeersbordsteun', 'Verkeersbordsteun']
+    child_items['Bevestiging'] = ['dummy_C', 'dummy_FNrHuPZCWV', 'dummy_J', 'dummy_a', 'dummy_s']
+    child_items_col_2['Bevestiging'] = ['Pictogram', 'Funderingsmassief', 'Verkeersbordsteun','Pictogram', 'Verkeersbordsteun']
+    child_items['LigtOp'] = ['dummy_FNrHuPZCWV','dummy_FNrHuPZCWV']
+    child_items_col_2['LigtOp'] =['Funderingsmassief','Funderingsmassief']
+
 
     for i in range(len(real_items)):
         real_item = possible_relations_list.list_gui.model.item(i)
@@ -181,17 +187,21 @@ def test_full_fill_possible_relations_list(qtbot,root_directory:Path,
         real_children = [real_item.child(x).text() for x in
                          range(real_item.rowCount())]
         assert real_children == child_items[item_text]
+        real_children_col_2 = [real_item.child(x, 1).text() for x in
+                               range(real_item.rowCount())]
+        assert real_children_col_2 == child_items_col_2[item_text]
 
     #check the data that is stored in the list elements
     data_index = possible_relations_list.item_type_data_index
     data_type = [
         possible_relations_list.list_gui.model.item(x).data(data_index )
         for x in range(possible_relations_list.list_gui.model.rowCount())]
-    fund1_possible_relations_gui_data_type = ["type"]
+    fund1_possible_relations_gui_data_type = ["type","type"]
     assert data_type == fund1_possible_relations_gui_data_type
 
     child_items = {}
-    child_items['Bevestiging'] = ['instance','instance','instance','instance']
+    child_items['Bevestiging'] = ['instance','instance','instance','instance','instance']
+    child_items['LigtOp'] = ['instance','instance']
     for i in range(len(fund1_possible_relations_gui_data_type)):
         real_item = possible_relations_list.list_gui.model.item(i)
         item_text = real_item.text()
@@ -208,9 +218,13 @@ def test_full_fill_possible_relations_list(qtbot,root_directory:Path,
 
     child_items = {}
     child_items['Bevestiging'] = [['dummy_TyBGmXfXC', 'dummy_C', 0],
- ['dummy_TyBGmXfXC', 'dummy_FNrHuPZCWV', 0],
- ['dummy_TyBGmXfXC', 'dummy_vbeo', 0],
- ['dummy_TyBGmXfXC', 'dummy_TjwXqP', 0]]
+                                  ['dummy_TyBGmXfXC', 'dummy_FNrHuPZCWV', 0],
+                                  ['dummy_TyBGmXfXC', 'dummy_vbeo', 0],
+                                  ['dummy_TyBGmXfXC', 'dummy_a', 0],
+                                  ['dummy_TyBGmXfXC', 'dummy_TjwXqP', 0]]
+    child_items['LigtOp'] = [
+         ['dummy_TyBGmXfXC', 'dummy_FNrHuPZCWV', 1],
+         ['dummy_TyBGmXfXC', 'dummy_FNrHuPZCWV', 2]]
     for i in range(len(fund1_possible_relations_gui_data1)):
         real_item = possible_relations_list.list_gui.model.item(i)
         item_text = real_item.text()
@@ -253,19 +267,19 @@ def test_full_fill_existing_relations_list(qtbot,root_directory:Path,
 
     existing_relation_list = RelationChangeDomain.get_screen().existing_relation_list_gui
 
-    reference_items = ['Bevestiging','HoortBij', 'LigtOp']
+    reference_items = ['HoortBij']
     real_items = [existing_relation_list.list_gui.model.item(x).text() for x in
                   range(existing_relation_list.list_gui.model.rowCount())]
-    assert reference_items == real_items
+    assert real_items == reference_items
 
     child_items = {}
     child_items_col_2 = {}
-    child_items['Bevestiging'] = ['None', 'dummy_a']
-    child_items_col_2['Bevestiging'] = ['None', 'dummy_TyBGmXfXC']
+    # child_items['Bevestiging'] = ['None', 'dummy_a']
+    # child_items_col_2['Bevestiging'] = ['None', 'dummy_TyBGmXfXC']
     child_items['HoortBij'] = ['dummy_J']
     child_items_col_2['HoortBij'] = ['dummy_LGG']
-    child_items['LigtOp'] = ['dummy_FNrHuPZCWV']
-    child_items_col_2['LigtOp'] = ['dummy_TyBGmXfXC']
+    # child_items['LigtOp'] = ['dummy_FNrHuPZCWV']
+    # child_items_col_2['LigtOp'] = ['dummy_TyBGmXfXC']
     for i in range(len(real_items)):
         real_item = existing_relation_list.list_gui.model.item(i)
         item_text = real_item.text()
