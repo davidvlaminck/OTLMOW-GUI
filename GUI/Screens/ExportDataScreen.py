@@ -63,7 +63,7 @@ class ExportDataScreen(Screen):
         frame_layout = QHBoxLayout()
         self.file_type_label.setText(self._('select file type for export') + ":")
         frame_layout.addWidget(self.file_type_label)
-        self.file_extension_selection.addItems(['Excel', 'CSV', 'JSON'])
+        self.file_extension_selection.addItems(list(global_vars.supported_file_formats.keys()))
         self.file_extension_selection.currentTextChanged.connect(self.show_additional_options)
         frame_layout.addWidget(self.file_extension_selection)
         frame_layout.addStretch()
@@ -109,12 +109,11 @@ class ExportDataScreen(Screen):
         file_picker = QFileDialog()
         file_picker.setModal(True)
         file_picker.setDirectory(file_path)
-        if self.file_extension_selection.currentText() == 'Excel':
-            document_loc = file_picker.getSaveFileName(filter="Excel files (*.xlsx)")
-        elif self.file_extension_selection.currentText() == 'CSV':
-            document_loc = file_picker.getSaveFileName(filter="CSV files (*.csv)")
-        elif self.file_extension_selection.currentText() == 'JSON':
-            document_loc = file_picker.getSaveFileName(filter="JSON files (*.json)")
+        chosen_file_format = self.file_extension_selection.currentText()
+        if chosen_file_format in global_vars.supported_file_formats:
+            file_suffix = global_vars.supported_file_formats[chosen_file_format]
+            filter_filepicker = f"{chosen_file_format} files (*.{file_suffix})"
+            document_loc = file_picker.getSaveFileName(filter=filter_filepicker)
         else:
             document_loc = file_picker.getSaveFileName()
         if document_loc != ('', ''):

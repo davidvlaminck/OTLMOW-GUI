@@ -214,7 +214,17 @@ class InsertDataScreen(Screen):
         file_picker.setWindowTitle("Selecteer bestand")
         file_picker.setDirectory(file_path)
         file_picker.setFileMode(QFileDialog.FileMode.ExistingFiles)
-        file_picker.setNameFilter("EXCEL files (*.xlsx);;CSV files (*.csv);;JSON files (*.json)")
+
+        filters = ""
+        for i, item in enumerate(global_vars.supported_file_formats.items()):
+            keys = item[0]
+            value = item[1]
+
+            filters += f"{keys} files (*.{value})"
+            if i < len(global_vars.supported_file_formats) -1:
+                filters += ";;" # the last value cannot have ;; behind it
+        file_picker.setNameFilter(filters)
+        # file_picker.setNameFilter("EXCEL files (*.xlsx);;CSV files (*.csv);;JSON files (*.json)")
         if file_picker.exec():
             InsertDataDomain.add_files_to_backend_list(file_picker.selectedFiles())
             self.clear_feedback()
