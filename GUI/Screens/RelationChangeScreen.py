@@ -9,6 +9,7 @@ from otlmow_model.OtlmowModel.Classes.ImplementatieElement.AIMObject import \
     AIMObject
 from otlmow_model.OtlmowModel.Classes.ImplementatieElement.RelatieObject import RelatieObject
 
+from Domain.RelationChangeDomain import RelationChangeDomain
 from GUI.Screens.RelationChangeElements.ExistingRelationListWidget import \
     ExistingRelationListWidget
 from GUI.Screens.RelationChangeElements.ObjectListWidget import ObjectListWidget
@@ -141,9 +142,21 @@ class RelationChangeScreen(Screen):
             existing_relation_attribute_dict)
 
     def expand_existing_relations_folder_of(self, relation_typeURI:str):
-        abbr_relation_typeURI = RelationChangeHelpers.get_abbreviated_typeURI(typeURI=relation_typeURI,is_relation=True)
+        add_namespace = RelationChangeHelpers.is_unique_across_namespaces(
+            relation_typeURI,
+            RelationChangeDomain.objects)
+        abbr_relation_typeURI = RelationChangeHelpers.get_abbreviated_typeURI(
+            typeURI=relation_typeURI,
+            add_namespace=add_namespace,
+            is_relation=True)
         self.existing_relation_list_gui.expand_folder_of(abbr_relation_typeURI)
 
     def expand_possible_relations_folder_of(self, relation_typeURI:str):
-        abbr_relation_typeURI = RelationChangeHelpers.get_abbreviated_typeURI(typeURI=relation_typeURI,is_relation=True)
+        add_namespace = RelationChangeHelpers.is_unique_across_namespaces(
+            relation_typeURI,
+            RelationChangeDomain.objects)
+        abbr_relation_typeURI = RelationChangeHelpers.get_abbreviated_typeURI(
+            typeURI=relation_typeURI,
+            add_namespace=add_namespace,
+            is_relation=True)
         self.possible_relation_list_gui.expand_folder_of(abbr_relation_typeURI)

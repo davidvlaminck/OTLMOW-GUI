@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2024-11-19 17:41+0100\n"
+"POT-Creation-Date: 2024-11-20 15:41+0100\n"
 "PO-Revision-Date: 2023-10-19 13:11+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en_US\n"
@@ -182,22 +182,44 @@ msgstr "Old attribute"
 msgid "new_attribute"
 msgstr "New attribute"
 
-#: GUI/DialogWindows/ChangeSubsetWindow.py:26 GUI/Screens/TemplateScreen.py:128
-#: GUI/Screens/TemplateScreen.py:284
-msgid "change_subset"
-msgstr "Change subset"
+#: GUI/DialogWindows/AddExternalAssetWindow.py:33
+msgid "add_external_asset_title"
+msgstr "Add external OTL-asset"
 
+#: GUI/DialogWindows/AddExternalAssetWindow.py:39
+msgid "asset_id_or_name"
+msgstr "Identificator/Name"
+
+#: GUI/DialogWindows/AddExternalAssetWindow.py:41
+msgid "asset_id_dummy"
+msgstr "extern asset 1"
+
+#: GUI/DialogWindows/AddExternalAssetWindow.py:46
+msgid "asset_type"
+msgstr "OTL-asset type"
+
+#: GUI/DialogWindows/AddExternalAssetWindow.py:49
+msgid "asset_type_dummy"
+msgstr "Onderdeel#Verkeersbord"
+
+#: GUI/DialogWindows/AddExternalAssetWindow.py:81
 #: GUI/DialogWindows/ChangeSubsetWindow.py:68
 #: GUI/DialogWindows/RemoveProjectFilesWindow.py:34
 #: GUI/DialogWindows/UpsertProjectWindow.py:96
 msgid "submit"
 msgstr "Submit"
 
+#: GUI/DialogWindows/AddExternalAssetWindow.py:83
 #: GUI/DialogWindows/ChangeSubsetWindow.py:70
 #: GUI/DialogWindows/RemoveProjectFilesWindow.py:36
 #: GUI/DialogWindows/UpsertProjectWindow.py:98
 msgid "cancel"
 msgstr "Cancel"
+
+#: GUI/DialogWindows/ChangeSubsetWindow.py:26 GUI/Screens/TemplateScreen.py:128
+#: GUI/Screens/TemplateScreen.py:284
+msgid "change_subset"
+msgstr "Change subset"
 
 #: GUI/DialogWindows/ChooseFileNameWindow.py:22
 msgid "warning overwriting files"
@@ -389,7 +411,7 @@ msgstr "{doc_name}: invalid columns found, bad columns are {bad_columns}\n"
 msgid "{doc_name}: type uri not in first row of {tab}\n"
 msgstr "{doc_name}: TypeUri not found in first row \n"
 
-#: GUI/Screens/RelationChangeScreen.py:81
+#: GUI/Screens/RelationChangeScreen.py:82
 msgid "functionality under development"
 msgstr "Functionality under development"
 
@@ -456,7 +478,7 @@ msgid "search"
 msgstr "Enter project or service order to search"
 
 #: GUI/Screens/RelationChangeElements/AbstractInstanceListWidget.py:418
-#: GUI/Screens/RelationChangeElements/ObjectListWidget.py:94
+#: GUI/Screens/RelationChangeElements/ObjectListWidget.py:102
 msgid "no_options_available"
 msgstr "No options available"
 
@@ -480,19 +502,19 @@ msgstr "Existing relation attributes"
 msgid "remove_relation"
 msgstr "Remove relations"
 
-#: GUI/Screens/RelationChangeElements/ObjectListWidget.py:23
+#: GUI/Screens/RelationChangeElements/ObjectListWidget.py:24
 msgid "class_list"
 msgstr "OTL-assets"
 
-#: GUI/Screens/RelationChangeElements/ObjectListWidget.py:24
+#: GUI/Screens/RelationChangeElements/ObjectListWidget.py:25
 msgid "otl_asset_description"
 msgstr "Select an OTL-asset here to make a relation with it"
 
-#: GUI/Screens/RelationChangeElements/ObjectListWidget.py:25
+#: GUI/Screens/RelationChangeElements/ObjectListWidget.py:26
 msgid "object_attributes"
 msgstr "OTL-asset attributes"
 
-#: GUI/Screens/RelationChangeElements/ObjectListWidget.py:48
+#: GUI/Screens/RelationChangeElements/ObjectListWidget.py:49
 msgid "add_external_asset"
 msgstr "Add external OTL-asset"
 

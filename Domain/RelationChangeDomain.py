@@ -1,3 +1,7 @@
+import inspect
+import os
+import sys
+from pathlib import Path
 from typing import List, Optional, cast, Union
 
 from otlmow_converter.DotnotationDictConverter import DotnotationDictConverter
@@ -11,11 +15,13 @@ from otlmow_model.OtlmowModel.Helpers.OTLObjectHelper import is_relation
 
 from otlmow_modelbuilder.OSLOCollector import OSLOCollector
 from otlmow_modelbuilder.SQLDataClasses.OSLORelatie import OSLORelatie
+from otlmow_template.SubsetTemplateCreator import ROOT_DIR
 
 from Domain import global_vars
 from Domain.Project import Project
 from Domain.ProjectFileManager import ProjectFileManager
-
+from GUI.Screens.RelationChangeElements.RelationChangeHelpers import RelationChangeHelpers, \
+    SITE_PACKAGES_ROOT
 
 
 def save_assets(func):
@@ -47,6 +53,8 @@ class RelationChangeDomain:
     last_added_to_existing: Optional[list[AIMObject]] = []
     last_added_to_possible: Optional[list[AIMObject]] = []
 
+    all_OTL_asset_types_dict = {}
+
     """
     Call this when the project or project.subset_path changes or everytime you go to the window
     """
@@ -61,8 +69,61 @@ class RelationChangeDomain:
         cls.possible_object_to_object_relations_dict = {}
         cls.aim_id_relations = []
 
+        cls.all_OTL_asset_types_dict = {}
+        all_type_uris = cls.list_all_non_abstract_class_type_uris(otl_assets_only=True)
+        for uri in all_type_uris:
+            cls.all_OTL_asset_types_dict[RelationChangeHelpers.get_abbreviated_typeURI(uri,add_namespace=True)] = uri
+        cls.all_OTL_asset_types_dict = cls.sort_nested_dict(cls.all_OTL_asset_types_dict)
+
+
+
         cls.set_instances(ProjectFileManager.load_validated_assets())
 
+    @classmethod
+    def list_all_non_abstract_class_type_uris(cls, otl_assets_only=False,
+                                              model_directory='otlmow_model/OtlmowModel'):
+        classes_to_instantiate = {}
+        type_uri_list: List[str] = []
+
+        class_location = Path(SITE_PACKAGES_ROOT) / model_directory / 'Classes/'
+
+        for location, dirs, file in os.walk(class_location):
+            dirs.remove("__pycache__")
+
+            for dir in dirs:
+                dir_location = Path(location, dir)
+
+                for f in os.listdir(dir_location):
+                    f = str(f)
+                    if not os.path.isfile(dir_location / f):
+                        continue
+                    classes_to_instantiate[Path(f).stem] = Path(
+                        dir_location / Path(f).stem).resolve()
+
+        classes_to_instantiate['Agent'] = class_location / 'Agent'
+
+        for class_name, file_path in classes_to_instantiate.items():
+
+            try:
+                import_path = f'{file_path.parts[-3]}.{file_path.parts[-2]}.{file_path.parts[-1]}'
+                if "Agent" in str(file_path.absolute()):
+                    import_path = f'{file_path.parts[-2]}.{file_path.parts[-1]}'
+                if 'otlmow_model' not in import_path:
+                    import_path = 'otlmow_model.OtlmowModel.' + import_path
+
+                py_mod = __import__(name=import_path, fromlist=f'{class_name}')
+            except ModuleNotFoundError:
+                raise ModuleNotFoundError(f'Could not import the module for {import_path}')
+
+            class_ = getattr(py_mod, class_name)
+
+            if not inspect.isabstract(class_):
+                instance = class_()
+                if hasattr(instance, "typeURI"):
+                    if otl_assets_only and OTLObjectHelper.is_relation(instance):
+                        continue
+                    type_uri_list.append(instance.typeURI)
+        return type_uri_list
 
     @classmethod
     def set_instances(cls, objects_list: List[AIMObject]):

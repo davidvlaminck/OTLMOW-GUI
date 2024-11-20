@@ -7,6 +7,7 @@ from otlmow_model.OtlmowModel.Classes.ImplementatieElement.AIMObject import AIMO
 from otlmow_model.OtlmowModel.Helpers import OTLObjectHelper
 
 from Domain.RelationChangeDomain import RelationChangeDomain
+from GUI.DialogWindows.AddExternalAssetWindow import AddExternalAssetWindow
 from GUI.Screens.RelationChangeElements.AbstractInstanceListWidget import \
     AbstractInstanceListWidget, IMG_DIR
 
@@ -52,7 +53,8 @@ class ObjectListWidget(AbstractInstanceListWidget):
         return self.list_button
 
     def add_external_asset(self):
-        pass
+        add_asset_window = AddExternalAssetWindow(self._)
+        add_asset_window.draw_add_external_asset_window()
 
     def is_previously_selected_requirement(self, text_and_data):
         return self.selected_object and self.selected_object.assetId.identificator == text_and_data['data'].selected_object_id
@@ -62,7 +64,13 @@ class ObjectListWidget(AbstractInstanceListWidget):
 
         for OTL_object in objects:
             screen_name = RelationChangeHelpers.get_screen_name(OTL_object)
-            abbr_typeURI = RelationChangeHelpers.get_abbreviated_typeURI(OTL_object.typeURI,OTLObjectHelper.is_relation(OTL_object))
+            add_namespace = RelationChangeHelpers.is_unique_across_namespaces(
+                OTL_object.typeURI,
+                RelationChangeDomain.objects)
+            abbr_typeURI = RelationChangeHelpers.get_abbreviated_typeURI(
+                OTL_object.typeURI,
+                add_namespace,
+                OTLObjectHelper.is_relation(OTL_object))
 
             list_of_corresponding_values.append({
                 "text": self.Text(abbr_typeURI,screen_name,OTL_object.typeURI),

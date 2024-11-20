@@ -98,13 +98,18 @@ class ExistingRelationListWidget(AbstractInstanceListWidget):
         for i, relation_object in enumerate(objects):
 
             source_object = RelationChangeDomain.get_object(
-                relation_object.bronAssetId.identificator)
+                identificator=relation_object.bronAssetId.identificator)
             target_object = RelationChangeDomain.get_object(
-                relation_object.doelAssetId.identificator)
+                identificator=relation_object.doelAssetId.identificator)
             screen_name_source = RelationChangeHelpers.get_screen_name(OTL_object=source_object)
-            screen_name_target = RelationChangeHelpers.get_screen_name(target_object)
-
-            abbr_typeURI = RelationChangeHelpers.get_abbreviated_typeURI(relation_object.typeURI,OTLObjectHelper.is_relation(relation_object))
+            screen_name_target = RelationChangeHelpers.get_screen_name(OTL_object=target_object)
+            add_namespace = RelationChangeHelpers.is_unique_across_namespaces(
+                typeURI=relation_object.typeURI,
+                objects=RelationChangeDomain.objects)
+            abbr_typeURI = RelationChangeHelpers.get_abbreviated_typeURI(
+                typeURI=relation_object.typeURI,
+                add_namespace=add_namespace,
+                is_relation=OTLObjectHelper.is_relation(relation_object))
 
             direction = RelationChangeHelpers.get_screen_icon_direction("Unspecified")
 

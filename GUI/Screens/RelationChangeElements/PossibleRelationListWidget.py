@@ -176,11 +176,17 @@ class PossibleRelationListWidget(AbstractInstanceListWidget):
 
                 screen_name = RelationChangeHelpers.get_screen_name(target_object)
 
+                add_target_namespace = RelationChangeHelpers.is_unique_across_namespaces(
+                    target_object.typeURI,
+                    RelationChangeDomain.objects)
                 abbr_target_object_typeURI = RelationChangeHelpers.get_abbreviated_typeURI(
-                    target_object.typeURI, OTLObjectHelper.is_relation(target_object))
+                    target_object.typeURI,
+                    add_target_namespace,
+                    OTLObjectHelper.is_relation(target_object))
 
                 abbr_relation_typeURI = RelationChangeHelpers.get_abbreviated_typeURI(
-                    relation.typeURI,OTLObjectHelper.is_relation(relation))
+                    relation.typeURI, False,
+                    OTLObjectHelper.is_relation(relation))
 
                 list_of_corresponding_values.append({
                     "text": self.Text(abbr_relation_typeURI, direction, screen_name,
