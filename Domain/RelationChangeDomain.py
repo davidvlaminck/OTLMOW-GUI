@@ -98,8 +98,6 @@ class RelationChangeDomain:
             cls.all_OTL_asset_types_dict[RelationChangeHelpers.get_abbreviated_typeURI(uri,add_namespace=True)] = uri
         cls.all_OTL_asset_types_dict = cls.sort_nested_dict(cls.all_OTL_asset_types_dict)
 
-
-
         cls.set_instances(ProjectFileManager.load_validated_assets())
 
     @classmethod
@@ -172,6 +170,7 @@ class RelationChangeDomain:
                     cls.agent_objects.append(instance)
                 elif instance.assetId.toegekendDoor == global_vars.external_toegekendDoor_label:
                     cls.external_objects.append(instance)
+
                 else:
                     cls.internal_objects.append(instance)
 
@@ -214,15 +213,22 @@ class RelationChangeDomain:
 
         if selected_object.typeURI not in cls.possible_relations_per_class_dict:
             try:
-                cls.possible_relations_per_class_dict[selected_object.typeURI] = cls.collector.find_all_concrete_relations(selected_object.typeURI, False)
+                if cls.full_OTL_db_path.exists() and cls.external_objects and cls.agent_objects:
+                    # this is the long search but it includes relations with external assets
+                    cls.possible_relations_per_class_dict[selected_object.typeURI] = (
+                        cls.full_OTL_collector.find_all_concrete_relations(selected_object.typeURI,
+                                                                           False))
+                else:
+                    cls.possible_relations_per_class_dict[selected_object.typeURI] =\
+                        cls.collector.find_all_concrete_relations(selected_object.typeURI, False)
             except ValueError as e:
                 logging.debug(e)
 
                 # TODO: figure out a way to get the possible relations without the full OTL_model
                 if cls.full_OTL_db_path.exists():
-                    cls.possible_relations_per_class_dict[
-                        selected_object.typeURI] = cls.full_OTL_collector.find_all_concrete_relations(
-                        selected_object.typeURI, False)
+                    cls.possible_relations_per_class_dict[selected_object.typeURI] = (
+                        cls.full_OTL_collector.find_all_concrete_relations(selected_object.typeURI,
+                                                                           False))
                 else:
                     cls.possible_relations_per_class_dict[selected_object.typeURI] = []
 
@@ -525,7 +531,7 @@ class RelationChangeDomain:
         cls.shown_objects.extend(cls.agent_objects)
 
     @classmethod
-    def add_new_external_asset(cls,id_or_name,type_uri):
+    def create_and_add_new_external_asset(cls, id_or_name, type_uri):
         new_external_object =  dynamic_create_instance_from_uri(type_uri)
         if new_external_object.typeURI == 'http://purl.org/dc/terms/Agent':
             new_external_agent: Agent = cast(Agent,new_external_object)
