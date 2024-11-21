@@ -75,6 +75,6 @@ def mock_save_validated_assets_function() -> None:
 def mock_load_validated_assets() -> None:
     original_load_validated_assets = ProjectFileManager.load_validated_assets
 
-    ProjectFileManager.load_validated_assets = Mock(return_value=RelationChangeDomain.get_instances())
+    ProjectFileManager.load_validated_assets = Mock(return_value=RelationChangeDomain.get_quicksave_instances())
     yield
     ProjectFileManager.load_validated_assets = original_load_validated_assets

@@ -1,11 +1,14 @@
 import inspect
 import os
 from pathlib import Path
-from typing import Optional, List
+from typing import Optional, List, cast
 
+from otlmow_model.OtlmowModel.BaseClasses.OTLObject import OTLObject
+from otlmow_model.OtlmowModel.Classes.Agent import Agent
 from otlmow_model.OtlmowModel.Helpers import OTLObjectHelper
 from otlmow_template.SubsetTemplateCreator import ROOT_DIR
 
+from Domain import global_vars
 from GUI.translation.GlobalTranslate import GlobalTranslate
 from LatestReleaseMulti.OTLWizard.data.otlmow_template.SubsetTemplateCreator import \
     SubsetTemplateCreator
@@ -29,16 +32,24 @@ class RelationChangeHelpers:
             return type_name
 
     @classmethod
-    def get_screen_name(cls, OTL_object: AIMObject) -> Optional[str]:
-        if OTL_object is None:
+    def get_screen_name(cls, otl_object: OTLObject) -> Optional[str]:
+        if otl_object is None:
             return None
-        naam = ""
-        if hasattr(OTL_object, 'naam') and OTL_object.naam:
-            naam = OTL_object.naam
-            if GlobalTranslate._("external") in OTL_object.assetId.identificator:
-                naam = " ".join([naam,"(external)"])
+        naam = cls.get_correct_identificator(otl_object)
+        if otl_object.typeURI == 'http://purl.org/dc/terms/Agent':
+            agent: Agent = cast(Agent, otl_object)
+            # agent will always be external
+            naam = " ".join([naam,f"({GlobalTranslate._("external")})"])
         else:
-            naam = str(OTL_object.assetId.identificator)
+            aim_object: AIMObject = cast(AIMObject, otl_object)
+            if hasattr(aim_object, 'naam') and aim_object.naam:
+                naam = aim_object.naam
+
+            else:
+                naam = str(RelationChangeHelpers.get_correct_identificator(aim_object))
+
+            if aim_object.assetId.toegekendDoor == global_vars.external_toegekendDoor_label:
+                naam = " ".join([naam,f"({GlobalTranslate._("external")})"])
 
         return naam
     @classmethod
@@ -108,3 +119,14 @@ class RelationChangeHelpers:
                         continue
                     type_uri_list.append(instance.typeURI)
         return type_uri_list
+
+    @classmethod
+    def get_correct_identificator(cls,otl_object: OTLObject):
+        identificator = GlobalTranslate._("no_identificator")
+        if otl_object.typeURI == 'http://purl.org/dc/terms/Agent':
+            agent: Agent = cast(Agent, otl_object)
+            identificator = str(agent.agentId.identificator)
+        else:
+            aim_object: AIMObject = cast(AIMObject, otl_object)
+            identificator = str(aim_object.assetId.identificator)
+        return identificator

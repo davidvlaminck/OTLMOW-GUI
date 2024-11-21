@@ -101,8 +101,8 @@ class ExistingRelationListWidget(AbstractInstanceListWidget):
                 identificator=relation_object.bronAssetId.identificator)
             target_object = RelationChangeDomain.get_object(
                 identificator=relation_object.doelAssetId.identificator)
-            screen_name_source = RelationChangeHelpers.get_screen_name(OTL_object=source_object)
-            screen_name_target = RelationChangeHelpers.get_screen_name(OTL_object=target_object)
+            screen_name_source = RelationChangeHelpers.get_screen_name(otl_object=source_object)
+            screen_name_target = RelationChangeHelpers.get_screen_name(otl_object=target_object)
             add_namespace = RelationChangeHelpers.is_unique_across_namespaces(
                 typeURI=relation_object.typeURI,
                 objects=RelationChangeDomain.shown_objects)

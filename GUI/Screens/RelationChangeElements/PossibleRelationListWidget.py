@@ -10,6 +10,8 @@ from GUI.Screens.RelationChangeElements.AbstractInstanceListWidget import \
     AbstractInstanceListWidget, IMG_DIR
 from GUI.Screens.RelationChangeElements.FolderTreeView import FolderTreeView
 from GUI.Screens.RelationChangeElements.RelationChangeHelpers import RelationChangeHelpers
+from LatestReleaseMulti.OTLWizard.data.otlmow_model.OtlmowModel.BaseClasses.OTLObject import \
+    OTLObject
 from UnitTests.TestClasses.Classes.ImplementatieElement.AIMObject import AIMObject
 
 
@@ -140,15 +142,19 @@ class PossibleRelationListWidget(AbstractInstanceListWidget):
             for model_i in self.list_gui.selectionModel().selectedIndexes()
             if model_i.column() == 0]
 
-    def extract_text_and_data_per_item(self, source_object, objects, last_added):
+    def extract_text_and_data_per_item(self, source_object: OTLObject, objects, last_added):
         list_of_corresponding_values = []
         for target_identificator, target_relations in objects.items():
 
             for i, relation in enumerate(target_relations):
 
-                target_object: AIMObject = RelationChangeDomain.get_object(
+                target_object: OTLObject = RelationChangeDomain.get_object(
                     relation.doelAssetId.identificator)
 
+                if target_object is None:
+                    raise ValueError("target_object is None")
+                if source_object is None:
+                    raise ValueError("source_object is None")
                 # if the target of the relation is the current selected object then you should
                 # display the source object of the relation
                 if target_object == source_object:
@@ -191,7 +197,7 @@ class PossibleRelationListWidget(AbstractInstanceListWidget):
                 list_of_corresponding_values.append({
                     "text": self.Text(abbr_relation_typeURI, direction, screen_name,
                                       abbr_target_object_typeURI,relation.typeURI),
-                    "data": self.Data(source_object.assetId.identificator, target_identificator, i,relation in last_added)
+                    "data": self.Data(RelationChangeHelpers.get_correct_identificator(source_object), target_identificator, i,relation in last_added)
                 })
         list_of_corresponding_values.sort(key=lambda val: (
             val['text'].target_typeURI, val['text'].screen_name, val['text'].typeURI))
