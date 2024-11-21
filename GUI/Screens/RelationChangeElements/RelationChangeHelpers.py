@@ -22,6 +22,9 @@ class RelationChangeHelpers:
         split_typeURI = typeURI.split("#")
         type_name = split_typeURI[-1]
 
+        if typeURI == "http://purl.org/dc/terms/Agent":
+            return typeURI.replace("http://purl.org/dc/terms/","")
+
         if is_relation:
             return typeURI.replace(
                 "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#", "")
