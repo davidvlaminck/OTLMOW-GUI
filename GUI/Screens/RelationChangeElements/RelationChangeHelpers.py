@@ -6,6 +6,7 @@ from typing import Optional, List
 from otlmow_model.OtlmowModel.Helpers import OTLObjectHelper
 from otlmow_template.SubsetTemplateCreator import ROOT_DIR
 
+from GUI.translation.GlobalTranslate import GlobalTranslate
 from LatestReleaseMulti.OTLWizard.data.otlmow_template.SubsetTemplateCreator import \
     SubsetTemplateCreator
 from UnitTests.TestClasses.Classes.ImplementatieElement.AIMObject import AIMObject
@@ -31,13 +32,15 @@ class RelationChangeHelpers:
     def get_screen_name(cls, OTL_object: AIMObject) -> Optional[str]:
         if OTL_object is None:
             return None
+        naam = ""
+        if hasattr(OTL_object, 'naam') and OTL_object.naam:
+            naam = OTL_object.naam
+            if GlobalTranslate._("external") in OTL_object.assetId.identificator:
+                naam = " ".join([naam,"(external)"])
+        else:
+            naam = str(OTL_object.assetId.identificator)
 
-        return (
-            OTL_object.naam
-            if hasattr(OTL_object, 'naam') and OTL_object.naam
-            else str(OTL_object.assetId.identificator)
-        )
-
+        return naam
     @classmethod
     def is_unique_across_namespaces(cls, typeURI,objects):
         split_typeURI = typeURI.split("#")

@@ -66,7 +66,7 @@ class ObjectListWidget(AbstractInstanceListWidget):
             screen_name = RelationChangeHelpers.get_screen_name(OTL_object)
             add_namespace = RelationChangeHelpers.is_unique_across_namespaces(
                 OTL_object.typeURI,
-                RelationChangeDomain.objects)
+                RelationChangeDomain.shown_objects)
             abbr_typeURI = RelationChangeHelpers.get_abbreviated_typeURI(
                 OTL_object.typeURI,
                 add_namespace,

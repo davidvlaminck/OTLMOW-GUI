@@ -144,7 +144,7 @@ class RelationChangeScreen(Screen):
     def expand_existing_relations_folder_of(self, relation_typeURI:str):
         add_namespace = RelationChangeHelpers.is_unique_across_namespaces(
             relation_typeURI,
-            RelationChangeDomain.objects)
+            RelationChangeDomain.shown_objects)
         abbr_relation_typeURI = RelationChangeHelpers.get_abbreviated_typeURI(
             typeURI=relation_typeURI,
             add_namespace=add_namespace,
@@ -154,7 +154,7 @@ class RelationChangeScreen(Screen):
     def expand_possible_relations_folder_of(self, relation_typeURI:str):
         add_namespace = RelationChangeHelpers.is_unique_across_namespaces(
             relation_typeURI,
-            RelationChangeDomain.objects)
+            RelationChangeDomain.shown_objects)
         abbr_relation_typeURI = RelationChangeHelpers.get_abbreviated_typeURI(
             typeURI=relation_typeURI,
             add_namespace=add_namespace,

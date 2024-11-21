@@ -1,4 +1,5 @@
 import inspect
+import logging
 import os
 import sys
 from pathlib import Path
@@ -6,7 +7,8 @@ from typing import List, Optional, cast, Union
 
 from otlmow_converter.DotnotationDictConverter import DotnotationDictConverter
 from otlmow_converter.OtlmowConverter import OtlmowConverter
-from otlmow_model.OtlmowModel.BaseClasses.OTLObject import OTLObject, dynamic_create_type_from_uri
+from otlmow_model.OtlmowModel.BaseClasses.OTLObject import OTLObject, dynamic_create_type_from_uri, \
+    dynamic_create_instance_from_uri
 from otlmow_model.OtlmowModel.Classes.ImplementatieElement.AIMObject import \
     AIMObject
 from otlmow_model.OtlmowModel.Classes.ImplementatieElement.RelatieObject import RelatieObject
@@ -20,9 +22,13 @@ from otlmow_template.SubsetTemplateCreator import ROOT_DIR
 from Domain import global_vars
 from Domain.Project import Project
 from Domain.ProjectFileManager import ProjectFileManager
+
 from GUI.Screens.RelationChangeElements.RelationChangeHelpers import RelationChangeHelpers, \
     SITE_PACKAGES_ROOT
+from GUI.translation.GlobalTranslate import GlobalTranslate
 
+
+ROOT_DIR = Path(__file__).parent.parent
 
 def save_assets(func):
     def wrapper_func(*args, **kwargs):
@@ -39,10 +45,14 @@ class RelationChangeDomain:
 
     project:Project
     collector:OSLOCollector
+    full_OTL_collector: OSLOCollector
 
     aim_id_relations = []
 
-    objects: list[AIMObject] = []
+    owned_objects: list[AIMObject] = []
+    external_objects: list[AIMObject] = []
+    shown_objects: list[AIMObject] = []
+
     existing_relations: list[RelatieObject] = []
     possible_relations_per_class_dict: dict[str,list[OSLORelatie]] = {}
     possible_object_to_object_relations_dict: dict[str,dict[str,list[RelatieObject]]] =  {}
@@ -63,7 +73,11 @@ class RelationChangeDomain:
         cls.project = project
         cls.collector = OSLOCollector(project.subset_path)
         cls.collector.collect_all()
-        cls.objects = []
+        # TODO: figure out a way to get the possible relations without the full OTL_model
+        # cls.full_OTL_collector = OSLOCollector(ROOT_DIR / "data" / "OTL 2.12.db")
+        # cls.full_OTL_collector.collect_all()
+
+        cls.shown_objects = []
         cls.existing_relations = []
         cls.possible_relations_per_class_dict = {}
         cls.possible_object_to_object_relations_dict = {}
@@ -128,7 +142,7 @@ class RelationChangeDomain:
     @classmethod
     def set_instances(cls, objects_list: List[AIMObject]):
         cls.existing_relations = []
-        cls.objects = []
+        cls.shown_objects = []
         cls.aim_id_relations = []
 
         for instance in objects_list:
@@ -141,17 +155,20 @@ class RelationChangeDomain:
                 else:
                     cls.existing_relations.append(relation_instance)
             else:
-                cls.objects.append(instance)
+                cls.owned_objects.append(instance)
 
         cls.apply_active_aim_id_relations()
 
-        cls.get_screen().fill_object_list(cls.objects)
+        cls.shown_objects = cls.owned_objects
+        cls.add_external_objects_to_shown_objects()
+
+        cls.get_screen().fill_object_list(cls.shown_objects)
         cls.get_screen().fill_possible_relations_list(None, cls.possible_object_to_object_relations_dict)
         cls.get_screen().fill_existing_relations_list(cls.existing_relations)
 
     @classmethod
     def get_object(cls,identificator:str) -> Optional[AIMObject]:
-        filtered_objects = list(filter(lambda aim_object: aim_object.assetId.identificator == identificator, cls.objects))
+        filtered_objects = list(filter(lambda aim_object: aim_object.assetId.identificator == identificator, cls.shown_objects))
 
         if filtered_objects:
             if len(filtered_objects) > 1:
@@ -171,10 +188,19 @@ class RelationChangeDomain:
             return
 
         if selected_object.typeURI not in cls.possible_relations_per_class_dict:
-            cls.possible_relations_per_class_dict[selected_object.typeURI] = cls.collector.find_all_concrete_relations(selected_object.typeURI, False)
+            try:
+                cls.possible_relations_per_class_dict[selected_object.typeURI] = cls.collector.find_all_concrete_relations(selected_object.typeURI, False)
+            except ValueError as e:
+                logging.debug(e)
+                cls.possible_relations_per_class_dict[selected_object.typeURI] = []
+                # TODO: figure out a way to get the possible relations without the full OTL_model
+                # cls.possible_relations_per_class_dict[
+                #     selected_object.typeURI] = cls.full_OTL_collector.find_all_concrete_relations(
+                #     selected_object.typeURI, False)
+
 
         related_objects: list[AIMObject] = list(
-            filter(RelationChangeDomain.filter_out(selected_object), cls.objects))
+            filter(RelationChangeDomain.filter_out(selected_object), cls.shown_objects))
 
         relation_list = cls.possible_relations_per_class_dict[selected_object.typeURI]
 
@@ -382,7 +408,7 @@ class RelationChangeDomain:
 
     @classmethod
     def update_frontend(cls):
-        cls.get_screen().fill_object_list(cls.objects)
+        cls.get_screen().fill_object_list(cls.shown_objects)
         cls.get_screen().fill_existing_relations_list(cls.existing_relations, cls.last_added_to_existing)
         if cls.selected_object:
             cls.set_possible_relations(selected_object=cls.selected_object)
@@ -436,7 +462,7 @@ class RelationChangeDomain:
 
     @classmethod
     def get_instances(cls) -> list[Union[RelatieObject, AIMObject]]:
-        return cls.objects + cls.existing_relations + cls.get_inactive_aim_id_relations()
+        return cls.owned_objects + cls.existing_relations + cls.get_inactive_aim_id_relations()
 
     @classmethod
     def apply_active_aim_id_relations(cls):
@@ -449,4 +475,19 @@ class RelationChangeDomain:
 
         return [relation_instance for relation_instance in cls.aim_id_relations if not relation_instance.isActief]
 
+    @classmethod
+    def add_external_objects_to_shown_objects(cls):
+        cls.shown_objects.extend(cls.external_objects)
 
+    @classmethod
+    def add_new_external_asset(cls,id_or_name,type_uri):
+        new_external_asset: AIMObject = cast(AIMObject, dynamic_create_instance_from_uri(type_uri))
+        new_external_asset.assetId.identificator = f"{id_or_name}({GlobalTranslate._("external")})"
+
+        if hasattr(new_external_asset,"naam"):
+                new_external_asset.naam = id_or_name
+
+        cls.external_objects.append(new_external_asset)
+        cls.shown_objects.append(new_external_asset)
+
+        cls.update_frontend()

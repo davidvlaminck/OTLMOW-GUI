@@ -23,6 +23,9 @@ class AddExternalAssetWindow:
         self.error_label = QLabel()
         self._ = language_settings
 
+        self.input_asset_id_or_name: QLineEdit = QLineEdit()
+        self.combobox_asset_type: QComboBox = QComboBox()
+
     def draw_add_external_asset_window(self):
 
         self.error_label.setText("")
@@ -36,19 +39,19 @@ class AddExternalAssetWindow:
 
         # Creates 3 horizontal layouts for each input field with its label
         container_eigen_ref = QHBoxLayout()
-        label_asset_id_naam = QLabel( self._("asset_id_or_name")+ ":")
-        input_eigen_ref = QLineEdit()
-        input_eigen_ref.setPlaceholderText(self._("asset_id_dummy"))
-        container_eigen_ref.addWidget(label_asset_id_naam, alignment=Qt.AlignmentFlag.AlignLeft)
-        container_eigen_ref.addWidget(input_eigen_ref)
+        label_asset_id_or_name = QLabel( self._("asset_id_or_name")+ ":")
+        self.input_asset_id_or_name = QLineEdit()
+        self.input_asset_id_or_name.setPlaceholderText(self._("asset_id_dummy"))
+        container_eigen_ref.addWidget(label_asset_id_or_name, alignment=Qt.AlignmentFlag.AlignLeft)
+        container_eigen_ref.addWidget(self.input_asset_id_or_name)
 
         container_subset = QHBoxLayout()
         label_asset_type = QLabel(self._("asset_type") + ":")
 
-        combobox_asset_type = self.create_combobox(RelationChangeDomain.all_OTL_asset_types_dict)
-        combobox_asset_type.setPlaceholderText(self._("asset_type_dummy"))
+        self.combobox_asset_type = self.create_combobox(RelationChangeDomain.all_OTL_asset_types_dict)
+        self.combobox_asset_type.setPlaceholderText(self._("asset_type_dummy"))
         container_subset.addWidget(label_asset_type, alignment=Qt.AlignmentFlag.AlignLeft)
-        container_subset.addWidget(combobox_asset_type)
+        container_subset.addWidget(self.combobox_asset_type)
 
         # Adds the input fields to the layout
         layout.addLayout(container_eigen_ref)
@@ -60,7 +63,7 @@ class AddExternalAssetWindow:
         # Creates the button box
         button_box:QDialogButtonBox = self.create_button_box()
         # sends the values off to validate once submitted
-        button_box.accepted.connect(lambda: self.add_asset)
+        button_box.accepted.connect(lambda: self.add_asset(dialog_window))
         button_box.rejected.connect(dialog_window.reject)
         # Adds the two buttons to the layout
         layout.addWidget(button_box)
@@ -71,8 +74,14 @@ class AddExternalAssetWindow:
         dialog_window.show()
         dialog_window.exec()
 
-    def add_asset(self):
-        pass
+    def add_asset(self, dialog_window):
+        id_or_name = self.input_asset_id_or_name.text()
+        combobox_choice = self.combobox_asset_type.currentText()
+
+        type_uri = RelationChangeDomain.all_OTL_asset_types_dict[combobox_choice]
+
+        RelationChangeDomain.add_new_external_asset(id_or_name=id_or_name,type_uri=type_uri)
+        dialog_window.close()
 
     def create_button_box(self):
         button_box = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)

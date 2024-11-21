@@ -129,7 +129,7 @@ def test_add_remove_generate_files(root_directory: Path,
 
     InsertDataDomain.load_and_validate_documents()
 
-    RelationChangeDomain.set_possible_relations(RelationChangeDomain.objects[0])
+    RelationChangeDomain.set_possible_relations(RelationChangeDomain.shown_objects[0])
 
     bron_id = 'dummy_hxOTHWe'
     target_id = 'dummy_C'

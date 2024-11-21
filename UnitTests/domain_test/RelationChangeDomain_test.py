@@ -556,7 +556,7 @@ def test_set_objects_empty_list(mock_project: Project,
 
     RelationChangeDomain.set_instances([])
 
-    assert len(RelationChangeDomain.objects) == 0
+    assert len(RelationChangeDomain.shown_objects) == 0
 
 def test_set_objects_single_item_list(mock_screen: RelationChangeScreen,mock_collect_all,mock_rel_screen,mock_save_validated_assets_function,
                                  mock_load_validated_assets):
@@ -565,8 +565,8 @@ def test_set_objects_single_item_list(mock_screen: RelationChangeScreen,mock_col
     test_object.assetId.identificator = "dummy_identificator"
     RelationChangeDomain.set_instances([test_object])
 
-    assert len(RelationChangeDomain.objects) == 1
-    assert RelationChangeDomain.objects[0].assetId.identificator == "dummy_identificator"
+    assert len(RelationChangeDomain.shown_objects) == 1
+    assert RelationChangeDomain.shown_objects[0].assetId.identificator == "dummy_identificator"
 
 def test_set_objects_double_item_list(mock_screen,mock_collect_all,mock_rel_screen,mock_save_validated_assets_function,
                                  mock_load_validated_assets):
@@ -578,10 +578,10 @@ def test_set_objects_double_item_list(mock_screen,mock_collect_all,mock_rel_scre
     test_object2.assetId.identificator = "dummy_identificator2"
 
     RelationChangeDomain.set_instances([test_object, test_object2])
-    assert len(RelationChangeDomain.objects) == 2
+    assert len(RelationChangeDomain.shown_objects) == 2
 
-    assert RelationChangeDomain.objects[0].assetId.identificator == "dummy_identificator"
-    assert RelationChangeDomain.objects[1].assetId.identificator == "dummy_identificator2"
+    assert RelationChangeDomain.shown_objects[0].assetId.identificator == "dummy_identificator"
+    assert RelationChangeDomain.shown_objects[1].assetId.identificator == "dummy_identificator2"
 
 
 #################################################

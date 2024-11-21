@@ -105,7 +105,7 @@ class ExistingRelationListWidget(AbstractInstanceListWidget):
             screen_name_target = RelationChangeHelpers.get_screen_name(OTL_object=target_object)
             add_namespace = RelationChangeHelpers.is_unique_across_namespaces(
                 typeURI=relation_object.typeURI,
-                objects=RelationChangeDomain.objects)
+                objects=RelationChangeDomain.shown_objects)
             abbr_typeURI = RelationChangeHelpers.get_abbreviated_typeURI(
                 typeURI=relation_object.typeURI,
                 add_namespace=add_namespace,
