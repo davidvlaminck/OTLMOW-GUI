@@ -95,7 +95,14 @@ class RelationChangeDomain:
         cls.all_OTL_asset_types_dict = {}
         all_type_uris = cls.list_all_non_abstract_class_type_uris(otl_assets_only=True)
         for uri in all_type_uris:
-            cls.all_OTL_asset_types_dict[RelationChangeHelpers.get_abbreviated_typeURI(uri,add_namespace=True)] = uri
+            abbr_type_uri = RelationChangeHelpers.get_abbreviated_typeURI(uri,add_namespace=True)
+            screen_name = abbr_type_uri
+            if "#" in abbr_type_uri:
+                abbr_type_uri_split = abbr_type_uri.split("#")
+                screen_name = "#".join([abbr_type_uri_split[1], abbr_type_uri_split[0]])
+
+            cls.all_OTL_asset_types_dict[screen_name] = uri
+
         cls.all_OTL_asset_types_dict = cls.sort_nested_dict(cls.all_OTL_asset_types_dict)
 
         cls.set_instances(ProjectFileManager.load_validated_assets())
