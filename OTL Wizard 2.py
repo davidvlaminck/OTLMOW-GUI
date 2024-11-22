@@ -52,7 +52,7 @@ class OTLWizard(QApplication):
     def __init__(self,settings: dict, argv: typing.List[str]):
         super().__init__(argv)
 
-        sys.excepthook = excepthook
+        # sys.excepthook = excepthook
 
         Updater.check_for_updates()
 

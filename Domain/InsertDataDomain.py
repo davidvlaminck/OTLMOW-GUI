@@ -1,12 +1,16 @@
 import logging
 import os
 import tempfile
+import traceback
 from pathlib import Path
-from typing import List, Iterable, Optional
+from typing import List, Iterable, Optional, cast
 
 from openpyxl.reader.excel import load_workbook
 from otlmow_converter.OtlmowConverter import OtlmowConverter
-from otlmow_model.OtlmowModel.BaseClasses.OTLObject import OTLObject
+from otlmow_model.OtlmowModel.BaseClasses.OTLObject import OTLObject, \
+    dynamic_create_instance_from_uri
+from otlmow_model.OtlmowModel.Classes.ImplementatieElement.RelatieObject import RelatieObject
+from otlmow_model.OtlmowModel.Helpers import OTLObjectHelper, RelationValidator
 
 from Domain import global_vars
 from Domain.Project import Project
@@ -15,6 +19,14 @@ from Domain.RelationChangeDomain import RelationChangeDomain
 from Domain.enums import FileState
 from Domain.ProjectFile import ProjectFile
 from Exceptions.ExcelFileUnavailableError import ExcelFileUnavailableError
+from Exceptions.RelationExistsForSourceButNotToTypeUriOfTarget import \
+    RelationExistsForSourceButNotToTypeUriOfTarget
+from Exceptions.RelationExistsForTargetButNotToTypeUriOfSource import \
+    RelationExistsForTargetButNotToTypeUriOfSource
+from Exceptions.RelationHasInvalidTypeUriForSourceAndTarget import \
+    RelationHasInvalidTypeUriForSourceAndTarget
+from Exceptions.RelationHasNonExistingTypeUriForSourceOrTarget import \
+    RelationHasNonExistingTypeUriForSourceOrTarget
 from GUI.DialogWindows.NotificationWindow import NotificationWindow
 from GUI.translation.GlobalTranslate import GlobalTranslate
 from UnitTests.TestClasses.Classes.ImplementatieElement.AIMObject import AIMObject
@@ -167,11 +179,68 @@ class InsertDataDomain:
                 temp_path = Path(doc)
 
             try:
-                asset = InsertDataDomain.check_document(doc_location=temp_path)
+                assets = InsertDataDomain.check_document(doc_location=temp_path)
+
+                for asset in assets:
+                    if OTLObjectHelper.is_relation(asset):
+                        relation = cast(RelatieObject,asset)
+                        if relation.bron.typeURI not in RelationChangeDomain.all_OTL_asset_types_dict.values():
+                            raise RelationHasNonExistingTypeUriForSourceOrTarget(relation.typeURI, relation.assetId.identificator, "bron.typeURI", relation.bron.typeURI)
+                        elif relation.doel.typeURI not in RelationChangeDomain.all_OTL_asset_types_dict.values():
+                            raise RelationHasNonExistingTypeUriForSourceOrTarget(relation.typeURI, relation.assetId.identificator, "doel.typeURI",
+                                                                                 relation.doel.typeURI)
+                        elif not RelationValidator.is_valid_relation(relation_type=type(relation),
+                                source_typeURI=relation.bron.typeURI,
+                                target_typeURI=relation.doel.typeURI):
+
+                            # RelationValidator.is_valid_relation doesn't say if bron or doel is wrong
+                            source_instance = dynamic_create_instance_from_uri(relation.bron.typeURI)
+                            concrete_source_relations = list(source_instance._get_all_concrete_relations())
+                            concrete_source_relations_of_type_relation = set([rel for rel in concrete_source_relations if rel[1] == relation.typeURI])
+
+                            if concrete_source_relations_of_type_relation:
+                                # source asset has relation
+                                concrete_source_relation_to_target = \
+                                    [rel for rel in concrete_source_relations_of_type_relation if
+                                     rel[2] == relation.doel.typeURI]
+                                if not concrete_source_relation_to_target:
+                                    # source asset doesn't have this relation to target
+                                    raise RelationExistsForSourceButNotToTypeUriOfTarget(relation.typeURI,
+                                                                                      relation.assetId.identificator,
+                                                                               "doel.typeURI",
+                                                                                      relation.doel.typeURI)
+                                else:
+                                    logging.debug("Error in logic")
+                            else:
+                                target_instance = dynamic_create_instance_from_uri(
+                                    relation.doel.typeURI)
+                                concrete_target_relations = list(
+                                    target_instance._get_all_concrete_relations())
+                                concrete_target_relations_of_type_relation = set(
+                                    [rel for rel in concrete_target_relations if
+                                     rel[1] == relation.typeURI])
+                                if concrete_target_relations_of_type_relation:
+                                    # target asset has relation but not to source
+                                    raise RelationExistsForTargetButNotToTypeUriOfSource(
+                                        relation.typeURI,
+                                        relation.assetId.identificator,
+                                        "bron.typeURI",
+                                        relation.bron.typeURI)
+                                else:
+                                    # both target and source asset do not have relation
+                                    raise RelationHasInvalidTypeUriForSourceAndTarget(relation.typeURI,
+                                                                                      relation.assetId.identificator,
+                                                                        "bron.typeURI",
+                                                                                      relation.bron.typeURI,
+                                                                       "doel.typeURI",
+                                                                                      relation.doel.typeURI)
                 ProjectFileManager.add_template_file_to_project(Path(doc))
-                objects_lists.append(asset)
+                objects_lists.append(assets)
             except Exception as ex:
                 error_set.append({"exception": ex, "path_str": doc})
+                # ProjectFileManager.add_template_file_to_project(project=global_vars.current_project,
+                #                                               filepath=Path(doc),
+                #                                               state=FileState.ERROR)
             else:
                 InsertDataDomain.add_template_file_to_project(project=global_vars.current_project,
                                                               filepath=Path(doc),
