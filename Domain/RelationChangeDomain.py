@@ -2,6 +2,7 @@ import inspect
 import logging
 import os
 import sys
+from copy import deepcopy
 from pathlib import Path
 from typing import List, Optional, cast, Union
 
@@ -183,7 +184,7 @@ class RelationChangeDomain:
 
         cls.apply_active_aim_id_relations()
 
-        cls.shown_objects = cls.internal_objects
+        cls.shown_objects = deepcopy(cls.internal_objects)
         cls.add_external_objects_to_shown_objects()
         cls.add_agent_objects_to_shown_objects()
 
