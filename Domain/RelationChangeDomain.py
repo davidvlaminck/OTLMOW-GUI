@@ -71,6 +71,8 @@ class RelationChangeDomain:
 
     all_OTL_asset_types_dict = {}
 
+    external_object_added = False
+
     """
     Call this when the project or project.subset_path changes or everytime you go to the window
     """
@@ -188,9 +190,38 @@ class RelationChangeDomain:
         cls.add_external_objects_to_shown_objects()
         cls.add_agent_objects_to_shown_objects()
 
+        cls.create_and_add_missing_extenal_assets_from_relations()
+
         cls.get_screen().fill_object_list(cls.shown_objects)
         cls.get_screen().fill_possible_relations_list(None, cls.possible_object_to_object_relations_dict)
         cls.get_screen().fill_existing_relations_list(cls.existing_relations)
+
+    @classmethod
+    def create_and_add_missing_extenal_assets_from_relations(cls):
+        for relation_object in RelationChangeDomain.get_all_relations():
+
+            source_object = RelationChangeDomain.get_object(
+                identificator=relation_object.bronAssetId.identificator)
+            if not source_object:
+                try:
+                    cls.create_and_add_new_external_asset(relation_object.bronAssetId.identificator,
+                                                          relation_object.bron.typeURI)
+                except ValueError as e:
+                    # should there be a wrong typeURI
+                    print(e)
+            target_object = RelationChangeDomain.get_object(
+                identificator=relation_object.doelAssetId.identificator)
+            if not target_object:
+                try:
+                    cls.create_and_add_new_external_asset(relation_object.doelAssetId.identificator,
+                                                          relation_object.doel.typeURI)
+                except ValueError as e:
+                    # should there be a wrong typeURI
+                    print(e)
+
+    @classmethod
+    def get_all_relations(cls):
+        return (cls.existing_relations + cls.aim_id_relations)
 
     @classmethod
     def get_object(cls,identificator:str) -> Optional[OTLObject]:
@@ -219,9 +250,9 @@ class RelationChangeDomain:
             cls.get_screen().fill_possible_relation_attribute_field({})
             return
 
-        if selected_object.typeURI not in cls.possible_relations_per_class_dict:
+        if cls.external_object_added or selected_object.typeURI not in cls.possible_relations_per_class_dict:
             try:
-                if cls.full_OTL_db_path.exists() and cls.external_objects and cls.agent_objects:
+                if cls.full_OTL_db_path.exists() and (cls.external_objects or cls.agent_objects):
                     # this is the long search but it includes relations with external assets
                     cls.possible_relations_per_class_dict[selected_object.typeURI] = (
                         cls.full_OTL_collector.find_all_concrete_relations(selected_object.typeURI,
@@ -239,7 +270,7 @@ class RelationChangeDomain:
                                                                            False))
                 else:
                     cls.possible_relations_per_class_dict[selected_object.typeURI] = []
-
+            cls.external_object_added = False
 
         related_objects: list[AIMObject] = list(
             filter(RelationChangeDomain.filter_out(selected_object), cls.shown_objects))
@@ -533,10 +564,12 @@ class RelationChangeDomain:
     @classmethod
     def add_external_objects_to_shown_objects(cls):
         cls.shown_objects.extend(cls.external_objects)
+        cls.external_object_added = True
 
     @classmethod
     def add_agent_objects_to_shown_objects(cls):
         cls.shown_objects.extend(cls.agent_objects)
+        cls.external_object_added = True
 
     @classmethod
     def create_and_add_new_external_asset(cls, id_or_name, type_uri):
@@ -554,4 +587,5 @@ class RelationChangeDomain:
             cls.external_objects.append(new_external_asset)
             cls.shown_objects.append(new_external_asset)
 
+        cls.external_object_added = True
         cls.update_frontend()
