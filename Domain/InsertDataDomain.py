@@ -205,10 +205,13 @@ class InsertDataDomain:
                                      rel[2] == relation.doel.typeURI]
                                 if not concrete_source_relation_to_target:
                                     # source asset doesn't have this relation to target
-                                    raise RelationExistsForSourceButNotToTypeUriOfTarget(relation.typeURI,
-                                                                                      relation.assetId.identificator,
-                                                                               "doel.typeURI",
-                                                                                      relation.doel.typeURI)
+                                    raise RelationHasInvalidTypeUriForSourceAndTarget(
+                                        relation.typeURI,
+                                        relation.assetId.identificator,
+                                        "bron.typeURI",
+                                        relation.bron.typeURI,
+                                        "doel.typeURI",
+                                        relation.doel.typeURI)
                                 else:
                                     logging.debug("Error in logic")
                             else:
@@ -221,11 +224,13 @@ class InsertDataDomain:
                                      rel[1] == relation.typeURI])
                                 if concrete_target_relations_of_type_relation:
                                     # target asset has relation but not to source
-                                    raise RelationExistsForTargetButNotToTypeUriOfSource(
+                                    raise RelationHasInvalidTypeUriForSourceAndTarget(
                                         relation.typeURI,
                                         relation.assetId.identificator,
                                         "bron.typeURI",
-                                        relation.bron.typeURI)
+                                        relation.bron.typeURI,
+                                        "doel.typeURI",
+                                        relation.doel.typeURI)
                                 else:
                                     # both target and source asset do not have relation
                                     raise RelationHasInvalidTypeUriForSourceAndTarget(relation.typeURI,

@@ -302,51 +302,23 @@ class InsertDataScreen(Screen):
             error_text = self._(f'{doc_name}: {e}\n')
         elif issubclass(type(e), RelationHasInvalidTypeUriForSourceAndTarget):
                 error_text = self._(
-                    "{doc_name}:\n"
-                    "Relation of type: \"{type_uri}\"\n"
-                    "with assetId.identificator: \"{identificator}\"\n"
-                    "does not exist for both TypeURI value: \"{wrong_value}\"\n"
-                    "for field \"{wrong_field}\"\n"
-                    "and value: \"{wrong_value2}\"\n"
-                    "in field \"{wrong_field2}\".\n"
-                    "This relation cannot be made with this OTL-asset type.\n"
-                    "Please input a valid TypeURI in field \"{wrong_field}\" and field \"{wrong_field2}\"").format(
+                    "{doc_name}:\n"+
+                    "Relation of type: \"{type_uri}\"\n"+
+                    "with assetId.identificator: \"{identificator}\"\n"+
+                    "cannot be made between the typeURI's.\n"+
+                    "{wrong_field}= \"{wrong_value}\"\n"+
+                    "{wrong_field2}= \"{wrong_value2}\"\n").format(
                     doc_name=doc_name, type_uri=e.relation_type_uri,
                     identificator=e.relation_identificator, wrong_field=e.wrong_field,
                     wrong_value=e.wrong_value, wrong_field2=e.wrong_field2,
                     wrong_value2=e.wrong_value2)
-        elif issubclass(type(e), RelationExistsForSourceButNotToTypeUriOfTarget):
-                error_text = self._(
-                    "{doc_name}:\n"
-                    "Relation of type: \"{type_uri}\"\n"
-                    "with assetId.identificator: \"{identificator}\",\n"
-                    "has the invalid TypeURI value: \"{wrong_value}\"\n"
-                    "in field \"{wrong_field}\".\n"
-                    "This relation cannot be made between this source and target. Please input a valid TypeURI in field \"{wrong_field}\"").format(
-                    doc_name=doc_name, type_uri=e.relation_type_uri,
-                    identificator=e.relation_identificator, wrong_field=e.wrong_field,
-                    wrong_value=e.wrong_value)
-
-        elif issubclass(type(e), RelationExistsForTargetButNotToTypeUriOfSource):
-                error_text = self._(
-                    "{doc_name}:\n"
-                    "Relation of type: \"{type_uri}\"\n"
-                    "with assetId.identificator: \"{identificator}\",\n"
-                    "has the invalid TypeURI value: \"{wrong_value}\"\n"
-                    "in field \"{wrong_field}\".\n"
-                    "This relation cannot be made between this source and target. Please input a valid TypeURI in field \"{wrong_field}\"").format(
-                    doc_name=doc_name, type_uri=e.relation_type_uri,
-                    identificator=e.relation_identificator, wrong_field=e.wrong_field,
-                    wrong_value=e.wrong_value)
-
         elif issubclass(type(e), RelationHasNonExistingTypeUriForSourceOrTarget):
             error_text = self._(
-                "{doc_name}:\n"
+                "{doc_name}:\n" 
                 "Relation of type: \"{type_uri}\"\n"
                 "with assetId.identificator: \"{identificator}\",\n"
                 "has the non-existing TypeURI value: \"{wrong_value}\"\n"
-                "for field \"{wrong_field}\".\n"
-                "Please input an existing valid TypeURI in field \"{wrong_field}\"").format(
+                "for field \"{wrong_field}\".\n").format(
                 doc_name=doc_name, type_uri=e.relation_type_uri,identificator=e.relation_identificator, wrong_field=e.wrong_field, wrong_value=e.wrong_value)
         else:
             error_text = self._(f'{doc_name}: {e}\n')
