@@ -181,76 +181,20 @@ class InsertDataDomain:
             try:
                 assets = InsertDataDomain.check_document(doc_location=temp_path)
 
-                for asset in assets:
-                    if OTLObjectHelper.is_relation(asset):
-                        relation = cast(RelatieObject,asset)
-                        if relation.bron.typeURI not in RelationChangeDomain.all_OTL_asset_types_dict.values():
-                            raise RelationHasNonExistingTypeUriForSourceOrTarget(relation.typeURI, relation.assetId.identificator, "bron.typeURI", relation.bron.typeURI)
-                        elif relation.doel.typeURI not in RelationChangeDomain.all_OTL_asset_types_dict.values():
-                            raise RelationHasNonExistingTypeUriForSourceOrTarget(relation.typeURI, relation.assetId.identificator, "doel.typeURI",
-                                                                                 relation.doel.typeURI)
-                        elif not RelationValidator.is_valid_relation(relation_type=type(relation),
-                                source_typeURI=relation.bron.typeURI,
-                                target_typeURI=relation.doel.typeURI):
+                cls.check_for_invalid_relations(assets)
 
-                            # RelationValidator.is_valid_relation doesn't say if bron or doel is wrong
-                            source_instance = dynamic_create_instance_from_uri(relation.bron.typeURI)
-                            concrete_source_relations = list(source_instance._get_all_concrete_relations())
-                            concrete_source_relations_of_type_relation = set([rel for rel in concrete_source_relations if rel[1] == relation.typeURI])
-
-                            if concrete_source_relations_of_type_relation:
-                                # source asset has relation
-                                concrete_source_relation_to_target = \
-                                    [rel for rel in concrete_source_relations_of_type_relation if
-                                     rel[2] == relation.doel.typeURI]
-                                if not concrete_source_relation_to_target:
-                                    # source asset doesn't have this relation to target
-                                    raise RelationHasInvalidTypeUriForSourceAndTarget(
-                                        relation.typeURI,
-                                        relation.assetId.identificator,
-                                        "bron.typeURI",
-                                        relation.bron.typeURI,
-                                        "doel.typeURI",
-                                        relation.doel.typeURI)
-                                else:
-                                    logging.debug("Error in logic")
-                            else:
-                                target_instance = dynamic_create_instance_from_uri(
-                                    relation.doel.typeURI)
-                                concrete_target_relations = list(
-                                    target_instance._get_all_concrete_relations())
-                                concrete_target_relations_of_type_relation = set(
-                                    [rel for rel in concrete_target_relations if
-                                     rel[1] == relation.typeURI])
-                                if concrete_target_relations_of_type_relation:
-                                    # target asset has relation but not to source
-                                    raise RelationHasInvalidTypeUriForSourceAndTarget(
-                                        relation.typeURI,
-                                        relation.assetId.identificator,
-                                        "bron.typeURI",
-                                        relation.bron.typeURI,
-                                        "doel.typeURI",
-                                        relation.doel.typeURI)
-                                else:
-                                    # both target and source asset do not have relation
-                                    raise RelationHasInvalidTypeUriForSourceAndTarget(relation.typeURI,
-                                                                                      relation.assetId.identificator,
-                                                                        "bron.typeURI",
-                                                                                      relation.bron.typeURI,
-                                                                       "doel.typeURI",
-                                                                                      relation.doel.typeURI)
-                ProjectFileManager.add_template_file_to_project(Path(doc))
                 objects_lists.append(assets)
             except Exception as ex:
                 error_set.append({"exception": ex, "path_str": doc})
                 # ProjectFileManager.add_template_file_to_project(project=global_vars.current_project,
                 #                                               filepath=Path(doc),
                 #                                               state=FileState.ERROR)
-            else:
-                InsertDataDomain.add_template_file_to_project(project=global_vars.current_project,
+
+            InsertDataDomain.add_template_file_to_project(project=global_vars.current_project,
                                                               filepath=Path(doc),
                                                               state=FileState.OK)
 
+            ProjectFileManager.add_template_file_to_project(Path(doc))
         ProjectFileManager.add_project_files_to_assets_file(global_vars.current_project)
 
         cls.load_saved_documents_in_project()
@@ -263,6 +207,39 @@ class InsertDataDomain:
         return error_set, objects_lists
 
     @classmethod
+    def check_for_invalid_relations(cls, assets):
+        for asset in assets:
+            if OTLObjectHelper.is_relation(asset):
+                relation = cast(RelatieObject, asset)
+                if relation.bron.typeURI not in RelationChangeDomain.all_OTL_asset_types_dict.values():
+                    raise RelationHasNonExistingTypeUriForSourceOrTarget(relation.typeURI,
+                                                                         relation.assetId.identificator,
+                                                                         "bron.typeURI",
+                                                                         relation.bron.typeURI)
+                if relation.doel.typeURI not in RelationChangeDomain.all_OTL_asset_types_dict.values():
+                    raise RelationHasNonExistingTypeUriForSourceOrTarget(relation.typeURI,
+                                                                         relation.assetId.identificator,
+                                                                         "doel.typeURI",
+                                                                         relation.doel.typeURI)
+
+                # cls.detect_more_complex_target_or_source_typeURI_errors(relation)
+                if not RelationValidator.is_valid_relation(relation_type=type(relation),
+                                                             source_typeURI=relation.bron.typeURI,
+                                                             target_typeURI=relation.doel.typeURI):
+                    cls.raise_wrong_doel_or_target(relation)
+
+
+
+    @classmethod
+    def raise_wrong_doel_or_target(cls, relation):
+        raise RelationHasInvalidTypeUriForSourceAndTarget(relation.typeURI,
+                                                          relation.assetId.identificator,
+                                                          "bron.typeURI",
+                                                          relation.bron.typeURI,
+                                                          "doel.typeURI",
+                                                          relation.doel.typeURI)
+
+    @classmethod
     def flatten_list(cls, objects_lists):
         objects_in_memory: List[AIMObject] = []
         for objects_list in objects_lists:
@@ -272,3 +249,40 @@ class InsertDataDomain:
     @classmethod
     def get_screen(cls):
         return global_vars.otl_wizard.main_window.step2
+
+    @classmethod
+    def detect_more_complex_target_or_source_typeURI_errors(cls, relation):
+        if not RelationValidator.is_valid_relation(relation_type=type(relation),
+                                                   source_typeURI=relation.bron.typeURI,
+                                                   target_typeURI=relation.doel.typeURI):
+
+            # RelationValidator.is_valid_relation doesn't say if bron or doel is wrong
+            source_instance = dynamic_create_instance_from_uri(relation.bron.typeURI)
+            concrete_source_relations = list(source_instance._get_all_concrete_relations())
+            concrete_source_relations_of_type_relation = set(
+                [rel for rel in concrete_source_relations if rel[1] == relation.typeURI])
+
+            if concrete_source_relations_of_type_relation:
+                # source asset has relation
+                concrete_source_relation_to_target = \
+                    [rel for rel in concrete_source_relations_of_type_relation if
+                     rel[2] == relation.doel.typeURI]
+                if not concrete_source_relation_to_target:
+                    # source asset doesn't have this relation to target
+                    cls.raise_wrong_doel_or_target(relation)
+                else:
+                    logging.debug("Error in logic")
+            else:
+                target_instance = dynamic_create_instance_from_uri(
+                    relation.doel.typeURI)
+                concrete_target_relations = list(
+                    target_instance._get_all_concrete_relations())
+                concrete_target_relations_of_type_relation = set(
+                    [rel for rel in concrete_target_relations if
+                     rel[1] == relation.typeURI])
+                if concrete_target_relations_of_type_relation:
+                    # target asset has relation but not to source
+                    cls.raise_wrong_doel_or_target(relation)
+                else:
+                    # both target and source asset do not have relation
+                    cls.raise_wrong_doel_or_target(relation)
