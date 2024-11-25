@@ -39,7 +39,7 @@ def demo_data():
     project_1 = Project(
         project_path=Path(Path.home() / 'OTLWizardProjects' / 'Projects' / 'project_1'),
         subset_path=Path(project_dir / 'project_1' / 'Flitspaal_noAgent3.0.db'),
-        assets_path=Path(project_dir / 'project_1' / 'assets.json'),
+        assets_path=Path(project_dir / 'project_1'),
         eigen_referentie="test1",
         bestek="test_bestek1",
         laatst_bewerkt=datetime(2021, 9, 11))

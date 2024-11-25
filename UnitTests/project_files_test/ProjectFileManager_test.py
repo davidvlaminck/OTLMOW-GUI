@@ -210,7 +210,7 @@ def test_add_template_file_generates_folder():
     ProjectFileManager.save_project_to_dir(project)
     global_vars.current_project = project
     assert project.project_path.exists()
-    ProjectFileManager.add_template_file_to_project(Path(
+    ProjectFileManager.make_copy_of_added_file(Path(
         PARENT_OF_THIS_FILE) / 'OTLWizardProjects' / 'TestFiles' / 'should_pass_implementatieelement_Derdenobject.csv')
     assert (project.project_path / 'OTL-template-files').exists()
     ProjectFileManager.delete_project_files_by_path(project.project_path)
@@ -229,7 +229,7 @@ def test_remove_template_folder_removes_folder():
     ProjectFileManager.save_project_to_dir(project)
     global_vars.current_project = project
     assert project.project_path.exists()
-    ProjectFileManager.add_template_file_to_project(Path(
+    ProjectFileManager.make_copy_of_added_file(Path(
         PARENT_OF_THIS_FILE) / 'OTLWizardProjects' / 'TestFiles' / 'should_pass_implementatieelement_Derdenobject.csv')
     assert (project.project_path / 'OTL-template-files').exists()
     ProjectFileManager.delete_template_folder()

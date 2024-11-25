@@ -27,6 +27,7 @@ class ProjectFileManager:
 
     settings_filename = 'settings.json'
 
+
     @classmethod
     def init(cls):
         settings = cls.get_or_create_settings_file()
@@ -199,38 +200,9 @@ class ProjectFileManager:
             project_zip.write(project.assets_path, arcname=project.assets_path.name)
             project_zip.write(project.subset_path, arcname=project.subset_path.name)
 
-    @classmethod
-    def add_project_files_to_assets_file(cls, project: Project) -> None:
-        otl_wizard_project_dir = cls.get_otl_wizard_projects_dir()
-        object_array = []
-        for objects_list in project.saved_project_files:
-            objects_list_details = {
-                'file_path': str(objects_list.file_path),
-                'state': objects_list.state.value
-            }
-            object_array.append(objects_list_details)
-        project_dir_path = otl_wizard_project_dir / project.project_path.name
-        with open(project_dir_path / "assets.json", "w") as project_details_file:
-            json.dump(object_array, project_details_file)
 
-    @classmethod
-    def get_objects_list_saved_in_project(cls, project: Project) -> Project:
-        project_dir_path = cls.get_otl_wizard_projects_dir() / project.project_path.name
-        assets_path:Path = project_dir_path / "assets.json"
-        if assets_path.exists():
-            with open(assets_path, "r") as project_details_file:
-                objects_lists = json.load(project_details_file)
-            logging.debug(f"Loaded saved object lists: {str(objects_lists)}")
-            objects_lists_array = []
-            for objects_list in objects_lists:
-                file = ProjectFile(
-                    file_path=objects_list['file_path'],
-                    # state=FileState.WARNING) # files loaded from memory storage need to be validated
-                                             # again
-                    state=FileState(objects_list['state']))
-                objects_lists_array.append(file)
-            project.saved_project_files = objects_lists_array
-        return project
+
+
 
     @classmethod
     def load_project_file(cls, file_path) -> Project:
@@ -272,19 +244,7 @@ class ProjectFileManager:
 
         return version_info['model_version']
 
-    @classmethod
-    def add_template_file_to_project(cls, filepath: Path) -> Path:
-        project = global_vars.current_project
-        location_dir = project.project_path / 'OTL-template-files'
-        if not location_dir.exists():
-            location_dir.mkdir()
-        doc_name = filepath.name
-        end_location = location_dir / doc_name
-        if end_location == filepath:
-            return end_location
-        shutil.copy(filepath, end_location)
-        logging.debug(f"Created a copy of the template file {filepath.name} in the project folder")
-        return end_location
+
 
     @classmethod
     def delete_template_folder(cls) -> None:
@@ -296,18 +256,7 @@ class ProjectFileManager:
         shutil.rmtree(location_dir)
         logging.debug("Finished clearing out the whole template folder")
 
-    @classmethod
-    def delete_template_file_from_project(cls, file_path) -> bool:
-        try:
-            logging.debug(f"file path = {str(file_path)}")
-            Path(file_path).unlink()
-            return True
-        except FileNotFoundError as e:
-            logging.error(e)
-            return False
-        except PermissionError as e:
-            logging.error(e)
-            raise ExcelFileUnavailableError(file_path=file_path, exception=e)
+
 
     @staticmethod
     def create_empty_temporary_map() -> Path:

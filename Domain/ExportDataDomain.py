@@ -65,7 +65,7 @@ class ExportDataDomain:
     @staticmethod
     def extract_objects_from_files(project):
         logging.debug("started extracting objects from files for export")
-        valid_file_paths = [file.file_path for file in project.saved_project_files if file.state == FileState.OK]
+        valid_file_paths = [file.file_path for file in project.get_saved_projectfiles() if file.state == FileState.OK]
         objects_in_memory = []
         for path in valid_file_paths:
             objects_in_memory.extend(OtlmowConverter.from_file_to_objects(

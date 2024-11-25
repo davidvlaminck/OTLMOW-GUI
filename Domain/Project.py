@@ -1,23 +1,58 @@
 import datetime
 import json
+import logging
+import shutil
 from pathlib import Path
 from typing import Optional
 
+from Domain.ProjectFile import ProjectFile
+from Domain.enums import FileState
+from Exceptions.ExcelFileUnavailableError import ExcelFileUnavailableError
+from GUI.DialogWindows.NotificationWindow import NotificationWindow
+from GUI.translation.GlobalTranslate import GlobalTranslate
+
 
 class Project:
+    saved_documents_filename = "saved_documents.json"
+
     def __init__(self, project_path: Path = None, subset_path: Path = None, assets_path: Path = None,
                  eigen_referentie: str = None, bestek: str = None, laatst_bewerkt: datetime.datetime = None,
                  last_quick_save:Optional[Path] = None):
         self.project_path: Path = project_path
         self.subset_path: Path = subset_path
-        self.assets_path: Path = assets_path
+        if assets_path:
+            if ".json" in str(assets_path.absolute()):
+                self.assets_path: Path = assets_path
+            else:
+                self.assets_path: Path = assets_path / self.saved_documents_filename
+        else:
+            self.assets_path = self.project_path / self.saved_documents_filename
         self.last_quick_save:Path = last_quick_save
         self.eigen_referentie: str = eigen_referentie
         self.bestek: str = bestek
         self.laatst_bewerkt: datetime.datetime = laatst_bewerkt
 
-        self.assets_in_memory = [] #TODO: implement mechanisms to store, save and load validated assets
-        self.saved_project_files = []
+        self.assets_in_memory = []
+
+        self.saved_project_files: list[ProjectFile] = []
+
+    @classmethod
+    def get_home_path(cls) -> Path:
+        return Path.home()
+
+    @classmethod
+    def get_otl_wizard_work_dir(cls) -> Path:
+        work_dir_path = cls.get_home_path() / 'OTLWizardProjects'
+        if not work_dir_path.exists():
+            work_dir_path.mkdir()
+        return work_dir_path
+
+    @classmethod
+    def get_otl_wizard_projects_dir(cls) -> Path:
+        projects_dir_path = cls.get_otl_wizard_work_dir() / 'Projects'
+        if not projects_dir_path.exists():
+            projects_dir_path.mkdir()
+        return projects_dir_path
 
     @classmethod
     def load_project(cls, project_path: Path = None):
@@ -45,6 +80,105 @@ class Project:
                    datetime.datetime.strptime(project_details['laatst_bewerkt'], "%Y-%m-%d %H:%M:%S"),
                    last_quick_save)
 
-    def is_in_project(self, file_path):
-        return [project_file.file_path for project_file in self.saved_project_files].__contains__(file_path)
 
+    def load_saved_document_filenames(self):
+        project_dir_path = self.get_otl_wizard_projects_dir() / self.project_path.name
+        saved_documents_path: Path = project_dir_path / Project.saved_documents_filename
+        if saved_documents_path.exists():
+            with open(saved_documents_path, "r") as saved_document:
+                objects_lists = json.load(saved_document)
+            logging.debug(f"Loaded saved object lists: {str(objects_lists)}")
+            self.saved_project_files = []
+            for objects_list in objects_lists:
+                file = ProjectFile(
+                    file_path=objects_list['file_path'],
+                    state=FileState(objects_list['state']))
+                self.saved_project_files.append(file)
+
+        return self
+
+    def save_project_filepaths_to_file(self) -> None:
+        otl_wizard_project_dir = self.get_otl_wizard_projects_dir()
+        object_array = []
+        for objects_list in self.saved_project_files:
+            objects_list_details = {
+                'file_path': str(objects_list.file_path),
+                'state': objects_list.state.value
+            }
+            object_array.append(objects_list_details)
+        project_dir_path = otl_wizard_project_dir / self.project_path.name
+        with open(project_dir_path / self.saved_documents_filename, "w") as project_details_file:
+            json.dump(object_array, project_details_file)
+
+    def is_in_project(self, file_path) -> ProjectFile:
+        matches = [project_file for project_file in self.saved_project_files if
+         project_file.file_path == file_path]
+        return  matches[0] if matches else None
+
+    def get_saved_projectfiles(self):
+        return self.saved_project_files
+
+    def add_saved_project_file(self, file_path: Path | str, state: FileState):
+
+
+
+        self.saved_project_files.append(ProjectFile(file_path=file_path, state=state))
+        self.save_project_filepaths_to_file()
+
+
+    def make_copy_of_added_file(self, filepath: Path) -> Path:
+
+        location_dir = self.project_path / 'OTL-template-files'
+        if not location_dir.exists():
+            location_dir.mkdir()
+        doc_name = filepath.name
+        end_location = location_dir / doc_name
+        if end_location == filepath:
+            return end_location
+        shutil.copy(filepath, end_location)
+        logging.debug(f"Created a copy of the template file {filepath.name} in the project folder")
+        return end_location
+
+
+    def remove_all_project_files(self):
+        logging.debug("memory contains %s",
+                      self.saved_project_files)
+        for file in self.saved_project_files:
+            logging.debug("starting to delete file %s",
+                          file.file_path)
+            try:
+                self.delete_project_file(file_path=file.file_path)
+            except ExcelFileUnavailableError as e:
+                message = GlobalTranslate._(e.error_window_message_key)
+                title = GlobalTranslate._(e.error_window_title_key)
+                NotificationWindow("{0}:\n{1}".format(message, e.file_path), title)
+
+        self.saved_project_files = []
+        self.save_project_filepaths_to_file()
+
+
+    def remove_project_file(self, file_path) -> bool:
+        project_file = self.is_in_project(file_path)
+        res = False
+        if project_file:
+            if project_file.file_path.exists():
+                res =  self._delete_project_file(project_file.file_path)
+            else:
+                res = True
+
+            if res:
+                self.saved_project_files.remove(project_file)
+                self.save_project_filepaths_to_file()
+        return res
+
+    def _delete_project_file(self, file_path) -> bool:
+        try:
+            logging.debug(f"file path = {str(file_path)}")
+            Path(file_path).unlink()
+            return True
+        except FileNotFoundError as e:
+            logging.error(e)
+            return False
+        except PermissionError as e:
+            logging.error(e)
+            raise ExcelFileUnavailableError(file_path=file_path, exception=e)

@@ -47,7 +47,7 @@ class InsertDataScreen(Screen):
         self.message = QLabel()
         self.input_file_label = QLabel()
 
-        self.input_file_field: QTreeWidget = QTreeWidget()
+        self.project_files_overview_field: QTreeWidget = QTreeWidget()
         self.feedback_message_box = QFrame()
         self.asset_info = QListWidget()
 
@@ -125,9 +125,6 @@ class InsertDataScreen(Screen):
         for item in error_set:
             exception = item["exception"]
             doc = item["path_str"]
-            InsertDataDomain.add_template_file_to_project(project=global_vars.current_project,
-                                                          filepath=Path(doc),
-                                                          state=FileState.ERROR)
 
             if isinstance(exception, ExceptionsGroup):
                 for ex in exception.exceptions:
@@ -138,12 +135,12 @@ class InsertDataScreen(Screen):
     def add_input_file_field(self):
         input_file = QFrame()
         input_file_layout = QHBoxLayout()
-        self.input_file_field.setColumnCount(3)
-        header = self.input_file_field.header()
+        self.project_files_overview_field.setColumnCount(3)
+        header = self.project_files_overview_field.header()
         header.setSectionResizeMode(1, QHeaderView.ResizeMode.Stretch)
         header.setStretchLastSection(False)
-        self.input_file_field.setHeaderHidden(True)
-        input_file_layout.addWidget(self.input_file_field)
+        self.project_files_overview_field.setHeaderHidden(True)
+        input_file_layout.addWidget(self.project_files_overview_field)
         input_file.setLayout(input_file_layout)
         return input_file
 
@@ -251,15 +248,15 @@ class InsertDataScreen(Screen):
             list_item.setIcon(0, qta.icon('mdi.close', color="red"))
         list_item.setData(1, 1, file)
         list_item.setSizeHint(1, QSize(0, 30))
-        self.input_file_field.addTopLevelItem(list_item)
+        self.project_files_overview_field.addTopLevelItem(list_item)
         button = ButtonWidget()
         button.clicked.connect(self.delete_file_from_list)
         button.setIcon(qta.icon('mdi.close'))
-        self.input_file_field.setItemWidget(list_item, 2, button)
+        self.project_files_overview_field.setItemWidget(list_item, 2, button)
 
 
     def delete_file_from_list(self):
-        items = self.input_file_field.selectedItems()
+        items = self.project_files_overview_field.selectedItems()
         item_file_path = items[0].data(1,1)
 
         InsertDataDomain.delete_backend_document(item_file_path=item_file_path)
@@ -268,7 +265,7 @@ class InsertDataScreen(Screen):
 
     def update_file_list(self):
         logging.debug("[CLEAR] update_file_list")
-        self.input_file_field.clear()
+
         all_valid = InsertDataDomain.sync_backend_documents_with_frontend()
         self.control_button.setDisabled(all_valid)
 
