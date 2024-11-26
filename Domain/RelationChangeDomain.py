@@ -48,9 +48,6 @@ class RelationChangeDomain:
     project:Project
     collector:OSLOCollector
 
-    full_OTL_db_path = ROOT_DIR / "data" / "OTL 2.12.db"
-    full_OTL_collector: OSLOCollector
-
     aim_id_relations = []
 
     internal_objects: list[AIMObject] = []
@@ -81,11 +78,6 @@ class RelationChangeDomain:
         cls.project = project
         cls.collector = OSLOCollector(project.subset_path)
         cls.collector.collect_all()
-
-        # TODO: figure out a way to get the possible relations without the full OTL_model
-        if cls.full_OTL_db_path.exists():
-            cls.full_OTL_collector = OSLOCollector(cls.full_OTL_db_path)
-            cls.full_OTL_collector.collect_all()
 
         cls.shown_objects = []
         cls.internal_objects = []
@@ -252,7 +244,7 @@ class RelationChangeDomain:
 
         if cls.external_object_added or selected_object.typeURI not in cls.possible_relations_per_class_dict:
             try:
-                if cls.full_OTL_db_path.exists() and (cls.external_objects or cls.agent_objects):
+                if cls.external_objects or cls.agent_objects:
                     # this is the long search but it includes relations with external assets
                     cls.possible_relations_per_class_dict[selected_object.typeURI] = (
                         RelationChangeDomain.get_all_concrete_relation_from_full_model(
@@ -262,14 +254,10 @@ class RelationChangeDomain:
                         cls.collector.find_all_concrete_relations(selected_object.typeURI, False)
             except ValueError as e:
                 logging.debug(e)
-
-                # TODO: figure out a way to get the possible relations without the full OTL_model
-                # if cls.full_OTL_db_path.exists():
                 cls.possible_relations_per_class_dict[selected_object.typeURI] = (
                     RelationChangeDomain.get_all_concrete_relation_from_full_model(
                     selected_object))
-                # else:
-                #     cls.possible_relations_per_class_dict[selected_object.typeURI] = []
+
             cls.external_object_added = False
 
         related_objects: list[AIMObject] = list(
