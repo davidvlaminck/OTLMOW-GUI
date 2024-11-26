@@ -33,16 +33,18 @@ class Updater:
         print(cls.pyproject_config)
 
         # TODO: catch and process ratelimit exceeded error
-        return False
+        try:
+            contents = cls.github_downloader.download_file_to_memory("pyproject.toml").decode("utf-8")
+            master_pyproject_config = tomllib.loads(contents)
 
-        contents = cls.github_downloader.download_file_to_memory("pyproject.toml").decode("utf-8")
-        master_pyproject_config = tomllib.loads(contents)
+            cls.local_version = cls.pyproject_config['project']['version']
+            cls.master_version = master_pyproject_config['project']['version']
 
-        cls.local_version = cls.pyproject_config['project']['version']
-        cls.master_version = master_pyproject_config['project']['version']
-
-        if cls.local_version == cls.master_version:
-            logging.info(f"Local version {cls.local_version} is up to date with master version")
-        else:
-            cls.needs_update = True
-            logging.info(f"Update needed: Local version {cls.local_version} != {cls.master_version} master version" )
+            if cls.local_version == cls.master_version:
+                logging.info(f"Local version {cls.local_version} is up to date with master version")
+            else:
+                cls.needs_update = True
+                logging.info(f"Update needed: Local version {cls.local_version} != {cls.master_version} master version" )
+        except Exception as e:
+            logging.info(f"Couldn't check if new version is available for update")
+            logging.debug(e)
