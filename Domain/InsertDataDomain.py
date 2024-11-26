@@ -6,9 +6,10 @@ from pathlib import Path
 from typing import List, Iterable, Optional, cast
 
 from openpyxl.reader.excel import load_workbook
-from otlmow_converter.OtlmowConverter import OtlmowConverter
+
 from otlmow_model.OtlmowModel.BaseClasses.OTLObject import OTLObject, \
     dynamic_create_instance_from_uri
+from otlmow_model.OtlmowModel.Classes.Agent import Agent
 from otlmow_model.OtlmowModel.Classes.ImplementatieElement.RelatieObject import RelatieObject
 from otlmow_model.OtlmowModel.Helpers import OTLObjectHelper, RelationValidator
 
@@ -16,11 +17,15 @@ from Domain import global_vars
 from Domain.Project import Project
 from Domain.RelationChangeDomain import RelationChangeDomain, save_assets
 from Domain.enums import FileState
+from Exceptions.NoIdentificatorError import NoIdentificatorError
 from Exceptions.RelationHasInvalidTypeUriForSourceAndTarget import \
     RelationHasInvalidTypeUriForSourceAndTarget
 from Exceptions.RelationHasNonExistingTypeUriForSourceOrTarget import \
     RelationHasNonExistingTypeUriForSourceOrTarget
+from GUI.Screens.RelationChangeElements.RelationChangeHelpers import RelationChangeHelpers
 from UnitTests.TestClasses.Classes.ImplementatieElement.AIMObject import AIMObject
+from otlmow_converter.Exceptions.ExceptionsDictGroup import ExceptionsDictGroup
+from otlmow_converter.OtlmowConverter import OtlmowConverter
 
 
 class InsertDataDomain:
@@ -31,7 +36,7 @@ class InsertDataDomain:
 
     @classmethod
     def check_document(cls, doc_location) -> Iterable[OTLObject]:
-        return OtlmowConverter.from_file_to_objects(file_path=Path(doc_location))
+        return OtlmowConverter.from_file_to_objects(file_path=Path(doc_location), include_tab_info=True)
 
     @classmethod
     def remove_dropdown_values_from_excel(cls, doc) -> Path:
@@ -119,9 +124,13 @@ class InsertDataDomain:
                     temp_path = file_path
 
                 assets = InsertDataDomain.check_document(doc_location=temp_path)
+                exception_group = ExceptionsDictGroup(
+                    message=f'Failed to create objects from Excel file {temp_path}')
+                cls.check_for_invalid_relations(assets,exception_group)
+                cls.check_for_empty_identificators(assets,exception_group)
 
-                cls.check_for_invalid_relations(assets)
-
+                if len(exception_group.exceptions) > 0:
+                    raise exception_group
                 project_file.state = FileState.OK
                 objects_lists.append(assets)
             except Exception as ex:
@@ -143,32 +152,38 @@ class InsertDataDomain:
         return error_set, objects_lists
 
     @classmethod
-    def check_for_invalid_relations(cls, assets):
+    def check_for_invalid_relations(cls, assets: list[OTLObject],exception_group: ExceptionsDictGroup):
         for asset in assets:
             if OTLObjectHelper.is_relation(asset):
                 relation = cast(RelatieObject, asset)
                 if relation.bron.typeURI not in RelationChangeDomain.all_OTL_asset_types_dict.values():
-                    raise RelationHasNonExistingTypeUriForSourceOrTarget(relation.typeURI,
+                    ex = RelationHasNonExistingTypeUriForSourceOrTarget(relation.typeURI,
                                                                          relation.assetId.identificator,
                                                                          "bron.typeURI",
                                                                          relation.bron.typeURI)
+                    exception_group.add_exception(error=ex, cause_tab=RelationChangeHelpers.get_abbreviated_typeURI(asset.typeURI,False))
+
                 if relation.doel.typeURI not in RelationChangeDomain.all_OTL_asset_types_dict.values():
-                    raise RelationHasNonExistingTypeUriForSourceOrTarget(relation.typeURI,
+                    ex = RelationHasNonExistingTypeUriForSourceOrTarget(relation.typeURI,
                                                                          relation.assetId.identificator,
                                                                          "doel.typeURI",
                                                                          relation.doel.typeURI)
+                    exception_group.add_exception(error=ex,
+                                              cause_tab=RelationChangeHelpers.get_abbreviated_typeURI(
+                                                  asset.typeURI,False))
 
                 # cls.detect_more_complex_target_or_source_typeURI_errors(relation)
                 if not RelationValidator.is_valid_relation(relation_type=type(relation),
                                                              source_typeURI=relation.bron.typeURI,
                                                              target_typeURI=relation.doel.typeURI):
-                    cls.raise_wrong_doel_or_target(relation)
-
-
+                    ex = cls.raise_wrong_doel_or_target(relation)
+                    exception_group.add_exception(error=ex,
+                                                  cause_tab=RelationChangeHelpers.get_abbreviated_typeURI(
+                                                      asset.typeURI,False))
 
     @classmethod
     def raise_wrong_doel_or_target(cls, relation):
-        raise RelationHasInvalidTypeUriForSourceAndTarget(relation.typeURI,
+        return RelationHasInvalidTypeUriForSourceAndTarget(relation.typeURI,
                                                           relation.assetId.identificator,
                                                           "bron.typeURI",
                                                           relation.bron.typeURI,
@@ -223,3 +238,19 @@ class InsertDataDomain:
                     # both target and source asset do not have relation
                     cls.raise_wrong_doel_or_target(relation)
 
+    @classmethod
+    def check_for_empty_identificators(cls, assets: Iterable[OTLObject],exception_group: ExceptionsDictGroup):
+
+
+        for asset in assets:
+            identificator = None
+            if asset.typeURI == 'http://purl.org/dc/terms/Agent':
+                new_external_agent: Agent = cast(Agent, asset)
+                identificator = new_external_agent.agentId.identificator
+
+            else:
+                new_external_asset: AIMObject = cast(AIMObject, asset)
+                identificator = new_external_asset.assetId.identificator
+
+            if not identificator:
+                exception_group.add_exception(error=NoIdentificatorError(), cause_tab=RelationChangeHelpers.get_abbreviated_typeURI(asset.typeURI,False))

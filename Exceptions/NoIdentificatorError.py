@@ -1,0 +1,2 @@
+class NoIdentificatorError(Exception):
+    pass
