@@ -5,6 +5,9 @@ from typing import List
 from PyQt6.QtCore import Qt, QSize
 from PyQt6.QtWidgets import QVBoxLayout, QWidget, QLabel, QPushButton, QFrame, QHBoxLayout, QListWidget, \
     QFileDialog, QListWidgetItem, QTreeWidget, QTreeWidgetItem, QHeaderView
+
+from Exceptions.NoIdentificatorError import NoIdentificatorError
+from otlmow_converter.Exceptions.ExceptionsDictGroup import ExceptionsDictGroup
 from otlmow_converter.Exceptions.ExceptionsGroup import ExceptionsGroup
 from otlmow_converter.Exceptions.FailedToImportFileError import FailedToImportFileError
 from otlmow_converter.Exceptions.InvalidColumnNamesInExcelTabError import InvalidColumnNamesInExcelTabError
@@ -126,7 +129,7 @@ class InsertDataScreen(Screen):
             exception = item["exception"]
             doc = item["path_str"]
 
-            if isinstance(exception, ExceptionsGroup):
+            if isinstance(exception, ExceptionsDictGroup):
                 for ex in exception.exceptions:
                     self.add_error_to_feedback_list(ex, doc)
             else:
@@ -279,10 +282,20 @@ class InsertDataScreen(Screen):
         self.asset_info.clear()
         self.clear_feedback_message()
 
-    def add_error_to_feedback_list(self, e, doc):
-        logging.debug(e)
+    def add_error_to_feedback_list(self, e_dict, doc):
+
+        if isinstance(e_dict,dict):
+            e = e_dict["ex"]
+            tab= e_dict["tab"] if e_dict["tab"] else self._("unknown")
+        else:
+            e = e_dict
+            tab = "unknown"
+        
+        logging.debug(  f"{str(e)} in {tab} ")
         doc_name = Path(doc).name
         error_widget = QListWidgetItem()
+        
+        
         if str(e) == "argument of type 'NoneType' is not iterable":
             error_text = self._("{doc_name}: Data nodig in een datasheet om objecten in te laden.\n").format(
                 doc_name=doc_name)
@@ -294,9 +307,11 @@ class InsertDataScreen(Screen):
         elif issubclass(type(e), TypeUriNotInFirstRowError):
             error_text = self._("{doc_name}: type uri not in first row of {tab}\n").format(doc_name=doc_name, tab=str(e.tab))
         elif issubclass(type(e), ValueError):
-            error_text = self._(f'{doc_name}: {e}\n')
+            error_text = self._(f'{doc_name}: {e} in worksheet {tab}\n')
         elif issubclass(type(e), FailedToImportFileError):
-            error_text = self._(f'{doc_name}: {e}\n')
+            error_text = self._(f'{doc_name}: {e} in worksheet {tab}\n')
+        elif issubclass(type(e), NoIdentificatorError):
+            error_text = self._(f'{doc_name}: There are assets without an assetId.identificator in worksheet {tab}\n')
         elif issubclass(type(e), RelationHasInvalidTypeUriForSourceAndTarget):
                 error_text = self._(
                     "{doc_name}:\n"+
@@ -318,7 +333,7 @@ class InsertDataScreen(Screen):
                 "for field \"{wrong_field}\".\n").format(
                 doc_name=doc_name, type_uri=e.relation_type_uri,identificator=e.relation_identificator, wrong_field=e.wrong_field, wrong_value=e.wrong_value)
         else:
-            error_text = self._(f'{doc_name}: {e}\n')
+            error_text = self._(f'{doc_name}: {e} in worksheet {tab}\n')
         error_widget.setText(error_text)
         self.asset_info.addItem(error_widget)
         item = self.asset_info.findItems(error_text, Qt.MatchFlag.MatchExactly)
