@@ -25,8 +25,10 @@ class Project:
                 self.assets_path: Path = assets_path
             else:
                 self.assets_path: Path = assets_path / self.saved_documents_filename
-        else:
+        elif self.project_path is not None:
             self.assets_path = self.project_path / self.saved_documents_filename
+        else:
+            self.assets_path = None
         self.last_quick_save:Path = last_quick_save
         self.eigen_referentie: str = eigen_referentie
         self.bestek: str = bestek
