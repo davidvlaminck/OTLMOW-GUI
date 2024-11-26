@@ -403,7 +403,9 @@ class AbstractInstanceListWidget:
     def apply_relation_color(self, pixmap, typeURI):
         painter = QPainter(pixmap)
         painter.setCompositionMode(QPainter.CompositionMode.CompositionMode_SourceIn)
-        color_code = self.color_legend[typeURI]
+        color_code = '000000'
+        if typeURI in self.color_legend.keys():
+            color_code = self.color_legend[typeURI]
         color = QColor(f"#{color_code}")  # Choose the color you want
         painter.setBrush(color)
         painter.setPen(color)
