@@ -132,6 +132,7 @@ class InsertDataDomain:
                 project_file.state = FileState.ERROR
 
         # state can be changed to either OK or ERROR
+        global_vars.current_project.save_project_filepaths_to_file()
         cls.sync_backend_documents_with_frontend()
 
         objects_in_memory = cls.flatten_list(objects_lists)
