@@ -193,7 +193,7 @@ class RelationChangeDomain:
         cls.create_and_add_missing_extenal_assets_from_relations()
 
         cls.get_screen().fill_object_list(cls.shown_objects)
-        cls.get_screen().fill_possible_relations_list(None, cls.possible_object_to_object_relations_dict)
+        cls.get_screen().fill_possible_relations_list(None, {})
         cls.get_screen().fill_existing_relations_list(cls.existing_relations)
 
     @classmethod

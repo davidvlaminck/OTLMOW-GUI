@@ -1,5 +1,5 @@
 from collections import namedtuple
-from typing import Optional, Collection
+from typing import Optional, Collection, Union
 
 from PyQt6.QtGui import QStandardItem, QPixmap, QIcon, QFont
 from PyQt6.QtWidgets import QFrame, QVBoxLayout, QLabel, QTreeView
@@ -142,7 +142,7 @@ class PossibleRelationListWidget(AbstractInstanceListWidget):
             for model_i in self.list_gui.selectionModel().selectedIndexes()
             if model_i.column() == 0]
 
-    def extract_text_and_data_per_item(self, source_object: OTLObject, objects, last_added):
+    def extract_text_and_data_per_item(self, source_object: OTLObject, objects: Union[list[OTLObject],dict] , last_added):
         list_of_corresponding_values = []
         for target_identificator, target_relations in objects.items():
 
