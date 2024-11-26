@@ -70,6 +70,8 @@ class RelationChangeDomain:
 
     external_object_added = False
 
+    no_id_count = 0
+
     """
     Call this when the project or project.subset_path changes or everytime you go to the window
     """
@@ -86,6 +88,7 @@ class RelationChangeDomain:
         cls.possible_relations_per_class_dict = {}
         cls.possible_object_to_object_relations_dict = {}
         cls.aim_id_relations = []
+        cls.no_id_count = 0
 
         cls.all_OTL_asset_types_dict = {}
         all_type_uris = cls.list_all_non_abstract_class_type_uris(otl_assets_only=True)
@@ -159,6 +162,11 @@ class RelationChangeDomain:
         cls.shown_objects = []
 
         for instance in objects_list:
+
+            if not instance.assetId.identificator:
+                cls.no_id_count += 1
+                instance.assetId.identificator = f"no_id_given_{cls.no_id_count}"
+
             if is_relation(instance):
                 relation_instance = cast(RelatieObject,instance)
 
