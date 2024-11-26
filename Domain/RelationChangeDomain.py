@@ -255,8 +255,8 @@ class RelationChangeDomain:
                 if cls.full_OTL_db_path.exists() and (cls.external_objects or cls.agent_objects):
                     # this is the long search but it includes relations with external assets
                     cls.possible_relations_per_class_dict[selected_object.typeURI] = (
-                        cls.full_OTL_collector.find_all_concrete_relations(selected_object.typeURI,
-                                                                           False))
+                        RelationChangeDomain.get_all_concrete_relation_from_full_model(
+                        selected_object))
                 else:
                     cls.possible_relations_per_class_dict[selected_object.typeURI] =\
                         cls.collector.find_all_concrete_relations(selected_object.typeURI, False)
@@ -264,12 +264,12 @@ class RelationChangeDomain:
                 logging.debug(e)
 
                 # TODO: figure out a way to get the possible relations without the full OTL_model
-                if cls.full_OTL_db_path.exists():
-                    cls.possible_relations_per_class_dict[selected_object.typeURI] = (
-                        cls.full_OTL_collector.find_all_concrete_relations(selected_object.typeURI,
-                                                                           False))
-                else:
-                    cls.possible_relations_per_class_dict[selected_object.typeURI] = []
+                # if cls.full_OTL_db_path.exists():
+                cls.possible_relations_per_class_dict[selected_object.typeURI] = (
+                    RelationChangeDomain.get_all_concrete_relation_from_full_model(
+                    selected_object))
+                # else:
+                #     cls.possible_relations_per_class_dict[selected_object.typeURI] = []
             cls.external_object_added = False
 
         related_objects: list[AIMObject] = list(
@@ -328,6 +328,20 @@ class RelationChangeDomain:
 
         object_attributes_dict = DotnotationDictConverter.to_dict(selected_object)
         cls.get_screen().fill_object_attribute_field(object_attributes_dict)
+
+    @classmethod
+    def get_all_concrete_relation_from_full_model(cls, selected_object):
+        all_relations = selected_object._get_all_concrete_relations()
+        concrete_OSLO_relations: list[OSLORelatie] = [OSLORelatie(
+            bron_overerving="",
+            doel_overerving="",
+            bron_uri= concrete_relation[0],
+            doel_uri= concrete_relation[2],
+            objectUri= concrete_relation[1],
+            richting= concrete_relation[3],
+            deprecated_version=concrete_relation[4],
+            usagenote="")for concrete_relation in all_relations]
+        return concrete_OSLO_relations
 
     @classmethod
     def clear_possible_object_to_object_relations_dict(cls, selected_object):
