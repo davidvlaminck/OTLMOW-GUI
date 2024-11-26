@@ -14,7 +14,7 @@ from otlmow_model.OtlmowModel.Helpers import OTLObjectHelper, RelationValidator
 
 from Domain import global_vars
 from Domain.Project import Project
-from Domain.RelationChangeDomain import RelationChangeDomain
+from Domain.RelationChangeDomain import RelationChangeDomain, save_assets
 from Domain.enums import FileState
 from Exceptions.RelationHasInvalidTypeUriForSourceAndTarget import \
     RelationHasInvalidTypeUriForSourceAndTarget
@@ -101,6 +101,7 @@ class InsertDataDomain:
         InsertDataDomain.sync_backend_documents_with_frontend()
 
     @classmethod
+    @save_assets
     def load_and_validate_documents(cls):
         error_set: list[dict] = []
         objects_lists = []
