@@ -45,8 +45,9 @@ class AssetDataChangeScreen(Screen):
         window = QWidget()
         window.setProperty('class', 'background-box')
         window_layout = QVBoxLayout()
-        window_layout.addWidget(self.upper_side())
-        window_layout.addWidget(self.lower_side())
+        # window_layout.addWidget(self.upper_side())
+        # window_layout.addWidget(self.lower_side())
+        window_layout.addWidget(QLabel("Under Construction"))
         window.setLayout(window_layout)
         return window
 
