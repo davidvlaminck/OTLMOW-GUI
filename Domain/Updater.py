@@ -32,6 +32,9 @@ class Updater:
         cls.pyproject_config = toml.load(pyproject_path)
         print(cls.pyproject_config)
 
+        # TODO: catch and process ratelimit exceeded error
+        return False
+
         contents = cls.github_downloader.download_file_to_memory("pyproject.toml").decode("utf-8")
         master_pyproject_config = tomllib.loads(contents)
 
