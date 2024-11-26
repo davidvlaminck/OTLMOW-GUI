@@ -13,6 +13,7 @@ from otlmow_model.OtlmowModel.BaseClasses.OTLObject import OTLObject
 from otlmow_visuals.PyVisWrapper import PyVisWrapper
 
 from Domain.Project import Project
+from Domain.RelationChangeDomain import RelationChangeDomain
 from Domain.enums import FileState
 from GUI.ButtonWidget import ButtonWidget
 from Domain import global_vars
@@ -95,16 +96,7 @@ class DataVisualisationScreen(Screen):
         # self.view.reload()
 
     def load_assets(self) -> List[OTLObject]:
-        project: Project = global_vars.current_project
-        if project is None:
-            return
-        valid_file_paths:List[Path] = [file.file_path for file in project.saved_project_files if file.state == FileState.OK]
-
-        objects_in_memory: List[OTLObject] = []
-        for path in valid_file_paths:
-            objects_in_memory.extend(OtlmowConverter().from_file_to_objects(
-                file_path=Path(path), model_directory=project.subset_path))
-
+        objects_in_memory = RelationChangeDomain.get_quicksave_instances()
         return objects_in_memory
 
     def create_html(self, objects_in_memory:List[OTLObject]):
