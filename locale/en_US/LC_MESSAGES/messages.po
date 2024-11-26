@@ -401,15 +401,15 @@ msgstr "{doc_name}: Data needed in datasheet to load in objects.\n"
 
 #: GUI/Screens/InsertDataScreen.py:285
 msgid "{doc_name}: No type uri in {tab}\n"
-msgstr "{doc_name}: No TypeUri found \n"
+msgstr "{doc_name}: No TypeUri found in worksheet {tab}\n"
 
 #: GUI/Screens/InsertDataScreen.py:287
 msgid "{doc_name}: invalid columns in {tab}, bad columns are {bad_columns} \n"
-msgstr "{doc_name}: invalid columns found, bad columns are {bad_columns}\n"
+msgstr "{doc_name}: invalid columns found in worksheet {tab}, bad columns are {bad_columns}\n"
 
 #: GUI/Screens/InsertDataScreen.py:290
 msgid "{doc_name}: type uri not in first row of {tab}\n"
-msgstr "{doc_name}: TypeUri not found in first row \n"
+msgstr "{doc_name}: TypeUri not found in first row of worksheet {tab}\n"
 
 #: GUI/Screens/RelationChangeScreen.py:82
 msgid "functionality under development"

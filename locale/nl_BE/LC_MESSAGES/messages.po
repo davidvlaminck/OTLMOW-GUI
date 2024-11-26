@@ -407,17 +407,17 @@ msgstr "{doc_name}: Data nodig in een datasheet om objecten in te laden.\n"
 
 #: GUI/Screens/InsertDataScreen.py:285
 msgid "{doc_name}: No type uri in {tab}\n"
-msgstr "{doc_name}: Kolom TypeUri niet gevonden \n"
+msgstr "{doc_name}: Kolom TypeUri niet gevonden in werkblad {tab}\n"
 
 #: GUI/Screens/InsertDataScreen.py:287
 msgid "{doc_name}: invalid columns in {tab}, bad columns are {bad_columns} \n"
 msgstr ""
-"{doc_name}: Foutieve kolommen in werkblad, desbetreffende kolommen zijn "
+"{doc_name}: Foutieve kolommen in werkblad {tab}, desbetreffende kolommen zijn "
 "{bad_columns} \n"
 
 #: GUI/Screens/InsertDataScreen.py:290
 msgid "{doc_name}: type uri not in first row of {tab}\n"
-msgstr "{doc_name}: TypeUri staat niet in de eerste rij\n"
+msgstr "{doc_name}: TypeUri staat niet in de eerste rij van werkblad {tab}\n"
 
 #: GUI/Screens/RelationChangeScreen.py:82
 msgid "functionality under development"
