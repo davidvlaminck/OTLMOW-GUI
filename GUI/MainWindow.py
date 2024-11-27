@@ -23,17 +23,17 @@ class MainWindow(QStackedWidget):
 
         self.home_screen:Screen = HomeScreen(self._)
         self.step1:Screen = TemplateScreen(self._)
-        self.step1_tabwidget:Screen = TabWidget(page_nr=1, widget1=self.step1,
+        self.step1_tabwidget:Screen = TabWidget(self._, page_nr=1, widget1=self.step1,
                                          description1="template",
                                          has_save_btn=False)
         self.step2:Screen = InsertDataScreen(self._)
-        self.step2_tabwidget:Screen = TabWidget(page_nr=2, widget1=self.step2,
+        self.step2_tabwidget:Screen = TabWidget(self._, page_nr=2, widget1=self.step2,
                                          description1="insert_data",
                                          has_save_btn=False)
         self.step3_visuals:Screen = DataVisualisationScreen(self._)
         self.step3_data:Screen = AssetDataChangeScreen(self._)
         self.step3_relations:Screen = RelationChangeScreen(self._)
-        self.step_3_tabwidget:Screen = TabWidget(page_nr=3, widget1=self.step3_relations,
+        self.step_3_tabwidget:Screen = TabWidget(self._, page_nr=3, widget1=self.step3_relations,
                                           description1="relation_change",
                                           widget2=self.step3_visuals,
                                           description2="data visuals",
@@ -41,7 +41,7 @@ class MainWindow(QStackedWidget):
                                           description3="data_change",
                                           has_save_btn=False)
         self.step4_export:Screen = ExportDataScreen(self._)
-        self.step4_tabwidget:Screen = TabWidget(page_nr=4,
+        self.step4_tabwidget:Screen = TabWidget(self._, page_nr=4,
                                                 widget1=self.step4_export,
                                                 description1="export_data",
                                                 has_save_btn=False)

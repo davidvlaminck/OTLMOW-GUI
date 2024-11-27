@@ -79,23 +79,23 @@ msgstr "Aanmaken template"
 
 #: GUI/MainWindow.py:57
 msgid "insert_data"
-msgstr ""
+msgstr "Data inladen"
 
 #: GUI/MainWindow.py:58
 msgid "data visuals"
-msgstr ""
+msgstr "Data visualisatie"
 
 #: GUI/MainWindow.py:59
 msgid "data_change"
-msgstr ""
+msgstr "Data veranderen"
 
 #: GUI/MainWindow.py:60
 msgid "relation_change"
-msgstr ""
+msgstr "Relaties veranderen"
 
 #: GUI/MainWindow.py:61
 msgid "export_data"
-msgstr ""
+msgstr "Data exporteren"
 
 #: GUI/MessageBox.py:16
 msgid "delete"

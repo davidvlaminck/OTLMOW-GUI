@@ -15,9 +15,9 @@ LANG_DIR = ROOT_DIR.parent / 'locale/'
 
 class TabWidget(Screen):
 
-    def __init__(self, page_nr: int, widget1, description1: str, has_save_btn: bool = True, **kwargs):
+    def __init__(self, language, page_nr: int, widget1, description1: str, has_save_btn: bool = True, **kwargs):
         super().__init__()
-        self._ = return_language(LANG_DIR)
+        self._ = language
         self.tabs = QTabWidget()
         self.tab1 = widget1
         self.desc1 = description1

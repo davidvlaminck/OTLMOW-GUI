@@ -79,23 +79,23 @@ msgstr ""
 
 #: GUI/MainWindow.py:57
 msgid "insert_data"
-msgstr ""
+msgstr "Insert data"
 
 #: GUI/MainWindow.py:58
 msgid "data visuals"
-msgstr ""
+msgstr "Data visualisation"
 
 #: GUI/MainWindow.py:59
 msgid "data_change"
-msgstr ""
+msgstr "Data changes"
 
 #: GUI/MainWindow.py:60
 msgid "relation_change"
-msgstr ""
+msgstr "Relation changes"
 
 #: GUI/MainWindow.py:61
 msgid "export_data"
-msgstr ""
+msgstr "Export data"
 
 #: GUI/MessageBox.py:16
 msgid "delete"
