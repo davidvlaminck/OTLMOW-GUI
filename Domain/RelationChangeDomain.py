@@ -325,7 +325,7 @@ class RelationChangeDomain:
             possible_relations_for_this_object = cls.possible_object_to_object_relations_dict[
                                                               RelationChangeHelpers.get_correct_identificator(selected_object)]
 
-        cls.get_screen().fill_possible_relations_list(selected_object,possible_relations_for_this_object)
+        cls.get_screen().fill_possible_relations_list(selected_object,possible_relations_for_this_object,cls.last_added_to_possible)
 
         object_attributes_dict = DotnotationDictConverter.to_dict(selected_object)
         cls.get_screen().fill_object_attribute_field(object_attributes_dict)

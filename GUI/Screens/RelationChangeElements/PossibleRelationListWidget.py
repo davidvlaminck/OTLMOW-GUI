@@ -197,7 +197,7 @@ class PossibleRelationListWidget(AbstractInstanceListWidget):
                 list_of_corresponding_values.append({
                     "text": self.Text(abbr_relation_typeURI, direction, screen_name,
                                       abbr_target_object_typeURI,relation.typeURI),
-                    "data": self.Data(RelationChangeHelpers.get_correct_identificator(source_object), target_identificator, i,relation in last_added)
+                    "data": self.Data(RelationChangeHelpers.get_correct_identificator(source_object), target_identificator, i,relation.assetId.identificator in [e.assetId.identificator for e in last_added])
                 })
         list_of_corresponding_values.sort(key=lambda val: (
             val['text'].target_typeURI, val['text'].screen_name, val['text'].typeURI))
