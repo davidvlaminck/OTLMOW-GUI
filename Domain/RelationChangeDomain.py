@@ -6,6 +6,8 @@ from copy import deepcopy
 from pathlib import Path
 from typing import List, Optional, cast, Union
 
+from otlmow_model.OtlmowModel.Helpers.generated_lists import get_hardcoded_class_dict
+
 from otlmow_converter.DotnotationDictConverter import DotnotationDictConverter
 from otlmow_converter.OtlmowConverter import OtlmowConverter
 from otlmow_model.OtlmowModel.BaseClasses.OTLObject import OTLObject, dynamic_create_type_from_uri, \
@@ -91,15 +93,18 @@ class RelationChangeDomain:
         cls.no_id_count = 0
 
         cls.all_OTL_asset_types_dict = {}
-        all_type_uris = cls.list_all_non_abstract_class_type_uris(otl_assets_only=True)
-        for uri in all_type_uris:
+        all_type_uris = get_hardcoded_class_dict()
+        # all_type_uris = cls.list_all_non_abstract_class_type_uris(otl_assets_only=True)
+        for uri,info in all_type_uris.items():
             abbr_type_uri = RelationChangeHelpers.get_abbreviated_typeURI(uri,add_namespace=True)
-            screen_name = abbr_type_uri
+            screen_name = info['label']
             if "#" in abbr_type_uri:
                 abbr_type_uri_split = abbr_type_uri.split("#")
-                screen_name = "#".join([abbr_type_uri_split[1], abbr_type_uri_split[0]])
+                screen_name = "#".join([screen_name, abbr_type_uri_split[0]])
 
             cls.all_OTL_asset_types_dict[screen_name] = uri
+
+
 
         cls.all_OTL_asset_types_dict = cls.sort_nested_dict(cls.all_OTL_asset_types_dict)
 
