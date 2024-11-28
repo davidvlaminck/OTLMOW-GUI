@@ -28,11 +28,16 @@ class DataVisualisationScreen(Screen):
 
     def __init__(self, _):
         super().__init__()
+
+        self.frame_layout_legend = None
+        self.objects_in_memory = []
+
         self.container_insert_data_screen = QVBoxLayout()
         self._ = _
         self.view = QWebEngineView()
         self.color_label_title = QLabel()
         self.init_ui()
+
 
     def init_ui(self):
         self.container_insert_data_screen.addSpacing(10)
@@ -57,21 +62,34 @@ class DataVisualisationScreen(Screen):
         window.setLayout(window_layout)
         return window
 
-    @classmethod
-    def create_color_legend(cls):
-        relatie_color_dict = PyVisWrapper().relatie_color_dict
+
+    def create_color_legend(self):
+
         frame = QFrame()
-        frame_layout = QHBoxLayout()
+        self.frame_layout_legend = QHBoxLayout()
+        self.fill_frame_layout_legend()
+        frame.setLayout(self.frame_layout_legend)
+        return frame
+
+    def fill_frame_layout_legend(self):
+        for i in reversed(range(self.frame_layout_legend.count())):
+            self.frame_layout_legend.itemAt(i).widget().deleteLater()
+
+        relatie_color_dict = PyVisWrapper().relatie_color_dict
+        typeURIs_in_memory = [object_in_memory.typeURI for object_in_memory in
+                              self.objects_in_memory]
         for relatie, color in relatie_color_dict.items():
+
+            if relatie not in typeURIs_in_memory:
+                continue
+
             color_label = QLabel()
             label = QLabel()
             relatie_name = relatie.split('#')[-1]
             label.setText(relatie_name)
             color_label.setStyleSheet(f"background-color: #{color}")
-            frame_layout.addWidget(color_label)
-            frame_layout.addWidget(label)
-        frame.setLayout(frame_layout)
-        return frame
+            self.frame_layout_legend.addWidget(color_label)
+            self.frame_layout_legend.addWidget(label)
 
     def create_button_container(self):
         frame = QFrame()
@@ -91,8 +109,10 @@ class DataVisualisationScreen(Screen):
         self.color_label_title.setText(self._("relations legend") + ":")
 
     def reload_html(self):
-        objects_in_memory = self.load_assets()
-        self.create_html(objects_in_memory)
+        self.objects_in_memory = self.load_assets()
+        self.fill_frame_layout_legend()
+        self.create_html(self.objects_in_memory)
+
         # self.view.reload()
 
     def load_assets(self) -> List[OTLObject]:
