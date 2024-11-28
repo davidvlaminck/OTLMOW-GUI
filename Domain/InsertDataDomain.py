@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import List, Iterable, Optional, cast
 
 from openpyxl.reader.excel import load_workbook
+from otlmow_converter.Exceptions.ExceptionsGroup import ExceptionsGroup
 
 from otlmow_model.OtlmowModel.BaseClasses.OTLObject import OTLObject, \
     dynamic_create_instance_from_uri
@@ -24,7 +25,6 @@ from Exceptions.RelationHasNonExistingTypeUriForSourceOrTarget import \
     RelationHasNonExistingTypeUriForSourceOrTarget
 from GUI.Screens.RelationChangeElements.RelationChangeHelpers import RelationChangeHelpers
 from UnitTests.TestClasses.Classes.ImplementatieElement.AIMObject import AIMObject
-from otlmow_converter.Exceptions.ExceptionsDictGroup import ExceptionsDictGroup
 from otlmow_converter.OtlmowConverter import OtlmowConverter
 
 
@@ -124,7 +124,7 @@ class InsertDataDomain:
                     temp_path = file_path
 
                 assets = InsertDataDomain.check_document(doc_location=temp_path)
-                exception_group = ExceptionsDictGroup(
+                exception_group = ExceptionsGroup(
                     message=f'Failed to create objects from Excel file {temp_path}')
                 cls.check_for_invalid_relations(assets,exception_group)
                 cls.check_for_empty_identificators(assets,exception_group)
@@ -152,7 +152,7 @@ class InsertDataDomain:
         return error_set, objects_lists
 
     @classmethod
-    def check_for_invalid_relations(cls, assets: list[OTLObject],exception_group: ExceptionsDictGroup):
+    def check_for_invalid_relations(cls, assets: list[OTLObject],exception_group: ExceptionsGroup):
         for asset in assets:
             if OTLObjectHelper.is_relation(asset):
                 relation = cast(RelatieObject, asset)
@@ -239,7 +239,7 @@ class InsertDataDomain:
                     cls.raise_wrong_doel_or_target(relation)
 
     @classmethod
-    def check_for_empty_identificators(cls, assets: Iterable[OTLObject],exception_group: ExceptionsDictGroup):
+    def check_for_empty_identificators(cls, assets: Iterable[OTLObject],exception_group: ExceptionsGroup):
 
 
         for asset in assets:
@@ -253,4 +253,4 @@ class InsertDataDomain:
                 identificator = new_external_asset.assetId.identificator
 
             if not identificator:
-                exception_group.add_exception(error=NoIdentificatorError(), cause_tab=RelationChangeHelpers.get_abbreviated_typeURI(asset.typeURI,False))
+                exception_group.add_exception(error=NoIdentificatorError(original_exception=ValueError(),tab=RelationChangeHelpers.get_abbreviated_typeURI(asset.typeURI,False)))
