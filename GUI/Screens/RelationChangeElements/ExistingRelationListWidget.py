@@ -88,7 +88,7 @@ class ExistingRelationListWidget(AbstractInstanceListWidget):
 
         # for index in indices:
         #     RelationChangeDomain.remove_existing_relation(index)
-        RelationChangeDomain.remove_existing_relations(indices)
+        RelationChangeDomain.remove_multiple_existing_relations(indices)
 
     def extract_text_and_data_per_item(self, source_object, objects, last_added):
         list_of_corresponding_values = []

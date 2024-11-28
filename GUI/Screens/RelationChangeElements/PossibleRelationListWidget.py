@@ -118,7 +118,7 @@ class PossibleRelationListWidget(AbstractInstanceListWidget):
         Data = self.Data
         data_list: list[Data] = sorted(self.get_selected_data(), reverse=True)
 
-        RelationChangeDomain.add_possible_relations_to_existing_relations(data_list=data_list)
+        RelationChangeDomain.add_multiple_possible_relations_to_existing_relations(data_list=data_list)
 
         # for data in data_list:
         #     RelationChangeDomain.add_possible_relation_to_existing_relations(data.source_id,

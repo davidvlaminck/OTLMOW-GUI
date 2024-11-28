@@ -477,7 +477,7 @@ class RelationChangeDomain:
 
     @classmethod
     @save_assets
-    def add_possible_relations_to_existing_relations(cls,data_list):
+    def add_multiple_possible_relations_to_existing_relations(cls, data_list):
 
         cls.last_added_to_existing = [RelationChangeDomain.add_possible_relation_to_existing_relations(data.source_id,
                                                                              data.target_id,
@@ -507,7 +507,7 @@ class RelationChangeDomain:
 
     @classmethod
     @save_assets
-    def remove_existing_relations(cls, indices: list[int]) -> RelatieObject:
+    def remove_multiple_existing_relations(cls, indices: list[int]) -> RelatieObject:
         cls.last_added_to_possible = [cls.remove_existing_relation(index) for index in indices]
 
         cls.update_frontend()
@@ -518,6 +518,7 @@ class RelationChangeDomain:
         #if the removed relation already had a AIM ID it is set to false and kept if not it is
         # removed and made again in the possible relations
         removed_relation.isActief = False
+        cls.get_screen().expand_possible_relations_folder_of(removed_relation.typeURI)
 
         return removed_relation
 
