@@ -213,7 +213,7 @@ class RelationChangeDomain:
                                                           relation_object.bron.typeURI)
                 except ValueError as e:
                     # should there be a wrong typeURI
-                    print(e)
+                    logging.debug(e)
             target_object = RelationChangeDomain.get_object(
                 identificator=relation_object.doelAssetId.identificator)
             if not target_object:
@@ -222,7 +222,7 @@ class RelationChangeDomain:
                                                           relation_object.doel.typeURI)
                 except ValueError as e:
                     # should there be a wrong typeURI
-                    print(e)
+                    logging.debug(e)
 
     @classmethod
     def get_all_relations(cls):

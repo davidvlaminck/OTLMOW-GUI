@@ -178,7 +178,6 @@ class HeaderBar(QFrame):
                                             color='#B35F35'))
         self.return_button.setText(self._('return_to_home_screen'))
         if global_vars.current_project is not None:
-            print(global_vars.current_project.eigen_referentie)
             self.reference_title.setText(global_vars.current_project.eigen_referentie)
         else:
             self.reference_title.setText("")

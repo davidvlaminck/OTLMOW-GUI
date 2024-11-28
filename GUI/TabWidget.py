@@ -54,7 +54,6 @@ class TabWidget(Screen):
 
     def onClickFunction(self):
         self.main_window.setCurrentIndex(0)
-        print("click tabWidget")
 
     def init_ui(self):
         button = self.header.header_bar_detail_screen()

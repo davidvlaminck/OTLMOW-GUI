@@ -76,7 +76,6 @@ class AbstractInstanceListWidget:
     def create_object_list_gui(self, multi_select: bool = False) -> QFrame:
         frame = QFrame()
         self.frame_layout = QVBoxLayout()
-        print(self.frame_layout.contentsMargins())
         self.list_label = QLabel()
         self.list_label.setText(self.list_label_text)
 

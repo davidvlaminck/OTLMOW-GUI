@@ -30,7 +30,6 @@ class Updater:
             pyproject_path = Path(f'data/{cls.pyproject_filename}')
 
         cls.pyproject_config = toml.load(pyproject_path)
-        print(cls.pyproject_config)
 
         # TODO: catch and process ratelimit exceeded error
         try:
