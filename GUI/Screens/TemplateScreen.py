@@ -271,7 +271,8 @@ class TemplateScreen(Screen):
     def reset_ui(self, _):
         self._ = _
         if self.project is not None:
-            self.fill_list()
+            event_loop = asyncio.get_event_loop()
+            event_loop.create_task(self.fill_list())
             self.update_project_info()
 
         self.show_deprecated_attributes.setText(self._("show_deprecated_attributes"))

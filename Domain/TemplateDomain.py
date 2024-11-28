@@ -35,3 +35,8 @@ class TemplateDomain:
             logging.debug("Error while creating template")
             logging.error(e)
             raise e
+
+    @classmethod
+    def update_subset_information(cls, screen):
+        screen.reset_ui( screen._)
+

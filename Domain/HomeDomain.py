@@ -5,6 +5,7 @@ from Domain.RelationChangeDomain import RelationChangeDomain
 from Domain.Project import Project
 from Domain.ProjectFileManager import ProjectFileManager
 from Domain.SubsetDatabase import SubsetDatabase
+from Domain.TemplateDomain import TemplateDomain
 from Exceptions.EmptyFieldError import EmptyFieldError
 from Exceptions.WrongDatabaseError import WrongDatabaseError
 
@@ -58,4 +59,5 @@ class HomeDomain:
         project.subset_path = Path(new_path)
         ProjectFileManager.save_project_to_dir(project)
         main_window.widget(1).tab1.project = project
+        TemplateDomain.update_subset_information(main_window.widget(1).tab1)
         RelationChangeDomain.init_static(project)
