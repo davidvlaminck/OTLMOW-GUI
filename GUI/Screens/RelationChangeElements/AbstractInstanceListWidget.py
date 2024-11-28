@@ -66,8 +66,10 @@ class AbstractInstanceListWidget:
         def paint(self, painter: QPainter, option, index: QModelIndex):
             painter.save()
 
+
+
             # Apply custom background for specific rows or items
-            if  self.parent.list_gui.model.itemFromIndex(index).data(self.parent.data_last_added_index) :
+            if  self.parent.list_gui.model.itemFromIndex(index.siblingAtColumn(0)).data(self.parent.data_last_added_index) :
                 painter.fillRect(option.rect, QBrush(self.parent.last_added_color))
 
             painter.restore()
