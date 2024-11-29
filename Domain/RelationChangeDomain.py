@@ -547,8 +547,13 @@ class RelationChangeDomain:
             return
         last_selected_keys = selected_relations_data[-1]
         last_selected_relation = cls.possible_object_to_object_relations_dict[last_selected_keys.source_id][last_selected_keys.target_id][last_selected_keys.index]
+
+        last_selected_relation_partner_asset = RelationChangeDomain.get_object(last_selected_relation.doelAssetId.identificator)
+        if last_selected_relation_partner_asset == cls.selected_object:
+            last_selected_relation_partner_asset = RelationChangeDomain.get_object(last_selected_relation.bronAssetId.identificator)
+
         cls.get_screen().fill_possible_relation_attribute_field(
-            DotnotationDictConverter.to_dict(last_selected_relation))
+            DotnotationDictConverter.to_dict(last_selected_relation_partner_asset))
 
     @classmethod
     def get_internal_objects(cls):

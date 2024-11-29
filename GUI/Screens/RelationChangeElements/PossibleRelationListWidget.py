@@ -25,7 +25,7 @@ class PossibleRelationListWidget(AbstractInstanceListWidget):
 
         self.list_label_text = self._('relations_list')
         self.list_subtext_label_text = self._("possible_relation_subscription")
-        self.attribute_field_label_text = self._("possible_relation_attributes")
+        self.attribute_field_label_text = self._("possible_relation_partner_asset_attributes")
 
     def create_object_list_gui(self, multi_select: bool = False) -> QFrame:
         frame = super().create_object_list_gui(multi_select)
