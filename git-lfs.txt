@@ -1,3 +1,7 @@
 install git lfs (OS dependent)
 in repo: run " git lfs install "  # zorgt voor .gitattributes
 in repo: run ' git lfs track "*.exe" '  # trackt nu .exe bestanden
+
+na toevoegen bestanden:
+git lfs ls-files
+daarna git push
