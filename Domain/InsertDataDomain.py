@@ -160,29 +160,32 @@ class InsertDataDomain:
                     ex = RelationHasNonExistingTypeUriForSourceOrTarget(relation.typeURI,
                                                                          relation.assetId.identificator,
                                                                          "bron.typeURI",
-                                                                         relation.bron.typeURI)
-                    exception_group.add_exception(error=ex, cause_tab=RelationChangeHelpers.get_abbreviated_typeURI(asset.typeURI,False))
+                                                                         relation.bron.typeURI,
+                                                                        RelationChangeHelpers.get_abbreviated_typeURI(asset.typeURI,False))
+                    exception_group.add_exception(error=ex)
 
                 if relation.doel.typeURI not in RelationChangeDomain.all_OTL_asset_types_dict.values():
-                    ex = RelationHasNonExistingTypeUriForSourceOrTarget(relation.typeURI,
-                                                                         relation.assetId.identificator,
-                                                                         "doel.typeURI",
-                                                                         relation.doel.typeURI)
-                    exception_group.add_exception(error=ex,
-                                              cause_tab=RelationChangeHelpers.get_abbreviated_typeURI(
-                                                  asset.typeURI,False))
+                    ex = RelationHasNonExistingTypeUriForSourceOrTarget(
+                        relation_type_uri=relation.typeURI,
+                        relation_identificator=relation.assetId.identificator,
+                        wrong_field="doel.typeURI",
+                        wrong_value=relation.doel.typeURI,
+                        tab=RelationChangeHelpers.get_abbreviated_typeURI(
+                            asset.typeURI,False))
+                    exception_group.add_exception(error=ex)
 
                 # cls.detect_more_complex_target_or_source_typeURI_errors(relation)
                 if not RelationValidator.is_valid_relation(relation_type=type(relation),
                                                              source_typeURI=relation.bron.typeURI,
                                                              target_typeURI=relation.doel.typeURI):
-                    ex = cls.raise_wrong_doel_or_target(relation)
-                    exception_group.add_exception(error=ex,
-                                                  cause_tab=RelationChangeHelpers.get_abbreviated_typeURI(
-                                                      asset.typeURI,False))
+                    ex = cls.raise_wrong_doel_or_target(
+                        relation=relation,
+                        tab=RelationChangeHelpers.get_abbreviated_typeURI(
+                            asset.typeURI,False))
+                    exception_group.add_exception(error=ex)
 
     @classmethod
-    def raise_wrong_doel_or_target(cls, relation):
+    def raise_wrong_doel_or_target(cls, relation,tab):
         return RelationHasInvalidTypeUriForSourceAndTarget(relation.typeURI,
                                                           relation.assetId.identificator,
                                                           "bron.typeURI",
