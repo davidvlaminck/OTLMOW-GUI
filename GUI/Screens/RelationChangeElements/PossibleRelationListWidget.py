@@ -4,14 +4,15 @@ from typing import Optional, Collection, Union
 from PyQt6.QtGui import QStandardItem, QPixmap, QIcon, QFont
 from PyQt6.QtWidgets import QFrame, QVBoxLayout, QLabel, QTreeView
 from otlmow_model.OtlmowModel.Helpers import OTLObjectHelper
+from otlmow_model.OtlmowModel.BaseClasses.OTLObject import \
+    OTLObject
 
 from Domain.RelationChangeDomain import RelationChangeDomain
 from GUI.Screens.RelationChangeElements.AbstractInstanceListWidget import \
     AbstractInstanceListWidget, IMG_DIR
 from GUI.Screens.RelationChangeElements.FolderTreeView import FolderTreeView
 from GUI.Screens.RelationChangeElements.RelationChangeHelpers import RelationChangeHelpers
-from LatestReleaseMulti.OTLWizard.data.otlmow_model.OtlmowModel.BaseClasses.OTLObject import \
-    OTLObject
+
 from UnitTests.TestClasses.Classes.ImplementatieElement.AIMObject import AIMObject
 
 
