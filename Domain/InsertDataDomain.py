@@ -186,12 +186,14 @@ class InsertDataDomain:
 
     @classmethod
     def raise_wrong_doel_or_target(cls, relation,tab):
-        return RelationHasInvalidTypeUriForSourceAndTarget(relation.typeURI,
-                                                          relation.assetId.identificator,
-                                                          "bron.typeURI",
-                                                          relation.bron.typeURI,
-                                                          "doel.typeURI",
-                                                          relation.doel.typeURI)
+        return RelationHasInvalidTypeUriForSourceAndTarget(
+            relation_type_uri=relation.typeURI,
+            relation_identificator=relation.assetId.identificator,
+            wrong_field="bron.typeURI",
+            wrong_value=relation.bron.typeURI,
+            wrong_field2="doel.typeURI",
+            wrong_value2=relation.doel.typeURI,
+            tab=tab)
 
     @classmethod
     def flatten_list(cls, objects_lists):
