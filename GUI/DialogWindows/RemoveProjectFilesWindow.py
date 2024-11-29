@@ -1,7 +1,6 @@
 from PyQt6.QtWidgets import QDialog, QVBoxLayout, QLabel, QDialogButtonBox
 
 from Domain.Project import Project
-from Domain.InsertDataDomain import InsertDataDomain
 
 
 class RemoveProjectFilesWindow:
@@ -37,6 +36,6 @@ class RemoveProjectFilesWindow:
         return button_box
 
     def remove_project_files(self, dialog):
-        InsertDataDomain.remove_all_project_files(self.project)
+        self.project.remove_all_project_files()
         dialog.close()
-        pass
+

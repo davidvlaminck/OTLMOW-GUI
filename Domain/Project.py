@@ -149,7 +149,7 @@ class Project:
             logging.debug("starting to delete file %s",
                           file.file_path)
             try:
-                self.delete_project_file(file_path=file.file_path)
+                self._delete_project_file(file_path=file.file_path)
             except ExcelFileUnavailableError as e:
                 message = GlobalTranslate._(e.error_window_message_key)
                 title = GlobalTranslate._(e.error_window_title_key)

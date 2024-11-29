@@ -273,7 +273,7 @@ class InsertDataScreen(Screen):
 
     def reset_button_functionality(self):
         RemoveProjectFilesWindow(project=global_vars.current_project, language_settings=self._)
-        InsertDataDomain.load_saved_documents_in_project()
+        InsertDataDomain.sync_backend_documents_with_frontend()
         self.clear_feedback()
 
     def clear_feedback(self):
