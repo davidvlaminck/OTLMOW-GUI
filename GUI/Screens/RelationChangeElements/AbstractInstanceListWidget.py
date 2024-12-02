@@ -23,8 +23,9 @@ IMG_DIR = ROOT_DIR / 'img/'
 MULTI_SELECTION = QListWidget.SelectionMode.MultiSelection
 class AbstractInstanceListWidget:
 
-    def __init__(self, language_settings,list_gui_style_class=None,needs_source_object= False):
+    def __init__(self, language_settings,parent,labels,list_gui_style_class=None,needs_source_object= False):
         self._ = language_settings
+        self.parent = parent
         self.search_text = ""
 
         self.search_bar = None
@@ -57,16 +58,28 @@ class AbstractInstanceListWidget:
         self.last_added_color = QColor("#d0ffcc")
         self.needs_source_object= needs_source_object
 
+        self.labels = labels
+        self.first_paint = False
+        self.second_paint = False
+        self.multi_col_list = True
+
+
     class LastAddedHighlightDelegate(QStyledItemDelegate):
 
         def __init__(self, list_widget):
             super().__init__()
             self.parent : AbstractInstanceListWidget = list_widget
+            self.second_paint = False
+            self.first_paint = False
 
         def paint(self, painter: QPainter, option, index: QModelIndex):
             painter.save()
 
-
+            if(self.first_paint and not self.second_paint):
+                self.parent.list_gui.resize_columns(self.parent.multi_col_list)
+                self.second_paint = True
+            else:
+                self.first_paint = True
 
             # Apply custom background for specific rows or items
             if  self.parent.list_gui.model.itemFromIndex(index.siblingAtColumn(0)).data(self.parent.data_last_added_index) :
@@ -115,14 +128,14 @@ class AbstractInstanceListWidget:
         self.frame_layout.addWidget(self.list_label)
         self.frame_layout.addWidget(self.list_subtext_label)
         self.frame_layout.addWidget(self.create_search_bar())
-        self.frame_layout.addWidget(self.list_gui)
+        self.frame_layout.addWidget(self.list_gui,10)
 
         object_attribute_label = QLabel()
         object_attribute_label.setText(self.attribute_field_label_text)
         self.frame_layout.addWidget(self.create_button())
         self.frame_layout.addWidget(object_attribute_label)
 
-        self.frame_layout.addWidget(self.create_attribute_field())
+        self.frame_layout.addWidget(self.create_attribute_field(),5)
         frame.setLayout(self.frame_layout)
 
         return frame
@@ -145,6 +158,8 @@ class AbstractInstanceListWidget:
         self.list_gui.clear()
         item_list = []
         type_to_instance_dict = {}
+        self.list_gui.itemDelegate().first_paint = False
+        self.list_gui.itemDelegate().second_paint = False
 
         text_and_data_per_element = self.extract_text_and_data_per_item(source_object, objects,
                                                                         last_added)
@@ -153,6 +168,7 @@ class AbstractInstanceListWidget:
             self.add_no_asset_selected_placeholder()
         elif not objects:
             self.add_no_options_placeholder()
+
 
         for text_and_data in text_and_data_per_element:
 
@@ -165,7 +181,7 @@ class AbstractInstanceListWidget:
 
         folder_items_expanded = []
         previously_selected_item = None
-        multi_col_list = False
+        self.multi_col_list = False
         for asset_type, text_and_data_list in type_to_instance_dict.items():
 
             add_folder_based_on_search_text = False
@@ -209,7 +225,7 @@ class AbstractInstanceListWidget:
                         # instance_item_tuple[1].setData(instance_item_tuple[0].data(self.data_3_index), self.data_3_index)
                         instance_item_tuple[1].setData(instance_item_tuple[0].data(self.item_type_data_index), self.item_type_data_index)
                         instance_item_tuple[1].setEditable(False)
-                        multi_col_list = True
+                        self.multi_col_list = True
 
                     folder_item.appendRow(instance_item_tuple)
                     add_folder_based_on_search_text = True
@@ -224,7 +240,7 @@ class AbstractInstanceListWidget:
 
         for folder_item in item_list:
             folder_item.sortChildren(0,Qt.SortOrder.AscendingOrder)
-            if multi_col_list:
+            if self.multi_col_list:
                 padding_item = QStandardItem("")
                 padding_item.setData(folder_item.data(self.data_1_index), self.data_1_index)
                 padding_item.setData(folder_item.data(self.item_type_data_index), self.item_type_data_index)
@@ -240,7 +256,13 @@ class AbstractInstanceListWidget:
 
         self.list_gui.expandAll()
         self.list_gui.resizeColumnToContents(0)  # Resizes the first column based on its content
+        if self.multi_col_list:
+            self.list_gui.resizeColumnToContents(1)
+        # if self.multi_col_list:
+        #     self.list_gui.resize_columns(self.multi_col_list)
+        # else:
         # self.list_gui.setSizeAdjustPolicy(QTreeView.SizeAdjustPolicy.AdjustToContents)
+
         self.list_gui.collapseAll()
 
         # expand previously expanded items
@@ -252,6 +274,16 @@ class AbstractInstanceListWidget:
         self.select_object_id(previously_selected_item=previously_selected_item)
         if not previously_selected_item:
             self.set_list_button_enabled( False)
+
+        if self.needs_source_object and not source_object:
+            self.list_gui.model.setHeaderData(0, Qt.Orientation.Horizontal,"")
+        elif not objects:
+            self.list_gui.model.setHeaderData(0, Qt.Orientation.Horizontal,"")
+        else:
+            for i in range(len(self.labels)):
+                self.list_gui.model.setHeaderData(i, Qt.Orientation.Horizontal, self.labels[i])
+
+
 
     @abc.abstractmethod
     def create_instance_standard_item(self, text_and_data):
@@ -427,12 +459,12 @@ class AbstractInstanceListWidget:
         placeholder_font.setItalic(True)
         place_holder_item.setFont(placeholder_font)
 
-        padding_item = QStandardItem("")
-        padding_item.setEditable(False)
-        padding_item.setEnabled(False)
-        padding_item.setSelectable(False)
+        # padding_item = QStandardItem("")
+        # padding_item.setEditable(False)
+        # padding_item.setEnabled(False)
+        # padding_item.setSelectable(False)
 
-        self.list_gui.addItem([place_holder_item, padding_item])
+        self.list_gui.addItem([place_holder_item])
 
     @classmethod
     def add_attribute_field_placeholder(cls, field):

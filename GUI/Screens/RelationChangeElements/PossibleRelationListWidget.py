@@ -21,8 +21,9 @@ class PossibleRelationListWidget(AbstractInstanceListWidget):
     Text = namedtuple('text', ['typeURI', 'direction', 'screen_name', 'target_typeURI','full_typeURI'])
     Data = namedtuple('data', ['source_id', 'target_id', "index", "last_added"])
 
-    def __init__(self, language_settings):
-        super().__init__(language_settings=language_settings,needs_source_object=True)
+    def __init__(self, language_settings, parent):
+        labels = [language_settings("related_asset"),language_settings("asset_type")]
+        super().__init__(language_settings=language_settings,parent=parent, labels=labels, needs_source_object=True)
 
         self.list_label_text = self._('relations_list')
         self.list_subtext_label_text = self._("possible_relation_subscription")
@@ -48,13 +49,13 @@ class PossibleRelationListWidget(AbstractInstanceListWidget):
         placeholder_font.setItalic(True)
         place_holder_item.setFont(placeholder_font)
 
-        padding_item = QStandardItem("")
-        padding_item.setEditable(False)
-        padding_item.setEnabled(False)
-        padding_item.setSelectable(False)
+        # padding_item = QStandardItem("")
+        # padding_item.setEditable(False)
+        # padding_item.setEnabled(False)
+        # padding_item.setSelectable(False)
 
-        self.list_gui.addItem([place_holder_item,padding_item ])
-
+        # self.list_gui.addItem([place_holder_item,padding_item ])
+        self.list_gui.addItem([place_holder_item])
     def create_attribute_field(self):
         attribute_field = super().create_attribute_field()
         attribute_field.setProperty("class","attribute_field_possible_relation")

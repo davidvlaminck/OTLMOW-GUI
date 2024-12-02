@@ -1,3 +1,4 @@
+from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QStandardItemModel, QStandardItem
 from PyQt6.QtWidgets import QTreeView, QVBoxLayout
 
@@ -16,8 +17,33 @@ class FolderTreeView(QTreeView):
         # self.add_folder_with_items("Folder 3", ["Item 3.1", "Item 3.2", "Item 3.3", "Item 3.4"])
 
         self.setModel(self.model)
-        self.header().hide()
+
+
+        self.setStyleSheet(
+            """
+             QHeaderView::section
+            {
+                    height: 14px;
+                    font-size: 14px;
+                    font-family: Roboto;
+                    font-style: bold;
+                    padding: 0px 0px 5px 5px;
+                    margin: 0px;
+            }
+            """
+        )
+        # self.header().hide()
         # self.expandAll()
+
+    def resize_listener(self, event):
+        self.resize_columns()
+
+    def resize_columns(self,multi_col_list=True):
+        half_width = int(self.width()/ 2)
+        # if len(self.labels) > 1:
+        if multi_col_list and self.columnWidth(0) > half_width:
+            self.setColumnWidth(0, half_width)
+            # self.setColumnWidth(1, half_width)
 
     def add_folder_with_items(self, folder_name, items):
         # Create a folder item (top-level item)

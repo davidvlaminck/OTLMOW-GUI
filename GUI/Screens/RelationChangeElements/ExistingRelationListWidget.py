@@ -18,8 +18,9 @@ class ExistingRelationListWidget(AbstractInstanceListWidget):
     Text = namedtuple('text', ['typeURI', 'name_source', 'direction', 'name_target','full_typeURI'])
     Data = namedtuple('data', ["index", "last_added"])
 
-    def __init__(self, language_settings):
-        super().__init__(language_settings=language_settings)
+    def __init__(self, language_settings,parent):
+        labels = [language_settings("source_asset"),language_settings("target_asset")]
+        super().__init__(language_settings=language_settings,parent=parent,labels=labels)
 
         self.list_label_text = self._("existing_relations_list")
         self.list_subtext_label_text = self._("existing_relations_description")
