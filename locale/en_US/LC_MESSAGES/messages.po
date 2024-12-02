@@ -390,7 +390,7 @@ msgstr "Load in file:"
 
 #: GUI/Screens/InsertDataScreen.py:194
 msgid "all_info_correct"
-msgstr "All provided information is correct"
+msgstr "All data is otl-conform"
 
 #: GUI/Screens/InsertDataScreen.py:199
 msgid "warning"

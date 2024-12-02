@@ -26,7 +26,7 @@ class TemplateScreen(Screen):
         self.no_choice_list = QCheckBox()
         self.geometry_column_added = QCheckBox()
         self.export_attribute_info = QCheckBox()
-        self.show_deprecated_attributes = QCheckBox()
+        # self.show_deprecated_attributes = QCheckBox()
         self.example_label = QLabel()
         self.export_button = ButtonWidget()
         self.project = None
@@ -76,10 +76,10 @@ class TemplateScreen(Screen):
         self.amount_of_examples.setValue(0)
         self.export_attribute_info.setText(self._("export_attribute_info"))
         self.export_attribute_info.setProperty('class', 'settings-checkbox')
-        self.deprecated_titel.setText(self._("deprecated_settings"))
-        self.deprecated_titel.setProperty('class', 'settings-title')
-        self.show_deprecated_attributes.setText(self._("show_deprecated_attributes"))
-        self.show_deprecated_attributes.setProperty('class', 'settings-checkbox')
+        # self.deprecated_titel.setText(self._("deprecated_settings"))
+        # self.deprecated_titel.setProperty('class', 'settings-title')
+        # self.show_deprecated_attributes.setText(self._("show_deprecated_attributes"))
+        # self.show_deprecated_attributes.setProperty('class', 'settings-checkbox')
 
         example_box_layout.addWidget(self.example_label)
         example_box_layout.addWidget(self.amount_of_examples)
@@ -94,9 +94,9 @@ class TemplateScreen(Screen):
         options_menu_layout.addWidget(self.no_choice_list)
         options_menu_layout.addWidget(self.geometry_column_added)
         options_menu_layout.addSpacing(10)
-        options_menu_layout.addWidget(self.deprecated_titel)
-        self.show_deprecated_attributes.setEnabled(True)
-        options_menu_layout.addWidget(self.show_deprecated_attributes)
+        # options_menu_layout.addWidget(self.deprecated_titel)
+        # self.show_deprecated_attributes.setEnabled(True)
+        # options_menu_layout.addWidget(self.show_deprecated_attributes)
         options_menu_layout.addSpacing(10)
         options_menu_layout.addWidget(self.example_settings_titel)
         options_menu_layout.addWidget(self.export_attribute_info)
@@ -196,8 +196,8 @@ class TemplateScreen(Screen):
                 item.setText(value.name)
                 item.setData(1, value.objectUri)
                 self.all_classes.addItem(item)
-                if TemplateDomain.check_for_no_deprecated_present(values):
-                    self.show_deprecated_attributes.setEnabled(False)
+                # if TemplateDomain.check_for_no_deprecated_present(values):
+                #     self.show_deprecated_attributes.setEnabled(False)
         except FileNotFoundError as e:
             self.all_classes.setEnabled(False)
             self.all_classes.addItem(self._("no classes found in specified path"))
@@ -255,7 +255,7 @@ class TemplateScreen(Screen):
         TemplateDomain().create_template(self.project.subset_path, document_path, selected_classes,
                                          generate_choice_list, self.geometry_column_added.isChecked(),
                                          self.export_attribute_info.isChecked(),
-                                         self.show_deprecated_attributes.isChecked(),
+                                         False,
                                          self.amount_of_examples.value())
         if platform.system() == 'Linux':
             os.open(document_path, os.O_WRONLY)
@@ -275,7 +275,7 @@ class TemplateScreen(Screen):
             event_loop.create_task(self.fill_list())
             self.update_project_info()
 
-        self.show_deprecated_attributes.setText(self._("show_deprecated_attributes"))
+        # self.show_deprecated_attributes.setText(self._("show_deprecated_attributes"))
         self.export_attribute_info.setText(self._("export_attribute_info"))
         self.geometry_column_added.setText(self._("geometry_column_added"))
         self.no_choice_list.setText(self._("no_choice_list"))
