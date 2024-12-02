@@ -3,6 +3,7 @@ from pathlib import Path
 
 from PyQt6.QtWidgets import QTabWidget, QVBoxLayout
 
+from Domain import global_vars
 from Domain.language_settings import return_language
 from GUI.Screens.Screen import Screen
 from GUI.HeaderBar import HeaderBar
@@ -54,6 +55,8 @@ class TabWidget(Screen):
 
     def onClickFunction(self):
         self.main_window.setCurrentIndex(0)
+        global_vars.current_project.clear_model_builder_from_memory()
+
 
     def init_ui(self):
         button = self.header.header_bar_detail_screen()

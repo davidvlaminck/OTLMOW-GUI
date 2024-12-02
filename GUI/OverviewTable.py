@@ -33,6 +33,7 @@ class OverviewTable(QTableWidget):
         self.main_window = None
         self.error_widget = QTableWidgetItem()
         self.projects = None
+        self.cellDoubleClicked.connect(self.open_project_async_task)
 
     def draw_table(self, input_text: str = None):
         self.setEnabled(True)
@@ -67,11 +68,13 @@ class OverviewTable(QTableWidget):
         for row_index, element in enumerate(projects):
             self.add_cell_to_table(self, row=row_index, column=0, item=element.eigen_referentie)
             self.add_cell_to_table(self, row=row_index, column=1, item=element.bestek)
+            # self.add_cell_to_table(self, row=row_index, column=2,
+            #                        item=ModelBuilder(element.subset_path).get_name_project())
             self.add_cell_to_table(self, row=row_index, column=2,
-                                   item=ModelBuilder(element.subset_path).get_name_project())
+                                   item=element.get_subset_db_name())
             self.add_cell_to_table(self, row=row_index, column=3, item=element.laatst_bewerkt)
             self.add_action_buttons(row_index, element, self)
-        self.cellDoubleClicked.connect(self.open_project_async_task)
+
 
     @staticmethod
     def add_cell_to_table(table: QTableWidget, row: int, column: int, item: Union[str, datetime.datetime]) -> None:

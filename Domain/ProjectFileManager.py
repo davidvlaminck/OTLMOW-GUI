@@ -94,6 +94,8 @@ class ProjectFileManager:
             'eigen_referentie': project.eigen_referentie,
             'laatst_bewerkt': project.laatst_bewerkt.strftime("%Y-%m-%d %H:%M:%S"),
             'subset': project.subset_path.name,
+            'subset_operator': project.get_operator_name(),
+            'otl_version': project.get_otl_version(),
             'last_quick_save': str(project.last_quick_save)
         }
 

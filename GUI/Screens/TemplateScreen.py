@@ -189,7 +189,7 @@ class TemplateScreen(Screen):
             await asyncio.sleep(1)
             self.all_classes.clear()
             self.all_classes.setEnabled(True)
-            modelbuilder = ModelBuilder(self.project.subset_path)
+            modelbuilder = self.project.load_model_builder()
             values = modelbuilder.filter_relations_and_abstract()
             for value in values:
                 item = QListWidgetItem()
@@ -218,10 +218,10 @@ class TemplateScreen(Screen):
 
     def update_project_info(self):
         try:
-            model_builder = ModelBuilder(self.project.subset_path)
-            self.subset_name.setText(model_builder.get_name_project())
-            self.operator_name.setText(model_builder.get_operator_name())
-            self.otl_version.setText(model_builder.get_otl_version())
+            # model_builder = ModelBuilder(self.project.subset_path)
+            self.subset_name.setText(self.project.get_subset_db_name())
+            self.operator_name.setText(self.project.get_operator_name())
+            self.otl_version.setText(self.project.get_otl_version())
         except FileNotFoundError as e:
             self.subset_name.setText("/")
             self.operator_name.setText("/")

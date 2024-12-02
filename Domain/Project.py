@@ -5,6 +5,7 @@ import shutil
 from pathlib import Path
 from typing import Optional
 
+from Domain.ModelBuilder import ModelBuilder
 from Domain.ProjectFile import ProjectFile
 from Domain.enums import FileState
 from Exceptions.ExcelFileUnavailableError import ExcelFileUnavailableError
@@ -17,9 +18,12 @@ class Project:
 
     def __init__(self, project_path: Path = None, subset_path: Path = None, assets_path: Path = None,
                  eigen_referentie: str = None, bestek: str = None, laatst_bewerkt: datetime.datetime = None,
-                 last_quick_save:Optional[Path] = None):
+                 last_quick_save:Optional[Path] = None, subset_operator: Optional[str] = None,otl_version: Optional[str] = None):
         self.project_path: Path = project_path
         self.subset_path: Path = subset_path
+        self.subset_operator: Optional[str] = subset_operator
+        self.otl_version: Optional[str] = otl_version
+
         if assets_path:
             if ".json" in str(assets_path.absolute()):
                 self.assets_path: Path = assets_path
@@ -37,6 +41,7 @@ class Project:
         self.assets_in_memory = []
 
         self.saved_project_files: list[ProjectFile] = []
+        self.model_builder = None
 
     @classmethod
     def get_home_path(cls) -> Path:
@@ -74,14 +79,48 @@ class Project:
             last_quick_save = Path(project_details['last_quick_save'])
 
 
+        if 'subset_operator' not in project_details :
+            subset_operator = None
+        else:
+            subset_operator = Path(project_details['subset_operator'])
+
+        if 'otl_version' not in project_details:
+            otl_version = None
+        else:
+            otl_version = Path(project_details['otl_version'])
+
         return cls(project_path,
                    project_path / project_details['subset'],
                    project_path / 'assets.json',
                    project_details['eigen_referentie'],
                    project_details['bestek'],
                    datetime.datetime.strptime(project_details['laatst_bewerkt'], "%Y-%m-%d %H:%M:%S"),
-                   last_quick_save)
+                   last_quick_save,
+                   subset_operator=subset_operator,
+                   otl_version=otl_version)
 
+    def get_subset_db_name(self):
+        return  str(self.subset_path.name)
+
+    def load_model_builder(self) -> ModelBuilder:
+        if not self.model_builder and self.subset_path:
+            self.model_builder = ModelBuilder(self.subset_path)
+        return self.model_builder
+
+    def clear_model_builder_from_memory(self) -> None:
+        self.model_builder = None
+
+    def get_operator_name(self):
+        if not self.subset_operator:
+            self.subset_operator = self.load_model_builder().get_operator_name()
+
+        return self.subset_operator
+
+    def get_otl_version(self):
+        if not self.otl_version:
+            self.otl_version = self.load_model_builder().get_operator_name()
+
+        return self.otl_version
 
     def load_saved_document_filenames(self):
         project_dir_path = self.get_otl_wizard_projects_dir() / self.project_path.name
