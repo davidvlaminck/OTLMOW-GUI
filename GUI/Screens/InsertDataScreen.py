@@ -276,6 +276,10 @@ class InsertDataScreen(Screen):
         InsertDataDomain.sync_backend_documents_with_frontend()
         self.clear_feedback()
 
+    def clear_all(self):
+        self.clear_feedback()
+        self.project_files_overview_field.clear()
+
     def clear_feedback(self):
         logging.debug("[CLEAR] clear_feedback")
         self.asset_info.clear()

@@ -128,7 +128,7 @@ class OverviewTable(QTableWidget):
         # InsertDataDomain.load_saved_documents_in_project()
 
         self.main_window.widget(1).tab1.update_project_info()
-        # self.main_window.widget(2).tab1.load_saved_documents_in_project()
+        self.main_window.widget(2).tab1.clear_all()
         RelationChangeDomain.init_static(global_vars.current_project)
         InsertDataDomain.init_static()
         event_loop = asyncio.get_event_loop()

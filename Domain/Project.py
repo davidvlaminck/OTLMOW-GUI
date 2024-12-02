@@ -3,7 +3,7 @@ import json
 import logging
 import shutil
 from pathlib import Path
-from typing import Optional, Union
+from typing import Optional, Union, cast
 
 from Domain.ModelBuilder import ModelBuilder
 from Domain.ProjectFile import ProjectFile
@@ -116,8 +116,11 @@ class Project:
 
     def get_operator_name(self):
         if not self.subset_operator:
-            self.subset_operator = self.load_model_builder().get_operator_name().stem()
-
+            subset_operator = self.load_model_builder().get_operator_name()
+            if isinstance(subset_operator,Path):
+                self.subset_operator = cast(Path,subset_operator).stem()
+            else:
+                self.subset_operator = subset_operator
         return self.subset_operator
 
     def get_otl_version(self):
