@@ -3,7 +3,7 @@ import json
 import logging
 import shutil
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Union
 
 from Domain.ModelBuilder import ModelBuilder
 from Domain.ProjectFile import ProjectFile
@@ -18,10 +18,14 @@ class Project:
 
     def __init__(self, project_path: Path = None, subset_path: Path = None, assets_path: Path = None,
                  eigen_referentie: str = None, bestek: str = None, laatst_bewerkt: datetime.datetime = None,
-                 last_quick_save:Optional[Path] = None, subset_operator: Optional[str] = None,otl_version: Optional[str] = None):
+                 last_quick_save:Optional[Path] = None, subset_operator: Optional[Union[str,Path]] = None,otl_version: Optional[Union[str,Path]] = None):
         self.project_path: Path = project_path
         self.subset_path: Path = subset_path
+        if isinstance(subset_operator,Path):
+            subset_operator = subset_operator.stem
         self.subset_operator: Optional[str] = subset_operator
+        if isinstance(otl_version,Path):
+            otl_version = otl_version.stem
         self.otl_version: Optional[str] = otl_version
 
         if assets_path:
@@ -112,13 +116,13 @@ class Project:
 
     def get_operator_name(self):
         if not self.subset_operator:
-            self.subset_operator = self.load_model_builder().get_operator_name()
+            self.subset_operator = self.load_model_builder().get_operator_name().stem()
 
         return self.subset_operator
 
     def get_otl_version(self):
         if not self.otl_version:
-            self.otl_version = self.load_model_builder().get_operator_name()
+            self.otl_version = self.load_model_builder().get_otl_version()
 
         return self.otl_version
 

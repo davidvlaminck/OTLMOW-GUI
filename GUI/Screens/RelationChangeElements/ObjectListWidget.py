@@ -19,7 +19,8 @@ class ObjectListWidget(AbstractInstanceListWidget):
     Data = namedtuple('data', ['selected_object_id','last_added'])
 
     def __init__(self, language_settings,parent):
-        labels = [ language_settings("OTL_asset")]
+        self._ = language_settings
+        labels = [ self._("OTL_asset")]
         super().__init__(language_settings=language_settings,parent=parent,labels=labels)
 
         self.list_label_text = self._('class_list')

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2024-11-29 14:03+0100\n"
+"POT-Creation-Date: 2024-12-02 14:10+0100\n"
 "PO-Revision-Date: 2023-10-19 13:11+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en_US\n"
@@ -116,33 +116,33 @@ msgid "no"
 msgstr "No"
 
 #: GUI/DialogWindows/UpsertProjectWindow.py:43
-#: GUI/DialogWindows/UpsertProjectWindow.py:61 GUI/OverviewTable.py:42
-#: GUI/OverviewTable.py:160
+#: GUI/DialogWindows/UpsertProjectWindow.py:61 GUI/OverviewTable.py:43
+#: GUI/OverviewTable.py:163
 msgid "own_reference"
 msgstr "Own reference"
 
 #: GUI/DialogWindows/UpsertProjectWindow.py:45
-#: GUI/DialogWindows/UpsertProjectWindow.py:62 GUI/OverviewTable.py:42
-#: GUI/OverviewTable.py:160
+#: GUI/DialogWindows/UpsertProjectWindow.py:62 GUI/OverviewTable.py:43
+#: GUI/OverviewTable.py:163
 msgid "service_order"
 msgstr "Service order"
 
 #: GUI/DialogWindows/ChangeSubsetWindow.py:31
 #: GUI/DialogWindows/UpsertProjectWindow.py:47
-#: GUI/DialogWindows/UpsertProjectWindow.py:63 GUI/OverviewTable.py:42
-#: GUI/OverviewTable.py:160 GUI/Screens/TemplateScreen.py:165
+#: GUI/DialogWindows/UpsertProjectWindow.py:63 GUI/OverviewTable.py:43
+#: GUI/OverviewTable.py:163 GUI/Screens/TemplateScreen.py:165
 msgid "subset"
 msgstr "Subset"
 
-#: GUI/OverviewTable.py:42 GUI/OverviewTable.py:160
+#: GUI/OverviewTable.py:43 GUI/OverviewTable.py:163
 msgid "last_edited"
 msgstr "Last edited"
 
-#: GUI/OverviewTable.py:88
+#: GUI/OverviewTable.py:91
 msgid "no_result"
 msgstr "No results found for this search value"
 
-#: GUI/OverviewTable.py:161
+#: GUI/OverviewTable.py:164
 msgid "no_results"
 msgstr "No results found for this search value"
 
@@ -195,6 +195,7 @@ msgid "asset_id_dummy"
 msgstr "extern asset 1"
 
 #: GUI/DialogWindows/AddExternalAssetWindow.py:49
+#: GUI/Screens/RelationChangeElements/PossibleRelationListWidget.py:26
 msgid "asset_type"
 msgstr "OTL-asset type"
 
@@ -422,13 +423,14 @@ msgid ""
 "{wrong_field}= \"{wrong_value}\"\n"
 "{wrong_field2}= \"{wrong_value2}\"\n"
 " in tab {tab}"
-msgstr ""{doc_name}:\n"
+msgstr ""
+"\"{doc_name}:\n"
 "Error in relation of type: \"{type_uri}\"\n"
 "with assetId.identificator: \"{identificator}\"\n"
 "This relation cannot be made between the typeURI's.\n"
 "{wrong_field}= \"{wrong_value}\"\n"
 "{wrong_field2}= \"{wrong_value2}\"\n"
-"in tab {tab}""
+"in tab {tab}\""
 
 #: GUI/Screens/InsertDataScreen.py:319
 msgid ""
@@ -507,71 +509,91 @@ msgstr "No asset types found in specified path"
 msgid "{selected} classes selected"
 msgstr "{selected} asset types selected"
 
-#: GUI/Screens/RelationChangeElements/AbstractInstanceListWidget.py:299
-#, fuzzy
-msgid "search"
-msgstr "Enter project or service order to search"
+#: GUI/Screens/RelationChangeElements/AbstractInstanceListWidget.py:343
+msgid "search_button"
+msgstr "Search"
 
-#: GUI/Screens/RelationChangeElements/AbstractInstanceListWidget.py:421
-#: GUI/Screens/RelationChangeElements/ObjectListWidget.py:102
-msgid "no_options_available"
-msgstr "No options available"
-
-#: GUI/Screens/RelationChangeElements/AbstractInstanceListWidget.py:440
+#: GUI/Screens/RelationChangeElements/AbstractInstanceListWidget.py:373
 msgid "no_instance_selected"
 msgstr "No object selected"
 
-#: GUI/Screens/RelationChangeElements/ExistingRelationListWidget.py:24
+#: GUI/Screens/RelationChangeElements/AbstractInstanceListWidget.py:455
+#: GUI/Screens/RelationChangeElements/ObjectListWidget.py:104
+msgid "no_options_available"
+msgstr "No options available"
+
+#: GUI/Screens/RelationChangeElements/ExistingRelationListWidget.py:23
+msgid "source_asset"
+msgstr "Source asset"
+
+#: GUI/Screens/RelationChangeElements/ExistingRelationListWidget.py:23
+msgid "target_asset"
+msgstr "Target asset"
+
+#: GUI/Screens/RelationChangeElements/ExistingRelationListWidget.py:26
 msgid "existing_relations_list"
 msgstr "Existing relations"
 
-#: GUI/Screens/RelationChangeElements/ExistingRelationListWidget.py:25
+#: GUI/Screens/RelationChangeElements/ExistingRelationListWidget.py:27
 msgid "existing_relations_description"
 msgstr "Shows the existing relations in the project"
 
-#: GUI/Screens/RelationChangeElements/ExistingRelationListWidget.py:26
+#: GUI/Screens/RelationChangeElements/ExistingRelationListWidget.py:28
 msgid "existing_relation_attributes"
 msgstr "Existing relation attributes (last selected)"
 
-#: GUI/Screens/RelationChangeElements/ExistingRelationListWidget.py:48
+#: GUI/Screens/RelationChangeElements/ExistingRelationListWidget.py:50
 msgid "remove_relation"
 msgstr "Remove relations"
 
-#: GUI/Screens/RelationChangeElements/ObjectListWidget.py:24
+#: GUI/Screens/RelationChangeElements/ExistingRelationListWidget.py:146
+#: GUI/Screens/RelationChangeElements/PossibleRelationListWidget.py:221
+msgid "no_relation_selected"
+msgstr "No relation selected"
+
+#: GUI/Screens/RelationChangeElements/ObjectListWidget.py:23
+msgid "OTL_asset"
+msgstr "OTL-asset"
+
+#: GUI/Screens/RelationChangeElements/ObjectListWidget.py:26
 msgid "class_list"
 msgstr "OTL-assets"
 
-#: GUI/Screens/RelationChangeElements/ObjectListWidget.py:25
+#: GUI/Screens/RelationChangeElements/ObjectListWidget.py:27
 msgid "otl_asset_description"
 msgstr "Select an OTL-asset here to make a relation with it"
 
-#: GUI/Screens/RelationChangeElements/ObjectListWidget.py:26
+#: GUI/Screens/RelationChangeElements/ObjectListWidget.py:28
 msgid "object_attributes"
 msgstr "OTL-asset attributes"
 
-#: GUI/Screens/RelationChangeElements/ObjectListWidget.py:49
+#: GUI/Screens/RelationChangeElements/ObjectListWidget.py:51
 msgid "add_external_asset"
 msgstr "Add external OTL-asset"
 
 #: GUI/Screens/RelationChangeElements/PossibleRelationListWidget.py:26
+msgid "related_asset"
+msgstr "Target or source"
+
+#: GUI/Screens/RelationChangeElements/PossibleRelationListWidget.py:29
 msgid "relations_list"
 msgstr "Possible relations"
 
-#: GUI/Screens/RelationChangeElements/PossibleRelationListWidget.py:27
+#: GUI/Screens/RelationChangeElements/PossibleRelationListWidget.py:30
 msgid "possible_relation_subscription"
 msgstr ""
 "Shows the possible relations that the selected OTL-asset can have with "
 "all the other OTL-assets"
 
-#: GUI/Screens/RelationChangeElements/PossibleRelationListWidget.py:28
+#: GUI/Screens/RelationChangeElements/PossibleRelationListWidget.py:31
 msgid "possible_relation_partner_asset_attributes"
 msgstr "Related asset attributes (last selected)"
 
-#: GUI/Screens/RelationChangeElements/PossibleRelationListWidget.py:41
+#: GUI/Screens/RelationChangeElements/PossibleRelationListWidget.py:44
 msgid "Select_an_OTL-asset_to_see_possible_relations"
 msgstr "Select an OTL-asset to see it's possible relations"
 
-#: GUI/Screens/RelationChangeElements/PossibleRelationListWidget.py:86
+#: GUI/Screens/RelationChangeElements/PossibleRelationListWidget.py:89
 #, fuzzy
 msgid "add_relation"
 msgstr "Possible relations:"
@@ -629,4 +651,7 @@ msgstr "no identificator"
 
 #~ msgid "possible_relation_attributes"
 #~ msgstr "Possible relation attributes"
+
+#~ msgid "search"
+#~ msgstr "Enter project or service order to search"
 

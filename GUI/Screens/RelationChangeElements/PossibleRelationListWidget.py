@@ -22,7 +22,8 @@ class PossibleRelationListWidget(AbstractInstanceListWidget):
     Data = namedtuple('data', ['source_id', 'target_id', "index", "last_added"])
 
     def __init__(self, language_settings, parent):
-        labels = [language_settings("related_asset"),language_settings("asset_type")]
+        self._ = language_settings
+        labels = [self._("related_asset"),self._("asset_type")]
         super().__init__(language_settings=language_settings,parent=parent, labels=labels, needs_source_object=True)
 
         self.list_label_text = self._('relations_list')
@@ -215,3 +216,6 @@ class PossibleRelationListWidget(AbstractInstanceListWidget):
             full_typeURI = text_and_data_list[0]["text"].full_typeURI
             self.add_colored_relation_bol_icon_to_item(folder_item, full_typeURI)
         return folder_item
+
+    def get_no_instance_selected_message(self):
+        return self._("no_relation_selected")

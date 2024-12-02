@@ -316,19 +316,31 @@ class AbstractInstanceListWidget:
         header.setSectionResizeMode(0, QHeaderView.ResizeMode.ResizeToContents)
         header.setStretchLastSection(False)
 
-        self.add_attribute_field_placeholder(self.attribute_field)
+        self.add_attribute_field_placeholder(self.attribute_field,
+                                             self.get_no_instance_selected_message())
 
         return self.attribute_field
 
     def fill_object_attribute_field(self, object_attribute_dict:dict):
-        self.fill_attribute_field(self.attribute_field, object_attribute_dict)
+
+        self.attribute_field.clear()
+
+        if not object_attribute_dict:
+           self.add_attribute_field_placeholder(self.attribute_field,
+                                                self.get_no_instance_selected_message())
+
+        for attribute, value in object_attribute_dict.items():
+            list_item = QTreeWidgetItem()
+            list_item.setText(0, attribute)
+            list_item.setText(1, str(value))
+            self.attribute_field.addTopLevelItem(list_item)
 
     def create_search_bar(self) -> QFrame:
         frame = QFrame()
         frame_layout = QHBoxLayout()
         frame_layout.setContentsMargins(5, 11, 0, 11)
         self.search_bar = QLineEdit()
-        self.search_bar.setPlaceholderText(self._('search'))
+        self.search_bar.setPlaceholderText(self._("search_button"))
         self.search_bar.textChanged.connect(self.search_listener)
 
         self.clear_search_bar_button = QPushButton()
@@ -357,18 +369,8 @@ class AbstractInstanceListWidget:
         return   [item for item in items
                   if self.search_text in item.text().lower()]
 
-    @classmethod
-    def fill_attribute_field(cls, field, object_attribute_dict):
-        field.clear()
-
-        if not object_attribute_dict:
-            cls.add_attribute_field_placeholder(field)
-
-        for attribute, value in object_attribute_dict.items():
-            list_item = QTreeWidgetItem()
-            list_item.setText(0, attribute)
-            list_item.setText(1, str(value))
-            field.addTopLevelItem(list_item)
+    def get_no_instance_selected_message(self):
+        return self._("no_instance_selected")
 
     def create_asset_type_item(self, asset_type):
         item = QListWidgetItem()
@@ -467,9 +469,9 @@ class AbstractInstanceListWidget:
         self.list_gui.addItem([place_holder_item])
 
     @classmethod
-    def add_attribute_field_placeholder(cls, field):
+    def add_attribute_field_placeholder(cls, field,text):
         place_holder_item = QTreeWidgetItem()
-        place_holder_item.setText(0, GlobalTranslate._("no_instance_selected"))
+        place_holder_item.setText(0, text)
 
         placeholder_font = QFont()
         placeholder_font.setItalic(True)
