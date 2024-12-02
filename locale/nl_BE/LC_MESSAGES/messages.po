@@ -396,7 +396,7 @@ msgstr "Bestanden inladen:"
 
 #: GUI/Screens/InsertDataScreen.py:194
 msgid "all_info_correct"
-msgstr "Alle gegevens zijn correct"
+msgstr "Alle gegevens zijn otl-conform"
 
 #: GUI/Screens/InsertDataScreen.py:199
 msgid "warning"
