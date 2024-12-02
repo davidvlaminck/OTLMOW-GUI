@@ -288,7 +288,7 @@ msgstr ""
 "De nieuwe versie is versie {1}\n"
 "Uw programma zit op versie {0}\n"
 "\n"
-"Wilt u deze nieuwe versie nu downloaden en installeren?"
+"Wilt u naar webpagina gaan waar u deze nieuwe versie kan downloaden?"
 
 #: GUI/DialogWindows/UpsertProjectWindow.py:33
 msgid "alter_project_title"

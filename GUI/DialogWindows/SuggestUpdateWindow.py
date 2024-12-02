@@ -1,4 +1,5 @@
 import logging
+import webbrowser
 
 from PyQt6.QtWidgets import QDialog, QVBoxLayout, QLabel, QDialogButtonBox
 
@@ -41,5 +42,10 @@ class SuggestUpdateWindow:
 
     def remove_project_files(self, dialog):
         logging.info("User choose to update")
+        self.open_wiki()
         dialog.close()
-        pass
+
+
+    @staticmethod
+    def open_wiki():
+        webbrowser.open('https://github.com/davidvlaminck/otlmow-gui/wiki/Installation')
