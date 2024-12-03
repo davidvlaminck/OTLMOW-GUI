@@ -168,10 +168,6 @@ class RelationChangeDomain:
 
         for instance in objects_list:
 
-            if not instance.assetId.identificator:
-                cls.no_id_count += 1
-                instance.assetId.identificator = f"no_id_given_{cls.no_id_count}"
-
             if is_relation(instance):
                 relation_instance = cast(RelatieObject,instance)
 
