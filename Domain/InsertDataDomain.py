@@ -117,7 +117,7 @@ class InsertDataDomain:
             try:
 
                 file_path = project_file.file_path
-                temp_path = ""
+                temp_path = file_path
                 if file_path.suffix in ['.xls', '.xlsx']:
                     temp_path = InsertDataDomain.remove_dropdown_values_from_excel(doc=file_path)
                 elif file_path.suffix == '.csv':
