@@ -39,7 +39,12 @@ class Project:
             self.assets_path = self.project_path / self.saved_documents_filename
         else:
             self.assets_path = None
-        self.last_quick_save:Path = last_quick_save
+
+        if last_quick_save:
+            self.last_quick_save:Path = self.get_quicksaves_dir_path() / last_quick_save.name
+        else:
+            self.last_quick_save = None
+
         self.eigen_referentie: str = eigen_referentie
         self.bestek: str = bestek
         self.laatst_bewerkt: datetime.datetime = laatst_bewerkt
@@ -136,32 +141,38 @@ class Project:
         saved_documents_path: Path = project_dir_path / Project.saved_documents_filename
         if saved_documents_path.exists():
             with open(saved_documents_path, "r") as saved_document:
-                objects_lists = json.load(saved_document)
-            logging.debug(f"Loaded saved object lists: {str(objects_lists)}")
+                saved_documents = json.load(saved_document)
+            logging.debug(f"Loaded saved object lists: {str(saved_documents)}")
             self.saved_project_files = []
-            for objects_list in objects_lists:
+            for document in saved_documents:
 
                 # if document was validated but there is no quicksave then set it to warning
-                state = FileState(objects_list['state'])
-                quick_save_path = Path(self.project_path / "quick_saves")
+                state = FileState(document['state'])
+                quick_save_path = self.get_quicksaves_dir_path()
                 if (state == FileState.OK and
                     not (quick_save_path.exists() and
                      len(list(os.listdir(quick_save_path))))):
                     state = FileState.WARNING
 
                 file = ProjectFile(
-                    file_path=objects_list['file_path'],
+                    file_path=document['file_path'],
                     state=state)
                 self.saved_project_files.append(file)
 
         return self
+
+    def get_quicksaves_dir_path(self):
+        quick_saves = Path(self.project_path / "quick_saves")
+        if not quick_saves.exists():
+            os.mkdir(Path(self.project_path / "quick_saves"))
+        return quick_saves
 
     def save_project_filepaths_to_file(self) -> None:
         otl_wizard_project_dir = self.get_otl_wizard_projects_dir()
         object_array = []
         for objects_list in self.saved_project_files:
             objects_list_details = {
-                'file_path': str(objects_list.file_path),
+                'file_path': str(objects_list.file_path.name),
                 'state': objects_list.state.value
             }
             object_array.append(objects_list_details)
@@ -178,16 +189,17 @@ class Project:
         return self.saved_project_files
 
     def add_saved_project_file(self, file_path: Path | str, state: FileState):
+        if isinstance(file_path,str):
+            file_path = Path(file_path)
 
-
-
-        self.saved_project_files.append(ProjectFile(file_path=file_path, state=state))
+        full_file_path = self.get_OTL_template_files_dir_path() / file_path.name
+        self.saved_project_files.append(ProjectFile(file_path=full_file_path, state=state))
         self.save_project_filepaths_to_file()
 
 
     def make_copy_of_added_file(self, filepath: Path) -> Path:
 
-        location_dir = self.project_path / 'OTL-template-files'
+        location_dir = self.get_OTL_template_files_dir_path()
         if not location_dir.exists():
             location_dir.mkdir()
         doc_name = filepath.name
@@ -198,6 +210,8 @@ class Project:
         logging.debug(f"Created a copy of the template file {filepath.name} in the project folder")
         return end_location
 
+    def get_OTL_template_files_dir_path(self):
+        return self.project_path / 'OTL-template-files'
 
     def remove_all_project_files(self):
         logging.debug("memory contains %s",

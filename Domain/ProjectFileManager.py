@@ -96,7 +96,7 @@ class ProjectFileManager:
             'subset': project.subset_path.name,
             'subset_operator': project.get_operator_name(),
             'otl_version': project.get_otl_version(),
-            'last_quick_save': str(project.last_quick_save)
+            'last_quick_save': str(project.last_quick_save.name)
         }
 
         with open(project_dir_path / "project_details.json", "w") as project_details_file:
@@ -202,21 +202,32 @@ class ProjectFileManager:
             project_zip.write(project.assets_path, arcname=project.assets_path.name)
             project_zip.write(project.subset_path, arcname=project.subset_path.name)
 
+            if not project.get_saved_projectfiles():
+                project.load_saved_document_filenames()
+
+            for document in project.get_saved_projectfiles():
+                save_path = Path('OTL-template-files') / document.file_path.name
+                project_zip.write(document.file_path, arcname=save_path)
 
 
 
 
     @classmethod
     def load_project_file(cls, file_path) -> Project:
-        project_dir_path = Path(cls.get_otl_wizard_projects_dir() / file_path.stem)
-        try:
-            project_dir_path.mkdir(exist_ok=False, parents=True)  # TODO: raise error if dir already exists?
-        except FileExistsError as ex:
-            logging.error("Project dir %s already exists", project_dir_path)
-            raise ex
-
         with zipfile.ZipFile(file_path) as project_file:
-            project_file.extractall(path=project_dir_path)
+
+            # TODO: handle if project doesn't contain project_details.json files
+            project_details = json.load(project_file.open('project_details.json'))
+
+            project_dir_path = Path(cls.get_otl_wizard_projects_dir() / project_details['eigen_referentie'])
+            try:
+                project_dir_path.mkdir(exist_ok=False, parents=True)  # TODO: raise error if dir already exists?
+            except FileExistsError as ex:
+                logging.error("Project dir %s already exists", project_dir_path)
+                raise ex
+
+            with zipfile.ZipFile(file_path) as project_file:
+                project_file.extractall(path=project_dir_path)
 
         return cls.get_project_from_dir(project_dir_path)
 
