@@ -62,10 +62,12 @@ class GitHubDownloader:
                 self.download_file(file_path=content.path, destination_dir=destination_dir)
 
     def download_file_to_memory(self, file_path: str = None, contents=None):
-        if contents is None:
-            contents = self.get_repo().get_contents(file_path)
+        # if contents is None:
+        #     contents = self.get_repo().get_contents(file_path)
 
         url = f'https://raw.githubusercontent.com/{self.repo_owner_and_name}/master/{file_path}'
         resp = requests.get(url)
+        if resp.status_code != 200:
+            raise ConnectionRefusedError()
 
         return resp.content
