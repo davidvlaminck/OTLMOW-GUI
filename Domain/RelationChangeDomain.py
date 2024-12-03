@@ -109,6 +109,7 @@ class RelationChangeDomain:
         cls.all_OTL_asset_types_dict = cls.sort_nested_dict(cls.all_OTL_asset_types_dict)
 
         cls.set_instances(ProjectFileManager.load_validated_assets())
+        global_vars.otl_wizard.main_window.step3_visuals.reload_html()
 
     @classmethod
     def list_all_non_abstract_class_type_uris(cls, otl_assets_only=False,

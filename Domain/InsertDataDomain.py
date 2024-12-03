@@ -148,6 +148,7 @@ class InsertDataDomain:
 
         global_vars.otl_wizard.main_window.step3_visuals.create_html(objects_in_memory)
         RelationChangeDomain.set_instances(objects_in_memory)
+        global_vars.otl_wizard.main_window.step3_visuals.reload_html()
 
         return error_set, objects_lists
 
