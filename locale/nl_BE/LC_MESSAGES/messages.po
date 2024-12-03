@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: jasper.berton@mow.vlaanderen.be\n"
-"POT-Creation-Date: 2024-12-02 14:10+0100\n"
+"POT-Creation-Date: 2024-12-03 17:29+0100\n"
 "PO-Revision-Date: 2023-10-19 13:13+0200\n"
 "Last-Translator: Jasper Berton <jasper.berton@mow.vlaanderen.be>\n"
 "Language: nl_BE\n"
@@ -34,13 +34,13 @@ msgstr "Subset is leeg"
 msgid "wrong_database_error"
 msgstr ""
 
-#: Domain/TemplateDomain.py:33
+#: Domain/TemplateDomain.py:37
 msgid "permission_to_file_was_denied_likely_due_to_the_file_being_open_in_excel"
 msgstr ""
 "U hebt geen toegang tot deze file! \n"
 "Waarschijnlijk omdat de file nog open is in excel"
 
-#: Domain/TemplateDomain.py:33
+#: Domain/TemplateDomain.py:37
 msgid "permission_denied"
 msgstr "Geen toestemming om de file te openen"
 
@@ -106,12 +106,12 @@ msgid "project_deletion_question"
 msgstr "Bent u zeker dat u dit project wilt verwijderen?"
 
 #: GUI/DialogWindows/ChooseFileNameWindow.py:25
-#: GUI/DialogWindows/SuggestUpdateWindow.py:37 GUI/MessageBox.py:19
+#: GUI/DialogWindows/SuggestUpdateWindow.py:38 GUI/MessageBox.py:19
 msgid "yes"
 msgstr "Ja"
 
 #: GUI/DialogWindows/ChooseFileNameWindow.py:26
-#: GUI/DialogWindows/SuggestUpdateWindow.py:39 GUI/MessageBox.py:20
+#: GUI/DialogWindows/SuggestUpdateWindow.py:40 GUI/MessageBox.py:20
 msgid "no"
 msgstr "Nee"
 
@@ -213,6 +213,7 @@ msgstr "Bevestigen"
 #: GUI/DialogWindows/AddExternalAssetWindow.py:92
 #: GUI/DialogWindows/ChangeSubsetWindow.py:70
 #: GUI/DialogWindows/RemoveProjectFilesWindow.py:35
+#: GUI/DialogWindows/RevalidateDocumentsWindow.py:33
 #: GUI/DialogWindows/UpsertProjectWindow.py:98
 msgid "cancel"
 msgstr "Annuleren"
@@ -276,11 +277,29 @@ msgstr "Verwijder project bestanden"
 msgid "remove_project_files_question"
 msgstr "Bent u zeker dat u dit project wilt verwijderen?"
 
-#: GUI/DialogWindows/SuggestUpdateWindow.py:20
+#: GUI/DialogWindows/RevalidateDocumentsWindow.py:14
+msgid "revalidate_documents_files_title"
+msgstr "Overscrhijf waarschuwing"
+
+#: GUI/DialogWindows/RevalidateDocumentsWindow.py:17
+msgid "revalidate_documents_files_question"
+msgstr ""
+"Door de documenten te valideren worden alle wijzigingen uit stap '3. "
+"Asset Data bewerken' ongedaan gemaakt.\n"
+"Dit zijn alle aangemaakte/verwijderde relaties en externe assets.\n"
+"\n"
+"Als u deze wilt behouden exporteer dan eerst alle data via stap '4. Asset"
+" Data exporteren'"
+
+#: GUI/DialogWindows/RevalidateDocumentsWindow.py:31
+msgid "continue"
+msgstr "Doorgaan"
+
+#: GUI/DialogWindows/SuggestUpdateWindow.py:21
 msgid "update_available_title"
 msgstr "Nieuwe versie van OTL-Wizard 2 beschikbaar"
 
-#: GUI/DialogWindows/SuggestUpdateWindow.py:23
+#: GUI/DialogWindows/SuggestUpdateWindow.py:24
 msgid "update_available_text"
 msgstr ""
 "Er is een nieuwe versie van OTL wizard 2 beschikbaar.\n"
@@ -305,7 +324,7 @@ msgstr "Origineel bestand inladen"
 
 #: GUI/Screens/AssetDataChangeScreen.py:90
 #: GUI/Screens/AssetDataChangeScreen.py:130
-#: GUI/Screens/AssetDataChangeScreen.py:136 GUI/Screens/InsertDataScreen.py:97
+#: GUI/Screens/AssetDataChangeScreen.py:136 GUI/Screens/InsertDataScreen.py:98
 msgid "choose_file"
 msgstr "Kies uw bestand..."
 
@@ -332,7 +351,7 @@ msgstr "Nieuw bestand inladen"
 msgid "the changes were correctly written to a new file"
 msgstr "Veranderingen zijn succesvol weggeschreven naar een nieuw bestand"
 
-#: GUI/Screens/AssetDataChangeScreen.py:237 GUI/Screens/InsertDataScreen.py:208
+#: GUI/Screens/AssetDataChangeScreen.py:237 GUI/Screens/InsertDataScreen.py:218
 msgid "error"
 msgstr "Error"
 
@@ -382,45 +401,45 @@ msgstr "Bestand om te uploaden"
 msgid "search_text"
 msgstr "Geef een project of bestek in om te zoeken"
 
-#: GUI/Screens/InsertDataScreen.py:87 GUI/Screens/InsertDataScreen.py:214
+#: GUI/Screens/InsertDataScreen.py:88 GUI/Screens/InsertDataScreen.py:224
 msgid "control_button"
 msgstr "Valideren"
 
-#: GUI/Screens/InsertDataScreen.py:93
+#: GUI/Screens/InsertDataScreen.py:94
 msgid "reset_fields"
 msgstr "Reset velden"
 
-#: GUI/Screens/InsertDataScreen.py:153 GUI/Screens/InsertDataScreen.py:213
+#: GUI/Screens/InsertDataScreen.py:163 GUI/Screens/InsertDataScreen.py:223
 msgid "input_file"
 msgstr "Bestanden inladen:"
 
-#: GUI/Screens/InsertDataScreen.py:194
+#: GUI/Screens/InsertDataScreen.py:204
 msgid "all_info_correct"
 msgstr "Alle gegevens zijn otl-conform"
 
-#: GUI/Screens/InsertDataScreen.py:199
+#: GUI/Screens/InsertDataScreen.py:209
 msgid "warning"
 msgstr "Waarschuwing"
 
-#: GUI/Screens/InsertDataScreen.py:293
+#: GUI/Screens/InsertDataScreen.py:307
 msgid "{doc_name}: Data nodig in een datasheet om objecten in te laden.\n"
 msgstr "{doc_name}: Data nodig in een datasheet om objecten in te laden.\n"
 
-#: GUI/Screens/InsertDataScreen.py:296
+#: GUI/Screens/InsertDataScreen.py:310
 msgid "{doc_name}: No type uri in {tab}\n"
 msgstr "{doc_name}: Kolom TypeUri niet gevonden in werkblad {tab}\n"
 
-#: GUI/Screens/InsertDataScreen.py:298
+#: GUI/Screens/InsertDataScreen.py:312
 msgid "{doc_name}: invalid columns in {tab}, bad columns are {bad_columns} \n"
 msgstr ""
 "{doc_name}: Foutieve kolommen in werkblad {tab}, desbetreffende kolommen "
 "zijn {bad_columns} \n"
 
-#: GUI/Screens/InsertDataScreen.py:301
+#: GUI/Screens/InsertDataScreen.py:315
 msgid "{doc_name}: type uri not in first row of {tab}\n"
 msgstr "{doc_name}: TypeUri staat niet in de eerste rij van werkblad {tab}\n"
 
-#: GUI/Screens/InsertDataScreen.py:307
+#: GUI/Screens/InsertDataScreen.py:321
 msgid ""
 "{doc_name}:\n"
 "Relation of type: \"{type_uri}\"\n"
@@ -438,7 +457,7 @@ msgstr ""
 "{wrong_field2}= \"{wrong_value2}\"\n"
 "in werkblad: {tab}"
 
-#: GUI/Screens/InsertDataScreen.py:319
+#: GUI/Screens/InsertDataScreen.py:333
 msgid ""
 "{doc_name}:\n"
 "Relation of type: \"{type_uri}\"\n"
@@ -487,14 +506,6 @@ msgstr "Genereer voorbeeldrijen"
 msgid "export_attribute_info"
 msgstr "Exporteer een omschrijving van elk attribuut"
 
-#: GUI/Screens/TemplateScreen.py:79 GUI/Screens/TemplateScreen.py:290
-msgid "deprecated_settings"
-msgstr "Instellingen voor deprecated attributen"
-
-#: GUI/Screens/TemplateScreen.py:81 GUI/Screens/TemplateScreen.py:278
-msgid "show_deprecated_attributes"
-msgstr "Deprecated attributen aanduiden"
-
 #: GUI/Screens/TemplateScreen.py:140 GUI/Screens/TemplateScreen.py:286
 msgid "operator"
 msgstr "Operator"
@@ -514,6 +525,10 @@ msgstr "Geen asset types gevonden in het opgegeven pad"
 #: GUI/Screens/TemplateScreen.py:236 GUI/Screens/TemplateScreen.py:291
 msgid "{selected} classes selected"
 msgstr "{selected} types geselecteerd"
+
+#: GUI/Screens/TemplateScreen.py:290
+msgid "deprecated_settings"
+msgstr "Instellingen voor deprecated attributen"
 
 #: GUI/Screens/RelationChangeElements/AbstractInstanceListWidget.py:343
 msgid "search_button"
@@ -607,12 +622,12 @@ msgstr "Selecteer een OTL-asset om zijn mogelijke relaties te zien"
 msgid "add_relation"
 msgstr "Voeg relaties toe"
 
-#: GUI/Screens/RelationChangeElements/RelationChangeHelpers.py:45
-#: GUI/Screens/RelationChangeElements/RelationChangeHelpers.py:55
+#: GUI/Screens/RelationChangeElements/RelationChangeHelpers.py:43
+#: GUI/Screens/RelationChangeElements/RelationChangeHelpers.py:53
 msgid "external"
 msgstr "extern"
 
-#: GUI/Screens/RelationChangeElements/RelationChangeHelpers.py:128
+#: GUI/Screens/RelationChangeElements/RelationChangeHelpers.py:126
 msgid "no_identificator"
 msgstr "geen identificator"
 
@@ -666,4 +681,7 @@ msgstr "geen identificator"
 
 #~ msgid "search"
 #~ msgstr "Geef een project of bestek in om te zoeken"
+
+#~ msgid "show_deprecated_attributes"
+#~ msgstr "Deprecated attributen aanduiden"
 

@@ -33,6 +33,7 @@ from Exceptions.RelationHasNonExistingTypeUriForSourceOrTarget import \
     RelationHasNonExistingTypeUriForSourceOrTarget
 from GUI.ButtonWidget import ButtonWidget
 from GUI.DialogWindows.RemoveProjectFilesWindow import RemoveProjectFilesWindow
+from GUI.DialogWindows.RevalidateDocumentsWindow import RevalidateDocumentsWindow
 from GUI.Screens.DataVisualisationScreen import DataVisualisationScreen
 from GUI.Screens.Screen import Screen
 import qtawesome as qta
@@ -86,7 +87,7 @@ class InsertDataScreen(Screen):
         button_frame_layout = QHBoxLayout()
         self.control_button.setText(self._('control_button'))
         self.control_button.setDisabled(True)
-        self.control_button.clicked.connect(lambda: self.validate_documents())
+        self.control_button.clicked.connect(lambda: self.try_to_validate_documents())
         self.control_button.setProperty('class', 'primary-button')
 
         reset_button = QPushButton()
@@ -104,6 +105,15 @@ class InsertDataScreen(Screen):
         button_frame_layout.addWidget(reset_button)
         button_frame.setLayout(button_frame_layout)
         return button_frame
+
+
+    def try_to_validate_documents(self):
+        # if there is a quick_save warn the user that the are overwriting the previous changes
+        if global_vars.current_project.get_last_quick_save_path():
+            RevalidateDocumentsWindow(self,self._)
+        else:
+            self.validate_documents()
+            self.validate_documents()
 
     def validate_documents(self):
         self.clear_feedback()

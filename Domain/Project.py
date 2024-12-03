@@ -167,6 +167,17 @@ class Project:
             os.mkdir(Path(self.project_path / "quick_saves"))
         return quick_saves
 
+    def get_last_quick_save_path(self) -> Optional[Path]:
+        path = None
+        quick_save_path_dir = self.get_quicksaves_dir_path()
+        if self.last_quick_save and self.last_quick_save.exists():
+            path = self.last_quick_save
+        elif quick_save_path_dir.exists():
+            file_list = sorted(os.listdir(quick_save_path_dir), reverse=True)
+            if file_list:
+                path = Path(quick_save_path_dir, file_list[0])
+        return path
+
     def save_project_filepaths_to_file(self) -> None:
         otl_wizard_project_dir = self.get_otl_wizard_projects_dir()
         object_array = []

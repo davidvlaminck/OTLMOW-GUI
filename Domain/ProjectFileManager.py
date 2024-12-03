@@ -113,21 +113,20 @@ class ProjectFileManager:
             # move subset to project dir
             new_subset_path = project_dir_path / project.subset_path.name
             shutil.copy(project.subset_path, new_subset_path)
-        global_vars.projects = cls.get_all_otl_wizard_projects()
+        # global_vars.projects = cls.get_all_otl_wizard_projects()
 
     @classmethod
     def load_validated_assets(cls) -> list[AIMObject]:
-        project_dir_path = global_vars.current_project.project_path
 
-        quick_save_path = Path(project_dir_path / "quick_saves")
-        if global_vars.current_project.last_quick_save and global_vars.current_project.last_quick_save.exists():
-            return list(OtlmowConverter.from_file_to_objects(global_vars.current_project.last_quick_save))
-        elif quick_save_path.exists():
-            file_list =  sorted(os.listdir(quick_save_path), reverse=True)
-            if file_list:
-                return list(OtlmowConverter.from_file_to_objects(Path(quick_save_path,file_list[0])))
+
+        path = global_vars.current_project.get_last_quick_save_path()
+
+        if path:
+            return list(OtlmowConverter.from_file_to_objects(path))
 
         return []
+
+
 
     @classmethod
     def save_validated_assets(cls, project, project_dir_path):
@@ -176,6 +175,8 @@ class ProjectFileManager:
                                              sequence_of_objects=project.assets_in_memory)
         global_vars.current_project.last_quick_save =save_path
         cls.save_project_to_dir(global_vars.current_project)
+        project.last_quick_save =save_path
+        cls.save_project_to_dir(project)
 
 
     @classmethod
@@ -206,11 +207,14 @@ class ProjectFileManager:
                 project.load_saved_document_filenames()
 
             for document in project.get_saved_projectfiles():
-                save_path = Path('OTL-template-files') / document.file_path.name
-                project_zip.write(document.file_path, arcname=save_path)
+                file_zip_path = Path('OTL-template-files') / document.file_path.name
+                project_zip.write(document.file_path, arcname=file_zip_path)
 
 
 
+            last_quick_save_path = project.get_last_quick_save_path()
+            last_quick_save_zip_path = Path("quick_saves") / last_quick_save_path.name
+            project_zip.write(last_quick_save_path, arcname=last_quick_save_zip_path)
 
     @classmethod
     def load_project_file(cls, file_path) -> Project:
