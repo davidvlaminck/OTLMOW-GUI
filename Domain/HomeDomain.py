@@ -56,7 +56,7 @@ class HomeDomain:
         project.laatst_bewerkt = time_of_alter
         if SubsetDatabase(Path(new_path)).is_valid_subset_database() is False:
             raise WrongDatabaseError("Wrong database")
-        project.subset_path = Path(new_path)
+        project.change_subset(Path(new_path))
         ProjectFileManager.save_project_to_dir(project)
         main_window.widget(1).tab1.project = project
         TemplateDomain.update_subset_information(main_window.widget(1).tab1)

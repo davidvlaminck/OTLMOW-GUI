@@ -1,10 +1,12 @@
 import datetime
 import json
 import logging
+import os
 import shutil
 from pathlib import Path
 from typing import Optional, Union, cast
 
+from Domain import global_vars
 from Domain.ModelBuilder import ModelBuilder
 from Domain.ProjectFile import ProjectFile
 from Domain.enums import FileState
@@ -95,7 +97,7 @@ class Project:
 
         return cls(project_path,
                    project_path / project_details['subset'],
-                   project_path / 'assets.json',
+                   project_path,
                    project_details['eigen_referentie'],
                    project_details['bestek'],
                    datetime.datetime.strptime(project_details['laatst_bewerkt'], "%Y-%m-%d %H:%M:%S"),
@@ -138,9 +140,18 @@ class Project:
             logging.debug(f"Loaded saved object lists: {str(objects_lists)}")
             self.saved_project_files = []
             for objects_list in objects_lists:
+
+                # if document was validated but there is no quicksave then set it to warning
+                state = FileState(objects_list['state'])
+                quick_save_path = Path(self.project_path / "quick_saves")
+                if (state == FileState.OK and
+                    not (quick_save_path.exists() and
+                     len(list(os.listdir(quick_save_path))))):
+                    state = FileState.WARNING
+
                 file = ProjectFile(
                     file_path=objects_list['file_path'],
-                    state=FileState(objects_list['state']))
+                    state=state)
                 self.saved_project_files.append(file)
 
         return self
@@ -230,3 +241,10 @@ class Project:
         except PermissionError as e:
             logging.error(e)
             raise ExcelFileUnavailableError(file_path=file_path, exception=e)
+
+    def change_subset(self, new_path: Path):
+        self.clear_model_builder_from_memory()
+        self.subset_path = new_path
+        self.model_builder = self.load_model_builder()
+        self.subset_operator = None
+        self.otl_version = None
