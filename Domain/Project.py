@@ -155,7 +155,7 @@ class Project:
                     state = FileState.WARNING
 
                 file = ProjectFile(
-                    file_path=document['file_path'],
+                    file_path= self.get_OTL_template_files_dir_path() / Path(document['file_path']).name ,
                     state=state)
                 self.saved_project_files.append(file)
 
