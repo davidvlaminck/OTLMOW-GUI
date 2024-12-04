@@ -9,6 +9,7 @@ from otlmow_model.OtlmowModel.Classes.ImplementatieElement.AIMObject import \
     AIMObject
 from otlmow_model.OtlmowModel.Classes.ImplementatieElement.RelatieObject import RelatieObject
 
+from Domain.RelationChangeDomain import RelationChangeDomain
 from GUI.Screens.RelationChangeElements.ExistingRelationListWidget import \
     ExistingRelationListWidget
 from GUI.Screens.RelationChangeElements.ObjectListWidget import ObjectListWidget
@@ -36,17 +37,30 @@ class RelationChangeScreen(Screen):
 
         self.frame_layout = None
 
-        self.objects_list_gui = ObjectListWidget(self._)
-        self.possible_relation_list_gui = PossibleRelationListWidget(self._)
-        self.existing_relation_list_gui = ExistingRelationListWidget(self._)
+        self.objects_list_gui = ObjectListWidget(self._,self)
+        self.possible_relation_list_gui = PossibleRelationListWidget(self._,self)
+        self.existing_relation_list_gui = ExistingRelationListWidget(self._,self)
 
         self.init_ui()
 
 
+    def paintEvent(self, a0):
+        self.synchronize_subtext_label_heights()
+        super().paintEvent(a0)
+
+    def synchronize_subtext_label_heights(self):
+        frame_rect_height = self.possible_relation_list_gui.list_subtext_label.frameRect().height()
+        frame_rect_object = self.objects_list_gui.list_subtext_label.frameRect()
+        frame_rect_exist = self.existing_relation_list_gui.list_subtext_label.frameRect()
+        if frame_rect_height != frame_rect_object.height():
+            self.objects_list_gui.list_subtext_label.setMinimumHeight(frame_rect_height)
+        if frame_rect_height != frame_rect_exist.height():
+            self.existing_relation_list_gui.list_subtext_label.setMinimumHeight(frame_rect_height)
+
     def init_ui(self) -> None:
-        self.container_insert_data_screen.addSpacing(10)
+        # self.container_insert_data_screen.addSpacing(5)
         self.container_insert_data_screen.addWidget(self.create_menu())
-        self.container_insert_data_screen.addStretch()
+        # self.container_insert_data_screen.addStretch()
         self.container_insert_data_screen.setContentsMargins(0, 0, 0, 0)
         self.setLayout(self.container_insert_data_screen)
 
@@ -54,7 +68,7 @@ class RelationChangeScreen(Screen):
         self.window = QWidget()
         self.window.setProperty('class', 'background-box')
         self.window_layout = QVBoxLayout()
-        self.window_layout.addSpacing(10)
+        # self.window_layout.addSpacing(10)
         self.window_layout.addWidget(self.horizontal_layout())
         self.window.setLayout(self.window_layout)
 
@@ -76,14 +90,18 @@ class RelationChangeScreen(Screen):
         return frame
 
     def fill_object_list(self, objects: List[AIMObject]) -> None:
-        self.objects_list_gui.fill_list(None,objects)
+        self.objects_list_gui.fill_list(None, objects, [])
         
-    def fill_existing_relations_list(self, relations_objects: List[RelatieObject]) -> None:
-        self.existing_relation_list_gui.fill_list(None,relations_objects)
+    def fill_existing_relations_list(self, relations_objects: List[RelatieObject], last_added: list[RelatieObject] = None) -> None:
+        if last_added is None:
+            last_added = []
+        self.existing_relation_list_gui.fill_list(None, relations_objects, last_added)
 
     def fill_possible_relations_list(self, source_object: AIMObject,
-                                     relations: dict[str, list[RelatieObject]]) -> None:
-        self.possible_relation_list_gui.fill_list(source_object,relations)
+                                     relations: dict[str, list[RelatieObject]], last_added=None) -> None:
+        if last_added is None:
+            last_added = []
+        self.possible_relation_list_gui.fill_list(source_object, relations,last_added)
 
     def horizontal_layout(self):
         frame = QFrame()
@@ -92,6 +110,11 @@ class RelationChangeScreen(Screen):
         self.frame_layout.addWidget(self.objects_list_gui.create_object_list_gui())
         self.frame_layout.addWidget(self.possible_relation_list_gui.create_object_list_gui(multi_select=True))
         self.frame_layout.addWidget(self.existing_relation_list_gui.create_object_list_gui(multi_select=True))
+
+        self.frame_layout.setStretch(0, 1)
+        self.frame_layout.setStretch(1, 1)
+        self.frame_layout.setStretch(2, 1)
+
         # self.frame_layout.addWidget(self.map_widget())
         # self.frame_layout.addSpacing(20)
         frame.setLayout(self.frame_layout)
@@ -119,9 +142,21 @@ class RelationChangeScreen(Screen):
             existing_relation_attribute_dict)
 
     def expand_existing_relations_folder_of(self, relation_typeURI:str):
-        abbr_relation_typeURI = RelationChangeHelpers.get_abbreviated_typeURI(typeURI=relation_typeURI,is_relation=True)
+        add_namespace = RelationChangeHelpers.is_unique_across_namespaces(
+            relation_typeURI,
+            RelationChangeDomain.shown_objects)
+        abbr_relation_typeURI = RelationChangeHelpers.get_abbreviated_typeURI(
+            typeURI=relation_typeURI,
+            add_namespace=add_namespace,
+            is_relation=True)
         self.existing_relation_list_gui.expand_folder_of(abbr_relation_typeURI)
 
     def expand_possible_relations_folder_of(self, relation_typeURI:str):
-        abbr_relation_typeURI = RelationChangeHelpers.get_abbreviated_typeURI(typeURI=relation_typeURI,is_relation=True)
+        add_namespace = RelationChangeHelpers.is_unique_across_namespaces(
+            relation_typeURI,
+            RelationChangeDomain.shown_objects)
+        abbr_relation_typeURI = RelationChangeHelpers.get_abbreviated_typeURI(
+            typeURI=relation_typeURI,
+            add_namespace=add_namespace,
+            is_relation=True)
         self.possible_relation_list_gui.expand_folder_of(abbr_relation_typeURI)

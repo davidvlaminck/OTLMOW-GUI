@@ -6,19 +6,24 @@ from typing import cast
 from otlmow_converter.OtlmowConverter import OtlmowConverter
 from otlmow_model.OtlmowModel.Classes.ImplementatieElement.RelatieObject import RelatieObject
 
-from Domain.InsertDataDomain import InsertDataDomain
+
 from Domain.RelationChangeDomain import RelationChangeDomain
 from Domain.enums import FileState
-from UnitTests.TestClasses.Classes.ImplementatieElement.AIMObject import AIMObject
+
 
 
 class ExportDataDomain:
+
+
+
     @classmethod
     def generate_files(cls, end_file, project, separate_per_class_csv_option, separate_relations_option):
 
         # objects_in_memory = cls.extract_objects_from_files(project=project)
-        assets_in_memory = RelationChangeDomain.objects
-        relations_in_memory = RelationChangeDomain.existing_relations
+
+
+        assets_in_memory = sorted(RelationChangeDomain.get_internal_objects(), key=lambda relation1: relation1.typeURI)
+        relations_in_memory = sorted(RelationChangeDomain.get_persistent_relations(), key=lambda relation1: relation1.typeURI)
         if separate_relations_option:
             # assets_in_memory, relations_in_memory = cls.split_relations_and_objects(objects_in_memory)
             relations_path, assets_path = cls.create_relation_and_class_path(end_file)
@@ -60,7 +65,7 @@ class ExportDataDomain:
     @staticmethod
     def extract_objects_from_files(project):
         logging.debug("started extracting objects from files for export")
-        valid_file_paths = [file.file_path for file in project.saved_project_files if file.state == FileState.OK]
+        valid_file_paths = [file.file_path for file in project.get_saved_projectfiles() if file.state == FileState.OK]
         objects_in_memory = []
         for path in valid_file_paths:
             objects_in_memory.extend(OtlmowConverter.from_file_to_objects(

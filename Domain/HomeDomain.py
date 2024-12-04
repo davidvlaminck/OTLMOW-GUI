@@ -5,6 +5,7 @@ from Domain.RelationChangeDomain import RelationChangeDomain
 from Domain.Project import Project
 from Domain.ProjectFileManager import ProjectFileManager
 from Domain.SubsetDatabase import SubsetDatabase
+from Domain.TemplateDomain import TemplateDomain
 from Exceptions.EmptyFieldError import EmptyFieldError
 from Exceptions.WrongDatabaseError import WrongDatabaseError
 
@@ -34,6 +35,7 @@ class HomeDomain:
             project.project_path = Path(
                 ProjectFileManager.get_otl_wizard_projects_dir() / 'Projects' / project.eigen_referentie)
         ProjectFileManager.save_project_to_dir(project)
+        ProjectFileManager.load_projects_into_global()
         overview_table.draw_table()
         dlg.close()
 
@@ -55,7 +57,8 @@ class HomeDomain:
         project.laatst_bewerkt = time_of_alter
         if SubsetDatabase(Path(new_path)).is_valid_subset_database() is False:
             raise WrongDatabaseError("Wrong database")
-        project.subset_path = Path(new_path)
+        project.change_subset(Path(new_path))
         ProjectFileManager.save_project_to_dir(project)
         main_window.widget(1).tab1.project = project
+        TemplateDomain.update_subset_information(main_window.widget(1).tab1)
         RelationChangeDomain.init_static(project)

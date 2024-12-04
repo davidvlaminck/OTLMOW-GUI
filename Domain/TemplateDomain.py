@@ -21,6 +21,10 @@ class TemplateDomain:
         try:
             logging.debug("Creating template")
             template_creator = SubsetTemplateCreator()
+
+            if 'http://purl.org/dc/terms/Agent' in selected_classes_dir:
+                selected_classes_dir.remove('http://purl.org/dc/terms/Agent')
+
             template_creator.generate_template_from_subset(
                 path_to_subset=subset_path, path_to_template_file_and_extension=document_path,
                 list_of_otl_objectUri=selected_classes_dir, generate_choice_list=generate_choice_list,
@@ -35,3 +39,8 @@ class TemplateDomain:
             logging.debug("Error while creating template")
             logging.error(e)
             raise e
+
+    @classmethod
+    def update_subset_information(cls, screen):
+        screen.reset_ui( screen._)
+

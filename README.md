@@ -47,7 +47,7 @@ We are working on a way to deploy this to the different operating systems. This 
 2. Generate the locale\base.pot file from the strings in your python code by running using the seperate python environment:  
     `pybabel extract -F babel.cfg -o locale\base.pot .\Domain .\GUI`
 2. Update the `locale\\<language_code>\LC_MESSAGES\message.po` files to the new base.pot using the seperate python environment   with:  
-    `pybabel update -i .\locale\base.pot -d locale`
+    `pybabel update -i .\locale\base.pot -d locale --no-fuzzy-matching`
 3. Find your `new_text_key` in the `locale\\<language_code>\LC_MESSAGES\message.po` of each language and fill in the
 tranlation for that text in like:
     ```
@@ -60,3 +60,14 @@ tranlation for that text in like:
 4. Compile new translations into messages.mo files using the seperate python environment  
     `pybabel compile -d locale`
     
+## exe and installer creation guide
+
+1. Make sure you have a python 3.13 environment with the requirements.txt installed set up
+2. Run the `pyinstaller_script.py` in that environment  
+    This will make the `OTL Wizard 2.exe` in the LatestReleaseMulti folder 
+3. Download and install [Inno Setup Compiler](https://jrsoftware.org/isinfo.php)
+4. In the `LatestReleaseMulti/inno_setup_installer_setup_script.iss` script replace all occurrences of:  
+    `C:\Users\chris\PycharmProjects\OTLMOW-GUI`  
+    with the absolute path to the root of your project
+5. Open `LatestReleaseMulti/inno_setup_installer_setup_script.iss` with Inno Setup Compiler and compile.  
+    This should create `LatestReleaseMulti/OTL wizard 2 installer.exe`

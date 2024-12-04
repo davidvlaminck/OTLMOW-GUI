@@ -5,6 +5,8 @@ from typing import List
 from PyQt6.QtCore import Qt, QSize
 from PyQt6.QtWidgets import QVBoxLayout, QWidget, QLabel, QPushButton, QFrame, QHBoxLayout, QListWidget, \
     QFileDialog, QListWidgetItem, QTreeWidget, QTreeWidgetItem, QHeaderView
+
+from Exceptions.NoIdentificatorError import NoIdentificatorError
 from otlmow_converter.Exceptions.ExceptionsGroup import ExceptionsGroup
 from otlmow_converter.Exceptions.FailedToImportFileError import FailedToImportFileError
 from otlmow_converter.Exceptions.InvalidColumnNamesInExcelTabError import InvalidColumnNamesInExcelTabError
@@ -21,8 +23,17 @@ from Domain.RelationChangeDomain import RelationChangeDomain
 from Domain.ProjectFileManager import ProjectFileManager
 from Domain.enums import FileState
 from Domain.InsertDataDomain import InsertDataDomain
+from Exceptions.RelationExistsForSourceButNotToTypeUriOfTarget import \
+    RelationExistsForSourceButNotToTypeUriOfTarget
+from Exceptions.RelationExistsForTargetButNotToTypeUriOfSource import \
+    RelationExistsForTargetButNotToTypeUriOfSource
+from Exceptions.RelationHasInvalidTypeUriForSourceAndTarget import \
+    RelationHasInvalidTypeUriForSourceAndTarget
+from Exceptions.RelationHasNonExistingTypeUriForSourceOrTarget import \
+    RelationHasNonExistingTypeUriForSourceOrTarget
 from GUI.ButtonWidget import ButtonWidget
 from GUI.DialogWindows.RemoveProjectFilesWindow import RemoveProjectFilesWindow
+from GUI.DialogWindows.RevalidateDocumentsWindow import RevalidateDocumentsWindow
 from GUI.Screens.DataVisualisationScreen import DataVisualisationScreen
 from GUI.Screens.Screen import Screen
 import qtawesome as qta
@@ -39,7 +50,7 @@ class InsertDataScreen(Screen):
         self.message = QLabel()
         self.input_file_label = QLabel()
 
-        self.input_file_field: QTreeWidget = QTreeWidget()
+        self.project_files_overview_field: QTreeWidget = QTreeWidget()
         self.feedback_message_box = QFrame()
         self.asset_info = QListWidget()
 
@@ -76,7 +87,7 @@ class InsertDataScreen(Screen):
         button_frame_layout = QHBoxLayout()
         self.control_button.setText(self._('control_button'))
         self.control_button.setDisabled(True)
-        self.control_button.clicked.connect(lambda: self.validate_documents())
+        self.control_button.clicked.connect(lambda: self.try_to_validate_documents())
         self.control_button.setProperty('class', 'primary-button')
 
         reset_button = QPushButton()
@@ -94,6 +105,15 @@ class InsertDataScreen(Screen):
         button_frame_layout.addWidget(reset_button)
         button_frame.setLayout(button_frame_layout)
         return button_frame
+
+
+    def try_to_validate_documents(self):
+        # if there is a quick_save warn the user that the are overwriting the previous changes
+        if global_vars.current_project.get_last_quick_save_path():
+            RevalidateDocumentsWindow(self,self._)
+        else:
+            self.validate_documents()
+            self.validate_documents()
 
     def validate_documents(self):
         self.clear_feedback()
@@ -117,9 +137,6 @@ class InsertDataScreen(Screen):
         for item in error_set:
             exception = item["exception"]
             doc = item["path_str"]
-            InsertDataDomain.add_template_file_to_project(project=global_vars.current_project,
-                                                          filepath=Path(doc),
-                                                          state=FileState.ERROR)
 
             if isinstance(exception, ExceptionsGroup):
                 for ex in exception.exceptions:
@@ -130,12 +147,12 @@ class InsertDataScreen(Screen):
     def add_input_file_field(self):
         input_file = QFrame()
         input_file_layout = QHBoxLayout()
-        self.input_file_field.setColumnCount(3)
-        header = self.input_file_field.header()
+        self.project_files_overview_field.setColumnCount(3)
+        header = self.project_files_overview_field.header()
         header.setSectionResizeMode(1, QHeaderView.ResizeMode.Stretch)
         header.setStretchLastSection(False)
-        self.input_file_field.setHeaderHidden(True)
-        input_file_layout.addWidget(self.input_file_field)
+        self.project_files_overview_field.setHeaderHidden(True)
+        input_file_layout.addWidget(self.project_files_overview_field)
         input_file.setLayout(input_file_layout)
         return input_file
 
@@ -214,7 +231,17 @@ class InsertDataScreen(Screen):
         file_picker.setWindowTitle("Selecteer bestand")
         file_picker.setDirectory(file_path)
         file_picker.setFileMode(QFileDialog.FileMode.ExistingFiles)
-        file_picker.setNameFilter("EXCEL files (*.xlsx);;CSV files (*.csv);;JSON files (*.json)")
+
+        filters = ""
+        for i, item in enumerate(global_vars.supported_file_formats.items()):
+            keys = item[0]
+            value = item[1]
+
+            filters += f"{keys} files (*.{value})"
+            if i < len(global_vars.supported_file_formats) -1:
+                filters += ";;" # the last value cannot have ;; behind it
+        file_picker.setNameFilter(filters)
+        # file_picker.setNameFilter("EXCEL files (*.xlsx);;CSV files (*.csv);;JSON files (*.json)")
         if file_picker.exec():
             InsertDataDomain.add_files_to_backend_list(file_picker.selectedFiles())
             self.clear_feedback()
@@ -233,15 +260,15 @@ class InsertDataScreen(Screen):
             list_item.setIcon(0, qta.icon('mdi.close', color="red"))
         list_item.setData(1, 1, file)
         list_item.setSizeHint(1, QSize(0, 30))
-        self.input_file_field.addTopLevelItem(list_item)
+        self.project_files_overview_field.addTopLevelItem(list_item)
         button = ButtonWidget()
         button.clicked.connect(self.delete_file_from_list)
         button.setIcon(qta.icon('mdi.close'))
-        self.input_file_field.setItemWidget(list_item, 2, button)
+        self.project_files_overview_field.setItemWidget(list_item, 2, button)
 
 
     def delete_file_from_list(self):
-        items = self.input_file_field.selectedItems()
+        items = self.project_files_overview_field.selectedItems()
         item_file_path = items[0].data(1,1)
 
         InsertDataDomain.delete_backend_document(item_file_path=item_file_path)
@@ -250,14 +277,18 @@ class InsertDataScreen(Screen):
 
     def update_file_list(self):
         logging.debug("[CLEAR] update_file_list")
-        self.input_file_field.clear()
+
         all_valid = InsertDataDomain.sync_backend_documents_with_frontend()
         self.control_button.setDisabled(all_valid)
 
     def reset_button_functionality(self):
         RemoveProjectFilesWindow(project=global_vars.current_project, language_settings=self._)
-        InsertDataDomain.load_saved_documents_in_project()
+        InsertDataDomain.sync_backend_documents_with_frontend()
         self.clear_feedback()
+
+    def clear_all(self):
+        self.clear_feedback()
+        self.project_files_overview_field.clear()
 
     def clear_feedback(self):
         logging.debug("[CLEAR] clear_feedback")
@@ -265,9 +296,13 @@ class InsertDataScreen(Screen):
         self.clear_feedback_message()
 
     def add_error_to_feedback_list(self, e, doc):
-        logging.debug(e)
+
+        
+        logging.debug(  f"{str(e)}")
         doc_name = Path(doc).name
         error_widget = QListWidgetItem()
+        
+        
         if str(e) == "argument of type 'NoneType' is not iterable":
             error_text = self._("{doc_name}: Data nodig in een datasheet om objecten in te laden.\n").format(
                 doc_name=doc_name)
@@ -278,10 +313,30 @@ class InsertDataScreen(Screen):
                 doc_name=doc_name, tab=e.tab, bad_columns=str(e.bad_columns))
         elif issubclass(type(e), TypeUriNotInFirstRowError):
             error_text = self._("{doc_name}: type uri not in first row of {tab}\n").format(doc_name=doc_name, tab=str(e.tab))
-        elif issubclass(type(e), ValueError):
-            error_text = self._(f'{doc_name}: {e}\n')
-        elif issubclass(type(e), FailedToImportFileError):
-            error_text = self._(f'{doc_name}: {e}\n')
+        elif issubclass(type(e), FailedToImportFileError): # as of otlmow_converter==1.4 never instantiated
+            error_text = self._(f'{doc_name}: {e} \n')
+        elif issubclass(type(e), NoIdentificatorError):
+            error_text = self._(f'{doc_name}: {e} \n')
+        elif issubclass(type(e), RelationHasInvalidTypeUriForSourceAndTarget):
+                error_text = self._(
+                    "{doc_name}:\n"+
+                    "Relation of type: \"{type_uri}\"\n"+
+                    "with assetId.identificator: \"{identificator}\"\n"+
+                    "This relation cannot be made between the typeURI's.\n"+
+                    "{wrong_field}= \"{wrong_value}\"\n"+
+                    "{wrong_field2}= \"{wrong_value2}\"\n in tab {tab}").format(
+                    doc_name=doc_name, type_uri=e.relation_type_uri,
+                    identificator=e.relation_identificator, wrong_field=e.wrong_field,
+                    wrong_value=e.wrong_value, wrong_field2=e.wrong_field2,
+                    wrong_value2=e.wrong_value2,tab=e.tab)
+        elif issubclass(type(e), RelationHasNonExistingTypeUriForSourceOrTarget) :
+            error_text = self._(
+                "{doc_name}:\n" 
+                "Relation of type: \"{type_uri}\"\n"
+                "with assetId.identificator: \"{identificator}\",\n"
+                "has the non-existing TypeURI value: \"{wrong_value}\"\n"
+                "for field \"{wrong_field}\".\n in tab {tab}").format(
+                doc_name=doc_name, type_uri=e.relation_type_uri,identificator=e.relation_identificator, wrong_field=e.wrong_field, wrong_value=e.wrong_value,tab=e.tab)
         else:
             error_text = self._(f'{doc_name}: {e}\n')
         error_widget.setText(error_text)

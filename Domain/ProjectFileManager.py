@@ -27,6 +27,7 @@ class ProjectFileManager:
 
     settings_filename = 'settings.json'
 
+
     @classmethod
     def init(cls):
         settings = cls.get_or_create_settings_file()
@@ -88,12 +89,18 @@ class ProjectFileManager:
         logging.debug("Saving project to %s", project_dir_path)
         project_dir_path.mkdir(exist_ok=True, parents=True)
 
+        last_quick_save_name = None
+        if project.last_quick_save:
+            last_quick_save_name = str(project.last_quick_save.name)
+
         project_details_dict = {
             'bestek': project.bestek,
             'eigen_referentie': project.eigen_referentie,
             'laatst_bewerkt': project.laatst_bewerkt.strftime("%Y-%m-%d %H:%M:%S"),
             'subset': project.subset_path.name,
-            'last_quick_save': str(project.last_quick_save)
+            'subset_operator': project.get_operator_name(),
+            'otl_version': project.get_otl_version(),
+            'last_quick_save': last_quick_save_name
         }
 
         with open(project_dir_path / "project_details.json", "w") as project_details_file:
@@ -110,21 +117,20 @@ class ProjectFileManager:
             # move subset to project dir
             new_subset_path = project_dir_path / project.subset_path.name
             shutil.copy(project.subset_path, new_subset_path)
-        global_vars.projects = cls.get_all_otl_wizard_projects()
+        # global_vars.projects = cls.get_all_otl_wizard_projects()
 
     @classmethod
     def load_validated_assets(cls) -> list[AIMObject]:
-        project_dir_path = global_vars.current_project.project_path
 
-        quick_save_path = Path(project_dir_path / "quick_saves")
-        if global_vars.current_project.last_quick_save and global_vars.current_project.last_quick_save.exists():
-            return list(OtlmowConverter.from_file_to_objects(global_vars.current_project.last_quick_save))
-        elif quick_save_path.exists():
-            file_list =  sorted(os.listdir(quick_save_path), reverse=True)
-            if file_list:
-                return list(OtlmowConverter.from_file_to_objects(Path(quick_save_path,file_list[0])))
+
+        path = global_vars.current_project.get_last_quick_save_path()
+
+        if path:
+            return list(OtlmowConverter.from_file_to_objects(path))
 
         return []
+
+
 
     @classmethod
     def save_validated_assets(cls, project, project_dir_path):
@@ -173,6 +179,8 @@ class ProjectFileManager:
                                              sequence_of_objects=project.assets_in_memory)
         global_vars.current_project.last_quick_save =save_path
         cls.save_project_to_dir(global_vars.current_project)
+        project.last_quick_save =save_path
+        cls.save_project_to_dir(project)
 
 
     @classmethod
@@ -199,50 +207,35 @@ class ProjectFileManager:
             project_zip.write(project.assets_path, arcname=project.assets_path.name)
             project_zip.write(project.subset_path, arcname=project.subset_path.name)
 
-    @classmethod
-    def add_project_files_to_assets_file(cls, project: Project) -> None:
-        otl_wizard_project_dir = cls.get_otl_wizard_projects_dir()
-        object_array = []
-        for objects_list in project.saved_project_files:
-            objects_list_details = {
-                'file_path': str(objects_list.file_path),
-                'state': objects_list.state.value
-            }
-            object_array.append(objects_list_details)
-        project_dir_path = otl_wizard_project_dir / project.project_path.name
-        with open(project_dir_path / "assets.json", "w") as project_details_file:
-            json.dump(object_array, project_details_file)
+            if not project.get_saved_projectfiles():
+                project.load_saved_document_filenames()
 
-    @classmethod
-    def get_objects_list_saved_in_project(cls, project: Project) -> Project:
-        project_dir_path = cls.get_otl_wizard_projects_dir() / project.project_path.name
-        assets_path:Path = project_dir_path / "assets.json"
-        if assets_path.exists():
-            with open(assets_path, "r") as project_details_file:
-                objects_lists = json.load(project_details_file)
-            logging.debug(f"Loaded saved object lists: {str(objects_lists)}")
-            objects_lists_array = []
-            for objects_list in objects_lists:
-                file = ProjectFile(
-                    file_path=objects_list['file_path'],
-                    # state=FileState.WARNING) # files loaded from memory storage need to be validated
-                                             # again
-                    state=FileState(objects_list['state']))
-                objects_lists_array.append(file)
-            project.saved_project_files = objects_lists_array
-        return project
+            for document in project.get_saved_projectfiles():
+                file_zip_path = Path('OTL-template-files') / document.file_path.name
+                project_zip.write(document.file_path, arcname=file_zip_path)
+
+
+
+            last_quick_save_path = project.get_last_quick_save_path()
+            last_quick_save_zip_path = Path("quick_saves") / last_quick_save_path.name
+            project_zip.write(last_quick_save_path, arcname=last_quick_save_zip_path)
 
     @classmethod
     def load_project_file(cls, file_path) -> Project:
-        project_dir_path = Path(cls.get_otl_wizard_projects_dir() / file_path.stem)
-        try:
-            project_dir_path.mkdir(exist_ok=False, parents=True)  # TODO: raise error if dir already exists?
-        except FileExistsError as ex:
-            logging.error("Project dir %s already exists", project_dir_path)
-            raise ex
-
         with zipfile.ZipFile(file_path) as project_file:
-            project_file.extractall(path=project_dir_path)
+
+            # TODO: handle if project doesn't contain project_details.json files
+            project_details = json.load(project_file.open('project_details.json'))
+
+            project_dir_path = Path(cls.get_otl_wizard_projects_dir() / project_details['eigen_referentie'])
+            try:
+                project_dir_path.mkdir(exist_ok=False, parents=True)  # TODO: raise error if dir already exists?
+            except FileExistsError as ex:
+                logging.error("Project dir %s already exists", project_dir_path)
+                raise ex
+
+            with zipfile.ZipFile(file_path) as project_file:
+                project_file.extractall(path=project_dir_path)
 
         return cls.get_project_from_dir(project_dir_path)
 
@@ -272,19 +265,7 @@ class ProjectFileManager:
 
         return version_info['model_version']
 
-    @classmethod
-    def add_template_file_to_project(cls, filepath: Path) -> Path:
-        project = global_vars.current_project
-        location_dir = project.project_path / 'OTL-template-files'
-        if not location_dir.exists():
-            location_dir.mkdir()
-        doc_name = filepath.name
-        end_location = location_dir / doc_name
-        if end_location == filepath:
-            return end_location
-        shutil.copy(filepath, end_location)
-        logging.debug(f"Created a copy of the template file {filepath.name} in the project folder")
-        return end_location
+
 
     @classmethod
     def delete_template_folder(cls) -> None:
@@ -296,18 +277,7 @@ class ProjectFileManager:
         shutil.rmtree(location_dir)
         logging.debug("Finished clearing out the whole template folder")
 
-    @classmethod
-    def delete_template_file_from_project(cls, file_path) -> bool:
-        try:
-            logging.debug(f"file path = {str(file_path)}")
-            Path(file_path).unlink()
-            return True
-        except FileNotFoundError as e:
-            logging.error(e)
-            return False
-        except PermissionError as e:
-            logging.error(e)
-            raise ExcelFileUnavailableError(file_path=file_path, exception=e)
+
 
     @staticmethod
     def create_empty_temporary_map() -> Path:

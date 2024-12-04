@@ -8,6 +8,8 @@ from PyQt6.QtWidgets import QWidget, QPushButton, QLabel, QHBoxLayout, QVBoxLayo
     QLineEdit, QFrame
 from PyQt6.QtCore import Qt
 import Domain.HomeDomain as home_domain
+from Domain.Updater import Updater
+from GUI.DialogWindows.SuggestUpdateWindow import SuggestUpdateWindow
 from GUI.Screens.Screen import Screen
 from GUI.HeaderBar import HeaderBar
 from GUI.MessageBox import MessageBox
@@ -38,6 +40,8 @@ class HomeScreen(Screen):
         ProjectFileManager.load_projects_into_global()
         self.main_content_ui()
         self.init_ui()
+        if Updater.needs_update:
+            SuggestUpdateWindow( self._,Updater.local_version,Updater.master_version)
 
     def main_content_ui(self):
         # Search bar

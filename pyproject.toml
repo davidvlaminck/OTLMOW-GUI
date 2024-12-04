@@ -4,18 +4,19 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "otlmow_gui"
-version = "0.1"
+version = "0.3.1"
 authors = [{name = "David Vlaminck", email = "david.vlaminck@mow.vlaanderen.be"},
-    {name = "Jasper Berton", email = "jasperberton1@telenet.be"}]
+    {name = "Jasper Berton", email = "jasperberton1@telenet.be"},
+    {name = "Christiaan Vanbergen", email = "christiaan.vanbergen.btf@gmail.com"}]
 readme = "README.md"
 license = {file = "LICENSE"}
 classifiers = [
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "Operating System :: OS Independent",
     "Development Status :: 5 - Production/Stable",
     "Environment :: Console",

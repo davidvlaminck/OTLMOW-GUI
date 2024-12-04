@@ -33,6 +33,7 @@ class OverviewTable(QTableWidget):
         self.main_window = None
         self.error_widget = QTableWidgetItem()
         self.projects = None
+        self.cellDoubleClicked.connect(self.open_project_async_task)
 
     def draw_table(self, input_text: str = None):
         self.setEnabled(True)
@@ -67,11 +68,13 @@ class OverviewTable(QTableWidget):
         for row_index, element in enumerate(projects):
             self.add_cell_to_table(self, row=row_index, column=0, item=element.eigen_referentie)
             self.add_cell_to_table(self, row=row_index, column=1, item=element.bestek)
+            # self.add_cell_to_table(self, row=row_index, column=2,
+            #                        item=ModelBuilder(element.subset_path).get_name_project())
             self.add_cell_to_table(self, row=row_index, column=2,
-                                   item=ModelBuilder(element.subset_path).get_name_project())
+                                   item=element.get_subset_db_name())
             self.add_cell_to_table(self, row=row_index, column=3, item=element.laatst_bewerkt)
             self.add_action_buttons(row_index, element, self)
-        self.cellDoubleClicked.connect(self.open_project_async_task)
+
 
     @staticmethod
     def add_cell_to_table(table: QTableWidget, row: int, column: int, item: Union[str, datetime.datetime]) -> None:
@@ -117,15 +120,17 @@ class OverviewTable(QTableWidget):
         projects = ProjectFileManager.get_all_otl_wizard_projects()
         p = next(k for k in projects if k.eigen_referentie == project)
         self.main_window.widget(1).tab1.project = p
-        p = ProjectFileManager.get_objects_list_saved_in_project(p)
+        p.load_saved_document_filenames()
         global_vars.current_project = p
         self.main_window.reset_ui(self._)
         # self.main_window.widget(2).tab1.load_saved_documents_in_project()
-        InsertDataDomain.init_static()
-        InsertDataDomain.load_saved_documents_in_project()
+        # InsertDataDomain.init_static()
+        # InsertDataDomain.load_saved_documents_in_project()
+
         self.main_window.widget(1).tab1.update_project_info()
-        # self.main_window.widget(2).tab1.load_saved_documents_in_project()
+        self.main_window.widget(2).tab1.clear_all()
         RelationChangeDomain.init_static(global_vars.current_project)
+        InsertDataDomain.init_static()
         event_loop = asyncio.get_event_loop()
         event_loop.create_task(self.navigate_to_project())
 

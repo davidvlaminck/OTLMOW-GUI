@@ -1,58 +1,45 @@
 import logging
 import os
 import tempfile
+
 from pathlib import Path
-from typing import List, Iterable, Optional
+from typing import List, Iterable, Optional, cast
 
 from openpyxl.reader.excel import load_workbook
-from otlmow_converter.OtlmowConverter import OtlmowConverter
-from otlmow_model.OtlmowModel.BaseClasses.OTLObject import OTLObject
+from otlmow_converter.Exceptions.ExceptionsGroup import ExceptionsGroup
+
+from otlmow_model.OtlmowModel.BaseClasses.OTLObject import OTLObject, \
+    dynamic_create_instance_from_uri
+from otlmow_model.OtlmowModel.Classes.Agent import Agent
+from otlmow_model.OtlmowModel.Classes.ImplementatieElement.RelatieObject import RelatieObject
+from otlmow_model.OtlmowModel.Helpers import OTLObjectHelper, RelationValidator
 
 from Domain import global_vars
 from Domain.Project import Project
-from Domain.ProjectFileManager import ProjectFileManager
-from Domain.RelationChangeDomain import RelationChangeDomain
+from Domain.RelationChangeDomain import RelationChangeDomain, save_assets
 from Domain.enums import FileState
-from Domain.ProjectFile import ProjectFile
-from Exceptions.ExcelFileUnavailableError import ExcelFileUnavailableError
-from GUI.DialogWindows.NotificationWindow import NotificationWindow
-from GUI.translation.GlobalTranslate import GlobalTranslate
+from Exceptions.NoIdentificatorError import NoIdentificatorError
+from Exceptions.RelationHasInvalidTypeUriForSourceAndTarget import \
+    RelationHasInvalidTypeUriForSourceAndTarget
+from Exceptions.RelationHasNonExistingTypeUriForSourceOrTarget import \
+    RelationHasNonExistingTypeUriForSourceOrTarget
+from GUI.Screens.RelationChangeElements.RelationChangeHelpers import RelationChangeHelpers
 from UnitTests.TestClasses.Classes.ImplementatieElement.AIMObject import AIMObject
+from otlmow_converter.OtlmowConverter import OtlmowConverter
 
 
 class InsertDataDomain:
-    documents: dict[str,FileState] = {}
 
     @classmethod
     def init_static(cls):
-        cls.documents = {}
-
-
-    @classmethod
-    def load_saved_documents_in_project(cls):
-        cls.clear_documents_in_memory()
-        logging.debug(f"list with {global_vars.current_project.saved_project_files}")
-        logging.debug(f"Filled list with {len(global_vars.current_project.saved_project_files)} "
-                      f"items")
-
-        files = []
-        states = []
-        for asset in global_vars.current_project.saved_project_files:
-            files.append(str(asset.file_path))
-            states.append(asset.state)
-
-        cls.add_files_to_backend_list(files, states)
-
-    @classmethod
-    def clear_documents_in_memory(cls):
-        cls.documents.clear()
+        cls.sync_backend_documents_with_frontend()
 
     @classmethod
     def check_document(cls, doc_location) -> Iterable[OTLObject]:
-        return OtlmowConverter.from_file_to_objects(file_path=Path(doc_location))
+        return OtlmowConverter.from_file_to_objects(file_path=Path(doc_location), include_tab_info=True)
 
     @classmethod
-    def start_excel_changes(cls, doc) -> Path:
+    def remove_dropdown_values_from_excel(cls, doc) -> Path:
         logging.debug("starting excel changes")
         wb = load_workbook(doc)
         temp_path = cls.create_temp_path(path_to_template_file_and_extension=doc)
@@ -75,55 +62,19 @@ class InsertDataDomain:
     @classmethod
     def add_template_file_to_project(cls, filepath: Path, project: Project, state: FileState):
         if Path(filepath).suffix in ['.xls', '.xlsx']:
-            filepath = cls.start_excel_changes(doc=filepath)
-        end_loc = ProjectFileManager.add_template_file_to_project(filepath=filepath)
-        template_file = ProjectFile(file_path=end_loc, state=state)
-        project.saved_project_files.append(template_file)
+            filepath = cls.remove_dropdown_values_from_excel(doc=filepath)
+
+        end_loc = project.make_copy_of_added_file(filepath=filepath)
+        project.add_saved_project_file(file_path=end_loc, state=state)
+        cls.sync_backend_documents_with_frontend()
+
 
     @classmethod
     def return_temporary_path(cls, file_path: Path) -> Path:
         if Path(file_path).suffix in ['.xls', '.xlsx']:
-            return cls.start_excel_changes(doc=file_path)
+            return cls.remove_dropdown_values_from_excel(doc=file_path)
         elif Path(file_path).suffix == '.csv':
             return cls.create_temp_path(path_to_template_file_and_extension=file_path)
-
-    @classmethod
-    def delete_project_file_from_project(cls, project: Project, file_path: Path):
-        try:
-
-            if (ProjectFileManager.delete_template_file_from_project(
-                    file_path=file_path)):
-                for file in project.saved_project_files:
-                    if file.file_path == file_path:
-                        project.saved_project_files.remove(file)
-                        break
-                ProjectFileManager.add_project_files_to_assets_file(project=project)
-                return True
-            else:
-                return False
-
-        except ExcelFileUnavailableError as e:
-            message = GlobalTranslate._(e.error_window_message_key)
-            title = GlobalTranslate._(e.error_window_title_key)
-            NotificationWindow("{0}:\n{1}".format(message,e.file_path),title)
-
-    @classmethod
-    def remove_all_project_files(cls, project: Project):
-        logging.debug("memory contains %s",
-                      project.saved_project_files)
-        for file in project.saved_project_files:
-            logging.debug("starting to delete file %s",
-                          file.file_path)
-            try:
-                ProjectFileManager.delete_template_file_from_project(
-                    file_path=file.file_path)
-            except ExcelFileUnavailableError as e:
-                message = GlobalTranslate._(e.error_window_message_key)
-                title = GlobalTranslate._(e.error_window_title_key)
-                NotificationWindow("{0}:\n{1}".format(message, e.file_path), title)
-
-        project.saved_project_files = []
-        ProjectFileManager.add_project_files_to_assets_file(project=project)
 
     @classmethod
     def add_files_to_backend_list(cls, files: list[str], states: Optional[list[FileState]] = None):
@@ -131,62 +82,119 @@ class InsertDataDomain:
             states = [FileState.WARNING for _ in range(len(files))]
 
         for i in range(len(files)):
-            cls.documents[files[i]] = states[i]
+            InsertDataDomain.add_template_file_to_project(project=global_vars.current_project,
+                                                          filepath=Path(files[i]),
+                                                          state=states[i])
 
         cls.get_screen().update_file_list()
 
     @classmethod
     def sync_backend_documents_with_frontend(cls) -> bool:
         all_valid = True
-        for item in cls.documents.items():
-            cls.get_screen().add_file_to_frontend_list(item[0],item[1])
-            if item[0] != FileState.OK:
+        cls.get_screen().project_files_overview_field.clear()
+        for item in global_vars.current_project.get_saved_projectfiles():
+            cls.get_screen().add_file_to_frontend_list(item.file_path,item.state)
+            if item.state != FileState.OK:
                 all_valid = False
 
         return all_valid
 
     @classmethod
     def delete_backend_document(cls, item_file_path: str):
-        file_is_in_project = global_vars.current_project.is_in_project(item_file_path)
-        if file_is_in_project is not None:
-            InsertDataDomain.delete_project_file_from_project(global_vars.current_project,
-                                                              Path(item_file_path))
-        InsertDataDomain.load_saved_documents_in_project()
+        global_vars.current_project.remove_project_file(Path(item_file_path))
+
+        InsertDataDomain.sync_backend_documents_with_frontend()
 
     @classmethod
+    @save_assets
     def load_and_validate_documents(cls):
         error_set: list[dict] = []
         objects_lists = []
-        global_vars.current_project.saved_project_files = []
 
-        for doc in cls.documents.keys():
+        for project_file in global_vars.current_project.get_saved_projectfiles():
 
-            if Path(doc).suffix in ['.xls', '.xlsx']:
-                temp_path = InsertDataDomain.start_excel_changes(doc=doc)
-            elif Path(doc).suffix == '.csv':
-                temp_path = Path(doc)
 
             try:
-                asset = InsertDataDomain.check_document(doc_location=temp_path)
-                ProjectFileManager.add_template_file_to_project(Path(doc))
-                objects_lists.append(asset)
+
+                file_path = project_file.file_path
+                temp_path = file_path
+                if file_path.suffix in ['.xls', '.xlsx']:
+                    temp_path = InsertDataDomain.remove_dropdown_values_from_excel(doc=file_path)
+                elif file_path.suffix == '.csv':
+                    temp_path = file_path
+
+                assets = InsertDataDomain.check_document(doc_location=temp_path)
+                exception_group = ExceptionsGroup(
+                    message=f'Failed to create objects from Excel file {temp_path}')
+                cls.check_for_invalid_relations(assets,exception_group)
+                cls.check_for_empty_identificators(assets,exception_group)
+
+                if len(exception_group.exceptions) > 0:
+                    raise exception_group
+                project_file.state = FileState.OK
+                objects_lists.append(assets)
             except Exception as ex:
-                error_set.append({"exception": ex, "path_str": doc})
-            else:
-                InsertDataDomain.add_template_file_to_project(project=global_vars.current_project,
-                                                              filepath=Path(doc),
-                                                              state=FileState.OK)
+                error_set.append({"exception": ex, "path_str": file_path})
+                # ProjectFileManager.add_template_file_to_project(project=global_vars.current_project,
+                #                                               filepath=Path(doc),
+                #                                               state=FileState.ERROR)
+                project_file.state = FileState.ERROR
 
-        ProjectFileManager.add_project_files_to_assets_file(global_vars.current_project)
-
-        cls.load_saved_documents_in_project()
+        # state can be changed to either OK or ERROR
+        global_vars.current_project.save_project_filepaths_to_file()
+        cls.sync_backend_documents_with_frontend()
 
         objects_in_memory = cls.flatten_list(objects_lists)
 
         global_vars.otl_wizard.main_window.step3_visuals.create_html(objects_in_memory)
         RelationChangeDomain.set_instances(objects_in_memory)
+        global_vars.otl_wizard.main_window.step3_visuals.reload_html()
 
         return error_set, objects_lists
+
+    @classmethod
+    def check_for_invalid_relations(cls, assets: list[OTLObject],exception_group: ExceptionsGroup):
+        for asset in assets:
+            if OTLObjectHelper.is_relation(asset):
+                relation = cast(RelatieObject, asset)
+                if relation.bron.typeURI not in RelationChangeDomain.all_OTL_asset_types_dict.values():
+                    ex = RelationHasNonExistingTypeUriForSourceOrTarget(relation.typeURI,
+                                                                         relation.assetId.identificator,
+                                                                         "bron.typeURI",
+                                                                         relation.bron.typeURI,
+                                                                        RelationChangeHelpers.get_abbreviated_typeURI(asset.typeURI,False))
+                    exception_group.add_exception(error=ex)
+
+                if relation.doel.typeURI not in RelationChangeDomain.all_OTL_asset_types_dict.values():
+                    ex = RelationHasNonExistingTypeUriForSourceOrTarget(
+                        relation_type_uri=relation.typeURI,
+                        relation_identificator=relation.assetId.identificator,
+                        wrong_field="doel.typeURI",
+                        wrong_value=relation.doel.typeURI,
+                        tab=RelationChangeHelpers.get_abbreviated_typeURI(
+                            asset.typeURI,False))
+                    exception_group.add_exception(error=ex)
+
+                # cls.detect_more_complex_target_or_source_typeURI_errors(relation)
+                if not RelationValidator.is_valid_relation(relation_type=type(relation),
+                                                             source_typeURI=relation.bron.typeURI,
+                                                             target_typeURI=relation.doel.typeURI):
+                    ex = cls.raise_wrong_doel_or_target(
+                        relation=relation,
+                        tab=RelationChangeHelpers.get_abbreviated_typeURI(
+                            asset.typeURI,False))
+                    exception_group.add_exception(error=ex)
+
+    @classmethod
+    def raise_wrong_doel_or_target(cls, relation,tab):
+        return RelationHasInvalidTypeUriForSourceAndTarget(
+            relation_type_uri=relation.typeURI,
+            relation_identificator=relation.assetId.identificator,
+            wrong_field="bron.typeURI",
+            wrong_value=relation.bron.typeURI,
+            wrong_field2="doel.typeURI",
+            wrong_value2=relation.doel.typeURI,
+            tab=tab)
 
     @classmethod
     def flatten_list(cls, objects_lists):
@@ -198,3 +206,57 @@ class InsertDataDomain:
     @classmethod
     def get_screen(cls):
         return global_vars.otl_wizard.main_window.step2
+
+    @classmethod
+    def detect_more_complex_target_or_source_typeURI_errors(cls, relation):
+        if not RelationValidator.is_valid_relation(relation_type=type(relation),
+                                                   source_typeURI=relation.bron.typeURI,
+                                                   target_typeURI=relation.doel.typeURI):
+
+            # RelationValidator.is_valid_relation doesn't say if bron or doel is wrong
+            source_instance = dynamic_create_instance_from_uri(relation.bron.typeURI)
+            concrete_source_relations = list(source_instance._get_all_concrete_relations())
+            concrete_source_relations_of_type_relation = set(
+                [rel for rel in concrete_source_relations if rel[1] == relation.typeURI])
+
+            if concrete_source_relations_of_type_relation:
+                # source asset has relation
+                concrete_source_relation_to_target = \
+                    [rel for rel in concrete_source_relations_of_type_relation if
+                     rel[2] == relation.doel.typeURI]
+                if not concrete_source_relation_to_target:
+                    # source asset doesn't have this relation to target
+                    cls.raise_wrong_doel_or_target(relation)
+                else:
+                    logging.debug("Error in logic")
+            else:
+                target_instance = dynamic_create_instance_from_uri(
+                    relation.doel.typeURI)
+                concrete_target_relations = list(
+                    target_instance._get_all_concrete_relations())
+                concrete_target_relations_of_type_relation = set(
+                    [rel for rel in concrete_target_relations if
+                     rel[1] == relation.typeURI])
+                if concrete_target_relations_of_type_relation:
+                    # target asset has relation but not to source
+                    cls.raise_wrong_doel_or_target(relation)
+                else:
+                    # both target and source asset do not have relation
+                    cls.raise_wrong_doel_or_target(relation)
+
+    @classmethod
+    def check_for_empty_identificators(cls, assets: Iterable[OTLObject],exception_group: ExceptionsGroup):
+
+
+        for asset in assets:
+            identificator = None
+            if asset.typeURI == 'http://purl.org/dc/terms/Agent':
+                new_external_agent: Agent = cast(Agent, asset)
+                identificator = new_external_agent.agentId.identificator
+
+            else:
+                new_external_asset: AIMObject = cast(AIMObject, asset)
+                identificator = new_external_asset.assetId.identificator
+
+            if not identificator:
+                exception_group.add_exception(error=NoIdentificatorError(original_exception=ValueError(),tab=RelationChangeHelpers.get_abbreviated_typeURI(asset.typeURI,False)))

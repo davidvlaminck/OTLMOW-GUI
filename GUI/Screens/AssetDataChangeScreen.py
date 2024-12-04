@@ -45,8 +45,9 @@ class AssetDataChangeScreen(Screen):
         window = QWidget()
         window.setProperty('class', 'background-box')
         window_layout = QVBoxLayout()
-        window_layout.addWidget(self.upper_side())
-        window_layout.addWidget(self.lower_side())
+        # window_layout.addWidget(self.upper_side())
+        # window_layout.addWidget(self.lower_side())
+        window_layout.addWidget(QLabel("Under Construction"))
         window.setLayout(window_layout)
         return window
 
@@ -135,6 +136,16 @@ class AssetDataChangeScreen(Screen):
         file_picker.setWindowTitle(self._('choose_file'))
         file_picker.setDirectory(file_path)
         file_picker.setFileMode(QFileDialog.FileMode.ExistingFiles)
+        filters = ""
+        for i, item in enumerate(global_vars.supported_file_formats.items()):
+            keys = item[0]
+            value = item[1]
+
+            filters += f"{keys} files (*.{value})"
+            if i < len(global_vars.supported_file_formats) - 1:
+                filters += ";;"  # the last value cannot have ;; behind it
+        file_picker.setNameFilter(filters)
+
         if file_picker.exec():
             logging.debug("file picker executed")
             self.add_file_to_list(file_picker.selectedFiles())

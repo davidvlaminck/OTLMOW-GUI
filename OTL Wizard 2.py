@@ -1,6 +1,8 @@
 import argparse
 import asyncio
+import importlib
 import logging
+import os
 import sys
 import traceback
 import typing
@@ -10,6 +12,7 @@ from pathlib import Path
 
 from Domain import global_vars
 from Domain.InsertDataDomain import InsertDataDomain
+from Domain.Updater import Updater
 from GUI.translation.GlobalTranslate import GlobalTranslate
 
 ROOT_DIR =  Path(Path(__file__).absolute()).parent
@@ -36,7 +39,7 @@ def demo_data():
     project_1 = Project(
         project_path=Path(Path.home() / 'OTLWizardProjects' / 'Projects' / 'project_1'),
         subset_path=Path(project_dir / 'project_1' / 'Flitspaal_noAgent3.0.db'),
-        assets_path=Path(project_dir / 'project_1' / 'assets.json'),
+        assets_path=Path(project_dir / 'project_1'),
         eigen_referentie="test1",
         bestek="test_bestek1",
         laatst_bewerkt=datetime(2021, 9, 11))
@@ -51,11 +54,23 @@ class OTLWizard(QApplication):
 
         sys.excepthook = excepthook
 
+        Updater.check_for_updates()
+
         app_icon = QIcon('img/wizard.ico')
         self.setWindowIcon(app_icon)
 
-        with open('GUI/style/custom.qss', 'r') as file:
+        style_path = Path('style/custom.qss')
+
+        if hasattr(sys, '_MEIPASS'): # when in .exe file
+            style_path = Path(os.path.join(sys._MEIPASS,'style/custom.qss'))
+        elif not style_path.exists():
+            style_path = Path('data/style/custom.qss')
+
+
+        with open(style_path, 'r') as file:
             self.setStyleSheet(file.read())
+
+        logging.debug(f"style sheet found in: {str(style_path.absolute())}")
 
         # self.demo_project = demo_data()
         self.demo_project = None
@@ -102,6 +117,13 @@ if __name__ == '__main__':
     logging.debug("Application started")
 
     app = OTLWizard(settings,sys.argv)
+
+    if '_PYI_SPLASH_IPC' in os.environ and importlib.util.find_spec("pyi_splash"):
+        import pyi_splash
+
+        pyi_splash.update_text('UI Loaded ...')
+        pyi_splash.close()
+        logging.info('Splash screen closed.')
 
     event_loop = QEventLoop(app)
     asyncio.set_event_loop(event_loop)

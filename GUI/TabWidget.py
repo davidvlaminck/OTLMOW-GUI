@@ -3,6 +3,7 @@ from pathlib import Path
 
 from PyQt6.QtWidgets import QTabWidget, QVBoxLayout
 
+from Domain import global_vars
 from Domain.language_settings import return_language
 from GUI.Screens.Screen import Screen
 from GUI.HeaderBar import HeaderBar
@@ -15,9 +16,9 @@ LANG_DIR = ROOT_DIR.parent / 'locale/'
 
 class TabWidget(Screen):
 
-    def __init__(self, page_nr: int, widget1, description1: str, has_save_btn: bool = True, **kwargs):
+    def __init__(self, language, page_nr: int, widget1, description1: str, has_save_btn: bool = True, **kwargs):
         super().__init__()
-        self._ = return_language(LANG_DIR)
+        self._ = language
         self.tabs = QTabWidget()
         self.tab1 = widget1
         self.desc1 = description1
@@ -54,7 +55,8 @@ class TabWidget(Screen):
 
     def onClickFunction(self):
         self.main_window.setCurrentIndex(0)
-        print("click tabWidget")
+        global_vars.current_project.clear_model_builder_from_memory()
+
 
     def init_ui(self):
         button = self.header.header_bar_detail_screen()

@@ -2,13 +2,14 @@ import asyncio
 import logging
 import webbrowser
 from asyncio import sleep
+from datetime import datetime
 from pathlib import Path
 
 import qtawesome as qta
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QPixmap, QTransform
 from PyQt6.QtWidgets import QFrame, QHBoxLayout, QLabel, QVBoxLayout, QWidget, QMenu
-from win32ctypes.pywin32.pywintypes import datetime
+
 
 from Domain import global_vars
 from GUI.ButtonWidget import ButtonWidget
@@ -177,7 +178,6 @@ class HeaderBar(QFrame):
                                             color='#B35F35'))
         self.return_button.setText(self._('return_to_home_screen'))
         if global_vars.current_project is not None:
-            print(global_vars.current_project.eigen_referentie)
             self.reference_title.setText(global_vars.current_project.eigen_referentie)
         else:
             self.reference_title.setText("")

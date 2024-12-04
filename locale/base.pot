@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2024-10-04 17:15+0200\n"
+"POT-Creation-Date: 2024-12-03 17:29+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,57 +17,81 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.16.0\n"
 
-#: Domain/ProjectFileManager.py:221 Domain/template_domain.py:32
-msgid "permission_to_file_was_denied_likely_due_to_the_file_being_open_in_excel"
-msgstr ""
-
-#: Domain/ProjectFileManager.py:222 Domain/template_domain.py:32
-msgid "permission_denied"
-msgstr ""
-
-#: Domain/home_domain.py:41
+#: Domain/HomeDomain.py:43
 msgid "own_reference_empty_error"
 msgstr ""
 
-#: Domain/home_domain.py:43
+#: Domain/HomeDomain.py:45
 msgid "bestek_empty_error"
 msgstr ""
 
-#: Domain/home_domain.py:45
+#: Domain/HomeDomain.py:47
 msgid "db_path_empty_error"
 msgstr ""
 
-#: Domain/home_domain.py:47
+#: Domain/HomeDomain.py:49
 msgid "wrong_database_error"
 msgstr ""
 
-#: GUI/HeaderBar.py:52 GUI/HeaderBar.py:168
+#: Domain/TemplateDomain.py:37
+msgid "permission_to_file_was_denied_likely_due_to_the_file_being_open_in_excel"
+msgstr ""
+
+#: Domain/TemplateDomain.py:37
+msgid "permission_denied"
+msgstr ""
+
+#: GUI/HeaderBar.py:77 GUI/HeaderBar.py:241
 msgid "new_project_button"
 msgstr ""
 
-#: GUI/HeaderBar.py:77 GUI/HeaderBar.py:172
+#: GUI/HeaderBar.py:143 GUI/HeaderBar.py:245
 msgid "help"
 msgstr ""
 
-#: GUI/DialogWindows/menu_actions_window.py:13 GUI/HeaderBar.py:79
-#: GUI/HeaderBar.py:173
+#: GUI/DialogWindows/MenuActionsWindow.py:13 GUI/HeaderBar.py:145
+#: GUI/HeaderBar.py:246
 msgid "about"
 msgstr ""
 
-#: GUI/HeaderBar.py:81 GUI/HeaderBar.py:174
+#: GUI/HeaderBar.py:147 GUI/HeaderBar.py:247
 msgid "report error"
 msgstr ""
 
-#: GUI/HeaderBar.py:109 GUI/HeaderBar.py:169
+#: GUI/HeaderBar.py:179 GUI/HeaderBar.py:242
 msgid "return_to_home_screen"
 msgstr ""
 
-#: GUI/HeaderBar.py:129 GUI/HeaderBar.py:170
+#: GUI/HeaderBar.py:199 GUI/HeaderBar.py:243
 msgid "save_button"
 msgstr ""
 
-#: GUI/HeaderBar.py:151 GUI/HeaderBar.py:171
+#: GUI/HeaderBar.py:224 GUI/HeaderBar.py:244
 msgid "import"
+msgstr ""
+
+#: GUI/MainWindow.py:56
+msgid "template"
+msgstr ""
+
+#: GUI/MainWindow.py:57
+msgid "insert_data"
+msgstr ""
+
+#: GUI/MainWindow.py:58
+msgid "data visuals"
+msgstr ""
+
+#: GUI/MainWindow.py:59
+msgid "data_change"
+msgstr ""
+
+#: GUI/MainWindow.py:60
+msgid "relation_change"
+msgstr ""
+
+#: GUI/MainWindow.py:61
+msgid "export_data"
 msgstr ""
 
 #: GUI/MessageBox.py:16
@@ -78,42 +102,44 @@ msgstr ""
 msgid "project_deletion_question"
 msgstr ""
 
-#: GUI/DialogWindows/choose_file_name_window.py:25 GUI/MessageBox.py:19
+#: GUI/DialogWindows/ChooseFileNameWindow.py:25
+#: GUI/DialogWindows/SuggestUpdateWindow.py:38 GUI/MessageBox.py:19
 msgid "yes"
 msgstr ""
 
-#: GUI/DialogWindows/choose_file_name_window.py:26 GUI/MessageBox.py:20
+#: GUI/DialogWindows/ChooseFileNameWindow.py:26
+#: GUI/DialogWindows/SuggestUpdateWindow.py:40 GUI/MessageBox.py:20
 msgid "no"
 msgstr ""
 
-#: GUI/DialogWindows/upsert_project_window.py:43
-#: GUI/DialogWindows/upsert_project_window.py:61 GUI/OverviewTable.py:40
-#: GUI/OverviewTable.py:153
+#: GUI/DialogWindows/UpsertProjectWindow.py:43
+#: GUI/DialogWindows/UpsertProjectWindow.py:61 GUI/OverviewTable.py:43
+#: GUI/OverviewTable.py:163
 msgid "own_reference"
 msgstr ""
 
-#: GUI/DialogWindows/upsert_project_window.py:45
-#: GUI/DialogWindows/upsert_project_window.py:62 GUI/OverviewTable.py:40
-#: GUI/OverviewTable.py:153
+#: GUI/DialogWindows/UpsertProjectWindow.py:45
+#: GUI/DialogWindows/UpsertProjectWindow.py:62 GUI/OverviewTable.py:43
+#: GUI/OverviewTable.py:163
 msgid "service_order"
 msgstr ""
 
-#: GUI/DialogWindows/change_subset_window.py:31
-#: GUI/DialogWindows/upsert_project_window.py:47
-#: GUI/DialogWindows/upsert_project_window.py:63 GUI/OverviewTable.py:40
-#: GUI/OverviewTable.py:153 GUI/Screens/TemplateScreen.py:165
+#: GUI/DialogWindows/ChangeSubsetWindow.py:31
+#: GUI/DialogWindows/UpsertProjectWindow.py:47
+#: GUI/DialogWindows/UpsertProjectWindow.py:63 GUI/OverviewTable.py:43
+#: GUI/OverviewTable.py:163 GUI/Screens/TemplateScreen.py:165
 msgid "subset"
 msgstr ""
 
-#: GUI/OverviewTable.py:40 GUI/OverviewTable.py:153
+#: GUI/OverviewTable.py:43 GUI/OverviewTable.py:163
 msgid "last_edited"
 msgstr ""
 
-#: GUI/OverviewTable.py:86
+#: GUI/OverviewTable.py:91
 msgid "no_result"
 msgstr ""
 
-#: GUI/OverviewTable.py:154
+#: GUI/OverviewTable.py:164
 msgid "no_results"
 msgstr ""
 
@@ -153,118 +179,162 @@ msgstr ""
 msgid "new_attribute"
 msgstr ""
 
-#: GUI/DialogWindows/change_subset_window.py:26
-#: GUI/Screens/TemplateScreen.py:128 GUI/Screens/TemplateScreen.py:284
-msgid "change_subset"
+#: GUI/DialogWindows/AddExternalAssetWindow.py:36
+msgid "add_external_asset_title"
 msgstr ""
 
-#: GUI/DialogWindows/change_subset_window.py:68
-#: GUI/DialogWindows/remove_project_files_window.py:34
-#: GUI/DialogWindows/upsert_project_window.py:96
+#: GUI/DialogWindows/AddExternalAssetWindow.py:42
+msgid "asset_id_or_name"
+msgstr ""
+
+#: GUI/DialogWindows/AddExternalAssetWindow.py:44
+msgid "asset_id_dummy"
+msgstr ""
+
+#: GUI/DialogWindows/AddExternalAssetWindow.py:49
+#: GUI/Screens/RelationChangeElements/PossibleRelationListWidget.py:26
+msgid "asset_type"
+msgstr ""
+
+#: GUI/DialogWindows/AddExternalAssetWindow.py:52
+msgid "asset_type_dummy"
+msgstr ""
+
+#: GUI/DialogWindows/AddExternalAssetWindow.py:90
+#: GUI/DialogWindows/ChangeSubsetWindow.py:68
+#: GUI/DialogWindows/RemoveProjectFilesWindow.py:33
+#: GUI/DialogWindows/UpsertProjectWindow.py:96
 msgid "submit"
 msgstr ""
 
-#: GUI/DialogWindows/change_subset_window.py:70
-#: GUI/DialogWindows/remove_project_files_window.py:36
-#: GUI/DialogWindows/upsert_project_window.py:98
+#: GUI/DialogWindows/AddExternalAssetWindow.py:92
+#: GUI/DialogWindows/ChangeSubsetWindow.py:70
+#: GUI/DialogWindows/RemoveProjectFilesWindow.py:35
+#: GUI/DialogWindows/RevalidateDocumentsWindow.py:33
+#: GUI/DialogWindows/UpsertProjectWindow.py:98
 msgid "cancel"
 msgstr ""
 
-#: GUI/DialogWindows/choose_file_name_window.py:22
+#: GUI/DialogWindows/ChangeSubsetWindow.py:26 GUI/Screens/TemplateScreen.py:128
+#: GUI/Screens/TemplateScreen.py:285
+msgid "change_subset"
+msgstr ""
+
+#: GUI/DialogWindows/ChooseFileNameWindow.py:22
 msgid "warning overwriting files"
 msgstr ""
 
-#: GUI/DialogWindows/choose_file_name_window.py:23
+#: GUI/DialogWindows/ChooseFileNameWindow.py:23
 msgid "warning overwriting files text"
 msgstr ""
 
-#: GUI/DialogWindows/language_window.py:23
+#: GUI/DialogWindows/LanguageWindow.py:23
 msgid "change_language_title"
 msgstr ""
 
-#: GUI/DialogWindows/language_window.py:25
+#: GUI/DialogWindows/LanguageWindow.py:25
 msgid "language_option_dutch"
 msgstr ""
 
-#: GUI/DialogWindows/language_window.py:26
+#: GUI/DialogWindows/LanguageWindow.py:26
 msgid "language_option_english"
 msgstr ""
 
-#: GUI/DialogWindows/menu_actions_window.py:16
+#: GUI/DialogWindows/MenuActionsWindow.py:16
 msgid "made_by"
 msgstr ""
 
-#: GUI/DialogWindows/menu_actions_window.py:28
+#: GUI/DialogWindows/MenuActionsWindow.py:28
 msgid "error_title"
 msgstr ""
 
-#: GUI/DialogWindows/menu_actions_window.py:29
+#: GUI/DialogWindows/MenuActionsWindow.py:29
 msgid "error_report"
 msgstr ""
 
-#: GUI/DialogWindows/menu_actions_window.py:30
+#: GUI/DialogWindows/MenuActionsWindow.py:30
 msgid "contact"
 msgstr ""
 
-#: GUI/DialogWindows/menu_actions_window.py:41
+#: GUI/DialogWindows/MenuActionsWindow.py:41
 msgid "version"
 msgstr ""
 
-#: GUI/DialogWindows/project_picker_window.py:17
+#: GUI/DialogWindows/ProjectPickerWindow.py:17
 msgid "select_OTL_project"
 msgstr ""
 
-#: GUI/DialogWindows/remove_project_files_window.py:17
+#: GUI/DialogWindows/RemoveProjectFilesWindow.py:16
 msgid "remove_project_files_title"
 msgstr ""
 
-#: GUI/DialogWindows/remove_project_files_window.py:20
+#: GUI/DialogWindows/RemoveProjectFilesWindow.py:19
 msgid "remove_project_files_question"
 msgstr ""
 
-#: GUI/DialogWindows/upsert_project_window.py:33
+#: GUI/DialogWindows/RevalidateDocumentsWindow.py:14
+msgid "revalidate_documents_files_title"
+msgstr ""
+
+#: GUI/DialogWindows/RevalidateDocumentsWindow.py:17
+msgid "revalidate_documents_files_question"
+msgstr ""
+
+#: GUI/DialogWindows/RevalidateDocumentsWindow.py:31
+msgid "continue"
+msgstr ""
+
+#: GUI/DialogWindows/SuggestUpdateWindow.py:21
+msgid "update_available_title"
+msgstr ""
+
+#: GUI/DialogWindows/SuggestUpdateWindow.py:24
+msgid "update_available_text"
+msgstr ""
+
+#: GUI/DialogWindows/UpsertProjectWindow.py:33
 msgid "alter_project_title"
 msgstr ""
 
-#: GUI/DialogWindows/upsert_project_window.py:35
+#: GUI/DialogWindows/UpsertProjectWindow.py:35
 msgid "new_project_title"
 msgstr ""
 
-#: GUI/Screens/AssetDataChangeScreen.py:75
-#: GUI/Screens/AssetDataChangeScreen.py:125
+#: GUI/Screens/AssetDataChangeScreen.py:76
+#: GUI/Screens/AssetDataChangeScreen.py:126
 msgid "original_file_load"
 msgstr ""
 
-#: GUI/Screens/AssetDataChangeScreen.py:89
-#: GUI/Screens/AssetDataChangeScreen.py:129
-#: GUI/Screens/AssetDataChangeScreen.py:135 GUI/Screens/InsertDataScreen.py:78
+#: GUI/Screens/AssetDataChangeScreen.py:90
+#: GUI/Screens/AssetDataChangeScreen.py:130
+#: GUI/Screens/AssetDataChangeScreen.py:136 GUI/Screens/InsertDataScreen.py:98
 msgid "choose_file"
 msgstr ""
 
-#: GUI/Screens/AssetDataChangeScreen.py:92
-#: GUI/Screens/AssetDataChangeScreen.py:127
+#: GUI/Screens/AssetDataChangeScreen.py:93
+#: GUI/Screens/AssetDataChangeScreen.py:128
 msgid "show differences"
 msgstr ""
 
-#: GUI/Screens/AssetDataChangeScreen.py:97
-#: GUI/Screens/AssetDataChangeScreen.py:128
+#: GUI/Screens/AssetDataChangeScreen.py:98
+#: GUI/Screens/AssetDataChangeScreen.py:129
 msgid "apply differences"
 msgstr ""
 
-#: GUI/Screens/AssetDataChangeScreen.py:102
-#: GUI/Screens/AssetDataChangeScreen.py:130
+#: GUI/Screens/AssetDataChangeScreen.py:103
+#: GUI/Screens/AssetDataChangeScreen.py:131
 msgid "empty fields"
 msgstr ""
 
-#: GUI/Screens/AssetDataChangeScreen.py:126
+#: GUI/Screens/AssetDataChangeScreen.py:127
 msgid "new_file_load"
 msgstr ""
 
-#: GUI/Screens/AssetDataChangeScreen.py:217
+#: GUI/Screens/AssetDataChangeScreen.py:228
 msgid "the changes were correctly written to a new file"
 msgstr ""
 
-#: GUI/Screens/AssetDataChangeScreen.py:226 GUI/Screens/InsertDataScreen.py:223
+#: GUI/Screens/AssetDataChangeScreen.py:237 GUI/Screens/InsertDataScreen.py:218
 msgid "error"
 msgstr ""
 
@@ -280,8 +350,8 @@ msgstr ""
 msgid "file_for_conversion"
 msgstr ""
 
-#: GUI/Screens/DataVisualisationScreen.py:49
-#: GUI/Screens/DataVisualisationScreen.py:87
+#: GUI/Screens/DataVisualisationScreen.py:58
+#: GUI/Screens/DataVisualisationScreen.py:109
 msgid "relations legend"
 msgstr ""
 
@@ -302,7 +372,7 @@ msgid "select file type for export"
 msgstr ""
 
 #: GUI/Screens/ExportDataScreen.py:76 GUI/Screens/ExportDataScreen.py:100
-#: GUI/Screens/TemplateScreen.py:88 GUI/Screens/TemplateScreen.py:283
+#: GUI/Screens/TemplateScreen.py:88 GUI/Screens/TemplateScreen.py:284
 msgid "export"
 msgstr ""
 
@@ -310,116 +380,216 @@ msgstr ""
 msgid "file_to_upload"
 msgstr ""
 
-#: GUI/Screens/HomeScreen.py:88 GUI/Screens/HomeScreen.py:95
+#: GUI/Screens/HomeScreen.py:92 GUI/Screens/HomeScreen.py:99
 msgid "search_text"
 msgstr ""
 
-#: GUI/Screens/InsertDataScreen.py:68 GUI/Screens/InsertDataScreen.py:229
+#: GUI/Screens/InsertDataScreen.py:88 GUI/Screens/InsertDataScreen.py:224
 msgid "control_button"
 msgstr ""
 
-#: GUI/Screens/InsertDataScreen.py:74
+#: GUI/Screens/InsertDataScreen.py:94
 msgid "reset_fields"
 msgstr ""
 
-#: GUI/Screens/InsertDataScreen.py:162 GUI/Screens/InsertDataScreen.py:228
+#: GUI/Screens/InsertDataScreen.py:163 GUI/Screens/InsertDataScreen.py:223
 msgid "input_file"
 msgstr ""
 
-#: GUI/Screens/InsertDataScreen.py:209
+#: GUI/Screens/InsertDataScreen.py:204
 msgid "all_info_correct"
 msgstr ""
 
-#: GUI/Screens/InsertDataScreen.py:214
+#: GUI/Screens/InsertDataScreen.py:209
 msgid "warning"
 msgstr ""
 
-#: GUI/Screens/InsertDataScreen.py:303
+#: GUI/Screens/InsertDataScreen.py:307
 msgid "{doc_name}: Data nodig in een datasheet om objecten in te laden.\n"
 msgstr ""
 
-#: GUI/Screens/InsertDataScreen.py:306
+#: GUI/Screens/InsertDataScreen.py:310
 msgid "{doc_name}: No type uri in {tab}\n"
 msgstr ""
 
-#: GUI/Screens/InsertDataScreen.py:308
+#: GUI/Screens/InsertDataScreen.py:312
 msgid "{doc_name}: invalid columns in {tab}, bad columns are {bad_columns} \n"
 msgstr ""
 
-#: GUI/Screens/InsertDataScreen.py:311
+#: GUI/Screens/InsertDataScreen.py:315
 msgid "{doc_name}: type uri not in first row of {tab}\n"
 msgstr ""
 
-#: GUI/Screens/RelationChangeScreen.py:45
+#: GUI/Screens/InsertDataScreen.py:321
+msgid ""
+"{doc_name}:\n"
+"Relation of type: \"{type_uri}\"\n"
+"with assetId.identificator: \"{identificator}\"\n"
+"This relation cannot be made between the typeURI's.\n"
+"{wrong_field}= \"{wrong_value}\"\n"
+"{wrong_field2}= \"{wrong_value2}\"\n"
+" in tab {tab}"
+msgstr ""
+
+#: GUI/Screens/InsertDataScreen.py:333
+msgid ""
+"{doc_name}:\n"
+"Relation of type: \"{type_uri}\"\n"
+"with assetId.identificator: \"{identificator}\",\n"
+"has the non-existing TypeURI value: \"{wrong_value}\"\n"
+"for field \"{wrong_field}\".\n"
+" in tab {tab}"
+msgstr ""
+
+#: GUI/Screens/RelationChangeScreen.py:82
 msgid "functionality under development"
 msgstr ""
 
-#: GUI/Screens/RelationChangeScreen.py:59
-msgid "class_list"
-msgstr ""
-
-#: GUI/Screens/RelationChangeScreen.py:72
-msgid "relations_list"
-msgstr ""
-
-#: GUI/Screens/RelationChangeScreen.py:84 GUI/Screens/TemplateScreen.py:186
-msgid "loading"
-msgstr ""
-
-#: GUI/Screens/RelationChangeScreen.py:91
-msgid "existing_relations_list"
-msgstr ""
-
 #: GUI/Screens/TemplateScreen.py:59 GUI/Screens/TemplateScreen.py:208
-#: GUI/Screens/TemplateScreen.py:281
+#: GUI/Screens/TemplateScreen.py:282
 msgid "select_all_classes"
 msgstr ""
 
-#: GUI/Screens/TemplateScreen.py:63 GUI/Screens/TemplateScreen.py:287
+#: GUI/Screens/TemplateScreen.py:63 GUI/Screens/TemplateScreen.py:288
 msgid "general_settings"
 msgstr ""
 
-#: GUI/Screens/TemplateScreen.py:64 GUI/Screens/TemplateScreen.py:280
+#: GUI/Screens/TemplateScreen.py:64 GUI/Screens/TemplateScreen.py:281
 msgid "no_choice_list"
 msgstr ""
 
-#: GUI/Screens/TemplateScreen.py:66 GUI/Screens/TemplateScreen.py:279
+#: GUI/Screens/TemplateScreen.py:66 GUI/Screens/TemplateScreen.py:280
 msgid "geometry_column_added"
 msgstr ""
 
-#: GUI/Screens/TemplateScreen.py:70 GUI/Screens/TemplateScreen.py:288
+#: GUI/Screens/TemplateScreen.py:70 GUI/Screens/TemplateScreen.py:289
 msgid "example_settings"
 msgstr ""
 
-#: GUI/Screens/TemplateScreen.py:73 GUI/Screens/TemplateScreen.py:282
+#: GUI/Screens/TemplateScreen.py:73 GUI/Screens/TemplateScreen.py:283
 msgid "amount_of_examples"
 msgstr ""
 
-#: GUI/Screens/TemplateScreen.py:77 GUI/Screens/TemplateScreen.py:278
+#: GUI/Screens/TemplateScreen.py:77 GUI/Screens/TemplateScreen.py:279
 msgid "export_attribute_info"
 msgstr ""
 
-#: GUI/Screens/TemplateScreen.py:79 GUI/Screens/TemplateScreen.py:289
-msgid "deprecated_settings"
-msgstr ""
-
-#: GUI/Screens/TemplateScreen.py:81 GUI/Screens/TemplateScreen.py:277
-msgid "show_deprecated_attributes"
-msgstr ""
-
-#: GUI/Screens/TemplateScreen.py:140 GUI/Screens/TemplateScreen.py:285
+#: GUI/Screens/TemplateScreen.py:140 GUI/Screens/TemplateScreen.py:286
 msgid "operator"
 msgstr ""
 
-#: GUI/Screens/TemplateScreen.py:152 GUI/Screens/TemplateScreen.py:286
+#: GUI/Screens/TemplateScreen.py:152 GUI/Screens/TemplateScreen.py:287
 msgid "otl_version"
+msgstr ""
+
+#: GUI/Screens/TemplateScreen.py:186
+msgid "loading"
 msgstr ""
 
 #: GUI/Screens/TemplateScreen.py:203
 msgid "no classes found in specified path"
 msgstr ""
 
-#: GUI/Screens/TemplateScreen.py:236 GUI/Screens/TemplateScreen.py:290
+#: GUI/Screens/TemplateScreen.py:236 GUI/Screens/TemplateScreen.py:291
 msgid "{selected} classes selected"
+msgstr ""
+
+#: GUI/Screens/TemplateScreen.py:290
+msgid "deprecated_settings"
+msgstr ""
+
+#: GUI/Screens/RelationChangeElements/AbstractInstanceListWidget.py:343
+msgid "search_button"
+msgstr ""
+
+#: GUI/Screens/RelationChangeElements/AbstractInstanceListWidget.py:373
+msgid "no_instance_selected"
+msgstr ""
+
+#: GUI/Screens/RelationChangeElements/AbstractInstanceListWidget.py:455
+#: GUI/Screens/RelationChangeElements/ObjectListWidget.py:104
+msgid "no_options_available"
+msgstr ""
+
+#: GUI/Screens/RelationChangeElements/ExistingRelationListWidget.py:23
+msgid "source_asset"
+msgstr ""
+
+#: GUI/Screens/RelationChangeElements/ExistingRelationListWidget.py:23
+msgid "target_asset"
+msgstr ""
+
+#: GUI/Screens/RelationChangeElements/ExistingRelationListWidget.py:26
+msgid "existing_relations_list"
+msgstr ""
+
+#: GUI/Screens/RelationChangeElements/ExistingRelationListWidget.py:27
+msgid "existing_relations_description"
+msgstr ""
+
+#: GUI/Screens/RelationChangeElements/ExistingRelationListWidget.py:28
+msgid "existing_relation_attributes"
+msgstr ""
+
+#: GUI/Screens/RelationChangeElements/ExistingRelationListWidget.py:50
+msgid "remove_relation"
+msgstr ""
+
+#: GUI/Screens/RelationChangeElements/ExistingRelationListWidget.py:146
+#: GUI/Screens/RelationChangeElements/PossibleRelationListWidget.py:221
+msgid "no_relation_selected"
+msgstr ""
+
+#: GUI/Screens/RelationChangeElements/ObjectListWidget.py:23
+msgid "OTL_asset"
+msgstr ""
+
+#: GUI/Screens/RelationChangeElements/ObjectListWidget.py:26
+msgid "class_list"
+msgstr ""
+
+#: GUI/Screens/RelationChangeElements/ObjectListWidget.py:27
+msgid "otl_asset_description"
+msgstr ""
+
+#: GUI/Screens/RelationChangeElements/ObjectListWidget.py:28
+msgid "object_attributes"
+msgstr ""
+
+#: GUI/Screens/RelationChangeElements/ObjectListWidget.py:51
+msgid "add_external_asset"
+msgstr ""
+
+#: GUI/Screens/RelationChangeElements/PossibleRelationListWidget.py:26
+msgid "related_asset"
+msgstr ""
+
+#: GUI/Screens/RelationChangeElements/PossibleRelationListWidget.py:29
+msgid "relations_list"
+msgstr ""
+
+#: GUI/Screens/RelationChangeElements/PossibleRelationListWidget.py:30
+msgid "possible_relation_subscription"
+msgstr ""
+
+#: GUI/Screens/RelationChangeElements/PossibleRelationListWidget.py:31
+msgid "possible_relation_partner_asset_attributes"
+msgstr ""
+
+#: GUI/Screens/RelationChangeElements/PossibleRelationListWidget.py:44
+msgid "Select_an_OTL-asset_to_see_possible_relations"
+msgstr ""
+
+#: GUI/Screens/RelationChangeElements/PossibleRelationListWidget.py:89
+msgid "add_relation"
+msgstr ""
+
+#: GUI/Screens/RelationChangeElements/RelationChangeHelpers.py:43
+#: GUI/Screens/RelationChangeElements/RelationChangeHelpers.py:53
+msgid "external"
+msgstr ""
+
+#: GUI/Screens/RelationChangeElements/RelationChangeHelpers.py:126
+msgid "no_identificator"
 msgstr ""
 
