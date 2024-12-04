@@ -89,6 +89,10 @@ class ProjectFileManager:
         logging.debug("Saving project to %s", project_dir_path)
         project_dir_path.mkdir(exist_ok=True, parents=True)
 
+        last_quick_save_name = None
+        if project.last_quick_save:
+            last_quick_save_name = str(project.last_quick_save.name)
+
         project_details_dict = {
             'bestek': project.bestek,
             'eigen_referentie': project.eigen_referentie,
@@ -96,7 +100,7 @@ class ProjectFileManager:
             'subset': project.subset_path.name,
             'subset_operator': project.get_operator_name(),
             'otl_version': project.get_otl_version(),
-            'last_quick_save': str(project.last_quick_save.name)
+            'last_quick_save': last_quick_save_name
         }
 
         with open(project_dir_path / "project_details.json", "w") as project_details_file:

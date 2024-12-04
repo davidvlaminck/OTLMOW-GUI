@@ -84,21 +84,21 @@ class Project:
         with open(project_details_file) as json_file:
             project_details = json.load(json_file)
 
-        if 'last_quick_save' not in project_details :
+        if 'last_quick_save' not in project_details or not project_details['last_quick_save']:
             last_quick_save = None
         else:
-            last_quick_save = Path(project_details['last_quick_save'])
+            last_quick_save = Path(project_path / "quick_saves") / Path(project_details['last_quick_save'])
 
 
-        if 'subset_operator' not in project_details :
+        if 'subset_operator' not in project_details or not project_details['subset_operator']:
             subset_operator = None
         else:
-            subset_operator = Path(project_details['subset_operator'])
+            subset_operator = project_details['subset_operator']
 
-        if 'otl_version' not in project_details:
+        if 'otl_version' not in project_details or not project_details['otl_version']:
             otl_version = None
         else:
-            otl_version = Path(project_details['otl_version'])
+            otl_version = project_details['otl_version']
 
         return cls(project_path,
                    project_path / project_details['subset'],
