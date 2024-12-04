@@ -485,12 +485,20 @@ class RelationChangeDomain:
     def add_possible_relation_to_existing_relations(cls, bron_asset_id, target_asset_id,
                                                     relation_object_index):
         relation_object = cls.possible_object_to_object_relations_dict[bron_asset_id][target_asset_id].pop(relation_object_index)
+
+        if relation_object.typeURI == 'https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#HeeftBetrokkene':
+            # don't add the relation
+            cls.get_screen().showHeeftBetrokkeneAttributeDialogWindow(bron_asset_id,target_asset_id,relation_object)
+        else:
+            cls.add_relation_object_to_existing_relations(relation_object)
+
+        return relation_object
+
+    @classmethod
+    def add_relation_object_to_existing_relations(cls, relation_object):
         relation_object.isActief = True
         cls.existing_relations.append(relation_object)
         cls.get_screen().expand_existing_relations_folder_of(relation_object.typeURI)
-        return relation_object
-
-
 
     @classmethod
     def update_frontend(cls):

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2024-12-03 17:29+0100\n"
+"POT-Creation-Date: 2024-12-04 17:40+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,19 +17,19 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.16.0\n"
 
-#: Domain/HomeDomain.py:43
+#: Domain/HomeDomain.py:44
 msgid "own_reference_empty_error"
 msgstr ""
 
-#: Domain/HomeDomain.py:45
+#: Domain/HomeDomain.py:46
 msgid "bestek_empty_error"
 msgstr ""
 
-#: Domain/HomeDomain.py:47
+#: Domain/HomeDomain.py:48
 msgid "db_path_empty_error"
 msgstr ""
 
-#: Domain/HomeDomain.py:49
+#: Domain/HomeDomain.py:50
 msgid "wrong_database_error"
 msgstr ""
 
@@ -192,16 +192,19 @@ msgid "asset_id_dummy"
 msgstr ""
 
 #: GUI/DialogWindows/AddExternalAssetWindow.py:49
+#: GUI/DialogWindows/DefineHeeftBetrokkeneRelationWindow.py:51
 #: GUI/Screens/RelationChangeElements/PossibleRelationListWidget.py:26
 msgid "asset_type"
 msgstr ""
 
 #: GUI/DialogWindows/AddExternalAssetWindow.py:52
+#: GUI/DialogWindows/DefineHeeftBetrokkeneRelationWindow.py:54
 msgid "asset_type_dummy"
 msgstr ""
 
 #: GUI/DialogWindows/AddExternalAssetWindow.py:90
 #: GUI/DialogWindows/ChangeSubsetWindow.py:68
+#: GUI/DialogWindows/DefineHeeftBetrokkeneRelationWindow.py:100
 #: GUI/DialogWindows/RemoveProjectFilesWindow.py:33
 #: GUI/DialogWindows/UpsertProjectWindow.py:96
 msgid "submit"
@@ -209,6 +212,7 @@ msgstr ""
 
 #: GUI/DialogWindows/AddExternalAssetWindow.py:92
 #: GUI/DialogWindows/ChangeSubsetWindow.py:70
+#: GUI/DialogWindows/DefineHeeftBetrokkeneRelationWindow.py:102
 #: GUI/DialogWindows/RemoveProjectFilesWindow.py:35
 #: GUI/DialogWindows/RevalidateDocumentsWindow.py:33
 #: GUI/DialogWindows/UpsertProjectWindow.py:98
@@ -226,6 +230,14 @@ msgstr ""
 
 #: GUI/DialogWindows/ChooseFileNameWindow.py:23
 msgid "warning overwriting files text"
+msgstr ""
+
+#: GUI/DialogWindows/DefineHeeftBetrokkeneRelationWindow.py:40
+msgid "needs_attribute"
+msgstr ""
+
+#: GUI/DialogWindows/DefineHeeftBetrokkeneRelationWindow.py:46
+msgid "define_attribute_to_add_heeft_betrokkene_relation"
 msgstr ""
 
 #: GUI/DialogWindows/LanguageWindow.py:23
@@ -441,7 +453,7 @@ msgid ""
 " in tab {tab}"
 msgstr ""
 
-#: GUI/Screens/RelationChangeScreen.py:82
+#: GUI/Screens/RelationChangeScreen.py:86
 msgid "functionality under development"
 msgstr ""
 

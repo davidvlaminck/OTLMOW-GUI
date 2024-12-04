@@ -10,6 +10,8 @@ from otlmow_model.OtlmowModel.Classes.ImplementatieElement.AIMObject import \
 from otlmow_model.OtlmowModel.Classes.ImplementatieElement.RelatieObject import RelatieObject
 
 from Domain.RelationChangeDomain import RelationChangeDomain
+from GUI.DialogWindows.DefineHeeftBetrokkeneRelationWindow import \
+    DefineHeeftBetrokkeneRelationWindow
 from GUI.Screens.RelationChangeElements.ExistingRelationListWidget import \
     ExistingRelationListWidget
 from GUI.Screens.RelationChangeElements.ObjectListWidget import ObjectListWidget
@@ -19,6 +21,8 @@ from GUI.Screens.RelationChangeElements.PossibleRelationListWidget import \
 
 from GUI.Screens.RelationChangeElements.RelationChangeHelpers import RelationChangeHelpers
 from GUI.Screens.Screen import Screen
+from LatestReleaseMulti.OTLWizard.data.otlmow_model.OtlmowModel.Classes.Onderdeel.HeeftBetrokkene import \
+    HeeftBetrokkene
 
 
 class RelationChangeScreen(Screen):
@@ -160,3 +164,7 @@ class RelationChangeScreen(Screen):
             add_namespace=add_namespace,
             is_relation=True)
         self.possible_relation_list_gui.expand_folder_of(abbr_relation_typeURI)
+
+    def showHeeftBetrokkeneAttributeDialogWindow(self, bron_asset_id, target_asset_id, heeftBetrokkene_relation_object: HeeftBetrokkene):
+        dialogWindow = DefineHeeftBetrokkeneRelationWindow(self._, bron_asset_id, target_asset_id,heeftBetrokkene_relation_object)
+        dialogWindow.draw_define_heeft_betrokkene_rol_window()
