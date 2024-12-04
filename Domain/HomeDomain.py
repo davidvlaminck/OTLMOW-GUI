@@ -35,6 +35,7 @@ class HomeDomain:
             project.project_path = Path(
                 ProjectFileManager.get_otl_wizard_projects_dir() / 'Projects' / project.eigen_referentie)
         ProjectFileManager.save_project_to_dir(project)
+        ProjectFileManager.load_projects_into_global()
         overview_table.draw_table()
         dlg.close()
 
