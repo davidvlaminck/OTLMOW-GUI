@@ -165,6 +165,6 @@ class RelationChangeScreen(Screen):
             is_relation=True)
         self.possible_relation_list_gui.expand_folder_of(abbr_relation_typeURI)
 
-    def showHeeftBetrokkeneAttributeDialogWindow(self, bron_asset_id, target_asset_id, heeftBetrokkene_relation_object: HeeftBetrokkene):
-        dialogWindow = DefineHeeftBetrokkeneRelationWindow(self._, bron_asset_id, target_asset_id,heeftBetrokkene_relation_object)
+    def showMultiSelectionHeeftBetrokkeneAttributeDialogWindow(self, data_list_and_relation_objects:list):
+        dialogWindow = DefineHeeftBetrokkeneRelationWindow(self._, data_list_and_relation_objects)
         dialogWindow.draw_define_heeft_betrokkene_rol_window()

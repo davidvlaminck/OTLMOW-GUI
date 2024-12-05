@@ -20,7 +20,9 @@ from Exceptions.WrongDatabaseError import WrongDatabaseError
 
 class DefineHeeftBetrokkeneRelationWindow:
     options_to_data_dict = {}
-    def __init__(self, language_settings, bron_asset_id, target_asset_id, relation_object: HeeftBetrokkene):
+
+
+    def __init__(self, language_settings,data_list_and_relation_objects):
         self.home_domain = HomeDomain(language_settings)
         self.error_label = QLabel()
         self._ = language_settings
@@ -28,9 +30,7 @@ class DefineHeeftBetrokkeneRelationWindow:
         self.input_asset_id_or_name: QLineEdit = QLineEdit()
         self.combobox_asset_type: QComboBox = QComboBox()
 
-        self.relation_object: HeeftBetrokkene = relation_object
-        self.bron_asset_id =  bron_asset_id
-        self.target_asset_id = target_asset_id
+        self.data_list_and_relation_objects = data_list_and_relation_objects
 
     def draw_define_heeft_betrokkene_rol_window(self):
 
@@ -45,9 +45,17 @@ class DefineHeeftBetrokkeneRelationWindow:
 
         # Creates 3 horizontal layouts for each input field with its label
         container_eigen_ref = QHBoxLayout()
+        only_heeft_betrokkene_relation_objects =  [data for data in self.data_list_and_relation_objects
+         if  data[2].typeURI == 'https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#HeeftBetrokkene']
 
-        label_asset_id_or_name = QLabel( self._("define_attribute_to_add_heeft_betrokkene_relation").format(self.bron_asset_id,self.target_asset_id))
-        container_eigen_ref.addWidget(label_asset_id_or_name)
+        if(len(only_heeft_betrokkene_relation_objects) == 1):
+            label_asset_id_or_name = QLabel( self._("define_attribute_to_add_heeft_betrokkene_relation").format(only_heeft_betrokkene_relation_objects[0][2].doelAssetId.identificator,only_heeft_betrokkene_relation_objects[0][2].bronAssetId.identificator))
+            container_eigen_ref.addWidget(label_asset_id_or_name)
+        else:
+            label_asset_id_or_name = QLabel(
+                self._("define_attribute_to_add_heeft_betrokkene_relations").format(
+                    only_heeft_betrokkene_relation_objects[0][2].doelAssetId.identificator))
+            container_eigen_ref.addWidget(label_asset_id_or_name)
 
 
         container_subset = QHBoxLayout()
@@ -85,9 +93,16 @@ class DefineHeeftBetrokkeneRelationWindow:
 
         optie = KlBetrokkenheidRol.options[combobox_choice]
 
-        self.relation_object.rol = optie.invulwaarde
+        RelationChangeDomain.last_added_to_existing.clear()
+        for data in self.data_list_and_relation_objects:
+            relation_object = data[2]
 
-        RelationChangeDomain.add_relation_object_to_existing_relations(relation_object=self.relation_object)
+            if relation_object.typeURI == 'https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#HeeftBetrokkene':
+                relation_object.rol = optie.invulwaarde
+
+            RelationChangeDomain.add_relation_object_to_existing_relations(relation_object)
+            RelationChangeDomain.last_added_to_existing.append(relation_object)
+
         RelationChangeDomain.update_frontend()
         dialog_window.close()
 

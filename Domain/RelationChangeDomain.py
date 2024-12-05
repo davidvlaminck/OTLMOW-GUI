@@ -476,7 +476,15 @@ class RelationChangeDomain:
     @save_assets
     def add_multiple_possible_relations_to_existing_relations(cls, data_list):
 
-        cls.last_added_to_existing = [RelationChangeDomain.add_possible_relation_to_existing_relations(data.source_id,
+        heeft_betrokkene_in_selection = [True for data in data_list
+                                         if cls.possible_object_to_object_relations_dict[data.source_id][data.target_id][data.index].typeURI == 'https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#HeeftBetrokkene']
+
+        if heeft_betrokkene_in_selection:
+            data_list_and_relation_objects = [(data.source_id,data.target_id, cls.possible_object_to_object_relations_dict[data.source_id][
+                data.target_id].pop(data.index)) for data in data_list]
+            cls.get_screen().showMultiSelectionHeeftBetrokkeneAttributeDialogWindow(data_list_and_relation_objects)
+        else:
+            cls.last_added_to_existing += [RelationChangeDomain.add_possible_relation_to_existing_relations(data.source_id,
                                                                              data.target_id,
                                                                              data.index) for data in data_list]
         cls.update_frontend()
@@ -486,11 +494,11 @@ class RelationChangeDomain:
                                                     relation_object_index):
         relation_object = cls.possible_object_to_object_relations_dict[bron_asset_id][target_asset_id].pop(relation_object_index)
 
-        if relation_object.typeURI == 'https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#HeeftBetrokkene':
-            # don't add the relation
-            cls.get_screen().showHeeftBetrokkeneAttributeDialogWindow(bron_asset_id,target_asset_id,relation_object)
-        else:
-            cls.add_relation_object_to_existing_relations(relation_object)
+        # if relation_object.typeURI == 'https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#HeeftBetrokkene':
+        #     # don't add the relation
+        #     cls.get_screen().showHeeftBetrokkeneAttributeDialogWindow(bron_asset_id,target_asset_id,relation_object)
+        # else:
+        cls.add_relation_object_to_existing_relations(relation_object)
 
         return relation_object
 
