@@ -51,7 +51,7 @@ class ObjectListWidget(AbstractInstanceListWidget):
         self.list_button.setText(self._("add_external_asset"))
         self.list_button.clicked.connect(
             self.add_external_asset)
-        self.list_button.setProperty("class", "primary-button")
+        self.list_button.setProperty("class", 'add-external-button')
         return self.list_button
 
     def add_external_asset(self):
