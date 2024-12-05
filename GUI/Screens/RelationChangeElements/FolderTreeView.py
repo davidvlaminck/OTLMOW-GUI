@@ -50,11 +50,15 @@ class FolderTreeView(QTreeView):
         folder_item = QStandardItem(folder_name)
         folder_item.setEditable(False)  # Make the folder name non-editable
         folder_item.setSelectable(False)  # Optional: make the folder itself non-selectable
+        folder_item.setToolTip("")
+        folder_item.setData(None, Qt.ItemDataRole.ToolTipRole)
 
         # Add items to the folder
         for item_name in items:
             item = QStandardItem(item_name)
             item.setEditable(False)  # Make the item name non-editable
+            item.setToolTip("")
+            item.setData(None, Qt.ItemDataRole.ToolTipRole)
             folder_item.appendRow(item)
 
         # Add the folder to the model
@@ -65,3 +69,8 @@ class FolderTreeView(QTreeView):
 
     def addItem(self,folder_item):
         self.model.appendRow(folder_item)
+
+    def event(self, event):
+        if event.type() == event.Type.ToolTip:
+            return False  # Ignore tooltip events
+        return super().event(event)
