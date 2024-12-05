@@ -632,7 +632,7 @@ msgstr ""
 
 #: GUI/Screens/RelationChangeElements/PossibleRelationListWidget.py:31
 msgid "possible_relation_partner_asset_attributes"
-msgstr "gerelateerde asset attributen (laatst geselecteerd)"
+msgstr "Gerelateerde asset attributen (laatst geselecteerd)"
 
 #: GUI/Screens/RelationChangeElements/PossibleRelationListWidget.py:44
 msgid "Select_an_OTL-asset_to_see_possible_relations"

@@ -29,7 +29,7 @@ class ObjectListWidget(AbstractInstanceListWidget):
 
     def create_object_list_gui(self, multi_select: bool = False) -> QFrame:
         frame = super().create_object_list_gui(multi_select)
-        self.frame_layout.setContentsMargins(11,11,0,11)
+        self.frame_layout.setContentsMargins(11,0,0,0)
         self.list_gui.setProperty('class', 'object-list')
         return frame
 

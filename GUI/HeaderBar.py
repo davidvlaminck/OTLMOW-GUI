@@ -93,6 +93,7 @@ class HeaderBar(QFrame):
         self.saving_msg.setProperty("class","white_text")
         header_sub_layout.addWidget(self.loading_icon)
         header_sub_layout.addWidget(self.saving_msg)
+        header_sub_layout.setContentsMargins(0, 0, 0, 0)
         header_sub.setLayout(header_sub_layout)
 
         return header_sub

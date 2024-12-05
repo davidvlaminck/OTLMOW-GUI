@@ -72,6 +72,7 @@ class RelationChangeScreen(Screen):
         self.window = QWidget()
         self.window.setProperty('class', 'background-box')
         self.window_layout = QVBoxLayout()
+        self.window_layout.setContentsMargins(0,0,0,0)
         # self.window_layout.addSpacing(10)
         self.window_layout.addWidget(self.horizontal_layout())
         self.window.setLayout(self.window_layout)

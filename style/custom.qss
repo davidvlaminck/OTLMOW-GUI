@@ -11,7 +11,7 @@
 .add-external-button{
     background: transparent;
     color: #0E5A69;
-    height: 24px;
+    height: 23px;
     font-family: Roboto;
     border: 1px solid #0E5A69;
 }
