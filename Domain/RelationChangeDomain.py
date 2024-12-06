@@ -488,7 +488,7 @@ class RelationChangeDomain:
                 data.target_id].pop(data.index)) for data in data_list]
             cls.get_screen().showMultiSelectionHeeftBetrokkeneAttributeDialogWindow(data_list_and_relation_objects)
         else:
-            cls.last_added_to_existing += [RelationChangeDomain.add_possible_relation_to_existing_relations(data.source_id,
+            cls.last_added_to_existing = [RelationChangeDomain.add_possible_relation_to_existing_relations(data.source_id,
                                                                              data.target_id,
                                                                              data.index) for data in data_list]
         cls.update_frontend()
