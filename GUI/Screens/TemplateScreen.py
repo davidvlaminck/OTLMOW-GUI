@@ -65,6 +65,7 @@ class TemplateScreen(Screen):
         self.no_choice_list.setProperty('class', 'settings-checkbox')
         self.geometry_column_added.setText(self._("geometry_column_added"))
         self.geometry_column_added.setProperty('class', 'settings-checkbox')
+        self.geometry_column_added.setChecked(True)
 
         self.example_settings_titel.setProperty('class', 'settings-title')
         self.example_settings_titel.setText(self._("example_settings"))
