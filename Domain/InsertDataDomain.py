@@ -123,9 +123,18 @@ class InsertDataDomain:
                 elif file_path.suffix == '.csv':
                     temp_path = file_path
 
-                assets = InsertDataDomain.check_document(doc_location=temp_path)
-                exception_group = ExceptionsGroup(
-                    message=f'Failed to create objects from Excel file {temp_path}')
+                exception_group = None
+                try:
+                    assets = InsertDataDomain.check_document(doc_location=temp_path)
+                except ExceptionsGroup as group:
+                    exception_group = group
+                    assets = group.objects
+
+                # second checks done by the GUI
+                if exception_group is None:
+                    exception_group = ExceptionsGroup(
+                        message=f'Failed to create objects from Excel file {temp_path}')
+
                 cls.check_for_invalid_relations(assets,exception_group)
                 cls.check_for_empty_identificators(assets,exception_group)
 
