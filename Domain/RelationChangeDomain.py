@@ -172,8 +172,12 @@ class RelationChangeDomain:
             if is_relation(instance):
                 relation_instance = cast(RelatieObject,instance)
 
-                if (OTLObjectHelper.is_aim_id(relation_instance.assetId.identificator) or
-                        not relation_instance.isActief):
+                is_aim_id = False
+                try:
+                    is_aim_id = OTLObjectHelper.is_aim_id(relation_instance.assetId.identificator)
+                except :
+                    pass
+                if is_aim_id or not relation_instance.isActief:
                     cls.aim_id_relations.append(relation_instance)
                 else:
                     cls.existing_relations.append(relation_instance)
