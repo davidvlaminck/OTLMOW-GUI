@@ -204,7 +204,8 @@ class ProjectFileManager:
         with zipfile.ZipFile(file_path, 'w') as project_zip:
             project_zip.write(project.project_path / 'project_details.json', arcname='project_details.json',
                               compresslevel=zipfile.ZIP_DEFLATED)
-            project_zip.write(project.assets_path, arcname=project.assets_path.name)
+            if project.assets_path and project.assets_path.exists():
+                project_zip.write(project.assets_path, arcname=project.assets_path.name)
             project_zip.write(project.subset_path, arcname=project.subset_path.name)
 
             if not project.get_saved_projectfiles():
@@ -217,8 +218,9 @@ class ProjectFileManager:
 
 
             last_quick_save_path = project.get_last_quick_save_path()
-            last_quick_save_zip_path = Path("quick_saves") / last_quick_save_path.name
-            project_zip.write(last_quick_save_path, arcname=last_quick_save_zip_path)
+            if last_quick_save_path and last_quick_save_path.exists():
+                last_quick_save_zip_path = Path("quick_saves") / last_quick_save_path.name
+                project_zip.write(last_quick_save_path, arcname=last_quick_save_zip_path)
 
     @classmethod
     def load_project_file(cls, file_path) -> Project:
