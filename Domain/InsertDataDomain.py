@@ -24,6 +24,7 @@ from Exceptions.RelationHasInvalidTypeUriForSourceAndTarget import \
 from Exceptions.RelationHasNonExistingTypeUriForSourceOrTarget import \
     RelationHasNonExistingTypeUriForSourceOrTarget
 from GUI.Screens.RelationChangeElements.RelationChangeHelpers import RelationChangeHelpers
+from GUI.translation.GlobalTranslate import GlobalTranslate
 from UnitTests.TestClasses.Classes.ImplementatieElement.AIMObject import AIMObject
 from otlmow_converter.OtlmowConverter import OtlmowConverter
 
@@ -268,4 +269,4 @@ class InsertDataDomain:
                 identificator = new_external_asset.assetId.identificator
 
             if not identificator:
-                exception_group.add_exception(error=NoIdentificatorError(original_exception=ValueError(),tab=RelationChangeHelpers.get_abbreviated_typeURI(asset.typeURI,False)))
+                exception_group.add_exception(error=NoIdentificatorError(GlobalTranslate._ ,original_exception=ValueError(),tab=RelationChangeHelpers.get_abbreviated_typeURI(asset.typeURI,False)))

@@ -337,6 +337,8 @@ class InsertDataScreen(Screen):
                 "has the non-existing TypeURI value: \"{wrong_value}\"\n"
                 "for field \"{wrong_field}\".\n in tab {tab}").format(
                 doc_name=doc_name, type_uri=e.relation_type_uri,identificator=e.relation_identificator, wrong_field=e.wrong_field, wrong_value=e.wrong_value,tab=e.tab)
+        elif issubclass(type(e), NoIdentificatorError):
+            error_text = self._("There are assets without an assetId.identificator in worksheet {0}".format(e.tab))
         else:
             error_text = self._(f'{doc_name}: {e}\n')
         error_widget.setText(error_text)
