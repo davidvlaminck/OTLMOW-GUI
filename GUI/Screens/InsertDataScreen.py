@@ -159,7 +159,7 @@ class InsertDataScreen(Screen):
     def left_side(self):
         left_side = QFrame()
         left_side_layout = QVBoxLayout()
-        left_side_layout.addSpacing(100)
+        # left_side_layout.addSpacing(100)
         self.input_file_label.setText(self._('input_file'))
         left_side_layout.addWidget(self.input_file_label)
         left_side_layout.addWidget(self.add_input_file_field(), alignment=Qt.AlignmentFlag.AlignBottom)
@@ -174,7 +174,7 @@ class InsertDataScreen(Screen):
         right_side_layout = QVBoxLayout()
         list_item = self.add_list()
         self.construct_feedback_message()
-        right_side_layout.addSpacing(100)
+        # right_side_layout.addSpacing(100)
         right_side_layout.addWidget(list_item)
         right_side_layout.addWidget(self.feedback_message_box, alignment=Qt.AlignmentFlag.AlignTop)
         right_side.setLayout(right_side_layout)
