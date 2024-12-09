@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2024-12-03 17:29+0100\n"
+"POT-Creation-Date: 2024-12-09 14:32+0100\n"
 "PO-Revision-Date: 2023-10-19 13:11+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en_US\n"
@@ -18,19 +18,19 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.16.0\n"
 
-#: Domain/HomeDomain.py:43
+#: Domain/HomeDomain.py:44
 msgid "own_reference_empty_error"
 msgstr "Own reference is empty"
 
-#: Domain/HomeDomain.py:45
+#: Domain/HomeDomain.py:46
 msgid "bestek_empty_error"
 msgstr "Subset is empty"
 
-#: Domain/HomeDomain.py:47
+#: Domain/HomeDomain.py:48
 msgid "db_path_empty_error"
 msgstr "Subset is empty"
 
-#: Domain/HomeDomain.py:49
+#: Domain/HomeDomain.py:50
 msgid "wrong_database_error"
 msgstr ""
 
@@ -44,32 +44,32 @@ msgstr ""
 msgid "permission_denied"
 msgstr "No permission to open the file"
 
-#: GUI/HeaderBar.py:77 GUI/HeaderBar.py:241
+#: GUI/HeaderBar.py:77 GUI/HeaderBar.py:242
 msgid "new_project_button"
 msgstr "New Project"
 
-#: GUI/HeaderBar.py:143 GUI/HeaderBar.py:245
+#: GUI/HeaderBar.py:144 GUI/HeaderBar.py:246
 msgid "help"
 msgstr "Help"
 
-#: GUI/DialogWindows/MenuActionsWindow.py:13 GUI/HeaderBar.py:145
-#: GUI/HeaderBar.py:246
+#: GUI/DialogWindows/MenuActionsWindow.py:13 GUI/HeaderBar.py:146
+#: GUI/HeaderBar.py:247
 msgid "about"
 msgstr "About"
 
-#: GUI/HeaderBar.py:147 GUI/HeaderBar.py:247
+#: GUI/HeaderBar.py:148 GUI/HeaderBar.py:248
 msgid "report error"
 msgstr "Report issue"
 
-#: GUI/HeaderBar.py:179 GUI/HeaderBar.py:242
+#: GUI/HeaderBar.py:180 GUI/HeaderBar.py:243
 msgid "return_to_home_screen"
 msgstr "Back home"
 
-#: GUI/HeaderBar.py:199 GUI/HeaderBar.py:243
+#: GUI/HeaderBar.py:200 GUI/HeaderBar.py:244
 msgid "save_button"
 msgstr "Save"
 
-#: GUI/HeaderBar.py:224 GUI/HeaderBar.py:244
+#: GUI/HeaderBar.py:225 GUI/HeaderBar.py:245
 msgid "import"
 msgstr "Import"
 
@@ -130,7 +130,7 @@ msgstr "Service order"
 #: GUI/DialogWindows/ChangeSubsetWindow.py:31
 #: GUI/DialogWindows/UpsertProjectWindow.py:47
 #: GUI/DialogWindows/UpsertProjectWindow.py:63 GUI/OverviewTable.py:43
-#: GUI/OverviewTable.py:163 GUI/Screens/TemplateScreen.py:165
+#: GUI/OverviewTable.py:163 GUI/Screens/TemplateScreen.py:166
 msgid "subset"
 msgstr "Subset"
 
@@ -146,19 +146,19 @@ msgstr "No results found for this search value"
 msgid "no_results"
 msgstr "No results found for this search value"
 
-#: GUI/StepperWidget.py:70
+#: GUI/StepperWidget.py:71
 msgid "step1"
 msgstr "Create Template"
 
-#: GUI/StepperWidget.py:71
+#: GUI/StepperWidget.py:72
 msgid "step2"
 msgstr "Insert Asset Data"
 
-#: GUI/StepperWidget.py:72
+#: GUI/StepperWidget.py:73
 msgid "step3"
 msgstr "Change Asset Data"
 
-#: GUI/StepperWidget.py:73
+#: GUI/StepperWidget.py:74
 msgid "step4"
 msgstr "Export Asset Data"
 
@@ -195,16 +195,19 @@ msgid "asset_id_dummy"
 msgstr "extern asset 1"
 
 #: GUI/DialogWindows/AddExternalAssetWindow.py:49
+#: GUI/DialogWindows/DefineHeeftBetrokkeneRelationWindow.py:62
 #: GUI/Screens/RelationChangeElements/PossibleRelationListWidget.py:26
 msgid "asset_type"
 msgstr "OTL-asset type"
 
 #: GUI/DialogWindows/AddExternalAssetWindow.py:52
+#: GUI/DialogWindows/DefineHeeftBetrokkeneRelationWindow.py:65
 msgid "asset_type_dummy"
 msgstr "Onderdeel#Verkeersbord"
 
 #: GUI/DialogWindows/AddExternalAssetWindow.py:90
 #: GUI/DialogWindows/ChangeSubsetWindow.py:68
+#: GUI/DialogWindows/DefineHeeftBetrokkeneRelationWindow.py:118
 #: GUI/DialogWindows/RemoveProjectFilesWindow.py:33
 #: GUI/DialogWindows/UpsertProjectWindow.py:96
 msgid "submit"
@@ -212,14 +215,15 @@ msgstr "Submit"
 
 #: GUI/DialogWindows/AddExternalAssetWindow.py:92
 #: GUI/DialogWindows/ChangeSubsetWindow.py:70
+#: GUI/DialogWindows/DefineHeeftBetrokkeneRelationWindow.py:120
 #: GUI/DialogWindows/RemoveProjectFilesWindow.py:35
 #: GUI/DialogWindows/RevalidateDocumentsWindow.py:33
 #: GUI/DialogWindows/UpsertProjectWindow.py:98
 msgid "cancel"
 msgstr "Cancel"
 
-#: GUI/DialogWindows/ChangeSubsetWindow.py:26 GUI/Screens/TemplateScreen.py:128
-#: GUI/Screens/TemplateScreen.py:285
+#: GUI/DialogWindows/ChangeSubsetWindow.py:26 GUI/Screens/TemplateScreen.py:129
+#: GUI/Screens/TemplateScreen.py:286
 msgid "change_subset"
 msgstr "Change subset"
 
@@ -230,6 +234,21 @@ msgstr "Warning: overwriting files"
 #: GUI/DialogWindows/ChooseFileNameWindow.py:23
 msgid "warning overwriting files text"
 msgstr "Are you sure you want to overwrite the files from step 2?"
+
+#: GUI/DialogWindows/DefineHeeftBetrokkeneRelationWindow.py:42
+msgid "needs_attribute"
+msgstr "Attribute value needed"
+
+#: GUI/DialogWindows/DefineHeeftBetrokkeneRelationWindow.py:52
+msgid "define_attribute_to_add_heeft_betrokkene_relation"
+msgstr ""
+"Which rol does the Agent '{0}\" have towards asset '{1}' in this "
+"HeeftBetrokkene relation?Welke rol heeft Agent '{0}' tot asset '{1}' in "
+"deze HeeftBetrokkene relatie?"
+
+#: GUI/DialogWindows/DefineHeeftBetrokkeneRelationWindow.py:56
+msgid "define_attribute_to_add_heeft_betrokkene_relations"
+msgstr ""
 
 #: GUI/DialogWindows/LanguageWindow.py:23
 msgid "change_language_title"
@@ -283,10 +302,13 @@ msgstr "Overwrite warning"
 
 #: GUI/DialogWindows/RevalidateDocumentsWindow.py:17
 msgid "revalidate_documents_files_question"
-msgstr "By validating the documents all changes in step '3. Change Asset Data' are discarded.\n"
+msgstr ""
+"By validating the documents all changes in step '3. Change Asset Data' "
+"are discarded.\n"
 "These include all the added/removed relations and external assets.\n"
 "\n"
-"If you wish to keep these you should export all the data via step '4. Export Asset Data'"
+"If you wish to keep these you should export all the data via step '4. "
+"Export Asset Data'"
 
 #: GUI/DialogWindows/RevalidateDocumentsWindow.py:31
 msgid "continue"
@@ -298,7 +320,8 @@ msgstr "A new version of OTL-Wizard 2  is available"
 
 #: GUI/DialogWindows/SuggestUpdateWindow.py:24
 msgid "update_available_text"
-msgstr " There is a new version of OTL-Wizard 2 available.\n"
+msgstr ""
+" There is a new version of OTL-Wizard 2 available.\n"
 "\n"
 "This new version is version {1}\n"
 "Your program is on version {0}\n"
@@ -363,8 +386,8 @@ msgstr "Convert"
 msgid "file_for_conversion"
 msgstr "File conversion"
 
-#: GUI/Screens/DataVisualisationScreen.py:58
-#: GUI/Screens/DataVisualisationScreen.py:109
+#: GUI/Screens/DataVisualisationScreen.py:61
+#: GUI/Screens/DataVisualisationScreen.py:114
 msgid "relations legend"
 msgstr "Color legend relations:"
 
@@ -385,7 +408,7 @@ msgid "select file type for export"
 msgstr "Select file type for export"
 
 #: GUI/Screens/ExportDataScreen.py:76 GUI/Screens/ExportDataScreen.py:100
-#: GUI/Screens/TemplateScreen.py:88 GUI/Screens/TemplateScreen.py:284
+#: GUI/Screens/TemplateScreen.py:89 GUI/Screens/TemplateScreen.py:285
 msgid "export"
 msgstr "Export"
 
@@ -437,133 +460,127 @@ msgstr "{doc_name}: TypeUri not found in first row of worksheet {tab}\n"
 
 #: GUI/Screens/InsertDataScreen.py:321
 msgid ""
+"{doc_name}: There are assets without an assetId.identificator in "
+"worksheet {tab}\n"
+msgstr "{doc_name}: There are assets without an assetId.identificator in "
+"worksheet {tab}\n"
+
+#: GUI/Screens/InsertDataScreen.py:323
+msgid ""
 "{doc_name}:\n"
 "Relation of type: \"{type_uri}\"\n"
 "with assetId.identificator: \"{identificator}\"\n"
 "This relation cannot be made between the typeURI's.\n"
 "{wrong_field}= \"{wrong_value}\"\n"
 "{wrong_field2}= \"{wrong_value2}\"\n"
-" in tab {tab}"
+" in tab {tab}\n"
 msgstr ""
-"\"{doc_name}:\n"
-"Error in relation of type: \"{type_uri}\"\n"
-"with assetId.identificator: \"{identificator}\"\n"
-"This relation cannot be made between the typeURI's.\n"
-"{wrong_field}= \"{wrong_value}\"\n"
-"{wrong_field2}= \"{wrong_value2}\"\n"
-"in tab {tab}\""
 
-#: GUI/Screens/InsertDataScreen.py:333
+#: GUI/Screens/InsertDataScreen.py:335
 msgid ""
 "{doc_name}:\n"
 "Relation of type: \"{type_uri}\"\n"
 "with assetId.identificator: \"{identificator}\",\n"
 "has the non-existing TypeURI value: \"{wrong_value}\"\n"
 "for field \"{wrong_field}\".\n"
-" in tab {tab}"
+" in tab {tab}\n"
 msgstr ""
-"{doc_name}:\n"
-"Error in relation of type: \"{type_uri}\"\n"
-"with assetId.identificator: \"{identificator}\",\n"
-"This relation has the non-existing TypeURI value: \"{wrong_value}\"\n"
-"for field \"{wrong_field}\".\n"
-"in tab {tab}"
 
-#: GUI/Screens/RelationChangeScreen.py:82
+#: GUI/Screens/RelationChangeScreen.py:87
 msgid "functionality under development"
 msgstr "Functionality under development"
 
-#: GUI/Screens/TemplateScreen.py:59 GUI/Screens/TemplateScreen.py:208
-#: GUI/Screens/TemplateScreen.py:282
+#: GUI/Screens/TemplateScreen.py:59 GUI/Screens/TemplateScreen.py:209
+#: GUI/Screens/TemplateScreen.py:283
 msgid "select_all_classes"
 msgstr "Select all asset types"
 
-#: GUI/Screens/TemplateScreen.py:63 GUI/Screens/TemplateScreen.py:288
+#: GUI/Screens/TemplateScreen.py:63 GUI/Screens/TemplateScreen.py:289
 msgid "general_settings"
 msgstr "General settings"
 
-#: GUI/Screens/TemplateScreen.py:64 GUI/Screens/TemplateScreen.py:281
+#: GUI/Screens/TemplateScreen.py:64 GUI/Screens/TemplateScreen.py:282
 msgid "no_choice_list"
 msgstr "Do not generate choice lists"
 
-#: GUI/Screens/TemplateScreen.py:66 GUI/Screens/TemplateScreen.py:280
+#: GUI/Screens/TemplateScreen.py:66 GUI/Screens/TemplateScreen.py:281
 msgid "geometry_column_added"
 msgstr "Add geometry column to the template"
 
-#: GUI/Screens/TemplateScreen.py:70 GUI/Screens/TemplateScreen.py:289
+#: GUI/Screens/TemplateScreen.py:71 GUI/Screens/TemplateScreen.py:290
 msgid "example_settings"
 msgstr "Example settings"
 
-#: GUI/Screens/TemplateScreen.py:73 GUI/Screens/TemplateScreen.py:283
+#: GUI/Screens/TemplateScreen.py:74 GUI/Screens/TemplateScreen.py:284
 msgid "amount_of_examples"
 msgstr "Generate rows of example data"
 
-#: GUI/Screens/TemplateScreen.py:77 GUI/Screens/TemplateScreen.py:279
+#: GUI/Screens/TemplateScreen.py:78 GUI/Screens/TemplateScreen.py:280
 msgid "export_attribute_info"
 msgstr "Export additional attribute information"
 
-#: GUI/Screens/TemplateScreen.py:140 GUI/Screens/TemplateScreen.py:286
+#: GUI/Screens/TemplateScreen.py:141 GUI/Screens/TemplateScreen.py:287
 msgid "operator"
 msgstr "Operator"
 
-#: GUI/Screens/TemplateScreen.py:152 GUI/Screens/TemplateScreen.py:287
+#: GUI/Screens/TemplateScreen.py:153 GUI/Screens/TemplateScreen.py:288
 msgid "otl_version"
 msgstr "OTL version"
 
-#: GUI/Screens/TemplateScreen.py:186
+#: GUI/Screens/TemplateScreen.py:187
 msgid "loading"
 msgstr "Loading"
 
-#: GUI/Screens/TemplateScreen.py:203
+#: GUI/Screens/TemplateScreen.py:204
 msgid "no classes found in specified path"
 msgstr "No asset types found in specified path"
 
-#: GUI/Screens/TemplateScreen.py:236 GUI/Screens/TemplateScreen.py:291
+#: GUI/Screens/TemplateScreen.py:237 GUI/Screens/TemplateScreen.py:292
 msgid "{selected} classes selected"
 msgstr "{selected} asset types selected"
 
-#: GUI/Screens/TemplateScreen.py:290
+#: GUI/Screens/TemplateScreen.py:291
 msgid "deprecated_settings"
 msgstr "Settings for deprecated attributes"
 
-#: GUI/Screens/RelationChangeElements/AbstractInstanceListWidget.py:343
+#: GUI/Screens/RelationChangeElements/AbstractInstanceListWidget.py:345
 msgid "search_button"
 msgstr "Search"
 
-#: GUI/Screens/RelationChangeElements/AbstractInstanceListWidget.py:373
+#: GUI/Screens/RelationChangeElements/AbstractInstanceListWidget.py:375
 msgid "no_instance_selected"
 msgstr "No object selected"
 
-#: GUI/Screens/RelationChangeElements/AbstractInstanceListWidget.py:455
+#: GUI/Screens/RelationChangeElements/AbstractInstanceListWidget.py:457
 #: GUI/Screens/RelationChangeElements/ObjectListWidget.py:104
 msgid "no_options_available"
 msgstr "No options available"
 
-#: GUI/Screens/RelationChangeElements/ExistingRelationListWidget.py:23
+#: GUI/Screens/RelationChangeElements/ExistingRelationListWidget.py:24
 msgid "source_asset"
 msgstr "Source asset"
 
-#: GUI/Screens/RelationChangeElements/ExistingRelationListWidget.py:23
+#: GUI/Screens/RelationChangeElements/ExistingRelationListWidget.py:24
 msgid "target_asset"
 msgstr "Target asset"
 
-#: GUI/Screens/RelationChangeElements/ExistingRelationListWidget.py:26
+#: GUI/Screens/RelationChangeElements/ExistingRelationListWidget.py:27
 msgid "existing_relations_list"
 msgstr "Existing relations"
 
-#: GUI/Screens/RelationChangeElements/ExistingRelationListWidget.py:27
+#: GUI/Screens/RelationChangeElements/ExistingRelationListWidget.py:28
 msgid "existing_relations_description"
 msgstr "Shows the existing relations in the project"
 
-#: GUI/Screens/RelationChangeElements/ExistingRelationListWidget.py:28
+#: GUI/Screens/RelationChangeElements/ExistingRelationListWidget.py:29
 msgid "existing_relation_attributes"
 msgstr "Existing relation attributes (last selected)"
 
-#: GUI/Screens/RelationChangeElements/ExistingRelationListWidget.py:50
+#: GUI/Screens/RelationChangeElements/ExistingRelationListWidget.py:56
 msgid "remove_relation"
 msgstr "Remove relations"
 
-#: GUI/Screens/RelationChangeElements/ExistingRelationListWidget.py:146
+#: GUI/Screens/RelationChangeElements/ExistingRelationListWidget.py:152
 #: GUI/Screens/RelationChangeElements/PossibleRelationListWidget.py:221
 msgid "no_relation_selected"
 msgstr "No relation selected"
@@ -674,4 +691,39 @@ msgstr "no identificator"
 
 #~ msgid "show_deprecated_attributes"
 #~ msgstr "Highlight deprecated attributes in template"
+
+#~ msgid ""
+#~ "{doc_name}:\n"
+#~ "Relation of type: \"{type_uri}\"\n"
+#~ "with assetId.identificator: \"{identificator}\"\n"
+#~ "This relation cannot be made between the typeURI's.\n"
+#~ "{wrong_field}= \"{wrong_value}\"\n"
+#~ "{wrong_field2}= \"{wrong_value2}\"\n"
+#~ " in tab {tab}"
+#~ msgstr ""
+#~ "\"{doc_name}:\n"
+#~ "Error in relation of type: \"{type_uri}\"\n"
+#~ "with assetId.identificator: \"{identificator}\"\n"
+#~ "This relation cannot be made between the typeURI's.\n"
+#~ "{wrong_field}= \"{wrong_value}\"\n"
+#~ "{wrong_field2}= \"{wrong_value2}\"\n"
+#~ "in tab {tab}\""
+
+#~ msgid ""
+#~ "{doc_name}:\n"
+#~ "Relation of type: \"{type_uri}\"\n"
+#~ "with assetId.identificator: \"{identificator}\",\n"
+#~ "has the non-existing TypeURI value: \"{wrong_value}\"\n"
+#~ "for field \"{wrong_field}\".\n"
+#~ " in tab {tab}"
+#~ msgstr ""
+#~ "{doc_name}:\n"
+#~ "Error in relation of type: \"{type_uri}\"\n"
+#~ "with assetId.identificator: \"{identificator}\",\n"
+#~ "This relation has the non-existing TypeURI value: \"{wrong_value}\"\n"
+#~ "for field \"{wrong_field}\".\n"
+#~ "in tab {tab}"
+
+#~ msgid "There are assets without an assetId.identificator in worksheet {0}"
+#~ msgstr "There are assets without an assetId.identificator in worksheet {0}"
 

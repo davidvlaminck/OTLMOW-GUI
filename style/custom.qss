@@ -8,6 +8,14 @@
     font-family: Roboto;
 }
 
+.add-external-button{
+    background: transparent;
+    color: #0E5A69;
+    height: 23px;
+    font-family: Roboto;
+    border: 1px solid #0E5A69;
+}
+
 .invisible{
     background-color: #00000000;
     color: #00000000;
@@ -92,7 +100,6 @@ HomeScreen{
     padding-left: 10px;
     padding-right: 10px;
     border: 1px solid #0E5A69;
-    cursor:pointer;
 }
 
 QApplication{
@@ -325,8 +332,8 @@ QTreeView::item {
 }
 
 .add_relation-button{
-    background-color: #d5e8d4;
-    color: #689a4c;
+    background-color: #0E5A69;
+    color: #ffffff;;
     height: 25px;
     border-radius: 5px;
     border: 1px solid #689a4c;

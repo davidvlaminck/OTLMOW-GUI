@@ -32,7 +32,7 @@ class PossibleRelationListWidget(AbstractInstanceListWidget):
 
     def create_object_list_gui(self, multi_select: bool = False) -> QFrame:
         frame = super().create_object_list_gui(multi_select)
-        self.frame_layout.setContentsMargins(0,11,11,11)
+        self.frame_layout.setContentsMargins(0,0,11,0)
         self.list_gui.setProperty('class', 'possible-relation-list')
 
         self.add_no_asset_selected_placeholder()

@@ -79,9 +79,9 @@ class OTLWizard(QApplication):
 
         self.main_window = MainWindow(language)
 
-        self.main_window.resize(1360, 768)
+        self.main_window.resize(1250, 650)
         self.main_window.setWindowTitle('OTLWizard')
-        self.main_window.setMinimumSize(1280, 720)
+        self.main_window.setMinimumSize(800, 600)
         self.main_window.show()
         global_vars.otl_wizard = self
 

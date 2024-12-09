@@ -29,7 +29,7 @@ class ObjectListWidget(AbstractInstanceListWidget):
 
     def create_object_list_gui(self, multi_select: bool = False) -> QFrame:
         frame = super().create_object_list_gui(multi_select)
-        self.frame_layout.setContentsMargins(11,11,0,11)
+        self.frame_layout.setContentsMargins(11,0,0,0)
         self.list_gui.setProperty('class', 'object-list')
         return frame
 
@@ -51,7 +51,7 @@ class ObjectListWidget(AbstractInstanceListWidget):
         self.list_button.setText(self._("add_external_asset"))
         self.list_button.clicked.connect(
             self.add_external_asset)
-        self.list_button.setProperty("class", "primary-button")
+        self.list_button.setProperty("class", 'add-external-button')
         return self.list_button
 
     def add_external_asset(self):

@@ -172,8 +172,12 @@ class RelationChangeDomain:
             if is_relation(instance):
                 relation_instance = cast(RelatieObject,instance)
 
-                if (OTLObjectHelper.is_aim_id(relation_instance.assetId.identificator) or
-                        not relation_instance.isActief):
+                is_aim_id = False
+                try:
+                    is_aim_id = OTLObjectHelper.is_aim_id(relation_instance.assetId.identificator)
+                except :
+                    pass
+                if is_aim_id or not relation_instance.isActief:
                     cls.aim_id_relations.append(relation_instance)
                 else:
                     cls.existing_relations.append(relation_instance)
@@ -447,7 +451,9 @@ class RelationChangeDomain:
                                source_object:AIMObject,
                                target_object:AIMObject) -> RelatieObject:
         relation_type = dynamic_create_type_from_uri(OSLO_relation.objectUri)
-        return RelationCreator.create_relation(relation_type,source_object,target_object)
+        relation_object = RelationCreator.create_relation(relation_type,source_object,target_object)
+        relation_object.assetId.toegekendDoor = global_vars.external_toegekendDoor_label
+        return relation_object
 
     @classmethod
     def sort_nested_dict(cls,d, by='keys'):
@@ -476,7 +482,15 @@ class RelationChangeDomain:
     @save_assets
     def add_multiple_possible_relations_to_existing_relations(cls, data_list):
 
-        cls.last_added_to_existing = [RelationChangeDomain.add_possible_relation_to_existing_relations(data.source_id,
+        heeft_betrokkene_in_selection = [True for data in data_list
+                                         if cls.possible_object_to_object_relations_dict[data.source_id][data.target_id][data.index].typeURI == 'https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#HeeftBetrokkene']
+
+        if heeft_betrokkene_in_selection:
+            data_list_and_relation_objects = [(data.source_id,data.target_id, cls.possible_object_to_object_relations_dict[data.source_id][
+                data.target_id].pop(data.index)) for data in data_list]
+            cls.get_screen().showMultiSelectionHeeftBetrokkeneAttributeDialogWindow(data_list_and_relation_objects)
+        else:
+            cls.last_added_to_existing = [RelationChangeDomain.add_possible_relation_to_existing_relations(data.source_id,
                                                                              data.target_id,
                                                                              data.index) for data in data_list]
         cls.update_frontend()
@@ -485,12 +499,20 @@ class RelationChangeDomain:
     def add_possible_relation_to_existing_relations(cls, bron_asset_id, target_asset_id,
                                                     relation_object_index):
         relation_object = cls.possible_object_to_object_relations_dict[bron_asset_id][target_asset_id].pop(relation_object_index)
+
+        # if relation_object.typeURI == 'https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#HeeftBetrokkene':
+        #     # don't add the relation
+        #     cls.get_screen().showHeeftBetrokkeneAttributeDialogWindow(bron_asset_id,target_asset_id,relation_object)
+        # else:
+        cls.add_relation_object_to_existing_relations(relation_object)
+
+        return relation_object
+
+    @classmethod
+    def add_relation_object_to_existing_relations(cls, relation_object):
         relation_object.isActief = True
         cls.existing_relations.append(relation_object)
         cls.get_screen().expand_existing_relations_folder_of(relation_object.typeURI)
-        return relation_object
-
-
 
     @classmethod
     def update_frontend(cls):

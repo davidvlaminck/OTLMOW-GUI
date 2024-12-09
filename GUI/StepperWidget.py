@@ -54,6 +54,7 @@ class StepperWidget(QWidget):
         horizontal_layout.addWidget(lines[2])
         horizontal_layout.addWidget(self.step4, alignment=Qt.AlignmentFlag.AlignLeft)
         horizontal_layout.addSpacing(50)
+        horizontal_layout.setContentsMargins(10, 0, 0, 0)
         return horizontal_layout
 
     def enable_steps(self):

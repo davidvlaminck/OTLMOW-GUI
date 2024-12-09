@@ -3,6 +3,7 @@ from typing import Optional, Collection
 
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QStandardItem
+from PyQt6.QtWidgets import QFrame
 from otlmow_model.OtlmowModel.Helpers import OTLObjectHelper
 
 from Domain.RelationChangeDomain import RelationChangeDomain
@@ -26,6 +27,11 @@ class ExistingRelationListWidget(AbstractInstanceListWidget):
         self.list_label_text = self._("existing_relations_list")
         self.list_subtext_label_text = self._("existing_relations_description")
         self.attribute_field_label_text = self._("existing_relation_attributes")
+
+    def create_object_list_gui(self, multi_select: bool = False) -> QFrame:
+        frame = super().create_object_list_gui(multi_select)
+        self.frame_layout.setContentsMargins(11, 0, 0, 0)
+        return frame
 
     def on_item_selected_listener(self, selected, deselected):
         no_item_selected = True
