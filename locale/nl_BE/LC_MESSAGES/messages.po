@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: jasper.berton@mow.vlaanderen.be\n"
-"POT-Creation-Date: 2024-12-06 17:37+0100\n"
+"POT-Creation-Date: 2024-12-09 14:32+0100\n"
 "PO-Revision-Date: 2023-10-19 13:13+0200\n"
 "Last-Translator: Jasper Berton <jasper.berton@mow.vlaanderen.be>\n"
 "Language: nl_BE\n"
@@ -387,8 +387,8 @@ msgstr "Converteren"
 msgid "file_for_conversion"
 msgstr "Bestand voor conversie"
 
-#: GUI/Screens/DataVisualisationScreen.py:58
-#: GUI/Screens/DataVisualisationScreen.py:109
+#: GUI/Screens/DataVisualisationScreen.py:61
+#: GUI/Screens/DataVisualisationScreen.py:114
 msgid "relations legend"
 msgstr "Mogelijke relaties"
 
@@ -461,41 +461,30 @@ msgstr "{doc_name}: TypeUri staat niet in de eerste rij van werkblad {tab}\n"
 
 #: GUI/Screens/InsertDataScreen.py:321
 msgid ""
+"{doc_name}: There are assets without an assetId.identificator in "
+"worksheet {tab}\n"
+msgstr "{doc_name}: Er zijn assets zonder een assetId.identificator in werkblad {tab}\n"
+
+#: GUI/Screens/InsertDataScreen.py:323
+msgid ""
 "{doc_name}:\n"
 "Relation of type: \"{type_uri}\"\n"
 "with assetId.identificator: \"{identificator}\"\n"
 "This relation cannot be made between the typeURI's.\n"
 "{wrong_field}= \"{wrong_value}\"\n"
 "{wrong_field2}= \"{wrong_value2}\"\n"
-" in tab {tab}"
+" in tab {tab}\n"
 msgstr ""
-"{doc_name}:\n"
-"Fout in relatie van type: \"{type_uri}\"\n"
-"met assetId.identificator: \"{identificator}\"\n"
-"Deze relatie kan niet gemaakt worden tussen deze typeURI's:\n"
-"{wrong_field}= \"{wrong_value}\"\n"
-"{wrong_field2}= \"{wrong_value2}\"\n"
-"in werkblad: {tab}"
 
-#: GUI/Screens/InsertDataScreen.py:333
+#: GUI/Screens/InsertDataScreen.py:335
 msgid ""
 "{doc_name}:\n"
 "Relation of type: \"{type_uri}\"\n"
 "with assetId.identificator: \"{identificator}\",\n"
 "has the non-existing TypeURI value: \"{wrong_value}\"\n"
 "for field \"{wrong_field}\".\n"
-" in tab {tab}"
+" in tab {tab}\n"
 msgstr ""
-"{doc_name}:\n"
-"Fout in relatie van type: \"{type_uri}\"\n"
-"met assetId.identificator: \"{identificator}\",\n"
-"Deze relatie heeft een onbestaande TypeURI waarde: \"{wrong_value}\"\n"
-"voor veld \"{wrong_field}\".\n"
-"in werkblad: {tab}"
-
-#: GUI/Screens/InsertDataScreen.py:341
-msgid "There are assets without an assetId.identificator in worksheet {0}"
-msgstr "Er zijn assets zonder een assetId.identificator in werkblad {0}"
 
 #: GUI/Screens/RelationChangeScreen.py:87
 msgid "functionality under development"
@@ -708,4 +697,39 @@ msgstr "geen identificator"
 
 #~ msgid "show_deprecated_attributes"
 #~ msgstr "Deprecated attributen aanduiden"
+
+#~ msgid ""
+#~ "{doc_name}:\n"
+#~ "Relation of type: \"{type_uri}\"\n"
+#~ "with assetId.identificator: \"{identificator}\"\n"
+#~ "This relation cannot be made between the typeURI's.\n"
+#~ "{wrong_field}= \"{wrong_value}\"\n"
+#~ "{wrong_field2}= \"{wrong_value2}\"\n"
+#~ " in tab {tab}"
+#~ msgstr ""
+#~ "{doc_name}:\n"
+#~ "Fout in relatie van type: \"{type_uri}\"\n"
+#~ "met assetId.identificator: \"{identificator}\"\n"
+#~ "Deze relatie kan niet gemaakt worden tussen deze typeURI's:\n"
+#~ "{wrong_field}= \"{wrong_value}\"\n"
+#~ "{wrong_field2}= \"{wrong_value2}\"\n"
+#~ "in werkblad: {tab}"
+
+#~ msgid ""
+#~ "{doc_name}:\n"
+#~ "Relation of type: \"{type_uri}\"\n"
+#~ "with assetId.identificator: \"{identificator}\",\n"
+#~ "has the non-existing TypeURI value: \"{wrong_value}\"\n"
+#~ "for field \"{wrong_field}\".\n"
+#~ " in tab {tab}"
+#~ msgstr ""
+#~ "{doc_name}:\n"
+#~ "Fout in relatie van type: \"{type_uri}\"\n"
+#~ "met assetId.identificator: \"{identificator}\",\n"
+#~ "Deze relatie heeft een onbestaande TypeURI waarde: \"{wrong_value}\"\n"
+#~ "voor veld \"{wrong_field}\".\n"
+#~ "in werkblad: {tab}"
+
+#~ msgid "There are assets without an assetId.identificator in worksheet {0}"
+#~ msgstr ""
 

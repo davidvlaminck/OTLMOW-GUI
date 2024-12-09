@@ -315,8 +315,10 @@ class InsertDataScreen(Screen):
             error_text = self._("{doc_name}: type uri not in first row of {tab}\n").format(doc_name=doc_name, tab=str(e.tab))
         elif issubclass(type(e), FailedToImportFileError): # as of otlmow_converter==1.4 never instantiated
             error_text = self._(f'{doc_name}: {e} \n')
+        # elif issubclass(type(e), NoIdentificatorError):
+        #     error_text = self._(f'{doc_name}: {e} \n')
         elif issubclass(type(e), NoIdentificatorError):
-            error_text = self._(f'{doc_name}: {e} \n')
+            error_text = self._("{doc_name}: There are assets without an assetId.identificator in worksheet {tab}\n").format(doc_name=doc_name, tab=str(e.tab))
         elif issubclass(type(e), RelationHasInvalidTypeUriForSourceAndTarget):
                 error_text = self._(
                     "{doc_name}:\n"+
@@ -324,7 +326,7 @@ class InsertDataScreen(Screen):
                     "with assetId.identificator: \"{identificator}\"\n"+
                     "This relation cannot be made between the typeURI's.\n"+
                     "{wrong_field}= \"{wrong_value}\"\n"+
-                    "{wrong_field2}= \"{wrong_value2}\"\n in tab {tab}").format(
+                    "{wrong_field2}= \"{wrong_value2}\"\n in tab {tab}\n").format(
                     doc_name=doc_name, type_uri=e.relation_type_uri,
                     identificator=e.relation_identificator, wrong_field=e.wrong_field,
                     wrong_value=e.wrong_value, wrong_field2=e.wrong_field2,
@@ -335,10 +337,9 @@ class InsertDataScreen(Screen):
                 "Relation of type: \"{type_uri}\"\n"
                 "with assetId.identificator: \"{identificator}\",\n"
                 "has the non-existing TypeURI value: \"{wrong_value}\"\n"
-                "for field \"{wrong_field}\".\n in tab {tab}").format(
+                "for field \"{wrong_field}\".\n in tab {tab}\n").format(
                 doc_name=doc_name, type_uri=e.relation_type_uri,identificator=e.relation_identificator, wrong_field=e.wrong_field, wrong_value=e.wrong_value,tab=e.tab)
-        elif issubclass(type(e), NoIdentificatorError):
-            error_text = self._("There are assets without an assetId.identificator in worksheet {0}".format(e.tab))
+
         else:
             error_text = self._(f'{doc_name}: {e}\n')
         error_widget.setText(error_text)

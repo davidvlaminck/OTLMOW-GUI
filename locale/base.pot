@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2024-12-06 17:37+0100\n"
+"POT-Creation-Date: 2024-12-09 14:32+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -366,8 +366,8 @@ msgstr ""
 msgid "file_for_conversion"
 msgstr ""
 
-#: GUI/Screens/DataVisualisationScreen.py:58
-#: GUI/Screens/DataVisualisationScreen.py:109
+#: GUI/Screens/DataVisualisationScreen.py:61
+#: GUI/Screens/DataVisualisationScreen.py:114
 msgid "relations legend"
 msgstr ""
 
@@ -438,27 +438,29 @@ msgstr ""
 
 #: GUI/Screens/InsertDataScreen.py:321
 msgid ""
+"{doc_name}: There are assets without an assetId.identificator in "
+"worksheet {tab}\n"
+msgstr ""
+
+#: GUI/Screens/InsertDataScreen.py:323
+msgid ""
 "{doc_name}:\n"
 "Relation of type: \"{type_uri}\"\n"
 "with assetId.identificator: \"{identificator}\"\n"
 "This relation cannot be made between the typeURI's.\n"
 "{wrong_field}= \"{wrong_value}\"\n"
 "{wrong_field2}= \"{wrong_value2}\"\n"
-" in tab {tab}"
+" in tab {tab}\n"
 msgstr ""
 
-#: GUI/Screens/InsertDataScreen.py:333
+#: GUI/Screens/InsertDataScreen.py:335
 msgid ""
 "{doc_name}:\n"
 "Relation of type: \"{type_uri}\"\n"
 "with assetId.identificator: \"{identificator}\",\n"
 "has the non-existing TypeURI value: \"{wrong_value}\"\n"
 "for field \"{wrong_field}\".\n"
-" in tab {tab}"
-msgstr ""
-
-#: GUI/Screens/InsertDataScreen.py:341
-msgid "There are assets without an assetId.identificator in worksheet {0}"
+" in tab {tab}\n"
 msgstr ""
 
 #: GUI/Screens/RelationChangeScreen.py:87
