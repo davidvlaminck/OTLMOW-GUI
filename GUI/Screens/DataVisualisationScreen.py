@@ -57,11 +57,11 @@ class DataVisualisationScreen(Screen):
         self.view.settings().setAttribute(QWebEngineSettings.WebAttribute.ShowScrollBars, False)
         self.view.setContentsMargins(0, 0, 0, 0)
         self.view.setSizePolicy(QSizePolicy.Policy.Expanding,QSizePolicy.Policy.Expanding )
-        window_layout.addWidget(self.view,10)
+        window_layout.addWidget(self.view,2)
         self.color_label_title.setText(self._("relations legend") + ":")
         window_layout.addWidget(self.color_label_title)
         window_layout.addWidget(self.create_color_legend())
-        window_layout.addSpacing(50)
+        # window_layout.addSpacing(50)
         # window_layout.addSpacing(50)
         window.setLayout(window_layout)
         return window
