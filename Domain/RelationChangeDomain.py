@@ -451,7 +451,9 @@ class RelationChangeDomain:
                                source_object:AIMObject,
                                target_object:AIMObject) -> RelatieObject:
         relation_type = dynamic_create_type_from_uri(OSLO_relation.objectUri)
-        return RelationCreator.create_relation(relation_type,source_object,target_object)
+        relation_object = RelationCreator.create_relation(relation_type,source_object,target_object)
+        relation_object.assetId.toegekendDoor = global_vars.external_toegekendDoor_label
+        return relation_object
 
     @classmethod
     def sort_nested_dict(cls,d, by='keys'):
