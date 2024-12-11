@@ -17,6 +17,98 @@ from Exceptions.ExcelFileUnavailableError import ExcelFileUnavailableError
 
 PARENT_OF_THIS_FILE = Path(__file__).parent
 
+@fixture
+def create_mock_project_project_1():
+    project_path = Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1')
+    project = Project(
+        project_path=project_path,
+        subset_path=Path(
+            PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' /
+            'OTL_AllCasesTestClass_no_double_kard.db'),
+        assets_path=Path(
+            PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' / 'saved_documents.json'),
+        eigen_referentie="eigen referentie",
+        bestek="bestek",
+        laatst_bewerkt=datetime.datetime(2023, 11, 1))
+
+    ProjectFileManager.save_project_to_dir(project)
+    yield project
+    if project_path.exists():
+        shutil.rmtree(project_path)
+
+@fixture
+def create_mock_project_project_2():
+    project_path = Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_2')
+    project = Project(
+        project_path=project_path,
+        subset_path=Path(
+            PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' /
+            'OTL_AllCasesTestClass_no_double_kard.db'),
+        assets_path=Path(
+            PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_2' / 'saved_documents.json'),
+        eigen_referentie="eigen referentie",
+        bestek="bestek",
+        laatst_bewerkt=datetime.datetime(2023, 11, 1))
+
+    ProjectFileManager.save_project_to_dir(project)
+    yield project
+    if project_path.exists():
+        shutil.rmtree(project_path)
+
+@fixture
+def create_mock_project_project_3():
+    project_path = Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_2')
+    project = Project(
+        project_path=project_path,
+        subset_path=Path(
+            PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' /
+            'OTL_AllCasesTestClass_no_double_kard.db'),
+        assets_path=Path(
+            PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_2' / 'saved_documents.json'),
+        eigen_referentie="eigen referentie",
+        bestek="bestek",
+        laatst_bewerkt=datetime.datetime(2023, 11, 1))
+
+    ProjectFileManager.save_project_to_dir(project)
+    yield project
+    if project_path.exists():
+        shutil.rmtree(project_path)
+
+@fixture
+def create_mock_project_project_4():
+    project_path = Path(ProjectFileManager.get_otl_wizard_projects_dir() / 'project_4')
+    project = Project(
+        project_path=project_path ,
+        subset_path=Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' /
+                         'OTL_AllCasesTestClass_no_double_kard.db'),
+        assets_path=Path(
+            PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' / 'saved_documents.json'),
+        eigen_referentie="eigen referentie",
+        bestek="bestek",
+        laatst_bewerkt=datetime.datetime(2023, 11, 1))
+    ProjectFileManager.save_project_to_dir(project)
+    yield project
+    if project_path.exists():
+        shutil.rmtree(project_path)
+
+@fixture
+def create_mock_project_eigen_referentie():
+    project_path = Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_2')
+    project = Project(
+        project_path=project_path,
+        subset_path=Path(
+            PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' /
+            'OTL_AllCasesTestClass_no_double_kard.db'),
+        assets_path=Path(
+            PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_2' / 'saved_documents.json'),
+        eigen_referentie="eigen referentie",
+        bestek="bestek",
+        laatst_bewerkt=datetime.datetime(2023, 11, 1))
+
+    ProjectFileManager.save_project_to_dir(project)
+    yield project
+    if project_path.exists():
+        shutil.rmtree(project_path)
 
 @pytest.fixture
 def mock_get_home_path(mocked_dir=Path(PARENT_OF_THIS_FILE)):
@@ -42,7 +134,7 @@ def mock_get_home_path_with_empty_directory(mock_get_home_path):
     shutil.rmtree(empty_dir)
 
 
-def test_get_project_from_dir_given_project_dir_location():
+def test_get_project_from_dir_given_project_dir_location(create_mock_project_project_1):
     project_dir_path = PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1'
 
     project = ProjectFileManager.get_project_from_dir(project_dir_path)
@@ -52,7 +144,7 @@ def test_get_project_from_dir_given_project_dir_location():
         PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' /
         'OTL_AllCasesTestClass_no_double_kard.db')
     assert project.assets_path == Path(
-        PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' / 'assets.json')
+        PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' / 'saved_documents.json')
     assert project.eigen_referentie == "eigen referentie"
     assert project.bestek == "bestek"
     assert project.laatst_bewerkt == datetime.datetime(2023, 11, 1)
@@ -75,24 +167,14 @@ def test_get_project_from_dir_details_missing():
     shutil.rmtree(project_dir_path)
 
 
-def test_save_project_given_details(mock_get_home_path):
-    project = Project(
-        project_path=Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_2'),
-        subset_path=Path(
-            PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' /
-            'OTL_AllCasesTestClass_no_double_kard.db'),
-        assets_path=Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_2' / 'assets.json'),
-        eigen_referentie="eigen referentie",
-        bestek="bestek",
-        laatst_bewerkt=datetime.datetime(2023, 11, 1))
+def test_save_project_given_details(mock_get_home_path,create_mock_project_eigen_referentie):
 
-    ProjectFileManager.save_project_to_dir(project)
 
     project_dir_path = PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_2'
     assert project_dir_path.exists()
     assert (project_dir_path / 'project_details.json').exists()
     assert (project_dir_path / 'OTL_AllCasesTestClass_no_double_kard.db').exists()
-    # assert (project_dir_path / 'assets.json').exists() #is not supposed to be created
+    # assert (project_dir_path / 'saved_documents.json').exists() #is not supposed to be created
 
     generated_project = ProjectFileManager.get_project_from_dir(project_dir_path)
     assert generated_project.eigen_referentie == "eigen referentie"
@@ -105,7 +187,7 @@ def test_save_project_given_details(mock_get_home_path):
 def test_get_all_otl_wizard_projects(caplog, mock_get_home_path):
     projects = ProjectFileManager.get_all_otl_wizard_projects()
     assert len(projects) == 1
-    assert projects[0].project_path == Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1')
+    assert projects[1].project_path == Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1')
     assert len(caplog.records) == 2
 
 
@@ -128,16 +210,8 @@ def test_get_otl_wizard_projects_dir():
     assert otl_wizard_projects_dir == otl_wizard_dir_using_os
 
 
-def test_export_project_to_file(mock_get_home_path):
-    project = Project(
-        project_path=Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1'),
-        subset_path=Path(
-            PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' /
-            'OTL_AllCasesTestClass_no_double_kard.db'),
-        assets_path=Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' / 'assets.json'),
-        eigen_referentie="eigen referentie",
-        bestek="bestek",
-        laatst_bewerkt=datetime.datetime(2023, 11, 1))
+def test_export_project_to_file(mock_get_home_path,create_mock_project_project_1):
+    project = create_mock_project_project_1
     file_path = Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1.otlw')
 
     ProjectFileManager.export_project_to_file(project=project, file_path=file_path)
@@ -146,21 +220,13 @@ def test_export_project_to_file(mock_get_home_path):
 
     with zipfile.ZipFile(file_path) as project_zip:
         list_of_files = sorted(project_zip.namelist())
-    assert list_of_files == ['OTL_AllCasesTestClass_no_double_kard.db', 'assets.json', 'project_details.json']
+    assert list_of_files == ['OTL_AllCasesTestClass_no_double_kard.db', 'project_details.json']
 
     os.remove(file_path)
 
 
-def test_load_project_file(mock_get_home_path):
-    project = Project(
-        project_path=Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1'),
-        subset_path=Path(
-            PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' /
-            'OTL_AllCasesTestClass_no_double_kard.db'),
-        assets_path=Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' / 'assets.json'),
-        eigen_referentie="eigen referentie",
-        bestek="bestek",
-        laatst_bewerkt=datetime.datetime(2023, 11, 1))
+def test_load_project_file(mock_get_home_path,create_mock_project_project_1):
+    project = create_mock_project_project_1
     file_path = Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_extract_and_load.otlw')
 
     ProjectFileManager.export_project_to_file(project=project, file_path=file_path)
@@ -174,7 +240,7 @@ def test_load_project_file(mock_get_home_path):
         PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_extract_and_load' /
         'OTL_AllCasesTestClass_no_double_kard.db')
     assert project_loaded.assets_path == Path(
-        PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_extract_and_load' / 'assets.json')
+        PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_extract_and_load' / 'saved_documents.json')
     assert project_loaded.eigen_referentie == project.eigen_referentie
     assert project_loaded.bestek == project.bestek
     assert project_loaded.laatst_bewerkt == project.laatst_bewerkt
@@ -183,31 +249,15 @@ def test_load_project_file(mock_get_home_path):
     shutil.rmtree(Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_extract_and_load'))
 
 
-def test_delete_project_removes_correct_project():
-    project = Project(
-        project_path=Path(ProjectFileManager.get_otl_wizard_projects_dir() / 'project_4'),
-        subset_path=Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' /
-                         'OTL_AllCasesTestClass_no_double_kard.db'),
-        assets_path=Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' / 'assets.json'),
-        eigen_referentie="eigen referentie",
-        bestek="bestek",
-        laatst_bewerkt=datetime.datetime(2023, 11, 1))
-    ProjectFileManager.save_project_to_dir(project)
+def test_delete_project_removes_correct_project(create_mock_project_project_4):
+    project = create_mock_project_project_4
     assert project.project_path.exists()
     ProjectFileManager.delete_project_files_by_path(project.project_path)
     assert not project.project_path.exists()
 
 
-def test_add_template_file_generates_folder():
-    project = Project(
-        project_path=Path(ProjectFileManager.get_otl_wizard_projects_dir() / 'project_4'),
-        subset_path=Path(
-            PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' / 'OTL_AllCasesTestClass_no_double_kard.db'),
-        assets_path=Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' / 'assets.json'),
-        eigen_referentie="eigen referentie",
-        bestek="bestek",
-        laatst_bewerkt=datetime.datetime(2023, 11, 1))
-    ProjectFileManager.save_project_to_dir(project)
+def test_add_template_file_generates_folder(create_mock_project_project_4):
+    project = create_mock_project_project_4()
     global_vars.current_project = project
     assert project.project_path.exists()
     ProjectFileManager.make_copy_of_added_file(Path(
@@ -217,16 +267,8 @@ def test_add_template_file_generates_folder():
     global_vars.current_project = None
 
 
-def test_remove_template_folder_removes_folder():
-    project = Project(
-        project_path=Path(ProjectFileManager.get_otl_wizard_projects_dir() / 'project_4'),
-        subset_path=Path(
-            PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' / 'OTL_AllCasesTestClass_no_double_kard.db'),
-        assets_path=Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' / 'assets.json'),
-        eigen_referentie="eigen referentie",
-        bestek="bestek",
-        laatst_bewerkt=datetime.datetime(2023, 11, 1))
-    ProjectFileManager.save_project_to_dir(project)
+def test_remove_template_folder_removes_folder(create_mock_project_project_4):
+    project = create_mock_project_project_4
     global_vars.current_project = project
     assert project.project_path.exists()
     ProjectFileManager.make_copy_of_added_file(Path(
@@ -242,27 +284,13 @@ def test_correct_project_files_in_memory_returns_false_if_none_given_as_param():
     assert not ProjectFileManager.correct_project_files_in_memory(None)
 
 
-def test_correct_project_files_in_memory_returns_false_if_project_has_no_templates_in_memory():
-    project = Project(
-        project_path=Path(ProjectFileManager.get_otl_wizard_projects_dir() / 'project_4'),
-        subset_path=Path(
-            PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' / 'OTL_AllCasesTestClass_no_double_kard.db'),
-        assets_path=Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' / 'assets.json'),
-        eigen_referentie="eigen referentie",
-        bestek="bestek",
-        laatst_bewerkt=datetime.datetime(2023, 11, 1))
+def test_correct_project_files_in_memory_returns_false_if_project_has_no_templates_in_memory(create_mock_project_project_4):
+    project = create_mock_project_project_4
     assert not ProjectFileManager.correct_project_files_in_memory(project)
 
 
-def test_correct_project_files_in_memory_returns_true_if_ok_files_in_memory():
-    project = Project(
-        project_path=Path(ProjectFileManager.get_otl_wizard_projects_dir() / 'project_4'),
-        subset_path=Path(
-            PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' / 'OTL_AllCasesTestClass_no_double_kard.db'),
-        assets_path=Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' / 'assets.json'),
-        eigen_referentie="eigen referentie",
-        bestek="bestek",
-        laatst_bewerkt=datetime.datetime(2023, 11, 1))
+def test_correct_project_files_in_memory_returns_true_if_ok_files_in_memory(create_mock_project_project_4):
+    project = create_mock_project_project_4
     project_file = ProjectFile(file_path=Path(
         PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'TestFiles' / 'should_pass_implementatieelement_Derdenobject.csv'),
         state=FileState.OK)
@@ -270,15 +298,8 @@ def test_correct_project_files_in_memory_returns_true_if_ok_files_in_memory():
     assert ProjectFileManager.correct_project_files_in_memory(project) is True
 
 
-def test_correct_project_files_in_memory_returns_false_if_no_ok_files_in_memory():
-    project = Project(
-        project_path=Path(ProjectFileManager.get_otl_wizard_projects_dir() / 'project_4'),
-        subset_path=Path(
-            PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' / 'OTL_AllCasesTestClass_no_double_kard.db'),
-        assets_path=Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' / 'assets.json'),
-        eigen_referentie="eigen referentie",
-        bestek="bestek",
-        laatst_bewerkt=datetime.datetime(2023, 11, 1))
+def test_correct_project_files_in_memory_returns_false_if_no_ok_files_in_memory(create_mock_project_project_4):
+    project = create_mock_project_project_4
     project_file = ProjectFile(file_path=Path(
         PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'TestFiles' / 'should_pass_implementatieelement_Derdenobject.csv'),
         state=FileState.ERROR)

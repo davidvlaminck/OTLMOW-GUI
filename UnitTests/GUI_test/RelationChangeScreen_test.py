@@ -257,7 +257,7 @@ def test_full_fill_existing_relations_list(qtbot,root_directory:Path,
                                 setup_test_project,
                                 mock_step3_visuals):
     test_object_lists_file_path: list[str] = [
-        str(root_directory / "demo_projects" / "simpel_vergelijkings_project" / "simpel_vergelijking_template2.xlsx")]
+        str(root_directory / "demo_projects" / "simpel_vergelijkings_project" / "simpel_vergelijking_template5.xlsx")]
 
     InsertDataDomain.add_files_to_backend_list(test_object_lists_file_path)
 
@@ -281,15 +281,15 @@ def test_full_fill_existing_relations_list(qtbot,root_directory:Path,
 
     existing_relation_list = RelationChangeDomain.get_screen().existing_relation_list_gui
 
-    reference_items = ['HoortBij']
+    reference_items = ['Bevestiging', 'HoortBij']
     real_items = [existing_relation_list.list_gui.model.item(x).text() for x in
                   range(existing_relation_list.list_gui.model.rowCount())]
     assert real_items == reference_items
 
     child_items = {}
     child_items_col_2 = {}
-    # child_items['Bevestiging'] = ['None', 'dummy_a']
-    # child_items_col_2['Bevestiging'] = ['None', 'dummy_TyBGmXfXC']
+    child_items['Bevestiging'] = ['dummy_Q (extern)']
+    child_items_col_2['Bevestiging'] = ['dummy_bcjseEAj (extern)']
     child_items['HoortBij'] = ['dummy_J']
     child_items_col_2['HoortBij'] = ['dummy_LGG']
     # child_items['LigtOp'] = ['dummy_FNrHuPZCWV']
@@ -323,6 +323,8 @@ def mock_collect_all() -> Mock:
 @fixture
 def mock_find_all_concrete_rel_all() -> Mock:
     original_find_all_concrete_relations = OSLOCollector.find_all_concrete_relations
+
+
 
     mock_find_all_concrete_relations = Mock(return_value=[])
     OSLOCollector.find_all_concrete_relations = mock_find_all_concrete_relations
@@ -498,14 +500,15 @@ def test_fill_possible_relations_list_with_2_same_name_but_diff_namespace_items(
 
     RelationChangeDomain.possible_relations_per_class_dict={test_object2.typeURI :[mock_OSLORelatie_test[0]],
                                                             test_object3.typeURI :[mock_OSLORelatie_test[1]]}
+    RelationChangeDomain.external_object_added = False
     RelationChangeDomain.set_possible_relations(test_object2)
     relation_change_screen = mock_rel_screen
 
     assert relation_change_screen.possible_relation_list_gui.list_gui.model.rowCount() == 1
     assert relation_change_screen.possible_relation_list_gui.list_gui.model.item(
-        0).text() == "Geen opties beschikbaar"
+        0).text() == 'Bevestiging'
 
-    assert relation_change_screen.possible_relation_list_gui.list_gui.model.item(0).rowCount() == 0
+    assert relation_change_screen.possible_relation_list_gui.list_gui.model.item(0).rowCount() == 1
     assert relation_change_screen.possible_relation_list_gui.list_gui.model.item(0).child(
         0).text() == "dummy_identificator3"
     assert relation_change_screen.possible_relation_list_gui.list_gui.model.item(0).child(

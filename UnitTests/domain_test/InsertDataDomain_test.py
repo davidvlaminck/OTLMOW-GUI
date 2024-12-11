@@ -58,19 +58,22 @@ def test_load_and_validate_document_good_path(mock_screen: InsertDataScreen,
                                               mock_rel_screen: RelationChangeScreen,
                                               mock_step3_visuals) -> None:
 
-    test_object_lists_file_path: list[str] = [str(root_directory / "demo_projects"  /  "simpel_vergelijkings_project" / "simpel_vergelijking_template2.xlsx")]
+    test_object_lists_file_path: list[str] = [str(root_directory / "demo_projects"  /  "simpel_vergelijkings_project" / "simpel_vergelijking_template5.xlsx")]
 
-    InsertDataDomain.clear_documents_in_memory()
+    InsertDataDomain.init_static()
 
     InsertDataDomain.add_files_to_backend_list(test_object_lists_file_path)
 
-    assert(len(InsertDataDomain.documents) == 1)
-    assert(list(InsertDataDomain.documents.keys())[0] == test_object_lists_file_path[0])
-    assert(list(InsertDataDomain.documents.values())[0] == FileState.WARNING)
+    assert(len(global_vars.current_project.saved_project_files) == 1)
+
+    expected_saved_file_path = global_vars.current_project.get_OTL_template_files_dir_path() / Path(test_object_lists_file_path[0]).name
+
+    assert(global_vars.current_project.saved_project_files[0].file_path == expected_saved_file_path)
+    assert(global_vars.current_project.saved_project_files[0].state == FileState.WARNING)
 
     error_set, objects_lists = InsertDataDomain.load_and_validate_documents()
 
     assert(len(error_set) == 0)
     assert(len(objects_lists) == 1)
     assert(len(objects_lists[0]) == 12)
-    assert (list(InsertDataDomain.documents.values())[0] == FileState.OK)
+    assert (global_vars.current_project.saved_project_files[0].state == FileState.OK)

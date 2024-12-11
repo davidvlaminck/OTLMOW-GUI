@@ -83,6 +83,8 @@ class RelationChangeDomain:
         cls.collector = OSLOCollector(project.subset_path)
         cls.collector.collect_all()
 
+        cls.selected_object = None
+
         cls.shown_objects = []
         cls.internal_objects = []
         cls.external_objects = []
@@ -91,6 +93,7 @@ class RelationChangeDomain:
         cls.possible_object_to_object_relations_dict = {}
         cls.aim_id_relations = []
         cls.no_id_count = 0
+        cls.external_object_added = False
 
         cls.all_OTL_asset_types_dict = {}
         all_type_uris = get_hardcoded_class_dict()
