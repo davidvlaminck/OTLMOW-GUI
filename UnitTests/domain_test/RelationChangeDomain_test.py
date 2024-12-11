@@ -72,12 +72,6 @@ def mock_fill_possible_relations_list(mock_rel_screen: RelationChangeScreen):
     mock_rel_screen.fill_possible_relations_list = Mock()
 
 @fixture
-def mock_step3_visuals() -> None:
-    step3_visuals = Mock(step3_visuals=DataVisualisationScreen)
-    main_window = Mock(step3_visuals=step3_visuals)
-    global_vars.otl_wizard = Mock(main_window=main_window)
-
-@fixture
 def mock_step3_step3_relations() -> None:
     step3_relations = Mock(step3_visuals=DataVisualisationScreen)
     main_window = Mock(step3_visuals=step3_relations)

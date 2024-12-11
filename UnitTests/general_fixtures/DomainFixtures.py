@@ -11,7 +11,22 @@ from Domain.RelationChangeDomain import RelationChangeDomain
 
 
 @fixture
-def setup_test_project(root_directory: Path) -> None:
+def mock_project_home_path(root_directory):
+    original_home_path = Project.get_home_path
+    Project.get_home_path = Mock(return_value=root_directory)
+    yield
+    Project.get_home_path = original_home_path
+
+@fixture
+def mock_get_otl_wizard_projects_dir(root_directory):
+    original_get_otl_wizard_projects_dir = Project.get_otl_wizard_projects_dir
+    Project.get_otl_wizard_projects_dir= Mock(return_value=root_directory / "demo_projects"
+                                   /  "simpel_vergelijkings_project")
+    yield
+    Project.get_otl_wizard_projects_dir = original_get_otl_wizard_projects_dir
+
+@fixture
+def setup_test_project(root_directory: Path, mock_step3_visuals,mock_get_otl_wizard_projects_dir) -> None:
     """Set up a test project environment for unit testing.
 
        This fixture initializes a test project by setting the current project and mocking the

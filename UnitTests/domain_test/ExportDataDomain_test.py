@@ -22,6 +22,8 @@ from UnitTests.general_fixtures.DomainFixtures import *
 def root_directory() -> Path:
     return Path(__file__).parent.parent.parent
 
+
+
 @fixture
 def mock_screen(qtbot: QtBot, create_translations) -> InsertDataScreen:
     insert_data_screen = InsertDataScreen(GlobalTranslate.instance.get_all())
@@ -48,11 +50,6 @@ def mock_rel_screen(qtbot: QtBot, create_translations) -> RelationChangeScreen:
 def mock_fill_possible_relations_list(mock_rel_screen: RelationChangeScreen):
     mock_rel_screen.fill_possible_relations_list = Mock()
 
-@fixture
-def mock_step3_visuals() -> None:
-    step3_visuals = Mock(step3_visuals=DataVisualisationScreen)
-    main_window = Mock(step3_visuals=step3_visuals)
-    global_vars.otl_wizard = Mock(main_window=main_window)
 
 
 @fixture
@@ -63,7 +60,6 @@ def get_export_path_with_cleanup(root_directory: Path) -> Path:
 
     if export_path.exists():
         os.remove(export_path)
-
 
 
 def test_unedited_generate_files(root_directory: Path,
@@ -113,6 +109,7 @@ def test_unedited_generate_files(root_directory: Path,
 
 
 def test_add_remove_generate_files(root_directory: Path,
+                                mock_project_home_path,
                                  mock_screen: InsertDataScreen,
                                 mock_fill_possible_relations_list: RelationChangeScreen,
                                 setup_test_project,
@@ -128,6 +125,8 @@ def test_add_remove_generate_files(root_directory: Path,
     InsertDataDomain.add_files_to_backend_list(test_object_lists_file_path)
 
     InsertDataDomain.load_and_validate_documents()
+
+
 
     RelationChangeDomain.set_possible_relations(RelationChangeDomain.shown_objects[0])
 

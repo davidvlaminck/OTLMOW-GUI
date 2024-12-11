@@ -65,7 +65,7 @@ def test_fill_class_list(root_directory:Path,
                                 mock_step3_visuals):
 
     test_object_lists_file_path: list[str] = [
-        str(root_directory / "demo_projects" / "simpel_vergelijkings_project" / "simpel_vergelijking_template2.xlsx")]
+        str(root_directory / "demo_projects" / "simpel_vergelijkings_project" / "simpel_vergelijking_template5.xlsx")]
 
     InsertDataDomain.add_files_to_backend_list(test_object_lists_file_path)
 
@@ -73,14 +73,16 @@ def test_fill_class_list(root_directory:Path,
 
     object_list = RelationChangeDomain.get_screen().objects_list_gui
 
-    reference_items = ['Funderingsmassief', 'Pictogram', 'Verkeersbordopstelling', 'Verkeersbordsteun']
+    reference_items = ['BetonnenHeipaal','Bewegingssensor','Funderingsmassief', 'Pictogram', 'Verkeersbordopstelling', 'Verkeersbordsteun']
     real_items = [object_list.list_gui.model.item(x).text() for x in range(object_list.list_gui.model.rowCount())]
 
     assert reference_items == real_items
 
     child_items = {}
+    child_items['BetonnenHeipaal'] = ['dummy_bcjseEAj (extern)']
+    child_items['Bewegingssensor'] = ['dummy_Q (extern)']
     child_items['Funderingsmassief'] = ['dummy_FNrHuPZCWV', 'dummy_TyBGmXfXC']
-    child_items['Pictogram'] = ['dummy_C', 'dummy_a']
+    child_items['Pictogram'] = [ 'dummy_a','dummy_long_identificator_pictogram']
     child_items['Verkeersbordopstelling'] = ['dummy_LGG', 'dummy_hxOTHWe']
     child_items['Verkeersbordsteun'] = ['dummy_J', 'dummy_s']
 
@@ -91,6 +93,7 @@ def test_fill_class_list(root_directory:Path,
 
         real_children = [real_item.child(x).text() for x in
                       range(real_item.rowCount())]
+        # print(real_children)
         assert real_children == child_items[item_text]
 
 
@@ -307,12 +310,23 @@ def mock_collect_all() -> Mock:
     OSLOCollector.collect_all = original_collect_all
 
 @fixture
+def mock_find_all_concrete_rel_all() -> Mock:
+    original_find_all_concrete_relations = OSLOCollector.find_all_concrete_relations
+
+    mock_find_all_concrete_relations = Mock(return_value=[])
+    OSLOCollector.find_all_concrete_relations = mock_find_all_concrete_relations
+    yield mock_find_all_concrete_relations
+    # after the test the original find_all_concrete_relations is restored for other tests to use
+    OSLOCollector.find_all_concrete_relations = original_find_all_concrete_relations
+
+@fixture
 def mock_project(mock_collect_all) -> Project:
     return Project()
 
 def test_fill_class_list_empty_list(qtbot,
                                     create_translations,
                                     mock_rel_screen: RelationChangeScreen,
+                                    mock_step3_visuals,
                                     mock_project,
                                     mock_load_validated_assets):
     relation_change_screen = mock_rel_screen
@@ -446,8 +460,10 @@ def mock_OSLORelatie_test():
 def test_fill_possible_relations_list_with_2_same_name_but_diff_namespace_items(
         qtbot,
         create_translations,
+        mock_find_all_concrete_rel_all,
         mock_OSLORelatie_test,
         mock_rel_screen,
+        mock_step3_visuals,
         mock_project,
         mock_load_validated_assets):
     test_object = AllCasesTestClassInstallatie()
@@ -476,9 +492,9 @@ def test_fill_possible_relations_list_with_2_same_name_but_diff_namespace_items(
 
     assert relation_change_screen.possible_relation_list_gui.list_gui.model.rowCount() == 1
     assert relation_change_screen.possible_relation_list_gui.list_gui.model.item(
-        0).text() == "Bevestiging"
+        0).text() == "Geen opties beschikbaar"
 
-    assert relation_change_screen.possible_relation_list_gui.list_gui.model.item(0).rowCount() == 1
+    assert relation_change_screen.possible_relation_list_gui.list_gui.model.item(0).rowCount() == 0
     assert relation_change_screen.possible_relation_list_gui.list_gui.model.item(0).child(
         0).text() == "dummy_identificator3"
     assert relation_change_screen.possible_relation_list_gui.list_gui.model.item(0).child(

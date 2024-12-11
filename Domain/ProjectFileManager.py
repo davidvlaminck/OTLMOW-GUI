@@ -93,6 +93,9 @@ class ProjectFileManager:
         if project.last_quick_save:
             last_quick_save_name = str(project.last_quick_save.name)
 
+        if not project.laatst_bewerkt:
+            project.laatst_bewerkt = datetime.datetime.now()
+
         project_details_dict = {
             'bestek': project.bestek,
             'eigen_referentie': project.eigen_referentie,
