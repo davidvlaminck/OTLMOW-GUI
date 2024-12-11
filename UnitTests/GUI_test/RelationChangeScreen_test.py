@@ -106,7 +106,7 @@ def test_full_fill_possible_relations_list(qtbot,root_directory:Path,
                                 setup_test_project,
                                 mock_step3_visuals):
     test_object_lists_file_path: list[str] = [
-        str(root_directory / "demo_projects" / "simpel_vergelijkings_project" / "simpel_vergelijking_template2.xlsx")]
+        str(root_directory / "demo_projects" / "simpel_vergelijkings_project" / "simpel_vergelijking_template5.xlsx")]
 
     InsertDataDomain.add_files_to_backend_list(test_object_lists_file_path)
 
@@ -125,8 +125,8 @@ def test_full_fill_possible_relations_list(qtbot,root_directory:Path,
 
     child_items = {}
     child_items_col_2 = {}
-    child_items['HoortBij'] = ['dummy_C', 'dummy_J', 'dummy_a', 'dummy_s']
-    child_items_col_2['HoortBij'] = ['Pictogram', 'Verkeersbordsteun', 'Pictogram', 'Verkeersbordsteun']
+    child_items['HoortBij'] = [ 'dummy_J', 'dummy_a','dummy_long_identificator_pictogram', 'dummy_s']
+    child_items_col_2['HoortBij'] = ['Verkeersbordsteun', 'Pictogram', 'Pictogram', 'Verkeersbordsteun']
 
     for i in range(len(real_items)):
         real_item = possible_relations_list.list_gui.model.item(i)
@@ -152,8 +152,9 @@ def test_full_fill_possible_relations_list(qtbot,root_directory:Path,
     # child_items_col_2['HoortBij'] = ['Pictogram', 'Verkeersbordsteun', 'Pictogram',
     #                                  'Verkeersbordsteun']
 
-    child_items['Bevestiging'] = ['dummy_FNrHuPZCWV', 'dummy_J', 'dummy_TyBGmXfXC', 'dummy_s']
-    child_items_col_2['Bevestiging'] =['Funderingsmassief', 'Verkeersbordsteun','Funderingsmassief', 'Verkeersbordsteun']
+    child_items['Bevestiging'] = ['dummy_FNrHuPZCWV','dummy_J','dummy_TyBGmXfXC','dummy_bcjseEAj (extern)','dummy_s']
+    child_items_col_2['Bevestiging'] =['Funderingsmassief','Verkeersbordsteun','Funderingsmassief',
+                                       'BetonnenHeipaal','Verkeersbordsteun']
     child_items['HoortBij'] = ['dummy_LGG', 'dummy_hxOTHWe']
     child_items_col_2['HoortBij'] = ['Verkeersbordopstelling', 'Verkeersbordopstelling']
     for i in range(len(real_items)):
@@ -178,10 +179,15 @@ def test_full_fill_possible_relations_list(qtbot,root_directory:Path,
     assert real_items == reference_items
 
     child_items = {}
-    child_items['Bevestiging'] = ['dummy_C', 'dummy_FNrHuPZCWV', 'dummy_J', 'dummy_a', 'dummy_s']
-    child_items_col_2['Bevestiging'] = ['Pictogram', 'Funderingsmassief', 'Verkeersbordsteun','Pictogram', 'Verkeersbordsteun']
-    child_items['LigtOp'] = ['dummy_FNrHuPZCWV','dummy_FNrHuPZCWV']
-    child_items_col_2['LigtOp'] =['Funderingsmassief','Funderingsmassief']
+    child_items['Bevestiging'] = ['dummy_FNrHuPZCWV','dummy_J','dummy_Q (extern)','dummy_a',
+                                  'dummy_bcjseEAj (extern)','dummy_long_identificator_pictogram',
+                                  'dummy_s']
+    child_items_col_2['Bevestiging'] = ['Funderingsmassief','Verkeersbordsteun','Bewegingssensor',
+                                        'Pictogram','BetonnenHeipaal','Pictogram',
+                                        'Verkeersbordsteun']
+    child_items['LigtOp'] = ['dummy_FNrHuPZCWV','dummy_FNrHuPZCWV','dummy_bcjseEAj (extern)',
+                             'dummy_bcjseEAj (extern)']
+    child_items_col_2['LigtOp'] =['Funderingsmassief','Funderingsmassief','BetonnenHeipaal','BetonnenHeipaal']
 
 
     for i in range(len(real_items)):
@@ -203,8 +209,9 @@ def test_full_fill_possible_relations_list(qtbot,root_directory:Path,
     assert data_type == fund1_possible_relations_gui_data_type
 
     child_items = {}
-    child_items['Bevestiging'] = ['instance','instance','instance','instance','instance']
-    child_items['LigtOp'] = ['instance','instance']
+    child_items['Bevestiging'] = ['instance','instance','instance','instance','instance',
+                                  'instance','instance']
+    child_items['LigtOp'] = ['instance','instance','instance','instance']
     for i in range(len(fund1_possible_relations_gui_data_type)):
         real_item = possible_relations_list.list_gui.model.item(i)
         item_text = real_item.text()
@@ -220,14 +227,18 @@ def test_full_fill_possible_relations_list(qtbot,root_directory:Path,
     assert data1 == fund1_possible_relations_gui_data1
 
     child_items = {}
-    child_items['Bevestiging'] = [['dummy_TyBGmXfXC', 'dummy_C', 0],
-                                  ['dummy_TyBGmXfXC', 'dummy_FNrHuPZCWV', 0],
-                                  ['dummy_TyBGmXfXC', 'dummy_vbeo', 0],
-                                  ['dummy_TyBGmXfXC', 'dummy_a', 0],
-                                  ['dummy_TyBGmXfXC', 'dummy_TjwXqP', 0]]
+    child_items['Bevestiging'] = [  ['dummy_TyBGmXfXC', 'dummy_FNrHuPZCWV', 0],
+                                     ['dummy_TyBGmXfXC', 'dummy_vbeo', 0],
+                                     ['dummy_TyBGmXfXC', 'dummy_Q', 0],
+                                     ['dummy_TyBGmXfXC', 'dummy_a', 0],
+                                     ['dummy_TyBGmXfXC', 'dummy_bcjseEAj', 0],
+                                     ['dummy_TyBGmXfXC', 'dummy_long_identificator_pictogram', 0],
+                                     ['dummy_TyBGmXfXC', 'dummy_TjwXqP', 0]]
     child_items['LigtOp'] = [
-         ['dummy_TyBGmXfXC', 'dummy_FNrHuPZCWV', 1],
-         ['dummy_TyBGmXfXC', 'dummy_FNrHuPZCWV', 2]]
+        ['dummy_TyBGmXfXC', 'dummy_FNrHuPZCWV', 1],
+         ['dummy_TyBGmXfXC', 'dummy_FNrHuPZCWV', 2],
+         ['dummy_TyBGmXfXC', 'dummy_bcjseEAj', 1],
+         ['dummy_TyBGmXfXC', 'dummy_bcjseEAj', 2]]
     for i in range(len(fund1_possible_relations_gui_data1)):
         real_item = possible_relations_list.list_gui.model.item(i)
         item_text = real_item.text()
