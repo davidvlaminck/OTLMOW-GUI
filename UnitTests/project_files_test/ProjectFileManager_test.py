@@ -31,10 +31,10 @@ def create_mock_project_project_1():
         bestek="bestek",
         laatst_bewerkt=datetime.datetime(2023, 11, 1))
 
-    ProjectFileManager.save_project_to_dir(project)
+    # ProjectFileManager.save_project_to_dir(project)
     yield project
-    if project_path.exists():
-        shutil.rmtree(project_path)
+    # if project_path.exists():
+    #     shutil.rmtree(project_path)
 
 @fixture
 def create_mock_project_project_2():
@@ -69,10 +69,10 @@ def create_mock_project_project_3():
         bestek="bestek",
         laatst_bewerkt=datetime.datetime(2023, 11, 1))
 
-    ProjectFileManager.save_project_to_dir(project)
+    # ProjectFileManager.save_project_to_dir(project)
     yield project
-    if project_path.exists():
-        shutil.rmtree(project_path)
+    # if project_path.exists():
+    #     shutil.rmtree(project_path)
 
 @fixture
 def create_mock_project_project_4():
