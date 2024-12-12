@@ -1,0 +1,7 @@
+[run]
+omit =
+    *_test*
+    *\TestClasses\*
+    *\*test\*
+    *\LatestReleaseMulti\*
+    *\general_fixtures\*
