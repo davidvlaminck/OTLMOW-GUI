@@ -22,7 +22,7 @@ class TemplateDomain:
             logging.debug("Creating template")
             template_creator = SubsetTemplateCreator()
 
-            if 'http://purl.org/dc/terms/Agent' in selected_classes_dir:
+            if selected_classes_dir and 'http://purl.org/dc/terms/Agent' in selected_classes_dir:
                 selected_classes_dir.remove('http://purl.org/dc/terms/Agent')
 
             template_creator.generate_template_from_subset(

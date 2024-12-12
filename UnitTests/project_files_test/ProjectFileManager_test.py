@@ -20,6 +20,7 @@ PARENT_OF_THIS_FILE = Path(__file__).parent
 @fixture
 def create_mock_project_project_1():
     project_path = Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1')
+    project_backup_path = Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects_backup' / project_path.name)
     project = Project(
         project_path=project_path,
         subset_path=Path(
@@ -27,14 +28,15 @@ def create_mock_project_project_1():
             'OTL_AllCasesTestClass_no_double_kard.db'),
         assets_path=Path(
             PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' / 'saved_documents.json'),
-        eigen_referentie="eigen referentie",
+        eigen_referentie="project_1",
         bestek="bestek",
         laatst_bewerkt=datetime.datetime(2023, 11, 1))
 
     # ProjectFileManager.save_project_to_dir(project)
     yield project
-    # if project_path.exists():
-    #     shutil.rmtree(project_path)
+    if project_path.exists():
+        shutil.rmtree(project_path)
+    shutil.copytree(project_backup_path,project_path)
 
 @fixture
 def create_mock_project_project_2():
@@ -58,6 +60,9 @@ def create_mock_project_project_2():
 @fixture
 def create_mock_project_project_3():
     project_path = Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_2')
+    project_backup_path = Path(
+        PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects_backup' / project_path.name)
+
     project = Project(
         project_path=project_path,
         subset_path=Path(
@@ -71,8 +76,10 @@ def create_mock_project_project_3():
 
     # ProjectFileManager.save_project_to_dir(project)
     yield project
-    # if project_path.exists():
-    #     shutil.rmtree(project_path)
+    if project_path.exists():
+        shutil.rmtree(project_path)
+    shutil.copytree(project_backup_path,project_path)
+
 
 @fixture
 def create_mock_project_project_4():
@@ -134,7 +141,7 @@ def mock_get_home_path_with_empty_directory(mock_get_home_path):
     shutil.rmtree(empty_dir)
 
 
-def test_get_project_from_dir_given_project_dir_location(create_mock_project_project_1):
+def test_get_project_from_dir_given_project_dir_location(create_mock_project_project_1: Project):
     project_dir_path = PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1'
 
     project = ProjectFileManager.get_project_from_dir(project_dir_path)
@@ -145,7 +152,7 @@ def test_get_project_from_dir_given_project_dir_location(create_mock_project_pro
         'OTL_AllCasesTestClass_no_double_kard.db')
     assert project.assets_path == Path(
         PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' / 'saved_documents.json')
-    assert project.eigen_referentie == "eigen referentie"
+    assert project.eigen_referentie == "project_1"
     assert project.bestek == "bestek"
     assert project.laatst_bewerkt == datetime.datetime(2023, 11, 1)
 
@@ -186,9 +193,9 @@ def test_save_project_given_details(mock_get_home_path,create_mock_project_eigen
 
 def test_get_all_otl_wizard_projects(caplog, mock_get_home_path):
     projects = ProjectFileManager.get_all_otl_wizard_projects()
-    assert len(projects) == 1
+    assert len(projects) == 2
     assert projects[1].project_path == Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1')
-    assert len(caplog.records) == 2
+    assert len(caplog.records) == 1
 
 
 def test_create_otl_wizard_model_dir(mock_get_home_path_with_empty_directory):
@@ -210,7 +217,7 @@ def test_get_otl_wizard_projects_dir():
     assert otl_wizard_projects_dir == otl_wizard_dir_using_os
 
 
-def test_export_project_to_file(mock_get_home_path,create_mock_project_project_1):
+def test_export_project_to_file(mock_get_home_path,create_mock_project_project_1: Project):
     project = create_mock_project_project_1
     file_path = Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1.otlw')
 
@@ -225,58 +232,58 @@ def test_export_project_to_file(mock_get_home_path,create_mock_project_project_1
     os.remove(file_path)
 
 
-def test_load_project_file(mock_get_home_path,create_mock_project_project_1):
+def test_import_project(mock_get_home_path, create_mock_project_project_1: Project, cleanup_after_creating_a_file_to_delete):
     project = create_mock_project_project_1
     file_path = Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_extract_and_load.otlw')
 
-    ProjectFileManager.export_project_to_file(project=project, file_path=file_path)
+    cleanup_after_creating_a_file_to_delete.append(file_path)
 
+    ProjectFileManager.export_project_to_file(project=project, file_path=file_path)
+    # project directory is deleted but the data is kept in memory
+    ProjectFileManager.delete_project_dir_by_path(project.project_path)
     assert file_path.exists()
 
-    project_loaded = ProjectFileManager.load_project_file(file_path=file_path)
+    project_loaded = ProjectFileManager.import_project(file_path=file_path)
     assert project_loaded.project_path == Path(
-        PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_extract_and_load')
+        PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1')
     assert project_loaded.subset_path == Path(
-        PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_extract_and_load' /
+        PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' /
         'OTL_AllCasesTestClass_no_double_kard.db')
     assert project_loaded.assets_path == Path(
-        PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_extract_and_load' / 'saved_documents.json')
+        PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' / 'saved_documents.json')
     assert project_loaded.eigen_referentie == project.eigen_referentie
     assert project_loaded.bestek == project.bestek
     assert project_loaded.laatst_bewerkt == project.laatst_bewerkt
 
-    os.remove(file_path)
-    shutil.rmtree(Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_extract_and_load'))
 
-
-def test_delete_project_removes_correct_project(create_mock_project_project_4):
+def test_delete_project_removes_correct_project(create_mock_project_project_4: Project):
     project = create_mock_project_project_4
     assert project.project_path.exists()
-    ProjectFileManager.delete_project_files_by_path(project.project_path)
+    ProjectFileManager.delete_project_dir_by_path(project.project_path)
     assert not project.project_path.exists()
 
 
-def test_add_template_file_generates_folder(create_mock_project_project_4):
-    project = create_mock_project_project_4()
-    global_vars.current_project = project
-    assert project.project_path.exists()
-    ProjectFileManager.make_copy_of_added_file(Path(
-        PARENT_OF_THIS_FILE) / 'OTLWizardProjects' / 'TestFiles' / 'should_pass_implementatieelement_Derdenobject.csv')
-    assert (project.project_path / 'OTL-template-files').exists()
-    ProjectFileManager.delete_project_files_by_path(project.project_path)
-    global_vars.current_project = None
-
-
-def test_remove_template_folder_removes_folder(create_mock_project_project_4):
+def test_add_template_file_generates_folder(create_mock_project_project_4: Project):
     project = create_mock_project_project_4
     global_vars.current_project = project
     assert project.project_path.exists()
-    ProjectFileManager.make_copy_of_added_file(Path(
+    global_vars.current_project.make_copy_of_added_file(Path(
+        PARENT_OF_THIS_FILE) / 'OTLWizardProjects' / 'TestFiles' / 'should_pass_implementatieelement_Derdenobject.csv')
+    assert (project.project_path / 'OTL-template-files').exists()
+    ProjectFileManager.delete_project_dir_by_path(project.project_path)
+    global_vars.current_project = None
+
+
+def test_remove_template_folder_removes_folder(create_mock_project_project_4: Project):
+    project = create_mock_project_project_4
+    global_vars.current_project = project
+    assert project.project_path.exists()
+    global_vars.current_project.make_copy_of_added_file(Path(
         PARENT_OF_THIS_FILE) / 'OTLWizardProjects' / 'TestFiles' / 'should_pass_implementatieelement_Derdenobject.csv')
     assert (project.project_path / 'OTL-template-files').exists()
     ProjectFileManager.delete_template_folder()
     assert not (project.project_path / 'OTL-template-files').exists()
-    ProjectFileManager.delete_project_files_by_path(project.project_path)
+    ProjectFileManager.delete_project_dir_by_path(project.project_path)
     global_vars.current_project = None
 
 
@@ -298,7 +305,7 @@ def test_correct_project_files_in_memory_returns_true_if_ok_files_in_memory(crea
     assert ProjectFileManager.correct_project_files_in_memory(project) is True
 
 
-def test_correct_project_files_in_memory_returns_false_if_no_ok_files_in_memory(create_mock_project_project_4):
+def test_correct_project_files_in_memory_returns_false_if_no_ok_files_in_memory(create_mock_project_project_4: Project):
     project = create_mock_project_project_4
     project_file = ProjectFile(file_path=Path(
         PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'TestFiles' / 'should_pass_implementatieelement_Derdenobject.csv'),
@@ -345,10 +352,14 @@ Returns:
 """
 
 def test_delete_template_file_from_project(
-        cleanup_after_creating_a_file_to_delete):
+        cleanup_after_creating_a_file_to_delete,create_mock_project_project_1):
+    project = create_mock_project_project_1
+    global_vars.current_project = project
     testFilePath = Path(PARENT_OF_THIS_FILE.parent / 'project_files_test' /
                         'OTLWizardProjects' / 'Projects' / 'project_1' /
                         'testFileToRemove.txt')
+
+    global_vars.current_project.saved_project_files.append(ProjectFile(testFilePath,FileState.ERROR))
 
     with open(testFilePath , 'w+') as fp:
         fp.write("This is a textfile not a sqllite file")
@@ -357,18 +368,19 @@ def test_delete_template_file_from_project(
     # after the test is done this fixture will continue running from the yield
     cleanup_after_creating_a_file_to_delete.append(testFilePath)
 
-    assert ProjectFileManager.delete_template_file_from_project(testFilePath)
+    assert global_vars.current_project.remove_project_file(testFilePath)
 
     assert not os.path.exists(testFilePath)
 
 
 def test_delete_non_existent_file_from_project(
-        cleanup_after_creating_a_file_to_delete):
+        cleanup_after_creating_a_file_to_delete,create_mock_project_project_1):
+    project = create_mock_project_project_1
     fakeTestFilePath = Path(PARENT_OF_THIS_FILE.parent / 'project_files_test' /
                             'OTLWizardProjects' / 'Projects' / 'project_1' /
                             'fakeTestFileToRemove.txt')
 
-    assert not ProjectFileManager.delete_template_file_from_project(
+    assert not project.remove_project_file(
         fakeTestFilePath)
 
 @pytest.mark.skip

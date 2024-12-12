@@ -99,7 +99,7 @@ class OTLWizard(QApplication):
     async def quit(self):
         logging.debug("closing application")
         if self.demo_project:
-            ProjectFileManager.delete_project_files_by_path(self.demo_project.project_path)
+            ProjectFileManager.delete_project_dir_by_path(self.demo_project.project_path)
         super().quit()
 
 def excepthook(exc_type, exc_value, exc_tb):

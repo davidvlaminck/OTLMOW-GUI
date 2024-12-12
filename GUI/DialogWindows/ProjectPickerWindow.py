@@ -20,4 +20,4 @@ class ProjectPickerWindow:
         file_picker.setOption(QFileDialog.Option.ShowDirsOnly, True)
         if file_picker.exec():
             project_file_path = Path(file_picker.selectedFiles()[0])
-            return ProjectFileManager.load_project_file(file_path=project_file_path)
+            return ProjectFileManager.import_project(file_path=project_file_path)

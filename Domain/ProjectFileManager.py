@@ -226,7 +226,7 @@ class ProjectFileManager:
                 project_zip.write(last_quick_save_path, arcname=last_quick_save_zip_path)
 
     @classmethod
-    def load_project_file(cls, file_path) -> Project:
+    def import_project(cls, file_path) -> Project:
         with zipfile.ZipFile(file_path) as project_file:
 
             # TODO: handle if project doesn't contain project_details.json files
@@ -245,7 +245,7 @@ class ProjectFileManager:
         return cls.get_project_from_dir(project_dir_path)
 
     @classmethod
-    def delete_project_files_by_path(cls, file_path: Path) -> None:
+    def delete_project_dir_by_path(cls, file_path: Path) -> None:
         logging.debug("Deleting project %s", file_path)
         shutil.rmtree(file_path)
         global_vars.projects = cls.get_all_otl_wizard_projects()
