@@ -1,4 +1,3 @@
-import argparse
 import asyncio
 import importlib
 import logging
@@ -11,8 +10,8 @@ from datetime import datetime
 from pathlib import Path
 
 from Domain import global_vars
-from Domain.InsertDataDomain import InsertDataDomain
-from Domain.Updater import Updater
+from Domain.step_domain.InsertDataDomain import InsertDataDomain
+from Domain.network.Updater import Updater
 from GUI.translation.GlobalTranslate import GlobalTranslate
 
 ROOT_DIR =  Path(Path(__file__).absolute()).parent
@@ -22,10 +21,10 @@ from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import QApplication
 from qasync import QEventLoop, asyncClose
 
-from Domain.Project import Project
-from Domain.ProjectFileManager import ProjectFileManager
+from Domain.project.Project import Project
+from Domain.project.ProjectFileManager import ProjectFileManager
 from GUI.MainWindow import MainWindow
-from GUI.Screens.ErrorScreen import ErrorScreen
+from GUI.screens.ErrorScreen import ErrorScreen
 
 
 project_dir = ROOT_DIR / 'demo_projects/'

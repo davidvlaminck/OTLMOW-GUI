@@ -3,7 +3,7 @@ from pathlib import Path
 import pytest
 
 from Domain.language_settings import return_language
-from Domain.HomeDomain import HomeDomain
+from Domain.step_domain.HomeDomain import HomeDomain
 from Exceptions.EmptyFieldError import EmptyFieldError
 from Exceptions.WrongDatabaseError import WrongDatabaseError
 

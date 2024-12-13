@@ -3,13 +3,11 @@ from pathlib import Path
 import pytest
 
 from Domain import global_vars
-from Domain.Project import Project
+from Domain.project.Project import Project
 
-from Domain.Database import Database
-from Domain.HomeDomain import HomeDomain
 from Domain.language_settings import return_language
 from Exceptions.EmptySearchWarning import EmptySearchWarning
-from GUI.OverviewTable import OverviewTable
+from GUI.screens.HomeElements.OverviewTable import OverviewTable
 
 ROOT_DIR = Path(__file__).parent
 

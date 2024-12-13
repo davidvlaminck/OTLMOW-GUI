@@ -4,10 +4,10 @@ from unittest.mock import Mock
 from _pytest.fixtures import fixture
 
 from Domain import global_vars
-from Domain.InsertDataDomain import InsertDataDomain
-from Domain.Project import Project
-from Domain.ProjectFileManager import ProjectFileManager
-from Domain.RelationChangeDomain import RelationChangeDomain
+from Domain.step_domain.InsertDataDomain import InsertDataDomain
+from Domain.project.Project import Project
+from Domain.project.ProjectFileManager import ProjectFileManager
+from Domain.step_domain.RelationChangeDomain import RelationChangeDomain
 
 
 @fixture

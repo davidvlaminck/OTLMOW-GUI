@@ -9,10 +9,10 @@ import pytest
 from _pytest.fixtures import fixture
 
 from Domain import global_vars
-from Domain.Project import Project
-from Domain.ProjectFileManager import ProjectFileManager
+from Domain.project.Project import Project
+from Domain.project.ProjectFileManager import ProjectFileManager
 from Domain.enums import FileState
-from Domain.ProjectFile import ProjectFile
+from Domain.project.ProjectFile import ProjectFile
 from Exceptions.ExcelFileUnavailableError import ExcelFileUnavailableError
 
 PARENT_OF_THIS_FILE = Path(__file__).parent

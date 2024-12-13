@@ -1,20 +1,12 @@
 import os
-from pathlib import Path
-from unittest.mock import Mock
 
-from _pytest.fixtures import fixture
 from openpyxl.reader.excel import load_workbook
 from pytestqt.qtbot import QtBot
 from pytestqt.plugin import qtbot
-from scipy.optimize import anderson
 
-from Domain.ExportDataDomain import ExportDataDomain
-from Domain.InsertDataDomain import InsertDataDomain
-from Domain.ProjectFile import ProjectFile
-from Domain.RelationChangeDomain import RelationChangeDomain
-from GUI.Screens.DataVisualisationScreen import DataVisualisationScreen
-from GUI.Screens.InsertDataScreen import InsertDataScreen
-from GUI.Screens.RelationChangeScreen import RelationChangeScreen
+from Domain.step_domain.ExportDataDomain import ExportDataDomain
+from GUI.screens.InsertDataScreen import InsertDataScreen
+from GUI.screens.RelationChangeScreen import RelationChangeScreen
 
 from UnitTests.general_fixtures.GUIFixtures import *
 from UnitTests.general_fixtures.DomainFixtures import *

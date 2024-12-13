@@ -1,20 +1,9 @@
-import os
-from pathlib import Path
-from unittest.mock import Mock
-
-from _pytest.fixtures import fixture
 from pytestqt.plugin import qtbot
 from pytestqt.qtbot import QtBot
 
-from Domain import global_vars
-from Domain.InsertDataDomain import InsertDataDomain
-from Domain.Project import Project
-from Domain.ProjectFileManager import ProjectFileManager
-from Domain.RelationChangeDomain import RelationChangeDomain
 from Domain.enums import FileState
-from GUI.Screens.DataVisualisationScreen import DataVisualisationScreen
-from GUI.Screens.InsertDataScreen import InsertDataScreen
-from GUI.Screens.RelationChangeScreen import RelationChangeScreen
+from GUI.screens.InsertDataScreen import InsertDataScreen
+from GUI.screens.RelationChangeScreen import RelationChangeScreen
 
 from UnitTests.general_fixtures.GUIFixtures import *
 from UnitTests.general_fixtures.DomainFixtures import *

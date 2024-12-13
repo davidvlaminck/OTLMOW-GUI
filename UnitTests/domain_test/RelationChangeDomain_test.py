@@ -1,17 +1,6 @@
-import sqlite3
-
-from ctypes.wintypes import PRECT
-from pathlib import Path
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import patch
 
 import pytest
-from _pytest.fixtures import fixture
-from otlmow_model.OtlmowModel.BaseClasses.OTLObject import OTLAttribuut
-from otlmow_model.OtlmowModel.Classes.Installatie.Verkeersbordopstelling import \
-    Verkeersbordopstelling
-from otlmow_model.OtlmowModel.Classes.Onderdeel.Funderingsmassief import Funderingsmassief
-from otlmow_model.OtlmowModel.Classes.Onderdeel.Pictogram import Pictogram
-from otlmow_model.OtlmowModel.Classes.Onderdeel.Verkeersbordsteun import Verkeersbordsteun
 from otlmow_model.OtlmowModel.Helpers.OTLObjectHelper import is_relation
 from otlmow_modelbuilder.OSLOCollector import OSLOCollector
 from otlmow_modelbuilder.SQLDataClasses.OSLORelatie import OSLORelatie
@@ -20,15 +9,9 @@ from typing import Optional
 from pytestqt.plugin import qtbot
 from pytestqt.qtbot import QtBot
 
-from Domain.InsertDataDomain import InsertDataDomain
-from Domain.Project import Project
-from Domain.RelationChangeDomain import RelationChangeDomain
-from GUI.Screens.DataVisualisationScreen import DataVisualisationScreen
-from GUI.Screens.InsertDataScreen import InsertDataScreen
-from GUI.Screens.RelationChangeScreen import RelationChangeScreen
-from GUI.translation.GlobalTranslate import GlobalTranslate
+from GUI.screens.InsertDataScreen import InsertDataScreen
+from GUI.screens.RelationChangeScreen import RelationChangeScreen
 from UnitTests.TestClasses.Classes.ImplementatieElement.AIMObject import AIMObject
-from UnitTests.TestClasses.Classes.ImplementatieElement.RelatieObject import RelatieObject
 from UnitTests.TestClasses.Classes.Onderdeel.AllCasesTestClass import AllCasesTestClass
 from UnitTests.TestClasses.Classes.Onderdeel.AnotherTestClass import AnotherTestClass
 

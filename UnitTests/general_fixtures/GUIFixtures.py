@@ -4,7 +4,7 @@ from unittest.mock import Mock
 from _pytest.fixtures import fixture
 
 from Domain import global_vars
-from GUI.Screens.DataVisualisationScreen import DataVisualisationScreen
+from GUI.screens.DataVisualisationScreen import DataVisualisationScreen
 from GUI.translation.GlobalTranslate import GlobalTranslate
 
 
