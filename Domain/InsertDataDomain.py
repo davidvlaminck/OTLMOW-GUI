@@ -186,9 +186,15 @@ class InsertDataDomain:
                     exception_group.add_exception(error=ex)
 
                 # cls.detect_more_complex_target_or_source_typeURI_errors(relation)
-                if not RelationValidator.is_valid_relation(relation_type=type(relation),
-                                                             source_typeURI=relation.bron.typeURI,
-                                                             target_typeURI=relation.doel.typeURI):
+                is_valid_relation = False
+                try:
+                    is_valid_relation = RelationValidator.is_valid_relation(relation_type=type(relation),
+                                                        source_typeURI=relation.bron.typeURI,
+                                                        target_typeURI=relation.doel.typeURI)
+                except Exception as e:
+                    pass
+
+                if not is_valid_relation:
                     ex = cls.raise_wrong_doel_or_target(
                         relation=relation,
                         tab=RelationChangeHelpers.get_abbreviated_typeURI(
