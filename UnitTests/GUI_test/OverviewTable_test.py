@@ -7,7 +7,7 @@ from Domain.project.Project import Project
 
 from Domain.language_settings import return_language
 from Exceptions.EmptySearchWarning import EmptySearchWarning
-from GUI.screens.HomeElements.OverviewTable import OverviewTable
+from GUI.screens.Home_elements.OverviewTable import OverviewTable
 
 ROOT_DIR = Path(__file__).parent
 

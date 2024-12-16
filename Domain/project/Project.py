@@ -9,6 +9,7 @@ from typing import Optional, Union, cast
 from Domain.database.ModelBuilder import ModelBuilder
 from Domain.project.ProjectFile import ProjectFile
 from Domain.enums import FileState
+from Domain.project.ProjectStructure import ProjectStructure
 from Exceptions.ExcelFileUnavailableError import ExcelFileUnavailableError
 from GUI.dialog_windows.NotificationWindow import NotificationWindow
 from GUI.translation.GlobalTranslate import GlobalTranslate
@@ -53,23 +54,6 @@ class Project:
         self.saved_project_files: list[ProjectFile] = []
         self.model_builder = None
 
-    @classmethod
-    def get_home_path(cls) -> Path:
-        return Path.home()
-
-    @classmethod
-    def get_otl_wizard_work_dir(cls) -> Path:
-        work_dir_path = cls.get_home_path() / 'OTLWizardProjects'
-        if not work_dir_path.exists():
-            work_dir_path.mkdir()
-        return work_dir_path
-
-    @classmethod
-    def get_otl_wizard_projects_dir(cls) -> Path:
-        projects_dir_path = cls.get_otl_wizard_work_dir() / 'Projects'
-        if not projects_dir_path.exists():
-            projects_dir_path.mkdir()
-        return projects_dir_path
 
     @classmethod
     def load_project(cls, project_path: Path = None):
@@ -136,7 +120,7 @@ class Project:
         return self.otl_version
 
     def load_saved_document_filenames(self):
-        project_dir_path = self.get_otl_wizard_projects_dir() / self.project_path.name
+        project_dir_path = ProjectStructure.get_otl_wizard_projects_dir() / self.project_path.name
         saved_documents_path: Path = project_dir_path / Project.saved_documents_filename
         if saved_documents_path.exists():
             with open(saved_documents_path, "r") as saved_document:
@@ -178,7 +162,7 @@ class Project:
         return path
 
     def save_project_filepaths_to_file(self) -> None:
-        otl_wizard_project_dir = self.get_otl_wizard_projects_dir()
+        otl_wizard_project_dir = ProjectStructure.get_otl_wizard_projects_dir()
         object_array = []
         for objects_list in self.saved_project_files:
             objects_list_details = {

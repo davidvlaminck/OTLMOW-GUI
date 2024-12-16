@@ -8,6 +8,7 @@ import tempfile
 import zipfile
 from pathlib import Path
 
+from openpyxl.compat import deprecated
 from otlmow_converter.OtlmowConverter import OtlmowConverter
 
 from Domain import global_vars
@@ -34,8 +35,12 @@ class ProjectFileManager:
         OTLLogger.init(logging_file)
         return settings
 
+
     @classmethod
     def get_project_from_dir(cls, project_dir_path: Path) -> Project:
+        """
+        Deprecated
+        """
         return Project.load_project(project_dir_path)
 
     @classmethod
@@ -74,7 +79,7 @@ class ProjectFileManager:
         projects = []
         for project_dir in project_dirs:
             try:
-                project = cls.get_project_from_dir(project_dir)
+                project = Project.load_project(project_dir)
                 projects.append(project)
             except FileNotFoundError:
                 logging.warning('Project dir %s is not a valid project directory', project_dir)
@@ -82,6 +87,9 @@ class ProjectFileManager:
 
     @classmethod
     def save_project_to_dir(cls, project: Project) -> None:
+        """
+        To Project.py
+        """
         otl_wizard_project_dir = cls.get_otl_wizard_projects_dir()
         project_dir_path = otl_wizard_project_dir / project.project_path.name
         logging.debug("Saving project to %s", project_dir_path)
@@ -122,7 +130,9 @@ class ProjectFileManager:
 
     @classmethod
     def load_validated_assets(cls) -> list[AIMObject]:
-
+        """
+            To Project.py
+        """
 
         path = global_vars.current_project.get_last_quick_save_path()
 
@@ -135,6 +145,9 @@ class ProjectFileManager:
 
     @classmethod
     def save_validated_assets(cls, project, project_dir_path):
+        """
+                    To Project.py
+                """
         """
         Saves validated assets of a project to a quick save directory.
         It manages the quick save files by removing old saves and generating a new save file with a unique name.
@@ -186,6 +199,9 @@ class ProjectFileManager:
 
     @classmethod
     def remove_too_old_quicksaves(cls, current_date, max_days_stored, quick_save_dir_path, date_format):
+        """
+            To Project.py
+        """
         files = os.listdir(quick_save_dir_path)
         for filename in files:
             try:
@@ -202,6 +218,9 @@ class ProjectFileManager:
 
     @classmethod
     def export_project_to_file(cls, project: Project, file_path: Path) -> None:
+        """
+            To Project.py
+        """
         with zipfile.ZipFile(file_path, 'w') as project_zip:
             project_zip.write(project.project_path / 'project_details.json', arcname='project_details.json',
                               compresslevel=zipfile.ZIP_DEFLATED)
@@ -225,6 +244,9 @@ class ProjectFileManager:
 
     @classmethod
     def import_project(cls, file_path) -> Project:
+        """
+            To Project.py as classmethod
+        """
         with zipfile.ZipFile(file_path) as project_file:
 
             # TODO: handle if project doesn't contain project_details.json files
@@ -244,9 +266,12 @@ class ProjectFileManager:
 
     @classmethod
     def delete_project_dir_by_path(cls, file_path: Path) -> None:
+        """
+            To Project.py
+        """
         logging.debug("Deleting project %s", file_path)
         shutil.rmtree(file_path)
-        global_vars.projects = cls.get_all_otl_wizard_projects()
+        cls.load_projects_into_global()
 
     @classmethod
     def load_projects_into_global(cls) -> None:
@@ -254,6 +279,9 @@ class ProjectFileManager:
 
     @classmethod
     def download_fresh_otlmow_model(cls, model_dir_path) -> None:
+        """
+            what is this doing here?
+        """
         ghdl = GitHubDownloader('davidvlaminck/OTLMOW-Model')
         ghdl.download_full_repo(model_dir_path / 'temp')
         shutil.unpack_archive(model_dir_path / 'temp' / 'full_repo_download.zip',
@@ -261,6 +289,9 @@ class ProjectFileManager:
 
     @classmethod
     def get_otlmow_model_version(cls, model_dir_path) -> str:
+        """
+            what is this doing here?
+        """
         ghdl = GitHubDownloader('davidvlaminck/OTLMOW-Model')
         ghdl.download_file(destination_dir=model_dir_path / 'temp', file_path='otlmow_model/version_info.json')
         with open(model_dir_path / 'temp' / 'version_info.json') as json_file:
@@ -272,6 +303,9 @@ class ProjectFileManager:
 
     @classmethod
     def delete_template_folder(cls) -> None:
+        """
+            To Project.py
+        """
         logging.debug("Started clearing out the whole template folder")
         project = global_vars.current_project
         location_dir = project.project_path / 'OTL-template-files'
@@ -293,6 +327,9 @@ class ProjectFileManager:
 
     @staticmethod
     def correct_project_files_in_memory(project: Project) -> bool:
+        """
+                To Project.py
+        """
         logging.debug("Started searching for project files in memory that are OTL conform")
         if project is None:
             logging.debug("No project found")
@@ -306,7 +343,9 @@ class ProjectFileManager:
 
     @classmethod
     def get_or_create_settings_file(cls) -> None:
-
+        """
+            what is this doing here?
+        """
         work_dir_path = cls.get_otl_wizard_work_dir()
         settings_filepath = work_dir_path / 'settings.json'
 
@@ -340,6 +379,9 @@ class ProjectFileManager:
 
     @classmethod
     def change_language_on_settings_file(cls, lang) -> None:
+        """
+                    what is this doing here?
+                """
         work_dir_path = cls.get_otl_wizard_work_dir()
         settings_file = work_dir_path / cls.settings_filename
         with open(settings_file) as json_file:
@@ -350,6 +392,9 @@ class ProjectFileManager:
 
     @classmethod
     def get_language_from_settings(cls) -> Language:
+        """
+                    what is this doing here?
+                """
         work_dir_path = cls.get_otl_wizard_work_dir()
         settings_file = work_dir_path / cls.settings_filename
         with open(settings_file) as json_file:
@@ -358,6 +403,9 @@ class ProjectFileManager:
 
     @classmethod
     def create_logging_file(cls) -> Path:
+        """
+                    what is this doing here?
+                """
         work_dir_path = cls.get_otl_wizard_work_dir() / 'logs'
         if not work_dir_path.exists():
             work_dir_path.mkdir()
@@ -369,6 +417,9 @@ class ProjectFileManager:
 
     @classmethod
     def remove_old_logging_files(cls) -> None:
+        """
+                    what is this doing here?
+                """
         work_dir_path = cls.get_otl_wizard_work_dir() / 'logs'
         for file in os.listdir(work_dir_path):
             file_name = Path(file).stem
