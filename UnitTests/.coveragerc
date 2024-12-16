@@ -5,3 +5,7 @@ omit =
     *\*test\*
     *\LatestReleaseMulti\*
     *\general_fixtures\*
+    */TestClasses/*
+    */*test/*
+    */LatestReleaseMulti/*
+    */general_fixtures/*
