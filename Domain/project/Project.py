@@ -120,7 +120,7 @@ class Project:
         return self.otl_version
 
     def load_saved_document_filenames(self):
-        project_dir_path = ProjectStructure.get_otl_wizard_projects_dir() / self.project_path.name
+
         project_dir_path = ProgramFileStructure.get_otl_wizard_projects_dir() / self.project_path.name
         saved_documents_path: Path = project_dir_path / Project.saved_documents_filename
         if saved_documents_path.exists():
@@ -163,7 +163,7 @@ class Project:
         return path
 
     def save_project_filepaths_to_file(self) -> None:
-        otl_wizard_project_dir = ProjectStructure.get_otl_wizard_projects_dir()
+
         otl_wizard_project_dir = ProgramFileStructure.get_otl_wizard_projects_dir()
         object_array = []
         for objects_list in self.saved_project_files:

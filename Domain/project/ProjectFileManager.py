@@ -293,7 +293,8 @@ class ProjectFileManager:
             what is this doing here?
         """
         ghdl = GitHubDownloader('davidvlaminck/OTLMOW-Model')
-        ghdl.download_file(destination_dir=model_dir_path / 'temp', file_path='otlmow_model/version_info.json')
+        ghdl.download_file_to_dir(file_path='otlmow_model/version_info.json',
+                                  destination_dir=model_dir_path / 'temp')
         with open(model_dir_path / 'temp' / 'version_info.json') as json_file:
             version_info = json.load(json_file)
 
