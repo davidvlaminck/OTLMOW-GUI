@@ -13,6 +13,7 @@ from otlmow_converter.OtlmowConverter import OtlmowConverter
 
 from Domain import global_vars
 from Domain.network.GitHubDownloader import GitHubDownloader
+from Domain.project.ProgramFileStructure import ProgramFileStructure
 from Domain.project.Project import Project
 from Domain.enums import Language, FileState
 from Domain.logger.OTLLogger import OTLLogger
@@ -44,36 +45,21 @@ class ProjectFileManager:
         return Project.load_project(project_dir_path)
 
     @classmethod
-    def get_home_path(cls) -> Path:
-        return Path.home()
-
-    @classmethod
-    def get_otl_wizard_work_dir(cls) -> Path:
-        work_dir_path = cls.get_home_path() / 'OTLWizardProjects'
-        if not work_dir_path.exists():
-            work_dir_path.mkdir()
-        return work_dir_path
-
-    @classmethod
-    def get_otl_wizard_projects_dir(cls) -> Path:
-        projects_dir_path = cls.get_otl_wizard_work_dir() / 'Projects'
-        if not projects_dir_path.exists():
-            projects_dir_path.mkdir()
-        return projects_dir_path
-
-    @classmethod
-    def get_otl_wizard_model_dir(cls) -> Path:
-        model_dir_path = cls.get_otl_wizard_work_dir() / 'Model'
-        if not model_dir_path.exists():
-            model_dir_path.mkdir()
-
-            # cls.download_fresh_otlmow_model(model_dir_path)
-            # cls.get_otlmow_model_version(model_dir_path)
-        return model_dir_path
-
-    @classmethod
     def get_all_otl_wizard_projects(cls) -> [Project]:
-        otl_wizard_project_dir = cls.get_otl_wizard_projects_dir()
+        """
+        Retrieves all OTL wizard projects from the designated projects directory.
+        This class method scans the directory for valid project directories,
+        attempts to load each project, and collects them into a list,
+        logging any directories that are not valid projects.
+
+        Returns:
+            list[Project]: A list of loaded Project instances.
+
+        Raises:
+            FileNotFoundError: If a project directory cannot be loaded due to missing files.
+        """
+
+        otl_wizard_project_dir = ProgramFileStructure.get_otl_wizard_projects_dir()
 
         project_dirs = [project_dir for project_dir in otl_wizard_project_dir.iterdir() if project_dir.is_dir()]
         projects = []
@@ -87,10 +73,8 @@ class ProjectFileManager:
 
     @classmethod
     def save_project_to_dir(cls, project: Project) -> None:
-        """
-        To Project.py
-        """
-        otl_wizard_project_dir = cls.get_otl_wizard_projects_dir()
+        """To Project.py"""
+        otl_wizard_project_dir = ProgramFileStructure.get_otl_wizard_projects_dir()
         project_dir_path = otl_wizard_project_dir / project.project_path.name
         logging.debug("Saving project to %s", project_dir_path)
         project_dir_path.mkdir(exist_ok=True, parents=True)
@@ -115,18 +99,10 @@ class ProjectFileManager:
         with open(project_dir_path / "project_details.json", "w") as project_details_file:
             json.dump(project_details_dict, project_details_file)
 
-        # TODO: It seems the idea here was that validated assets are stored in the project and
-        #       and loaded again when you open the project so object_lists don't need to be
-        #       validated again? Implement this again later
-        #       The problem is that he would overwrite assets.json that now contains a list of
-        #       objects_list_files
-        # cls.save_validated_assets(project, project_dir_path)
-
         if project.subset_path.parent.absolute() != project_dir_path.absolute():
             # move subset to project dir
             new_subset_path = project_dir_path / project.subset_path.name
             shutil.copy(project.subset_path, new_subset_path)
-        # global_vars.projects = cls.get_all_otl_wizard_projects()
 
     @classmethod
     def load_validated_assets(cls) -> list[AIMObject]:
@@ -144,7 +120,7 @@ class ProjectFileManager:
 
 
     @classmethod
-    def save_validated_assets(cls, project, project_dir_path):
+    def save_validated_assets(cls, project: Project, project_dir_path: Path|str) -> None:
         """
                     To Project.py
                 """
@@ -198,7 +174,8 @@ class ProjectFileManager:
 
 
     @classmethod
-    def remove_too_old_quicksaves(cls, current_date, max_days_stored, quick_save_dir_path, date_format):
+    def remove_too_old_quicksaves(cls, current_date: datetime, max_days_stored: datetime,
+                                  quick_save_dir_path: Path, date_format: str) -> None:
         """
             To Project.py
         """
@@ -252,10 +229,11 @@ class ProjectFileManager:
             # TODO: handle if project doesn't contain project_details.json files
             project_details = json.load(project_file.open('project_details.json'))
 
-            project_dir_path = Path(cls.get_otl_wizard_projects_dir() / project_details['eigen_referentie'])
+            project_dir_path = Path(ProgramFileStructure.get_otl_wizard_projects_dir() / project_details['eigen_referentie'])
             try:
-                project_dir_path.mkdir(exist_ok=False, parents=True)  # TODO: raise error if dir already exists?
+                project_dir_path.mkdir(exist_ok=False, parents=True)
             except FileExistsError as ex:
+                #TODO: warning user with dialog window when the project already exists
                 logging.error("Project dir %s already exists", project_dir_path)
                 raise ex
 
@@ -267,7 +245,7 @@ class ProjectFileManager:
     @classmethod
     def delete_project_dir_by_path(cls, file_path: Path) -> None:
         """
-            To Project.py
+            To Project.py without file_path
         """
         logging.debug("Deleting project %s", file_path)
         shutil.rmtree(file_path)
@@ -275,6 +253,15 @@ class ProjectFileManager:
 
     @classmethod
     def load_projects_into_global(cls) -> None:
+        """
+        Loads all OTL wizard projects into the global variable for project management.
+        This class method retrieves the list of projects and assigns it to the global variable,
+        making the projects accessible throughout the application.
+
+        Returns:
+            None
+        """
+
         global_vars.projects = ProjectFileManager.get_all_otl_wizard_projects()
 
     @classmethod
@@ -327,7 +314,7 @@ class ProjectFileManager:
         return tempdir
 
     @staticmethod
-    def correct_project_files_in_memory(project: Project) -> bool:
+    def are_all_project_files_in_memory_valid(project: Project) -> bool:
         """
                 To Project.py
         """

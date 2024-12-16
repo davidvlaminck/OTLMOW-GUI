@@ -288,12 +288,12 @@ def test_remove_template_folder_removes_folder(create_mock_project_project_4: Pr
 
 
 def test_correct_project_files_in_memory_returns_false_if_none_given_as_param():
-    assert not ProjectFileManager.correct_project_files_in_memory(None)
+    assert not ProjectFileManager.are_all_project_files_in_memory_valid(None)
 
 
 def test_correct_project_files_in_memory_returns_false_if_project_has_no_templates_in_memory(create_mock_project_project_4):
     project = create_mock_project_project_4
-    assert not ProjectFileManager.correct_project_files_in_memory(project)
+    assert not ProjectFileManager.are_all_project_files_in_memory_valid(project)
 
 
 def test_correct_project_files_in_memory_returns_true_if_ok_files_in_memory(create_mock_project_project_4):
@@ -302,7 +302,7 @@ def test_correct_project_files_in_memory_returns_true_if_ok_files_in_memory(crea
         PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'TestFiles' / 'should_pass_implementatieelement_Derdenobject.csv'),
         state=FileState.OK)
     project.saved_project_files.append(project_file)
-    assert ProjectFileManager.correct_project_files_in_memory(project) is True
+    assert ProjectFileManager.are_all_project_files_in_memory_valid(project) is True
 
 
 def test_correct_project_files_in_memory_returns_false_if_no_ok_files_in_memory(create_mock_project_project_4: Project):
@@ -311,7 +311,7 @@ def test_correct_project_files_in_memory_returns_false_if_no_ok_files_in_memory(
         PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'TestFiles' / 'should_pass_implementatieelement_Derdenobject.csv'),
         state=FileState.ERROR)
     project.saved_project_files.append(project_file)
-    assert ProjectFileManager.correct_project_files_in_memory(project) is False
+    assert ProjectFileManager.are_all_project_files_in_memory_valid(project) is False
 
 
 def test_create_empty_temporary_map_creates_map_in_correct_location():
