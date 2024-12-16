@@ -188,7 +188,7 @@ class TemplateScreen(Screen):
             await asyncio.sleep(1)
             self.all_classes.clear()
             self.all_classes.setEnabled(True)
-            modelbuilder = self.project.load_model_builder()
+            modelbuilder = self.project.get_model_builder()
             values = modelbuilder.filter_relations_and_abstract()
             for value in values:
                 item = QListWidgetItem()
