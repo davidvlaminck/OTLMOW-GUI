@@ -224,8 +224,8 @@ class ProjectFileManager:
         with zipfile.ZipFile(file_path, 'w') as project_zip:
             project_zip.write(project.project_path / 'project_details.json', arcname='project_details.json',
                               compresslevel=zipfile.ZIP_DEFLATED)
-            if project.assets_path and project.assets_path.exists():
-                project_zip.write(project.assets_path, arcname=project.assets_path.name)
+            if project.saved_documents_overview_path and project.saved_documents_overview_path.exists():
+                project_zip.write(project.saved_documents_overview_path, arcname=project.saved_documents_overview_path.name)
             project_zip.write(project.subset_path, arcname=project.subset_path.name)
 
             if not project.get_saved_projectfiles():

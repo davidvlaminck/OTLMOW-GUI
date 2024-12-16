@@ -32,13 +32,13 @@ class Project:
 
         if assets_path:
             if ".json" in str(assets_path.absolute()):
-                self.assets_path: Path = assets_path
+                self.saved_documents_overview_path: Path = assets_path
             else:
-                self.assets_path: Path = assets_path / self.saved_documents_filename
+                self.saved_documents_overview_path: Path = assets_path / self.saved_documents_filename
         elif self.project_path is not None:
-            self.assets_path = self.project_path / self.saved_documents_filename
+            self.saved_documents_overview_path = self.project_path / self.saved_documents_filename
         else:
-            self.assets_path = None
+            self.saved_documents_overview_path = None
 
         if last_quick_save:
             self.last_quick_save:Path = self.get_quicksaves_dir_path() / last_quick_save.name

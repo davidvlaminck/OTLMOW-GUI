@@ -150,7 +150,7 @@ def test_get_project_from_dir_given_project_dir_location(create_mock_project_pro
     assert project.subset_path == Path(
         PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' /
         'OTL_AllCasesTestClass_no_double_kard.db')
-    assert project.assets_path == Path(
+    assert project.saved_documents_overview_path == Path(
         PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' / 'saved_documents.json')
     assert project.eigen_referentie == "project_1"
     assert project.bestek == "bestek"
@@ -249,7 +249,7 @@ def test_import_project(mock_get_home_path, create_mock_project_project_1: Proje
     assert project_loaded.subset_path == Path(
         PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' /
         'OTL_AllCasesTestClass_no_double_kard.db')
-    assert project_loaded.assets_path == Path(
+    assert project_loaded.saved_documents_overview_path == Path(
         PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' / 'saved_documents.json')
     assert project_loaded.eigen_referentie == project.eigen_referentie
     assert project_loaded.bestek == project.bestek
