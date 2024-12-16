@@ -9,7 +9,7 @@ from typing import Optional, Union, cast
 from Domain.database.ModelBuilder import ModelBuilder
 from Domain.project.ProjectFile import ProjectFile
 from Domain.enums import FileState
-from Domain.project.ProjectStructure import ProjectStructure
+from Domain.project.ProgramFileStructure import ProgramFileStructure
 from Exceptions.ExcelFileUnavailableError import ExcelFileUnavailableError
 from GUI.dialog_windows.NotificationWindow import NotificationWindow
 from GUI.translation.GlobalTranslate import GlobalTranslate
@@ -121,6 +121,7 @@ class Project:
 
     def load_saved_document_filenames(self):
         project_dir_path = ProjectStructure.get_otl_wizard_projects_dir() / self.project_path.name
+        project_dir_path = ProgramFileStructure.get_otl_wizard_projects_dir() / self.project_path.name
         saved_documents_path: Path = project_dir_path / Project.saved_documents_filename
         if saved_documents_path.exists():
             with open(saved_documents_path, "r") as saved_document:
@@ -163,6 +164,7 @@ class Project:
 
     def save_project_filepaths_to_file(self) -> None:
         otl_wizard_project_dir = ProjectStructure.get_otl_wizard_projects_dir()
+        otl_wizard_project_dir = ProgramFileStructure.get_otl_wizard_projects_dir()
         object_array = []
         for objects_list in self.saved_project_files:
             objects_list_details = {

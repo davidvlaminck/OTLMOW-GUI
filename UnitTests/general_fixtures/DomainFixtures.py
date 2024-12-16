@@ -4,7 +4,7 @@ from unittest.mock import Mock
 from _pytest.fixtures import fixture
 
 from Domain import global_vars
-from Domain.project.ProjectStructure import ProjectStructure
+from Domain.project.ProgramFileStructure import ProgramFileStructure
 from Domain.step_domain.InsertDataDomain import InsertDataDomain
 from Domain.project.Project import Project
 from Domain.project.ProjectFileManager import ProjectFileManager
@@ -13,18 +13,18 @@ from Domain.step_domain.RelationChangeDomain import RelationChangeDomain
 
 @fixture
 def mock_project_home_path(root_directory):
-    original_home_path = ProjectStructure.get_home_path
-    ProjectStructure.get_home_path = Mock(return_value=root_directory)
+    original_home_path = ProgramFileStructure.get_home_path
+    ProgramFileStructure.get_home_path = Mock(return_value=root_directory)
     yield
-    ProjectStructure.get_home_path = original_home_path
+    ProgramFileStructure.get_home_path = original_home_path
 
 @fixture
 def mock_get_otl_wizard_projects_dir(root_directory):
-    original_get_otl_wizard_projects_dir = ProjectStructure.get_otl_wizard_projects_dir
-    ProjectStructure.get_otl_wizard_projects_dir= Mock(return_value=root_directory / "demo_projects"
-                                   /  "simpel_vergelijkings_project")
+    original_get_otl_wizard_projects_dir = ProgramFileStructure.get_otl_wizard_projects_dir
+    ProgramFileStructure.get_otl_wizard_projects_dir= Mock(return_value=root_directory / "demo_projects"
+                                                                        /  "simpel_vergelijkings_project")
     yield
-    ProjectStructure.get_otl_wizard_projects_dir = original_get_otl_wizard_projects_dir
+    ProgramFileStructure.get_otl_wizard_projects_dir = original_get_otl_wizard_projects_dir
 
 @fixture
 def setup_test_project(root_directory: Path, mock_step3_visuals,mock_get_otl_wizard_projects_dir) -> None:
