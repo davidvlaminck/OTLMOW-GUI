@@ -71,8 +71,7 @@ class AssetChangeDomain:
         tempdir = ProjectFileManager.create_empty_temporary_map()
         temp_loc = Path(tempdir) / file_name
         OtlmowConverter().from_objects_to_file(file_path=temp_loc, sequence_of_objects=diff_1)
-        end_loc = project.make_copy_of_added_file(filepath=temp_loc)
-        project.add_saved_project_file(file_path=end_loc, state=FileState.OK)
+        project.copy_and_add_project_file(file_path=temp_loc, state=FileState.OK)
 
 
     @staticmethod

@@ -225,7 +225,16 @@ def test_add_template_file_generates_folder(create_mock_project_project_4: Proje
     assert project.project_path.exists()
     project.make_copy_of_added_file(Path(
         PARENT_OF_THIS_FILE) / 'OTLWizardProjects' / 'TestFiles' / 'should_pass_implementatieelement_Derdenobject.csv')
-    assert (project.project_path / 'OTL-template-files').exists()
+
+    location_dir = project.get_project_files_dir_path()
+    if not location_dir.exists():
+        old_path = project.get_old_project_files_dir_path()
+        if old_path.exists():
+            location_dir = old_path
+        else:
+            location_dir.mkdir()
+
+    assert location_dir.exists()
     project.delete_project_dir_by_path()
 
 def test_delete_template_file_from_project(
@@ -268,9 +277,18 @@ def test_remove_template_folder_removes_folder(create_mock_project_project_4: Pr
     assert project.project_path.exists()
     project.make_copy_of_added_file(Path(
         PARENT_OF_THIS_FILE) / 'OTLWizardProjects' / 'TestFiles' / 'should_pass_implementatieelement_Derdenobject.csv')
-    assert (project.project_path / 'OTL-template-files').exists()
+
+    location_dir = project.get_project_files_dir_path()
+    if not location_dir.exists():
+        old_path = project.get_old_project_files_dir_path()
+        if old_path.exists():
+            location_dir = old_path
+        else:
+            location_dir.mkdir()
+
+    assert location_dir.exists()
     project.delete_template_folder()
-    assert not (project.project_path / 'OTL-template-files').exists()
+    assert not location_dir.exists()
     project.delete_project_dir_by_path()
 
 

@@ -55,7 +55,16 @@ def test_load_and_validate_document_good_path(mock_screen: InsertDataScreen,
 
     assert(len(global_vars.current_project.saved_project_files) == 1)
 
-    expected_saved_file_path = global_vars.current_project.get_OTL_template_files_dir_path() / Path(test_object_lists_file_path[0]).name
+    location_dir = global_vars.current_project.get_project_files_dir_path()
+    if not location_dir.exists():
+        old_path = global_vars.current_project.get_old_project_files_dir_path()
+        if old_path.exists():
+            location_dir = old_path
+        else:
+            location_dir.mkdir()
+
+    expected_saved_file_path = location_dir / Path(test_object_lists_file_path[0]).name
+
 
     assert(global_vars.current_project.saved_project_files[0].file_path == expected_saved_file_path)
     assert(global_vars.current_project.saved_project_files[0].state == FileState.WARNING)

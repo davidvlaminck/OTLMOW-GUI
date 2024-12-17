@@ -58,8 +58,9 @@ class HomeDomain:
         project.laatst_bewerkt = time_of_alter
         if SubsetDatabase(Path(new_path)).is_valid_subset_database() is False:
             raise WrongDatabaseError("Wrong database")
+
         project.change_subset(Path(new_path))
-        project.save_project_to_dir()
+
         main_window.widget(1).tab1.project = project
         TemplateDomain.update_subset_information(main_window.widget(1).tab1)
         RelationChangeDomain.init_static(project)

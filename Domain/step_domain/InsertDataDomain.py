@@ -65,8 +65,7 @@ class InsertDataDomain:
         if Path(filepath).suffix in ['.xls', '.xlsx']:
             filepath = cls.remove_dropdown_values_from_excel(doc=filepath)
 
-        end_loc = project.make_copy_of_added_file(filepath=filepath)
-        project.add_saved_project_file(file_path=end_loc, state=state)
+        project.copy_and_add_project_file(file_path=filepath, state=state)
         cls.sync_backend_documents_with_frontend()
 
 
