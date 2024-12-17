@@ -33,8 +33,7 @@ def save_assets(func):
     def wrapper_func(*args, **kwargs):
         res = func(*args, **kwargs)
         global_vars.current_project.assets_in_memory = RelationChangeDomain.get_quicksave_instances()
-        ProjectFileManager.save_validated_assets(global_vars.current_project,
-                                                 global_vars.current_project.project_path)
+        global_vars.current_project.save_validated_assets()
         global_vars.otl_wizard.main_window.step_3_tabwidget.header.start_event_loop()
         return res
 
@@ -106,7 +105,7 @@ class RelationChangeDomain:
 
         cls.all_OTL_asset_types_dict = cls.sort_nested_dict(cls.all_OTL_asset_types_dict)
 
-        cls.set_instances(ProjectFileManager.load_validated_assets())
+        cls.set_instances(cls.project.load_validated_assets())
         global_vars.otl_wizard.main_window.step3_visuals.reload_html()
 
     @classmethod

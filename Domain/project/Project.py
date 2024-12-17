@@ -3,8 +3,12 @@ import json
 import logging
 import os
 import shutil
+import zipfile
 from pathlib import Path
 from typing import Optional, Union, cast, Self
+
+from otlmow_converter.OtlmowConverter import OtlmowConverter
+from otlmow_model.OtlmowModel.Classes.ImplementatieElement.AIMObject import AIMObject
 
 from Domain.database.ModelBuilder import ModelBuilder
 from Domain.project.ProjectFile import ProjectFile
@@ -45,6 +49,11 @@ class Project:
         else:
             self.last_quick_save = None
 
+        if self.project_path:
+            self.quick_save_dir_path = Path(self.project_path / "quick_saves")
+        else:
+            self.quick_save_dir_path = None
+
         self.eigen_referentie: str = eigen_referentie
         self.bestek: str = bestek
         self.laatst_bewerkt: datetime.datetime = laatst_bewerkt
@@ -71,7 +80,7 @@ class Project:
             FileNotFoundError: If the project directory or the project details file does not exist.
         """
 
-        if not project_path.exists():
+        if project_path and not project_path.exists():
             raise FileNotFoundError(f"Project dir {project_path} does not exist")
 
         project_details_file = project_path / 'project_details.json'
@@ -106,6 +115,183 @@ class Project:
                    last_quick_save,
                    subset_operator=subset_operator,
                    otl_version=otl_version)
+
+
+    def save_project_to_dir(self) -> None:
+
+        otl_wizard_project_dir = ProgramFileStructure.get_otl_wizard_projects_dir()
+        project_dir_path = otl_wizard_project_dir / self.project_path.name
+        logging.debug("Saving project to %s", project_dir_path)
+        project_dir_path.mkdir(exist_ok=True, parents=True)
+
+        last_quick_save_name = None
+        if self.last_quick_save:
+            last_quick_save_name = str(self.last_quick_save.name)
+
+        if not self.laatst_bewerkt:
+            self.laatst_bewerkt = datetime.datetime.now()
+
+        project_details_dict = {
+            'bestek': self.bestek,
+            'eigen_referentie': self.eigen_referentie,
+            'laatst_bewerkt': self.laatst_bewerkt.strftime("%Y-%m-%d %H:%M:%S"),
+            'subset': self.subset_path.name,
+            'subset_operator': self.get_operator_name(),
+            'otl_version': self.get_otl_version(),
+            'last_quick_save': last_quick_save_name
+        }
+
+        with open(project_dir_path / "project_details.json", "w") as project_details_file:
+            json.dump(project_details_dict, project_details_file)
+
+        if self.subset_path.parent.absolute() != project_dir_path.absolute():
+            # move subset to project dir
+            new_subset_path = project_dir_path / self.subset_path.name
+            shutil.copy(self.subset_path, new_subset_path)
+
+
+    def load_validated_assets(self) -> list[AIMObject]:
+        path = self.get_last_quick_save_path()
+
+        if path:
+            return cast(list[AIMObject],list(OtlmowConverter.from_file_to_objects(path)))
+
+        return []
+
+    def save_validated_assets(self) -> None:
+        """
+                    To Project.py
+                """
+        """
+        Saves validated assets of a project to a quick save directory.
+        It manages the quick save files by removing old saves and generating a new save file with a unique name.
+
+        the format of the save file is: quick_save_{nbr}-{date}.json:
+            nbr:    counts up from 1 everytime a quicksave happens. resets every day.
+                    The highest previous number is extracted from the existing quicksave filenames
+                    of the current day
+            date:   the date on which the quicksave was made in format dd_mm_yy
+
+        All quicksaves that are more than 7 days old are deleted in this function
+
+        Args:
+            project: The project containing the assets to be saved.
+            project_dir_path: The directory path that the project belongs to
+
+        Returns:
+            None
+
+        Raises:
+            OSError: If there is an issue creating the quick save directory or saving the file.
+
+        """
+
+        save_number = 1
+        date_format = "%y%m%d_%H%M%S"
+        max_days_stored = 7
+
+        if self.quick_save_dir_path .exists():
+            current_date = datetime.datetime.now()
+
+            self.remove_too_old_quicksaves(current_date=current_date,
+                                          max_days_stored=max_days_stored,
+                                          date_format=date_format)
+        else:
+            os.mkdir(self.quick_save_dir_path )
+
+        current_date_str = datetime.datetime.now().strftime(date_format)
+
+        save_path = self.quick_save_dir_path  / f"quick_save-{current_date_str}.json"
+        OtlmowConverter.from_objects_to_file(file_path=save_path,
+                                             sequence_of_objects=self.assets_in_memory)
+        self.last_quick_save = save_path
+
+        self.save_project_to_dir()
+
+
+    def remove_too_old_quicksaves(self, current_date: datetime, max_days_stored: datetime,
+                                   date_format: str) -> None:
+        """
+            To Project.py
+        """
+        files = os.listdir(self.quick_save_dir_path )
+        for filename in files:
+            try:
+                file_date = datetime.datetime.strptime(filename.split("-")[-1].split(".json")[0],
+                                                       date_format)
+            except ValueError:
+                # if the save file doesn't adhere to standard naming convention it is never deleted
+                file_date = current_date
+
+            days_ago = (current_date - file_date).days
+            if days_ago > max_days_stored:
+                file_to_remove_path = Path(self.quick_save_dir_path , filename)
+                os.remove(file_to_remove_path)
+
+
+    def export_project_to_file(self, file_path: Path) -> None:
+        with zipfile.ZipFile(file_path, 'w') as project_zip:
+            project_zip.write(self.project_path / 'project_details.json',
+                              arcname='project_details.json',
+                              compresslevel=zipfile.ZIP_DEFLATED)
+            if self.saved_documents_overview_path and self.saved_documents_overview_path.exists():
+                project_zip.write(self.saved_documents_overview_path,
+                                  arcname=self.saved_documents_overview_path.name)
+            project_zip.write(self.subset_path, arcname=self.subset_path.name)
+
+            if not self.get_saved_projectfiles():
+                self.load_saved_document_filenames()
+
+            for document in self.get_saved_projectfiles():
+                file_zip_path = Path('OTL-template-files') / document.file_path.name
+                project_zip.write(document.file_path, arcname=file_zip_path)
+
+            last_quick_save_path = self.get_last_quick_save_path()
+            if last_quick_save_path and last_quick_save_path.exists():
+                last_quick_save_zip_path = Path("quick_saves") / last_quick_save_path.name
+                project_zip.write(last_quick_save_path, arcname=last_quick_save_zip_path)
+
+    @classmethod
+    def import_project(cls, file_path) -> Self:
+        with zipfile.ZipFile(file_path) as project_file:
+
+            # TODO: handle if project doesn't contain project_details.json files
+            project_details = json.load(project_file.open('project_details.json'))
+
+            project_dir_path = Path(
+                ProgramFileStructure.get_otl_wizard_projects_dir() / project_details[
+                    'eigen_referentie'])
+            try:
+                project_dir_path.mkdir(exist_ok=False, parents=True)
+            except FileExistsError as ex:
+                # TODO: warning user with dialog window when the project already exists
+                logging.error("Project dir %s already exists", project_dir_path)
+                raise ex
+
+            with zipfile.ZipFile(file_path) as project_file:
+                project_file.extractall(path=project_dir_path)
+
+        return Project.load_project(project_dir_path)
+
+    def delete_project_dir_by_path(self) -> None:
+        """
+            To Project.py without file_path
+        """
+        logging.debug("Deleting project %s", self.project_path)
+        shutil.rmtree(self.project_path)
+        # ProjectFileManager.load_projects_into_global()
+
+
+    def are_all_project_files_in_memory_valid(self) -> bool:
+
+        logging.debug("Started searching for project files in memory that are OTL conform")
+
+        if not self.saved_project_files:
+            logging.debug("No project files in memory")
+            return False
+        return any(
+            template.state == FileState.OK for template in self.saved_project_files
+        )
 
     def get_subset_db_name(self) -> str:
         """
@@ -269,6 +455,18 @@ class Project:
         """
 
         return self.project_path / 'OTL-template-files'
+
+    def delete_template_folder(self) -> None:
+        """
+            To Project.py
+        """
+        logging.debug(f"Started clearing out the whole template folder of "
+                      f"project: {self.eigen_referentie}")
+        location_dir = self.project_path / 'OTL-template-files'
+        if not location_dir.exists():
+            return
+        shutil.rmtree(location_dir)
+        logging.debug("Finished clearing out the whole template folder")
 
     def save_project_filepaths_to_file(self) -> None:
         """

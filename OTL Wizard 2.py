@@ -42,7 +42,7 @@ def demo_data():
         eigen_referentie="test1",
         bestek="test_bestek1",
         laatst_bewerkt=datetime(2021, 9, 11))
-    ProjectFileManager.save_project_to_dir(project_1)
+    project_1.save_project_to_dir()
     return project_1
 
 
@@ -98,7 +98,7 @@ class OTLWizard(QApplication):
     async def quit(self):
         logging.debug("closing application")
         if self.demo_project:
-            ProjectFileManager.delete_project_dir_by_path(self.demo_project.project_path)
+            self.demo_project.delete_project_dir_by_path()
         super().quit()
 
 def excepthook(exc_type, exc_value, exc_tb):

@@ -21,4 +21,4 @@ class ExportProjectWindow:
             project_path_str += '.otlw'
 
         project_path = Path(project_path_str)
-        ProjectFileManager.export_project_to_file(file_path=project_path, project=project)
+        project.export_project_to_file(file_path=project_path)

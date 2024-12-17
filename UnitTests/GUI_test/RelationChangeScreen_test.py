@@ -53,10 +53,10 @@ def mock_step3_visuals() -> None:
 
 @fixture
 def mock_load_validated_assets() -> None:
-    original_load_validated_assets = ProjectFileManager.load_validated_assets
-    ProjectFileManager.load_validated_assets = Mock()
+    original_load_validated_assets = Project.load_validated_assets
+    Project.load_validated_assets = Mock()
     yield
-    ProjectFileManager.load_validated_assets = original_load_validated_assets
+    Project.load_validated_assets = original_load_validated_assets
 
 def test_fill_class_list(root_directory:Path,
                                 mock_screen: InsertDataScreen,

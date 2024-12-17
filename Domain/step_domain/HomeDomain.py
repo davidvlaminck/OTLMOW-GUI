@@ -1,6 +1,7 @@
 from datetime import datetime
 from pathlib import Path
 
+from Domain.project.ProgramFileStructure import ProgramFileStructure
 from Domain.step_domain.RelationChangeDomain import RelationChangeDomain
 from Domain.project.Project import Project
 from Domain.project.ProjectFileManager import ProjectFileManager
@@ -21,7 +22,7 @@ class HomeDomain:
 
     @staticmethod
     def remove_project(project: Project, table) -> None:
-        ProjectFileManager.delete_project_dir_by_path(project.project_path)
+        project.delete_project_dir_by_path()
         table.removeRow(table.currentRow())
 
     # TODO: Remove draw_table naar ergens anders
@@ -33,8 +34,8 @@ class HomeDomain:
         project_exists = project.project_path is not None
         if not project_exists:
             project.project_path = Path(
-                ProjectFileManager.get_otl_wizard_projects_dir() / 'Projects' / project.eigen_referentie)
-        ProjectFileManager.save_project_to_dir(project)
+                ProgramFileStructure.get_otl_wizard_projects_dir() / 'Projects' / project.eigen_referentie)
+        project.save_project_to_dir()
         ProjectFileManager.load_projects_into_global()
         overview_table.draw_table()
         dlg.close()
@@ -58,7 +59,7 @@ class HomeDomain:
         if SubsetDatabase(Path(new_path)).is_valid_subset_database() is False:
             raise WrongDatabaseError("Wrong database")
         project.change_subset(Path(new_path))
-        ProjectFileManager.save_project_to_dir(project)
+        project.save_project_to_dir()
         main_window.widget(1).tab1.project = project
         TemplateDomain.update_subset_information(main_window.widget(1).tab1)
         RelationChangeDomain.init_static(project)
