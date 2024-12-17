@@ -22,9 +22,9 @@ from GUI.translation.GlobalTranslate import GlobalTranslate
 class Project:
     saved_documents_filename = "saved_documents.json"
 
-    def __init__(self, project_path: Path = None, subset_path: Path = None, assets_path: Path = None,
+    def __init__(self, project_path: Path = None, subset_path: Path = None, saved_documents_overview_path: Path = None,
                  eigen_referentie: str = None, bestek: str = None, laatst_bewerkt: datetime.datetime = None,
-                 last_quick_save:Optional[Path] = None, subset_operator: Optional[Union[str,Path]] = None,otl_version: Optional[Union[str,Path]] = None):
+                 last_quick_save:Optional[Path] = None, subset_operator: Optional[Union[str,Path]] = None, otl_version: Optional[Union[str,Path]] = None):
         self.project_path: Path = project_path
         self.subset_path: Path = subset_path
         if isinstance(subset_operator,Path):
@@ -34,11 +34,11 @@ class Project:
             otl_version = otl_version.stem
         self.otl_version: Optional[str] = otl_version
 
-        if assets_path:
-            if ".json" in str(assets_path.absolute()):
-                self.saved_documents_overview_path: Path = assets_path
+        if saved_documents_overview_path:
+            if ".json" in str(saved_documents_overview_path.absolute()):
+                self.saved_documents_overview_path: Path = saved_documents_overview_path
             else:
-                self.saved_documents_overview_path: Path = assets_path / self.saved_documents_filename
+                self.saved_documents_overview_path: Path = saved_documents_overview_path / self.saved_documents_filename
         elif self.project_path is not None:
             self.saved_documents_overview_path = self.project_path / self.saved_documents_filename
         else:

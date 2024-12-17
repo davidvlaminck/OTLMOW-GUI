@@ -18,11 +18,11 @@ TEST_DIR = ROOT_DIR / 'project_files_test/'
 
 @pytest.fixture
 def projects():
-    global_vars.projects = [Project(project_path=None, subset_path=None, assets_path=None,
+    global_vars.projects = [Project(project_path=None, subset_path=None, saved_documents_overview_path=None,
                                     eigen_referentie="testen", bestek="test", laatst_bewerkt=None),
-                            Project(project_path=None, subset_path=None, assets_path=None,
+                            Project(project_path=None, subset_path=None, saved_documents_overview_path=None,
                                     eigen_referentie="test2", bestek="test2", laatst_bewerkt=None),
-                            Project(project_path=None, subset_path=None, assets_path=None,
+                            Project(project_path=None, subset_path=None, saved_documents_overview_path=None,
                                     eigen_referentie="test3", bestek="test3", laatst_bewerkt=None)]
 
 

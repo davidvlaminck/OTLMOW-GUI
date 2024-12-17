@@ -57,7 +57,7 @@ def create_mock_project_project_2():
         subset_path=Path(
             PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' /
             'OTL_AllCasesTestClass_no_double_kard.db'),
-        assets_path=Path(
+        saved_documents_overview_path=Path(
             PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_2' / 'saved_documents.json'),
         eigen_referentie="eigen referentie",
         bestek="bestek",
@@ -79,7 +79,7 @@ def create_mock_project_project_3():
         subset_path=Path(
             PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' /
             'OTL_AllCasesTestClass_no_double_kard.db'),
-        assets_path=Path(
+        saved_documents_overview_path=Path(
             PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_2' / 'saved_documents.json'),
         eigen_referentie="eigen referentie",
         bestek="bestek",
@@ -99,7 +99,7 @@ def create_mock_project_project_4():
         project_path=project_path ,
         subset_path=Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' /
                          'OTL_AllCasesTestClass_no_double_kard.db'),
-        assets_path=Path(
+        saved_documents_overview_path=Path(
             PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' / 'saved_documents.json'),
         eigen_referentie="eigen referentie",
         bestek="bestek",
