@@ -5,16 +5,16 @@ on: [workflow_dispatch]
 jobs:
   coverage:
     timeout-minutes: 10
-    runs-on: macos-latest
+    runs-on: windows-latest
     defaults:
       run:
         working-directory: ./UnitTests
     steps:
-      - uses: actions/checkout@v3
-      - name: Set up Python 3.11
-        uses: actions/setup-python@v4
+      - uses: actions/checkout@v4
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: '3.12'
       - name: Display Python version for testing purposes
         run: python -c "import sys; print(sys.version)"
       - name: Install Python dependencies
