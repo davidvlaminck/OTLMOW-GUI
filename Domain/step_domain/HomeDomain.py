@@ -4,7 +4,7 @@ from pathlib import Path
 from Domain.project.ProgramFileStructure import ProgramFileStructure
 from Domain.step_domain.RelationChangeDomain import RelationChangeDomain
 from Domain.project.Project import Project
-from Domain.project.ProjectFileManager import ProjectFileManager
+from Domain.project.ProgramFileManager import ProgramFileManager
 from Domain.database.SubsetDatabase import SubsetDatabase
 from Domain.step_domain.TemplateDomain import TemplateDomain
 from Exceptions.EmptyFieldError import EmptyFieldError
@@ -18,7 +18,7 @@ class HomeDomain:
 
     @classmethod
     def get_all_projects(cls) -> list:
-        return ProjectFileManager.get_all_otl_wizard_projects()
+        return ProgramFileManager.get_all_otl_wizard_projects()
 
     @classmethod
     def remove_project(cls,project: Project, table) -> None:

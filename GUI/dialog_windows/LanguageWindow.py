@@ -3,9 +3,9 @@ from pathlib import Path
 
 from PyQt6.QtWidgets import QDialog, QHBoxLayout, QPushButton
 
-from Domain.project.ProjectFileManager import ProjectFileManager
+from Domain.project.ProgramFileManager import ProgramFileManager
 from Domain.enums import Language
-from Domain.language_settings import return_language
+from Domain.Settings import Settings
 
 ROOT_DIR = Path(__file__).parent.parent
 
@@ -33,7 +33,7 @@ class LanguageWindow:
         dialog.exec()
 
     def change_language(self, lang: Enum, dialog: QDialog, main_window) -> None:
-        ProjectFileManager.change_language_on_settings_file(lang)
-        self._ = return_language(LANG_DIR, lang)
+        ProgramFileManager.change_language_on_settings_file(lang)
+        self._ = Settings.return_language(LANG_DIR, lang)
         main_window.reset_ui(self._)
         dialog.close()

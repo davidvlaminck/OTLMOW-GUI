@@ -12,7 +12,7 @@ from Domain import global_vars
 from Domain.step_domain.InsertDataDomain import InsertDataDomain
 from Domain.step_domain.RelationChangeDomain import RelationChangeDomain
 from Domain.project.Project import Project
-from Domain.project.ProjectFileManager import ProjectFileManager
+from Domain.project.ProgramFileManager import ProgramFileManager
 from Exceptions.EmptySearchWarning import EmptySearchWarning
 from GUI.screens.general_elements.ButtonWidget import ButtonWidget
 from GUI.dialog_windows.ExportProjectWindow import ExportProjectWindow
@@ -115,7 +115,7 @@ class OverviewTable(QTableWidget):
         logging.debug("called this loopdieloop")
         self.main_window.setCurrentIndex(1)
         project = self.item(row, 0).text()
-        projects = ProjectFileManager.get_all_otl_wizard_projects()
+        projects = ProgramFileManager.get_all_otl_wizard_projects()
         p = next(k for k in projects if k.eigen_referentie == project)
         self.main_window.widget(1).tab1.project = p
         p.load_saved_document_filenames()

@@ -2,7 +2,7 @@ from pathlib import Path
 
 from PyQt6.QtGui import QPixmap
 
-from Domain.project.ProjectFileManager import ProjectFileManager
+from Domain.project.ProgramFileManager import ProgramFileManager
 from PyQt6.QtWidgets import QWidget, QPushButton, QLabel, QHBoxLayout, QVBoxLayout, \
     QLineEdit, QFrame
 from PyQt6.QtCore import Qt

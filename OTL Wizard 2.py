@@ -10,6 +10,7 @@ from datetime import datetime
 from pathlib import Path
 
 from Domain import global_vars
+from Domain.logger.OTLLogger import OTLLogger
 from Domain.step_domain.InsertDataDomain import InsertDataDomain
 from Domain.network.Updater import Updater
 from GUI.translation.GlobalTranslate import GlobalTranslate
@@ -17,12 +18,17 @@ from GUI.translation.GlobalTranslate import GlobalTranslate
 ROOT_DIR =  Path(Path(__file__).absolute()).parent
 sys.path.insert(0,str(ROOT_DIR.absolute()))# needed for python to import project files
 
+
+
 from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import QApplication
 from qasync import QEventLoop, asyncClose
 
+
+
+
 from Domain.project.Project import Project
-from Domain.project.ProjectFileManager import ProjectFileManager
+from Domain.project.ProgramFileManager import ProgramFileManager
 from GUI.MainWindow import MainWindow
 from GUI.screens.ErrorScreen import ErrorScreen
 
@@ -111,8 +117,8 @@ def excepthook(exc_type, exc_value, exc_tb):
 
 
 if __name__ == '__main__':
-    settings = ProjectFileManager.init()
-
+    settings = ProgramFileManager.init()
+    OTLLogger.init()
     logging.debug("Application started")
 
     app = OTLWizard(settings,sys.argv)

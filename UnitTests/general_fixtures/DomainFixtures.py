@@ -8,7 +8,7 @@ from Domain import global_vars
 from Domain.project.ProgramFileStructure import ProgramFileStructure
 from Domain.step_domain.InsertDataDomain import InsertDataDomain
 from Domain.project.Project import Project
-from Domain.project.ProjectFileManager import ProjectFileManager
+from Domain.project.ProgramFileManager import ProgramFileManager
 from Domain.step_domain.RelationChangeDomain import RelationChangeDomain
 
 @fixture

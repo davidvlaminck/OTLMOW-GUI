@@ -1,5 +1,7 @@
+import json
 import logging
 import os
+import shutil
 import sys
 import tomllib
 from pathlib import Path
@@ -47,3 +49,21 @@ class Updater:
         except Exception as e:
             logging.info(f"Couldn't check if new version is available for update")
             logging.debug(e)
+
+    @classmethod
+    def download_fresh_otlmow_model(cls, model_dir_path) -> None:
+
+        ghdl = GitHubDownloader('davidvlaminck/OTLMOW-Model')
+        ghdl.download_full_repo(model_dir_path / 'temp')
+        shutil.unpack_archive(model_dir_path / 'temp' / 'full_repo_download.zip',
+                              model_dir_path / 'temp' / 'downloaded_model')
+
+    @classmethod
+    def get_otlmow_model_version(cls, model_dir_path) -> str:
+        ghdl = GitHubDownloader('davidvlaminck/OTLMOW-Model')
+        ghdl.download_file_to_dir(file_path='otlmow_model/version_info.json',
+                                  destination_dir=model_dir_path / 'temp')
+        with open(model_dir_path / 'temp' / 'version_info.json') as json_file:
+            version_info = json.load(json_file)
+
+        return version_info['model_version']

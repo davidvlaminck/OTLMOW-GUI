@@ -3,7 +3,7 @@ from pathlib import Path
 from PyQt6.QtWidgets import QFileDialog
 
 from Domain.project.Project import Project
-from Domain.project.ProjectFileManager import ProjectFileManager
+from Domain.project.ProgramFileManager import ProgramFileManager
 
 
 class ProjectPickerWindow:

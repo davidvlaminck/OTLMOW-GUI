@@ -22,7 +22,7 @@ from otlmow_modelbuilder.SQLDataClasses.OSLORelatie import OSLORelatie
 
 from Domain import global_vars
 from Domain.project.Project import Project
-from Domain.project.ProjectFileManager import ProjectFileManager
+from Domain.project.ProgramFileManager import ProgramFileManager
 
 from GUI.screens.RelationChange_elements.RelationChangeHelpers import RelationChangeHelpers, \
     SITE_PACKAGES_ROOT

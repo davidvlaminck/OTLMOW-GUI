@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pytest
 
-from Domain.language_settings import return_language
+from Domain.Settings import Settings
 from Domain.step_domain.HomeDomain import HomeDomain
 from Exceptions.EmptyFieldError import EmptyFieldError
 from Exceptions.WrongDatabaseError import WrongDatabaseError
@@ -14,7 +14,7 @@ LOCALE_DIR = ROOT_DIR.parent.parent / 'locale/'
 
 @pytest.fixture
 def home_domain() -> HomeDomain:
-    return HomeDomain(return_language(LOCALE_DIR))
+    return HomeDomain(Settings.return_language(LOCALE_DIR))
 
 
 def test_validate_with_good_values(home_domain: HomeDomain):

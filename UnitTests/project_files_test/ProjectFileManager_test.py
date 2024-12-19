@@ -11,7 +11,7 @@ from _pytest.fixtures import fixture
 from Domain import global_vars
 from Domain.project.ProgramFileStructure import ProgramFileStructure
 from Domain.project.Project import Project
-from Domain.project.ProjectFileManager import ProjectFileManager
+from Domain.project.ProgramFileManager import ProgramFileManager
 from Domain.enums import FileState
 from Domain.project.ProjectFile import ProjectFile
 from Exceptions.ExcelFileUnavailableError import ExcelFileUnavailableError
@@ -49,7 +49,7 @@ def mock_get_home_path_with_empty_directory():
 
 
 def test_get_all_otl_wizard_projects(caplog, mock_project_home_path):
-    projects = ProjectFileManager.get_all_otl_wizard_projects()
+    projects = ProgramFileManager.get_all_otl_wizard_projects()
     assert len(projects) == 1
     assert projects[0].project_path == Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1')
     assert len(caplog.records) == 1
@@ -61,7 +61,7 @@ def test_create_otl_wizard_model_dir(mock_get_home_path_with_empty_directory):
 
 
 def test_get_all_otl_wizard_projects_empty_directory(mock_get_home_path_with_empty_directory):
-    projects = ProjectFileManager.get_all_otl_wizard_projects()
+    projects = ProgramFileManager.get_all_otl_wizard_projects()
     assert projects == []
 
 
@@ -77,13 +77,13 @@ def test_get_otl_wizard_projects_dir():
 def test_create_empty_temporary_map_creates_map_in_correct_location():
     temp_loc = Path(tempfile.gettempdir()) / 'temp-otlmow'
     temp_loc.rmdir()
-    tempdir = ProjectFileManager.create_empty_temporary_map()
+    tempdir = ProgramFileManager.create_empty_temporary_map()
     Path(tempfile.gettempdir()) / 'temp-otlmow'
     assert tempdir == Path(tempfile.gettempdir()) / 'temp-otlmow'
 
 
 def test_create_empty_temporary_map_contains_no_files():
-    tempdir = ProjectFileManager.create_empty_temporary_map()
+    tempdir = ProgramFileManager.create_empty_temporary_map()
     assert not os.listdir(tempdir)
 
 
@@ -122,6 +122,6 @@ def test_delete_occupied_template_file_from_project(
 
     #TODO: figure out why this doesn't work on github pipeline
     with pytest.raises(ExcelFileUnavailableError) as e:
-        ProjectFileManager.delete_template_file_from_project(test_file_path)
+        ProgramFileManager.delete_template_file_from_project(test_file_path)
 
         assert e.value.file_path ==  test_file_path

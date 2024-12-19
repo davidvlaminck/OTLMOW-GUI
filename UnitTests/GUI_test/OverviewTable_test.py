@@ -5,7 +5,7 @@ import pytest
 from Domain import global_vars
 from Domain.project.Project import Project
 
-from Domain.language_settings import return_language
+from Domain.Settings import Settings
 from Exceptions.EmptySearchWarning import EmptySearchWarning
 from GUI.screens.Home_elements.OverviewTable import OverviewTable
 
@@ -28,7 +28,7 @@ def projects():
 
 @pytest.fixture
 def locale():
-    return return_language(LOCALE_DIR)
+    return Settings.return_language(LOCALE_DIR)
 
 
 def test_filter_function_with_nothing_returns_all_projects(locale, projects):

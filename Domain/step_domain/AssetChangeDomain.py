@@ -8,7 +8,7 @@ from otlmow_model.OtlmowModel.Helpers.OTLObjectHelper import compare_two_lists_o
 
 from Domain import global_vars
 from Domain.project.Project import Project
-from Domain.project.ProjectFileManager import ProjectFileManager
+from Domain.project.ProgramFileManager import ProgramFileManager
 from Domain.enums import ReportAction, FileState
 from Domain.ReportItem import ReportItem
 
@@ -48,7 +48,7 @@ class AssetChangeDomain:
 
     @classmethod
     def get_diff_report(cls, original_documents: list) -> List[ReportItem]:
-        model_dir = ProjectFileManager.get_otl_wizard_model_dir()
+        model_dir = ProgramFileManager.get_otl_wizard_model_dir()
         logging.debug(f"original docs {original_documents}")
         original_assets = []
         for x in original_documents:
@@ -65,10 +65,10 @@ class AssetChangeDomain:
         original_assets = cls.generate_original_assets_from_files(original_documents=original_documents)
         diff_1 = compare_two_lists_of_objects_attribute_level(first_list=original_assets,
                                                               second_list=changed_assets,
-                                                              model_directory=ProjectFileManager.get_otl_wizard_model_dir())
-        ProjectFileManager.delete_template_folder()
+                                                              model_directory=ProgramFileManager.get_otl_wizard_model_dir())
+        ProgramFileManager.delete_template_folder()
         project.saved_project_files = []
-        tempdir = ProjectFileManager.create_empty_temporary_map()
+        tempdir = ProgramFileManager.create_empty_temporary_map()
         temp_loc = Path(tempdir) / file_name
         OtlmowConverter().from_objects_to_file(file_path=temp_loc, sequence_of_objects=diff_1)
         project.copy_and_add_project_file(file_path=temp_loc, state=FileState.OK)
