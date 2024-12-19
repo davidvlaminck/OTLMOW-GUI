@@ -41,7 +41,7 @@ class Settings:
         return translator.gettext
 
     @classmethod
-    def get_or_create_settings_file(cls) -> None:
+    def get_or_create_settings_file(cls) -> dict:
         """
         Retrieves or creates a settings file for the application.
         This class method checks for the existence of a settings file and initializes
@@ -70,12 +70,12 @@ class Settings:
         language = Language.DUTCH
         if not settings_filepath.exists():
             first_run = True
-
+        settings_details = {}
         with open(settings_filepath, 'w+') as json_file:
             try:
                 settings_details = json.load(json_file)
             except:
-                settings_details = {}
+                pass
 
             if settings_details.__contains__('language'):
                 settings_details['language'] = Language[settings_details['language']]
@@ -88,7 +88,7 @@ class Settings:
 
             json.dump(settings_details, json_file)
 
-            return settings_details
+        return settings_details
 
     @classmethod
     def change_language_on_settings_file(cls, lang) -> None:

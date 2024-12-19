@@ -10,6 +10,7 @@ from datetime import datetime
 from pathlib import Path
 
 from Domain import global_vars
+from Domain.Settings import Settings
 from Domain.logger.OTLLogger import OTLLogger
 from Domain.step_domain.InsertDataDomain import InsertDataDomain
 from Domain.network.Updater import Updater
@@ -28,7 +29,6 @@ from qasync import QEventLoop, asyncClose
 
 
 from Domain.project.Project import Project
-from Domain.project.ProgramFileManager import ProgramFileManager
 from GUI.MainWindow import MainWindow
 from GUI.screens.ErrorScreen import ErrorScreen
 
@@ -117,11 +117,11 @@ def excepthook(exc_type, exc_value, exc_tb):
 
 
 if __name__ == '__main__':
-    settings = ProgramFileManager.init()
+    program_settings = Settings.get_or_create_settings_file()
     OTLLogger.init()
     logging.debug("Application started")
 
-    app = OTLWizard(settings,sys.argv)
+    app = OTLWizard(program_settings, sys.argv)
 
     if '_PYI_SPLASH_IPC' in os.environ and importlib.util.find_spec("pyi_splash"):
         import pyi_splash
