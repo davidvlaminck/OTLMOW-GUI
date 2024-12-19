@@ -62,22 +62,11 @@ class ProjectFileManager:
                 projects.append(project)
             except FileNotFoundError:
                 logging.warning('Project dir %s is not a valid project directory', project_dir)
+
+        global_vars.projects =projects
+
         return projects
 
-
-
-    @classmethod
-    def load_projects_into_global(cls) -> None:
-        """
-        Loads all OTL wizard projects into the global variable for project management.
-        This class method retrieves the list of projects and assigns it to the global variable,
-        making the projects accessible throughout the application.
-
-        Returns:
-            None
-        """
-
-        global_vars.projects = ProjectFileManager.get_all_otl_wizard_projects()
 
     @classmethod
     def download_fresh_otlmow_model(cls, model_dir_path) -> None:

@@ -16,19 +16,19 @@ class HomeDomain:
     def __init__(self, language_settings):
         self._ = language_settings
 
-    @staticmethod
-    def get_all_projects() -> list:
+    @classmethod
+    def get_all_projects(cls) -> list:
         return ProjectFileManager.get_all_otl_wizard_projects()
 
-    @staticmethod
-    def remove_project(project: Project, table) -> None:
+    @classmethod
+    def remove_project(cls,project: Project, table) -> None:
         project.delete_project_dir_by_path()
         table.removeRow(table.currentRow())
 
     # TODO: Remove draw_table naar ergens anders
     # TODO: Rename alter_table want je past geen table aan maar de projecten
-    @staticmethod
-    def alter_table(dlg, overview_table, project: Project = None):
+    @classmethod
+    def alter_table(cls,dlg, overview_table, project: Project = None):
         time_of_alter = datetime.now().date()
         project.laatst_bewerkt = time_of_alter
         project_exists = project.project_path is not None
@@ -36,7 +36,7 @@ class HomeDomain:
             project.project_path = Path(
                 ProgramFileStructure.get_otl_wizard_projects_dir() / 'Projects' / project.eigen_referentie)
         project.save_project_to_dir()
-        ProjectFileManager.load_projects_into_global()
+        HomeDomain.get_all_projects()
         overview_table.draw_table()
         dlg.close()
 
@@ -52,8 +52,8 @@ class HomeDomain:
         else:
             return True
 
-    @staticmethod
-    def change_subset(project: Project, new_path, main_window) -> None:
+    @classmethod
+    def change_subset(cls, project: Project, new_path, main_window) -> None:
         time_of_alter = datetime.now().date()
         project.laatst_bewerkt = time_of_alter
         if SubsetDatabase(Path(new_path)).is_valid_subset_database() is False:

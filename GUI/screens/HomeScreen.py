@@ -6,7 +6,7 @@ from Domain.project.ProjectFileManager import ProjectFileManager
 from PyQt6.QtWidgets import QWidget, QPushButton, QLabel, QHBoxLayout, QVBoxLayout, \
     QLineEdit, QFrame
 from PyQt6.QtCore import Qt
-import Domain.step_domain.HomeDomain as home_domain
+from Domain.step_domain.HomeDomain import HomeDomain
 from Domain.network.Updater import Updater
 from GUI.dialog_windows.SuggestUpdateWindow import SuggestUpdateWindow
 from GUI.screens.Screen import Screen
@@ -24,7 +24,7 @@ class HomeScreen(Screen):
     def __init__(self, language_settings=None):
         super().__init__()
         self._ = language_settings
-        self.home_domain = home_domain.HomeDomain(self._)
+        self.home_domain = HomeDomain(self._)
         self.container_home_screen = QVBoxLayout()
 
         self.message_box = MessageBox(self._, self.home_domain)
@@ -36,7 +36,7 @@ class HomeScreen(Screen):
         self.header = HeaderBar(language=self._, table=self.table)
         self.main_window = None
 
-        ProjectFileManager.load_projects_into_global()
+        HomeDomain.get_all_projects()
         self.main_content_ui()
         self.init_ui()
         if Updater.needs_update:
@@ -93,7 +93,7 @@ class HomeScreen(Screen):
     def reset_ui(self, lang_settings=None) -> None:
         if lang_settings is not None:
             self._ = lang_settings
-            self.home_domain = home_domain.HomeDomain(self._)
+            self.home_domain = HomeDomain(self._)
         self.table.reset_ui(self._)
         self.input_field.setPlaceholderText(self._('search_text'))
         self.header.reset_ui(self._)
