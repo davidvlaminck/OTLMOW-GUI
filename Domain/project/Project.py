@@ -681,16 +681,7 @@ class Project:
         if isinstance(file_path,str):
             file_path = Path(file_path)
 
-        location_dir = self.get_project_files_dir_path()
-        if not location_dir.exists():
-            old_path = self.get_old_project_files_dir_path()
-            if old_path.exists():
-                location_dir = old_path
-            else:
-                return
-
-        full_file_path = location_dir / file_path.name
-        end_location = self.make_copy_of_added_file(filepath=full_file_path)
+        end_location = self.make_copy_of_added_file(filepath=file_path)
         self.saved_project_files.append(ProjectFile(file_path=end_location, state=state))
         self.save_project_filepaths_to_file()
 
