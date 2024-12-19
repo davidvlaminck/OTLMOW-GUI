@@ -1,4 +1,5 @@
 import logging
+from dataclasses import dataclass
 from pathlib import Path
 from typing import List
 
@@ -10,8 +11,14 @@ from Domain import global_vars
 from Domain.project.Project import Project
 from Domain.project.ProgramFileManager import ProgramFileManager
 from Domain.enums import ReportAction, FileState
-from Domain.ReportItem import ReportItem
 
+@dataclass
+class ReportItem:
+    id: str
+    actie: ReportAction
+    attribute: str
+    original_value: str
+    new_value: str
 
 class AssetChangeDomain:
 
@@ -124,3 +131,4 @@ class AssetChangeDomain:
             first_list=list1, second_list=list2, model_directory=model_directory)
         return compare_two_lists_of_objects_attribute_level(
             first_list=list1, second_list=diff_1, model_directory=model_directory)
+
