@@ -1,14 +1,14 @@
-
+from pathlib import Path
 
 from Domain.enums import Language
-from Domain.language_settings import return_language
+from Domain.Settings import Settings
 
 
 class GlobalTranslate:
     instance = None
 
-    def __init__(self,settings:dict,lang_dir:str):
-        self._ = return_language(lang_dir,Language[settings["language"]])
+    def __init__(self,settings:dict,lang_dir:Path):
+        self._ = Settings.return_language(lang_dir,Language[settings["language"]])
         GlobalTranslate.instance = self
 
     @classmethod

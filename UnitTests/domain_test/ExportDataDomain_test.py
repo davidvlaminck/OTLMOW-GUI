@@ -1,19 +1,12 @@
 import os
-from pathlib import Path
-from unittest.mock import Mock
 
-from _pytest.fixtures import fixture
 from openpyxl.reader.excel import load_workbook
 from pytestqt.qtbot import QtBot
 from pytestqt.plugin import qtbot
 
-from Domain.ExportDataDomain import ExportDataDomain
-from Domain.InsertDataDomain import InsertDataDomain
-from Domain.ProjectFile import ProjectFile
-from Domain.RelationChangeDomain import RelationChangeDomain
-from GUI.Screens.DataVisualisationScreen import DataVisualisationScreen
-from GUI.Screens.InsertDataScreen import InsertDataScreen
-from GUI.Screens.RelationChangeScreen import RelationChangeScreen
+from Domain.step_domain.ExportDataDomain import ExportDataDomain
+from GUI.screens.InsertDataScreen import InsertDataScreen
+from GUI.screens.RelationChangeScreen import RelationChangeScreen
 
 from UnitTests.general_fixtures.GUIFixtures import *
 from UnitTests.general_fixtures.DomainFixtures import *
@@ -21,6 +14,8 @@ from UnitTests.general_fixtures.DomainFixtures import *
 @fixture
 def root_directory() -> Path:
     return Path(__file__).parent.parent.parent
+
+
 
 @fixture
 def mock_screen(qtbot: QtBot, create_translations) -> InsertDataScreen:
@@ -48,11 +43,6 @@ def mock_rel_screen(qtbot: QtBot, create_translations) -> RelationChangeScreen:
 def mock_fill_possible_relations_list(mock_rel_screen: RelationChangeScreen):
     mock_rel_screen.fill_possible_relations_list = Mock()
 
-@fixture
-def mock_step3_visuals() -> None:
-    step3_visuals = Mock(step3_visuals=DataVisualisationScreen)
-    main_window = Mock(step3_visuals=step3_visuals)
-    global_vars.otl_wizard = Mock(main_window=main_window)
 
 
 @fixture
@@ -65,7 +55,6 @@ def get_export_path_with_cleanup(root_directory: Path) -> Path:
         os.remove(export_path)
 
 
-
 def test_unedited_generate_files(root_directory: Path,
                                  mock_screen: InsertDataScreen,
                                 mock_fill_possible_relations_list: RelationChangeScreen,
@@ -75,9 +64,11 @@ def test_unedited_generate_files(root_directory: Path,
                                  mock_save_validated_assets_function,
                                  mock_load_validated_assets):
 
+
+
     test_object_lists_file_path: list[str] = [
         str(root_directory / "demo_projects" / "simpel_vergelijkings_project" /
-            "simpel_vergelijking_template2.xlsx")]
+            "simpel_vergelijking_template5.xlsx")]
 
     InsertDataDomain.add_files_to_backend_list(test_object_lists_file_path)
 
@@ -85,7 +76,7 @@ def test_unedited_generate_files(root_directory: Path,
 
     export_path = get_export_path_with_cleanup
 
-    ExportDataDomain.generate_files(export_path,global_vars.current_project,False,False)
+    ExportDataDomain.generate_files(export_path, False, False)
 
     assert export_path.exists()
 
@@ -113,6 +104,7 @@ def test_unedited_generate_files(root_directory: Path,
 
 
 def test_add_remove_generate_files(root_directory: Path,
+                                mock_project_home_path,
                                  mock_screen: InsertDataScreen,
                                 mock_fill_possible_relations_list: RelationChangeScreen,
                                 setup_test_project,
@@ -123,30 +115,44 @@ def test_add_remove_generate_files(root_directory: Path,
 
     test_object_lists_file_path: list[str] = [
         str(root_directory / "demo_projects" / "simpel_vergelijkings_project" /
-            "simpel_vergelijking_template2.xlsx")]
+            "simpel_vergelijking_template5.xlsx")]
 
     InsertDataDomain.add_files_to_backend_list(test_object_lists_file_path)
 
     InsertDataDomain.load_and_validate_documents()
 
+
+
     RelationChangeDomain.set_possible_relations(RelationChangeDomain.shown_objects[0])
 
     bron_id = 'dummy_hxOTHWe'
-    target_id = 'dummy_C'
+    target_id = 'dummy_a'
     index = 0
     RelationChangeDomain.add_possible_relation_to_existing_relations(bron_id,target_id,index)
 
-    RelationChangeDomain.remove_existing_relation(0)
+    to_remove_index = -1
+    to_remove_typeURI = 'https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Bevestiging'
+    to_remove_source_id = 'dummy_Q'
+    to_remove_target_id = 'dummy_bcjseEAj'
+    for i, relation in enumerate(RelationChangeDomain.existing_relations):
+        if (relation.bronAssetId.identificator == to_remove_source_id and
+            relation.typeURI == to_remove_typeURI and
+            relation.doelAssetId.identificator == to_remove_target_id):
+            to_remove_index = i
+
+    assert to_remove_index != -1
+
+    RelationChangeDomain.remove_existing_relation(to_remove_index)
 
     export_path = get_export_path_with_cleanup
 
-    ExportDataDomain.generate_files(export_path,global_vars.current_project,False,False)
+    ExportDataDomain.generate_files(export_path, False, False)
 
     assert export_path.exists()
 
     wb = load_workbook(export_path)
 
-    ref_path_expected_workbook = (root_directory / "UnitTests" / "project_files_test" / "OTLWizardProjects" / "reference_files" / "ref_add_remove_test.xlsx")
+    ref_path_expected_workbook = (root_directory / "UnitTests" / "project_files_test" / "OTLWizardProjects" / "reference_files" / "ref_test_add_remove_generate_files.xlsx")
     expected_wb = load_workbook(Path(ref_path_expected_workbook))
 
     if 'Keuzelijsten' in expected_wb.sheetnames:
@@ -187,7 +193,7 @@ def test_add_remove_inactive_relations_and_generate_files(root_directory: Path,
 
     test_object_lists_file_path: list[str] = [
         str(root_directory / "demo_projects" / "simpel_vergelijkings_project" /
-            "simpel_vergelijking_template2.xlsx")]
+            "simpel_vergelijking_template5.xlsx")]
 
     InsertDataDomain.add_files_to_backend_list(test_object_lists_file_path)
 
@@ -198,30 +204,47 @@ def test_add_remove_inactive_relations_and_generate_files(root_directory: Path,
     index_1 = 1
 
     RelationChangeDomain.set_possible_relations( RelationChangeDomain.get_object(source_id_1))
-    RelationChangeDomain.add_possible_relation_to_existing_relations(source_id_1,
+    added_relation =  RelationChangeDomain.add_possible_relation_to_existing_relations(source_id_1,
                                                                      target_id_1,
                                                                      index_1)
+    print(f"first added relation {added_relation.typeURI}")
 
     source_id_2 = 'dummy_a'
     target_id_2 = 'dummy_TyBGmXfXC'
     index_2 = 0
 
     RelationChangeDomain.set_possible_relations(RelationChangeDomain.get_object(source_id_2))
-    RelationChangeDomain.add_possible_relation_to_existing_relations(source_id_2,
+    added_relation =  RelationChangeDomain.add_possible_relation_to_existing_relations(source_id_2,
                                                                      target_id_2,
                                                                      index_2)
+    print(f"second added relation {added_relation.typeURI}" )
 
-    RelationChangeDomain.remove_existing_relation(2)
+    to_remove_index = -1
+    to_remove_typeURI = 'https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Bevestiging'
+    to_remove_source_id = 'dummy_Q'
+    to_remove_target_id = 'dummy_bcjseEAj'
+    for i, relation in enumerate(RelationChangeDomain.existing_relations):
+        if (relation.bronAssetId.identificator == to_remove_source_id and
+                relation.typeURI == to_remove_typeURI and
+                relation.doelAssetId.identificator == to_remove_target_id):
+            to_remove_index = i
+
+    assert to_remove_index != -1
+
+    remove_relation =  RelationChangeDomain.remove_existing_relation(to_remove_index)
+    print(f"removed relation bron id {remove_relation.bronAssetId.identificator} target id {remove_relation.doelAssetId.identificator}  type {remove_relation.typeURI}")
 
     export_path = get_export_path_export_with_cleanup
 
-    ExportDataDomain.generate_files(export_path,global_vars.current_project,False,False)
+    ExportDataDomain.generate_files(export_path, False, False)
 
     assert export_path.exists()
 
     wb = load_workbook(export_path)
 
-    ref_path_expected_workbook = (root_directory / "UnitTests" / "project_files_test" / "OTLWizardProjects" / "reference_files" / "ref_add_remove_inactive_test.xlsx")
+    ref_path_expected_workbook = (root_directory / "UnitTests" / "project_files_test" /
+                                  "OTLWizardProjects" / "reference_files" /
+                                  "ref_test_add_temove_inactive_relations_and_generate_files.xlsx")
     expected_wb = load_workbook(Path(ref_path_expected_workbook))
 
     if 'Keuzelijsten' in expected_wb.sheetnames:

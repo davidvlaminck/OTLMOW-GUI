@@ -1,0 +1,91 @@
+from PyQt6.QtCore import Qt
+from PyQt6.QtWidgets import QDialog, QLabel, QVBoxLayout, QHBoxLayout, QLineEdit, QDialogButtonBox, \
+    QComboBox
+
+from Domain.step_domain.HomeDomain import HomeDomain
+
+from Domain.step_domain.RelationChangeDomain import RelationChangeDomain
+
+
+class AddExternalAssetWindow:
+    options_to_data_dict = {}
+    def __init__(self, language_settings):
+        self.home_domain = HomeDomain(language_settings)
+        self.error_label = QLabel()
+        self._ = language_settings
+
+        self.input_asset_id_or_name: QLineEdit = QLineEdit()
+        self.combobox_asset_type: QComboBox = QComboBox()
+
+    def draw_add_external_asset_window(self):
+
+        self.error_label.setText("")
+        dialog_window = QDialog()
+        dialog_window.setMinimumWidth(450)
+        # Makes the dialog the primary screen, disabling the screen behind it
+        dialog_window.setModal(True)
+        dialog_window.setWindowTitle(self._("add_external_asset_title"))
+        # Creates the vertical stack layout
+        layout = QVBoxLayout()
+
+        # Creates 3 horizontal layouts for each input field with its label
+        container_eigen_ref = QHBoxLayout()
+        label_asset_id_or_name = QLabel( self._("asset_id_or_name")+ ":")
+        self.input_asset_id_or_name = QLineEdit()
+        self.input_asset_id_or_name.setPlaceholderText(self._("asset_id_dummy"))
+        container_eigen_ref.addWidget(label_asset_id_or_name, alignment=Qt.AlignmentFlag.AlignLeft)
+        container_eigen_ref.addWidget(self.input_asset_id_or_name)
+
+        container_subset = QHBoxLayout()
+        label_asset_type = QLabel(self._("asset_type") + ":")
+
+        self.combobox_asset_type = self.create_combobox(RelationChangeDomain.all_OTL_asset_types_dict)
+        self.combobox_asset_type.setPlaceholderText(self._("asset_type_dummy"))
+        container_subset.addWidget(label_asset_type, alignment=Qt.AlignmentFlag.AlignLeft)
+        container_subset.addWidget(self.combobox_asset_type)
+
+        # Adds the input fields to the layout
+        layout.addLayout(container_eigen_ref)
+        layout.addLayout(container_subset)
+
+        # Changes the color of the error label to red
+        self.error_label.setStyleSheet("color: red")
+
+        # Creates the button box
+        button_box:QDialogButtonBox = self.create_button_box()
+        # sends the values off to validate once submitted
+        button_box.accepted.connect(lambda: self.add_asset(dialog_window))
+        button_box.rejected.connect(dialog_window.reject)
+        # Adds the two buttons to the layout
+        layout.addWidget(button_box)
+        layout.addWidget(self.error_label)
+        # Fills the dialog with the created layout
+        dialog_window.setLayout(layout)
+        # Shows the dialog
+        dialog_window.show()
+        dialog_window.exec()
+
+    def add_asset(self, dialog_window):
+        id_or_name = self.input_asset_id_or_name.text()
+        combobox_choice = self.combobox_asset_type.currentText()
+
+        type_uri = RelationChangeDomain.all_OTL_asset_types_dict[combobox_choice]
+
+        RelationChangeDomain.create_and_add_new_external_asset(id_or_name=id_or_name, type_uri=type_uri)
+        dialog_window.close()
+
+    def create_button_box(self):
+        button_box = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
+        button_box.setProperty("class", "button-box")
+        button_box.button(QDialogButtonBox.StandardButton.Ok).setProperty("class", "primary-button")
+        button_box.button(QDialogButtonBox.StandardButton.Ok).setText(self._("submit"))
+        button_box.button(QDialogButtonBox.StandardButton.Cancel).setProperty("class", "secondary-button")
+        button_box.button(QDialogButtonBox.StandardButton.Cancel).setText(self._("cancel"))
+        return button_box
+
+    def create_combobox(self, options_to_data_dict):
+        comboBox = QComboBox()
+        comboBox.addItems(list(options_to_data_dict.keys()))
+        # comboBox.currentTextChanged.connect(self.)
+
+        return comboBox

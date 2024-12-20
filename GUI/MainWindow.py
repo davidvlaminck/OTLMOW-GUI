@@ -1,19 +1,19 @@
 import asyncio
 import logging
-from asyncio import sleep
 from typing import List
 
 from PyQt6.QtWidgets import QStackedWidget, QWidget
 
-from GUI.Screens.AssetDataChangeScreen import AssetDataChangeScreen
-from GUI.Screens.DataVisualisationScreen import DataVisualisationScreen
-from GUI.Screens.ExportDataScreen import ExportDataScreen
-from GUI.Screens.HomeScreen import HomeScreen
-from GUI.Screens.InsertDataScreen import InsertDataScreen
-from GUI.Screens.RelationChangeScreen import RelationChangeScreen
-from GUI.Screens.Screen import Screen
-from GUI.Screens.TemplateScreen import TemplateScreen
-from GUI.TabWidget import TabWidget
+from GUI.dialog_windows.NotificationWindow import NotificationWindow
+from GUI.screens.AssetDataChangeScreen import AssetDataChangeScreen
+from GUI.screens.DataVisualisationScreen import DataVisualisationScreen
+from GUI.screens.ExportDataScreen import ExportDataScreen
+from GUI.screens.HomeScreen import HomeScreen
+from GUI.screens.InsertDataScreen import InsertDataScreen
+from GUI.screens.RelationChangeScreen import RelationChangeScreen
+from GUI.screens.Screen import Screen
+from GUI.screens.TemplateScreen import TemplateScreen
+from GUI.header.TabWidget import TabWidget
 
 
 class MainWindow(QStackedWidget):
@@ -91,3 +91,9 @@ class MainWindow(QStackedWidget):
                 task.cancel()  # Cancel all pending tasks
 
             loop.call_soon_threadsafe(loop.stop)
+
+
+    def notify_user_of_excel_file_unavailable_error(self,e):
+        message = self._(e.error_window_message_key)
+        title = self._(e.error_window_title_key)
+        NotificationWindow("{0}:\n{1}".format(message, e.file_path), title)

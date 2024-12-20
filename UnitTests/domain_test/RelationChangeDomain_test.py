@@ -1,17 +1,6 @@
-import sqlite3
-
-from ctypes.wintypes import PRECT
-from pathlib import Path
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import patch
 
 import pytest
-from _pytest.fixtures import fixture
-from otlmow_model.OtlmowModel.BaseClasses.OTLObject import OTLAttribuut
-from otlmow_model.OtlmowModel.Classes.Installatie.Verkeersbordopstelling import \
-    Verkeersbordopstelling
-from otlmow_model.OtlmowModel.Classes.Onderdeel.Funderingsmassief import Funderingsmassief
-from otlmow_model.OtlmowModel.Classes.Onderdeel.Pictogram import Pictogram
-from otlmow_model.OtlmowModel.Classes.Onderdeel.Verkeersbordsteun import Verkeersbordsteun
 from otlmow_model.OtlmowModel.Helpers.OTLObjectHelper import is_relation
 from otlmow_modelbuilder.OSLOCollector import OSLOCollector
 from otlmow_modelbuilder.SQLDataClasses.OSLORelatie import OSLORelatie
@@ -20,15 +9,9 @@ from typing import Optional
 from pytestqt.plugin import qtbot
 from pytestqt.qtbot import QtBot
 
-from Domain.InsertDataDomain import InsertDataDomain
-from Domain.Project import Project
-from Domain.RelationChangeDomain import RelationChangeDomain
-from GUI.Screens.DataVisualisationScreen import DataVisualisationScreen
-from GUI.Screens.InsertDataScreen import InsertDataScreen
-from GUI.Screens.RelationChangeScreen import RelationChangeScreen
-from GUI.translation.GlobalTranslate import GlobalTranslate
+from GUI.screens.InsertDataScreen import InsertDataScreen
+from GUI.screens.RelationChangeScreen import RelationChangeScreen
 from UnitTests.TestClasses.Classes.ImplementatieElement.AIMObject import AIMObject
-from UnitTests.TestClasses.Classes.ImplementatieElement.RelatieObject import RelatieObject
 from UnitTests.TestClasses.Classes.Onderdeel.AllCasesTestClass import AllCasesTestClass
 from UnitTests.TestClasses.Classes.Onderdeel.AnotherTestClass import AnotherTestClass
 
@@ -72,12 +55,6 @@ def mock_fill_possible_relations_list(mock_rel_screen: RelationChangeScreen):
     mock_rel_screen.fill_possible_relations_list = Mock()
 
 @fixture
-def mock_step3_visuals() -> None:
-    step3_visuals = Mock(step3_visuals=DataVisualisationScreen)
-    main_window = Mock(step3_visuals=step3_visuals)
-    global_vars.otl_wizard = Mock(main_window=main_window)
-
-@fixture
 def mock_step3_step3_relations() -> None:
     step3_relations = Mock(step3_visuals=DataVisualisationScreen)
     main_window = Mock(step3_visuals=step3_relations)
@@ -96,7 +73,7 @@ def test_full_set_possible_relations(root_directory:Path,
                                 mock_load_validated_assets):
 
     test_object_lists_file_path: list[str] = [
-        str(root_directory / "demo_projects" / "simpel_vergelijkings_project" / "simpel_vergelijking_template2.xlsx")]
+        str(root_directory / "demo_projects" / "simpel_vergelijkings_project" / "simpel_vergelijking_template5.xlsx")]
 
     InsertDataDomain.add_files_to_backend_list(test_object_lists_file_path)
 
@@ -111,17 +88,18 @@ def test_full_set_possible_relations(root_directory:Path,
 
     assert len(RelationChangeDomain.possible_relations_per_class_dict.keys()) == 4
     # search with regex for (#Verkeersbordopstelling'|#Pictogram'|#Funderingsmassief'|#verkeersbordsteun'|BevestigingGC'|#Draagconstructie'|#Fundering'|#ConstructieElement')
+    # with external objects added every relation possible in the entire OTL model is found
     class1 = "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Verkeersbordsteun"
-    assert len(RelationChangeDomain.possible_relations_per_class_dict[class1]) == 3
+    assert len(RelationChangeDomain.possible_relations_per_class_dict[class1]) == 72
 
     class2 = "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Funderingsmassief"
-    assert len(RelationChangeDomain.possible_relations_per_class_dict[class2]) == 4
+    assert len(RelationChangeDomain.possible_relations_per_class_dict[class2]) == 707
 
     class3 = "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Pictogram"
-    assert len(RelationChangeDomain.possible_relations_per_class_dict[class3]) == 3
+    assert len(RelationChangeDomain.possible_relations_per_class_dict[class3]) == 114
 
     class4 = "https://wegenenverkeer.data.vlaanderen.be/ns/installatie#Verkeersbordopstelling"
-    assert len(RelationChangeDomain.possible_relations_per_class_dict[class4]) == 2
+    assert len(RelationChangeDomain.possible_relations_per_class_dict[class4]) == 33
 
     #define the objects of each class in the test set
     for objects_list in objects_lists:
@@ -136,7 +114,7 @@ def test_full_set_possible_relations(root_directory:Path,
                 verkeersbordopstelling2: AIMObject  = object
             elif object.assetId.identificator == "dummy_a":
                 pictogram1: AIMObject  = object
-            elif object.assetId.identificator == "dummy_C":
+            elif object.assetId.identificator == "dummy_long_identificator_pictogram":
                 pictogram2: AIMObject  = object
             elif object.assetId.identificator == "dummy_TyBGmXfXC":
                 funderingsmassief1: AIMObject  = object
@@ -395,7 +373,7 @@ def test_full_add_possible_relation_to_existing_relation(root_directory:Path,
                                 mock_load_validated_assets
                                                          ):
     test_object_lists_file_path: list[str] = [
-        str(root_directory / "demo_projects" / "simpel_vergelijkings_project" / "simpel_vergelijking_template2.xlsx")]
+        str(root_directory / "demo_projects" / "simpel_vergelijkings_project" / "simpel_vergelijking_template5.xlsx")]
 
     InsertDataDomain.add_files_to_backend_list(test_object_lists_file_path)
 
@@ -416,10 +394,10 @@ def test_full_add_possible_relation_to_existing_relation(root_directory:Path,
     RelationChangeDomain.add_possible_relation_to_existing_relations(bron_asset_id, target_asset_id, relation_object_index)
 
     # is the correct relation object in the existing_relations list?
-    assert len(RelationChangeDomain.existing_relations) == 2
-    assert RelationChangeDomain.existing_relations[1].bronAssetId.identificator == bron_asset_id
-    assert RelationChangeDomain.existing_relations[1].doelAssetId.identificator == target_asset_id
-    assert RelationChangeDomain.existing_relations[1] == relation_object
+    assert len(RelationChangeDomain.existing_relations) == 3
+    assert RelationChangeDomain.existing_relations[2].bronAssetId.identificator == bron_asset_id
+    assert RelationChangeDomain.existing_relations[2].doelAssetId.identificator == target_asset_id
+    assert RelationChangeDomain.existing_relations[2] == relation_object
 
     # is the correct relation removed from the possible relation list?
     assert previous_possible_relations_list_length == len(RelationChangeDomain.possible_object_to_object_relations_dict[bron_asset_id][target_asset_id]) + 1
@@ -432,16 +410,15 @@ def test_full_remove_existing_relation(root_directory:Path,
                                 mock_step3_visuals,mock_save_validated_assets_function,
                                  mock_load_validated_assets):
     test_object_lists_file_path: list[str] = [
-        str(root_directory / "demo_projects" / "simpel_vergelijkings_project" / "simpel_vergelijking_template2.xlsx")]
+        str(root_directory / "demo_projects" / "simpel_vergelijkings_project" / "simpel_vergelijking_template5.xlsx")]
 
     InsertDataDomain.add_files_to_backend_list(test_object_lists_file_path)
 
     error_set, objects_lists = InsertDataDomain.load_and_validate_documents()
 
-    for objects_list in objects_lists:
-        for object in objects_list:
-            if not is_relation(object):
-                RelationChangeDomain.set_possible_relations(object)
+
+    for object in RelationChangeDomain.shown_objects:
+            RelationChangeDomain.set_possible_relations(object)
 
     to_remove_index = 0
 
@@ -459,7 +436,7 @@ def test_full_remove_existing_relation(root_directory:Path,
     removed_relation = RelationChangeDomain.remove_existing_relation(index=0)
 
     # is the correct relation object in the existing_relations list?
-    assert len(RelationChangeDomain.existing_relations) == 0
+    assert len(RelationChangeDomain.existing_relations) == 1
     assert removed_relation not in RelationChangeDomain.existing_relations
 
     # force update of the backend possible relations lists
@@ -481,8 +458,8 @@ def test_full_remove_existing_relation(root_directory:Path,
     assert l1[len(l1) - 1].doelAssetId.identificator == removed_relation.doelAssetId.identificator
     assert l1[len(l1) - 1].typeURI == removed_relation.typeURI
 
-    assert l2[len(l2) - 1].bronAssetId.identificator == removed_relation.bronAssetId.identificator
-    assert l2[len(l2) - 1].doelAssetId.identificator == removed_relation.doelAssetId.identificator
+    assert l2[len(l2) - 1].bronAssetId.identificator == removed_relation.doelAssetId.identificator
+    assert l2[len(l2) - 1].doelAssetId.identificator == removed_relation.bronAssetId.identificator
     assert l2[len(l2) - 1].typeURI == removed_relation.typeURI
 
 #################################################

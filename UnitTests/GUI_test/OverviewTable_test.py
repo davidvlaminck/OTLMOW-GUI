@@ -3,13 +3,11 @@ from pathlib import Path
 import pytest
 
 from Domain import global_vars
-from Domain.Project import Project
+from Domain.project.Project import Project
 
-from Domain.Database import Database
-from Domain.HomeDomain import HomeDomain
-from Domain.language_settings import return_language
+from Domain.Settings import Settings
 from Exceptions.EmptySearchWarning import EmptySearchWarning
-from GUI.OverviewTable import OverviewTable
+from GUI.screens.Home_elements.OverviewTable import OverviewTable
 
 ROOT_DIR = Path(__file__).parent
 
@@ -20,17 +18,17 @@ TEST_DIR = ROOT_DIR / 'project_files_test/'
 
 @pytest.fixture
 def projects():
-    global_vars.projects = [Project(project_path=None, subset_path=None, assets_path=None,
+    global_vars.projects = [Project(project_path=None, subset_path=None, saved_documents_overview_path=None,
                                     eigen_referentie="testen", bestek="test", laatst_bewerkt=None),
-                            Project(project_path=None, subset_path=None, assets_path=None,
+                            Project(project_path=None, subset_path=None, saved_documents_overview_path=None,
                                     eigen_referentie="test2", bestek="test2", laatst_bewerkt=None),
-                            Project(project_path=None, subset_path=None, assets_path=None,
+                            Project(project_path=None, subset_path=None, saved_documents_overview_path=None,
                                     eigen_referentie="test3", bestek="test3", laatst_bewerkt=None)]
 
 
 @pytest.fixture
 def locale():
-    return return_language(LOCALE_DIR)
+    return Settings.return_language(LOCALE_DIR)
 
 
 def test_filter_function_with_nothing_returns_all_projects(locale, projects):

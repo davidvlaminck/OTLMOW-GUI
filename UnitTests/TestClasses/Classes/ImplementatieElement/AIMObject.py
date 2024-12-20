@@ -132,3 +132,4 @@ class AIMObject(AIMDBStatus, AIMToestand, OTLAsset, RelationInteractor):
     @theoretischeLevensduur.setter
     def theoretischeLevensduur(self, value):
         self._theoretischeLevensduur.set_waarde(value, owner=self)
+

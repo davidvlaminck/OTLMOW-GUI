@@ -1,4 +1,3 @@
-import argparse
 import asyncio
 import importlib
 import logging
@@ -11,21 +10,27 @@ from datetime import datetime
 from pathlib import Path
 
 from Domain import global_vars
-from Domain.InsertDataDomain import InsertDataDomain
-from Domain.Updater import Updater
+from Domain.Settings import Settings
+from Domain.logger.OTLLogger import OTLLogger
+from Domain.step_domain.InsertDataDomain import InsertDataDomain
+from Domain.network.Updater import Updater
 from GUI.translation.GlobalTranslate import GlobalTranslate
 
 ROOT_DIR =  Path(Path(__file__).absolute()).parent
 sys.path.insert(0,str(ROOT_DIR.absolute()))# needed for python to import project files
 
+
+
 from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import QApplication
 from qasync import QEventLoop, asyncClose
 
-from Domain.Project import Project
-from Domain.ProjectFileManager import ProjectFileManager
+
+
+
+from Domain.project.Project import Project
 from GUI.MainWindow import MainWindow
-from GUI.Screens.ErrorScreen import ErrorScreen
+from GUI.screens.ErrorScreen import ErrorScreen
 
 
 project_dir = ROOT_DIR / 'demo_projects/'
@@ -39,11 +44,11 @@ def demo_data():
     project_1 = Project(
         project_path=Path(Path.home() / 'OTLWizardProjects' / 'Projects' / 'project_1'),
         subset_path=Path(project_dir / 'project_1' / 'Flitspaal_noAgent3.0.db'),
-        assets_path=Path(project_dir / 'project_1'),
+        saved_documents_overview_path=Path(project_dir / 'project_1'),
         eigen_referentie="test1",
         bestek="test_bestek1",
         laatst_bewerkt=datetime(2021, 9, 11))
-    ProjectFileManager.save_project_to_dir(project_1)
+    project_1.save_project_to_dir()
     return project_1
 
 
@@ -99,7 +104,7 @@ class OTLWizard(QApplication):
     async def quit(self):
         logging.debug("closing application")
         if self.demo_project:
-            ProjectFileManager.delete_project_files_by_path(self.demo_project.project_path)
+            self.demo_project.delete_project_dir_by_path()
         super().quit()
 
 def excepthook(exc_type, exc_value, exc_tb):
@@ -112,11 +117,11 @@ def excepthook(exc_type, exc_value, exc_tb):
 
 
 if __name__ == '__main__':
-    settings = ProjectFileManager.init()
-
+    program_settings = Settings.get_or_create_settings_file()
+    OTLLogger.init()
     logging.debug("Application started")
 
-    app = OTLWizard(settings,sys.argv)
+    app = OTLWizard(program_settings, sys.argv)
 
     if '_PYI_SPLASH_IPC' in os.environ and importlib.util.find_spec("pyi_splash"):
         import pyi_splash

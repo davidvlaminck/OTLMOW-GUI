@@ -1,17 +1,49 @@
+import os
 from pathlib import Path
 from unittest.mock import Mock
 
 from _pytest.fixtures import fixture
 
 from Domain import global_vars
-from Domain.InsertDataDomain import InsertDataDomain
-from Domain.Project import Project
-from Domain.ProjectFileManager import ProjectFileManager
-from Domain.RelationChangeDomain import RelationChangeDomain
+from Domain.project.ProgramFileStructure import ProgramFileStructure
+from Domain.step_domain.InsertDataDomain import InsertDataDomain
+from Domain.project.Project import Project
+from Domain.project.ProgramFileManager import ProgramFileManager
+from Domain.step_domain.RelationChangeDomain import RelationChangeDomain
+
+@fixture
+def cleanup_after_creating_a_file_to_delete():
+    to_delete = []
+    yield to_delete
+    for item in to_delete:
+        if os.path.exists(item):
+            os.remove(item)
+
+@fixture
+def mock_project_home_path(root_directory):
+    original_home_path = ProgramFileStructure.get_home_path
+    ProgramFileStructure.get_home_path = Mock(return_value=root_directory)
+    yield
+    ProgramFileStructure.get_home_path = original_home_path
+
+@fixture
+def mock_get_otl_wizard_projects_dir(root_directory):
+    original_get_otl_wizard_projects_dir = ProgramFileStructure.get_otl_wizard_projects_dir
+    ProgramFileStructure.get_otl_wizard_projects_dir= Mock(return_value=root_directory / "demo_projects"
+                                                                        /  "simpel_vergelijkings_project")
+    yield
+    ProgramFileStructure.get_otl_wizard_projects_dir = original_get_otl_wizard_projects_dir
+
+@fixture
+def mock_save_validated_assets_function() -> None:
+    original_save_validated_assets =  Project.save_validated_assets
+    Project.save_validated_assets  = Mock()
+    yield
+    Project.save_validated_assets = original_save_validated_assets
 
 
 @fixture
-def setup_test_project(root_directory: Path) -> None:
+def setup_test_project(root_directory: Path, mock_step3_visuals,mock_get_otl_wizard_projects_dir,mock_save_validated_assets_function) -> None:
     """Set up a test project environment for unit testing.
 
        This fixture initializes a test project by setting the current project and mocking the
@@ -46,8 +78,8 @@ def setup_test_project(root_directory: Path) -> None:
 
     global_vars.current_project = Project(project_path=project_file_path,
                                           subset_path=Path(test_subset_file_path))
-    original_get_otl_wizard_projects_dir = ProjectFileManager.get_otl_wizard_projects_dir
-    ProjectFileManager.get_otl_wizard_projects_dir = Mock(
+    original_get_otl_wizard_projects_dir = ProgramFileStructure.get_otl_wizard_projects_dir
+    ProgramFileStructure.get_otl_wizard_projects_dir = Mock(
         return_value=root_directory / "demo_projects" / "simpel_vergelijkings_project")
 
     local_mock_InsertDataDomain_get_screen = InsertDataDomain.get_screen
@@ -62,19 +94,14 @@ def setup_test_project(root_directory: Path) -> None:
 
 
     yield
-    ProjectFileManager.get_otl_wizard_projects_dir = original_get_otl_wizard_projects_dir
+    ProgramFileStructure.get_otl_wizard_projects_dir = original_get_otl_wizard_projects_dir
 
-@fixture
-def mock_save_validated_assets_function() -> None:
-    original_save_validated_assets =  ProjectFileManager.save_validated_assets
-    ProjectFileManager.save_validated_assets  = Mock()
-    yield
-    ProjectFileManager.save_validated_assets = original_save_validated_assets
+
 
 @fixture
 def mock_load_validated_assets() -> None:
-    original_load_validated_assets = ProjectFileManager.load_validated_assets
+    original_load_validated_assets = Project.load_validated_assets
 
-    ProjectFileManager.load_validated_assets = Mock(return_value=RelationChangeDomain.get_quicksave_instances())
+    Project.load_validated_assets = Mock(return_value=RelationChangeDomain.get_quicksave_instances())
     yield
-    ProjectFileManager.load_validated_assets = original_load_validated_assets
+    Project.load_validated_assets = original_load_validated_assets

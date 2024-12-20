@@ -5,9 +5,9 @@ from otlmow_modelbuilder.SQLDataClasses.OSLORelatie import OSLORelatie
 from pytestqt.plugin import qtbot
 from pytestqt.qtbot import QtBot
 
-from GUI.Screens.DataVisualisationScreen import DataVisualisationScreen
-from GUI.Screens.InsertDataScreen import InsertDataScreen
-from GUI.Screens.RelationChangeScreen import RelationChangeScreen
+from GUI.screens.DataVisualisationScreen import DataVisualisationScreen
+from GUI.screens.InsertDataScreen import InsertDataScreen
+from GUI.screens.RelationChangeScreen import RelationChangeScreen
 from UnitTests.TestClasses.Classes.Installatie.AllCasesTestClassInstallatie import \
     AllCasesTestClassInstallatie
 from UnitTests.TestClasses.Classes.Onderdeel.AllCasesTestClass import AllCasesTestClass
@@ -53,10 +53,10 @@ def mock_step3_visuals() -> None:
 
 @fixture
 def mock_load_validated_assets() -> None:
-    original_load_validated_assets = ProjectFileManager.load_validated_assets
-    ProjectFileManager.load_validated_assets = Mock()
+    original_load_validated_assets = Project.load_validated_assets
+    Project.load_validated_assets = Mock()
     yield
-    ProjectFileManager.load_validated_assets = original_load_validated_assets
+    Project.load_validated_assets = original_load_validated_assets
 
 def test_fill_class_list(root_directory:Path,
                                 mock_screen: InsertDataScreen,
@@ -65,7 +65,7 @@ def test_fill_class_list(root_directory:Path,
                                 mock_step3_visuals):
 
     test_object_lists_file_path: list[str] = [
-        str(root_directory / "demo_projects" / "simpel_vergelijkings_project" / "simpel_vergelijking_template2.xlsx")]
+        str(root_directory / "demo_projects" / "simpel_vergelijkings_project" / "simpel_vergelijking_template5.xlsx")]
 
     InsertDataDomain.add_files_to_backend_list(test_object_lists_file_path)
 
@@ -73,14 +73,16 @@ def test_fill_class_list(root_directory:Path,
 
     object_list = RelationChangeDomain.get_screen().objects_list_gui
 
-    reference_items = ['Funderingsmassief', 'Pictogram', 'Verkeersbordopstelling', 'Verkeersbordsteun']
+    reference_items = ['BetonnenHeipaal','Bewegingssensor','Funderingsmassief', 'Pictogram', 'Verkeersbordopstelling', 'Verkeersbordsteun']
     real_items = [object_list.list_gui.model.item(x).text() for x in range(object_list.list_gui.model.rowCount())]
 
     assert reference_items == real_items
 
     child_items = {}
+    child_items['BetonnenHeipaal'] = ['dummy_bcjseEAj (extern)']
+    child_items['Bewegingssensor'] = ['dummy_Q (extern)']
     child_items['Funderingsmassief'] = ['dummy_FNrHuPZCWV', 'dummy_TyBGmXfXC']
-    child_items['Pictogram'] = ['dummy_C', 'dummy_a']
+    child_items['Pictogram'] = [ 'dummy_a','dummy_long_identificator_pictogram']
     child_items['Verkeersbordopstelling'] = ['dummy_LGG', 'dummy_hxOTHWe']
     child_items['Verkeersbordsteun'] = ['dummy_J', 'dummy_s']
 
@@ -91,6 +93,7 @@ def test_fill_class_list(root_directory:Path,
 
         real_children = [real_item.child(x).text() for x in
                       range(real_item.rowCount())]
+        # print(real_children)
         assert real_children == child_items[item_text]
 
 
@@ -103,7 +106,7 @@ def test_full_fill_possible_relations_list(qtbot,root_directory:Path,
                                 setup_test_project,
                                 mock_step3_visuals):
     test_object_lists_file_path: list[str] = [
-        str(root_directory / "demo_projects" / "simpel_vergelijkings_project" / "simpel_vergelijking_template2.xlsx")]
+        str(root_directory / "demo_projects" / "simpel_vergelijkings_project" / "simpel_vergelijking_template5.xlsx")]
 
     InsertDataDomain.add_files_to_backend_list(test_object_lists_file_path)
 
@@ -122,8 +125,8 @@ def test_full_fill_possible_relations_list(qtbot,root_directory:Path,
 
     child_items = {}
     child_items_col_2 = {}
-    child_items['HoortBij'] = ['dummy_C', 'dummy_J', 'dummy_a', 'dummy_s']
-    child_items_col_2['HoortBij'] = ['Pictogram', 'Verkeersbordsteun', 'Pictogram', 'Verkeersbordsteun']
+    child_items['HoortBij'] = [ 'dummy_J', 'dummy_a','dummy_long_identificator_pictogram', 'dummy_s']
+    child_items_col_2['HoortBij'] = ['Verkeersbordsteun', 'Pictogram', 'Pictogram', 'Verkeersbordsteun']
 
     for i in range(len(real_items)):
         real_item = possible_relations_list.list_gui.model.item(i)
@@ -149,8 +152,9 @@ def test_full_fill_possible_relations_list(qtbot,root_directory:Path,
     # child_items_col_2['HoortBij'] = ['Pictogram', 'Verkeersbordsteun', 'Pictogram',
     #                                  'Verkeersbordsteun']
 
-    child_items['Bevestiging'] = ['dummy_FNrHuPZCWV', 'dummy_J', 'dummy_TyBGmXfXC', 'dummy_s']
-    child_items_col_2['Bevestiging'] =['Funderingsmassief', 'Verkeersbordsteun','Funderingsmassief', 'Verkeersbordsteun']
+    child_items['Bevestiging'] = ['dummy_FNrHuPZCWV','dummy_J','dummy_TyBGmXfXC','dummy_bcjseEAj (extern)','dummy_s']
+    child_items_col_2['Bevestiging'] =['Funderingsmassief','Verkeersbordsteun','Funderingsmassief',
+                                       'BetonnenHeipaal','Verkeersbordsteun']
     child_items['HoortBij'] = ['dummy_LGG', 'dummy_hxOTHWe']
     child_items_col_2['HoortBij'] = ['Verkeersbordopstelling', 'Verkeersbordopstelling']
     for i in range(len(real_items)):
@@ -175,10 +179,15 @@ def test_full_fill_possible_relations_list(qtbot,root_directory:Path,
     assert real_items == reference_items
 
     child_items = {}
-    child_items['Bevestiging'] = ['dummy_C', 'dummy_FNrHuPZCWV', 'dummy_J', 'dummy_a', 'dummy_s']
-    child_items_col_2['Bevestiging'] = ['Pictogram', 'Funderingsmassief', 'Verkeersbordsteun','Pictogram', 'Verkeersbordsteun']
-    child_items['LigtOp'] = ['dummy_FNrHuPZCWV','dummy_FNrHuPZCWV']
-    child_items_col_2['LigtOp'] =['Funderingsmassief','Funderingsmassief']
+    child_items['Bevestiging'] = ['dummy_FNrHuPZCWV','dummy_J','dummy_Q (extern)','dummy_a',
+                                  'dummy_bcjseEAj (extern)','dummy_long_identificator_pictogram',
+                                  'dummy_s']
+    child_items_col_2['Bevestiging'] = ['Funderingsmassief','Verkeersbordsteun','Bewegingssensor',
+                                        'Pictogram','BetonnenHeipaal','Pictogram',
+                                        'Verkeersbordsteun']
+    child_items['LigtOp'] = ['dummy_FNrHuPZCWV','dummy_FNrHuPZCWV','dummy_bcjseEAj (extern)',
+                             'dummy_bcjseEAj (extern)']
+    child_items_col_2['LigtOp'] =['Funderingsmassief','Funderingsmassief','BetonnenHeipaal','BetonnenHeipaal']
 
 
     for i in range(len(real_items)):
@@ -200,8 +209,9 @@ def test_full_fill_possible_relations_list(qtbot,root_directory:Path,
     assert data_type == fund1_possible_relations_gui_data_type
 
     child_items = {}
-    child_items['Bevestiging'] = ['instance','instance','instance','instance','instance']
-    child_items['LigtOp'] = ['instance','instance']
+    child_items['Bevestiging'] = ['instance','instance','instance','instance','instance',
+                                  'instance','instance']
+    child_items['LigtOp'] = ['instance','instance','instance','instance']
     for i in range(len(fund1_possible_relations_gui_data_type)):
         real_item = possible_relations_list.list_gui.model.item(i)
         item_text = real_item.text()
@@ -217,14 +227,18 @@ def test_full_fill_possible_relations_list(qtbot,root_directory:Path,
     assert data1 == fund1_possible_relations_gui_data1
 
     child_items = {}
-    child_items['Bevestiging'] = [['dummy_TyBGmXfXC', 'dummy_C', 0],
-                                  ['dummy_TyBGmXfXC', 'dummy_FNrHuPZCWV', 0],
-                                  ['dummy_TyBGmXfXC', 'dummy_vbeo', 0],
-                                  ['dummy_TyBGmXfXC', 'dummy_a', 0],
-                                  ['dummy_TyBGmXfXC', 'dummy_TjwXqP', 0]]
+    child_items['Bevestiging'] = [  ['dummy_TyBGmXfXC', 'dummy_FNrHuPZCWV', 0],
+                                     ['dummy_TyBGmXfXC', 'dummy_vbeo', 0],
+                                     ['dummy_TyBGmXfXC', 'dummy_Q', 0],
+                                     ['dummy_TyBGmXfXC', 'dummy_a', 0],
+                                     ['dummy_TyBGmXfXC', 'dummy_bcjseEAj', 0],
+                                     ['dummy_TyBGmXfXC', 'dummy_long_identificator_pictogram', 0],
+                                     ['dummy_TyBGmXfXC', 'dummy_TjwXqP', 0]]
     child_items['LigtOp'] = [
-         ['dummy_TyBGmXfXC', 'dummy_FNrHuPZCWV', 1],
-         ['dummy_TyBGmXfXC', 'dummy_FNrHuPZCWV', 2]]
+        ['dummy_TyBGmXfXC', 'dummy_FNrHuPZCWV', 1],
+         ['dummy_TyBGmXfXC', 'dummy_FNrHuPZCWV', 2],
+         ['dummy_TyBGmXfXC', 'dummy_bcjseEAj', 1],
+         ['dummy_TyBGmXfXC', 'dummy_bcjseEAj', 2]]
     for i in range(len(fund1_possible_relations_gui_data1)):
         real_item = possible_relations_list.list_gui.model.item(i)
         item_text = real_item.text()
@@ -243,7 +257,7 @@ def test_full_fill_existing_relations_list(qtbot,root_directory:Path,
                                 setup_test_project,
                                 mock_step3_visuals):
     test_object_lists_file_path: list[str] = [
-        str(root_directory / "demo_projects" / "simpel_vergelijkings_project" / "simpel_vergelijking_template2.xlsx")]
+        str(root_directory / "demo_projects" / "simpel_vergelijkings_project" / "simpel_vergelijking_template5.xlsx")]
 
     InsertDataDomain.add_files_to_backend_list(test_object_lists_file_path)
 
@@ -267,15 +281,15 @@ def test_full_fill_existing_relations_list(qtbot,root_directory:Path,
 
     existing_relation_list = RelationChangeDomain.get_screen().existing_relation_list_gui
 
-    reference_items = ['HoortBij']
+    reference_items = ['Bevestiging', 'HoortBij']
     real_items = [existing_relation_list.list_gui.model.item(x).text() for x in
                   range(existing_relation_list.list_gui.model.rowCount())]
     assert real_items == reference_items
 
     child_items = {}
     child_items_col_2 = {}
-    # child_items['Bevestiging'] = ['None', 'dummy_a']
-    # child_items_col_2['Bevestiging'] = ['None', 'dummy_TyBGmXfXC']
+    child_items['Bevestiging'] = ['dummy_Q (extern)']
+    child_items_col_2['Bevestiging'] = ['dummy_bcjseEAj (extern)']
     child_items['HoortBij'] = ['dummy_J']
     child_items_col_2['HoortBij'] = ['dummy_LGG']
     # child_items['LigtOp'] = ['dummy_FNrHuPZCWV']
@@ -307,12 +321,25 @@ def mock_collect_all() -> Mock:
     OSLOCollector.collect_all = original_collect_all
 
 @fixture
+def mock_find_all_concrete_rel_all() -> Mock:
+    original_find_all_concrete_relations = OSLOCollector.find_all_concrete_relations
+
+
+
+    mock_find_all_concrete_relations = Mock(return_value=[])
+    OSLOCollector.find_all_concrete_relations = mock_find_all_concrete_relations
+    yield mock_find_all_concrete_relations
+    # after the test the original find_all_concrete_relations is restored for other tests to use
+    OSLOCollector.find_all_concrete_relations = original_find_all_concrete_relations
+
+@fixture
 def mock_project(mock_collect_all) -> Project:
     return Project()
 
 def test_fill_class_list_empty_list(qtbot,
                                     create_translations,
                                     mock_rel_screen: RelationChangeScreen,
+                                    mock_step3_visuals,
                                     mock_project,
                                     mock_load_validated_assets):
     relation_change_screen = mock_rel_screen
@@ -446,8 +473,10 @@ def mock_OSLORelatie_test():
 def test_fill_possible_relations_list_with_2_same_name_but_diff_namespace_items(
         qtbot,
         create_translations,
+        mock_find_all_concrete_rel_all,
         mock_OSLORelatie_test,
         mock_rel_screen,
+        mock_step3_visuals,
         mock_project,
         mock_load_validated_assets):
     test_object = AllCasesTestClassInstallatie()
@@ -471,12 +500,13 @@ def test_fill_possible_relations_list_with_2_same_name_but_diff_namespace_items(
 
     RelationChangeDomain.possible_relations_per_class_dict={test_object2.typeURI :[mock_OSLORelatie_test[0]],
                                                             test_object3.typeURI :[mock_OSLORelatie_test[1]]}
+    RelationChangeDomain.external_object_added = False
     RelationChangeDomain.set_possible_relations(test_object2)
     relation_change_screen = mock_rel_screen
 
     assert relation_change_screen.possible_relation_list_gui.list_gui.model.rowCount() == 1
     assert relation_change_screen.possible_relation_list_gui.list_gui.model.item(
-        0).text() == "Bevestiging"
+        0).text() == 'Bevestiging'
 
     assert relation_change_screen.possible_relation_list_gui.list_gui.model.item(0).rowCount() == 1
     assert relation_change_screen.possible_relation_list_gui.list_gui.model.item(0).child(
