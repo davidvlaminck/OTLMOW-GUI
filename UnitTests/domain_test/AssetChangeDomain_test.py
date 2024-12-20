@@ -1,9 +1,8 @@
 import logging
 from pathlib import Path
 
-from Domain.step_domain.AssetChangeDomain import AssetChangeDomain
+from Domain.step_domain.AssetChangeDomain import AssetChangeDomain, ReportItem
 from Domain.enums import ReportAction
-from Domain.ReportItem import ReportItem
 from UnitTests.project_files_test.OTLWizardProjects.Model.OtlmowModel.Classes.Onderdeel.AllCasesTestClass import \
     AllCasesTestClass
 from UnitTests.project_files_test.OTLWizardProjects.Model.OtlmowModel.Classes.Onderdeel.AnotherTestClass import \
