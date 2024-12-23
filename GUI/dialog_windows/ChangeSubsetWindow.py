@@ -12,7 +12,6 @@ from Exceptions.WrongDatabaseError import WrongDatabaseError
 class ChangeSubsetWindow:
 
     def __init__(self, language_settings):
-        self.home_domain = HomeDomain(language_settings)
         self._ = language_settings
         self.error_label = QLabel()
         self.input_subset = QLineEdit()
@@ -21,9 +20,9 @@ class ChangeSubsetWindow:
         dialog = QDialog()
         self.error_label.setText("")
         self.error_label.setStyleSheet("color: red")
-        dialog.setModal(True)
-        dialog.setMinimumWidth(700)
-        dialog.setWindowTitle(self._("change_subset"))
+        self.setModal(True)
+        self.setMinimumWidth(700)
+        self.setWindowTitle(self._("change_subset"))
         layout = QVBoxLayout()
 
         frame = QFrame()
@@ -42,24 +41,24 @@ class ChangeSubsetWindow:
         button_box = self.create_button_box()
         button_box.accepted.connect(
             lambda: self.validate_change_subset(project, dialog, main_window, self.input_subset.text(), old_project_path))
-        button_box.rejected.connect(dialog.reject)
+        button_box.rejected.connect(self.reject)
 
         layout.addWidget(frame)
         layout.addWidget(self.error_label)
         layout.addWidget(button_box)
-        dialog.setLayout(layout)
-        dialog.show()
-        dialog.exec()
+        self.setLayout(layout)
+        self.show()
+        self.exec()
         main_window.reset_ui(self._)
 
     def validate_change_subset(self, project, dialog, main_window, input_subset: str, old_project_path: Path):
         try:
-            self.home_domain.change_subset(project=project, new_path=input_subset, main_window=main_window)
+            HomeDomain.change_subset(project=project, new_path=input_subset, main_window=main_window)
         except WrongDatabaseError as e:
             self.error_label.setText(str(e))
             self.input_subset.setText(str(old_project_path))
             return
-        dialog.close()
+        self.close()
 
     def create_button_box(self):
         button_box = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)

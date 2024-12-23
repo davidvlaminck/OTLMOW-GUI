@@ -10,7 +10,6 @@ from Domain.step_domain.RelationChangeDomain import RelationChangeDomain
 class AddExternalAssetWindow:
     options_to_data_dict = {}
     def __init__(self, language_settings):
-        self.home_domain = HomeDomain(language_settings)
         self.error_label = QLabel()
         self._ = language_settings
 

@@ -7,10 +7,12 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QFrame, QCheckBox, QSpinBox, \
     QLabel, QListWidget, QListWidgetItem
 
+from Domain import global_vars
+from Domain.step_domain.InsertDataDomain import InsertDataDomain
+from Domain.step_domain.RelationChangeDomain import RelationChangeDomain
 from Domain.step_domain.TemplateDomain import TemplateDomain
 from GUI.screens.general_elements.ButtonWidget import ButtonWidget
 from GUI.dialog_windows.ChangeSubsetWindow import ChangeSubsetWindow
-from GUI.dialog_windows.export_to_template_window import ExportToTemplateWindow
 from GUI.screens.Screen import Screen
 
 
@@ -200,6 +202,10 @@ class TemplateScreen(Screen):
         except FileNotFoundError as e:
             self.all_classes.setEnabled(False)
             self.all_classes.addItem(self._("no classes found in specified path"))
+
+        RelationChangeDomain.init_static(global_vars.current_project)
+        InsertDataDomain.init_static()
+        global_vars.otl_wizard.main_window.enable_steps()
 
     def create_list(self):
         frame = QFrame()

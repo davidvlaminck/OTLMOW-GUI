@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import Callable
 
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QDialog, QLabel, QVBoxLayout, QHBoxLayout, QLineEdit, QPushButton, QDialogButtonBox, \
@@ -13,61 +14,40 @@ from Exceptions.EmptyFieldError import EmptyFieldError
 from Exceptions.WrongDatabaseError import WrongDatabaseError
 
 
-class UpsertProjectWindow:
+class UpsertProjectWindow(QDialog):
 
-    def __init__(self, language_settings):
-        self.home_domain = HomeDomain(language_settings)
-        self.error_label = QLabel()
+    def __init__(self, language_settings: Callable, project: Project = None):
+        super().__init__()
+
         self._ = language_settings
 
-    def draw_upsert_project(self, overview_table, project: Project = None):
-        is_project = project is not None
-        # Resets the error label to empty when reopening the dialog
+        self.error_label = QLabel()
         self.error_label.setText("")
-        dialog_window = QDialog()
-        dialog_window.setMinimumWidth(400)
+
+        self.setMinimumWidth(400)
         # Makes the dialog the primary screen, disabling the screen behind it
-        dialog_window.setModal(True)
-        if is_project:
-            dialog_window.setWindowTitle(self._("alter_project_title"))
-        else:
-            dialog_window.setWindowTitle(self._("new_project_title"))
+        self.setModal(True)
+
         # Creates the vertical stack layout
         layout = QVBoxLayout()
-        # Creates 3 horizontal layouts for each input field with its label
-        container_eigen_ref = QHBoxLayout()
-        container_bestek = QHBoxLayout()
-        container_subset = QHBoxLayout()
-        # Creates labels for the input fields and adds them to the horizontal layouts
-        label_eigen_ref = QLabel(self._("own_reference") + ":")
-        container_eigen_ref.addWidget(label_eigen_ref, alignment=Qt.AlignmentFlag.AlignLeft)
-        label_bestek = QLabel(self._("service_order") + ":")
-        container_bestek.addWidget(label_bestek, alignment=Qt.AlignmentFlag.AlignLeft)
-        label_subset = QLabel(self._("subset") + ":")
-        container_subset.addWidget(label_subset, alignment=Qt.AlignmentFlag.AlignLeft)
+
         # Creates the input fields
-        input_eigen_ref = QLineEdit()
-        container_eigen_ref.addWidget(input_eigen_ref)
-        input_bestek = QLineEdit()
-        container_bestek.addWidget(input_bestek)
-        input_subset = QLineEdit()
-        input_subset.setReadOnly(True)
-        file_picker_btn = QPushButton()
-        file_picker_btn.setIcon(qta.icon('mdi.folder-open-outline'))
-        file_picker_btn.clicked.connect(lambda: self.open_file_picker(input_subset))
-        container_subset.addWidget(input_subset)
-        container_subset.addWidget(file_picker_btn)
-        input_eigen_ref.setPlaceholderText(self._("own_reference"))
-        input_bestek.setPlaceholderText(self._("service_order"))
-        input_subset.setPlaceholderText(self._("subset"))
-        if is_project:
-            input_eigen_ref.setText(project.eigen_referentie)
-            input_bestek.setText(project.bestek)
-            input_subset.setText(str(project.subset_path))
+        container_eigen_ref, input_eigen_ref = self.create_eigen_ref_container()
+        container_bestek, input_bestek = self.create_bestek_container()
+        container_subset, input_subset = self.create_subset_container()
+
         # Adds the input fields to the layout
         layout.addLayout(container_eigen_ref)
         layout.addLayout(container_bestek)
         layout.addLayout(container_subset)
+
+        if project:
+            self.setWindowTitle(self._("alter_project_title"))
+            input_eigen_ref.setText(project.eigen_referentie)
+            input_bestek.setText(project.bestek)
+            input_subset.setText(str(project.subset_path))
+        else:
+            self.setWindowTitle(self._("new_project_title"))
 
         # Changes the color of the error label to red
         self.error_label.setStyleSheet("color: red")
@@ -76,19 +56,89 @@ class UpsertProjectWindow:
         button_box = self.create_button_box()
         # sends the values off to validate once submitted
         button_box.accepted.connect(
-            lambda: self.pass_values_through_validate(input_eigen_ref.text(), input_bestek.text(),
-                                                      input_subset.text(), dialog_window, overview_table, project))
-        button_box.rejected.connect(dialog_window.reject)
+            lambda: self.pass_values_through_validate(input_eigen_ref= input_eigen_ref.text(),
+                                                      input_bestek= input_bestek.text(),
+                                                      input_subset= input_subset.text(),
+                                                      project=project))
+        button_box.rejected.connect(self.reject)
         # Adds the two buttons to the layout
         layout.addWidget(button_box)
         layout.addWidget(self.error_label)
         # Fills the dialog with the created layout
-        dialog_window.setLayout(layout)
+        self.setLayout(layout)
         # Shows the dialog
-        dialog_window.show()
-        dialog_window.exec()
+        self.show()
+        self.exec()
 
-    def create_button_box(self):
+    def create_subset_container(self) -> tuple[QHBoxLayout,QLineEdit]:
+        """
+        Creates a container for the subset input field along with its label and file picker button.
+
+        This method constructs a horizontal layout that includes a label indicating the subset, a read-only input field for displaying the subset value, and a button that allows the user to open a file picker dialog. The layout and input field are returned for further use in the user interface.
+
+        :return: A tuple containing the layout for the subset container and the input field.
+        :rtype: tuple[QHBoxLayout, QLineEdit]
+        """
+
+        label_subset = QLabel(self._("subset") + ":")
+        input_subset = QLineEdit()
+        input_subset.setReadOnly(True)
+        input_subset.setPlaceholderText(self._("subset"))
+        file_picker_btn = QPushButton()
+        file_picker_btn.setIcon(qta.icon('mdi.folder-open-outline'))
+        file_picker_btn.clicked.connect(lambda: self.open_file_picker(input_subset))
+        container_subset = QHBoxLayout()
+        container_subset.addWidget(label_subset, alignment=Qt.AlignmentFlag.AlignLeft)
+        container_subset.addWidget(input_subset)
+        container_subset.addWidget(file_picker_btn)
+        return container_subset, input_subset
+
+    def create_bestek_container(self) -> tuple[QHBoxLayout,QLineEdit]:
+        """
+        Creates a container for the bestek input field along with its label.
+
+        This method constructs a horizontal layout that includes a label indicating the service order and an input field for entering the bestek value. The layout and input field are returned for further use in the user interface.
+
+        :return: A tuple containing the layout for the bestek container and the input field.
+        :rtype: tuple[QHBoxLayout, QLineEdit]
+        """
+
+        label_bestek = QLabel(self._("service_order") + ":")
+        input_bestek = QLineEdit()
+        input_bestek.setPlaceholderText(self._("service_order"))
+        container_bestek = QHBoxLayout()
+        container_bestek.addWidget(label_bestek, alignment=Qt.AlignmentFlag.AlignLeft)
+        container_bestek.addWidget(input_bestek)
+        return container_bestek, input_bestek
+
+    def create_eigen_ref_container(self)  -> tuple[QHBoxLayout,QLineEdit]:
+        """
+        Creates a container for the eigen reference input field along with its label.
+
+        This method constructs a horizontal layout that includes a label indicating the own reference and an input field for entering the eigen reference value. The layout and input field are returned for further use in the user interface.
+
+        :return: A tuple containing the layout for the eigen reference container and the input field.
+        :rtype: tuple[QHBoxLayout, QLineEdit]
+        """
+
+        label_eigen_ref = QLabel(self._("own_reference") + ":")
+        input_eigen_ref = QLineEdit()
+        input_eigen_ref.setPlaceholderText(self._("own_reference"))
+        container_eigen_ref = QHBoxLayout()
+        container_eigen_ref.addWidget(label_eigen_ref, alignment=Qt.AlignmentFlag.AlignLeft)
+        container_eigen_ref.addWidget(input_eigen_ref)
+        return container_eigen_ref, input_eigen_ref
+
+    def create_button_box(self) -> QDialogButtonBox:
+        """
+        Creates a button box for the dialog window with OK and Cancel buttons.
+
+        This method initializes a QDialogButtonBox with standard OK and Cancel buttons, applying specific properties and text labels to each button. The button box is configured for use in the dialog interface and returned for further integration.
+
+        :return: The configured QDialogButtonBox containing the OK and Cancel buttons.
+        :rtype: QDialogButtonBox
+        """
+
         button_box = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
         button_box.setProperty("class", "button-box")
         button_box.button(QDialogButtonBox.StandardButton.Ok).setProperty("class", "primary-button")
@@ -97,11 +147,32 @@ class UpsertProjectWindow:
         button_box.button(QDialogButtonBox.StandardButton.Cancel).setText(self._("cancel"))
         return button_box
 
-    def pass_values_through_validate(self, input_eigen_ref: str, input_bestek: str, input_subset: str, dialog_window,
-                                     overview_table,
+    def pass_values_through_validate(self,
+                                     input_eigen_ref: str,
+                                     input_bestek: str,
+                                     input_subset: str,
                                      project: Project = None) -> None:
+        """
+        Validates input values and processes them for project upsert operations.
+
+        This method checks the provided eigen reference, bestek, and subset values for validity
+        using the HomeDomain validation methods. If the inputs are valid, it processes the upsert
+        dialog input and closes the dialog; otherwise, it displays an error message.
+
+        :param input_eigen_ref: The eigen reference input to validate.
+        :type input_eigen_ref: str
+        :param input_bestek: The bestek input to validate.
+        :type input_bestek: str
+        :param input_subset: The subset input to validate.
+        :type input_subset: str
+        :param project: An optional Project instance to process. Defaults to None.
+        :type project: Project, optional
+
+        :return: None
+        """
+
         try:
-            self.home_domain.validate(input_eigen_ref, input_bestek, input_subset)
+            HomeDomain.validate(input_eigen_ref, input_bestek, input_subset)
         except EmptyFieldError as e:
             self.error_label.setText(str(e))
             return
@@ -109,16 +180,24 @@ class UpsertProjectWindow:
             self.error_label.setText(str(e))
             return
         self.error_label.setText("")
-        if project is None:
-            project = Project()
-        project.eigen_referentie = input_eigen_ref
-        project.bestek = input_bestek
-        project.subset_path = Path(input_subset)
-        self.home_domain.alter_table(dlg=dialog_window,
-                                     overview_table=overview_table, project=project)
+
+        HomeDomain.process_upsert_dialog_input(input_bestek, input_eigen_ref, input_subset, project)
+        self.close()
+
 
     @staticmethod
     def open_file_picker(input_subset):
+        """
+        Opens a file picker dialog to select a subset file.
+
+        This static method displays a file dialog that allows the user to select a database file. If the input subset field is empty, the dialog starts in the user's home directory; otherwise, it starts in the directory specified by the input subset field.
+
+        :param input_subset: The QLineEdit widget where the selected file path will be set.
+        :type input_subset: QLineEdit
+
+        :return: None
+        """
+
         if input_subset.text() == "":
             file_path = str(Path.home())
         else:

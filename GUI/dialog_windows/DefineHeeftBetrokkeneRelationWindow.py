@@ -13,7 +13,6 @@ class DefineHeeftBetrokkeneRelationWindow:
 
 
     def __init__(self, language_settings,data_list_and_relation_objects):
-        self.home_domain = HomeDomain(language_settings)
         self.error_label = QLabel()
         self._ = language_settings
 

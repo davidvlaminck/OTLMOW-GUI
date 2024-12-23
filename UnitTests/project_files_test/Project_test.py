@@ -52,16 +52,13 @@ def create_mock_project_project_1():
 @fixture
 def create_mock_project_project_2():
     project_path = Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_2')
-    project = Project(
-        project_path=project_path,
-        subset_path=Path(
-            PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' /
-            'OTL_AllCasesTestClass_no_double_kard.db'),
-        saved_documents_overview_path=Path(
-            PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_2' / 'saved_documents.json'),
-        eigen_referentie="eigen referentie",
-        bestek="bestek",
-        laatst_bewerkt=datetime.datetime(2023, 11, 1))
+    project = Project(eigen_referentie="eigen referentie", project_path=project_path,
+                      subset_path=Path(
+                          PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' /
+                          'OTL_AllCasesTestClass_no_double_kard.db'),
+                      saved_documents_overview_path=Path(
+                          PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_2' / 'saved_documents.json'),
+                      bestek="bestek", laatst_bewerkt=datetime.datetime(2023, 11, 1))
 
     project.save_project_to_dir()
     yield project
@@ -74,16 +71,13 @@ def create_mock_project_project_3():
     project_backup_path = Path(
         PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects_backup' / project_path.name)
 
-    project = Project(
-        project_path=project_path,
-        subset_path=Path(
-            PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' /
-            'OTL_AllCasesTestClass_no_double_kard.db'),
-        saved_documents_overview_path=Path(
-            PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_2' / 'saved_documents.json'),
-        eigen_referentie="eigen referentie",
-        bestek="bestek",
-        laatst_bewerkt=datetime.datetime(2023, 11, 1))
+    project = Project(eigen_referentie="eigen referentie", project_path=project_path,
+                      subset_path=Path(
+                          PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' /
+                          'OTL_AllCasesTestClass_no_double_kard.db'),
+                      saved_documents_overview_path=Path(
+                          PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_2' / 'saved_documents.json'),
+                      bestek="bestek", laatst_bewerkt=datetime.datetime(2023, 11, 1))
 
     project.save_project_to_dir()
     yield project
@@ -95,15 +89,13 @@ def create_mock_project_project_3():
 @fixture
 def create_mock_project_project_4():
     project_path = Path(ProgramFileStructure.get_otl_wizard_projects_dir() / 'project_4')
-    project = Project(
-        project_path=project_path ,
-        subset_path=Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' /
-                         'OTL_AllCasesTestClass_no_double_kard.db'),
-        saved_documents_overview_path=Path(
-            PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' / 'saved_documents.json'),
-        eigen_referentie="eigen referentie",
-        bestek="bestek",
-        laatst_bewerkt=datetime.datetime(2023, 11, 1))
+    project = Project(eigen_referentie="eigen referentie", project_path=project_path,
+                      subset_path=Path(
+                          PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' /
+                          'OTL_AllCasesTestClass_no_double_kard.db'),
+                      saved_documents_overview_path=Path(
+                          PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1' / 'saved_documents.json'),
+                      bestek="bestek", laatst_bewerkt=datetime.datetime(2023, 11, 1))
     project.save_project_to_dir()
     yield project
     if project_path.exists():

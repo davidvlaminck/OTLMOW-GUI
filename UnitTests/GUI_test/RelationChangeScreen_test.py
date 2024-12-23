@@ -334,7 +334,7 @@ def mock_find_all_concrete_rel_all() -> Mock:
 
 @fixture
 def mock_project(mock_collect_all) -> Project:
-    return Project()
+    return Project(eigen_referentie="test")
 
 def test_fill_class_list_empty_list(qtbot,
                                     create_translations,

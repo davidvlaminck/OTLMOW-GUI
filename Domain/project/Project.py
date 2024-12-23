@@ -41,17 +41,17 @@ class Project:
 
     max_days_quicksave_stored = 7
 
-    def __init__(self, project_path: Path = None, 
-                 subset_path: Path = None, 
-                 saved_documents_overview_path: Path = None, 
-                 eigen_referentie: str = None, 
-                 bestek: str = None,
-                 laatst_bewerkt: datetime.datetime = None,
-                 last_quick_save:Optional[Path] = None, 
-                 subset_operator: Optional[Union[str,Path]] = None, 
-                 otl_version: Optional[Union[str,Path]] = None):
+    def __init__(self, eigen_referentie: str, project_path: Path = None, subset_path: Path = None,
+                 saved_documents_overview_path: Path = None, bestek: str = None,
+                 laatst_bewerkt: datetime.datetime = None, last_quick_save: Optional[Path] = None,
+                 subset_operator: Optional[Union[str, Path]] = None,
+                 otl_version: Optional[Union[str, Path]] = None):
         
         self.project_path: Path = project_path
+        if not self.project_path:
+            self.project_path = Path(
+                ProgramFileStructure.get_otl_wizard_projects_dir() / 'Projects' / eigen_referentie)
+
         self.subset_path: Path = subset_path
         
         if isinstance(subset_operator,Path):
@@ -96,16 +96,18 @@ class Project:
     def load_project(cls, project_path: Path = None)-> Self:
         """
         Loads a project from a specified directory by reading its details from a JSON file.
-        It validates the existence of the project directory and the required project details file before extracting and returning the project information.
 
-        Args:
-            project_path (Path, optional): The path to the project directory. Defaults to None.
+        It validates the existence of the project directory and the required project details file
+        before extracting and returning the project information.
 
-        Returns:
-            Project: An instance of the project class initialized with the loaded details.
+        :param project_path: The path to the project directory. Defaults to None.
+        :type project_path: Path, optional
 
-        Raises:
-            FileNotFoundError: If the project directory or the project details file does not exist.
+        :return: An instance of the project class initialized with the loaded details.
+        :rtype: Project
+
+        :raises FileNotFoundError:  If the project directory or the project details file does not
+                                    exist.
         """
 
         if project_path and not project_path.exists():
@@ -121,7 +123,8 @@ class Project:
         if 'last_quick_save' not in project_details or not project_details['last_quick_save']:
             last_quick_save = None
         else:
-            last_quick_save = Path(project_path / cls.quick_saves_foldername) / Path(project_details['last_quick_save'])
+            last_quick_save = (Path(project_path / cls.quick_saves_foldername) /
+                               Path(project_details['last_quick_save']))
 
 
         if 'subset_operator' not in project_details or not project_details['subset_operator']:
@@ -147,23 +150,23 @@ class Project:
 
     def save_project_to_dir(self) -> None:
         """
-        Saves the current project to a designated directory,
-        including project details and any associated subset files.
+        Saves the current project to a designated directory, including project details and any
+        associated subset files.
+
         This function ensures that the project directory is created if it does not exist and
         updates the last modified timestamp if necessary.
 
-        Args:
-            self: The instance of the class containing project details.
+        :param self: The instance of the class containing project details.
 
-        Returns:
-            None
+        :return: None
 
-        Raises:
-            OSError: If there is an error creating the directory or writing the project details file.
+        :raises OSError:    If there is an error creating the directory or writing the project
+                            details file.
 
-        Examples:
+        :example:
             project.save_project_to_dir()
         """
+
 
         otl_wizard_project_dir = ProgramFileStructure.get_otl_wizard_projects_dir()
         project_dir_path = otl_wizard_project_dir / self.project_path.name
@@ -180,20 +183,18 @@ class Project:
     def save_project_details(self, project_dir_path: Path) -> None:
         """
         Saves the project's details to a specified directory in JSON format.
-        This function constructs a dictionary of project attributes and writes it to a file,
-        updating the last modified timestamp if necessary.
 
-        Args:
-            self: The instance of the class managing the project.
-            project_dir_path (Path): The directory path where the project details will be saved.
+        This function constructs a dictionary of project attributes and writes it to a file, updating the last modified timestamp if necessary.
 
-        Returns:
-            None
+        :param self: The instance of the class managing the project.
+        :param project_dir_path: The directory path where the project details will be saved.
+        :type project_dir_path: Path
 
-        Raises:
-            OSError: If there is an error writing the project details file.
+        :return: None
 
-        Examples:
+        :raises OSError: If there is an error writing the project details file.
+
+        :example:
             project.save_project_details(Path('/path/to/project'))
         """
 
@@ -221,47 +222,46 @@ class Project:
         # sourcery skip: use-named-expression
         """
         Loads validated assets from the most recent quick save file.
+
         If a valid quick save path is found, it converts the file contents into a list of AIMObject
         instances; otherwise, it returns an empty list.
 
-        Args:
-            self: The instance of the class managing asset loading.
+        :param self: The instance of the class managing asset loading.
 
-        Returns:
-            list[AIMObject]: A list of validated AIMObject instances loaded from the quick save file, or an empty list if no valid path is found.
+        :return:    A list of validated AIMObject instances loaded from the quick save file, or an
+                    empty list if no valid path is found.
+        :rtype: list[AIMObject]
 
-        Examples:
+        :example:
             assets = project.load_validated_assets()
         """
 
         path = self.get_last_quick_save_path()
 
         if path:
-            return cast(typ=list[AIMObject],val=list(OtlmowConverter.from_file_to_objects(path)))
+            return list(OtlmowConverter.from_file_to_objects(path))
 
         return []
 
     def save_validated_assets(self) -> None:
         """
-        Saves validated assets the project to the quick save directory.
-        It manages the quick save files by removing old saves and generating a new save file with
-        a unique name.
+        Saves validated assets to the project quick save directory.
 
-        the format of the save file is: quick_save_{date}_{time}.json:
+        It manages the quick save files by removing old saves and generating a new save file with a unique name.
+
+        The format of the save file is: quick_save_{date}_{time}.json:
             date:   the date on which the quicksave was made in format yymmdd
-            time:   the tie on which the quicksave was made in format HHMMSS
+            time:   the time on which the quicksave was made in format HHMMSS
 
-        All quicksaves that are more than set days old (default= 7) are deleted in this function
+        All quicksaves that are more than set days old (default= 7) are deleted in this function.
 
-        Args:
+        :param self: The instance of the class managing quick saves.
 
-        Returns:
-            None
+        :return: None
 
-        Raises:
-            OSError: If there is an issue creating the quick save directory or saving the file.
-
+        :raises OSError: If there is an issue creating the quick save directory or saving the file.
         """
+
         date_format = "%y%m%d_%H%M%S"
         
 
@@ -288,23 +288,25 @@ class Project:
                                    date_format: str) -> None:
         """
         Removes quick save files that are older than a specified number of days.
-        This function checks the modification dates of the quick save files and deletes those
-        that exceed the maximum age defined by the user.
 
-        Files that do not adhere to the standard naming convention are never deleted
+        This function checks the modification dates of the quick save files and deletes those that exceed the maximum age defined by the user.
 
-        Args:
-            self: The instance of the class managing quick saves.
-            current_date (datetime): The current date used to compare against quick save file dates.
-            max_days_stored (datetime): The maximum number of days to retain quick save files.
-            date_format (str): The format used to parse the date from the filename.
+        Files that do not adhere to the standard naming convention are never deleted.
 
-        Returns:
-            None
+        :param self: The instance of the class managing quick saves.
+        :param current_date: The current date used to compare against quick save file dates.
+        :type current_date: datetime
+        :param max_days_stored: The maximum number of days to retain quick save files.
+        :type max_days_stored: datetime
+        :param date_format: The format used to parse the date from the filename.
+        :type date_format: str
 
-        Examples:
+        :return: None
+
+        :example:
             project.remove_too_old_quicksaves(datetime.now(), 30, "%Y-%m-%d")
         """
+
 
         files = os.listdir(path=self.quick_save_dir_path )
         for filename in files:
@@ -322,6 +324,22 @@ class Project:
 
 
     def export_project_to_file(self, file_path: Path) -> None:
+        """
+        Exports the project data to a specified file in OTLW format which is a custom ZIP format.
+
+        This method creates a ZIP file containing the project's details,
+        including the project details file, saved documents overview, subset path, and any saved
+        project files. It also includes the last quick save file if it exists, ensuring that all
+        relevant project information is packaged together.
+
+        :param file_path: The path where the OTLW file will be saved.
+        :type file_path: Path
+
+        :return: None
+
+        :raises FileNotFoundError: If any of the files to be included in the ZIP do not exist.
+        """
+
         with zipfile.ZipFile(file=file_path, mode='w') as project_zip:
             project_zip.write(self.project_path / self.project_details_filename,
                               arcname=self.project_details_filename,
@@ -345,6 +363,20 @@ class Project:
 
     @classmethod
     def import_project(cls, file_path: Path) -> Self:
+        """
+        Imports a project from a specified OTLW file which is a custom ZIP format.
+
+        This class method extracts project details from a ZIP file and creates a new project directory based on the extracted information. It handles the creation of the project directory and raises an error if the directory already exists.
+
+        :param file_path: The path to the OTLW file containing the project data.
+        :type file_path: Path
+
+        :return: An instance of the Project class initialized with the imported project details.
+        :rtype: Self
+
+        :raises FileExistsError: If the project directory already exists.
+        """
+
         with zipfile.ZipFile(file=file_path) as project_file:
 
             # TODO: handle if project doesn't contain project_details.json files
@@ -366,14 +398,29 @@ class Project:
 
     def delete_project_dir_by_path(self) -> None:
         """
-            To Project.py without file_path
+        Deletes the project directory specified by the project's path.
+
+        This method removes the entire directory associated with the project, including all its contents. It logs the deletion action for debugging purposes.
+
+        :return: None
         """
+
         logging.debug("Deleting project %s", self.project_path)
         shutil.rmtree(path=self.project_path)
-        # ProjectFileManager.load_projects_into_global()
+
 
 
     def are_all_project_files_in_memory_valid(self) -> bool:
+        """
+        Checks if all project files currently in memory are valid.
+
+        This method evaluates the state of saved project files to determine if at least one file
+        meets the required validity criteria. It logs the process and returns a boolean indicating
+        whether any project files are valid.
+
+        :return: True if at least one project file is valid; otherwise, False.
+        :rtype: bool
+        """
 
         logging.debug("Started searching for project files in memory that are OTL conform")
 
@@ -387,25 +434,30 @@ class Project:
     def get_subset_db_name(self) -> str:
         """
         Retrieves the name of the subset database associated with the project.
+
         This function returns the name of the subset path as a string.
 
-        Returns:
-            str: The name of the subset database.
+        :return: The name of the subset database.
+        :rtype: str
         """
 
         return  str(self.subset_path.name)
 
     def get_model_builder(self) -> ModelBuilder:
         """
-        Loads and initializes the model builder associated with the project if it has not been created yet.
-        This function checks if the model builder is already set and creates a new instance using the subset path if necessary.
+        Loads and initializes the model builder associated with the project if it has not been
+        created yet.
 
-        Returns:
-            ModelBuilder: The model builder instance associated with the project.
+        This function checks if the model builder is already set and creates a new instance using
+        the subset path if necessary.
 
-        Raises:
-            ValueError: If the subset path is not set when attempting to create the model builder.
+        :return: The model builder instance associated with the project.
+        :rtype: ModelBuilder
+
+        :raises ValueError: If the subset path is not set when attempting to create the model
+                            builder.
         """
+
 
         if not self.model_builder and self.subset_path:
             self.model_builder = ModelBuilder(self.subset_path)
@@ -414,10 +466,10 @@ class Project:
     def clear_model_builder_from_memory(self) -> None:
         """
         Clears the model builder from memory by setting it to None.
+
         This function effectively releases the reference to the current model builder, allowing for garbage collection.
 
-        Returns:
-            None
+        :return: None
         """
 
         self.model_builder = None
@@ -425,13 +477,13 @@ class Project:
     def get_operator_name(self) -> str:
         """
         Retrieves the name of the subset operator associated with the project.
+
         If the subset operator is not already set, it fetches the operator name from the model builder and processes it accordingly.
 
-        Returns:
-            str: The name of the subset operator.
+        :return: The name of the subset operator.
+        :rtype: str
 
-        Raises:
-            ValueError: If the operator name cannot be determined from the model builder.
+        :raises ValueError: If the operator name cannot be determined from the model builder.
         """
 
         if not self.subset_operator:
@@ -445,13 +497,13 @@ class Project:
     def get_otl_version(self) -> str:
         """
         Retrieves the OTL (Object Type Library) version associated with the project.
+
         If the OTL version is not already set, it fetches the version from the model builder.
 
-        Returns:
-            str: The OTL version.
+        :return: The OTL version.
+        :rtype: str
 
-        Raises:
-            ValueError: If the OTL version cannot be determined from the model builder.
+        :raises ValueError: If the OTL version cannot be determined from the model builder.
         """
 
         if not self.otl_version:
@@ -462,15 +514,14 @@ class Project:
     def load_saved_document_filenames(self) -> Self:
         """
         Loads the filenames of saved documents associated with the project from a specified directory.
-        This function checks for the existence of a saved documents file, reads its contents, and populates the list of saved project files with their saved states.
-        If there are no quicksaves yet then the states are set to FileState.WARNING
 
-        Returns:
-            self: The instance of the class, allowing for method chaining.
+        This function checks for the existence of a saved documents file, reads its contents, and populates the list of saved project files with their saved states. If there are no quicksaves yet then the states are set to FileState.WARNING.
 
-        Raises:
-            FileNotFoundError: If the saved documents file does not exist.
-            json.JSONDecodeError: If the saved documents file contains invalid JSON.
+        :return: The instance of the class, allowing for method chaining.
+        :rtype: self
+
+        :raises FileNotFoundError: If the saved documents file does not exist.
+        :raises json.JSONDecodeError: If the saved documents file contains invalid JSON.
         """
 
         project_dir_path = ProgramFileStructure.get_otl_wizard_projects_dir() / self.project_path.name
@@ -516,13 +567,13 @@ class Project:
     def get_quicksaves_dir_path(self) -> Path:
         """
         Retrieves the path to the quick saves directory for the project.
+
         If the directory does not exist, it creates it before returning the path.
 
-        Returns:
-            Path: The path to the quick saves directory.
+        :return: The path to the quick saves directory.
+        :rtype: Path
 
-        Raises:
-            OSError: If the directory cannot be created due to a file system error.
+        :raises OSError: If the directory cannot be created due to a file system error.
         """
 
         quick_saves = Path(self.project_path / self.quick_saves_foldername)
@@ -534,15 +585,15 @@ class Project:
         # sourcery skip: use-named-expression
         """
         Retrieves the path to the last quick save file for the project.
-        It first checks if there is a specific last quick save path and if that exists; if not,
-        it looks for the most recent file in the quick saves directory.
 
-        Returns:
-            Optional[Path]: The path to the last quick save file, or None if no quick save exists.
+        It first checks if there is a specific last quick save path and if that exists; if not, it looks for the most recent file in the quick saves directory.
 
-        Raises:
-            OSError: If there is an issue accessing the quick saves directory.
+        :return: The path to the last quick save file, or None if no quick save exists.
+        :rtype: Optional[Path]
+
+        :raises OSError: If there is an issue accessing the quick saves directory.
         """
+
         path = None
         quick_save_path_dir = self.get_quicksaves_dir_path()
         if self.last_quick_save and self.last_quick_save.exists():
@@ -555,16 +606,16 @@ class Project:
 
     def get_project_files_dir_path(self) -> Path:
         """
-        Retrieves the directory path for the project's files. This function constructs and
-        returns the full path to the folder designated for storing project files.
+        Retrieves the directory path for the project's files.
 
-        Args:
-            self: The instance of the class managing the project.
+        This function constructs and returns the full path to the folder designated for storing project files.
 
-        Returns:
-            Path: The path to the project files directory.
+        :param self: The instance of the class managing the project.
 
-        Examples:
+        :return: The path to the project files directory.
+        :rtype: Path
+
+        :example:
             files_dir = project.get_project_files_dir_path()
         """
 
@@ -572,23 +623,31 @@ class Project:
 
     def get_old_project_files_dir_path(self) -> Path:
         """
-        Retrieves the directory path for the old project's files. This function constructs and
-        returns the full path to the folder designated for storing project files in project made
-        with an old version of OTL wizard.
+        Retrieves the directory path for the old project's files.
 
-        Args:
-            self: The instance of the class managing the project.
+        This function constructs and returns the full path to the folder designated for storing project files in projects made with an old version of OTL wizard.
 
-        Returns:
-            Path: The path to the old project files directory.
+        :param self: The instance of the class managing the project.
 
-        Examples:
+        :return: The path to the old project files directory.
+        :rtype: Path
+
+        :example:
             old_files_dir = project.get_old_project_files_dir_path()
         """
 
         return self.project_path / self.old_project_files_foldername
 
     def delete_template_folder(self) -> None:
+        """
+        Deletes the template folders associated with the project.
+
+        This method removes both the old and new project files directories, effectively clearing
+        out all template files. It logs the start and completion of the deletion process for
+        debugging purposes.
+
+        :return: None
+        """
 
         logging.debug(f"Started clearing out the whole template folder of "
                       f"project: {self.eigen_referentie}")
@@ -606,15 +665,12 @@ class Project:
     def save_project_filepaths_to_file(self) -> None:
         """
         Saves the file paths and states of the project's saved files to a JSON file.
-        This function constructs a list of saved project file details and writes them to a
-        specified file within the project's directory.
-        It will overwrite the existing saved_documents.json
 
-        Returns:
-            None
+        This function constructs a list of saved project file details and writes them to a specified file within the project's directory. It will overwrite the existing saved_documents.json.
 
-        Raises:
-            OSError: If there is an issue writing to the file or accessing the project directory.
+        :return: None
+
+        :raises OSError: If there is an issue writing to the file or accessing the project directory.
         """
 
         otl_wizard_project_dir = ProgramFileStructure.get_otl_wizard_projects_dir()
@@ -632,17 +688,16 @@ class Project:
     def is_in_project(self, file_path) -> ProjectFile:
         """
         Checks if a specified file path is present in the project's saved files.
-        This function searches through the list of saved project files and returns the matching
-        project file if found, or None if no match exists.
 
-        Args:
-            file_path (Path): The path of the file to check for in the project's saved files.
+        This function searches through the list of saved project files and returns the matching project file if found, or None if no match exists.
 
-        Returns:
-            ProjectFile: The matching project file if found, or None if not.
+        :param file_path: The path of the file to check for in the project's saved files.
+        :type file_path: Path
 
-        Raises:
-            TypeError: If the provided file_path is not of the expected type.
+        :return: The matching project file if found, or None if not.
+        :rtype: ProjectFile
+
+        :raises TypeError: If the provided file_path is not of the expected type.
         """
 
         matches = [project_file for project_file in self.saved_project_files if
@@ -652,31 +707,35 @@ class Project:
     def get_saved_projectfiles(self) -> list[ProjectFile]:
         """
         Retrieves the list of saved project files associated with the project.
+
         This function returns the current state of the saved project files as a list of ProjectFile instances.
 
-        Returns:
-            list[ProjectFile]: A list containing the saved project files.
+        :return: A list containing the saved project files.
+        :rtype: list[ProjectFile]
         """
 
         return self.saved_project_files
 
     def copy_and_add_project_file(self, file_path: Path | str, state: FileState) -> None:
         """
-        Adds a saved project file to the list of saved project files, makes a copy of it and
+        Adds a saved project file to the list of saved project files, makes a copy of it, and
         updates its state.
+
         This function converts the file path to a Path object if it is provided as a string,
-        constructs the full file path, and appends a new ProjectFile instance to the saved project files.
+        constructs the full file path, and appends a new ProjectFile instance to the saved project
+        files.
 
-        Args:
-            file_path (Path | str): The path of the file to be saved, which can be a string or a Path object.
-            state (FileState): The state of the project file to be saved.
+        :param file_path: The path of the file to be saved, which can be a string or a Path object.
+        :type file_path: Path | str
+        :param state: The state of the project file to be saved.
+        :type state: FileState
 
-        Returns:
-            None
+        :return: None
 
-        Raises:
-            ValueError: If the provided file_path is invalid or if the state is not a valid FileState.
+        :raises ValueError: If the provided file_path is invalid or if the state is not a valid
+                            FileState.
         """
+
 
         if isinstance(file_path,str):
             file_path = Path(file_path)
@@ -689,19 +748,18 @@ class Project:
     def make_copy_of_added_file(self, filepath: Path) -> Path:
         """
         Creates a copy of the specified file in the OTL template files directory.
-        This function ensures the destination directory exists,
-        copies the file if it is not already in the target location,
-        and returns the path to the copied file.
 
-        Args:
-            filepath (Path): The path of the file to be copied.
+        This function ensures the destination directory exists, copies the file if it is not
+        already in the target location, and returns the path to the copied file.
 
-        Returns:
-            Path: The path to the copied file in the OTL template files directory.
+        :param filepath: The path of the file to be copied.
+        :type filepath: Path
 
-        Raises:
-            FileNotFoundError: If the specified file does not exist.
-            OSError: If there is an issue creating the directory or copying the file.
+        :return: The path to the copied file in the OTL template files directory.
+        :rtype: Path
+
+        :raises FileNotFoundError: If the specified file does not exist.
+        :raises OSError: If there is an issue creating the directory or copying the file.
         """
 
         location_dir = self.get_project_files_dir_path()
@@ -724,18 +782,12 @@ class Project:
     def remove_all_project_files(self):
         """
         Removes all project files from memory and deletes them from the file system.
-        This function iterates through the list of saved project files,
-        attempts to delete each one, and handles any errors that occur during the deletion process.
 
-        Creates a notification window to user if the program doesn't have access to file
+        This function iterates through the list of saved project files, attempts to delete each one, and handles any errors that occur during the deletion process. It creates a notification window to the user if the program doesn't have access to the file, and an empty saved_project_files list is saved to saved_document.json after the whole process.
 
-        empty saved_project_files list is saved to saved_document.json after whole process
+        :return: None
 
-        Returns:
-            None
-
-        Raises:
-            ExcelFileUnavailableError: If a file cannot be deleted due to its unavailability.
+        :raises ExcelFileUnavailableError: If a file cannot be deleted due to its unavailability.
         """
 
         logging.debug("memory contains %s", self.saved_project_files)
@@ -755,17 +807,16 @@ class Project:
         """
         Removes a specified project file from the list of saved project files and deletes it from
         the file system if it exists.
-        This function checks if the file is part of the project, attempts to delete it, and updates
-        the saved project files accordingly.
 
-        Args:
-            file_path (Path | str): The path of the project file to be removed.
+        This function checks if the file is part of the project, attempts to delete it, and
+        updates the saved project files accordingly.
 
-        Returns:
-            bool: True if the file was successfully removed, False otherwise.
+        :param file_path: The path of the project file to be removed.
+        :type file_path: Path | str
 
-        Raises:
-            ExcelFileUnavailableError: If the file cannot be deleted due to its unavailability.
+        :return: True if the file was successfully removed, False otherwise.
+
+        :raises ExcelFileUnavailableError: If the file cannot be deleted due to its unavailability.
         """
 
         project_file = self.is_in_project(file_path=file_path)
@@ -789,21 +840,15 @@ class Project:
     def _delete_project_file(file_path) -> bool:
         """
         Deletes a specified project file from the file system.
-        This function attempts to unlink the file at the given path and
-        handles some errors that may occur during the deletion process.
 
-        Needs following calls after calling this one
-            self.saved_project_files.remove(project_file)
-            self.save_project_filepaths_to_file()
+        This function attempts to unlink the file at the given path and handles some errors that may occur during the deletion process. Needs following calls after calling this one: self.saved_project_files.remove(project_file) and self.save_project_filepaths_to_file().
 
-        Args:
-            file_path (Path | str): The path of the project file to be deleted.
+        :param file_path: The path of the project file to be deleted.
+        :type file_path: Path | str
 
-        Returns:
-            bool: True if the file was successfully deleted, False if the file was not found.
+        :return: True if the file was successfully deleted, False if the file was not found.
 
-        Raises:
-            ExcelFileUnavailableError: If there is a permission error while attempting to delete the file.
+        :raises ExcelFileUnavailableError: If there is a permission error while attempting to delete the file.
         """
 
         try:
@@ -821,14 +866,13 @@ class Project:
     def change_subset(self, new_path: Path) -> None:
         """
         Changes the current subset path for the project and resets related properties.
-        This function clears the model builder from memory, updates the subset path,
-        ,loads a new model builder and resets subset operator, and OTL version to their initial states.
 
-        Args:
-            new_path (Path): The new path to set as the subset for the project.
+        This function clears the model builder from memory, updates the subset path, loads a new model builder, and resets the subset operator and OTL version to their initial states.
 
-        Returns:
-            None
+        :param new_path: The new path to set as the subset for the project.
+        :type new_path: Path
+
+        :return: None
         """
 
         self.clear_model_builder_from_memory()
@@ -836,4 +880,40 @@ class Project:
         self.model_builder = self.get_model_builder()
         self.subset_operator = None
         self.otl_version = None
+        self.update_last_alter_time()
         self.save_project_to_dir()
+
+    def update_information(self, new_eigen_ref:str, new_bestek:str, new_subset_path: Path):
+        """
+        Updates the project information with new details.
+
+        This method modifies the project's eigen reference,
+        bestek, and subset path, ensuring that the project reflects the latest information.
+        It also updates the last altered time to track when the changes were made.
+
+        :param new_eigen_ref: The new eigen reference for the project.
+        :type new_eigen_ref: str
+        :param new_bestek: The new bestek for the project.
+        :type new_bestek: str
+        :param new_subset_path: The new path for the project's subset.
+        :type new_subset_path: Path
+
+        :return: None
+        """
+
+        self.eigen_referentie = new_eigen_ref
+        self.bestek = new_bestek
+        self.change_subset(new_subset_path)
+        self.update_last_alter_time()
+
+    def update_last_alter_time(self):
+        """
+        Updates the last altered time of the project.
+
+        This method sets the last altered timestamp to the current date and time, allowing for tracking of when the project was last modified.
+
+        :return: None
+        """
+
+        time_of_alter = datetime.datetime.now().date()
+        self.laatst_bewerkt = time_of_alter

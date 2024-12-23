@@ -1,9 +1,12 @@
 import asyncio
 import logging
-from typing import List
+
+from typing import List, Callable
 
 from PyQt6.QtWidgets import QStackedWidget, QWidget
 
+from Domain.project.Project import Project
+from Domain.step_domain.HomeDomain import HomeDomain
 from GUI.dialog_windows.NotificationWindow import NotificationWindow
 from GUI.screens.AssetDataChangeScreen import AssetDataChangeScreen
 from GUI.screens.DataVisualisationScreen import DataVisualisationScreen
@@ -17,40 +20,42 @@ from GUI.header.TabWidget import TabWidget
 
 
 class MainWindow(QStackedWidget):
-    def __init__(self, language):
+    def __init__(self, language: Callable):
         super().__init__()
         self._ = language
 
-        self.home_screen:Screen = HomeScreen(self._)
-        self.step1:Screen = TemplateScreen(self._)
-        self.step1_tabwidget:Screen = TabWidget(self._, page_nr=1, widget1=self.step1,
+        self.home_screen:HomeScreen = HomeScreen(self._)
+        self.step1:TemplateScreen = TemplateScreen(self._)
+        self.step1_tabwidget:TabWidget = TabWidget(self._, page_nr=1, widget1=self.step1,
                                          description1="template",
                                          has_save_btn=False)
-        self.step2:Screen = InsertDataScreen(self._)
-        self.step2_tabwidget:Screen = TabWidget(self._, page_nr=2, widget1=self.step2,
+        self.step2:InsertDataScreen = InsertDataScreen(self._)
+        self.step2_tabwidget:TabWidget = TabWidget(self._, page_nr=2, widget1=self.step2,
                                          description1="insert_data",
                                          has_save_btn=False)
-        self.step3_visuals:Screen = DataVisualisationScreen(self._)
-        self.step3_data:Screen = AssetDataChangeScreen(self._)
-        self.step3_relations:Screen = RelationChangeScreen(self._)
-        self.step_3_tabwidget:Screen = TabWidget(self._, page_nr=3, widget1=self.step3_relations,
+        self.step3_visuals:DataVisualisationScreen = DataVisualisationScreen(self._)
+        self.step3_data:AssetDataChangeScreen = AssetDataChangeScreen(self._)
+        self.step3_relations:RelationChangeScreen = RelationChangeScreen(self._)
+        self.step_3_tabwidget:TabWidget = TabWidget(self._, page_nr=3, widget1=self.step3_relations,
                                           description1="relation_change",
                                           widget2=self.step3_visuals,
                                           description2="data visuals",
                                           widget3=self.step3_data,
                                           description3="data_change",
                                           has_save_btn=False)
-        self.step4_export:Screen = ExportDataScreen(self._)
-        self.step4_tabwidget:Screen = TabWidget(self._, page_nr=4,
+        self.step4_export:ExportDataScreen = ExportDataScreen(self._)
+        self.step4_tabwidget:TabWidget = TabWidget(self._, page_nr=4,
                                                 widget1=self.step4_export,
                                                 description1="export_data",
                                                 has_save_btn=False)
         self.add_widget(self.home_screen)
-        self.stepper_widgets:Screen = [self.step1_tabwidget, self.step2_tabwidget, self.step_3_tabwidget,
+        self.stepper_widgets:list[Screen] = [self.step1_tabwidget, self.step2_tabwidget, self.step_3_tabwidget,
                            self.step4_tabwidget]
         self.add_tabs_with_stepper_to_widget(self.stepper_widgets)
         self.home_screen.table.main_window = self
         self.step1.main_window = self
+
+        HomeDomain.init(self.home_screen)
 
         # dummy translation so the pybabel system doesn't remove them
         self._("template")
@@ -97,3 +102,12 @@ class MainWindow(QStackedWidget):
         message = self._(e.error_window_message_key)
         title = self._(e.error_window_title_key)
         NotificationWindow("{0}:\n{1}".format(message, e.file_path), title)
+
+    def set_project(self,project:Project) -> None:
+        self.step1_tabwidget.tab1.project = project
+
+        self.step1_tabwidget.tab1.update_project_info()
+        self.step2_tabwidget.tab1.clear_all()
+
+    def enable_steps(self):
+        self.reset_ui(self._)

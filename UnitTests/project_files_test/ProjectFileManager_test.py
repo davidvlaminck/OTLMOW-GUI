@@ -14,6 +14,7 @@ from Domain.project.Project import Project
 from Domain.project.ProgramFileManager import ProgramFileManager
 from Domain.enums import FileState
 from Domain.project.ProjectFile import ProjectFile
+from Domain.step_domain.HomeDomain import HomeDomain
 from Exceptions.ExcelFileUnavailableError import ExcelFileUnavailableError
 
 from UnitTests.general_fixtures.GUIFixtures import *
@@ -45,13 +46,11 @@ def mock_get_home_path_with_empty_directory():
     shutil.rmtree(empty_dir)
 
 
-
-
-
 def test_get_all_otl_wizard_projects(caplog, mock_project_home_path):
-    projects = ProgramFileManager.get_all_otl_wizard_projects()
+    projects = HomeDomain.get_all_otl_wizard_projects()
     assert len(projects) == 1
-    assert projects[0].project_path == Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1')
+    assert list(projects.keys())[0] == 'project_1'
+    assert list(projects.values())[0].project_path == Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1')
     assert len(caplog.records) == 1
 
 
@@ -61,8 +60,8 @@ def test_create_otl_wizard_model_dir(mock_get_home_path_with_empty_directory):
 
 
 def test_get_all_otl_wizard_projects_empty_directory(mock_get_home_path_with_empty_directory):
-    projects = ProgramFileManager.get_all_otl_wizard_projects()
-    assert projects == []
+    projects = HomeDomain.get_all_otl_wizard_projects()
+    assert projects == {}
 
 
 def test_get_otl_wizard_projects_dir():

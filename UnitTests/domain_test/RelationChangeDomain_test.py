@@ -471,7 +471,7 @@ def test_full_remove_existing_relation(root_directory:Path,
 
 @pytest.fixture
 def mock_project() -> Project:
-    return Project()
+    return Project("test")
 
 @pytest.fixture
 def mock_oslo_collector() -> Function:
@@ -535,9 +535,10 @@ def test_set_objects_empty_list(mock_project: Project,
 
     assert len(RelationChangeDomain.shown_objects) == 0
 
-def test_set_objects_single_item_list(mock_screen: RelationChangeScreen,mock_collect_all,mock_rel_screen,mock_save_validated_assets_function,
-                                 mock_load_validated_assets):
-    RelationChangeDomain.init_static(Project())
+def test_set_objects_single_item_list(mock_screen: RelationChangeScreen,mock_collect_all,
+                                      mock_rel_screen,mock_save_validated_assets_function,
+                                      mock_load_validated_assets,mock_step3_visuals):
+    RelationChangeDomain.init_static(Project(eigen_referentie="test"))
     test_object = AllCasesTestClass()
     test_object.assetId.identificator = "dummy_identificator"
     RelationChangeDomain.set_instances([test_object])
@@ -546,8 +547,8 @@ def test_set_objects_single_item_list(mock_screen: RelationChangeScreen,mock_col
     assert RelationChangeDomain.shown_objects[0].assetId.identificator == "dummy_identificator"
 
 def test_set_objects_double_item_list(mock_screen,mock_collect_all,mock_rel_screen,mock_save_validated_assets_function,
-                                 mock_load_validated_assets):
-    RelationChangeDomain.init_static(Project())
+                                 mock_load_validated_assets,mock_step3_visuals):
+    RelationChangeDomain.init_static(Project(eigen_referentie="test"))
     test_object = AllCasesTestClass()
     test_object.assetId.identificator = "dummy_identificator"
 
