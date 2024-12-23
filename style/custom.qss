@@ -268,6 +268,11 @@ QTabBar::tab{
     padding-left: 20px;
 }
 
+QCheckBox:disabled
+{
+    color: DimGray;
+}
+
 .settings-label{
     font-family: Roboto;
     font-style: normal;

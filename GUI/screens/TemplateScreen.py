@@ -26,7 +26,7 @@ class TemplateScreen(Screen):
         self.no_choice_list = QCheckBox()
         self.geometry_column_added = QCheckBox()
         self.export_attribute_info = QCheckBox()
-        # self.show_deprecated_attributes = QCheckBox()
+        self.show_deprecated_attributes = QCheckBox()
         self.example_label = QLabel()
         self.export_button = ButtonWidget()
         self.project = None
@@ -40,9 +40,9 @@ class TemplateScreen(Screen):
         self.otl_title = QLabel()
         self.change_subset_btn = ButtonWidget()
         self.amount_of_examples = QSpinBox()
-        self.example_settings_titel = QLabel()
-        self.deprecated_titel = QLabel()
-        self.general_settings_titel = QLabel()
+        self.example_settings_title = QLabel()
+        self.non_otl_conform_settings_title = QLabel()
+        self.general_settings_title = QLabel()
 
         self.init_ui()
 
@@ -55,57 +55,76 @@ class TemplateScreen(Screen):
 
     def options_menu(self):
         options_menu = QFrame()
-        options_menu_layout = QVBoxLayout()
+        main_layout = QVBoxLayout()
+
         self.select_all_classes.setText(self._("select_all_classes"))
         self.select_all_classes.stateChanged.connect(lambda: self.select_all_classes_clicked())
 
-        self.general_settings_titel.setProperty('class', 'settings-title')
-        self.general_settings_titel.setText(self._("general_settings"))
+        self.general_settings_title.setProperty('class', 'settings-title')
+        self.general_settings_title.setText(self._("general_settings"))
+
         self.no_choice_list.setText(self._("no_choice_list"))
         self.no_choice_list.setProperty('class', 'settings-checkbox')
+
         self.geometry_column_added.setText(self._("geometry_column_added"))
         self.geometry_column_added.setProperty('class', 'settings-checkbox')
         self.geometry_column_added.setChecked(True)
 
-        self.example_settings_titel.setProperty('class', 'settings-title')
-        self.example_settings_titel.setText(self._("example_settings"))
-        example_box = QFrame()
-        example_box_layout = QHBoxLayout()
-        self.example_label.setText(self._("amount_of_examples"))
-        self.example_label.setProperty('class', 'settings-label')
-        self.amount_of_examples.setRange(0, 100)
-        self.amount_of_examples.setValue(0)
+        self.non_otl_conform_settings_title.setText(self._("add_non_otl_conform_information"))
+        self.non_otl_conform_settings_title.setProperty('class', 'settings-title')
+
+        self.show_deprecated_attributes.setText(self._("show_deprecated_attributes"))
+        self.show_deprecated_attributes.setProperty('class', 'settings-checkbox')
+        self.show_deprecated_attributes.setEnabled(False)
+
         self.export_attribute_info.setText(self._("export_attribute_info"))
         self.export_attribute_info.setProperty('class', 'settings-checkbox')
-        # self.deprecated_titel.setText(self._("deprecated_settings"))
-        # self.deprecated_titel.setProperty('class', 'settings-title')
-        # self.show_deprecated_attributes.setText(self._("show_deprecated_attributes"))
-        # self.show_deprecated_attributes.setProperty('class', 'settings-checkbox')
 
-        example_box_layout.addWidget(self.example_label)
-        example_box_layout.addWidget(self.amount_of_examples)
-        example_box.setLayout(example_box_layout)
+        self.example_settings_title.setProperty('class', 'settings-title')
+        self.example_settings_title.setText(self._("example_settings"))
+
+        example_generation_container = self.create_example_generation_container()
 
         self.export_button.setText(self._("export"))
         self.export_button.setProperty('class', 'primary-button')
         self.export_button.clicked.connect(lambda: self.export_function())
 
-        options_menu_layout.addSpacing(10)
-        options_menu_layout.addWidget(self.general_settings_titel)
-        options_menu_layout.addWidget(self.no_choice_list)
-        options_menu_layout.addWidget(self.geometry_column_added)
-        options_menu_layout.addSpacing(10)
-        # options_menu_layout.addWidget(self.deprecated_titel)
-        # self.show_deprecated_attributes.setEnabled(True)
-        # options_menu_layout.addWidget(self.show_deprecated_attributes)
-        options_menu_layout.addSpacing(10)
-        options_menu_layout.addWidget(self.example_settings_titel)
-        options_menu_layout.addWidget(self.export_attribute_info)
-        options_menu_layout.addWidget(example_box)
-        options_menu_layout.addWidget(self.export_button, alignment=Qt.AlignmentFlag.AlignLeft)
-        options_menu_layout.addStretch()
-        options_menu.setLayout(options_menu_layout)
+        # build main layout
+        main_layout.addSpacing(10)
+        main_layout.addWidget(self.general_settings_title)
+
+        main_layout.addWidget(self.no_choice_list)
+        main_layout.addWidget(self.geometry_column_added)
+
+        main_layout.addSpacing(10)
+        main_layout.addWidget(self.non_otl_conform_settings_title)
+
+        main_layout.addWidget(self.show_deprecated_attributes)
+        main_layout.addWidget(self.export_attribute_info)
+
+        main_layout.addSpacing(10)
+        main_layout.addWidget(self.example_settings_title)
+
+        main_layout.addWidget(example_generation_container)
+        main_layout.addWidget(self.export_button, alignment=Qt.AlignmentFlag.AlignLeft)
+
+        main_layout.addStretch()
+
+        options_menu.setLayout(main_layout)
+
         return options_menu
+
+    def create_example_generation_container(self):
+        example_generation_container = QFrame()
+        example_box_layout = QHBoxLayout()
+        self.example_label.setText(self._("amount_of_examples"))
+        self.example_label.setProperty('class', 'settings-label')
+        self.amount_of_examples.setRange(0, 100)
+        self.amount_of_examples.setValue(0)
+        example_box_layout.addWidget(self.example_label)
+        example_box_layout.addWidget(self.amount_of_examples)
+        example_generation_container.setLayout(example_box_layout)
+        return example_generation_container
 
     def template_menu(self):
         full_window = QWidget()
@@ -197,8 +216,8 @@ class TemplateScreen(Screen):
                 item.setText(value.name)
                 item.setData(1, value.objectUri)
                 self.all_classes.addItem(item)
-                # if TemplateDomain.check_for_no_deprecated_present(values):
-                #     self.show_deprecated_attributes.setEnabled(False)
+                if TemplateDomain.check_for_no_deprecated_present(values):
+                    self.show_deprecated_attributes.setEnabled(False)
         except FileNotFoundError as e:
             self.all_classes.setEnabled(False)
             self.all_classes.addItem(self._("no classes found in specified path"))
@@ -290,7 +309,7 @@ class TemplateScreen(Screen):
         self.change_subset_btn.setText(self._("change_subset"))
         self.operator_title.setText(self._("operator") + ":")
         self.otl_title.setText(self._("otl_version") + ":")
-        self.general_settings_titel.setText(self._("general_settings"))
-        self.example_settings_titel.setText(self._("example_settings"))
-        self.deprecated_titel.setText(self._("deprecated_settings"))
+        self.general_settings_title.setText(self._("general_settings"))
+        self.example_settings_title.setText(self._("example_settings"))
+        self.non_otl_conform_settings_title.setText(self._("deprecated_settings"))
         self.label_counter.setText(self._("{selected} classes selected").format(selected=self.selected))
