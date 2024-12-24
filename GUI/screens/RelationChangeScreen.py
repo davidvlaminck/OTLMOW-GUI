@@ -45,6 +45,14 @@ class RelationChangeScreen(Screen):
 
         self.init_ui()
 
+    def set_gui_lists_to_loading_state(self):
+        self.objects_list_gui.clear()
+        self.possible_relation_list_gui.clear()
+        self.existing_relation_list_gui.clear()
+
+        self.objects_list_gui.add_loading_placeholder()
+        self.possible_relation_list_gui.add_loading_placeholder()
+        self.existing_relation_list_gui.add_loading_placeholder()
 
     def paintEvent(self, a0):
         self.synchronize_subtext_label_heights()

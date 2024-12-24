@@ -1,3 +1,4 @@
+import asyncio
 import inspect
 import logging
 import os
@@ -41,8 +42,8 @@ def save_assets(func):
 
 class RelationChangeDomain:
 
-    project:Project
-    collector:OSLOCollector
+    project:Project = None
+    collector:OSLOCollector = None
 
     aim_id_relations = []
 
@@ -90,21 +91,32 @@ class RelationChangeDomain:
         cls.external_object_added = False
 
         cls.all_OTL_asset_types_dict = {}
+
+
+        if global_vars.current_project:
+            event_loop = asyncio.get_event_loop()
+            event_loop.create_task(cls.load_project_relation_data())
+
+
+    @classmethod
+    async def load_project_relation_data(cls):
+        cls.get_screen().set_gui_lists_to_loading_state()
+        await asyncio.sleep(0)  # Give the UI thread the chance to switch the screen to
+        # RelationChangeScreen
+        await asyncio.sleep(0) # Give the UI thread another chance to switch the screen to
+        # RelationChangeScreen
+
         all_type_uris = get_hardcoded_class_dict()
         # all_type_uris = cls.list_all_non_abstract_class_type_uris(otl_assets_only=True)
-        for uri,info in all_type_uris.items():
-            abbr_type_uri = RelationChangeHelpers.get_abbreviated_typeURI(uri,add_namespace=True)
+        for uri, info in all_type_uris.items():
+            abbr_type_uri = RelationChangeHelpers.get_abbreviated_typeURI(uri, add_namespace=True)
             screen_name = info['label']
             if "#" in abbr_type_uri:
                 abbr_type_uri_split = abbr_type_uri.split("#")
                 screen_name = "#".join([screen_name, abbr_type_uri_split[0]])
 
             cls.all_OTL_asset_types_dict[screen_name] = uri
-
-
-
         cls.all_OTL_asset_types_dict = cls.sort_nested_dict(cls.all_OTL_asset_types_dict)
-
         cls.set_instances(cls.project.load_validated_assets())
         global_vars.otl_wizard.main_window.step3_visuals.reload_html()
 

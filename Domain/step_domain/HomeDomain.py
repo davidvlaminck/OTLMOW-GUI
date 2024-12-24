@@ -141,7 +141,7 @@ class HomeDomain:
 
         project.change_subset(new_path=Path(new_path))
 
-        TemplateDomain.start_fill_list()
+        TemplateDomain.init_static()
         RelationChangeDomain.init_static(project=project)
 
         main_window.reset_ui(GlobalTranslate._)
@@ -187,13 +187,15 @@ class HomeDomain:
         """
 
         selected_project = cls.projects[project_ref]
-
-        global_vars.otl_wizard.main_window.set_project(project=selected_project)
-
-        selected_project.load_saved_document_filenames()
         global_vars.current_project = selected_project
 
-        TemplateDomain.start_fill_list()
+        global_vars.otl_wizard.main_window.go_to_project()
+
+        selected_project.load_saved_document_filenames()
+
+        TemplateDomain.init_static()
+        InsertDataDomain.init_static()
+        global_vars.otl_wizard.main_window.enable_steps()
 
     @classmethod
     def process_upsert_dialog_input(cls, input_bestek: str, input_eigen_ref: str,

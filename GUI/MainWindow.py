@@ -5,8 +5,10 @@ from typing import List, Callable
 
 from PyQt6.QtWidgets import QStackedWidget, QWidget
 
+from Domain import global_vars
 from Domain.project.Project import Project
 from Domain.step_domain.HomeDomain import HomeDomain
+from Domain.step_domain.RelationChangeDomain import RelationChangeDomain
 from GUI.dialog_windows.NotificationWindow import NotificationWindow
 from GUI.screens.AssetDataChangeScreen import AssetDataChangeScreen
 from GUI.screens.DataVisualisationScreen import DataVisualisationScreen
@@ -103,12 +105,16 @@ class MainWindow(QStackedWidget):
         title = self._(e.error_window_title_key)
         NotificationWindow("{0}:\n{1}".format(message, e.file_path), title)
 
-    def set_project(self,project:Project) -> None:
-        # self.step1_tabwidget.tab1.project = project
-
-        self.step1_tabwidget.tab1.update_project_info(project)
-        self.step2_tabwidget.tab1.clear_all()
+    def go_to_project(self) -> None:
         self.setCurrentIndex(1)
 
-    def enable_steps(self):
+    def enable_steps(self) -> None:
         self.reset_ui(self._)
+
+    def setCurrentIndex(self, index):
+        # if you go to the RelationChangeScreen the information is updated if the project had changed
+        if index == 3 and (not RelationChangeDomain.project or RelationChangeDomain.project != global_vars.current_project):
+            RelationChangeDomain.init_static(project=global_vars.current_project)
+
+        super().setCurrentIndex(index)
+

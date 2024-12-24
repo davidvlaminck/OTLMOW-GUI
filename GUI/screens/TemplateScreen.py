@@ -447,7 +447,7 @@ class TemplateScreen(TemplateScreenInterface):
     def reset_ui(self, _) -> None:
         self._ = _
         
-        TemplateDomain.start_fill_list()
+        TemplateDomain.init_static()
             
         self.export_attribute_info.setText(self._("export_attribute_info"))
         self.geometry_column_added.setText(self._("geometry_column_added"))

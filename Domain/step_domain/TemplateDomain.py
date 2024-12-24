@@ -61,7 +61,7 @@ class TemplateDomain:
         screen.reset_ui( screen._)
 
     @classmethod
-    def start_fill_list(cls):
+    def init_static(cls):
         if global_vars.current_project:
             event_loop = asyncio.get_event_loop()
             event_loop.create_task(cls.fill_list())
@@ -86,9 +86,9 @@ class TemplateDomain:
             cls.get_screen().set_gui_list_to_no_classes_found()
 
         cls.get_screen().update_project_info(global_vars.current_project)
-        RelationChangeDomain.init_static(project= global_vars.current_project)
-        InsertDataDomain.init_static()
-        global_vars.otl_wizard.main_window.enable_steps()
+
+
+
 
     @classmethod
     def get_screen(cls) -> TemplateScreenInterface:
