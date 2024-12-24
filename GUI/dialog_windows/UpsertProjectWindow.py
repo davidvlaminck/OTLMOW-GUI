@@ -1,10 +1,11 @@
-from pathlib import Path
+import os
 from typing import Callable
 
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QDialog, QLabel, QVBoxLayout, QHBoxLayout, QLineEdit, QPushButton, QDialogButtonBox, \
     QFileDialog
 
+from Domain import global_vars
 from Domain.project.Project import Project
 from Domain.step_domain.HomeDomain import HomeDomain
 
@@ -186,7 +187,7 @@ class UpsertProjectWindow(QDialog):
 
 
     @staticmethod
-    def open_file_picker(input_subset):
+    def open_file_picker(input_subset: QLineEdit):
         """
         Opens a file picker dialog to select a subset file.
 
@@ -198,14 +199,16 @@ class UpsertProjectWindow(QDialog):
         :return: None
         """
 
-        if input_subset.text() == "":
-            file_path = str(Path.home())
-        else:
-            file_path = input_subset.text()
+        file_path = global_vars.get_start_dir_subset_selection(input_subset.text())
+
         file_picker = QFileDialog()
         file_picker.setWindowTitle("Selecteer subset")
         file_picker.setDirectory(file_path)
         file_picker.setNameFilter("Database files (*.db)")
         file_picker.setOption(QFileDialog.Option.ShowDirsOnly, True)
+
         if file_picker.exec():
-            input_subset.setText(file_picker.selectedFiles()[0])
+            selected = file_picker.selectedFiles()[0]
+            input_subset.setText(selected)
+            if selected:
+                global_vars.last_subset_selected_dir = os.path.dirname(selected)

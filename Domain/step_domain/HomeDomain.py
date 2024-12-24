@@ -112,7 +112,7 @@ class HomeDomain:
             return True
 
     @classmethod
-    def change_subset(cls, project: Project, new_path, main_window) -> None:
+    def change_subset(cls, new_path) -> None:
         """
         Changes the subset of a specified project and updates the associated UI components.
         This class method updates the project's last modified date, validates the new subset path,
@@ -133,15 +133,18 @@ class HomeDomain:
         :raises WrongDatabaseError: If the new path does not point to a valid subset database.
         """
 
+        project = global_vars.current_project
+        main_window = global_vars.otl_wizard.main_window
+
         if SubsetDatabase(db_path=Path(new_path)).is_valid_subset_database() is False:
             raise WrongDatabaseError("Wrong database")
 
         project.change_subset(new_path=Path(new_path))
 
-        main_window.widget(1).tab1.project = project
-        TemplateDomain.update_subset_information(screen=main_window.widget(1).tab1)
+        TemplateDomain.start_fill_list()
         RelationChangeDomain.init_static(project=project)
 
+        main_window.reset_ui(GlobalTranslate._)
 
     @classmethod
     def get_screen(cls) -> HomeScreenInterface:
@@ -190,10 +193,7 @@ class HomeDomain:
         selected_project.load_saved_document_filenames()
         global_vars.current_project = selected_project
 
-        template_screen = global_vars.otl_wizard.main_window.widget(1).tab1
-
-        event_loop = asyncio.get_event_loop()
-        event_loop.create_task(template_screen.fill_list())
+        TemplateDomain.start_fill_list()
 
     @classmethod
     def process_upsert_dialog_input(cls, input_bestek: str, input_eigen_ref: str,

@@ -104,10 +104,11 @@ class MainWindow(QStackedWidget):
         NotificationWindow("{0}:\n{1}".format(message, e.file_path), title)
 
     def set_project(self,project:Project) -> None:
-        self.step1_tabwidget.tab1.project = project
+        # self.step1_tabwidget.tab1.project = project
 
-        self.step1_tabwidget.tab1.update_project_info()
+        self.step1_tabwidget.tab1.update_project_info(project)
         self.step2_tabwidget.tab1.clear_all()
+        self.setCurrentIndex(1)
 
     def enable_steps(self):
         self.reset_ui(self._)
