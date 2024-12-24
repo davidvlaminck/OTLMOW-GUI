@@ -81,7 +81,8 @@ class HomeScreen(HomeScreenInterface):
         self.container_home_screen.addSpacing(43)
         # add table to the vertical layout with margins
         self.container_home_screen.addLayout(table_container)
-        self.container_home_screen.addStretch()
+        # self.container_home_screen.addStretch()
+        self.container_home_screen.addSpacing(10)
         self.container_home_screen.addWidget(AWV_logo_label, alignment=Qt.AlignmentFlag.AlignRight)
         self.container_home_screen.setContentsMargins(0, 0, 0, 0)
 

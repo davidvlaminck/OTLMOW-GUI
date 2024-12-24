@@ -67,7 +67,8 @@ class TemplateScreen(TemplateScreenInterface):
 
         self.main_layout.addSpacing(10)
         self.main_layout.addWidget(self.template_menu())
-        self.main_layout.addStretch()
+        # self.main_layout.addStretch()
+        self.main_layout.addSpacing(10)
         self.main_layout.setContentsMargins(0, 0, 0, 0)
         self.setLayout(self.main_layout)
 

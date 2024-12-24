@@ -2,8 +2,9 @@ import logging
 from pathlib import Path
 
 from PyQt6.QtCore import Qt, QSize
-from PyQt6.QtWidgets import QVBoxLayout, QWidget, QLabel, QPushButton, QFrame, QHBoxLayout, QListWidget, \
-    QFileDialog, QListWidgetItem, QTreeWidget, QTreeWidgetItem, QHeaderView
+from PyQt6.QtWidgets import QVBoxLayout, QWidget, QLabel, QPushButton, QFrame, QHBoxLayout, \
+    QListWidget, \
+    QFileDialog, QListWidgetItem, QTreeWidget, QTreeWidgetItem, QHeaderView, QSizePolicy
 
 from Exceptions.NoIdentificatorError import NoIdentificatorError
 from otlmow_converter.Exceptions.ExceptionsGroup import ExceptionsGroup
@@ -54,7 +55,8 @@ class InsertDataScreen(Screen):
     def init_ui(self):
         self.container_insert_data_screen.addSpacing(10)
         self.container_insert_data_screen.addWidget(self.create_menu())
-        self.container_insert_data_screen.addStretch()
+        # self.container_insert_data_screen.addStretch()
+        self.container_insert_data_screen.addSpacing(10)
         self.container_insert_data_screen.setContentsMargins(0, 0, 0, 0)
         self.setLayout(self.container_insert_data_screen)
 
@@ -63,7 +65,9 @@ class InsertDataScreen(Screen):
         window.setProperty('class', 'background-box')
         window_layout = QHBoxLayout()
         left_side = self.left_side()
+        left_side.setSizePolicy(QSizePolicy.Policy.Expanding,QSizePolicy.Policy.Expanding )
         right_side = self.right_side()
+        right_side.setSizePolicy(QSizePolicy.Policy.Expanding,QSizePolicy.Policy.Expanding )
         window_layout.setContentsMargins(32, 0, 16, 0)
         window_layout.addWidget(left_side)
         window_layout.addWidget(right_side)
@@ -136,6 +140,7 @@ class InsertDataScreen(Screen):
         input_file = QFrame()
         input_file_layout = QHBoxLayout()
         self.project_files_overview_field.setColumnCount(3)
+        self.project_files_overview_field.setSizePolicy(QSizePolicy.Policy.Expanding,QSizePolicy.Policy.Expanding )
         header = self.project_files_overview_field.header()
         header.setSectionResizeMode(1, QHeaderView.ResizeMode.Stretch)
         header.setStretchLastSection(False)
@@ -148,12 +153,14 @@ class InsertDataScreen(Screen):
         left_side = QFrame()
         left_side_layout = QVBoxLayout()
         # left_side_layout.addSpacing(100)
+        left_side_layout.addSpacing(10)
         self.input_file_label.setText(self._('input_file'))
         left_side_layout.addWidget(self.input_file_label)
-        left_side_layout.addWidget(self.add_input_file_field(), alignment=Qt.AlignmentFlag.AlignBottom)
-        left_side_layout.addWidget(self.button_set(), alignment=Qt.AlignmentFlag.AlignTop)
-        left_side_layout.addSpacing(30)
-        left_side_layout.addStretch()
+        left_side_layout.addWidget(self.add_input_file_field())
+        left_side_layout.addWidget(self.button_set())
+        left_side_layout.addWidget(self.construct_dummy_feedback_message())
+        left_side_layout.addSpacing(10)
+
         left_side.setLayout(left_side_layout)
         return left_side
 
@@ -163,10 +170,13 @@ class InsertDataScreen(Screen):
         list_item = self.add_list()
         self.construct_feedback_message()
         # right_side_layout.addSpacing(100)
+        right_side_layout.addSpacing(10)
         right_side_layout.addWidget(list_item)
-        right_side_layout.addWidget(self.feedback_message_box, alignment=Qt.AlignmentFlag.AlignTop)
+        right_side_layout.addWidget(self.feedback_message_box)
+        right_side_layout.addSpacing(10)
         right_side.setLayout(right_side_layout)
-        right_side_layout.addStretch()
+
+        # right_side_layout.addStretch()
         return right_side
 
     def construct_feedback_message(self):
@@ -175,12 +185,25 @@ class InsertDataScreen(Screen):
         frame_layout.addWidget(self.message_icon)
         self.message.setProperty('class', 'feedback-message')
         frame_layout.addWidget(self.message)
-        frame_layout.addStretch()
+        # frame_layout.addStretch()
         self.feedback_message_box.setLayout(frame_layout)
+
+    def construct_dummy_feedback_message(self) -> QFrame:
+        dummy_feedback = QFrame()
+        frame_layout = QHBoxLayout()
+        frame_layout.addWidget(QLabel())
+        dummy_message = QLabel()
+        dummy_message.setProperty('class', 'feedback-message')
+        frame_layout.addWidget(dummy_message)
+        # frame_layout.addStretch()
+        dummy_feedback.setLayout(frame_layout)
+        return dummy_feedback
+
 
     def add_list(self):
         frame = QFrame()
         frame_layout = QHBoxLayout()
+        self.asset_info.setSizePolicy(QSizePolicy.Policy.Expanding,QSizePolicy.Policy.Expanding)
         frame_layout.addWidget(self.asset_info)
         frame_layout.setContentsMargins(0, 30, 50, 85)
         frame.setLayout(frame_layout)
