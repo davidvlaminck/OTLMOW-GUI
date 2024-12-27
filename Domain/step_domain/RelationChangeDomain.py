@@ -542,7 +542,7 @@ class RelationChangeDomain:
     def add_relation_object_to_existing_relations(cls, relation_object):
         relation_object.isActief = True
         cls.existing_relations.append(relation_object)
-        cls.get_screen().expand_existing_relations_folder_of(relation_object.typeURI)
+        cls.get_screen().expand_existing_relations_folder_of(relation_typeURI=relation_object.typeURI)
 
     @classmethod
     def update_frontend(cls):
@@ -567,7 +567,7 @@ class RelationChangeDomain:
         #if the removed relation already had a AIM ID it is set to false and kept if not it is
         # removed and made again in the possible relations
         removed_relation.isActief = False
-        cls.get_screen().expand_possible_relations_folder_of(removed_relation.typeURI)
+        cls.get_screen().expand_possible_relations_folder_of(relation_typeURI=removed_relation.typeURI)
 
         return removed_relation
 
@@ -582,12 +582,13 @@ class RelationChangeDomain:
     @classmethod
     def select_existing_relation_indices(cls, indices: list[int]) -> None:
         if not indices:
-            cls.get_screen().fill_existing_relation_attribute_field({})
+            cls.get_screen().fill_existing_relation_attribute_field(existing_relation_attribute_dict={})
             return
         
         last_index = indices[-1]
         last_selected_relation = cls.existing_relations[last_index]
-        cls.get_screen().fill_existing_relation_attribute_field(DotnotationDictConverter.to_dict(last_selected_relation))
+        cls.get_screen().fill_existing_relation_attribute_field(
+            existing_relation_attribute_dict=DotnotationDictConverter.to_dict(last_selected_relation))
 
     @classmethod
     def select_possible_relation_data(cls, selected_relations_data: list) -> None:
