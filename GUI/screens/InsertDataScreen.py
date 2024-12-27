@@ -165,8 +165,12 @@ class InsertDataScreen(Screen):
         button_frame_layout.addStretch()
         button_frame_layout.addWidget(self.control_button)
         button_frame_layout.addWidget(reset_button)
+        button_frame_layout.setContentsMargins(11, 11, 11, 0)
 
         button_frame.setLayout(button_frame_layout)
+
+        self.warning_feedback_message()
+        self.clear_feedback_message()
 
         return button_frame
 
@@ -262,7 +266,7 @@ class InsertDataScreen(Screen):
             QFrame: The configured frame containing the project files overview field.
         """
 
-        input_file = QFrame()
+        input_file_frame = QFrame()
         input_file_layout = QHBoxLayout()
 
         self.project_files_overview_field.setColumnCount(3)
@@ -275,9 +279,9 @@ class InsertDataScreen(Screen):
 
         input_file_layout.addWidget(self.project_files_overview_field)
 
-        input_file.setLayout(input_file_layout)
+        input_file_frame.setLayout(input_file_layout)
 
-        return input_file
+        return input_file_frame
 
 
     def left_side(self) -> QFrame:
@@ -304,9 +308,10 @@ class InsertDataScreen(Screen):
 
         left_side_layout.addWidget(self.input_file_label)
         left_side_layout.addWidget(self.add_input_file_field())
-        left_side_layout.addWidget(self.button_set())
-        left_side_layout.addWidget(self.construct_dummy_feedback_message())
+        left_side_layout.addWidget(self.button_set(),alignment=Qt.AlignmentFlag.AlignBottom)
         left_side_layout.addSpacing(10)
+        left_side_layout.setStretch(2, 1)
+
 
         left_side.setLayout(left_side_layout)
         return left_side
@@ -336,6 +341,7 @@ class InsertDataScreen(Screen):
         right_side_layout.addWidget(self.add_list())
         right_side_layout.addWidget(self.feedback_message_box)
         right_side_layout.addSpacing(10)
+        right_side_layout.setStretch(1, 1)
 
         right_side.setLayout(right_side_layout)
 
@@ -417,7 +423,7 @@ class InsertDataScreen(Screen):
         self.asset_info.setSizePolicy(QSizePolicy.Policy.Expanding,QSizePolicy.Policy.Expanding)
 
         frame_layout.addWidget(self.asset_info)
-        frame_layout.setContentsMargins(0, 30, 50, 85)
+        frame_layout.setContentsMargins(0, 30, 0, 85)
 
         frame.setLayout(frame_layout)
 
