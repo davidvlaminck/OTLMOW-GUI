@@ -546,7 +546,7 @@ class InsertDataScreen(Screen):
         file_picker.setNameFilter(filters)
 
         if file_picker.exec():
-            InsertDataDomain.add_files_to_backend_list(file_picker.selectedFiles())
+            InsertDataDomain.add_files_to_backend_list(files=file_picker.selectedFiles())
             self.clear_feedback()
 
 

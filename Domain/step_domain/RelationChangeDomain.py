@@ -45,23 +45,23 @@ class RelationChangeDomain:
     project:Project = None
     collector:OSLOCollector = None
 
-    aim_id_relations = []
-
-    internal_objects: list[AIMObject] = []
-    external_objects: list[AIMObject] = []
-    agent_objects: list[Agent] = []
-    shown_objects: list[OTLObject] = []
 
 
-    existing_relations: list[RelatieObject] = []
+    internal_objects: list[AIMObject] = [] # Object in the project (placed by contractor)
+    external_objects: list[AIMObject] = [] # Object outside the project (from DAVIE)
+    agent_objects: list[Agent] = []        # Agent objects (not an AIMobject)
+    shown_objects: list[OTLObject] = []    # All objects combined that are displayed on GUI (col 1)
+
     possible_relations_per_class_dict: dict[str,list[OSLORelatie]] = {}
-    possible_object_to_object_relations_dict: dict[str,dict[str,list[RelatieObject]]] =  {}
+    possible_object_to_object_relations_dict: dict[str, dict[str, list[RelatieObject]]] = {}#(col 2)
+
+    existing_relations: list[RelatieObject] = []  # relations
+    aim_id_relations = [] # pre-existing relations from DAVIE
 
 
-
-    selected_object: Optional[AIMObject] = None
-    last_added_to_existing: Optional[list[AIMObject]] = []
-    last_added_to_possible: Optional[list[AIMObject]] = []
+    selected_object: Optional[AIMObject] = None # the asset/agent in col 1 currently selected by user
+    last_added_to_existing: Optional[list[AIMObject]] = [] # relation last added to col 3
+    last_added_to_possible: Optional[list[AIMObject]] = [] # relation last added to col 2
 
     all_OTL_asset_types_dict = {}
 
@@ -69,11 +69,22 @@ class RelationChangeDomain:
 
     no_id_count = 0
 
-    """
-    Call this when the project or project.subset_path changes or everytime you go to the window
-    """
     @classmethod
-    def init_static(cls, project:Project):
+    def init_static(cls, project: Project) -> None:
+        """
+        Initializes static resources for the RelationChangeDomain class.
+        Call this when the project or project.subset_path changes or everytime you go to the window
+
+        This method sets up the project and initializes various attributes related
+        to object relations, including collectors and lists for managing internal
+        and external objects. It also starts loading project relation data asynchronously.
+
+        :param cls: The class itself.
+        :param project: The project to be initialized.
+        :type project: Project
+        :returns: None
+        """
+
         cls.project = project
         cls.collector = OSLOCollector(project.subset_path)
         cls.collector.collect_all()
@@ -97,9 +108,19 @@ class RelationChangeDomain:
             event_loop = asyncio.get_event_loop()
             event_loop.create_task(cls.load_project_relation_data())
 
-
     @classmethod
-    async def load_project_relation_data(cls):
+    async def load_project_relation_data(cls) -> None:
+        """
+        Loads project relation data asynchronously.
+
+        This method sets the GUI to a loading state while it retrieves and processes
+        project relation data. It populates a dictionary with asset type URIs and
+        updates the user interface accordingly once the data is loaded.
+
+        :param cls: The class itself.
+        :returns: None
+        """
+
         cls.get_screen().set_gui_lists_to_loading_state()
         await asyncio.sleep(0)  # Give the UI thread the chance to switch the screen to
         # RelationChangeScreen
@@ -499,7 +520,7 @@ class RelationChangeDomain:
                 data.target_id].pop(data.index)) for data in data_list]
             cls.get_screen().showMultiSelectionHeeftBetrokkeneAttributeDialogWindow(data_list_and_relation_objects)
         else:
-            cls.last_added_to_existing = [RelationChangeDomain.add_possible_relation_to_existing_relations(data.source_id,
+            cls.last_added_to_existing = [RelationChangeDomain.dadd_possible_relation_to_existing_relations(data.source_id,
                                                                              data.target_id,
                                                                              data.index) for data in data_list]
         cls.update_frontend()

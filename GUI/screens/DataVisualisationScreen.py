@@ -111,7 +111,7 @@ class DataVisualisationScreen(Screen):
     def reload_html(self):
         self.objects_in_memory = self.load_assets()
         self.fill_frame_layout_legend()
-        self.create_html(self.objects_in_memory)
+        self.create_html(objects_in_memory=self.objects_in_memory)
 
         # self.view.reload()
 
