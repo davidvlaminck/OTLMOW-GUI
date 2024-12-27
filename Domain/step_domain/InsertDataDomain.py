@@ -31,6 +31,30 @@ from otlmow_converter.OtlmowConverter import OtlmowConverter
 
 
 class InsertDataDomain:
+    """
+    Handles operations related to inserting and validating documents wih objects.
+
+    This class provides methods for managing the insertion of data, including
+    loading and validating documents, managing relations, and synchronizing
+    data between the backend and frontend. It also includes functionality for
+    handling exceptions related to data integrity.
+
+    :param None:
+    :attributes:
+        project (optional): The current project associated with the data insertion.
+        collector (OSLOCollector): Collector for managing OSLO data.
+        selected_object (optional): The currently selected object in the UI.
+        shown_objects (list): List of objects currently displayed in the UI.
+        internal_objects (list): List of internal objects related to the project.
+        external_objects (list): List of external objects related to the project.
+        existing_relations (list): List of existing relations between objects.
+        possible_relations_per_class_dict (dict): Dictionary of possible relations per class.
+        possible_object_to_object_relations_dict (dict): Dictionary of possible relations between objects.
+        aim_id_relations (list): List of relations identified by AIM IDs.
+        no_id_count (int): Counter for objects without identifiers.
+        external_object_added (bool): Flag indicating if an external object has been added.
+        all_OTL_asset_types_dict (dict): Dictionary of all OTL asset types.
+    """
 
     @classmethod
     def init_static(cls):
