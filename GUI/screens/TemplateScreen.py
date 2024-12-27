@@ -15,6 +15,41 @@ from LatestReleaseMulti.OTLWizard.data.otlmow_modelbuilder.SQLDataClasses.OSLOCl
 
 
 class TemplateScreen(TemplateScreenInterface):
+    """Represents the template screen for managing project settings and data export.
+
+    This class provides a user interface for exporting templates.
+    It includes various UI components such as labels, buttons, checkboxes, and lists to facilitate
+    user interactions and display relevant information.
+
+    Args:
+        language_settings (optional): Language settings for the user interface.
+
+    Attributes:
+        project (optional): The current project associated with the template screen.
+        main_window (optional): Reference to the main application window.
+        main_layout (QVBoxLayout): Layout for organizing UI components vertically.
+        subset_name (QLabel): Label for displaying the subset name.
+        operator_name (QLabel): Label for displaying the operator's name.
+        otl_version (QLabel): Label for displaying the OTL version.
+        operator_title (QLabel): Label for the operator title.
+        otl_title (QLabel): Label for the OTL title.
+        change_subset_btn (ButtonWidget): Button for changing the subset.
+        general_settings_title (QLabel): Title label for general settings.
+        no_choice_list (QCheckBox): Checkbox for no choice list option.
+        geometry_column_added (QCheckBox): Checkbox for geometry column addition.
+        export_button (ButtonWidget): Button for exporting data.
+        export_attribute_info (QCheckBox): Checkbox for exporting attribute information.
+        show_deprecated_attributes (QCheckBox): Checkbox for showing deprecated attributes.
+        example_amount_label (QLabel): Label for the example amount setting.
+        non_otl_conform_settings_title (QLabel): Title label for non-OTL conform settings.
+        amount_of_examples (QSpinBox): Spin box for specifying the amount of examples.
+        example_settings_title (QLabel): Title label for example settings.
+        select_all_classes (QCheckBox): Checkbox for selecting all classes.
+        all_classes (QListWidget): List widget for displaying available classes.
+        selected (int): Counter for the number of selected classes.
+        label_counter (QLabel): Label for displaying the count of selected classes.
+    """
+
     def __init__(self, language_settings=None):
         super().__init__()
         self._ = language_settings

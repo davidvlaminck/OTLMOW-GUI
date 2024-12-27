@@ -25,6 +25,26 @@ IMG_DIR = ROOT_DIR.parent.parent / 'img/'
 
 
 class HomeScreen(HomeScreenInterface):
+    """
+    Represents the home screen of the application for managing projects.
+
+    This class provides the user interface for searching and displaying project information,
+    including options for exporting data and managing project settings. It integrates various
+    UI components such as input fields, buttons, and tables to facilitate user interactions.
+
+    Args:
+        language_settings (optional): Language settings for the user interface.
+
+    Attributes:
+        project (optional): The current project associated with the home screen.
+        main_window (optional): Reference to the main application window.
+        main_layout (QVBoxLayout): Layout for organizing UI components vertically.
+        search_input_field (QLineEdit): Input field for entering search queries.
+        search_message (QLabel): Label for displaying search-related messages.
+        table (OverviewTable): Table for displaying project data.
+        header (HeaderBar): Header bar for the home screen.
+    """
+
 
     def __init__(self, language_settings=None):
         super().__init__()

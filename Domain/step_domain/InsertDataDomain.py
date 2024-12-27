@@ -93,7 +93,7 @@ class InsertDataDomain:
         all_valid = True
         cls.get_screen().project_files_overview_field.clear()
         for item in global_vars.current_project.get_saved_projectfiles():
-            cls.get_screen().add_file_to_frontend_list(item.file_path,item.state)
+            cls.get_screen().add_file_to_frontend_list(file=item.file_path,asset_state=item.state)
             if item.state != FileState.OK:
                 all_valid = False
 
