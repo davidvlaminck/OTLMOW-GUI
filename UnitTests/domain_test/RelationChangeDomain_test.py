@@ -440,8 +440,10 @@ def test_full_remove_existing_relation(root_directory:Path,
     assert removed_relation not in RelationChangeDomain.existing_relations
 
     # force update of the backend possible relations lists
-    RelationChangeDomain.set_possible_relations(RelationChangeDomain.get_object(bron_asset_id))
-    RelationChangeDomain.set_possible_relations(RelationChangeDomain.get_object(target_asset_id))
+    RelationChangeDomain.set_possible_relations(
+        selected_object=RelationChangeDomain.get_object(identificator=bron_asset_id))
+    RelationChangeDomain.set_possible_relations(
+        selected_object=RelationChangeDomain.get_object(identificator=target_asset_id))
 
     l1 = RelationChangeDomain.possible_object_to_object_relations_dict[bron_asset_id][target_asset_id]
     l2 = RelationChangeDomain.possible_object_to_object_relations_dict[target_asset_id][bron_asset_id]

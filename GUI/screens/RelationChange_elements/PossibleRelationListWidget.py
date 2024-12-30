@@ -1,3 +1,4 @@
+import logging
 from collections import namedtuple
 from typing import Union
 
@@ -147,58 +148,81 @@ class PossibleRelationListWidget(AbstractInstanceListWidget):
         for target_identificator, target_relations in objects.items():
 
             for i, relation in enumerate(target_relations):
+                relation_source_id:str = relation.bronAssetId.identificator
+                relation_target_id: str = relation.doelAssetId.identificator
 
                 target_object: OTLObject = RelationChangeDomain.get_object(
-                    relation.doelAssetId.identificator)
-
-                if target_object is None:
-                    raise ValueError("target_object is None")
-                if source_object is None:
-                    raise ValueError("source_object is None")
+                                                                identificator=relation_target_id)
+                try:
+                    if target_object is None:
+                        raise ValueError("target_object is None")
+                    if source_object is None:
+                        raise ValueError("source_object is None")
+                except Exception as e:
+                    logging.debug(f"target or source are None in relation {relation.typeURI} \n{e}")
+                    continue
                 # if the target of the relation is the current selected object then you should
                 # display the source object of the relation
-                if target_object == source_object:
+                if target_object and source_object and target_object == source_object:
                     target_object =  RelationChangeDomain.get_object(
-                    relation.bronAssetId.identificator)
+                                                          identificator=relation_source_id)
 
                 #  if the new target_object is still the same as the source_object something is wrong
-                if target_object == source_object:
+                if target_object and source_object and target_object == source_object:
                     raise ValueError()
 
-
+                # determine the icon that indicates direction
                 direction = ""
-                if OTLObjectHelper.is_directional_relation(relation):
-                    if relation.bronAssetId.identificator == target_identificator:
-                        direction = RelationChangeHelpers.get_screen_icon_direction(
-                            "Destination -> Source")
-                        target_object = RelationChangeDomain.get_object(
-                            relation.bronAssetId.identificator)
+                if OTLObjectHelper.is_directional_relation(otl_object=relation):
+                    if relation_source_id == target_identificator:
+                        direction = RelationChangeHelpers.incoming_direction_icon
+
                     else:
-                        direction = RelationChangeHelpers.get_screen_icon_direction(
-                            "Source -> Destination")
-
+                        direction = RelationChangeHelpers.outgoing_direction_icon
                 else:
-                    direction = RelationChangeHelpers.get_screen_icon_direction("Unspecified")
+                    direction = RelationChangeHelpers.unspecified_direction_icon
 
-                screen_name = RelationChangeHelpers.get_screen_name(target_object)
+                real_source_id: str = RelationChangeHelpers.get_correct_identificator(
+                    otl_object=source_object)
+                abbr_relation_typeURI: str = RelationChangeHelpers.get_abbreviated_typeURI(
+                    typeURI=relation.typeURI,
+                    add_namespace=False,
+                    is_relation=OTLObjectHelper.is_relation(relation))
+                target_screen_name:str = RelationChangeHelpers.get_screen_name(otl_object=target_object)
 
-                add_target_namespace = RelationChangeHelpers.is_unique_across_namespaces(
-                    target_object.typeURI,
-                    RelationChangeDomain.shown_objects)
-                abbr_target_object_typeURI = RelationChangeHelpers.get_abbreviated_typeURI(
-                    target_object.typeURI,
-                    add_target_namespace,
-                    OTLObjectHelper.is_relation(target_object))
+                try:
+                    add_target_namespace:bool = RelationChangeHelpers.is_unique_across_namespaces(
+                        typeURI=target_object.typeURI,
+                        objects=RelationChangeDomain.shown_objects)
+                    abbr_target_object_typeURI:str = RelationChangeHelpers.get_abbreviated_typeURI(
+                        typeURI=target_object.typeURI,
+                        add_namespace=add_target_namespace,
+                        is_relation=OTLObjectHelper.is_relation(target_object))
 
-                abbr_relation_typeURI = RelationChangeHelpers.get_abbreviated_typeURI(
-                    relation.typeURI, False,
-                    OTLObjectHelper.is_relation(relation))
+                    is_last_added:bool =    (relation.assetId.identificator in
+                                            [e.assetId.identificator for e in last_added])
 
-                list_of_corresponding_values.append({
-                    "text": self.Text(abbr_relation_typeURI, direction, screen_name,
-                                      abbr_target_object_typeURI,relation.typeURI),
-                    "data": self.Data(RelationChangeHelpers.get_correct_identificator(source_object), target_identificator, i,relation.assetId.identificator in [e.assetId.identificator for e in last_added])
-                })
+                    list_of_corresponding_values.append({
+                        "text": self.Text(typeURI=abbr_relation_typeURI,
+                                          direction=direction,
+                                          screen_name=target_screen_name,
+                                          target_typeURI=abbr_target_object_typeURI,
+                                          full_typeURI=relation.typeURI),
+                        "data": self.Data(source_id=real_source_id ,
+                                          target_id=target_identificator,
+                                          index=i,
+                                          last_added=is_last_added)
+                    })
+                except Exception as e:
+                    target_screen_name: str = RelationChangeHelpers.get_screen_name(
+                        otl_object=target_object)
+                    abbr_relation_typeURI: str = RelationChangeHelpers.get_abbreviated_typeURI(
+                        typeURI=relation.typeURI,
+                        add_namespace=False,
+                        is_relation=OTLObjectHelper.is_relation(relation))
+                    real_source_id: str = RelationChangeHelpers.get_correct_identificator(
+                        otl_object=source_object)
+                    logging.debug(f"Couldn't make relation {abbr_relation_typeURI}: {real_source_id} {direction} {target_screen_name} because \n{e}")
         list_of_corresponding_values.sort(key=lambda val: (
             val['text'].target_typeURI, val['text'].screen_name, val['text'].typeURI))
         return list_of_corresponding_values

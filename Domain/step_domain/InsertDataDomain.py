@@ -16,6 +16,7 @@ from otlmow_model.OtlmowModel.Classes.ImplementatieElement.RelatieObject import 
 from otlmow_model.OtlmowModel.Helpers import OTLObjectHelper, RelationValidator
 
 from Domain import global_vars
+from Domain.Helpers import Helpers
 from Domain.project.Project import Project
 from Domain.step_domain.RelationChangeDomain import RelationChangeDomain, save_assets
 from Domain.enums import FileState
@@ -53,7 +54,6 @@ class InsertDataDomain:
         aim_id_relations (list): List of relations identified by AIM IDs.
         no_id_count (int): Counter for objects without identifiers.
         external_object_added (bool): Flag indicating if an external object has been added.
-        all_OTL_asset_types_dict (dict): Dictionary of all OTL asset types.
     """
 
     @classmethod
@@ -347,7 +347,7 @@ class InsertDataDomain:
             if OTLObjectHelper.is_relation(otl_object=asset):
 
                 relation = cast(RelatieObject, asset)
-                if relation.bron.typeURI not in RelationChangeDomain.all_OTL_asset_types_dict.values():
+                if relation.bron.typeURI not in Helpers.all_OTL_asset_types_dict.values():
                     ex = RelationHasNonExistingTypeUriForSourceOrTarget(
                         relation_type_uri=relation.typeURI,
                         relation_identificator=relation.assetId.identificator,
@@ -357,7 +357,7 @@ class InsertDataDomain:
                             asset.typeURI,False))
                     exception_group.add_exception(error=ex)
 
-                if relation.doel.typeURI not in RelationChangeDomain.all_OTL_asset_types_dict.values():
+                if relation.doel.typeURI not in Helpers.all_OTL_asset_types_dict.values():
                     ex = RelationHasNonExistingTypeUriForSourceOrTarget(
                         relation_type_uri=relation.typeURI,
                         relation_identificator=relation.assetId.identificator,

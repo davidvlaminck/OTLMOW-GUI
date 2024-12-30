@@ -22,8 +22,8 @@ from otlmow_modelbuilder.OSLOCollector import OSLOCollector
 from otlmow_modelbuilder.SQLDataClasses.OSLORelatie import OSLORelatie
 
 from Domain import global_vars
+from Domain.Helpers import Helpers
 from Domain.project.Project import Project
-from Domain.project.ProgramFileManager import ProgramFileManager
 
 from GUI.screens.RelationChange_elements.RelationChangeHelpers import RelationChangeHelpers, \
     SITE_PACKAGES_ROOT
@@ -31,6 +31,16 @@ from GUI.screens.RelationChange_elements.RelationChangeHelpers import RelationCh
 ROOT_DIR = Path(__file__).parent.parent
 
 def save_assets(func):
+    """Decorator that saves assets after executing the decorated function.
+
+    This decorator wraps a function to ensure that after its execution, the current
+    project's assets in memory are updated and saved. It also starts the event loop
+    for the header in the main window to animate the OTL Wizard 2 logo during saving.
+
+    :param func: The function to be decorated.
+    :returns: The wrapper function that includes the saving logic.
+    """
+
     def wrapper_func(*args, **kwargs):
         res = func(*args, **kwargs)
         global_vars.current_project.assets_in_memory = RelationChangeDomain.get_quicksave_instances()
@@ -44,8 +54,6 @@ class RelationChangeDomain:
 
     project:Project = None
     collector:OSLOCollector = None
-
-
 
     internal_objects: list[AIMObject] = [] # Object in the project (placed by contractor)
     external_objects: list[AIMObject] = [] # Object outside the project (from DAVIE)
@@ -62,8 +70,6 @@ class RelationChangeDomain:
     selected_object: Optional[AIMObject] = None # the asset/agent in col 1 currently selected by user
     last_added_to_existing: Optional[list[AIMObject]] = [] # relation last added to col 3
     last_added_to_possible: Optional[list[AIMObject]] = [] # relation last added to col 2
-
-    all_OTL_asset_types_dict = {}
 
     external_object_added = False
 
@@ -101,8 +107,6 @@ class RelationChangeDomain:
         cls.no_id_count = 0
         cls.external_object_added = False
 
-        cls.all_OTL_asset_types_dict = {}
-
 
         if global_vars.current_project:
             event_loop = asyncio.get_event_loop()
@@ -122,73 +126,31 @@ class RelationChangeDomain:
         """
 
         cls.get_screen().set_gui_lists_to_loading_state()
+
         await asyncio.sleep(0)  # Give the UI thread the chance to switch the screen to
-        # RelationChangeScreen
-        await asyncio.sleep(0) # Give the UI thread another chance to switch the screen to
-        # RelationChangeScreen
+                                # RelationChangeScreen
+        await asyncio.sleep(0)  # Give the UI thread another chance to switch the screen to
+                                # RelationChangeScreen
 
-        all_type_uris = get_hardcoded_class_dict()
-        # all_type_uris = cls.list_all_non_abstract_class_type_uris(otl_assets_only=True)
-        for uri, info in all_type_uris.items():
-            abbr_type_uri = RelationChangeHelpers.get_abbreviated_typeURI(uri, add_namespace=True)
-            screen_name = info['label']
-            if "#" in abbr_type_uri:
-                abbr_type_uri_split = abbr_type_uri.split("#")
-                screen_name = "#".join([screen_name, abbr_type_uri_split[0]])
-
-            cls.all_OTL_asset_types_dict[screen_name] = uri
-        cls.all_OTL_asset_types_dict = cls.sort_nested_dict(cls.all_OTL_asset_types_dict)
+        Helpers.create_external_typeURI_options()
         cls.set_instances(cls.project.load_validated_assets())
         global_vars.otl_wizard.main_window.step3_visuals.reload_html()
 
     @classmethod
-    def list_all_non_abstract_class_type_uris(cls, otl_assets_only=False,
-                                              model_directory='otlmow_model/OtlmowModel'):
-        classes_to_instantiate = {}
-        type_uri_list: List[str] = []
+    def set_instances(cls, objects_list: List[AIMObject]) -> None:
+        """Processes and categorizes AIM objects for relation management.
 
-        class_location = Path(SITE_PACKAGES_ROOT) / model_directory / 'Classes/'
+        This method takes a list of AIM objects and categorizes them into various
+        groups based on their properties.
+        It updates the class attributes to reflect the current state of these objects
+        and ensures that the user interface is populated with the correct information.
 
-        for location, dirs, file in os.walk(class_location):
-            dirs.remove("__pycache__")
+        :param cls: The class itself.
+        :param objects_list: A list of AIM objects to be processed and categorized.
+        :type objects_list: List[AIMObject]
+        :returns: None
+        """
 
-            for dir in dirs:
-                dir_location = Path(location, dir)
-
-                for f in os.listdir(dir_location):
-                    f = str(f)
-                    if not os.path.isfile(dir_location / f):
-                        continue
-                    classes_to_instantiate[Path(f).stem] = Path(
-                        dir_location / Path(f).stem).resolve()
-
-        classes_to_instantiate['Agent'] = class_location / 'Agent'
-
-        for class_name, file_path in classes_to_instantiate.items():
-
-            try:
-                import_path = f'{file_path.parts[-3]}.{file_path.parts[-2]}.{file_path.parts[-1]}'
-                if "Agent" in str(file_path.absolute()):
-                    import_path = f'{file_path.parts[-2]}.{file_path.parts[-1]}'
-                if 'otlmow_model' not in import_path:
-                    import_path = 'otlmow_model.OtlmowModel.' + import_path
-
-                py_mod = __import__(name=import_path, fromlist=f'{class_name}')
-            except ModuleNotFoundError:
-                raise ModuleNotFoundError(f'Could not import the module for {import_path}')
-
-            class_ = getattr(py_mod, class_name)
-
-            if not inspect.isabstract(class_):
-                instance = class_()
-                if hasattr(instance, "typeURI"):
-                    if otl_assets_only and OTLObjectHelper.is_relation(instance):
-                        continue
-                    type_uri_list.append(instance.typeURI)
-        return type_uri_list
-
-    @classmethod
-    def set_instances(cls, objects_list: List[AIMObject]):
         cls.existing_relations = []
         cls.aim_id_relations = []
 
@@ -200,23 +162,24 @@ class RelationChangeDomain:
         for instance in objects_list:
 
             if is_relation(instance):
-                relation_instance = cast(RelatieObject,instance)
-
+                relation_instance:RelatieObject = instance
                 is_aim_id = False
                 try:
                     is_aim_id = OTLObjectHelper.is_aim_id(relation_instance.assetId.identificator)
-                except :
+                except Exception:
                     pass
+
                 if is_aim_id or not relation_instance.isActief:
                     cls.aim_id_relations.append(relation_instance)
                 else:
                     cls.existing_relations.append(relation_instance)
+
             else:
                 if instance.typeURI == 'http://purl.org/dc/terms/Agent':
-                    cls.agent_objects.append(instance)
+                    agent_instance: Agent = instance
+                    cls.agent_objects.append(agent_instance)
                 elif instance.assetId.toegekendDoor == global_vars.external_toegekendDoor_label:
                     cls.external_objects.append(instance)
-
                 else:
                     cls.internal_objects.append(instance)
 
@@ -226,45 +189,83 @@ class RelationChangeDomain:
         cls.add_external_objects_to_shown_objects()
         cls.add_agent_objects_to_shown_objects()
 
-        cls.create_and_add_missing_extenal_assets_from_relations()
+        cls.create_and_add_missing_external_assets_from_relations()
 
         cls.get_screen().fill_object_list(cls.shown_objects)
         cls.get_screen().fill_possible_relations_list(None, {})
         cls.get_screen().fill_existing_relations_list(cls.existing_relations)
 
     @classmethod
-    def create_and_add_missing_extenal_assets_from_relations(cls):
-        for relation_object in RelationChangeDomain.get_all_relations():
+    def create_and_add_missing_external_assets_from_relations(cls) -> None:
+        """
+        Creates and adds missing external assets based on existing relations.
 
-            source_object = RelationChangeDomain.get_object(
-                identificator=relation_object.bronAssetId.identificator)
+        This method iterates through all relations and checks for the existence of
+        source and target objects. If either object is missing, it attempts to create
+        and add a new external asset using the relation's identifiers and type URIs.
+
+        :param cls: The class itself.
+        :returns: None
+        """
+
+        for relation_object in RelationChangeDomain.get_all_relations():
+            source_id = relation_object.bronAssetId.identificator
+            target_id = relation_object.doelAssetId.identificator
+
+            source_object = RelationChangeDomain.get_object(identificator=source_id)
             if not source_object:
                 try:
-                    cls.create_and_add_new_external_asset(relation_object.bronAssetId.identificator,
-                                                          relation_object.bron.typeURI)
+                    cls.create_and_add_new_external_asset(id_or_name=source_id,
+                                                          type_uri=relation_object.bron.typeURI)
                 except ValueError as e:
                     # should there be a wrong typeURI
                     logging.debug(e)
-            target_object = RelationChangeDomain.get_object(
-                identificator=relation_object.doelAssetId.identificator)
+
+            target_object = RelationChangeDomain.get_object(identificator=target_id)
             if not target_object:
                 try:
-                    cls.create_and_add_new_external_asset(relation_object.doelAssetId.identificator,
-                                                          relation_object.doel.typeURI)
+                    cls.create_and_add_new_external_asset(id_or_name=target_id,
+                                                          type_uri=relation_object.doel.typeURI)
                 except ValueError as e:
                     # should there be a wrong typeURI
                     logging.debug(e)
 
     @classmethod
-    def get_all_relations(cls):
+    def get_all_relations(cls) -> list:
+        """Retrieves all existing relations from the class.
+
+        This method combines and returns the lists of existing relations and AIM ID
+        relations stored in the class. It provides a unified view of all relations
+        for further processing or display.
+
+        :param cls: The class itself.
+        :returns: A list containing all existing and AIM ID relations.
+        :rtype: list
+        """
+
         return (cls.existing_relations + cls.aim_id_relations)
 
     @classmethod
-    def get_object(cls,identificator:str) -> Optional[OTLObject]:
+    def get_object(cls, identificator: str) -> Optional[OTLObject]:
+        """
+        Retrieves an object from the list of shown objects based on its identificator.
+
+        This method filters the list of shown objects to find an object that matches
+        the provided identificator. If multiple objects are found, it currently does
+        not handle the error case, but if exactly one object is found, it returns that object.
+
+        :param cls: The class itself.
+        :param identificator: The identificator of the object to retrieve.
+        :type identificator: str
+        :returns: The matching OTL object if found, otherwise None.
+        :rtype: Optional[OTLObject]
+        """
         filtered_objects = list(filter(cls.filter_on_id(identificator), cls.shown_objects))
 
         if filtered_objects:
             if len(filtered_objects) > 1:
+                logging.debug(f"ERROR RelationChangeDomain.get_object function found multiple "
+                              f"objects with id: {identificator}")
                 pass #TODO: raise error of 2 objects with the same identificator in the list
             else:
                 return filtered_objects[0]
@@ -286,7 +287,7 @@ class RelationChangeDomain:
             cls.get_screen().fill_possible_relation_attribute_field({})
             return
 
-        if cls.external_object_added or selected_object.typeURI not in cls.possible_relations_per_class_dict:
+        if cls.external_object_added or selected_object.typeURI not in cls.possible_relations_per_class_dict.keys():
             try:
                 if cls.external_objects or cls.agent_objects:
                     # this is the long search but it includes relations with external assets
@@ -325,6 +326,9 @@ class RelationChangeDomain:
                                                  relation_instance.bronAssetId.identificator)
 
         for relation in relation_list:
+
+
+
             if relation.bron_uri == selected_object.typeURI:
 
                 for related_object in related_objects:
@@ -346,10 +350,11 @@ class RelationChangeDomain:
                         continue
 
 
+
                     if relation.bron_uri == related_object.typeURI:
                         cls.add_relation_between(relation, selected_object,related_object,True)
 
-        cls.possible_object_to_object_relations_dict = cls.sort_nested_dict(cls.possible_object_to_object_relations_dict)
+        cls.possible_object_to_object_relations_dict = Helpers.sort_nested_dict(cls.possible_object_to_object_relations_dict)
 
         possible_relations_for_this_object = {}
         if RelationChangeHelpers.get_correct_identificator(selected_object) in cls.possible_object_to_object_relations_dict:
@@ -438,6 +443,8 @@ class RelationChangeDomain:
         else:
             relation_object = cls.create_relation_object(relation,selected_object,related_object)
 
+        if not relation_object:
+            return
 
         if (    selected_object_id in cls.possible_object_to_object_relations_dict.keys() and
                 related_object_id in cls.possible_object_to_object_relations_dict[selected_object_id].keys() and
@@ -480,33 +487,37 @@ class RelationChangeDomain:
                                OSLO_relation:OSLORelatie,
                                source_object:AIMObject,
                                target_object:AIMObject) -> RelatieObject:
-        relation_type = dynamic_create_type_from_uri(OSLO_relation.objectUri)
-        relation_object = RelationCreator.create_relation(relation_type,source_object,target_object)
-        relation_object.assetId.toegekendDoor = global_vars.external_toegekendDoor_label
+        try:
+            relation_type = dynamic_create_type_from_uri(OSLO_relation.objectUri)
+            relation_object = RelationCreator.create_relation(relation_type,source_object,target_object)
+            relation_object.assetId.toegekendDoor = global_vars.external_toegekendDoor_label
+        except Exception as e:
+            source_id = None
+            source_type = None
+            if source_object:
+                if hasattr(source_object,"assetId"):
+                    source_id = source_object.assetId.identificator
+                elif hasattr(source_object,"agentId"):
+                    source_id = source_object.agentId.identificator
+                if hasattr(source_object,"typeURI"):
+                    source_type = RelationChangeHelpers.get_abbreviated_typeURI(source_object.typeURI,True)
+
+            target_id = None
+            target_type = None
+            if target_object:
+                if  hasattr(target_object,"assetId"):
+                    target_id = target_object.assetId.identificator
+                elif hasattr(target_object,"agentId"):
+                    target_id = target_object.agentId.identificator
+                if hasattr(target_object,"typeURI"):
+                    target_type = RelationChangeHelpers.get_abbreviated_typeURI(target_object.typeURI,True)
+
+            logging.debug(f"Couldn't make relation between source_type:{source_type} source_id:{source_id} {OSLO_relation.richting} target_type:{target_type} target_id:{target_id} for relation typeURI {OSLO_relation.objectUri}: \n {e}" )
+            return None
+
         return relation_object
 
-    @classmethod
-    def sort_nested_dict(cls,d, by='keys'):
-        """Recursively sorts a dictionary by keys or values."""
-        if not isinstance(d, dict):
-            if isinstance(d,list):
-                return sorted(d,key= lambda relation_object: relation_object.typeURI)
-            return d
 
-        # Sort the current dictionary
-        if by == 'keys':
-            sorted_dict = dict(
-                (k, cls.sort_nested_dict(v, by=by)) for k, v in sorted(d.items())
-            )
-        elif by == 'values':
-            sorted_dict = dict(
-                (k, cls.sort_nested_dict(v, by=by)) for k, v in
-                sorted(d.items(), key=lambda item: item[1])
-            )
-        else:
-            raise ValueError("Invalid sort parameter. Use 'keys' or 'values'.")
-
-        return sorted_dict
 
     @classmethod
     @save_assets
@@ -598,12 +609,14 @@ class RelationChangeDomain:
         last_selected_keys = selected_relations_data[-1]
         last_selected_relation = cls.possible_object_to_object_relations_dict[last_selected_keys.source_id][last_selected_keys.target_id][last_selected_keys.index]
 
-        last_selected_relation_partner_asset = RelationChangeDomain.get_object(last_selected_relation.doelAssetId.identificator)
+        last_selected_relation_partner_asset = RelationChangeDomain.get_object(
+            identificator=last_selected_relation.doelAssetId.identificator)
         if last_selected_relation_partner_asset == cls.selected_object:
-            last_selected_relation_partner_asset = RelationChangeDomain.get_object(last_selected_relation.bronAssetId.identificator)
+            last_selected_relation_partner_asset = RelationChangeDomain.get_object(
+                identificator=last_selected_relation.bronAssetId.identificator)
 
-        cls.get_screen().fill_possible_relation_attribute_field(
-            DotnotationDictConverter.to_dict(last_selected_relation_partner_asset))
+        cls.get_screen().fill_possible_relation_attribute_field(possible_relation_attribute_dict=
+            DotnotationDictConverter.to_dict(otl_object=last_selected_relation_partner_asset))
 
     @classmethod
     def get_internal_objects(cls):

@@ -15,6 +15,10 @@ from UnitTests.TestClasses.Classes.ImplementatieElement.AIMObject import AIMObje
 ROOT_DIR_GUI = Path(__file__).parent.parent.parent.parent
 SITE_PACKAGES_ROOT = ROOT_DIR
 class RelationChangeHelpers:
+
+    unspecified_direction_icon:str = "<->"
+    outgoing_direction_icon: str = "-->"
+    incoming_direction_icon: str = "<--"
     @classmethod
     def get_abbreviated_typeURI(cls, typeURI, add_namespace, is_relation=False):
         split_typeURI = typeURI.split("#")
@@ -67,13 +71,14 @@ class RelationChangeHelpers:
         return type_name not in list_of_non_unique_type_names
 
     @classmethod
-    def get_screen_icon_direction(self, input_richting:str):
-        richting = "<->"
+    def get_screen_icon_direction(cls, input_richting:str) -> str:
+        richting = cls.unspecified_direction_icon
         if input_richting == "Source -> Destination":
-            richting = "-->"
+            richting = cls.outgoing_direction_icon
         elif input_richting == "Destination -> Source":
-            richting = "<--"
+            richting = cls.incoming_direction_icon
         return richting
+
 
     @classmethod
     def list_all_non_abstract_class_type_uris(cls, otl_assets_only=False,
