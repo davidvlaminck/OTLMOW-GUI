@@ -67,7 +67,8 @@ class InsertDataDomain:
         :param cls: The class itself.
         :returns: None
         """
-
+        if not Helpers.all_OTL_asset_types_dict:
+            Helpers.create_external_typeURI_options()
         cls.sync_backend_documents_with_frontend()
 
     @classmethod

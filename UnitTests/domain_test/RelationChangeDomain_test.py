@@ -9,6 +9,7 @@ from typing import Optional
 from pytestqt.plugin import qtbot
 from pytestqt.qtbot import QtBot
 
+from Domain.Helpers import Helpers
 from GUI.screens.InsertDataScreen import InsertDataScreen
 from GUI.screens.RelationChangeScreen import RelationChangeScreen
 from UnitTests.TestClasses.Classes.ImplementatieElement.AIMObject import AIMObject
@@ -241,7 +242,7 @@ def test_full_set_possible_relations(root_directory:Path,
     poss_rel[vopstel2_id][id(pictogram2)] = [RelationChangeDomain.create_relation_object(vsteun_hoortbij_vopstel, pictogram2,verkeersbordopstelling2)]
 
 
-    poss_rel = RelationChangeDomain.sort_nested_dict(poss_rel)
+    poss_rel = Helpers.sort_nested_dict(poss_rel)
 
     for selected_object_id in poss_rel.keys():
         print("test with selected_object id:{0}".format(selected_object_id))

@@ -202,9 +202,15 @@ class RelationChangeDomain:
         cls.aim_id_relations = []
         cls.external_object_added = False
 
+        if not Helpers.all_OTL_asset_types_dict:
+            Helpers.create_external_typeURI_options()
+
         if global_vars.current_project:
-            event_loop = asyncio.get_event_loop()
-            event_loop.create_task(cls.load_project_relation_data())
+            try:
+                event_loop = asyncio.get_event_loop()
+                event_loop.create_task(cls.load_project_relation_data())
+            except DeprecationWarning:
+                cls.load_project_relation_data()
 
     @classmethod
     async def load_project_relation_data(cls) -> None:

@@ -527,7 +527,7 @@ class Project:
 
         project_dir_path = ProgramFileStructure.get_otl_wizard_projects_dir() / self.project_path.name
         saved_documents_path: Path = project_dir_path / Project.saved_documents_filename
-        Helpers.create_external_typeURI_options()
+
         if saved_documents_path.exists():
             with open(file=saved_documents_path,mode="r") as saved_document:
                 saved_documents = json.load(fp=saved_document)
