@@ -49,6 +49,106 @@ def save_assets(func):
 
 
 class RelationChangeDomain:
+    """
+    RelationChangeDomain manages the relationships between various objects within a project. It provides methods for initializing project data, managing internal and external objects, and handling relations, including adding, removing, and retrieving relations.
+
+    Attributes:
+        project (Project): The current project being managed.
+        collector (OSLOCollector): The collector for OSLO data.
+        internal_objects (list[AIMObject]): Objects placed by the contractor within the project.
+        external_objects (list[AIMObject]): Object outside the project (from DAVIE)
+        agent_objects (list[Agent]): Agent objects that are not AIM objects.
+        shown_objects (list[RelationInteractor]): All objects displayed in the GUI.
+        possible_relations_per_class_dict (dict[str, list[OSLORelatie]]): Possible relations
+            categorized by class type
+        possible_object_to_object_relations_dict (dict[str, dict[str, list[RelatieObject]]]):
+            Possible Relations between objects that the user can choose from.
+        existing_relations (list[RelatieObject]): Currently active relations.
+        aim_id_relations (list): Pre-existing relations sourced from DAVIE.
+        selected_object (Optional[RelationInteractor]): The currently selected object from
+            the OTL-asset column in the GUI.
+        last_added_to_existing (Optional[list[RelatieObject]]): The last relations added to
+            existing relations.
+        last_added_to_possible (Optional[list[RelatieObject]]): The last relations added to
+            possible relations.
+        external_object_added (bool): Flag indicating if an external object has been added.
+
+    Methods:
+        init_static(project: Project) -> None: Initializes static resources for the class.
+        load_project_relation_data() -> None: Loads project relation data asynchronously.
+        set_instances(objects_list: List[AIMObject]) -> None: Processes and categorizes AIM objects.
+        create_and_add_missing_external_assets_from_relations() -> None: Creates missing external
+            assets from relations.
+        get_all_relations() -> list[RelatieObject]: Retrieves all existing relations.
+        get_object(identificator: str) -> Optional[RelationInteractor]: Retrieves an object by its
+            identifier.
+        filter_on_id(id_to_check: str): Filters objects based on a specified identifier.
+        set_possible_relations(selected_object: RelationInteractor) -> None: Sets possible
+            relations for a selected object.
+        get_possible_relations_for(selected_id: str) -> dict: Retrieves possible relations for a
+            given ID.
+        add_all_possible_relations_between_selected_and_related_objects(
+            relation_list: list[OSLORelatie], selected_object: RelationInteractor,
+            related_objects: list[RelationInteractor]) -> None: Adds possible relations between
+            selected and related objects.
+        add_inactive_relations_to_possible_relations(selected_id: str) -> None: Adds inactive
+            relations to possible relations.
+        are_possible_relations_to_other_class_types_collected_for(typeURI: str) -> bool: Checks if
+            possible relations for a class type URI have been collected.
+        collect_possible_relations_to_class_types_from(selected_object: RelationInteractor)
+            -> None: Collects possible relations for a selected object.
+        get_all_concrete_relation_from_full_model(selected_object: RelationInteractor)
+            -> list[OSLORelatie]: Retrieves all concrete relations for a selected object.
+        get_same_relations_in_list(relation_list: list[RelatieObject], relation_def: OSLORelatie,
+            selected_object: RelationInteractor, related_object: RelationInteractor,
+            reverse: bool = False) -> list: Retrieves relations matching a specified definition.
+        is_same_relation(existing_relation: RelatieObject, relation_def: OSLORelatie,
+            selected: RelationInteractor, related: RelationInteractor, reverse: bool = False)
+            -> bool: Determines if an existing relation matches a specified definition.
+        add_relation_between(relation: OSLORelatie, selected_object: RelationInteractor,
+            related_object: RelationInteractor, reverse: bool = False) -> None: Adds a relation
+            between two objects.
+        add_possible_relation_object(relation_object, selected_object_id, related_object_id)
+            -> None: Adds a relation object to possible relations.
+        filter_out(object_to_filter_for: RelationInteractor) -> Callable: Creates a filter function
+            to exclude a specified object.
+        get_screen() -> RelationChangeScreenInterface: Retrieves the current screen interface.
+        create_relation_object(OSLO_relation: OSLORelatie, source_object: RelationInteractor,
+            target_object: RelationInteractor) -> Optional[RelatieObject]: Creates a relation
+            object based on provided definitions.
+        add_multiple_possible_relations_to_existing_relations(data_list): Adds multiple possible
+            relations to existing relations.
+        add_possible_relation_to_existing_relations( bron_asset_id:str, target_asset_id:str,
+            relation_object_index:int) -> RelatieObject: Adds a possible relation to existing
+            relations.
+        add_relation_object_to_existing_relations(relation_object: RelatieObject): Adds a relation
+            object to existing relations.
+        update_frontend(): Updates the user interface to reflect the current state of objects and
+            relations.
+        remove_multiple_existing_relations(indices: list[int]) -> None: Removes multiple existing
+            relations based on indices.
+        remove_existing_relation(index: int) -> RelatieObject: Removes an existing relation by
+            index.
+        select_existing_relation_indices(indices: list[int]) -> None: Selects existing relations
+            based on indices.
+        select_possible_relation_data(selected_relations_data: list) -> None: Selects and displays
+            data for possible relations.
+        get_internal_objects() -> list[RelationInteractor]: Retrieves the list of internal objects.
+        get_persistent_relations() -> list[RelatieObject]: Retrieves a combined list of persistent
+            relations.
+        get_export_instances() -> list[Union[RelatieObject, RelationInteractor]]: Retrieves a
+            combined list of instances for export.
+        get_quicksave_instances() -> list[Union[RelatieObject, RelationInteractor]]: Retrieves a
+            combined list of instances for quicksave.
+        apply_active_aim_id_relations() -> None: Applies active AIM ID relations to existing
+            relations.
+        get_inactive_aim_id_relations() -> list: Retrieves a list of inactive AIM ID relations.
+        add_external_objects_to_shown_objects() -> None: Adds external objects to shown objects.
+        add_agent_objects_to_shown_objects() -> None: Adds agent objects to shown objects.
+        create_and_add_new_external_asset(id_or_name: str, type_uri: str) -> None: Creates and
+            adds a new external asset.
+    """
+
     project: Project = None
     collector: OSLOCollector = None
 
@@ -70,7 +170,6 @@ class RelationChangeDomain:
 
     external_object_added = False
 
-    no_id_count = 0
 
     @classmethod
     def init_static(cls, project: Project) -> None:
@@ -101,7 +200,6 @@ class RelationChangeDomain:
         cls.possible_relations_per_class_dict = {}
         cls.possible_object_to_object_relations_dict = {}
         cls.aim_id_relations = []
-        cls.no_id_count = 0
         cls.external_object_added = False
 
         if global_vars.current_project:
@@ -787,8 +885,8 @@ class RelationChangeDomain:
         cls.update_frontend()
 
     @classmethod
-    def add_possible_relation_to_existing_relations(cls, bron_asset_id, target_asset_id,
-                                                    relation_object_index) -> RelatieObject:
+    def add_possible_relation_to_existing_relations(cls, bron_asset_id:str, target_asset_id:str,
+                                                    relation_object_index:int) -> RelatieObject:
         """
         Adds a possible relation to the existing relations using the specified source and target
         asset IDs along with the index of the relation object. This method retrieves the relation
