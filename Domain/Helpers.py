@@ -20,22 +20,22 @@ class Helpers:
         cls.all_OTL_asset_types_dict = Helpers.sort_nested_dict(cls.all_OTL_asset_types_dict)
 
     @classmethod
-    def sort_nested_dict(cls, d, by='keys'):
+    def sort_nested_dict(cls, dictionary, by='keys'):
         """Recursively sorts a dictionary by keys or values."""
-        if not isinstance(d, dict):
-            if isinstance(d, list):
-                return sorted(d, key=lambda relation_object: relation_object.typeURI)
-            return d
+        if not isinstance(dictionary, dict):
+            if isinstance(dictionary, list):
+                return sorted(dictionary, key=lambda relation_object: relation_object.typeURI)
+            return dictionary
 
         # Sort the current dictionary
         if by == 'keys':
             sorted_dict = dict(
-                (k, cls.sort_nested_dict(v, by=by)) for k, v in sorted(d.items())
+                (k, cls.sort_nested_dict(v, by=by)) for k, v in sorted(dictionary.items())
             )
         elif by == 'values':
             sorted_dict = dict(
                 (k, cls.sort_nested_dict(v, by=by)) for k, v in
-                sorted(d.items(), key=lambda item: item[1])
+                sorted(dictionary.items(), key=lambda item: item[1])
             )
         else:
             raise ValueError("Invalid sort parameter. Use 'keys' or 'values'.")

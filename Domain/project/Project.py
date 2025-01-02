@@ -13,6 +13,7 @@ from otlmow_converter.OtlmowConverter import OtlmowConverter
 from otlmow_model.OtlmowModel.Classes.ImplementatieElement.AIMObject import AIMObject
 
 from Domain import global_vars
+from Domain.Helpers import Helpers
 from Domain.database.ModelBuilder import ModelBuilder
 from Domain.project.ProjectFile import ProjectFile
 from Domain.enums import FileState
@@ -526,6 +527,7 @@ class Project:
 
         project_dir_path = ProgramFileStructure.get_otl_wizard_projects_dir() / self.project_path.name
         saved_documents_path: Path = project_dir_path / Project.saved_documents_filename
+        Helpers.create_external_typeURI_options()
         if saved_documents_path.exists():
             with open(file=saved_documents_path,mode="r") as saved_document:
                 saved_documents = json.load(fp=saved_document)

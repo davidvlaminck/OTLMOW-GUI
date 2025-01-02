@@ -1,7 +1,9 @@
 
-from typing import List
+from typing import List, Optional
 
 from PyQt6.QtWidgets import QVBoxLayout, QFrame, QHBoxLayout, QWidget
+from otlmow_model.OtlmowModel.BaseClasses.OTLObject import OTLObject
+from otlmow_model.OtlmowModel.BaseClasses.RelationInteractor import RelationInteractor
 from otlmow_model.OtlmowModel.Classes.ImplementatieElement.AIMObject import AIMObject
 from otlmow_model.OtlmowModel.Classes.ImplementatieElement.RelatieObject import RelatieObject
 
@@ -15,9 +17,11 @@ from GUI.screens.RelationChange_elements.PossibleRelationListWidget import \
     PossibleRelationListWidget
 from GUI.screens.RelationChange_elements.RelationChangeHelpers import RelationChangeHelpers
 from GUI.screens.Screen import Screen
+from GUI.screens.screen_interface.RelationChangeScreenInterface import \
+    RelationChangeScreenInterface
 
 
-class RelationChangeScreen(Screen):
+class RelationChangeScreen(RelationChangeScreenInterface):
     """
     Represents the screen for managing relation changes in the application.
 
@@ -157,7 +161,7 @@ class RelationChangeScreen(Screen):
         return self.window
 
 
-    def fill_object_list(self, objects: List[AIMObject]) -> None:
+    def fill_object_list(self, objects: List[RelationInteractor]) -> None:
         """
         Fills the object list GUI with the provided AIM objects.
 
@@ -199,7 +203,7 @@ class RelationChangeScreen(Screen):
                                                   last_added=last_added)
 
 
-    def fill_possible_relations_list(self, source_object: AIMObject,
+    def fill_possible_relations_list(self, source_object: Optional[RelationInteractor],
                                      relations: dict[str, list[RelatieObject]],
                                      last_added=None) -> None:
         """
@@ -378,3 +382,9 @@ class RelationChangeScreen(Screen):
             language_settings=self._,
             data_list_and_relation_objects=data_list_and_relation_objects)
         dialogWindow.draw_define_heeft_betrokkene_rol_window()
+
+    def clear_possible_relation_elements(self):
+        self.fill_possible_relations_list(None, {})
+        self.fill_object_attribute_field({})
+        self.fill_possible_relation_attribute_field({})
+
