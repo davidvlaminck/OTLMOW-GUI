@@ -2,7 +2,6 @@
 from typing import List, Optional
 
 from PyQt6.QtWidgets import QVBoxLayout, QFrame, QHBoxLayout, QWidget
-from otlmow_model.OtlmowModel.BaseClasses.OTLObject import OTLObject
 from otlmow_model.OtlmowModel.BaseClasses.RelationInteractor import RelationInteractor
 from otlmow_model.OtlmowModel.Classes.ImplementatieElement.AIMObject import AIMObject
 from otlmow_model.OtlmowModel.Classes.ImplementatieElement.RelatieObject import RelatieObject
@@ -16,7 +15,6 @@ from GUI.screens.RelationChange_elements.ObjectListWidget import ObjectListWidge
 from GUI.screens.RelationChange_elements.PossibleRelationListWidget import \
     PossibleRelationListWidget
 from GUI.screens.RelationChange_elements.RelationChangeHelpers import RelationChangeHelpers
-from GUI.screens.Screen import Screen
 from GUI.screens.screen_interface.RelationChangeScreenInterface import \
     RelationChangeScreenInterface
 
@@ -383,7 +381,15 @@ class RelationChangeScreen(RelationChangeScreenInterface):
             data_list_and_relation_objects=data_list_and_relation_objects)
         dialogWindow.draw_define_heeft_betrokkene_rol_window()
 
-    def clear_possible_relation_elements(self):
+    def clear_possible_relation_elements(self) -> None:
+        """
+        Clears all possible relation elements from the user interface.
+        This method resets the displayed lists and fields related to possible relations,
+        ensuring that no outdated or irrelevant information is shown.
+
+        :return: None
+        """
+
         self.fill_possible_relations_list(None, {})
         self.fill_object_attribute_field({})
         self.fill_possible_relation_attribute_field({})
