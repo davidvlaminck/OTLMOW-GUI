@@ -24,12 +24,9 @@ def mock_deprecated_classes():
     TemplateDomain.classes = original_classes
 
 def test_check_for_no_deprecated_present_detects_deprecated(mock_deprecated_classes):
-    # values = [OSLOClass(deprecated_version="1.0.0")]
     assert TemplateDomain.check_for_no_deprecated_present() is False
 
-
 def test_check_for_no_deprecated_present_detects_no_deprecated(mock_non_deprecated_classes):
-    # values = [OSLOClass(deprecated_version="")]
     assert TemplateDomain.check_for_no_deprecated_present() is True
 
 

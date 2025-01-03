@@ -51,7 +51,7 @@ class Project:
         self.project_path: Path = project_path
         if not self.project_path:
             self.project_path = Path(
-                ProgramFileStructure.get_otl_wizard_projects_dir() / 'Projects' / eigen_referentie)
+                ProgramFileStructure.get_otl_wizard_projects_dir() / eigen_referentie)
 
         self.subset_path: Path = subset_path
         
