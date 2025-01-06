@@ -3,7 +3,7 @@ import os
 from pathlib import Path
 from typing import Optional, List, cast
 
-from otlmow_model.OtlmowModel.BaseClasses.OTLObject import OTLObject
+from otlmow_model.OtlmowModel.BaseClasses.RelationInteractor import RelationInteractor
 from otlmow_model.OtlmowModel.Classes.Agent import Agent
 from otlmow_model.OtlmowModel.Helpers import OTLObjectHelper
 from otlmow_template.SubsetTemplateCreator import ROOT_DIR
@@ -15,6 +15,10 @@ from UnitTests.TestClasses.Classes.ImplementatieElement.AIMObject import AIMObje
 ROOT_DIR_GUI = Path(__file__).parent.parent.parent.parent
 SITE_PACKAGES_ROOT = ROOT_DIR
 class RelationChangeHelpers:
+
+    unspecified_direction_icon:str = "<->"
+    outgoing_direction_icon: str = "-->"
+    incoming_direction_icon: str = "<--"
     @classmethod
     def get_abbreviated_typeURI(cls, typeURI, add_namespace, is_relation=False):
         split_typeURI = typeURI.split("#")
@@ -33,7 +37,7 @@ class RelationChangeHelpers:
             return type_name
 
     @classmethod
-    def get_screen_name(cls, otl_object: OTLObject) -> Optional[str]:
+    def get_screen_name(cls, otl_object: RelationInteractor) -> Optional[str]:
         if otl_object is None:
             return None
         naam = cls.get_correct_identificator(otl_object)
@@ -67,13 +71,14 @@ class RelationChangeHelpers:
         return type_name not in list_of_non_unique_type_names
 
     @classmethod
-    def get_screen_icon_direction(self, input_richting:str):
-        richting = "<->"
+    def get_screen_icon_direction(cls, input_richting:str) -> str:
+        richting = cls.unspecified_direction_icon
         if input_richting == "Source -> Destination":
-            richting = "-->"
+            richting = cls.outgoing_direction_icon
         elif input_richting == "Destination -> Source":
-            richting = "<--"
+            richting = cls.incoming_direction_icon
         return richting
+
 
     @classmethod
     def list_all_non_abstract_class_type_uris(cls, otl_assets_only=False,
@@ -99,17 +104,18 @@ class RelationChangeHelpers:
         classes_to_instantiate['Agent'] = class_location / 'Agent'
 
         for class_name, file_path in classes_to_instantiate.items():
+            
+            import_path = f'{file_path.parts[-3]}.{file_path.parts[-2]}.{file_path.parts[-1]}'
+            if "Agent" in str(file_path.absolute()):
+                import_path = f'{file_path.parts[-2]}.{file_path.parts[-1]}'
+            if 'otlmow_model' not in import_path:
+                import_path = f'otlmow_model.OtlmowModel.{import_path}'
 
             try:
-                import_path = f'{file_path.parts[-3]}.{file_path.parts[-2]}.{file_path.parts[-1]}'
-                if "Agent" in str(file_path.absolute()):
-                    import_path = f'{file_path.parts[-2]}.{file_path.parts[-1]}'
-                if 'otlmow_model' not in import_path:
-                    import_path = 'otlmow_model.OtlmowModel.' + import_path
-
                 py_mod = __import__(name=import_path, fromlist=f'{class_name}')
-            except ModuleNotFoundError:
-                raise ModuleNotFoundError(f'Could not import the module for {import_path}')
+            except ModuleNotFoundError as e:
+                raise ModuleNotFoundError(f'Could not import the module for {import_path}'
+                ) from e
 
             class_ = getattr(py_mod, class_name)
 
@@ -122,12 +128,11 @@ class RelationChangeHelpers:
         return type_uri_list
 
     @classmethod
-    def get_correct_identificator(cls,otl_object: OTLObject):
+    def get_correct_identificator(cls,otl_object: RelationInteractor):
         identificator = GlobalTranslate._("no_identificator")
-        if otl_object.typeURI == 'http://purl.org/dc/terms/Agent':
-            agent: Agent = cast(Agent, otl_object)
-            identificator = str(agent.agentId.identificator)
-        else:
-            aim_object: AIMObject = cast(AIMObject, otl_object)
-            identificator = str(aim_object.assetId.identificator)
+        if hasattr(otl_object,"assetId"):
+            identificator = str(otl_object.assetId.identificator)
+        elif hasattr(otl_object,"agentId"):
+            identificator = str(otl_object.agentId.identificator)
+
         return identificator

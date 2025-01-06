@@ -1,9 +1,10 @@
+
 from enum import Enum
 from pathlib import Path
+from typing import Callable
 
-from PyQt6.QtWidgets import QDialog, QHBoxLayout, QPushButton
+from PyQt6.QtWidgets import QDialog, QHBoxLayout, QPushButton, QStackedWidget
 
-from Domain.project.ProgramFileManager import ProgramFileManager
 from Domain.enums import Language
 from Domain.Settings import Settings
 
@@ -12,28 +13,42 @@ ROOT_DIR = Path(__file__).parent.parent
 LANG_DIR = ROOT_DIR.parent / 'locale/'
 
 
-class LanguageWindow:
+class LanguageWindow(QDialog):
 
-    def __init__(self, language_settings):
+    def __init__(self, language_settings: Callable, main_window: QStackedWidget):
+        super().__init__()
         self._ = language_settings
+        self.setModal(True)
+        self.setWindowTitle(self._("change_language_title"))
 
-    def language_window(self, main_window) -> None:
-        dialog = QDialog()
-        dialog.setModal(True)
-        dialog.setWindowTitle(self._("change_language_title"))
         layout = QHBoxLayout()
+
         button_ned = QPushButton(self._("language_option_dutch"))
         button_eng = QPushButton(self._("language_option_english"))
-        button_ned.clicked.connect(lambda: self.change_language(Language.DUTCH, dialog, main_window))
-        button_eng.clicked.connect(lambda: self.change_language(Language.ENGLISH, dialog, main_window))
+        button_ned.clicked.connect(lambda: self.change_language(lang= Language.DUTCH, main_window= main_window))
+        button_eng.clicked.connect(lambda: self.change_language(lang= Language.ENGLISH, main_window= main_window))
         layout.addWidget(button_ned)
         layout.addWidget(button_eng)
-        dialog.setLayout(layout)
-        dialog.show()
-        dialog.exec()
+        self.setLayout(layout)
+        self.show()
+        self.exec()
 
-    def change_language(self, lang: Enum, dialog: QDialog, main_window) -> None:
-        ProgramFileManager.change_language_on_settings_file(lang)
+    def change_language(self, lang: Language, main_window: QStackedWidget) -> None:
+        """
+        Changes the application's language and updates the user interface accordingly.
+
+        This method updates the language setting in the application's settings file, retrieves the
+        corresponding translation Callable, and resets the main window's UI to reflect the new
+        language. Finally, it closes the language selection window.
+
+        :param lang: The new language to be set, represented as a Language enum.
+        :type lang: Language
+        :param main_window: The main window instance to be updated.
+        :type main_window: QStackedWidget
+
+        :return: None
+        """
+        Settings.change_language_on_settings_file(lang)
         self._ = Settings.return_language(LANG_DIR, lang)
         main_window.reset_ui(self._)
-        dialog.close()
+        self.close()

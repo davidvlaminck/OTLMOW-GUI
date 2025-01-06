@@ -28,7 +28,7 @@ class AbstractInstanceListWidget:
         self.search_bar = None
         self.clear_search_bar_button = None
 
-        self.list_gui = None
+        self.list_gui: Optional[FolderTreeView] = None
         self.list_button = ButtonWidget()
 
         self.list_label = None
@@ -476,3 +476,20 @@ class AbstractInstanceListWidget:
         placeholder_font.setItalic(True)
         place_holder_item.setFont(0,placeholder_font)
         field.addTopLevelItem(place_holder_item)
+
+    def add_loading_placeholder(self):
+        place_holder_item = QStandardItem(
+            self._("loading"))
+        place_holder_item.setEditable(False)
+        place_holder_item.setEnabled(False)
+        place_holder_item.setSelectable(False)
+
+        placeholder_font = QFont()
+        placeholder_font.setItalic(True)
+        place_holder_item.setFont(placeholder_font)
+
+        self.list_gui.addItem(place_holder_item)
+
+    def clear(self):
+        self.list_gui.clear()
+        self.attribute_field.clear()

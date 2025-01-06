@@ -110,3 +110,4 @@ class ObjectListWidget(AbstractInstanceListWidget):
         place_holder_item.setFont(placeholder_font)
 
         self.list_gui.addItem(place_holder_item)
+

@@ -12,6 +12,7 @@ from PyQt6.QtWidgets import QFrame, QHBoxLayout, QLabel, QVBoxLayout, QWidget, Q
 
 
 from Domain import global_vars
+from Domain.step_domain.HomeDomain import HomeDomain
 from GUI.screens.general_elements.ButtonWidget import ButtonWidget
 from GUI.dialog_windows.LanguageWindow import LanguageWindow
 from GUI.dialog_windows.MenuActionsWindow import MenuActionsWindow
@@ -155,11 +156,9 @@ class HeaderBar(QFrame):
 
     def start_dialog_window(self, id_: int = None, is_project=False) -> None:
         if is_project:
-            upsert_project_window = UpsertProjectWindow(self._)
-            upsert_project_window.draw_upsert_project(project=id_, overview_table=self.table)
+            UpsertProjectWindow(language_settings=self._,project=id_)
         else:
-            language_window = LanguageWindow(self._)
-            language_window.language_window(main_window=self.main_window)
+            LanguageWindow(language_settings=self._,main_window=self.main_window)
 
     def header_bar_detail_screen(self):
         if self.initialised:
@@ -231,9 +230,9 @@ class HeaderBar(QFrame):
         project = ProjectPickerWindow(self._).open_project_file_picker()
         if project is None:
             return
-        global_vars.projects.append(project)
+        HomeDomain.projects.append(project)
         logging.debug("Projects global")
-        for p in global_vars.projects:
+        for p in HomeDomain.projects:
             logging.debug(p.eigen_referentie)
         self.table.reset_ui(self._)
 

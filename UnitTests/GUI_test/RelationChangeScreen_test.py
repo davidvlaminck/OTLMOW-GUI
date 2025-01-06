@@ -113,7 +113,7 @@ def test_full_fill_possible_relations_list(qtbot,root_directory:Path,
     error_set, objects_lists = InsertDataDomain.load_and_validate_documents()
 
     # VerkeersOpstelling1
-    vopstel1 = InsertDataDomain.flatten_list(objects_lists)[0]
+    vopstel1 = InsertDataDomain.flatten_list(objects_lists=objects_lists)[0]
 
     RelationChangeDomain.set_possible_relations(selected_object=vopstel1)
     possible_relations_list = RelationChangeDomain.get_screen().possible_relation_list_gui
@@ -139,7 +139,7 @@ def test_full_fill_possible_relations_list(qtbot,root_directory:Path,
 
 
     # pictogram 1
-    pict1 = InsertDataDomain.flatten_list(objects_lists)[4]
+    pict1 = InsertDataDomain.flatten_list(objects_lists=objects_lists)[4]
     RelationChangeDomain.set_possible_relations(selected_object=pict1)
 
     reference_items = ['Bevestiging', 'HoortBij']
@@ -169,7 +169,7 @@ def test_full_fill_possible_relations_list(qtbot,root_directory:Path,
         assert real_children_col_2 == child_items_col_2[item_text]
 
     # funderingsMassief 1
-    fund1 = InsertDataDomain.flatten_list(objects_lists)[2]
+    fund1 = InsertDataDomain.flatten_list(objects_lists=objects_lists)[2]
     RelationChangeDomain.set_possible_relations(selected_object=fund1)
 
     reference_items = ['Bevestiging','LigtOp']
@@ -334,7 +334,7 @@ def mock_find_all_concrete_rel_all() -> Mock:
 
 @fixture
 def mock_project(mock_collect_all) -> Project:
-    return Project()
+    return Project(eigen_referentie="test")
 
 def test_fill_class_list_empty_list(qtbot,
                                     create_translations,

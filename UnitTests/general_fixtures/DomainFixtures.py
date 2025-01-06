@@ -76,7 +76,7 @@ def setup_test_project(root_directory: Path, mock_step3_visuals,mock_get_otl_wiz
     project_file_path: Path = (root_directory / "demo_projects"  /  "simpel_vergelijkings_project"
                                / "wizardProject")
 
-    global_vars.current_project = Project(project_path=project_file_path,
+    global_vars.current_project = Project( eigen_referentie="test", project_path=project_file_path,
                                           subset_path=Path(test_subset_file_path))
     original_get_otl_wizard_projects_dir = ProgramFileStructure.get_otl_wizard_projects_dir
     ProgramFileStructure.get_otl_wizard_projects_dir = Mock(

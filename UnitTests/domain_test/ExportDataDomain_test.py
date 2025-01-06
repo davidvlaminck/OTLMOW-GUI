@@ -213,10 +213,12 @@ def test_add_remove_inactive_relations_and_generate_files(root_directory: Path,
     target_id_2 = 'dummy_TyBGmXfXC'
     index_2 = 0
 
-    RelationChangeDomain.set_possible_relations(RelationChangeDomain.get_object(source_id_2))
-    added_relation =  RelationChangeDomain.add_possible_relation_to_existing_relations(source_id_2,
-                                                                     target_id_2,
-                                                                     index_2)
+    RelationChangeDomain.set_possible_relations(
+        selected_object=RelationChangeDomain.get_object(identificator=source_id_2))
+    added_relation =  RelationChangeDomain.add_possible_relation_to_existing_relations(
+        bron_asset_id=source_id_2,
+        target_asset_id=target_id_2,
+        relation_object_index= index_2)
     print(f"second added relation {added_relation.typeURI}" )
 
     to_remove_index = -1

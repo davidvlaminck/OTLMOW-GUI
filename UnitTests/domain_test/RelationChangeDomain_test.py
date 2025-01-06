@@ -9,6 +9,7 @@ from typing import Optional
 from pytestqt.plugin import qtbot
 from pytestqt.qtbot import QtBot
 
+from Domain.Helpers import Helpers
 from GUI.screens.InsertDataScreen import InsertDataScreen
 from GUI.screens.RelationChangeScreen import RelationChangeScreen
 from UnitTests.TestClasses.Classes.ImplementatieElement.AIMObject import AIMObject
@@ -241,7 +242,7 @@ def test_full_set_possible_relations(root_directory:Path,
     poss_rel[vopstel2_id][id(pictogram2)] = [RelationChangeDomain.create_relation_object(vsteun_hoortbij_vopstel, pictogram2,verkeersbordopstelling2)]
 
 
-    poss_rel = RelationChangeDomain.sort_nested_dict(poss_rel)
+    poss_rel = Helpers.sort_nested_dict(poss_rel)
 
     for selected_object_id in poss_rel.keys():
         print("test with selected_object id:{0}".format(selected_object_id))
@@ -440,8 +441,10 @@ def test_full_remove_existing_relation(root_directory:Path,
     assert removed_relation not in RelationChangeDomain.existing_relations
 
     # force update of the backend possible relations lists
-    RelationChangeDomain.set_possible_relations(RelationChangeDomain.get_object(bron_asset_id))
-    RelationChangeDomain.set_possible_relations(RelationChangeDomain.get_object(target_asset_id))
+    RelationChangeDomain.set_possible_relations(
+        selected_object=RelationChangeDomain.get_object(identificator=bron_asset_id))
+    RelationChangeDomain.set_possible_relations(
+        selected_object=RelationChangeDomain.get_object(identificator=target_asset_id))
 
     l1 = RelationChangeDomain.possible_object_to_object_relations_dict[bron_asset_id][target_asset_id]
     l2 = RelationChangeDomain.possible_object_to_object_relations_dict[target_asset_id][bron_asset_id]
@@ -471,7 +474,7 @@ def test_full_remove_existing_relation(root_directory:Path,
 
 @pytest.fixture
 def mock_project() -> Project:
-    return Project()
+    return Project("test")
 
 @pytest.fixture
 def mock_oslo_collector() -> Function:
@@ -535,9 +538,10 @@ def test_set_objects_empty_list(mock_project: Project,
 
     assert len(RelationChangeDomain.shown_objects) == 0
 
-def test_set_objects_single_item_list(mock_screen: RelationChangeScreen,mock_collect_all,mock_rel_screen,mock_save_validated_assets_function,
-                                 mock_load_validated_assets):
-    RelationChangeDomain.init_static(Project())
+def test_set_objects_single_item_list(mock_screen: RelationChangeScreen,mock_collect_all,
+                                      mock_rel_screen,mock_save_validated_assets_function,
+                                      mock_load_validated_assets,mock_step3_visuals):
+    RelationChangeDomain.init_static(Project(eigen_referentie="test"))
     test_object = AllCasesTestClass()
     test_object.assetId.identificator = "dummy_identificator"
     RelationChangeDomain.set_instances([test_object])
@@ -546,8 +550,8 @@ def test_set_objects_single_item_list(mock_screen: RelationChangeScreen,mock_col
     assert RelationChangeDomain.shown_objects[0].assetId.identificator == "dummy_identificator"
 
 def test_set_objects_double_item_list(mock_screen,mock_collect_all,mock_rel_screen,mock_save_validated_assets_function,
-                                 mock_load_validated_assets):
-    RelationChangeDomain.init_static(Project())
+                                 mock_load_validated_assets,mock_step3_visuals):
+    RelationChangeDomain.init_static(Project(eigen_referentie="test"))
     test_object = AllCasesTestClass()
     test_object.assetId.identificator = "dummy_identificator"
 

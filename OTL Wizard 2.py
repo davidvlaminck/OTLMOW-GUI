@@ -41,13 +41,11 @@ LANG_DIR = ROOT_DIR / 'locale/'
 
 # Used to add demo data to the application for showcase purpose only
 def demo_data():
-    project_1 = Project(
-        project_path=Path(Path.home() / 'OTLWizardProjects' / 'Projects' / 'project_1'),
-        subset_path=Path(project_dir / 'project_1' / 'Flitspaal_noAgent3.0.db'),
-        saved_documents_overview_path=Path(project_dir / 'project_1'),
-        eigen_referentie="test1",
-        bestek="test_bestek1",
-        laatst_bewerkt=datetime(2021, 9, 11))
+    project_1 = Project(eigen_referentie="test1", project_path=Path(
+        Path.home() / 'OTLWizardProjects' / 'Projects' / 'project_1'),
+                        subset_path=Path(project_dir / 'project_1' / 'Flitspaal_noAgent3.0.db'),
+                        saved_documents_overview_path=Path(project_dir / 'project_1'),
+                        bestek="test_bestek1", laatst_bewerkt=datetime(2021, 9, 11))
     project_1.save_project_to_dir()
     return project_1
 
@@ -84,6 +82,7 @@ class OTLWizard(QApplication):
 
         self.main_window = MainWindow(language)
 
+
         self.main_window.resize(1250, 650)
         self.main_window.setWindowTitle('OTLWizard')
         self.main_window.setMinimumSize(800, 600)
@@ -94,7 +93,7 @@ class OTLWizard(QApplication):
             self.test_setup()
 
     def test_setup(self):
-        self.main_window.home_screen.table.open_project_async_task(2)
+        self.main_window.home_screen.table.open_project(2)
         InsertDataDomain.load_and_validate_documents()
         self.main_window.setCurrentIndex(3)
         self.main_window.reset_ui(self.main_window._)

@@ -2,21 +2,32 @@ import os
 import shutil
 from pathlib import Path
 
+from _pytest.fixtures import fixture
 from otlmow_modelbuilder.SQLDataClasses.OSLOClass import OSLOClass
 
 from Domain.step_domain.TemplateDomain import TemplateDomain
 
 PARENT_OF_THIS_FILE = Path(__file__).parent
 
+@fixture
+def mock_non_deprecated_classes():
+    original_classes = TemplateDomain.classes
+    TemplateDomain.classes = [OSLOClass(deprecated_version="")]
+    yield
+    TemplateDomain.classes = original_classes
 
-def test_check_for_no_deprecated_present_detects_deprecated():
-    values = [OSLOClass(deprecated_version="1.0.0")]
-    assert TemplateDomain.check_for_no_deprecated_present(values) is False
+@fixture
+def mock_deprecated_classes():
+    original_classes = TemplateDomain.classes
+    TemplateDomain.classes = [OSLOClass(deprecated_version="1.0.0")]
+    yield
+    TemplateDomain.classes = original_classes
 
+def test_check_for_no_deprecated_present_detects_deprecated(mock_deprecated_classes):
+    assert TemplateDomain.check_for_no_deprecated_present() is False
 
-def test_check_for_no_deprecated_present_detects_no_deprecated():
-    values = [OSLOClass(deprecated_version="")]
-    assert TemplateDomain.check_for_no_deprecated_present(values) is True
+def test_check_for_no_deprecated_present_detects_no_deprecated(mock_non_deprecated_classes):
+    assert TemplateDomain.check_for_no_deprecated_present() is True
 
 
 def test_create_template():
