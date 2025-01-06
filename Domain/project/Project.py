@@ -26,7 +26,7 @@ class Project:
     │   <self.eigen_referentie>                 : folder
     │   │   project_details.json                : json-file
     │   │   saved_documents.json                : json-file
-    │   │   <self.subset_path.name>.db                    : sqlite file
+    │   │   <self.subset_path.name>.db          : sqlite file
     │   ├───project-files                       : folder
     │   │       <saved_project_files[0]>.xlsx   : xlsx,json,geojson,csv file
     │   └───quick_saves                         : folder
