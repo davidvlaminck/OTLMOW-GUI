@@ -13,7 +13,6 @@ from otlmow_converter.OtlmowConverter import OtlmowConverter
 from otlmow_model.OtlmowModel.Classes.ImplementatieElement.AIMObject import AIMObject
 
 from Domain import global_vars
-from Domain.Helpers import Helpers
 from Domain.database.ModelBuilder import ModelBuilder
 from Domain.project.ProjectFile import ProjectFile
 from Domain.enums import FileState
