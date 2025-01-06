@@ -230,11 +230,14 @@ class HeaderBar(QFrame):
         project = ProjectPickerWindow(self._).open_project_file_picker()
         if project is None:
             return
-        HomeDomain.projects.append(project)
+        HomeDomain.projects[project.eigen_referentie] = project
         logging.debug("Projects global")
-        for p in HomeDomain.projects:
-            logging.debug(p.eigen_referentie)
-        self.table.reset_ui(self._)
+        for eigen_ref in HomeDomain.projects.keys():
+            logging.debug(eigen_ref)
+
+        HomeDomain.reload_projects()
+        HomeDomain.update_frontend()
+        # self.table.reset_ui(self._)
 
     def reset_ui(self, _):
         self._ = _
