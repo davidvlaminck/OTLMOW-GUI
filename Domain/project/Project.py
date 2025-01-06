@@ -354,7 +354,7 @@ class Project:
                 self.load_saved_document_filenames()
 
             for document in self.get_saved_projectfiles():
-                file_zip_path = Path() / document.file_path.name
+                file_zip_path = Path(self.project_files_foldername) / document.file_path.name
                 project_zip.write(document.file_path, arcname=file_zip_path)
 
             last_quick_save_path = self.get_last_quick_save_path()
