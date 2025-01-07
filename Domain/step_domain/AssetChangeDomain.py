@@ -28,7 +28,8 @@ class AssetChangeDomain:
         report_list = []
         diff_lists = cls.generate_difference_between_two_lists(list1=original_data, list2=new_data,
                                                                model_directory=model_directory)
-        logging.debug(f"diff lists {str(diff_lists)}")
+        diff_lists_str = str(diff_lists)
+        logging.debug(f"diff lists {diff_lists_str}")
         original_data_dict = {item.assetId.identificator: item for item in original_data}
         for item in diff_lists:
             old_item = original_data_dict.get(item.assetId.identificator)
@@ -112,8 +113,8 @@ class AssetChangeDomain:
     def generate_complex_asset_report(item, attribute, complex_list, old_item_dict) -> List[ReportItem]:
         return [ReportItem(
             id=item.assetId.identificator, actie=ReportAction.ATC, attribute=attribute,
-            original_value=f"{str(key)}: {str(old_item_dict.get(attribute).get(key))}",
-            new_value=f"{str(key)}: {str(value)}"
+            original_value=f"{0}: {1}".format(str(key),str(old_item_dict.get(attribute).get(key))),
+            new_value=f"{0}: {1}".format(str(key),str(value))
         ) for key, value in complex_list.items()]
 
     @staticmethod

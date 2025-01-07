@@ -151,7 +151,8 @@ class AssetDataChangeScreen(Screen):
 
     def add_file_to_list(self, files):
         self.control_button.setDisabled(False)
-        logging.debug(f"adding file to list {str(files)}")
+        files_str = str(files)
+        logging.debug(f"adding file to list {files_str}")
         for file in files:
             list_item = QTreeWidgetItem()
             doc_name = Path(file).name

@@ -535,7 +535,8 @@ class Project:
         if saved_documents_path.exists():
             with open(file=saved_documents_path,mode="r") as saved_document:
                 saved_documents = json.load(fp=saved_document)
-            logging.debug(f"Loaded saved object lists: {str(saved_documents)}")
+            saved_documents_str = str(saved_documents)
+            logging.debug(f"Loaded saved object lists: {saved_documents_str}")
             self.saved_project_files = []
 
             location_dir = self.get_project_files_dir_path()
@@ -858,7 +859,8 @@ class Project:
         """
 
         try:
-            logging.debug(f"file path = {str(file_path)}")
+            file_path_str = str(file_path)
+            logging.debug(f"file path = {file_path_str}")
             Path(file_path).unlink()
             return True
         except FileNotFoundError as e:

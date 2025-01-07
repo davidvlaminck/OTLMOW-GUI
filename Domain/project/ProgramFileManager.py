@@ -28,7 +28,8 @@ class ProgramFileManager:
         """
 
         tempdir = Path(tempfile.gettempdir()) / 'temp-otlmow'
-        logging.debug(f"tempdir {str(tempdir)}")
+        tempdir_str = str(tempdir)
+        logging.debug(f"tempdir {tempdir_str}")
         if not tempdir.exists():
             os.makedirs(tempdir)
         [f.unlink() for f in Path(tempdir).glob("*") if f.is_file()]

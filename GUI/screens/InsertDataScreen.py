@@ -716,7 +716,7 @@ class InsertDataScreen(Screen):
             None
         """
 
-        logging.debug(  f"{str(exception)}")
+        logging.debug(str(exception))
         doc_name = Path(doc).name
         error_widget = QListWidgetItem()
 

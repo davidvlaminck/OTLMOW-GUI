@@ -35,8 +35,8 @@ class Settings:
             translator = Settings.return_language(Path('/path/to/locales'), Language.ENGLISH)
         """
 
-
-        logging.debug(f"Changing language to: {str(language)}")
+        language_str = str(language)
+        logging.debug(f"Changing language to: {language_str}")
         translator = gettext.translation('messages', localedir=locale_dir, languages=[language.value])
         translator.install()
         return translator.gettext

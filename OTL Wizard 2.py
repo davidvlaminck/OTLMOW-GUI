@@ -73,7 +73,8 @@ class OTLWizard(QApplication):
         with open(style_path, 'r') as file:
             self.setStyleSheet(file.read())
 
-        logging.debug(f"style sheet found in: {str(style_path.absolute())}")
+        style_path_str = str(style_path.absolute())
+        logging.debug(f"style sheet found in: {style_path_str}")
 
         # self.demo_project = demo_data()
         self.demo_project = None

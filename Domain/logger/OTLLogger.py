@@ -43,7 +43,9 @@ class OTLLogger:
         for file in os.listdir(work_dir_path):
             file_name = Path(file).stem
             split_file = file_name.split('_')
-            logging.debug(f"split file date {str(split_file[-1])}")
+
+            date_str = str(split_file[-1])
+            logging.debug(f"split file date {date_str}")
             datetime_obj = datetime.datetime.strptime(split_file[-1], "%Y%m%d%H%M%S")
             if datetime_obj < datetime.datetime.now() - datetime.timedelta(days=7):
                 os.remove(work_dir_path / file)

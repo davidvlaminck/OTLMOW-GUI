@@ -48,8 +48,9 @@ class TemplateDomain:
                 model_directory=model_directory,
                 abbreviate_excel_sheettitles=True)
         except PermissionError as e:
-            logging.debug(f"Permission to file was denied: {str(document_path)}")
-            NotificationWindow(GlobalTranslate._("permission_to_file_was_denied_likely_due_to_the_file_being_open_in_excel") + ":\n" + str(document_path),title=GlobalTranslate._("permission_denied"))
+            document_path_str = str(document_path)
+            logging.debug(f"Permission to file was denied: {document_path_str}")
+            NotificationWindow(GlobalTranslate._("permission_to_file_was_denied_likely_due_to_the_file_being_open_in_excel") + ":\n" + document_path_str, title=GlobalTranslate._("permission_denied"))
         except Exception as e:
             logging.debug("Error while creating template")
             logging.error(e)

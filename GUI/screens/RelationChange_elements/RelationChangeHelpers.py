@@ -44,7 +44,8 @@ class RelationChangeHelpers:
         if otl_object.typeURI == 'http://purl.org/dc/terms/Agent':
             agent: Agent = cast(Agent, otl_object)
             # agent will always be external
-            naam = " ".join([naam,f"({GlobalTranslate._("external")})"])
+            external_tranlation = GlobalTranslate._("external")
+            naam = " ".join([naam,f"({external_tranlation})"])
         else:
             aim_object: AIMObject = cast(AIMObject, otl_object)
             if hasattr(aim_object, 'naam') and aim_object.naam:
@@ -54,7 +55,8 @@ class RelationChangeHelpers:
                 naam = str(RelationChangeHelpers.get_correct_identificator(aim_object))
 
             if aim_object.assetId.toegekendDoor == global_vars.external_toegekendDoor_label:
-                naam = " ".join([naam,f"({GlobalTranslate._("external")})"])
+                external_tranlation = GlobalTranslate._("external")
+                naam = " ".join([naam,f"({external_tranlation})"])
 
         return naam
     @classmethod
