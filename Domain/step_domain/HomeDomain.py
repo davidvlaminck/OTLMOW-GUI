@@ -12,6 +12,7 @@ from Domain.step_domain.InsertDataDomain import InsertDataDomain
 from Domain.step_domain.RelationChangeDomain import RelationChangeDomain
 from Domain.step_domain.TemplateDomain import TemplateDomain
 from Exceptions.EmptyFieldError import EmptyFieldError
+from Exceptions.NotASqlliteFileError import NotASqlliteFileError
 from Exceptions.WrongDatabaseError import WrongDatabaseError
 from GUI.screens.Screen import Screen
 from GUI.screens.screen_interface.HomeScreenInterface import HomeScreenInterface
@@ -99,6 +100,12 @@ class HomeDomain:
         :raises EmptyFieldError: If any of the input fields are empty.
         :raises WrongDatabaseError: If the database path does not point to a valid subset database.
         """
+        try:
+            subset_db = SubsetDatabase(db_path=Path(db_path))
+            is_valid_subset = subset_db.is_valid_subset_database()
+            subset_db.close_connection()
+        except NotASqlliteFileError:
+            is_valid_subset = False
 
         if not input_eigen_ref.strip():
             raise EmptyFieldError(GlobalTranslate._('own_reference_empty_error'))
@@ -106,7 +113,7 @@ class HomeDomain:
             raise EmptyFieldError(GlobalTranslate._('bestek_empty_error'))
         elif not db_path.strip():
             raise EmptyFieldError(GlobalTranslate._('db_path_empty_error'))
-        elif SubsetDatabase(db_path=Path(db_path)).is_valid_subset_database() is False:
+        elif is_valid_subset is False:
             raise WrongDatabaseError(GlobalTranslate._('wrong_database_error'))
         else:
             return True
