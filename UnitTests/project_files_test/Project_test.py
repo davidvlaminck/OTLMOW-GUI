@@ -849,13 +849,24 @@ def test_save_validated_assets(setup_preloaded_assets_in_memory: Project):
         '<LigtOp> object\n    typeURI : https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#LigtOp\n    assetId :\n        identificator : dummy_ligt_op\n        toegekendDoor : dummy_LxexRM\n    bron :\n    bronAssetId :\n        identificator : dummy_FNrHuPZCWV\n        toegekendDoor : dummy_Ouee\n    doel :\n    doelAssetId :\n        identificator : dummy_TyBGmXfXC\n        toegekendDoor : dummy_ZT\n    isActief : False']
     assert [str(asset) for asset in new_loaded_assets] == expected_assets_and_relations
 
+def list_files_scandir(path='.'):
+    with os.scandir(path) as entries:
+        for entry in entries:
+            if entry.is_file():
+                print(entry.path)
+            elif entry.is_dir():
+                list_files_scandir(entry.path)
+
 def test_export_project_with_other_files(root_directory, setup_quicksave_test_project,cleanup_after_creating_a_file_to_delete):
     quicksave_test_project_export_path = Path(root_directory, "OTLWizardProjects", "TestFiles", "export_test.otlw")
 
     cleanup_after_creating_a_file_to_delete.append(quicksave_test_project_export_path)
 
     project = setup_quicksave_test_project
+    print("In folder:")
+    list_files_scandir(project.project_path)
 
+    project.load_saved_document_filenames()
     project.export_project_to_file(quicksave_test_project_export_path)
 
     # check the file content of the otlw file (zip format)
@@ -865,8 +876,11 @@ def test_export_project_with_other_files(root_directory, setup_quicksave_test_pr
                               'quick_saves/quick_save-250103_170930.json',
                               'saved_documents.json',
                               'simpele_vergelijkings_subset2.db']
+
     with zipfile.ZipFile(quicksave_test_project_export_path) as project_zip:
         list_of_files = sorted(project_zip.namelist())
+    print("In zip:")
+    print(list_of_files)
     assert list_of_files == expected_list_of_files
 
 @fixture
@@ -878,6 +892,7 @@ def setup_exported_project(root_directory, setup_quicksave_test_project,cleanup_
 
     project = setup_quicksave_test_project
 
+    project.load_saved_document_filenames()
     project.export_project_to_file(quicksave_test_project_export_path)
     project.delete_project_dir_by_path()
     HomeDomain.reload_projects()
