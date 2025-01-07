@@ -3,6 +3,7 @@ from pathlib import Path
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QFrame, QCheckBox, QSpinBox, \
     QLabel, QListWidget, QListWidgetItem
+from otlmow_modelbuilder.SQLDataClasses.OSLOClass import OSLOClass
 
 from Domain.project.Project import Project
 from Domain.step_domain.TemplateDomain import TemplateDomain
@@ -10,8 +11,7 @@ from GUI.dialog_windows.ExportToTemplateWindow import ExportToTemplateWindow
 from GUI.screens.general_elements.ButtonWidget import ButtonWidget
 from GUI.dialog_windows.ChangeSubsetWindow import ChangeSubsetWindow
 from GUI.screens.screen_interface.TemplateScreenInterface import TemplateScreenInterface
-from LatestReleaseMulti.OTLWizard.data.otlmow_modelbuilder.SQLDataClasses.OSLOClass import \
-    OSLOClass
+
 
 
 class TemplateScreen(TemplateScreenInterface):

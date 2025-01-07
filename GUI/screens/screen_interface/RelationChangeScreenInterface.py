@@ -4,9 +4,6 @@ from PyQt6.QtWidgets import QWidget, QFrame
 from otlmow_model.OtlmowModel.BaseClasses.RelationInteractor import RelationInteractor
 
 from GUI.screens.Screen import Screen
-from LatestReleaseMulti.OTLWizard.data.otlmow_model.OtlmowModel.BaseClasses.OTLObject import \
-    OTLObject
-from UnitTests.TestClasses.Classes.ImplementatieElement.AIMObject import AIMObject
 from UnitTests.TestClasses.Classes.ImplementatieElement.RelatieObject import RelatieObject
 
 
