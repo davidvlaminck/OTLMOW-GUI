@@ -689,7 +689,7 @@ class Project:
             }
             object_array.append(objects_list_details)
         project_dir_path = otl_wizard_project_dir / self.project_path.name
-        with open(file=project_dir_path / self.saved_documents_filename, mode="w") as project_details_file:
+        with open(file=project_dir_path / self.saved_documents_filename, mode="w+") as project_details_file:
             json.dump(object_array, project_details_file)
 
     def is_in_project(self, file_path) -> ProjectFile:
