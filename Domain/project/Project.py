@@ -7,7 +7,7 @@ import os
 import shutil
 import zipfile
 from pathlib import Path
-from typing import Optional, Union, cast, Self
+from typing import Optional, Union, cast
 
 from otlmow_converter.OtlmowConverter import OtlmowConverter
 from otlmow_model.OtlmowModel.BaseClasses.RelationInteractor import RelationInteractor
@@ -92,7 +92,7 @@ class Project:
 
 
     @classmethod
-    def load_project(cls, project_path: Path = None)-> Self:
+    def load_project(cls, project_path: Path = None):
         """
         Loads a project from a specified directory by reading its details from a JSON file.
 
@@ -367,7 +367,7 @@ class Project:
                 project_zip.write(last_quick_save_path, arcname=last_quick_save_zip_path)
 
     @classmethod
-    def import_project(cls, file_path: Path) -> Self:
+    def import_project(cls, file_path: Path):
         """
         Imports a project from a specified OTLW file which is a custom ZIP format.
 
@@ -516,7 +516,7 @@ class Project:
 
         return self.otl_version
 
-    def load_saved_document_filenames(self) -> Self:
+    def load_saved_document_filenames(self):
         """
         Loads the filenames of saved documents associated with the project from a specified directory.
 
