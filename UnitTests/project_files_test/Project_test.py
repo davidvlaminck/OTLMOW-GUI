@@ -1,14 +1,12 @@
+from __future__ import annotations
+
 import datetime
-import glob
 import json
-import os
 import shutil
 import zipfile
 from asyncio import sleep
 from copy import deepcopy
 from datetime import timedelta
-from os.path import exists
-from pathlib import Path
 from typing import Union
 from unittest.mock import mock_open, patch, MagicMock
 
@@ -211,7 +209,7 @@ def test_project_init(mock_otl_wizard_dir, root_directory, eigen_referentie, pro
                       bestek, laatst_bewerkt, last_quick_save, subset_operator, otl_version,
                       expected_project_path, expected_subset_operator, expected_otl_version,
                       expected_saved_documents_overview_path, expected_last_quick_save):
-    projects_dir = Path(root_directory,  "OTLWizardProjects\Projects")
+    projects_dir = Path(root_directory,  "OTLWizardProjects","Projects")
     # Act
     # Adding the path to the project folder to all the relative paths
     eigen_referentie = eigen_referentie
@@ -239,7 +237,7 @@ def test_project_init(mock_otl_wizard_dir, root_directory, eigen_referentie, pro
 
 @fixture
 def mock_project_dir(root_directory):
-    projects_dir = Path(root_directory, "OTLWizardProjects\Projects")
+    projects_dir = Path(root_directory, "OTLWizardProjects", "Projects")
 
     # Adding the path to the project folder to all the relative paths
     project_path = add_projects_path(projects_dir, "ref1")
@@ -307,7 +305,7 @@ def test_project_init_existing_dir(root_directory,mock_project_dir, eigen_refere
                       bestek, laatst_bewerkt, last_quick_save, subset_operator, otl_version,
                       expected_project_path, expected_subset_operator, expected_otl_version,
                       expected_saved_documents_overview_path, expected_last_quick_save):
-    projects_dir = Path(root_directory,  "OTLWizardProjects\Projects")
+    projects_dir = Path(root_directory,  "OTLWizardProjects","Projects")
     # Act
     # Adding the path to the project folder to all the relative paths
     eigen_referentie = add_projects_path(projects_dir,eigen_referentie)
