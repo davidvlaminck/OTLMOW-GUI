@@ -665,7 +665,7 @@ def setup_quicksave_test_project(root_directory) -> Project:
 
     shutil.copytree(backup_quicksave_test_project_path,
                     quicksave_test_project_path)
-    sleep(0.05)  # sleep to give the system time to copy
+    sleep(0.5)  # sleep to give the system time to copy
     setup_quicksave_test_project = Project.load_project(quicksave_test_project_path)
 
     yield setup_quicksave_test_project
@@ -806,10 +806,10 @@ def test_save_validated_assets_delete_old_files(get_and_cleanup_empty_project: P
     # 2. young_save_f
     # 3. new_saved_save_f
     # only old_save_f is deleted
-    quick_save_files = os.listdir(project.get_quicksaves_dir_path())
+    quick_save_files =  sorted(os.listdir(project.get_quicksaves_dir_path()))
     assert len(quick_save_files) == 3
 
-    expected_quick_save_files = [f"quick_save-{young_date_str}.json", project.get_last_quick_save_path().name, 'strange_name.json']
+    expected_quick_save_files = sorted([f"quick_save-{young_date_str}.json", project.get_last_quick_save_path().name, 'strange_name.json'])
     assert quick_save_files == expected_quick_save_files
 @fixture
 def setup_preloaded_assets_in_memory(setup_quicksave_test_project) -> Project:
