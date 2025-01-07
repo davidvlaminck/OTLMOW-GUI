@@ -656,7 +656,7 @@ def test_save_project_given_details(mock_project_home_path,create_mock_project_e
     shutil.rmtree(project_dir_path)
 
 @fixture
-def setup_quicksave_test_project(root_directory) -> Project:
+def setup_quicksave_test_project(root_directory,mock_otl_wizard_dir) -> Project:
     backup_quicksave_test_project_path  = Path(root_directory, "OTLWizardProjects", "Projects_backup", "quicksave_test")
     quicksave_test_project_path = Path(root_directory, "OTLWizardProjects", "Projects", "quicksave_test")
 
@@ -857,7 +857,7 @@ def list_files_scandir(path='.'):
             elif entry.is_dir():
                 list_files_scandir(entry.path)
 
-def test_export_project_with_other_files(root_directory, setup_quicksave_test_project,cleanup_after_creating_a_file_to_delete):
+def test_export_project_with_other_files(root_directory, setup_quicksave_test_project,cleanup_after_creating_a_file_to_delete, mock_otl_wizard_dir):
     quicksave_test_project_export_path = Path(root_directory, "OTLWizardProjects", "TestFiles", "export_test.otlw")
 
     cleanup_after_creating_a_file_to_delete.append(quicksave_test_project_export_path)
@@ -866,7 +866,6 @@ def test_export_project_with_other_files(root_directory, setup_quicksave_test_pr
     print("In folder:")
     list_files_scandir(project.project_path)
 
-    project.load_saved_document_filenames()
     project.export_project_to_file(quicksave_test_project_export_path)
 
     # check the file content of the otlw file (zip format)
@@ -892,7 +891,6 @@ def setup_exported_project(root_directory, setup_quicksave_test_project,cleanup_
 
     project = setup_quicksave_test_project
 
-    project.load_saved_document_filenames()
     project.export_project_to_file(quicksave_test_project_export_path)
     project.delete_project_dir_by_path()
     HomeDomain.reload_projects()
@@ -977,7 +975,7 @@ def test_add_template_file_generates_folder(create_mock_project_project_4: Proje
     project.delete_project_dir_by_path()
 
 def test_delete_template_file_from_project(
-        cleanup_after_creating_a_file_to_delete,create_mock_project_project_1):
+        cleanup_after_creating_a_file_to_delete,create_mock_project_project_1,mock_otl_wizard_dir):
     project = create_mock_project_project_1
 
     testFilePath = Path(PARENT_OF_THIS_FILE.parent / 'project_files_test' /
