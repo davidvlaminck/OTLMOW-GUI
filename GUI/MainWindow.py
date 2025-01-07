@@ -57,7 +57,7 @@ class MainWindow(QStackedWidget):
         self.home_screen.table.main_window = self
         self.step1.main_window = self
 
-        HomeDomain.init(self.home_screen)
+        HomeDomain.init_static(self.home_screen)
 
         # dummy translation so the pybabel system doesn't remove them
         self._("template")

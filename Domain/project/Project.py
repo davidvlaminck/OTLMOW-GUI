@@ -10,7 +10,9 @@ from pathlib import Path
 from typing import Optional, Union, cast, Self
 
 from otlmow_converter.OtlmowConverter import OtlmowConverter
+from otlmow_model.OtlmowModel.BaseClasses.RelationInteractor import RelationInteractor
 from otlmow_model.OtlmowModel.Classes.ImplementatieElement.AIMObject import AIMObject
+from otlmow_model.OtlmowModel.Classes.ImplementatieElement.RelatieObject import RelatieObject
 
 from Domain import global_vars
 from Domain.Helpers import Helpers
@@ -27,7 +29,7 @@ class Project:
     │   <self.eigen_referentie>                 : folder
     │   │   project_details.json                : json-file
     │   │   saved_documents.json                : json-file
-    │   │   <self.subset_path.name>.db                    : sqlite file
+    │   │   <self.subset_path_name>.db          : sqlite file
     │   ├───project-files                       : folder
     │   │       <saved_project_files[0]>.xlsx   : xlsx,json,geojson,csv file
     │   └───quick_saves                         : folder
@@ -41,13 +43,14 @@ class Project:
     quick_saves_foldername =  "quick_saves"
 
     max_days_quicksave_stored = 7
+    quicksave_date_format = "%y%m%d_%H%M%S"
 
     def __init__(self, eigen_referentie: str, project_path: Path = None, subset_path: Path = None,
                  saved_documents_overview_path: Path = None, bestek: str = None,
                  laatst_bewerkt: datetime.datetime = None, last_quick_save: Optional[Path] = None,
                  subset_operator: Optional[Union[str, Path]] = None,
                  otl_version: Optional[Union[str, Path]] = None):
-        
+
         self.project_path: Path = project_path
         if not self.project_path:
             self.project_path = Path(
@@ -68,26 +71,21 @@ class Project:
                 self.saved_documents_overview_path: Path = saved_documents_overview_path
             else:
                 self.saved_documents_overview_path: Path = saved_documents_overview_path / self.saved_documents_filename
-        elif self.project_path is not None:
-            self.saved_documents_overview_path = self.project_path / self.saved_documents_filename
         else:
-            self.saved_documents_overview_path = None
+            self.saved_documents_overview_path = self.project_path / self.saved_documents_filename
+
+        self.quick_save_dir_path = Path(self.project_path / self.quick_saves_foldername)
 
         if last_quick_save:
             self.last_quick_save:Path = self.get_quicksaves_dir_path() / last_quick_save.name
         else:
             self.last_quick_save = None
 
-        if self.project_path:
-            self.quick_save_dir_path = Path(self.project_path / self.quick_saves_foldername)
-        else:
-            self.quick_save_dir_path = None
-
         self.eigen_referentie: str = eigen_referentie
         self.bestek: str = bestek
         self.laatst_bewerkt: datetime.datetime = laatst_bewerkt
 
-        self.assets_in_memory = []
+        self.assets_in_memory:list[Union[RelatieObject, RelationInteractor]] = []
 
         self.saved_project_files: list[ProjectFile] = []
         self.model_builder = None
@@ -138,6 +136,7 @@ class Project:
         else:
             otl_version = project_details['otl_version']
 
+        logging.info(f"Loading project: {project_details['eigen_referentie']}")
         return cls(project_path=project_path,
                    subset_path=project_path / project_details['subset'],
                    saved_documents_overview_path= Path(project_path,  cls.saved_documents_filename),
@@ -176,7 +175,7 @@ class Project:
 
         self.save_project_details(project_dir_path=project_dir_path)
 
-        if self.subset_path.parent.absolute() != project_dir_path.absolute():
+        if self.subset_path and self.subset_path.parent.absolute() != project_dir_path.absolute():
             # move subset to project dir
             new_subset_path = project_dir_path / self.subset_path.name
             shutil.copy(src=self.subset_path, dst=new_subset_path)
@@ -206,11 +205,15 @@ class Project:
         if not self.laatst_bewerkt:
             self.laatst_bewerkt = datetime.datetime.now()
 
+        subset_name = None
+        if self.subset_path:
+            subset_name = self.subset_path.name
+
         project_details_dict = {
             'bestek': self.bestek,
             'eigen_referentie': self.eigen_referentie,
             'laatst_bewerkt': self.laatst_bewerkt.strftime("%Y-%m-%d %H:%M:%S"),
-            'subset': self.subset_path.name,
+            'subset': subset_name,
             'subset_operator': self.get_operator_name(),
             'otl_version': self.get_otl_version(),
             'last_quick_save': last_quick_save_name
@@ -219,8 +222,8 @@ class Project:
         with open(project_dir_path / self.project_details_filename, "w") as project_details_file:
             json.dump(project_details_dict, project_details_file)
 
-    def load_validated_assets(self) -> list[AIMObject]:
-        # sourcery skip: use-named-expression
+    def load_validated_assets(self) -> list[Union[RelatieObject, RelationInteractor]]:
+        # sourcery skip: assign-if-exp, reintroduce-else, use-named-expression
         """
         Loads validated assets from the most recent quick save file.
 
@@ -240,6 +243,7 @@ class Project:
         path = self.get_last_quick_save_path()
 
         if path:
+            # noinspection PyTypeChecker
             return list(OtlmowConverter.from_file_to_objects(path))
 
         return []
@@ -263,19 +267,19 @@ class Project:
         :raises OSError: If there is an issue creating the quick save directory or saving the file.
         """
 
-        date_format = "%y%m%d_%H%M%S"
+
         
 
         if self.quick_save_dir_path.exists():
             current_date = datetime.datetime.now()
 
             self.remove_too_old_quicksaves(current_date=current_date,
-                                          max_days_stored=self.max_days_quicksave_stored,
-                                          date_format=date_format)
+                                          max_days_stored=Project.max_days_quicksave_stored,
+                                          date_format=Project.quicksave_date_format)
         else:
             os.mkdir(self.quick_save_dir_path )
 
-        current_date_str = datetime.datetime.now().strftime(date_format)
+        current_date_str = datetime.datetime.now().strftime(Project.quicksave_date_format)
 
         save_path = self.quick_save_dir_path  / f"quick_save-{current_date_str}.json"
         OtlmowConverter.from_objects_to_file(file_path=save_path,
@@ -487,7 +491,7 @@ class Project:
         :raises ValueError: If the operator name cannot be determined from the model builder.
         """
 
-        if not self.subset_operator:
+        if self.subset_path and not self.subset_operator:
             subset_operator = self.get_model_builder().get_operator_name()
             if isinstance(subset_operator,Path):
                 self.subset_operator = cast(Path,subset_operator).stem
@@ -507,7 +511,7 @@ class Project:
         :raises ValueError: If the OTL version cannot be determined from the model builder.
         """
 
-        if not self.otl_version:
+        if self.subset_path and not self.otl_version:
             self.otl_version = self.get_model_builder().get_otl_version()
 
         return self.otl_version
@@ -579,7 +583,7 @@ class Project:
         """
 
         quick_saves = Path(self.project_path / self.quick_saves_foldername)
-        if not quick_saves.exists():
+        if not quick_saves.exists() and self.project_path.exists():
             os.mkdir(Path(self.project_path / self.quick_saves_foldername))
         return quick_saves
 
@@ -919,3 +923,17 @@ class Project:
 
         time_of_alter = datetime.datetime.now().date()
         self.laatst_bewerkt = time_of_alter
+
+
+    def __eq__(self, __value):
+        if not __value:
+            return False
+
+        return (self.eigen_referentie == __value.eigen_referentie and
+                Helpers.equal_paths(path1=self.subset_path,path2=__value.subset_path) and
+                self.subset_operator == __value.subset_operator and
+                self.otl_version == __value.otl_version and
+                self.bestek == __value.bestek and
+                self.laatst_bewerkt == __value.laatst_bewerkt and
+                self.saved_project_files == __value.saved_project_files)
+

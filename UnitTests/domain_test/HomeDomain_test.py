@@ -15,7 +15,7 @@ LOCALE_DIR = ROOT_DIR.parent.parent / 'locale/'
 
 @pytest.fixture
 def home_domain() -> HomeDomain:
-    HomeDomain.init(home_screen=Mock())
+    HomeDomain.init_static(home_screen=Mock())
 
 
 def test_validate_with_good_values():

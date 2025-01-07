@@ -1,3 +1,6 @@
+from pathlib import Path
+from typing import Optional
+
 from otlmow_model.OtlmowModel.Helpers.generated_lists import get_hardcoded_class_dict
 
 from GUI.screens.RelationChange_elements.RelationChangeHelpers import RelationChangeHelpers
@@ -41,3 +44,12 @@ class Helpers:
             raise ValueError("Invalid sort parameter. Use 'keys' or 'values'.")
 
         return sorted_dict
+    
+    @classmethod
+    def equal_paths(cls,path1: Optional[Path], path2: Optional[Path]):
+        if path1 and path2:
+            return path1.name == path2.name
+        elif path1 or path2:
+            return False
+        else:
+            return True

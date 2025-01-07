@@ -55,8 +55,8 @@ class RelationChangeDomain:
     Attributes:
         project (Project): The current project being managed.
         collector (OSLOCollector): The collector for OSLO data.
-        internal_objects (list[AIMObject]): Objects placed by the contractor within the project.
-        external_objects (list[AIMObject]): Object outside the project (from DAVIE)
+        internal_objects (list[Union[RelatieObject, RelationInteractor]]): Objects placed by the contractor within the project.
+        external_objects (list[Union[RelatieObject, RelationInteractor]]): Object outside the project (from DAVIE)
         agent_objects (list[Agent]): Agent objects that are not AIM objects.
         shown_objects (list[RelationInteractor]): All objects displayed in the GUI.
         possible_relations_per_class_dict (dict[str, list[OSLORelatie]]): Possible relations
@@ -76,7 +76,7 @@ class RelationChangeDomain:
     Methods:
         init_static(project: Project) -> None: Initializes static resources for the class.
         load_project_relation_data() -> None: Loads project relation data asynchronously.
-        set_instances(objects_list: List[AIMObject]) -> None: Processes and categorizes AIM objects.
+        set_instances(objects_list: list[Union[RelatieObject, RelationInteractor]]) -> None: Processes and categorizes AIM objects.
         create_and_add_missing_external_assets_from_relations() -> None: Creates missing external
             assets from relations.
         get_all_relations() -> list[RelatieObject]: Retrieves all existing relations.
@@ -152,8 +152,8 @@ class RelationChangeDomain:
     project: Project = None
     collector: OSLOCollector = None
 
-    internal_objects: list[AIMObject] = []  # Object in the project (placed by contractor)
-    external_objects: list[AIMObject] = []  # Object outside the project (from DAVIE)
+    internal_objects: list[RelationInteractor] = []  # Object in the project (placed by contractor)
+    external_objects: list[RelationInteractor] = []  # Object outside the project (from DAVIE)
     agent_objects: list[Agent] = []  # Agent objects (not an AIMobject)
     shown_objects: list[RelationInteractor] = []  # All objects combined that are displayed on GUI (col 1)
 
@@ -236,7 +236,7 @@ class RelationChangeDomain:
         global_vars.otl_wizard.main_window.step3_visuals.reload_html()
 
     @classmethod
-    def set_instances(cls, objects_list: List[AIMObject]) -> None:
+    def set_instances(cls, objects_list: list[Union[RelatieObject, RelationInteractor]]) -> None:
         # sourcery skip: use-contextlib-suppress
         """Processes and categorizes AIM objects for relation management.
 
@@ -247,7 +247,7 @@ class RelationChangeDomain:
 
         :param cls: The class itself.
         :param objects_list: A list of AIM objects to be processed and categorized.
-        :type objects_list: List[AIMObject]
+        :type objects_list: list[Union[RelatieObject, RelationInteractor]]
         :returns: None
         """
 

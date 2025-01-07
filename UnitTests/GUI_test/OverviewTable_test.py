@@ -29,7 +29,7 @@ def projects(locale) -> HomeScreen:
     original_home_ref = global_vars.otl_wizard.main_window.home_screen
     global_vars.otl_wizard.main_window.home_screen = home_screen
 
-    HomeDomain.init(home_screen)
+    HomeDomain.init_static(home_screen)
     HomeDomain.projects = [Project(eigen_referentie="testen", project_path=None, subset_path=None,
                                    saved_documents_overview_path=None, bestek="test",
                                    laatst_bewerkt=None),

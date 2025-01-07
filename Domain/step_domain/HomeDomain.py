@@ -24,7 +24,7 @@ class HomeDomain:
     projects = {}
 
     @classmethod
-    def init(cls, home_screen: HomeScreenInterface):
+    def init_static(cls, home_screen: HomeScreenInterface):
         cls.projects = cls.get_all_otl_wizard_projects()
         cls.update_frontend(screen=home_screen)
 

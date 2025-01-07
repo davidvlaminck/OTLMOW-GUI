@@ -1,5 +1,6 @@
 from pathlib import Path
 
+from Domain.Helpers import Helpers
 from Domain.enums import FileState
 
 
@@ -24,3 +25,7 @@ class ProjectFile:
 
         self.file_path: Path = file_path
         self.state: FileState = state
+
+    def __eq__(self, __value):
+        return Helpers.equal_paths(self.file_path,__value.file_path) and self.state == __value.state
+

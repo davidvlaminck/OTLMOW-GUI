@@ -368,12 +368,16 @@ class InsertDataDomain:
                             asset.typeURI,False))
                     exception_group.add_exception(error=ex)
 
-                is_valid_relation = False
-                with contextlib.suppress(Exception):
+
+                try:
                     is_valid_relation = RelationValidator.is_valid_relation(
                         relation_type=type(relation),
                         source_typeURI=relation.bron.typeURI,
                         target_typeURI=relation.doel.typeURI)
+                except Exception as e:
+                    logging.warning(e)
+                    is_valid_relation = False
+
                 if not is_valid_relation:
                     ex = cls.raise_wrong_doel_or_target(
                         relation=relation,
