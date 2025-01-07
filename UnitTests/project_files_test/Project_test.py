@@ -256,10 +256,10 @@ def mock_project_dir(root_directory):
     "expected_saved_documents_overview_path, expected_last_quick_save",
     [
         # Happy path with all parameters provided
-        ("ref1", Path("ref1"), Path("ref1"), Path("ref1/saved_documents.json"),
+        ("ref1", Path("ref1"), Path("ref1"), Path("ref1", "saved_documents.json"),
          "bestek1", datetime.datetime(2023, 10, 1),None,"operator1", "version1",
          # expected values
-         Path("ref1"), "operator1", "version1", Path("ref1/saved_documents.json"),
+         Path("ref1"), "operator1", "version1", Path("ref1", "saved_documents.json"),
          None),
 
         # Happy path with minimal parameters
@@ -268,29 +268,29 @@ def mock_project_dir(root_directory):
          Path('ref1'), None,None, Path('ref1' , 'saved_documents.json'), None),
 
         # Edge case with subset_operator and otl_version as Path
-        ("ref1", None, None, None, None, None, None, Path("/operator/path"), Path("/version/path"),
+        ("ref1", None, None, None, None, None, None, Path("operator", "path"), Path("version", "path"),
         # expected values
          Path('ref1'), "path","path", Path('ref1' , 'saved_documents.json'),None),
 
         # Edge case with saved_documents_overview_path not ending in .json
         ("ref1", None, None, Path("ref1"), None, None, None, None, None,
         # expected values
-         Path('ref1'), None, None, Path("ref1/saved_documents.json"), None),
+         Path('ref1'), None, None, Path("ref1", "saved_documents.json"), None),
 
         # Edge case everything except eigen_reference is None
         ("ref1", None, None, None, None, None, None, None, None,
         # expected values
-         Path('ref1'), None,None,  Path("ref1/saved_documents.json"), None),
+         Path('ref1'), None,None,  Path("ref1", "saved_documents.json"), None),
 
         # quick_save_path_given
         ("ref1", None, None, None, None, None,  Path("save.json"), None, None,
         # expected values
-        Path('ref1'), None, None, Path("ref1/saved_documents.json"), Path("save.json")),
+        Path('ref1'), None, None, Path("ref1", "saved_documents.json"), Path("save.json")),
 
         # project_path_given
         ("ref1", Path("project_ref1"), None, None, None, None, None, None, None,
         # expected values
-        Path('project_ref1'), None, None, Path("project_ref1/saved_documents.json"), None)
+        Path('project_ref1'), None, None, Path("project_ref1", "saved_documents.json"), None)
     ],
     ids=[
         "happy_path_all_params",
@@ -337,7 +337,7 @@ def test_project_init_existing_dir(root_directory,mock_project_dir, eigen_refere
     [
         # Happy path test case
         pytest.param(
-            Path("/valid/project/path"),
+            Path("valid", "project", "path"),
             {
                 "subset": "subset_path",
                 "eigen_referentie": "ref123",
@@ -348,13 +348,13 @@ def test_project_init_existing_dir(root_directory,mock_project_dir, eigen_refere
                 "otl_version": "1.0"
             },
             {
-                "project_path": Path("/valid/project/path"),
-                "subset_path": Path("/valid/project/path/subset_path"),
-                "saved_documents_overview_path": Path("/valid/project/path/saved_documents.json"),
+                "project_path": Path("valid", "project", "path"),
+                "subset_path": Path("valid", "project", "path", "subset_path"),
+                "saved_documents_overview_path": Path("valid", "project", "path", "saved_documents.json"),
                 "eigen_referentie": "ref123",
                 "bestek": "bestek123",
                 "laatst_bewerkt": datetime.datetime(2023, 10, 1, 12, 0, 0),
-                "last_quick_save": Path("/valid/project/path/quick_saves/quick_save_path"),
+                "last_quick_save": Path("valid", "project", "path", "quick_saves", "quick_save_path"),
                 "subset_operator": "operator123",
                 "otl_version": "1.0"
             },
@@ -362,7 +362,7 @@ def test_project_init_existing_dir(root_directory,mock_project_dir, eigen_refere
         ),
         # Edge case: Missing optional fields
         pytest.param(
-            Path("/valid/project/path"),
+            Path("valid", "project", "path"),
             {
                 "subset": "subset_path",
                 "eigen_referentie": "ref123",
@@ -370,9 +370,9 @@ def test_project_init_existing_dir(root_directory,mock_project_dir, eigen_refere
                 "laatst_bewerkt": "2023-10-01 12:00:00"
             },
             {
-                "project_path": Path("/valid/project/path"),
-                "subset_path": Path("/valid/project/path/subset_path"),
-                "saved_documents_overview_path": Path("/valid/project/path/saved_documents.json"),
+                "project_path": Path("valid", "project", "path"),
+                "subset_path": Path("valid", "project", "path", "subset_path"),
+                "saved_documents_overview_path": Path("valid", "project", "path", "saved_documents.json"),
                 "eigen_referentie": "ref123",
                 "bestek": "bestek123",
                 "laatst_bewerkt": datetime.datetime(2023, 10, 1, 12, 0, 0),
@@ -408,25 +408,25 @@ def test_load_project_happy_and_edge_cases(project_path, project_details, expect
     [
         # Error case: Project directory does not exist
         pytest.param(
-            Path("/invalid/project/path"),
+            Path("invalid", "project", "path"),
             False,
             FileNotFoundError,
-            "Project dir \invalid\project\path does not exist",
+            "Project dir {0} does not exist".format(str(Path("invalid", "project", "path"))),
             "project_directory_not_exist"
         ),
         # Error case: Project details file does not exist
         pytest.param(
-            Path("/valid/project/path"),
+            Path("valid", "project", "path"),
             True,
             FileNotFoundError,
-            "Project details file \\valid\project\path\project_details.json does not exist",
+            "Project details file {0} does not exist".format(str(Path("valid", "project", "path","project_details.json"))),
             "project_details_file_not_exist"
         ),
     ]
 )
 def test_load_project_error_cases(project_path, project_path_exists, expected_exception,expected_error_msg, id):
     # Arrange
-    with patch.object(Path, "exists", side_effect=[project_path_exists,Path("/valid/project/path/project_details.json").exists()]):
+    with patch.object(Path, "exists", side_effect=[project_path_exists,Path("valid", "project", "path", "project_details.json").exists()]):
         # Act & Assert
         with pytest.raises(expected_exception) as exc_info:
             Project.load_project(project_path)
@@ -553,29 +553,29 @@ def get_and_cleanup_empty_project(mock_otl_wizard_dir,request):
          Path('ref1'), None,None, Path('ref1' , 'saved_documents.json'), None),
 
         # Edge case with subset_operator and otl_version as Path
-        ("ref1", None, None, None, None, None, None, Path("/operator/path"), Path("/version/path"),
+        ("ref1", None, None, None, None, None, None, Path("operator", "path"), Path("version", "path"),
         # expected values
          Path('ref1'), "path","path", Path('ref1' , 'saved_documents.json'),None),
 
         # Edge case with saved_documents_overview_path not ending in .json
         ("ref1", None, None, Path("ref1"), None, None, None, None, None,
         # expected values
-         Path('ref1'), None, None, Path("ref1/saved_documents.json"), None),
+         Path('ref1'), None, None, Path("ref1", "saved_documents.json"), None),
 
         # Edge case everything except eigen_reference is None
         ("ref1", None, None, None, None, None, None, None, None,
         # expected values
-         Path('ref1'), None,None,  Path("ref1/saved_documents.json"), None),
+         Path('ref1'), None,None,  Path("ref1", "saved_documents.json"), None),
 
         # last quick save path is given
         ("ref1", None, None, None, None, None,  Path("save.json"), None, None,
         # expected values
-        Path('ref1'), None, None, Path("ref1/saved_documents.json"), "save.json"),
+        Path('ref1'), None, None, Path("ref1", "saved_documents.json"), "save.json"),
 
         # project_path_given
         ("ref1", Path("project_ref1"), None, None, None, None, None, None, None,
         # expected values
-        Path('project_ref1'), None, None, Path("project_ref1/saved_documents.json"), None)
+        Path('project_ref1'), None, None, Path("project_ref1", "saved_documents.json"), None)
     ],
     ids=[
         "empty_project",
@@ -613,10 +613,10 @@ def test_save_project_to_dir(get_and_cleanup_empty_project):
     # expected_error, expected_error_value,
     [
         # non_existent_subset
-        ("ref1", Path("ref1"), Path("ref1"), Path("ref1/saved_documents.json"),
+        ("ref1", Path("ref1"), Path("ref1"), Path("ref1", "saved_documents.json"),
          "bestek1", datetime.datetime(2023, 10, 1),None,"operator1", "version1",
          # expected values
-         Path("ref1"), "operator1", "version1", Path("ref1/saved_documents.json"),
+         Path("ref1"), "operator1", "version1", Path("ref1", "saved_documents.json"),
          None,FileNotFoundError,'No such file or directory ref1'),
 
 
@@ -655,8 +655,8 @@ def test_save_project_given_details(mock_project_home_path,create_mock_project_e
 
 @fixture
 def setup_quicksave_test_project(root_directory) -> Project:
-    backup_quicksave_test_project_path  = Path(root_directory, "OTLWizardProjects/Projects_backup/quicksave_test")
-    quicksave_test_project_path = Path(root_directory, "OTLWizardProjects/Projects/quicksave_test")
+    backup_quicksave_test_project_path  = Path(root_directory, "OTLWizardProjects", "Projects_backup", "quicksave_test")
+    quicksave_test_project_path = Path(root_directory, "OTLWizardProjects", "Projects", "quicksave_test")
 
     if quicksave_test_project_path.exists():
         shutil.rmtree(quicksave_test_project_path)
@@ -848,7 +848,7 @@ def test_save_validated_assets(setup_preloaded_assets_in_memory: Project):
     assert [str(asset) for asset in new_loaded_assets] == expected_assets_and_relations
 
 def test_export_project_with_other_files(root_directory, setup_quicksave_test_project,cleanup_after_creating_a_file_to_delete):
-    quicksave_test_project_export_path = Path(root_directory, "OTLWizardProjects/TestFiles/export_test.otlw")
+    quicksave_test_project_export_path = Path(root_directory, "OTLWizardProjects", "TestFiles", "export_test.otlw")
 
     cleanup_after_creating_a_file_to_delete.append(quicksave_test_project_export_path)
 

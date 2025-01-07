@@ -113,8 +113,8 @@ class AssetChangeDomain:
     def generate_complex_asset_report(item, attribute, complex_list, old_item_dict) -> List[ReportItem]:
         return [ReportItem(
             id=item.assetId.identificator, actie=ReportAction.ATC, attribute=attribute,
-            original_value=f"{0}: {1}".format(str(key),str(old_item_dict.get(attribute).get(key))),
-            new_value=f"{0}: {1}".format(str(key),str(value))
+            original_value="{0}: {1}".format(str(key),str(old_item_dict.get(attribute).get(key))),
+            new_value="{0}: {1}".format(str(key),str(value))
         ) for key, value in complex_list.items()]
 
     @staticmethod
