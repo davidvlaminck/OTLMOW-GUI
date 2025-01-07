@@ -54,6 +54,10 @@ class OTLWizard(QApplication):
 
     def __init__(self,settings: dict, argv: typing.List[str]):
         super().__init__(argv)
+        # Windows will set the colorScheme to Dark if that is the setting of the system
+        # We will set it to light no matter what the colorscheme of the system is.
+        # if self.styleHints().colorScheme() == Qt.ColorScheme.Dark:
+        self.styleHints().setColorScheme(Qt.ColorScheme.Light)
 
         sys.excepthook = excepthook
 
