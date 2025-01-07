@@ -53,6 +53,10 @@ def create_mock_project_project_1():
     #     laatst_bewerkt=datetime.datetime(2023, 11, 1))
     # project.save_project_to_dir()
 
+    if project_path.exists():
+        shutil.rmtree(project_path)
+    shutil.copytree(project_backup_path,project_path)
+
     project = Project.load_project(project_path)
 
     yield project
