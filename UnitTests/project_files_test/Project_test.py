@@ -742,7 +742,7 @@ def test_save_validated_assets_from_scratch(get_and_cleanup_empty_project: Proje
 
     assert not project.quick_save_dir_path.exists()
 
-    project.save_validated_assets()
+    project.save_validated_assets(asynchronous=False)
 
     # check that the quicksave directory exists now
     assert project.quick_save_dir_path.exists()
@@ -799,7 +799,7 @@ def test_save_validated_assets_delete_old_files(get_and_cleanup_empty_project: P
     quick_save_files = os.listdir(project.get_quicksaves_dir_path())
     assert len(quick_save_files) == 3
 
-    project.save_validated_assets()
+    project.save_validated_assets(asynchronous=False)
 
     # quicksave folder should contain
     # 1. strange_name_f
@@ -822,7 +822,7 @@ def test_save_validated_assets(setup_preloaded_assets_in_memory: Project):
     expected_assets =  deepcopy(setup_preloaded_assets_in_memory.assets_in_memory)
     old_quicksave = deepcopy(setup_preloaded_assets_in_memory.last_quick_save)
 
-    setup_preloaded_assets_in_memory.save_validated_assets()
+    setup_preloaded_assets_in_memory.save_validated_assets(asynchronous=False)
 
     # we expect there to be a new last_quick_save
     assert setup_preloaded_assets_in_memory.last_quick_save != old_quicksave

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 import datetime
 import json
 import logging
@@ -248,7 +249,7 @@ class Project:
 
         return []
 
-    def save_validated_assets(self) -> None:
+    def save_validated_assets(self, asynchronous = True) -> None:
         """
         Saves validated assets to the project quick save directory.
 
@@ -265,10 +266,8 @@ class Project:
         :return: None
 
         :raises OSError: If there is an issue creating the quick save directory or saving the file.
+        @param asynchronous: do the save asynchronous or not
         """
-
-
-        
 
         if self.quick_save_dir_path.exists():
             current_date = datetime.datetime.now()
@@ -282,10 +281,26 @@ class Project:
         current_date_str = datetime.datetime.now().strftime(Project.quicksave_date_format)
 
         save_path = self.quick_save_dir_path  / f"quick_save-{current_date_str}.json"
+
+        if asynchronous:
+            try:
+                event_loop = asyncio.get_event_loop()
+                event_loop.create_task(self.make_quick_save_async(save_path=save_path))
+            except DeprecationWarning:
+                # should only go here if you are testing
+                self.make_quick_save(save_path=save_path)
+        else:
+            self.make_quick_save(save_path=save_path)
+
+
+    async def make_quick_save_async(self, save_path: Path) -> None:
+        self.make_quick_save(save_path=save_path)
+
+
+    def make_quick_save(self, save_path: Path) -> None:
         OtlmowConverter.from_objects_to_file(file_path=save_path,
                                              sequence_of_objects=self.assets_in_memory)
         self.last_quick_save = save_path
-
         self.save_project_to_dir()
 
 

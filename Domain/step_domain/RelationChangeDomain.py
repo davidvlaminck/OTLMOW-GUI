@@ -210,6 +210,7 @@ class RelationChangeDomain:
                 event_loop = asyncio.get_event_loop()
                 event_loop.create_task(cls.load_project_relation_data())
             except DeprecationWarning:
+                # should only go here if you are testing
                 cls.load_project_relation_data()
 
     @classmethod
