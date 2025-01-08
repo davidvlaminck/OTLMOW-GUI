@@ -948,6 +948,135 @@ def test_import_project(mock_project_home_path, create_mock_project_project_1: P
     assert project_loaded.bestek == project.bestek
     assert project_loaded.laatst_bewerkt == project.laatst_bewerkt
 
+import pytest
+import json
+import os
+import shutil
+from unittest.mock import MagicMock, patch
+from pathlib import Path
+from Domain.project.Project import Project
+from Domain.enums import FileState
+from Domain.project.ProjectFile import ProjectFile
+
+@pytest.fixture
+def mock_project(mock_otl_wizard_dir):
+    project = Project(eigen_referentie="test_project")
+    project.saved_project_files = []
+    project.save_project_to_dir()
+
+    yield project
+
+    if project.project_path and project.project_path.exists():
+        shutil.rmtree(project.project_path)
+
+@pytest.mark.parametrize("saved_documents_content, expected_states, test_id", [
+    ([], [], "empty_saved_documents"),
+    ([{"file_path": "file1.txt", "state": "ok"}], [FileState.WARNING], "no_quicksave_warning"),
+    ([{"file_path": "file1.txt", "state": "ok"}, {"file_path": "file2.txt", "state": "warning"}], [FileState.WARNING, FileState.WARNING], "mixed_states_no_quicksave"),
+    ([{"file_path": "file1.txt", "state": "ok"}], [FileState.OK], "quicksave_exists"),
+], ids=["empty_saved_documents",
+        "no_quicksave_warning",
+        "mixed_states_no_quicksave",
+        "quicksave_exists"])
+def test_load_saved_document_filenames(mock_project, mock_otl_wizard_dir, saved_documents_content, expected_states, test_id):
+    # Arrange
+    saved_documents_path = ProgramFileStructure.get_otl_wizard_projects_dir() / mock_project.project_path.name / Project.saved_documents_filename
+    quicksave_dir_path = mock_project.get_quicksaves_dir_path()
+    os.makedirs(quicksave_dir_path, exist_ok=True)
+    with open(saved_documents_path, 'w') as f:
+        json.dump(saved_documents_content, f)
+    if expected_states and expected_states[0] == FileState.OK:
+        with open(quicksave_dir_path / "quicksave.txt", 'w') as f:
+            f.write("quicksave content")
+    # Act
+    result = mock_project.load_saved_document_filenames()
+
+    # Assert
+    assert result == mock_project
+    assert len(mock_project.saved_project_files) == len(expected_states)
+    for file, expected_state in zip(mock_project.saved_project_files, expected_states):
+        assert file.state == expected_state
+
+
+def test_load_saved_document_filenames_old_project_structure(mock_project, mock_otl_wizard_dir):
+    """
+    Test the loading of saved document filenames for a project with an old directory structure.
+
+    This function verifies that the correct file states are assigned and that files are moved
+    from the old project structure to the new one.
+
+    @param mock_project:
+    @param mock_otl_wizard_dir:
+    @return:
+    """
+    saved_documents_content =  [{"file_path": "file1.txt", "state": "ok"}]
+    expected_states = [FileState.WARNING]
+    test_id = "old_project_structure_test"
+
+    # Arrange
+    saved_documents_path = ProgramFileStructure.get_otl_wizard_projects_dir() / mock_project.project_path.name / Project.saved_documents_filename
+    quicksave_dir_path = mock_project.get_quicksaves_dir_path()
+    os.makedirs(quicksave_dir_path, exist_ok=True)
+    with open(saved_documents_path, 'w') as f:
+        json.dump(saved_documents_content, f)
+
+    #create the file in the save_document_content in the old OTL-templates directory
+    os.mkdir(mock_project.get_old_project_files_dir_path())
+    with open(mock_project.get_old_project_files_dir_path() / saved_documents_content[0]["file_path"], 'w') as f:
+        f.write("file to be moved")
+
+    if expected_states and expected_states[0] == FileState.OK:
+        with open(quicksave_dir_path / "quicksave.txt", 'w') as f:
+            f.write("quicksave content")
+    # Act
+    result = mock_project.load_saved_document_filenames()
+
+    # Assert
+    assert result == mock_project
+    assert len(mock_project.saved_project_files) == len(expected_states)
+    for file, expected_state in zip(mock_project.saved_project_files, expected_states):
+        assert file.state == expected_state
+
+    expected_file = ProjectFile(
+        file_path=mock_project.get_project_files_dir_path() / Path(saved_documents_content[0]["file_path"]).name,
+        state=FileState.OK)
+    assert len(mock_project.saved_project_files) == 1
+    assert mock_project.saved_project_files[0].file_path == expected_file.file_path
+    assert expected_file.file_path.exists()
+
+@pytest.mark.parametrize("caught_exception, test_id, saved_documents_content", [
+    (FileNotFoundError, "no_file",""),
+    (json.JSONDecodeError, "invalid_json","invalid json"),
+    (json.JSONDecodeError, "no_json_content",""),
+], ids=["no_file",
+        "invalid_json",
+        "no_json_content"])
+def test_load_saved_document_filenames_edge_cases(mock_project : Project, mock_otl_wizard_dir,
+                                                  caught_exception, test_id, saved_documents_content):
+    """
+    test Project.load_saved_document_filenames with edge cases that are handled
+
+    @param mock_project: mock project
+    @param mock_otl_wizard_dir: mocks the ProgramFileStructure.get_otl_wizard_projects_dir() function
+    @param caught_exception: these exceptions should NOT happen
+    @param test_id:
+    @return:
+    """
+    # Arrange
+    saved_documents_path = ProgramFileStructure.get_otl_wizard_projects_dir() / mock_project.project_path.name / Project.saved_documents_filename
+    if isinstance(caught_exception, FileNotFoundError):
+        # Ensure the file does not exist
+        if saved_documents_path.exists():
+            os.remove(saved_documents_path)
+    else:
+        # Create an invalid JSON file
+        with open(saved_documents_path, 'w+') as f:
+            f.write(saved_documents_content)
+
+    # Act & Assert
+    mock_project.load_saved_document_filenames()
+
+    assert mock_project.saved_project_files == []
 
 def test_delete_project_removes_correct_project(create_mock_project_project_4: Project):
     project = create_mock_project_project_4

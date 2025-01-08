@@ -549,7 +549,12 @@ class Project:
 
         if saved_documents_path.exists():
             with open(file=saved_documents_path,mode="r") as saved_document:
-                saved_documents = json.load(fp=saved_document)
+                try:
+                    saved_documents = json.load(fp=saved_document)
+                except json.decoder.JSONDecodeError as e:
+                    # happens when the saved_documents.json file is empty
+                    logging.warning(e)
+                    saved_documents = []
             saved_documents_str = str(saved_documents)
             logging.debug(f"Loaded saved object lists: {saved_documents_str}")
             self.saved_project_files = []
