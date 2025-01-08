@@ -54,6 +54,7 @@ class InsertDataScreen(Screen):
         assets (list): List to store asset information.
         main_window (optional): Reference to the main application window.
     """
+    feedback_message_icon_color = "white"
 
     def __init__(self, language_settings=None):
         super().__init__()
@@ -444,8 +445,10 @@ class InsertDataScreen(Screen):
         Returns:
             None
         """
-
-        self.message_icon.setPixmap(qta.icon('mdi.check', color="white").pixmap(QSize(48, 48)))
+        self.message_icon.setVisible(True)
+        self.message_icon.setPixmap(qta.icon(
+            'mdi.check',
+            color=InsertDataScreen.feedback_message_icon_color).pixmap(QSize(48, 48)))
         self.message.setText(self._('all_info_correct'))
         self.feedback_message_box.setStyleSheet('background-color: #1DCA94; border-radius: 10px;')
 
@@ -464,8 +467,10 @@ class InsertDataScreen(Screen):
         Returns:
             None
         """
-
-        self.message_icon.setPixmap(qta.icon('mdi.alert', color="white").pixmap(QSize(48, 48)))
+        self.message_icon.setVisible(True)
+        self.message_icon.setPixmap(qta.icon(
+            'mdi.alert',
+            color=InsertDataScreen.feedback_message_icon_color).pixmap(QSize(48, 48)))
         self.message.setText(self._('warning'))
         self.feedback_message_box.setStyleSheet('background-color: #F8AA62; border-radius: 10px;')
 
@@ -486,6 +491,7 @@ class InsertDataScreen(Screen):
         """
 
         self.message.setText('')
+        self.message_icon.setVisible(False)
         self.feedback_message_box.setStyleSheet('')
 
 
@@ -503,9 +509,12 @@ class InsertDataScreen(Screen):
         Returns:
             None
         """
-
-        self.message_icon.setPixmap(qta.icon('mdi.alert-circle-outline', color="white").pixmap(QSize(48, 48)))
+        self.message_icon.setVisible(True)
+        self.message_icon.setPixmap(qta.icon(
+            'mdi.alert-circle-outline',
+            color=InsertDataScreen.feedback_message_icon_color).pixmap(QSize(48, 48)))
         self.message.setText(self._('error'))
+
         self.feedback_message_box.setStyleSheet('background-color: #CC3300; border-radius: 10px;')
 
 

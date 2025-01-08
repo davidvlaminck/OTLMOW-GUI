@@ -12,6 +12,7 @@ import qtawesome as qta
 from otlmow_visuals.PyVisWrapper import PyVisWrapper
 
 from Domain.step_domain.RelationChangeDomain import RelationChangeDomain
+from GUI.Styling import Styling
 from GUI.screens.general_elements.ButtonWidget import ButtonWidget
 from GUI.screens.RelationChange_elements.FolderTreeView import FolderTreeView
 from UnitTests.TestClasses.Classes.ImplementatieElement.AIMObject import AIMObject
@@ -52,7 +53,6 @@ class AbstractInstanceListWidget:
         # self.data_last_added_index = 9
 
         self.color_legend = PyVisWrapper().relatie_color_dict
-        self.last_added_color = QColor("#d0ffcc")
         self.needs_source_object= needs_source_object
 
         self.labels = labels
@@ -80,7 +80,7 @@ class AbstractInstanceListWidget:
 
             # Apply custom background for specific rows or items
             if  self.parent.list_gui.model.itemFromIndex(index.siblingAtColumn(0)).data(self.parent.data_last_added_index) :
-                painter.fillRect(option.rect, QBrush(self.parent.last_added_color))
+                painter.fillRect(option.rect, QBrush(Styling.last_added_color))
 
             painter.restore()
             super().paint(painter, option, index)

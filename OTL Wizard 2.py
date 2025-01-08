@@ -14,6 +14,7 @@ from Domain.Settings import Settings
 from Domain.logger.OTLLogger import OTLLogger
 from Domain.step_domain.InsertDataDomain import InsertDataDomain
 from Domain.network.Updater import Updater
+from GUI.Styling import Styling
 from GUI.translation.GlobalTranslate import GlobalTranslate
 
 ROOT_DIR =  Path(Path(__file__).absolute()).parent
@@ -57,28 +58,20 @@ class OTLWizard(QApplication):
         # Windows will set the colorScheme to Dark if that is the setting of the system
         # We will set it to light no matter what the colorscheme of the system is.
         # if self.styleHints().colorScheme() == Qt.ColorScheme.Dark:
-        self.styleHints().setColorScheme(Qt.ColorScheme.Light)
+        # self.styleHints().setColorScheme(Qt.ColorScheme.Light)
 
         sys.excepthook = excepthook
 
         Updater.check_for_updates()
 
-        app_icon = QIcon('img/wizard.ico')
+        app_icon = QIcon(str(Path('img','wizard.ico')))
         self.setWindowIcon(app_icon)
 
-        style_path = Path('style/custom.qss')
+        self.meipass = sys._MEIPASS if hasattr(sys, '_MEIPASS') else None
+        Styling.applyStyling(self,self.meipass)
+        # self.applicationStateChanged.connect(lambda state: logging.debug(f"applicationStateChanged changed {state}"))
+        self.paletteChanged.connect(lambda state: Styling.applyStyling(self,self.meipass))
 
-        if hasattr(sys, '_MEIPASS'): # when in .exe file
-            style_path = Path(os.path.join(sys._MEIPASS,'style/custom.qss'))
-        elif not style_path.exists():
-            style_path = Path('data/style/custom.qss')
-
-
-        with open(style_path, 'r') as file:
-            self.setStyleSheet(file.read())
-
-        style_path_str = str(style_path.absolute())
-        logging.debug(f"style sheet found in: {style_path_str}")
 
         # self.demo_project = demo_data()
         self.demo_project = None
@@ -86,8 +79,6 @@ class OTLWizard(QApplication):
         language = GlobalTranslate(settings,LANG_DIR).get_all()
 
         self.main_window = MainWindow(language)
-
-
         self.main_window.resize(1250, 650)
         self.main_window.setWindowTitle('OTLWizard')
         self.main_window.setMinimumSize(800, 600)
@@ -133,6 +124,8 @@ if __name__ == '__main__':
         pyi_splash.update_text('UI Loaded ...')
         pyi_splash.close()
         logging.info('Splash screen closed.')
+
+
 
     event_loop = QEventLoop(app)
     asyncio.set_event_loop(event_loop)

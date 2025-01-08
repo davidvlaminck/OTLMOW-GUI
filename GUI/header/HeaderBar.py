@@ -13,6 +13,7 @@ from PyQt6.QtWidgets import QFrame, QHBoxLayout, QLabel, QVBoxLayout, QWidget, Q
 
 from Domain import global_vars
 from Domain.step_domain.HomeDomain import HomeDomain
+from GUI.Styling import Styling
 from GUI.screens.general_elements.ButtonWidget import ButtonWidget
 from GUI.dialog_windows.LanguageWindow import LanguageWindow
 from GUI.dialog_windows.MenuActionsWindow import MenuActionsWindow
@@ -26,6 +27,7 @@ ROOT_DIR = Path(__file__).parent.parent
 IMG_DIR = ROOT_DIR / 'img/'
 
 class HeaderBar(QFrame):
+
     def __init__(self, language, main_window=None, table: OverviewTable = None, has_save_btn: bool = True):
         super().__init__()
         self.new_project_button = ButtonWidget()
@@ -44,25 +46,26 @@ class HeaderBar(QFrame):
         self.pixmap_icon = None
         self.initialised = False
         self.quick_save_animation_task = None
+        self.header = None
 
     def construct_header_bar(self):
         self.setProperty('class', 'header')
-        header = QHBoxLayout()
+        self.header = QHBoxLayout()
         title = QLabel('OTLWizard')
         title.setProperty('class', 'title')
-        header.addWidget(title)
-        header.addSpacing(30)
+        self.header.addWidget(title)
+        self.header.addSpacing(30)
         self.create_new_project_button()
         self.create_import_button()
-        header.addWidget(self.new_project_button)
-        header.addWidget(self.import_button)
-        # header.addWidget(self.create_loading_icon())
-        header.addStretch()
-        header.setAlignment(self.new_project_button, Qt.AlignmentFlag.AlignLeft)
+        self.header.addWidget(self.new_project_button)
+        self.header.addWidget(self.import_button)
+        # self.header.addWidget(self.create_loading_icon())
+        self.header.addStretch()
+        self.header.setAlignment(self.new_project_button, Qt.AlignmentFlag.AlignLeft)
         user_settings = self.construct_settings_bar()
-        header.addLayout(user_settings)
-        header.setAlignment(user_settings, Qt.AlignmentFlag.AlignRight)
-        self.setLayout(header)
+        self.header.addLayout(user_settings)
+        self.header.setAlignment(user_settings, Qt.AlignmentFlag.AlignRight)
+        self.setLayout(self.header)
 
     def start_event_loop(self):
 
@@ -220,7 +223,7 @@ class HeaderBar(QFrame):
 
     def create_import_button(self):
         self.import_button.setIcon(qta.icon("mdi.download",
-                                            color="#0E5A69"))
+                                            color=Styling.import_button_icon_color))
         self.import_button.setText(self._("import"))
         self.import_button.setProperty('class', 'import-button')
         self.import_button.clicked.connect(
