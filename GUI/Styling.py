@@ -67,19 +67,13 @@ class Styling:
 
         #update a few hardcoded colors
         if global_vars.otl_wizard:
-            # res =global_vars.otl_wizard.main_window.home_screen.header.header.indexOf(global_vars.otl_wizard.main_window.home_screen.header.import_button)
-            # logging.debug(f"import_button index : {res}")
+            # Import button on the home_screen
             global_vars.otl_wizard.main_window.home_screen.header.import_button.setIcon(qta.icon("mdi.download",
                                             color=Styling.import_button_icon_color))
-            # global_vars.otl_wizard.main_window.step1_tabwidget.header.import_button.setIcon(qta.icon("mdi.download",
-            #                                 color=Styling.import_button_icon_color))
-            # global_vars.otl_wizard.main_window.step2_tabwidget.header.import_button.setIcon(
-            #     qta.icon("mdi.download",
-            #              color=Styling.import_button_icon_color))
-            # global_vars.otl_wizard.main_window.step_3_tabwidget.header.import_button.setIcon(
-            #     qta.icon("mdi.download",
-            #              color=Styling.import_button_icon_color))
-            # global_vars.otl_wizard.main_window.step4_tabwidget.header.import_button.setIcon(
-            #     qta.icon("mdi.download",
-            #              color=Styling.import_button_icon_color))
+
+            # the color of disabled steps in the step bar in a project
+            global_vars.otl_wizard.main_window.step1_tabwidget.stepper_widget.enable_steps()
+            global_vars.otl_wizard.main_window.step2_tabwidget.stepper_widget.enable_steps()
+            global_vars.otl_wizard.main_window.step_3_tabwidget.stepper_widget.enable_steps()
+            global_vars.otl_wizard.main_window.step4_tabwidget.stepper_widget.enable_steps()
 

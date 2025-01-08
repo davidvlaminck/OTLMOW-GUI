@@ -22,7 +22,7 @@ from GUI.dialog_windows.UpsertProjectWindow import UpsertProjectWindow
 from GUI.screens.Home_elements.OverviewTable import OverviewTable
 
 
-ROOT_DIR = Path(__file__).parent.parent
+ROOT_DIR = Path(__file__).parent.parent.parent
 
 IMG_DIR = ROOT_DIR / 'img/'
 
@@ -35,7 +35,7 @@ class HeaderBar(QFrame):
         self.table = table
         self.main_window = main_window
         self.return_button = ButtonWidget()
-        self.subtitel = QLabel()
+        self.subtitle = QLabel()
         self.save_button = ButtonWidget()
         self.import_button = ButtonWidget()
         self.reference_title = QLabel()
@@ -84,7 +84,7 @@ class HeaderBar(QFrame):
             lambda: self.start_dialog_window(is_project=True))
 
     def create_loading_icon(self):
-        self.pixmap_icon = QPixmap(f'{str(IMG_DIR)}/wizard.ico')
+        self.pixmap_icon = QPixmap(str(IMG_DIR / 'wizard.ico'))
 
         header_sub = QFrame()
         header_sub_layout = QHBoxLayout()
