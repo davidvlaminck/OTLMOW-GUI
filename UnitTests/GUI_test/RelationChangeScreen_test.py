@@ -59,13 +59,13 @@ def mock_load_validated_assets() -> None:
     Project.load_validated_assets = original_load_validated_assets
 
 def test_fill_class_list(root_directory:Path,
+                         setup_simpel_vergelijking_template5,
                                 mock_screen: InsertDataScreen,
                                 mock_rel_screen: RelationChangeScreen,
                                 setup_test_project,
                                 mock_step3_visuals):
 
-    test_object_lists_file_path: list[str] = [
-        str(root_directory / "demo_projects" / "simpel_vergelijkings_project" / "simpel_vergelijking_template5.xlsx")]
+    test_object_lists_file_path: list[str] = setup_simpel_vergelijking_template5
 
     InsertDataDomain.add_files_to_backend_list(test_object_lists_file_path)
 
@@ -101,12 +101,12 @@ def test_fill_class_list(root_directory:Path,
 # RelationChangeScreen.fill_possible_relations_list   #
 #######################################################
 def test_full_fill_possible_relations_list(qtbot,root_directory:Path,
+                                           setup_simpel_vergelijking_template5,
                                 mock_screen: InsertDataScreen,
                                 mock_rel_screen: RelationChangeScreen,
                                 setup_test_project,
                                 mock_step3_visuals):
-    test_object_lists_file_path: list[str] = [
-        str(root_directory / "demo_projects" / "simpel_vergelijkings_project" / "simpel_vergelijking_template5.xlsx")]
+    test_object_lists_file_path: list[str] = setup_simpel_vergelijking_template5
 
     InsertDataDomain.add_files_to_backend_list(test_object_lists_file_path)
 
@@ -252,12 +252,12 @@ def test_full_fill_possible_relations_list(qtbot,root_directory:Path,
 # RelationChangeScreen.fill_possible_relations_list   #
 #######################################################
 def test_full_fill_existing_relations_list(qtbot,root_directory:Path,
+                                           setup_simpel_vergelijking_template5,
                                 mock_screen: InsertDataScreen,
                                 mock_rel_screen: RelationChangeScreen,
                                 setup_test_project,
                                 mock_step3_visuals):
-    test_object_lists_file_path: list[str] = [
-        str(root_directory / "demo_projects" / "simpel_vergelijkings_project" / "simpel_vergelijking_template5.xlsx")]
+    test_object_lists_file_path: list[str] = setup_simpel_vergelijking_template5
 
     InsertDataDomain.add_files_to_backend_list(test_object_lists_file_path)
 

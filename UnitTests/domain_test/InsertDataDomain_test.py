@@ -42,13 +42,13 @@ def mock_rel_screen(qtbot: QtBot, create_translations) -> RelationChangeScreen:
     RelationChangeDomain.get_screen = original_get_screen
 
 def test_load_and_validate_document_good_path(mock_screen: InsertDataScreen,
+                                              setup_simpel_vergelijking_template5,
                                               root_directory: Path,
                                               setup_test_project,
                                               mock_rel_screen: RelationChangeScreen,
                                               mock_step3_visuals) -> None:
 
-    test_object_lists_file_path: list[str] = [str(root_directory / "demo_projects"  /  "simpel_vergelijkings_project" / "simpel_vergelijking_template5.xlsx")]
-
+    test_object_lists_file_path: list[str] = setup_simpel_vergelijking_template5
     InsertDataDomain.init_static()
 
     InsertDataDomain.add_files_to_backend_list(test_object_lists_file_path)

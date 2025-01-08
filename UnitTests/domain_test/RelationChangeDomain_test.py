@@ -66,6 +66,7 @@ def id(aim_object: AIMObject):
 
 def test_full_set_possible_relations(root_directory:Path,
                                 mock_screen: InsertDataScreen,
+                                     setup_simpel_vergelijking_template5,
                                 # mock_fill_possible_relations_list: RelationChangeScreen,
                                 setup_test_project,
                                 mock_step3_visuals,
@@ -73,8 +74,7 @@ def test_full_set_possible_relations(root_directory:Path,
                                 mock_save_validated_assets_function,
                                 mock_load_validated_assets):
 
-    test_object_lists_file_path: list[str] = [
-        str(root_directory / "demo_projects" / "simpel_vergelijkings_project" / "simpel_vergelijking_template5.xlsx")]
+    test_object_lists_file_path: list[str] = setup_simpel_vergelijking_template5
 
     InsertDataDomain.add_files_to_backend_list(test_object_lists_file_path)
 
@@ -249,14 +249,16 @@ def test_full_set_possible_relations(root_directory:Path,
         for rel_object_id  in poss_rel[selected_object_id].keys():
             assert RelationChangeDomain.possible_object_to_object_relations_dict[selected_object_id][rel_object_id] == poss_rel[selected_object_id][rel_object_id]
 
+
+
 def test_full_add_possible_relation_to_existing_relation(root_directory:Path,
+                                                         setup_simpel_vergelijking_template2,
                                 mock_screen: InsertDataScreen,
                                 mock_fill_possible_relations_list: RelationChangeScreen,
                                 setup_test_project,
                                 mock_step3_visuals,mock_save_validated_assets_function,
                                  mock_load_validated_assets):
-    test_object_lists_file_path: list[str] = [
-        str(root_directory / "demo_projects" / "simpel_vergelijkings_project" / "simpel_vergelijking_template2.xlsx")]
+    test_object_lists_file_path: list[str] = setup_simpel_vergelijking_template2
 
     InsertDataDomain.add_files_to_backend_list(test_object_lists_file_path)
 
@@ -287,12 +289,12 @@ def test_full_add_possible_relation_to_existing_relation(root_directory:Path,
 
 
 def test_full_set_possible_relations_unique_situations(root_directory: Path,
+                                                       setup_simpel_vergelijking_template4,
                                      mock_screen: InsertDataScreen,
                                      mock_fill_possible_relations_list: RelationChangeScreen,
                                      setup_test_project,
                                      mock_step3_visuals):
-    test_object_lists_file_path: list[str] = [
-        str(root_directory / "demo_projects" / "simpel_vergelijkings_project" / "simpel_vergelijking_template4.xlsx")]
+    test_object_lists_file_path: list[str] = setup_simpel_vergelijking_template4
 
     InsertDataDomain.add_files_to_backend_list(test_object_lists_file_path)
 
@@ -318,13 +320,13 @@ def test_full_set_possible_relations_unique_situations(root_directory: Path,
 
 
 def test_full_add_possible_relation_to_existing_relation(root_directory: Path,
+                                                         setup_simpel_vergelijking_template2,
                                                          mock_screen: InsertDataScreen,
                                                          mock_fill_possible_relations_list: RelationChangeScreen,
                                                          setup_test_project,
                                                          mock_step3_visuals,mock_save_validated_assets_function,
                                  mock_load_validated_assets):
-    test_object_lists_file_path: list[str] = [
-        str(root_directory / "demo_projects" / "simpel_vergelijkings_project" / "simpel_vergelijking_template2.xlsx")]
+    test_object_lists_file_path: list[str] = setup_simpel_vergelijking_template2
 
     InsertDataDomain.add_files_to_backend_list(test_object_lists_file_path)
 
@@ -366,6 +368,7 @@ def test_full_add_possible_relation_to_existing_relation(root_directory: Path,
 
 
 def test_full_add_possible_relation_to_existing_relation(root_directory:Path,
+                                                         setup_simpel_vergelijking_template5,
                                 mock_screen: InsertDataScreen,
                                 mock_fill_possible_relations_list: RelationChangeScreen,
                                 setup_test_project,
@@ -373,8 +376,7 @@ def test_full_add_possible_relation_to_existing_relation(root_directory:Path,
                                 mock_save_validated_assets_function,
                                 mock_load_validated_assets
                                                          ):
-    test_object_lists_file_path: list[str] = [
-        str(root_directory / "demo_projects" / "simpel_vergelijkings_project" / "simpel_vergelijking_template5.xlsx")]
+    test_object_lists_file_path: list[str] = setup_simpel_vergelijking_template5
 
     InsertDataDomain.add_files_to_backend_list(test_object_lists_file_path)
 
@@ -405,13 +407,13 @@ def test_full_add_possible_relation_to_existing_relation(root_directory:Path,
     assert relation_object not in RelationChangeDomain.possible_object_to_object_relations_dict[bron_asset_id][target_asset_id]
 
 def test_full_remove_existing_relation(root_directory:Path,
+                                       setup_simpel_vergelijking_template5,
                                 mock_screen: InsertDataScreen,
                                 mock_fill_possible_relations_list: RelationChangeScreen,
                                 setup_test_project,
                                 mock_step3_visuals,mock_save_validated_assets_function,
                                  mock_load_validated_assets):
-    test_object_lists_file_path: list[str] = [
-        str(root_directory / "demo_projects" / "simpel_vergelijkings_project" / "simpel_vergelijking_template5.xlsx")]
+    test_object_lists_file_path: list[str] = setup_simpel_vergelijking_template5
 
     InsertDataDomain.add_files_to_backend_list(test_object_lists_file_path)
 

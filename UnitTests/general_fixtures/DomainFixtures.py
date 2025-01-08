@@ -1,4 +1,5 @@
 import os
+import shutil
 from pathlib import Path
 from unittest.mock import Mock
 
@@ -105,3 +106,62 @@ def mock_load_validated_assets() -> None:
     Project.load_validated_assets = Mock(return_value=RelationChangeDomain.get_quicksave_instances())
     yield
     Project.load_validated_assets = original_load_validated_assets
+
+@fixture
+def setup_simpel_vergelijking_template5(root_directory):
+    test_object_lists_file_path: list[str] = [
+        str(root_directory / "demo_projects" / "simpel_vergelijkings_project" /
+            "simpel_vergelijking_template5.xlsx")]
+
+    for path_str in test_object_lists_file_path:
+        if os.path.exists(path_str):
+            os.remove(path_str)
+
+        backup_path = root_directory / "demo_projects" / "simpel_vergelijkings_project_backup_files" / Path(path_str).name
+        shutil.copy(backup_path, path_str)
+
+    yield test_object_lists_file_path
+
+    for path_str in test_object_lists_file_path:
+        if os.path.exists(path_str):
+            os.remove(path_str)
+
+@fixture
+def setup_simpel_vergelijking_template2(root_directory):
+    test_object_lists_file_path: list[str] = [
+        str(root_directory / "demo_projects" / "simpel_vergelijkings_project" /
+            "simpel_vergelijking_template2.xlsx")]
+
+    for path_str in test_object_lists_file_path:
+        if os.path.exists(path_str):
+            os.remove(path_str)
+
+        backup_path = root_directory / "demo_projects" / "simpel_vergelijkings_project_backup_files" / Path(
+            path_str).name
+        shutil.copy(backup_path, path_str)
+
+    yield test_object_lists_file_path
+
+    for path_str in test_object_lists_file_path:
+        if os.path.exists(path_str):
+            os.remove(path_str)
+
+@fixture
+def setup_simpel_vergelijking_template4(root_directory):
+    test_object_lists_file_path: list[str] = [
+        str(root_directory / "demo_projects" / "simpel_vergelijkings_project" /
+            "simpel_vergelijking_template4.xlsx")]
+
+    for path_str in test_object_lists_file_path:
+        if os.path.exists(path_str):
+            os.remove(path_str)
+
+        backup_path = root_directory / "demo_projects" / "simpel_vergelijkings_project_backup_files" / Path(
+            path_str).name
+        shutil.copy(backup_path, path_str)
+
+    yield test_object_lists_file_path
+
+    for path_str in test_object_lists_file_path:
+        if os.path.exists(path_str):
+            os.remove(path_str)
