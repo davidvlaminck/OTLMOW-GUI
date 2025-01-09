@@ -1,3 +1,4 @@
+import logging
 from collections import namedtuple
 
 from PyQt6.QtCore import QItemSelectionModel
@@ -33,17 +34,53 @@ class ObjectListWidget(AbstractInstanceListWidget):
         return frame
 
     def on_item_selected_listener(self, selected, deselected):
+        # sourcery skip: remove-dict-keys
+
+        if self.selected_item:
+            type_folder_item = self.selected_item.parent()
+            self.reset_selected_item_count(type_folder_item=type_folder_item)
+
         # Get the currently selected indexes
         self.selected_object = None
+        dict_type_to_type_folder_item = {}
+        dict_type_to_selected_item_count = {}
         for index in self.list_gui.selectionModel().selectedIndexes():
             if index.column() == 0:
                 item = self.list_gui.model.itemFromIndex(index)
                 if item and item.isSelectable():
                     selected_object_id = item.data(self.data_1_index)
-                    self.selected_object = RelationChangeDomain.get_object(identificator=
-                                                                       selected_object_id)
+
+                    self.selected_object = RelationChangeDomain.get_object(
+                        identificator=selected_object_id)
+                    self.selected_item = item
+
+                    # keep count of selected items in folder
+                    parent_type_folder_item = item.parent()
+                    parent_type_folder_type = parent_type_folder_item.data(self.data_1_index)
+                    if parent_type_folder_type in dict_type_to_selected_item_count.keys():
+                        dict_type_to_selected_item_count[parent_type_folder_type] += 1
+                    else:
+                        dict_type_to_selected_item_count[parent_type_folder_type] = 1
+                        dict_type_to_type_folder_item[parent_type_folder_type] = parent_type_folder_item
+
+        # update the selected_counts on all type_folder_items
+        for type_folder_type, selected_item_count in dict_type_to_selected_item_count.items():
+            logging.debug( f"{type_folder_type}: {selected_item_count}")
+
+            type_folder_item = dict_type_to_type_folder_item[type_folder_type]
+
+            item_count = self.update_selected_count_data(type_folder_item=type_folder_item,
+                                                         selected_item_count=selected_item_count)
+
+            # apply new information to the folder_item display text
+            self.set_type_folder_text(type_folder_item=type_folder_item,
+                                      otl_type=type_folder_type,
+                                      item_count=item_count,
+                                      selected_item_count=selected_item_count)
 
         RelationChangeDomain.set_possible_relations(selected_object=self.selected_object)
+
+
 
     def create_button(self):
         self.list_button.setEnabled(True)
@@ -92,8 +129,12 @@ class ObjectListWidget(AbstractInstanceListWidget):
             previously_selected_item_index = self.list_gui.model.indexFromItem(
                 previously_selected_item)
             if previously_selected_item_index:
-                self.list_gui.selectionModel().setCurrentIndex(previously_selected_item_index,
-                                                               QItemSelectionModel.SelectionFlag.SelectCurrent)
+                # renew selected_item before new selection
+                self.selected_item = previously_selected_item
+
+                self.list_gui.selectionModel().setCurrentIndex(
+                    previously_selected_item_index,
+                    QItemSelectionModel.SelectionFlag.SelectCurrent)
 
     def is_last_added(self, text_and_data: dict):
         pass

@@ -65,6 +65,16 @@ class PossibleRelationListWidget(AbstractInstanceListWidget):
 
     def on_item_selected_listener(self, selected, deselected):
         no_item_selected = True
+
+        for index in deselected.indexes():
+            if index.column() == 0:
+                item = self.list_gui.model.itemFromIndex(index)
+                if item and item.isSelectable():
+                    type_folder_item = item.parent()
+                    self.reset_selected_item_count(type_folder_item=type_folder_item)
+
+        dict_type_to_type_folder_item = {}
+        dict_type_to_selected_item_count = {}
         # Get the currently selected indexes
         for index in self.list_gui.selectionModel().selectedIndexes():
             if index.column() == 0:
@@ -72,8 +82,32 @@ class PossibleRelationListWidget(AbstractInstanceListWidget):
                 if item and item.isSelectable():
                     no_item_selected = False
 
-        self.possible_relations_selected()
+                    # keep count of selected items in folder
+                    parent_type_folder_item = item.parent()
+                    parent_type_folder_type = parent_type_folder_item.data(self.data_1_index)
+                    if parent_type_folder_type in dict_type_to_selected_item_count.keys():
+                        dict_type_to_selected_item_count[parent_type_folder_type] += 1
+                    else:
+                        dict_type_to_selected_item_count[parent_type_folder_type] = 1
+                        dict_type_to_type_folder_item[
+                            parent_type_folder_type] = parent_type_folder_item
 
+        # update the selected_counts on all type_folder_items
+        for type_folder_type, selected_item_count in dict_type_to_selected_item_count.items():
+            logging.debug( f"{type_folder_type}: {selected_item_count}")
+
+            type_folder_item = dict_type_to_type_folder_item[type_folder_type]
+
+            item_count = self.update_selected_count_data(type_folder_item=type_folder_item,
+                                                         selected_item_count=selected_item_count)
+
+            # apply new information to the folder_item display text
+            self.set_type_folder_text(type_folder_item=type_folder_item,
+                                      otl_type=type_folder_type,
+                                      item_count=item_count,
+                                      selected_item_count=selected_item_count)
+
+        self.possible_relations_selected()
         self.set_list_button_enabled(not no_item_selected)
 
     def set_list_button_enabled(self, item_selected:bool):
@@ -127,7 +161,7 @@ class PossibleRelationListWidget(AbstractInstanceListWidget):
         #                                                                      data.index)
 
     def possible_relations_selected(self):
-        Data = self.Data
+        Data = self.Data # a named tuple type defined as variable of the class put into local var
         data_list: list[Data] = self.get_selected_data()
 
         RelationChangeDomain.select_possible_relation_data(data_list)
@@ -137,11 +171,10 @@ class PossibleRelationListWidget(AbstractInstanceListWidget):
             self.Data(self.list_gui.model.itemFromIndex(model_i).data(self.data_1_index)[0],
                       self.list_gui.model.itemFromIndex(model_i).data(self.data_1_index)[1],
                       self.list_gui.model.itemFromIndex(model_i).data(self.data_1_index)[2], False)
-            # self.Data(self.list_gui.model.itemFromIndex(model_i).data(self.data_1_index),
-            #           self.list_gui.model.itemFromIndex(model_i).data(self.data_2_index),
-            #           self.list_gui.model.itemFromIndex(model_i).data(self.data_3_index),False)
+
             for model_i in self.list_gui.selectionModel().selectedIndexes()
-            if model_i.column() == 0]
+            if model_i.column() == 0] # we want one model_i per row, so only column == 0 is taken
+
 
     def extract_text_and_data_per_item(self, source_object: OTLObject, objects: Union[list[OTLObject],dict] , last_added):
         list_of_corresponding_values = []

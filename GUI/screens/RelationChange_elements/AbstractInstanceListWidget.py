@@ -41,11 +41,13 @@ class AbstractInstanceListWidget:
         # self.type_to_items_dict = {}
         self.type_open_status = {}
         self.selected_object = None
+        self.selected_item = None
         self.list_gui_style_class = list_gui_style_class
 
         self.item_type_data_index = 3
         self.data_1_index = 4
         self.data_last_added_index = 5
+        self.data_item_count_index = 8
 
         # self.data_1_index = 4
         # self.data_2_index = 5
@@ -139,22 +141,33 @@ class AbstractInstanceListWidget:
 
         return frame
 
-    def clicked_item_listener(self, model_index: QModelIndex):
-        model_index = model_index.siblingAtColumn(0)
-        if self.list_gui.model.itemFromIndex(model_index).hasChildren():
-            if self.list_gui.isExpanded(model_index):
-                self.list_gui.collapse(model_index)
+    def clicked_item_listener(self, table_coord: QModelIndex) -> None:
+        """
+        Intended to connect to self.list_gui.clicked signal which is triggered when an item in the
+        list is clicked
 
-            else:
-                self.list_gui.expand(model_index)
+        Responds to item click events in the list widget by checking if the clicked item is a
+        folder. If the item is a folder, it toggles the expand state of that item in the GUI.
 
+        :param table_coord: The index of the clicked item in the table.
+        :type table_coord: QModelIndex
 
+        :return: None
+        """
+
+        table_coord = table_coord.siblingAtColumn(0)
+        if self.is_item_a_type_folder_at_row(table_coord):
+           self.list_gui.toggle_expand_state_of_item_at_row(table_coord)
+
+    def is_item_a_type_folder_at_row(self, model_index):
+        return self.list_gui.model.itemFromIndex(model_index).hasChildren()
 
     def fill_list(self, source_object: Optional[AIMObject], objects: Collection, last_added) -> None:
         # sourcery skip: remove-dict-keys
         # objects = RelationChangeDomain.objects
         self.list_gui.setSortingEnabled(False)
         self.list_gui.clear()
+
         item_list = []
         type_to_instance_dict = {}
         self.list_gui.itemDelegate().first_paint = False
@@ -270,6 +283,9 @@ class AbstractInstanceListWidget:
         self.select_object_id(previously_selected_item=previously_selected_item)
         if not previously_selected_item:
             self.set_list_button_enabled( False)
+            self.selected_object = None
+            self.selected_item = None
+
 
         if self.needs_source_object and not source_object:
             self.list_gui.model.setHeaderData(0, Qt.Orientation.Horizontal,"")
@@ -368,22 +384,47 @@ class AbstractInstanceListWidget:
     def get_no_instance_selected_message(self):
         return self._("no_instance_selected")
 
-    def create_asset_type_item(self, asset_type):
-        item = QListWidgetItem()
-        item.setText(f"{asset_type}")
-        item.setData(self.data_1_index, asset_type)
-        item.setData(self.item_type_data_index, "type")
-        return item
 
     def create_asset_type_standard_item(self, asset_type, text_and_data_list):
-        item = QStandardItem(f"{asset_type}")
+        item_count = len(text_and_data_list)
+        selected_item_count = 0
+
+        item = QStandardItem()
+        self.set_type_folder_text(type_folder_item= item,
+                                  otl_type= asset_type,
+                                  item_count=item_count,
+                                  selected_item_count=selected_item_count)
         item.setEditable(False)  # Make the folder name non-editable
         item.setSelectable(False)  # Optional: make the folder itself non-selectable
 
         item.setData(asset_type,self.data_1_index)
         item.setData("type", self.item_type_data_index)
         item.setData(False, self.data_last_added_index)
+
+        # there are only so many data indexes you can use so we have to bundle information
+        item.setData([selected_item_count,item_count],self.data_item_count_index)
+
         return item
+
+    def set_type_folder_text(self, type_folder_item, otl_type, item_count, selected_item_count = 0):
+        if not selected_item_count:
+            type_folder_item.setText(f"{otl_type} ({item_count})")
+        else:
+            type_folder_item.setText(f"{otl_type} ({selected_item_count}/{item_count})")
+
+    def update_selected_count_data(self, type_folder_item, selected_item_count):
+        item_count = type_folder_item.data(self.data_item_count_index)[1]
+        type_folder_item.setData([selected_item_count, item_count], self.data_item_count_index)
+        return item_count
+
+    def reset_selected_item_count(self, type_folder_item):
+        selected_item_count = 0
+        item_count = self.update_selected_count_data(type_folder_item, selected_item_count)
+        asset_type = type_folder_item.data(self.data_1_index)
+        self.set_type_folder_text(type_folder_item=type_folder_item,
+                                  otl_type=asset_type,
+                                  item_count=item_count,
+                                  selected_item_count=selected_item_count)
 
     def select_object_id(self, previously_selected_item: QStandardItem):
         pass
