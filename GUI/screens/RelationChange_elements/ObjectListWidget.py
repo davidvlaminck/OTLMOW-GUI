@@ -33,7 +33,7 @@ class ObjectListWidget(AbstractInstanceListWidget):
         self.list_gui.setProperty('class', 'object-list')
         return frame
 
-    def on_item_selected_listener(self, selected, deselected):
+    def on_item_selected_listener(self,  selected: QItemSelectionModel, deselected:QItemSelectionModel):
         # sourcery skip: remove-dict-keys
 
         if self.selected_item:

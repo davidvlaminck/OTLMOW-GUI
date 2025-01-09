@@ -2,6 +2,7 @@ import logging
 from collections import namedtuple
 from typing import Union
 
+from PyQt6.QtCore import QItemSelectionModel
 from PyQt6.QtGui import QStandardItem, QPixmap, QIcon, QFont
 from PyQt6.QtWidgets import QFrame
 from otlmow_model.OtlmowModel.Helpers import OTLObjectHelper
@@ -63,7 +64,7 @@ class PossibleRelationListWidget(AbstractInstanceListWidget):
     def object_selected_listener(self, item) -> None:
         pass
 
-    def on_item_selected_listener(self, selected, deselected):
+    def on_item_selected_listener(self, selected: QItemSelectionModel, deselected:QItemSelectionModel):
         no_item_selected = True
 
         for index in deselected.indexes():

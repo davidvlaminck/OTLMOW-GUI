@@ -2,7 +2,7 @@ import abc
 from pathlib import Path
 from typing import Optional, Collection
 
-from PyQt6.QtCore import Qt, QModelIndex
+from PyQt6.QtCore import Qt, QModelIndex, QItemSelectionModel
 from PyQt6.QtGui import QColor, QStandardItem, QPixmap, QIcon, QPainter, QBrush, QFont
 from PyQt6.QtWidgets import QTreeWidget, QFrame, QVBoxLayout, QLabel, QListWidget, QListWidgetItem, \
     QHeaderView, QTreeWidgetItem, QHBoxLayout, QLineEdit, QPushButton, QTreeView, \
@@ -310,7 +310,7 @@ class AbstractInstanceListWidget:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def on_item_selected_listener(self, selected, deselected):
+    def on_item_selected_listener(self,  selected: QItemSelectionModel, deselected:QItemSelectionModel):
         raise NotImplementedError
 
     @abc.abstractmethod
