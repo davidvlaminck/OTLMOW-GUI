@@ -222,8 +222,7 @@ class HeaderBar(QFrame):
 
 
     def create_import_button(self):
-        self.import_button.setIcon(qta.icon("mdi.download",
-                                            color=Styling.import_button_icon_color))
+        self.set_import_icon(self.import_button)
         self.import_button.setText(self._("import"))
         self.import_button.setProperty('class', 'import-button')
         self.import_button.clicked.connect(
@@ -255,3 +254,9 @@ class HeaderBar(QFrame):
             self.reference_title.setText(global_vars.current_project.eigen_referentie)
         else:
             self.reference_title.setText("")
+
+    def set_import_icon(self, button: ButtonWidget):
+        button.setIcon(qta.icon("mdi.download",
+                                            color=Styling.button_icon_color))
+    def update_color_scheme(self):
+        self.set_import_icon(self.import_button)

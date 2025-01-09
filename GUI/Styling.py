@@ -20,9 +20,9 @@ class Styling:
     last_added_color = light_last_added_color
 
     #HeaderBar colors
-    light_import_button_icon_color = QColor("#0E5A69")
-    dark_import_button_icon_color = QColor("#FFFFFF")
-    import_button_icon_color = light_import_button_icon_color
+    light_button_icon_color = QColor("#0E5A69")
+    dark_button_icon_color = QColor("#FFFFFF")
+    button_icon_color = light_button_icon_color
 
     @classmethod
     def applyStyling(cls,app:QApplication , meipass):
@@ -46,11 +46,11 @@ class Styling:
         if app.styleHints().colorScheme() == Qt.ColorScheme.Dark:
             style_filename = cls.dark_stylesheet_filename
             cls.last_added_color = cls.dark_last_added_color
-            cls.import_button_icon_color = cls.dark_import_button_icon_color
+            cls.button_icon_color = cls.dark_button_icon_color
         else:
             style_filename = cls.light_stylesheet_filename
             cls.last_added_color = cls.light_last_added_color
-            cls.import_button_icon_color = cls.light_import_button_icon_color
+            cls.button_icon_color = cls.light_button_icon_color
 
         style_path = Path('style', style_filename)
 
@@ -67,13 +67,6 @@ class Styling:
 
         #update a few hardcoded colors
         if global_vars.otl_wizard:
-            # Import button on the home_screen
-            global_vars.otl_wizard.main_window.home_screen.header.import_button.setIcon(qta.icon("mdi.download",
-                                            color=Styling.import_button_icon_color))
+            global_vars.otl_wizard.main_window.update_color_scheme()
 
-            # the color of disabled steps in the step bar in a project
-            global_vars.otl_wizard.main_window.step1_tabwidget.stepper_widget.enable_steps()
-            global_vars.otl_wizard.main_window.step2_tabwidget.stepper_widget.enable_steps()
-            global_vars.otl_wizard.main_window.step_3_tabwidget.stepper_widget.enable_steps()
-            global_vars.otl_wizard.main_window.step4_tabwidget.stepper_widget.enable_steps()
 

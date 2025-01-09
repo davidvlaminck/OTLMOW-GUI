@@ -394,3 +394,9 @@ class RelationChangeScreen(RelationChangeScreenInterface):
         self.fill_object_attribute_field({})
         self.fill_possible_relation_attribute_field({})
 
+    def update_color_scheme(self):
+        self.objects_list_gui.update_color_scheme()
+        self.possible_relation_list_gui.update_color_scheme()
+        self.existing_relation_list_gui.update_color_scheme()
+
+

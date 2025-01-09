@@ -118,3 +118,14 @@ class MainWindow(QStackedWidget):
 
         super().setCurrentIndex(index)
 
+    def update_color_scheme(self):
+        # Import button on the home_screen
+        self.home_screen.header.update_color_scheme()
+        self.step3_relations.update_color_scheme()
+
+        # the color of disabled steps in the step bar in a project
+        self.step1_tabwidget.stepper_widget.enable_steps()
+        self.step2_tabwidget.stepper_widget.enable_steps()
+        self.step_3_tabwidget.stepper_widget.enable_steps()
+        self.step4_tabwidget.stepper_widget.enable_steps()
+

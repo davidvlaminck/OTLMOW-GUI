@@ -208,7 +208,6 @@ class AbstractInstanceListWidget:
                             self.search_text in folder_item.text().lower()):
                         search_match = True
 
-                        # self.type_to_items_dict[asset_type].append(instance_item)
                         instance_item.setEditable(False)  # Make the item name non-editable
                         if self.is_last_added(text_and_data):
                             instance_item.setBackground(QBrush(QColor("#ecf0f1")))
@@ -220,8 +219,6 @@ class AbstractInstanceListWidget:
 
                     if len(instance_item_tuple) > 1:
                         instance_item_tuple[1].setData(instance_item_tuple[0].data(self.data_1_index), self.data_1_index)
-                        # instance_item_tuple[1].setData(instance_item_tuple[0].data(self.data_2_index), self.data_2_index)
-                        # instance_item_tuple[1].setData(instance_item_tuple[0].data(self.data_3_index), self.data_3_index)
                         instance_item_tuple[1].setData(instance_item_tuple[0].data(self.item_type_data_index), self.item_type_data_index)
                         instance_item_tuple[1].setEditable(False)
                         self.multi_col_list = True
@@ -343,7 +340,7 @@ class AbstractInstanceListWidget:
         self.search_bar.textChanged.connect(self.search_listener)
 
         self.clear_search_bar_button = QPushButton()
-        self.clear_search_bar_button.setIcon(qta.icon('mdi.close'))
+        self.set_clear_icon(self.clear_search_bar_button)
         self.clear_search_bar_button.clicked.connect(self.clear_search_listener)
         self.clear_search_bar_button.setProperty('class', 'secondary-button')
 
@@ -493,3 +490,10 @@ class AbstractInstanceListWidget:
     def clear(self):
         self.list_gui.clear()
         self.attribute_field.clear()
+
+    # noinspection PyMethodMayBeStatic
+    def set_clear_icon(self, button: QPushButton):
+        button.setIcon(qta.icon('mdi.close', color=Styling.button_icon_color))
+
+    def update_color_scheme(self):
+        self.set_clear_icon(self.clear_search_bar_button)
