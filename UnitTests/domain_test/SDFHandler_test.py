@@ -79,3 +79,80 @@ def test_get_classes_from_SDF_file_error(root_directory,create_translations,rel_
         assert exc_info.value.args[0] == expected_error_msg
     else:
         assert str(exc_info.value) == expected_error_msg
+
+
+@pytest.mark.parametrize("rel_sdf_file_path, sdf_class, expected_output", [
+    ("UnitTests/test_files/input/DA-2024-03992_export_sdf_example.sdf", 'OTL_Brandblusser',
+     Path("UnitTests/test_files/output_ref/output_get_object_from_class_DA-2024-03992_export.txt")),
+    ("UnitTests/test_files/input/DA-2025-00023_export_sdf_example.sdf", 'OTL_WVLichtmast',
+     Path("UnitTests/test_files/output_ref/output_get_object_from_class_DA-2025-00023_export.txt")),
+], ids=["DA-2024-03992_export_sdf_example",
+        "DA-2025-00023_export_sdf_example"])
+def test_get_objects_from_class(root_directory,rel_sdf_file_path, sdf_class,expected_output):
+
+    sdf_path_example = root_directory / rel_sdf_file_path
+    output = SDFHandler.get_objects_from_class(sdf_path_example,sdf_class)
+
+    if isinstance(expected_output,Path):
+        # the expected_output can be big so it is eassier to store it in file sometimes
+        expected_output_path = root_directory / expected_output
+
+        with open(expected_output_path.absolute(), mode="r", encoding="utf-8") as expected_output_file:
+            expected_output = expected_output_file.read()
+
+    assert output == expected_output
+
+@pytest.mark.parametrize("rel_sdf_file_path,sdf_class,expected_exception,expected_error_msg", [
+    ("UnitTests/test_files/input/does_not_exist.sdf","",FileNotFoundError,"{0} is not a valid path. File does not exist."),
+    ("UnitTests/test_files/input/wrong_type_for_sdf.txt","",WrongFileTypeError,'The path to the provided file is not a SDF-file file with extension (.sdf)'),
+    ("UnitTests/test_files/input/DA-2025-00023_export_sdf_corrupted_example.sdf","",FDOToolboxProcessError,
+     ('An error occured during FDO toolbox call:  \n'
+     'Call: "C:\\Program Files\\FDO Toolbox\\FdoCmd.exe" query-features --class "" '
+     '--from-file '
+     '"{0}"  '
+     '--format CSV \n'
+     'Error:\n'
+     '\n'
+     '\n'
+     'OSGeo.FDO.Common.Exception: File is not an SDF file, or is an SDF file with '
+     'an unsupported version.  ---> OSGeo.FDO.Common.Exception: An error occurred '
+     'during SDF database access.  \n'
+     '   --- End of inner exception stack trace ---\n'
+     '   at OSGeo.FDO.Connections.IConnectionImp.Open()\n'
+     '   at FdoCmd.Commands.ProviderConnectionCommand.Execute()')),
+    ("UnitTests/test_files/input/DA-2024-03992_export_sdf_example.sdf","class_not_in_sdf",FDOToolboxProcessError,
+     (('An error occured during FDO toolbox call:  \n'
+     'Call: "C:\\Program Files\\FDO Toolbox\\FdoCmd.exe" query-features --class '
+     '"class_not_in_sdf" --from-file '
+     '"{0}"  '
+     '--format CSV \n'
+     'Error:\n'
+     '\n'
+     '\n'
+     "OSGeo.FDO.Common.Exception: Class 'class_not_in_sdf' is not found. \n"
+     '   at OSGeo.FDO.Commands.Feature.ISelectImp.Execute()\n'
+     '   at FdoCmd.Commands.QueryFeaturesCommand.ExecuteCommand(IConnection conn, '
+     'String provider, ISelect cmd)\n'
+     '   at '
+     'FdoCmd.Commands.ProviderConnectionCommand`1.ExecuteConnection(IConnection '
+     'conn, String provider)\n'
+     '   at FdoCmd.Commands.ProviderConnectionCommand.Execute()')))
+], ids=["no_file",
+        "not_a_sdf_file",
+        "invalid_sdf_content",
+        "class_not_in_sdf"])
+def test_get_objects_from_class_error(root_directory,create_translations,rel_sdf_file_path,sdf_class,expected_exception,expected_error_msg):
+
+    sdf_path_example = root_directory / rel_sdf_file_path
+
+    with pytest.raises(expected_exception) as exc_info:
+        output = SDFHandler.get_objects_from_class(sdf_path_example,sdf_class)
+
+    # adding the correct absolute path in the expected error
+    if '{0}' in expected_error_msg:
+        expected_error_msg = expected_error_msg.format(sdf_path_example)
+
+    if expected_exception == FileNotFoundError:
+        assert exc_info.value.args[0] == expected_error_msg
+    else:
+        assert str(exc_info.value) == expected_error_msg
