@@ -216,7 +216,7 @@ class PossibleRelationListWidget(AbstractInstanceListWidget):
                 else:
                     direction = RelationChangeHelpers.unspecified_direction_icon
 
-                real_source_id: str = RelationChangeHelpers.get_correct_identificator(
+                real_source_id: str = RelationChangeHelpers.get_corrected_identificator(
                     otl_object=source_object)
                 abbr_relation_typeURI: str = RelationChangeHelpers.get_abbreviated_typeURI(
                     typeURI=relation.typeURI,
@@ -254,7 +254,7 @@ class PossibleRelationListWidget(AbstractInstanceListWidget):
                         typeURI=relation.typeURI,
                         add_namespace=False,
                         is_relation=OTLObjectHelper.is_relation(relation))
-                    real_source_id: str = RelationChangeHelpers.get_correct_identificator(
+                    real_source_id: str = RelationChangeHelpers.get_corrected_identificator(
                         otl_object=source_object)
                     logging.debug(f"Couldn't make relation {abbr_relation_typeURI}: {real_source_id} {direction} {target_screen_name} because \n{e}")
         list_of_corresponding_values.sort(key=lambda val: (

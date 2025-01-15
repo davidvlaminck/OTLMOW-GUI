@@ -95,7 +95,7 @@ class ObjectListWidget(AbstractInstanceListWidget):
         add_asset_window.draw_add_external_asset_window()
 
     def is_previously_selected_requirement(self, text_and_data):
-        return self.selected_object and RelationChangeHelpers.get_correct_identificator(self.selected_object) == text_and_data['data'].selected_object_id
+        return self.selected_object and RelationChangeHelpers.get_corrected_identificator(self.selected_object) == text_and_data['data'].selected_object_id
 
     def extract_text_and_data_per_item(self, source_object, objects, last_added):
         list_of_corresponding_values = []
@@ -112,7 +112,7 @@ class ObjectListWidget(AbstractInstanceListWidget):
 
             list_of_corresponding_values.append({
                 "text": self.Text(abbr_typeURI,screen_name,OTL_object.typeURI),
-                "data": self.Data(RelationChangeHelpers.get_correct_identificator(OTL_object),False)
+                "data": self.Data(RelationChangeHelpers.get_corrected_identificator(OTL_object), False)
             })
         return list_of_corresponding_values
     def create_instance_standard_item(self, text_and_data):

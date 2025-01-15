@@ -156,3 +156,75 @@ def test_get_objects_from_class_error(root_directory,create_translations,rel_sdf
         assert exc_info.value.args[0] == expected_error_msg
     else:
         assert str(exc_info.value) == expected_error_msg
+
+
+@pytest.mark.parametrize("rel_sdf_file_path, rel_csv_output_file_path, expected_output_dirpath, expected_output_file_basename", [
+    ("UnitTests/test_files/input/DA-2024-03992_export_sdf_example.sdf",
+     Path("UnitTests/test_files/output_test/convert_SDF_to_CSV_DA-2024-03992_export/da-2024-03992_export.csv"),
+     Path("UnitTests/test_files/output_ref/convert_SDF_to_CSV_DA-2024-03992_export"),"da-2024-03992_export"),
+
+    ("UnitTests/test_files/input/DA-2025-00023_export_sdf_example.sdf",
+     Path("UnitTests/test_files/output_test/convert_SDF_to_CSV_DA-2025-00023_export/da-2025-00023_export.csv"),
+     Path("UnitTests/test_files/output_ref/convert_SDF_to_CSV_DA-2025-00023_export"),"da-2025-00023_export"),
+
+    ("UnitTests/test_files/input/DA-2024-03992_export_sdf_example.sdf",
+     Path("UnitTests/test_files/output_test/convert_SDF_to_CSV_DA-2024-03992_export_csv_output_dir_given"),
+     Path("UnitTests/test_files/output_ref/convert_SDF_to_CSV_DA-2024-03992_export"),"da-2024-03992_export"),
+
+    ("UnitTests/test_files/input/DA-2025-00023_export_sdf_example.sdf",
+     Path("UnitTests/test_files/output_test/convert_SDF_to_CSV_DA-2025-00023_export_csv_output_dir_given"),
+     Path("UnitTests/test_files/output_ref/convert_SDF_to_CSV_DA-2025-00023_export"),"da-2025-00023_export")
+
+], ids=["DA-2024-03992_export_sdf_example",
+        "DA-2025-00023_export_sdf_example",
+        "DA-2024-03992_export_sdf_example_csv_output_dir_given",
+        "DA-2025-00023_export_sdf_example_csv_output_dir_given"])
+def test_convert_SDF_to_CSV(root_directory,create_translations,cleanup_after_creating_a_file_to_delete,
+                            rel_sdf_file_path:str, rel_csv_output_file_path:Path,
+                            expected_output_dirpath:Path,expected_output_file_basename:str):
+
+    sdf_path_example = root_directory / rel_sdf_file_path
+    csv_output_path = root_directory / rel_csv_output_file_path
+    expected_output_path = root_directory / expected_output_dirpath
+
+    # format the expected output csv files based on the classes in the sdf file
+    output_classes = SDFHandler.get_classes_from_SDF_file(sdf_path_example)
+
+    if ((os.path.exists(csv_output_path) and os.path.isdir(csv_output_path)) or
+            csv_output_path.suffix == ""):
+        test_output_basepath: str = str(csv_output_path / "")
+    else:
+        test_output_basepath: str = os.path.splitext(csv_output_path)[0]
+
+    expected_output_basepath: str = str((expected_output_path / expected_output_file_basename).absolute())
+
+    # build absolute paths to csv of test output
+    test_output_filepath_list = [test_output_basepath + otlclass + ".csv" for otlclass in output_classes]
+    # build absolute paths to csv of expected output
+    expected_output_filepath_list = [(expected_output_basepath + otlclass + " .csv"
+                                      if ("Seinbrug" not in otlclass and "Voedingskabel" not in otlclass)
+                                      else expected_output_basepath + otlclass + ".csv")
+                                     for otlclass in output_classes]
+
+    #Setup cleanup
+    cleanup_after_creating_a_file_to_delete.extend(test_output_filepath_list)
+
+    #Act
+    SDFHandler.convert_SDF_to_CSV(sdf_filepath=sdf_path_example,
+                                  csv_output_path=csv_output_path)
+
+    #Test
+    for i in range(len(test_output_filepath_list)):
+
+        filepath_of_test_output_csv_for_one_class = test_output_filepath_list[i]
+        assert(os.path.exists(filepath_of_test_output_csv_for_one_class))
+
+        filepath_of_expected_output_csv_for_one_class = expected_output_filepath_list[i]
+        if not os.path.exists(filepath_of_expected_output_csv_for_one_class):
+            raise FileNotFoundError(f"Reference file doesn't exist: {filepath_of_expected_output_csv_for_one_class}")
+
+        #read test and expected output file and compare
+        test_output_content = Path(filepath_of_test_output_csv_for_one_class).read_text()
+        expected_output_content = Path(filepath_of_expected_output_csv_for_one_class).read_text().replace("mmÃƒâ€šÃ‚Â²","mmÃ‚Â²")
+
+        assert(test_output_content == expected_output_content)

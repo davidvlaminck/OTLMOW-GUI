@@ -1,0 +1,2 @@
+"FeatId","koppeling","diameter","heeftEigenAfsluitkraan","heeftIsolatie","naam","assetId.identificator","assetId.toegekendDoor","notitie","standaardBestekPostNummer[]","typeURI","bestekPostNummer[]","theoretischeLevensduur","datumOprichtingObject","toestand","isActief","geometry"
+"1",,,,,,"391ba246-01ca-47c9-ac19-2b3ae784ffeb-b25kZXJkZWVsI0h5ZHJhbnQ","AWV","Hydrant niet in kast",,"https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Hydrant",,,,"in-gebruik","true","POINT Z (151973.664 213014.98 -27.166)"

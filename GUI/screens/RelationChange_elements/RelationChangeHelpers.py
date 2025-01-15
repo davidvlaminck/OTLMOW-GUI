@@ -40,7 +40,7 @@ class RelationChangeHelpers:
     def get_screen_name(cls, otl_object: RelationInteractor) -> Optional[str]:
         if otl_object is None:
             return None
-        naam = cls.get_correct_identificator(otl_object)
+        naam = cls.get_corrected_identificator(otl_object)
         if otl_object.typeURI == 'http://purl.org/dc/terms/Agent':
             agent: Agent = cast(Agent, otl_object)
             # agent will always be external
@@ -52,7 +52,7 @@ class RelationChangeHelpers:
                 naam = aim_object.naam
 
             else:
-                naam = str(RelationChangeHelpers.get_correct_identificator(aim_object))
+                naam = str(RelationChangeHelpers.get_corrected_identificator(aim_object))
 
             if aim_object.assetId.toegekendDoor == global_vars.external_toegekendDoor_label:
                 external_tranlation = GlobalTranslate._("external")
@@ -130,7 +130,7 @@ class RelationChangeHelpers:
         return type_uri_list
 
     @classmethod
-    def get_correct_identificator(cls,otl_object: RelationInteractor):
+    def get_corrected_identificator(cls, otl_object: RelationInteractor):
         identificator = GlobalTranslate._("no_identificator")
         if hasattr(otl_object,"assetId"):
             identificator = str(otl_object.assetId.identificator)

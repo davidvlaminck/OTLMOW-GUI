@@ -390,7 +390,7 @@ class RelationChangeDomain:
         :rtype: function
         """
 
-        return lambda otl_object: RelationChangeHelpers.get_correct_identificator(
+        return lambda otl_object: RelationChangeHelpers.get_corrected_identificator(
             otl_object) == id_to_check
 
     @classmethod
@@ -426,7 +426,7 @@ class RelationChangeDomain:
             filter(RelationChangeDomain.filter_out(object_to_filter_for=selected_object), 
                    cls.shown_objects))
 
-        selected_id = RelationChangeHelpers.get_correct_identificator(otl_object=selected_object)
+        selected_id = RelationChangeHelpers.get_corrected_identificator(otl_object=selected_object)
         relation_list = cls.possible_relations_per_class_dict[selected_object.typeURI]
 
         cls.possible_object_to_object_relations_dict[selected_id] = {}
@@ -676,8 +676,8 @@ class RelationChangeDomain:
 
         existing_source_id:str = existing_relation.bronAssetId.identificator
         existing_target_id:str  = existing_relation.doelAssetId.identificator
-        related_id:str = RelationChangeHelpers.get_correct_identificator(related)
-        selected_id:str = RelationChangeHelpers.get_correct_identificator(selected)
+        related_id:str = RelationChangeHelpers.get_corrected_identificator(related)
+        selected_id:str = RelationChangeHelpers.get_corrected_identificator(selected)
 
         if existing_relation.typeURI == relation_def.objectUri:
             if relation_def.richting == "Unspecified":
@@ -711,8 +711,8 @@ class RelationChangeDomain:
         :return: None
         """
 
-        selected_object_id:str = RelationChangeHelpers.get_correct_identificator(selected_object)
-        related_object_id:str = RelationChangeHelpers.get_correct_identificator(related_object)
+        selected_object_id:str = RelationChangeHelpers.get_corrected_identificator(selected_object)
+        related_object_id:str = RelationChangeHelpers.get_corrected_identificator(related_object)
 
         # the relation object is reversed from the wrong direction to the right direction
         # noinspection PyUnusedLocal
@@ -792,8 +792,8 @@ class RelationChangeDomain:
         """
 
         def filter_func(related_object: RelationInteractor):
-            return (RelationChangeHelpers.get_correct_identificator(object_to_filter_for) != 
-                    RelationChangeHelpers.get_correct_identificator(related_object))
+            return (RelationChangeHelpers.get_corrected_identificator(object_to_filter_for) !=
+                    RelationChangeHelpers.get_corrected_identificator(related_object))
 
         return filter_func
 
@@ -836,7 +836,7 @@ class RelationChangeDomain:
             source_id = None
             source_type = None
             if source_object:
-                source_id = RelationChangeHelpers.get_correct_identificator(
+                source_id = RelationChangeHelpers.get_corrected_identificator(
                     otl_object=source_object)
                 source_type = RelationChangeHelpers.get_abbreviated_typeURI(
                         typeURI=source_object.typeURI, add_namespace=True)
@@ -845,7 +845,7 @@ class RelationChangeDomain:
             target_type = None
             if target_object:
 
-                target_id = RelationChangeHelpers.get_correct_identificator(
+                target_id = RelationChangeHelpers.get_corrected_identificator(
                     otl_object=target_object)
                 target_type = RelationChangeHelpers.get_abbreviated_typeURI(
                         target_object.typeURI, True)

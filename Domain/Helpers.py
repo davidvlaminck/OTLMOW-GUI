@@ -32,14 +32,12 @@ class Helpers:
 
         # Sort the current dictionary
         if by == 'keys':
-            sorted_dict = dict(
-                (k, cls.sort_nested_dict(v, by=by)) for k, v in sorted(dictionary.items())
-            )
+            sorted_dict = {(k, cls.sort_nested_dict(v, by=by)) for k, v in sorted(dictionary.items())}
+
         elif by == 'values':
-            sorted_dict = dict(
-                (k, cls.sort_nested_dict(v, by=by)) for k, v in
-                sorted(dictionary.items(), key=lambda item: item[1])
-            )
+            sorted_dict = {(k, cls.sort_nested_dict(v, by=by)) for k, v in
+             sorted(dictionary.items(), key=lambda item: item[1])}
+
         else:
             raise ValueError("Invalid sort parameter. Use 'keys' or 'values'.")
 
