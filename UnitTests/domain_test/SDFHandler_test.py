@@ -39,15 +39,13 @@ def root_directory() -> Path:
 def test_get_classes_from_SDF_file(root_directory,rel_sdf_file_path,expected_output):
 
     sdf_path_example = root_directory / rel_sdf_file_path
-    output = SDFHandler.get_classes_from_SDF_file(sdf_path_example)
+    output = SDFHandler._get_classes_from_SDF_file(sdf_path_example)
 
     assert output == expected_output
 
 
 
 @pytest.mark.parametrize("rel_sdf_file_path,expected_exception,expected_error_msg", [
-    ("UnitTests/test_files/input/does_not_exist.sdf",FileNotFoundError,"{0} is not a valid path. File does not exist."),
-    ("UnitTests/test_files/input/wrong_type_for_sdf.txt",WrongFileTypeError,'The path to the provided file is not a SDF-file file with extension (.sdf)'),
     ("UnitTests/test_files/input/DA-2025-00023_export_sdf_corrupted_example.sdf",FDOToolboxProcessError,
      ('An error occured during FDO toolbox call:  \n'
  'Call: "C:\\Program Files\\FDO Toolbox\\FdoCmd.exe" list-classes --from-file '
@@ -61,15 +59,13 @@ def test_get_classes_from_SDF_file(root_directory,rel_sdf_file_path,expected_out
  '   --- End of inner exception stack trace ---\n'
  '   at OSGeo.FDO.Connections.IConnectionImp.Open()\n'
  '   at FdoCmd.Commands.ProviderConnectionCommand.Execute()'))
-], ids=["no_file",
-        "not_a_sdf_file",
-        "invalid_sdf_content"])
+], ids=["invalid_sdf_content"])
 def test_get_classes_from_SDF_file_error(root_directory,create_translations,rel_sdf_file_path,expected_exception,expected_error_msg):
 
     sdf_path_example = root_directory / rel_sdf_file_path
 
     with pytest.raises(expected_exception) as exc_info:
-        output = SDFHandler.get_classes_from_SDF_file(sdf_path_example)
+        output = SDFHandler._get_classes_from_SDF_file(sdf_path_example)
 
     # addin the correct absolute path in the expected error
     if '{0}' in expected_error_msg:
@@ -91,7 +87,7 @@ def test_get_classes_from_SDF_file_error(root_directory,create_translations,rel_
 def test_get_objects_from_class(root_directory,rel_sdf_file_path, sdf_class,expected_output):
 
     sdf_path_example = root_directory / rel_sdf_file_path
-    output = SDFHandler.get_objects_from_class(sdf_path_example,sdf_class)
+    output = SDFHandler._get_objects_from_class(sdf_path_example, sdf_class)
 
     if isinstance(expected_output,Path):
         # the expected_output can be big so it is eassier to store it in file sometimes
@@ -103,9 +99,7 @@ def test_get_objects_from_class(root_directory,rel_sdf_file_path, sdf_class,expe
     assert output == expected_output
 
 @pytest.mark.parametrize("rel_sdf_file_path,sdf_class,expected_exception,expected_error_msg", [
-    ("UnitTests/test_files/input/does_not_exist.sdf","",FileNotFoundError,"{0} is not a valid path. File does not exist."),
-    ("UnitTests/test_files/input/wrong_type_for_sdf.txt","",WrongFileTypeError,'The path to the provided file is not a SDF-file file with extension (.sdf)'),
-    ("UnitTests/test_files/input/DA-2025-00023_export_sdf_corrupted_example.sdf","",FDOToolboxProcessError,
+     ("UnitTests/test_files/input/DA-2025-00023_export_sdf_corrupted_example.sdf","",FDOToolboxProcessError,
      ('An error occured during FDO toolbox call:  \n'
      'Call: "C:\\Program Files\\FDO Toolbox\\FdoCmd.exe" query-features --class "" '
      '--from-file '
@@ -137,16 +131,14 @@ def test_get_objects_from_class(root_directory,rel_sdf_file_path, sdf_class,expe
      'FdoCmd.Commands.ProviderConnectionCommand`1.ExecuteConnection(IConnection '
      'conn, String provider)\n'
      '   at FdoCmd.Commands.ProviderConnectionCommand.Execute()')))
-], ids=["no_file",
-        "not_a_sdf_file",
-        "invalid_sdf_content",
+], ids=["invalid_sdf_content",
         "class_not_in_sdf"])
 def test_get_objects_from_class_error(root_directory,create_translations,rel_sdf_file_path,sdf_class,expected_exception,expected_error_msg):
 
     sdf_path_example = root_directory / rel_sdf_file_path
 
     with pytest.raises(expected_exception) as exc_info:
-        output = SDFHandler.get_objects_from_class(sdf_path_example,sdf_class)
+        output = SDFHandler._get_objects_from_class(sdf_path_example, sdf_class)
 
     # adding the correct absolute path in the expected error
     if '{0}' in expected_error_msg:
@@ -188,7 +180,7 @@ def test_convert_SDF_to_CSV(root_directory,create_translations,cleanup_after_cre
     expected_output_path = root_directory / expected_output_dirpath
 
     # format the expected output csv files based on the classes in the sdf file
-    output_classes = SDFHandler.get_classes_from_SDF_file(sdf_path_example)
+    output_classes = SDFHandler._get_classes_from_SDF_file(sdf_path_example)
 
     if ((os.path.exists(csv_output_path) and os.path.isdir(csv_output_path)) or
             csv_output_path.suffix == ""):
@@ -228,3 +220,54 @@ def test_convert_SDF_to_CSV(root_directory,create_translations,cleanup_after_cre
         expected_output_content = Path(filepath_of_expected_output_csv_for_one_class).read_text().replace("mmÃƒâ€šÃ‚Â²","mmÃ‚Â²")
 
         assert(test_output_content == expected_output_content)
+
+@pytest.mark.parametrize("rel_sdf_file_path, rel_csv_output_file_path, expected_exception,expected_error_msg", [
+    ("UnitTests/test_files/input/does_not_exist.sdf",
+     Path("UnitTests/test_files/output_test/convert_SDF_to_CSV_DA-2024-03992_export/da-2024-03992_export.csv"),
+     FileNotFoundError,
+     "{0} is not a valid path. File does not exist."),
+
+    ("UnitTests/test_files/input/wrong_type_for_sdf.txt",
+     Path("UnitTests/test_files/output_test/convert_SDF_to_CSV_DA-2024-03992_export/da-2024-03992_export.csv"),
+     WrongFileTypeError,
+     'The path to the provided file is not a SDF-file file with extension (.sdf)'),
+
+    ("UnitTests/test_files/input/DA-2025-00023_export_sdf_corrupted_example.sdf",
+     Path(
+         "UnitTests/test_files/output_test/convert_SDF_to_CSV_DA-2024-03992_export/da-2024-03992_export.csv"),
+     FDOToolboxProcessError,
+     ('An error occured during FDO toolbox call:  \n'
+      'Call: "C:\\Program Files\\FDO Toolbox\\FdoCmd.exe" list-classes --from-file '
+      '"C:\\Users\\chris\\PycharmProjects\\OTLMOW-GUI\\UnitTests\\test_files\\input\\DA-2025-00023_export_sdf_corrupted_example.sdf" \n'
+      'Error:\n'
+      '\n'
+      '\n'
+      'OSGeo.FDO.Common.Exception: File is not an SDF file, or is an SDF file with '
+      'an unsupported version.  ---> OSGeo.FDO.Common.Exception: An error occurred '
+      'during SDF database access.  \n'
+      '   --- End of inner exception stack trace ---\n'
+      '   at OSGeo.FDO.Connections.IConnectionImp.Open()\n'
+      '   at FdoCmd.Commands.ProviderConnectionCommand.Execute()'))
+], ids=["no_file",
+        "not_a_sdf_file",
+        "invalid_sdf_content"])
+def test_convert_SDF_to_CSV_error(root_directory,create_translations,
+                                  rel_sdf_file_path,rel_csv_output_file_path,
+                                  expected_exception,expected_error_msg):
+
+    sdf_path_example = root_directory / rel_sdf_file_path
+    csv_output_path = root_directory / rel_csv_output_file_path
+
+    with pytest.raises(expected_exception) as exc_info:
+        # Act
+        SDFHandler.convert_SDF_to_CSV(sdf_filepath=sdf_path_example,
+                                      csv_output_path=csv_output_path)
+
+    # adding the correct absolute path in the expected error
+    if '{0}' in expected_error_msg:
+        expected_error_msg = expected_error_msg.format(sdf_path_example)
+
+    if expected_exception == FileNotFoundError:
+        assert exc_info.value.args[0] == expected_error_msg
+    else:
+        assert str(exc_info.value) == expected_error_msg

@@ -16,9 +16,7 @@ class SDFHandler:
 
 
     @classmethod
-    def get_classes_from_SDF_file(cls, sdf_file_path:Path) -> list[str]:
-
-        cls.validate_SDF_file(sdf_file_path)
+    def _get_classes_from_SDF_file(cls, sdf_file_path:Path) -> list[str]:
 
         sdf_file_path_str = sdf_file_path.absolute()
         command = f'"{cls.FDO_toolbox_path_str}" list-classes --from-file "{sdf_file_path_str}"'
@@ -26,7 +24,7 @@ class SDFHandler:
         output, error = cls.run_command(command=command)
 
         if error:
-            cls.filter_out_coordinate_system_not_installed_error(command=command, error=error)
+            cls._filter_out_coordinate_system_not_installed_error(command=command, error=error)
 
         if output:
             return output.split("\n")
@@ -34,7 +32,7 @@ class SDFHandler:
             return []
 
     @classmethod
-    def filter_out_coordinate_system_not_installed_error(cls, command:str, error:str) -> None:
+    def _filter_out_coordinate_system_not_installed_error(cls, command:str, error:str) -> None:
         # The following error occurs even though the program works properly
         # Here we filter out this error to be able to capture and use other critical errors
         pattern = re.compile(
@@ -50,7 +48,7 @@ class SDFHandler:
 
 
     @classmethod
-    def validate_SDF_file(cls, sdf_filepath) -> None:
+    def _validate_SDF_file(cls, sdf_filepath) -> None:
         if not sdf_filepath.exists():
             raise FileNotFoundError(f'{sdf_filepath} is not a valid path. File does not exist.')
         if sdf_filepath.suffix != ".sdf":
@@ -59,30 +57,28 @@ class SDFHandler:
                                      expected_filetype_suffix=".sdf")
 
     @classmethod
-    def get_objects_from_class(cls, sdf_filepath, sdf_class) -> str:
-
-
-        cls.validate_SDF_file(sdf_filepath)
+    def _get_objects_from_class(cls, sdf_filepath, sdf_class) -> str:
 
         sdf_file_path_str = sdf_filepath.absolute()
         command = f'"{cls.FDO_toolbox_path_str}" query-features --class "{sdf_class}" --from-file "{sdf_file_path_str}"  --format CSV'
 
         output, error = cls.run_command(command)
         if error:
-            cls.filter_out_coordinate_system_not_installed_error(command, error)
+            cls._filter_out_coordinate_system_not_installed_error(command, error)
 
         output = output.replace("_",".")
         output = output.replace("Geometry", "geometry")
         output = output.replace("XYZ", "Z")
-        return output + "\n"
+
+        return output + "\n" # added for compatibility with old OTL-wizard csv generation
 
     @classmethod
     def convert_SDF_to_CSV(cls, sdf_filepath:Path=None, csv_output_path:Path=None) -> None:
 
-        cls.validate_SDF_file(sdf_filepath)
+        cls._validate_SDF_file(sdf_filepath)
 
         # format the expected output csv files based on the classes in the sdf file
-        output_classes: list[str] = SDFHandler.get_classes_from_SDF_file(sdf_filepath)
+        output_classes: list[str] = SDFHandler._get_classes_from_SDF_file(sdf_filepath)
         if ((os.path.exists(csv_output_path) and os.path.isdir(csv_output_path)) or
             csv_output_path.suffix == ""):
             output_basepath: str = str(csv_output_path / "")
@@ -93,7 +89,7 @@ class SDFHandler:
 
         for otlclass in output_classes:
 
-            objects_str:str = SDFHandler.get_objects_from_class(sdf_filepath=sdf_filepath, sdf_class=otlclass)
+            objects_str:str = SDFHandler._get_objects_from_class(sdf_filepath=sdf_filepath, sdf_class=otlclass)
 
             # build absolute path to csv of output
             filepath_of_output_csv_for_one_class = output_basepath + otlclass + ".csv"
