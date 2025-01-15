@@ -4,6 +4,7 @@ import pytest
 from _pytest.fixtures import fixture
 
 from Domain.SDFHandler import SDFHandler
+from Exceptions.FDOToolboxNotInstalledError import FDOToolboxNotInstalledError
 from Exceptions.FDOToolboxProcessError import FDOToolboxProcessError
 from Exceptions.WrongFileTypeError import WrongFileTypeError
 
@@ -271,3 +272,31 @@ def test_convert_SDF_to_CSV_error(root_directory,create_translations,
         assert exc_info.value.args[0] == expected_error_msg
     else:
         assert str(exc_info.value) == expected_error_msg
+
+@fixture
+def mock_wrong_FDOToolbox_path():
+    original_path = global_vars.FDO_toolbox_path_str
+    global_vars.FDO_toolbox_path_str = 'C:\\Program Files\\FDO Toolbox\\FdoCmd1_wrong.exe'
+    yield
+    global_vars.FDO_toolbox_path_str = original_path
+
+def test_convert_SDF_to_CSV_FDOToolbox_not_installed_error(root_directory,create_translations,mock_wrong_FDOToolbox_path):
+
+    #setup test
+    rel_sdf_file_path = "UnitTests/test_files/input/DA-2024-03992_export_sdf_example.sdf"
+    rel_csv_output_file_path = Path("UnitTests/test_files/output_test/convert_SDF_to_CSV_DA-2024-03992_export/da-2024-03992_export.csv")
+    expected_exception = FDOToolboxNotInstalledError
+    expected_error_msg = ('FDO toolbox executable could not be found. Most likely becuase it is not '
+                         'installed. Make sure it is installed in the correct directory so that the '
+                         'following path exists: \n'
+                         'C:\\Program Files\\FDO Toolbox\\FdoCmd1_wrong.exe')
+
+    sdf_path_example = root_directory / rel_sdf_file_path
+    csv_output_path = root_directory / rel_csv_output_file_path
+
+    with pytest.raises(expected_exception) as exc_info:
+        # Act
+        SDFHandler.convert_SDF_to_CSV(sdf_filepath=sdf_path_example,
+                                      csv_output_path=csv_output_path)
+
+    assert str(exc_info.value) == expected_error_msg

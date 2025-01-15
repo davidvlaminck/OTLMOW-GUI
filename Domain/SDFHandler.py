@@ -3,6 +3,10 @@ import re
 import subprocess
 import sys
 from pathlib import Path
+
+from Domain import global_vars
+from Exceptions.FDOToolboxNotInstalledError import FDOToolboxNotInstalledError
+
 ROOT_DIR =  Path(Path(__file__).absolute()).parent.parent
 sys.path.insert(0,str(ROOT_DIR.absolute()))# needed for python to import project files
 
@@ -12,14 +16,14 @@ from GUI.translation.GlobalTranslate import GlobalTranslate
 
 
 class SDFHandler:
-    FDO_toolbox_path_str =  'C:\\Program Files\\FDO Toolbox\\FdoCmd.exe'
+
 
 
     @classmethod
     def _get_classes_from_SDF_file(cls, sdf_file_path:Path) -> list[str]:
 
         sdf_file_path_str = sdf_file_path.absolute()
-        command = f'"{cls.FDO_toolbox_path_str}" list-classes --from-file "{sdf_file_path_str}"'
+        command = f'"{global_vars.FDO_toolbox_path_str}" list-classes --from-file "{sdf_file_path_str}"'
 
         output, error = cls.run_command(command=command)
 
@@ -60,7 +64,7 @@ class SDFHandler:
     def _get_objects_from_class(cls, sdf_filepath, sdf_class) -> str:
 
         sdf_file_path_str = sdf_filepath.absolute()
-        command = f'"{cls.FDO_toolbox_path_str}" query-features --class "{sdf_class}" --from-file "{sdf_file_path_str}"  --format CSV'
+        command = f'"{global_vars.FDO_toolbox_path_str}" query-features --class "{sdf_class}" --from-file "{sdf_file_path_str}"  --format CSV'
 
         output, error = cls.run_command(command)
         if error:
@@ -75,6 +79,7 @@ class SDFHandler:
     @classmethod
     def convert_SDF_to_CSV(cls, sdf_filepath:Path=None, csv_output_path:Path=None) -> None:
 
+        cls._check_if_FDOToolbox_is_installed()
         cls._validate_SDF_file(sdf_filepath)
 
         # format the expected output csv files based on the classes in the sdf file
@@ -104,6 +109,11 @@ class SDFHandler:
         result = subprocess.run(command, shell=True, stdout=subprocess.PIPE,
                                 stderr=subprocess.PIPE, text=True)
         return result.stdout.strip(), result.stderr.strip()
+
+    @classmethod
+    def _check_if_FDOToolbox_is_installed(cls):
+        if not os.path.exists(global_vars.FDO_toolbox_path_str):
+            raise FDOToolboxNotInstalledError(GlobalTranslate._)
 
 
 if __name__ == "__main__":
