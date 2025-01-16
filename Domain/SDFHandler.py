@@ -1,3 +1,4 @@
+import logging
 import os
 import re
 import subprocess
@@ -86,9 +87,11 @@ class SDFHandler:
         output_classes: list[str] = SDFHandler._get_classes_from_SDF_file(sdf_filepath)
         if ((os.path.exists(csv_output_path) and os.path.isdir(csv_output_path)) or
             csv_output_path.suffix == ""):
-            output_basepath: str = str(csv_output_path / "")
+            csv_output_path_is_dir = True
+            output_basepath: str = str(csv_output_path)
             os.makedirs(csv_output_path, exist_ok=True)
         else:
+            csv_output_path_is_dir = False
             output_basepath: str = os.path.splitext(csv_output_path)[0]
             os.makedirs(csv_output_path.parent, exist_ok=True)
 
@@ -101,6 +104,12 @@ class SDFHandler:
 
             with open(filepath_of_output_csv_for_one_class,mode='w+') as output_csv_file:
                 output_csv_file.write(objects_str)
+            if csv_output_path_is_dir:
+                filepath_of_output_csv_for_one_class = str(
+                    Path(output_basepath) / f"{otlclass}.csv")
+            else:
+                filepath_of_output_csv_for_one_class = output_basepath + otlclass + ".csv"
+            logging.debug(f"created file: {filepath_of_output_csv_for_one_class}")
 
 
     @classmethod
@@ -117,6 +126,8 @@ class SDFHandler:
 
 
 if __name__ == "__main__":
+    logger = logging.getLogger()
+    logger.setLevel(logging.DEBUG)
     settings = {"language": "ENGLISH"}
     root = Path(Path(__file__).absolute()).parent.parent
     GlobalTranslate(settings, root/ 'locale')

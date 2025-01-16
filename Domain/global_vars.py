@@ -8,7 +8,7 @@ otl_wizard = None
 supported_file_formats = {'Excel':"xlsx", 'CSV':"csv", 'JSON':'json','GeoJSON': 'geojson'}
 external_toegekendDoor_label = "OTL_wizard_2"
 last_subset_selected_dir: Optional[Path] = None
-FDO_toolbox_path_str =  'C:\\Program Files\\FDO Toolbox\\FdoCmd1.exe'
+FDO_toolbox_path_str =  'C:\\Program Files\\FDO Toolbox\\FdoCmd.exe'
 
 
 def get_start_dir_subset_selection(input_subset_str:str):
