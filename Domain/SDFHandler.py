@@ -100,15 +100,15 @@ class SDFHandler:
             objects_str:str = SDFHandler._get_objects_from_class(sdf_filepath=sdf_filepath, sdf_class=otlclass)
 
             # build absolute path to csv of output
-            filepath_of_output_csv_for_one_class = output_basepath + otlclass + ".csv"
-
-            with open(filepath_of_output_csv_for_one_class,mode='w+') as output_csv_file:
-                output_csv_file.write(objects_str)
             if csv_output_path_is_dir:
                 filepath_of_output_csv_for_one_class = str(
                     Path(output_basepath) / f"{otlclass}.csv")
             else:
                 filepath_of_output_csv_for_one_class = output_basepath + otlclass + ".csv"
+
+            with open(filepath_of_output_csv_for_one_class,mode='w+') as output_csv_file:
+                output_csv_file.write(objects_str)
+
             logging.debug(f"created file: {filepath_of_output_csv_for_one_class}")
 
 
@@ -142,7 +142,7 @@ if __name__ == "__main__":
 
     # write output to test files
     # output = root / "UnitTests\\test_files\\output_ref\\output_get_object_from_class_DA-2025-00023_export.txt"
-    output_csv = root / "UnitTests\\test_files\\output_test\\convert_SDF_to_CSV_DA-2025-00023_export\\test_DA-2024-03992_export.csv"
-
+    # output_csv = root / "UnitTests\\test_files\\output_test\\convert_SDF_to_CSV_DA-2025-00023_export\\test_DA-2024-03992_export.csv"
+    output_csv = root / "C:\\Users\\chris\\Documents\\job_related\\wegen_en_verkeer\\new_python_otl_wizard\\testData\\Ruben_SDF_test\\DA-2025-00023_export\\christiaan_omzetting"
     SDFHandler.convert_SDF_to_CSV(sdf_path_input,output_csv)
 

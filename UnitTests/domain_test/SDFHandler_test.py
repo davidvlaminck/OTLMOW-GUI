@@ -181,19 +181,22 @@ def test_convert_SDF_to_CSV(root_directory,create_translations,cleanup_after_cre
     expected_output_path = root_directory / expected_output_dirpath
 
     # format the expected output csv files based on the classes in the sdf file
-    output_classes = SDFHandler._get_classes_from_SDF_file(sdf_path_example)
 
+    output_classes = SDFHandler._get_classes_from_SDF_file(sdf_path_example)
+    # build absolute paths to csv of test output
     if ((os.path.exists(csv_output_path) and os.path.isdir(csv_output_path)) or
             csv_output_path.suffix == ""):
-        test_output_basepath: str = str(csv_output_path / "")
+        test_output_basepath: str = str(csv_output_path)
+        test_output_filepath_list = [str(
+                    Path(test_output_basepath) / f"{otlclass}.csv") for otlclass in
+                                     output_classes]
     else:
         test_output_basepath: str = os.path.splitext(csv_output_path)[0]
+        test_output_filepath_list = [test_output_basepath + otlclass + ".csv" for otlclass in
+                                     output_classes]
 
-    expected_output_basepath: str = str((expected_output_path / expected_output_file_basename).absolute())
-
-    # build absolute paths to csv of test output
-    test_output_filepath_list = [test_output_basepath + otlclass + ".csv" for otlclass in output_classes]
     # build absolute paths to csv of expected output
+    expected_output_basepath: str = str((expected_output_path / expected_output_file_basename).absolute())
     expected_output_filepath_list = [(expected_output_basepath + otlclass + " .csv"
                                       if ("Seinbrug" not in otlclass and "Voedingskabel" not in otlclass)
                                       else expected_output_basepath + otlclass + ".csv")
