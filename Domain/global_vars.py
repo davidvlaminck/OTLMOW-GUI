@@ -5,7 +5,7 @@ from typing import Optional
 projects = []
 current_project = None
 otl_wizard = None
-supported_file_formats = {'Excel':"xlsx", 'CSV':"csv", 'JSON':'json','GeoJSON': 'geojson'}
+supported_file_formats = {'Excel':"xlsx", 'CSV':"csv", 'JSON':'json','GeoJSON': 'geojson','SDF':'sdf'}
 external_toegekendDoor_label = "OTL_wizard_2"
 last_subset_selected_dir: Optional[Path] = None
 FDO_toolbox_path_str =  'C:\\Program Files\\FDO Toolbox\\FdoCmd.exe'

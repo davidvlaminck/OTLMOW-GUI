@@ -948,16 +948,6 @@ def test_import_project(mock_project_home_path, create_mock_project_project_1: P
     assert project_loaded.bestek == project.bestek
     assert project_loaded.laatst_bewerkt == project.laatst_bewerkt
 
-import pytest
-import json
-import os
-import shutil
-from unittest.mock import MagicMock, patch
-from pathlib import Path
-from Domain.project.Project import Project
-from Domain.enums import FileState
-from Domain.project.ProjectFile import ProjectFile
-
 @pytest.fixture
 def mock_project(mock_otl_wizard_dir):
     project = Project(eigen_referentie="test_project")

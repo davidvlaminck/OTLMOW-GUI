@@ -4,6 +4,7 @@ import re
 import subprocess
 import sys
 from pathlib import Path
+from typing import List
 
 from Domain import global_vars
 from Exceptions.FDOToolboxNotInstalledError import FDOToolboxNotInstalledError
@@ -78,7 +79,9 @@ class SDFHandler:
         return output + "\n" # added for compatibility with old OTL-wizard csv generation
 
     @classmethod
-    def convert_SDF_to_CSV(cls, sdf_filepath:Path=None, csv_output_path:Path=None) -> None:
+    def convert_SDF_to_CSV(cls, sdf_filepath:Path=None, csv_output_path:Path=None) -> list[str]:
+
+        output_csv_filepath_list = []
 
         cls._check_if_FDOToolbox_is_installed()
         cls._validate_SDF_file(sdf_filepath)
@@ -99,6 +102,8 @@ class SDFHandler:
 
             objects_str:str = SDFHandler._get_objects_from_class(sdf_filepath=sdf_filepath, sdf_class=otlclass)
 
+
+
             # build absolute path to csv of output
             if csv_output_path_is_dir:
                 filepath_of_output_csv_for_one_class = str(
@@ -110,7 +115,9 @@ class SDFHandler:
                 output_csv_file.write(objects_str)
 
             logging.debug(f"created file: {filepath_of_output_csv_for_one_class}")
+            output_csv_filepath_list.append(filepath_of_output_csv_for_one_class)
 
+        return output_csv_filepath_list
 
     @classmethod
     def run_command(cls,command):
@@ -136,13 +143,13 @@ if __name__ == "__main__":
         "C:\\Users\\chris\\Documents\\job_related\\wegen_en_verkeer\\new_python_otl_wizard\\testData\\Ruben_SDF_test\\DA-2025-00023_export\\download.sdf")
 
     # sdf_file_classes = SDFHandler.get_classes_from_SDF_file(sdf_file_path=sdf_path_input)
-    # sdf_objects = SDFHandler.get_objects_from_class(sdf_file_path=sdf_path_input,sdf_class="OTL_Brandblusser")
-    # sdf_objects = SDFHandler.get_objects_from_class(sdf_filepath=sdf_path_input, sdf_class="OTL_Voedingskabel")
-    # print(sdf_objects)
+    # sdf_objects = SDFHandler._get_objects_from_class(sdf_file_path=sdf_path_input,sdf_class="OTL_Brandblusser")
+    sdf_objects = SDFHandler._get_objects_from_class(sdf_filepath=sdf_path_input, sdf_class="OTL_Voedingskabel")
+    print(sdf_objects)
 
     # write output to test files
     # output = root / "UnitTests\\test_files\\output_ref\\output_get_object_from_class_DA-2025-00023_export.txt"
     # output_csv = root / "UnitTests\\test_files\\output_test\\convert_SDF_to_CSV_DA-2025-00023_export\\test_DA-2024-03992_export.csv"
-    output_csv = root / "C:\\Users\\chris\\Documents\\job_related\\wegen_en_verkeer\\new_python_otl_wizard\\testData\\Ruben_SDF_test\\DA-2025-00023_export\\christiaan_omzetting"
-    SDFHandler.convert_SDF_to_CSV(sdf_path_input,output_csv)
+    # output_csv = root / "C:\\Users\\chris\\Documents\\job_related\\wegen_en_verkeer\\new_python_otl_wizard\\testData\\Ruben_SDF_test\\DA-2025-00023_export\\christiaan_omzetting"
+    # SDFHandler.convert_SDF_to_CSV(sdf_path_input,output_csv)
 

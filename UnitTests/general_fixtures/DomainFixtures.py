@@ -1,9 +1,11 @@
 import os
 import shutil
+from collections import namedtuple
 from pathlib import Path
 from unittest.mock import Mock
 
 from _pytest.fixtures import fixture
+from typing_extensions import NamedTuple
 
 from Domain import global_vars
 from Domain.project.ProgramFileStructure import ProgramFileStructure
@@ -165,3 +167,40 @@ def setup_simpel_vergelijking_template4(root_directory):
     for path_str in test_object_lists_file_path:
         if os.path.exists(path_str):
             os.remove(path_str)
+@fixture
+def mock_otl_wizard_dir_no_param(root_directory):
+    original_get_otl_wizard_projects_dir = ProgramFileStructure.get_otl_wizard_projects_dir
+    ProgramFileStructure.get_otl_wizard_projects_dir = Mock(return_value=root_directory  / "OTLWizardProjects" / "Projects")
+
+    yield
+    ProgramFileStructure.get_otl_wizard_projects_dir = original_get_otl_wizard_projects_dir
+
+@fixture
+def get_and_cleanup_empty_project_no_param(mock_otl_wizard_dir_no_param):
+    RequestTuple = namedtuple('requestTuple', ['param'])
+    request = RequestTuple(("empty_project", None, None, None, None, None, None, None, None))
+    eigen_referentie = request.param[0]
+    project_path = request.param[1]
+    subset_path= request.param[2]
+    saved_documents_overview_path= request.param[3]
+    bestek= request.param[4]
+    laatst_bewerkt= request.param[5]
+    last_quick_save= request.param[6]
+    subset_operator= request.param[7]
+    otl_version= request.param[8]
+    print()
+
+    # remove remnants from failed or aborted tests if necessary
+    project_path_rm = ProgramFileStructure.get_otl_wizard_projects_dir() / eigen_referentie
+    if project_path_rm.exists():
+        shutil.rmtree(project_path_rm)
+
+    yield Project(eigen_referentie=eigen_referentie, project_path= project_path,
+                  subset_path=subset_path,
+                  saved_documents_overview_path=saved_documents_overview_path,bestek=bestek,
+                  laatst_bewerkt=laatst_bewerkt, subset_operator=subset_operator,
+                  otl_version=otl_version,
+                  last_quick_save=last_quick_save)
+
+    if project_path_rm.exists():
+        shutil.rmtree(project_path_rm)

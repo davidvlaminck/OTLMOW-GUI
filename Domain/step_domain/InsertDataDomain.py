@@ -4,7 +4,7 @@ import os
 import tempfile
 
 from pathlib import Path
-from typing import List, Iterable, Optional, cast
+from typing import List, Iterable, Optional, cast, Union
 
 from openpyxl.reader.excel import load_workbook
 from otlmow_converter.Exceptions.ExceptionsGroup import ExceptionsGroup
@@ -17,6 +17,7 @@ from otlmow_model.OtlmowModel.Helpers import OTLObjectHelper, RelationValidator
 
 from Domain import global_vars
 from Domain.Helpers import Helpers
+from Domain.SDFHandler import SDFHandler
 from Domain.project.Project import Project
 from Domain.step_domain.RelationChangeDomain import RelationChangeDomain, save_assets
 from Domain.enums import FileState
@@ -72,7 +73,7 @@ class InsertDataDomain:
         cls.sync_backend_documents_with_frontend()
 
     @classmethod
-    def check_document(cls, doc_location: str) -> Iterable[OTLObject]:
+    def check_document(cls, doc_location: Union[str, Path], delimiter: str=";") -> Iterable[OTLObject]:
         """
         Checks a document and converts it into a list of OTL objects.
 
@@ -85,8 +86,20 @@ class InsertDataDomain:
         :type doc_location: str
         :returns: An iterable of OTL objects extracted from the document.
         """
+        if isinstance(doc_location,str):
+            doc_location_path = Path(doc_location)
+        else:
+            doc_location_path = doc_location
 
-        return OtlmowConverter.from_file_to_objects(file_path=Path(doc_location), include_tab_info=True)
+        exception_group = None
+        try:
+            assets = OtlmowConverter.from_file_to_objects(file_path=doc_location_path, include_tab_info=True,
+                                                 delimiter=delimiter)
+        except ExceptionsGroup as group:
+            exception_group = group
+            assets = group.objects
+
+        return assets,exception_group
 
     @classmethod
     def remove_dropdown_values_from_excel(cls, doc: Path) -> Path:
@@ -114,6 +127,15 @@ class InsertDataDomain:
 
         wb.save(temp_path)
         return temp_path
+
+    @classmethod
+    def create_temporary_SDF_conversion_to_CSV_files(cls, sdf_filepath: Path) -> list[str]:
+
+        temp_csv_path = cls.create_temp_path(path_to_template_file_and_extension=sdf_filepath).with_suffix(".csv")
+        logging.debug(f"Converting SDF file: {sdf_filepath}\n To temporary CSV file: {temp_csv_path}")
+        temp_csv_path_str_list = SDFHandler.convert_SDF_to_CSV(sdf_filepath=sdf_filepath,csv_output_path=temp_csv_path)
+
+        return temp_csv_path_str_list
 
     @classmethod
     def create_temp_path(cls, path_to_template_file_and_extension: Path) -> Path:
@@ -281,28 +303,43 @@ class InsertDataDomain:
         for project_file in global_vars.current_project.get_saved_projectfiles():
             file_path = project_file.file_path
             try:
-               
-                temp_path = file_path
+                exception_group = None
                 if file_path.suffix in ['.xls', '.xlsx']:
                     temp_path = InsertDataDomain.remove_dropdown_values_from_excel(doc=file_path)
+                    assets, exception_group = InsertDataDomain.check_document(
+                        doc_location=temp_path)
                 elif file_path.suffix == '.csv':
-                    temp_path = file_path
+                    assets, exception_group = InsertDataDomain.check_document(
+                        doc_location=file_path)
+                elif file_path.suffix == '.sdf':
+                    # SDF files will make multiple CSV files, one for each class
+                    temp_path_list = InsertDataDomain.create_temporary_SDF_conversion_to_CSV_files(
+                        sdf_filepath=file_path)
 
-                exception_group = None
-                try:
-                    assets = InsertDataDomain.check_document(doc_location=temp_path)
-                except ExceptionsGroup as group:
-                    exception_group = group
-                    assets = group.objects
+                    assets = []
+                    sdf_exception_list = []
+                    for temp_path in temp_path_list:
+                        assets_subset, exception_group_subset = InsertDataDomain.check_document(
+                            doc_location=temp_path ,
+                            delimiter=",")
+                        assets.extend(assets_subset)
+                        if exception_group is not None:
+                            sdf_exception_list.extend(exception_group.exceptions)
+
+
+                    exception_group = ExceptionsGroup(
+                        message=f'Failed to create objects from Excel file {file_path}')
+                    for exception in sdf_exception_list:
+                        exception_group.add_exception(exception)
+
 
                 # second checks done by the GUI
                 if exception_group is None:
                     exception_group = ExceptionsGroup(
-                        message=f'Failed to create objects from Excel file {temp_path}')
+                        message=f'Failed to create objects from Excel file {file_path}')
 
                 cls.check_for_invalid_relations(assets= assets,exception_group=exception_group)
                 cls.check_for_empty_identificators(assets=assets,exception_group=exception_group)
-
                 if len(exception_group.exceptions) > 0:
                     raise exception_group
 

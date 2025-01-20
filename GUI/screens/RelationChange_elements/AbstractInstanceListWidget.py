@@ -66,6 +66,7 @@ class AbstractInstanceListWidget:
     class LastAddedHighlightDelegate(QStyledItemDelegate):
 
         def __init__(self, list_widget):
+
             super().__init__()
             self.parent : AbstractInstanceListWidget = list_widget
             self.second_paint = False

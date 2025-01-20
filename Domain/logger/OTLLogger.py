@@ -18,7 +18,8 @@ class OTLLogger:
 
         logger = logging.getLogger()
         logger.addHandler(file_handler)
-        logger.setLevel(logging.DEBUG)
+        logger.setLevel(logging.INFO)
+        # logger.propagate = False #turns logging off
         logger.handlers[0].setFormatter(logging.Formatter(fmt='%(asctime)s ln %(lineno)-4d:%(filename)-25s %(levelname)-8s %(message)s',
              datefmt='%Y-%m-%d %H:%M:%S'))
 
