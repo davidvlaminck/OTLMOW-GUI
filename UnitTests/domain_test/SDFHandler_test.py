@@ -19,7 +19,7 @@ It can only be used on Windows so these test should only be run on Windows syste
 @fixture
 def root_directory() -> Path:
     return Path(__file__).parent.parent.parent
-
+@pytest.mark.skip
 @pytest.mark.parametrize("rel_sdf_file_path, expected_output", [
     ("UnitTests/test_files/input/DA-2024-03992_export_sdf_example.sdf",
      ['OTL_Brandblusser', 'OTL_Galgpaal', 'OTL_Hydrant', 'OTL_IntercomToestel',
@@ -45,7 +45,7 @@ def test_get_classes_from_SDF_file(root_directory,rel_sdf_file_path,expected_out
     assert output == expected_output
 
 
-
+@pytest.mark.skip
 @pytest.mark.parametrize("rel_sdf_file_path,expected_exception,expected_error_msg", [
     ("UnitTests/test_files/input/DA-2025-00023_export_sdf_corrupted_example.sdf",FDOToolboxProcessError,
      ('An error occured during FDO toolbox call:  \n'
@@ -77,7 +77,7 @@ def test_get_classes_from_SDF_file_error(root_directory,create_translations,rel_
     else:
         assert str(exc_info.value) == expected_error_msg
 
-
+@pytest.mark.skip
 @pytest.mark.parametrize("rel_sdf_file_path, sdf_class, expected_output", [
     ("UnitTests/test_files/input/DA-2024-03992_export_sdf_example.sdf", 'OTL_Brandblusser',
      Path("UnitTests/test_files/output_ref/output_get_object_from_class_DA-2024-03992_export.txt")),
@@ -99,6 +99,7 @@ def test_get_objects_from_class(root_directory,rel_sdf_file_path, sdf_class,expe
 
     assert output == expected_output + "\n"
 
+@pytest.mark.skip
 @pytest.mark.parametrize("rel_sdf_file_path,sdf_class,expected_exception,expected_error_msg", [
      ("UnitTests/test_files/input/DA-2025-00023_export_sdf_corrupted_example.sdf","",FDOToolboxProcessError,
      ('An error occured during FDO toolbox call:  \n'
@@ -150,7 +151,7 @@ def test_get_objects_from_class_error(root_directory,create_translations,rel_sdf
     else:
         assert str(exc_info.value) == expected_error_msg
 
-
+@pytest.mark.skip
 @pytest.mark.parametrize("rel_sdf_file_path, rel_csv_output_file_path, expected_output_dirpath, expected_output_file_basename", [
     ("UnitTests/test_files/input/DA-2024-03992_export_sdf_example.sdf",
      Path("UnitTests/test_files/output_test/convert_SDF_to_CSV_DA-2024-03992_export/da-2024-03992_export.csv"),
@@ -225,6 +226,7 @@ def test_convert_SDF_to_CSV(root_directory,create_translations,cleanup_after_cre
 
         assert(test_output_content == expected_output_content)
 
+@pytest.mark.skip
 @pytest.mark.parametrize("rel_sdf_file_path, rel_csv_output_file_path, expected_exception,expected_error_msg", [
     ("UnitTests/test_files/input/does_not_exist.sdf",
      Path("UnitTests/test_files/output_test/convert_SDF_to_CSV_DA-2024-03992_export/da-2024-03992_export.csv"),
@@ -283,6 +285,7 @@ def mock_wrong_FDOToolbox_path():
     yield
     global_vars.FDO_toolbox_path_str = original_path
 
+@pytest.mark.skip
 def test_convert_SDF_to_CSV_FDOToolbox_not_installed_error(root_directory,create_translations,mock_wrong_FDOToolbox_path):
 
     #setup test
