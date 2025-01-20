@@ -97,7 +97,7 @@ def test_get_objects_from_class(root_directory,rel_sdf_file_path, sdf_class,expe
         with open(expected_output_path.absolute(), mode="r", encoding="utf-8") as expected_output_file:
             expected_output = expected_output_file.read()
 
-    assert output == expected_output
+    assert output == expected_output + "\n"
 
 @pytest.mark.parametrize("rel_sdf_file_path,sdf_class,expected_exception,expected_error_msg", [
      ("UnitTests/test_files/input/DA-2025-00023_export_sdf_corrupted_example.sdf","",FDOToolboxProcessError,
@@ -289,7 +289,7 @@ def test_convert_SDF_to_CSV_FDOToolbox_not_installed_error(root_directory,create
     rel_sdf_file_path = "UnitTests/test_files/input/DA-2024-03992_export_sdf_example.sdf"
     rel_csv_output_file_path = Path("UnitTests/test_files/output_test/convert_SDF_to_CSV_DA-2024-03992_export/da-2024-03992_export.csv")
     expected_exception = FDOToolboxNotInstalledError
-    expected_error_msg = ('FDO toolbox executable could not be found. Most likely becuase it is not '
+    expected_error_msg = ('FDO toolbox executable could not be found. Most likely because it is not '
                          'installed. Make sure it is installed in the correct directory so that the '
                          'following path exists: \n'
                          'C:\\Program Files\\FDO Toolbox\\FdoCmd1_wrong.exe')
