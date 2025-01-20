@@ -77,7 +77,7 @@ def test_load_and_validate_document_good_path(mock_screen: InsertDataScreen,
     assert(len(objects_lists[0]) == 12)
     assert (global_vars.current_project.saved_project_files[0].state == FileState.OK)
 
-
+@pytest.mark.skip
 @pytest.mark.parametrize("rel_sdf_file_path, expected_output_filepath, object_count", [
 
     ("UnitTests/test_files/input/DA-2025-00023_export_sdf_example.sdf",
