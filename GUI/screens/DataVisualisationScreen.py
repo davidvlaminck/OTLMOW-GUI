@@ -1,3 +1,4 @@
+import os
 from typing import List
 
 import qtawesome as qta
@@ -16,13 +17,16 @@ from GUI.screens.Screen import Screen
 
 ROOT_DIR = Path(__file__).parent
 
-HTML_DIR = ROOT_DIR.parent.parent / 'img' / 'html'
-
+# HTML_DIR = ROOT_DIR.parent.parent / 'img' / 'html'
+HTML_DIR = Path.home() / 'OTLWizardProjects' / 'img' / 'html'
 
 class DataVisualisationScreen(Screen):
 
     def __init__(self, _):
         super().__init__()
+
+        if not HTML_DIR.exists():
+            os.makedirs(HTML_DIR,exist_ok=True)
 
         self.frame_layout_legend = None
         self.objects_in_memory = []
@@ -46,7 +50,7 @@ class DataVisualisationScreen(Screen):
         window_layout = QVBoxLayout()
         window_layout.setContentsMargins(0,0,0,0)
         
-        html_loc = HTML_DIR / "basic.html"
+        html_loc = ROOT_DIR.parent.parent / 'img' / 'html' / "basic.html"
         self.view.setHtml(open(html_loc).read())
         self.view.settings().setAttribute(QWebEngineSettings.WebAttribute.ShowScrollBars, False)
         self.view.setContentsMargins(0, 0, 0, 0)
@@ -76,6 +80,7 @@ class DataVisualisationScreen(Screen):
             self.frame_layout_legend.itemAt(i).widget().deleteLater()
 
         relatie_color_dict = PyVisWrapper().relatie_color_dict
+
         typeURIs_in_memory = [object_in_memory.typeURI for object_in_memory in
                               self.objects_in_memory]
         for relatie, color in relatie_color_dict.items():
@@ -121,6 +126,9 @@ class DataVisualisationScreen(Screen):
 
     def create_html(self, objects_in_memory:List[OTLObject]):
         html_loc = HTML_DIR / "visuals.html"
+        previous_cwd = os.getcwd()
+        os.chdir(Path.home() / 'OTLWizardProjects')
         PyVisWrapper().show(list_of_objects=objects_in_memory,
                             html_path=Path(html_loc), launch_html=False)
+        os.chdir(previous_cwd)
         self.view.setHtml(open(html_loc).read())
