@@ -1,5 +1,7 @@
 import asyncio
 import logging
+import os
+import subprocess
 import webbrowser
 from asyncio import sleep
 from datetime import datetime
@@ -151,7 +153,21 @@ class HeaderBar(QFrame):
         self.about_action.triggered.connect(lambda: MenuActionsWindow(self._).create_about_window())
         self.report_action = menu.addAction(self._('report error'))
         self.report_action.triggered.connect(lambda: MenuActionsWindow(self._).create_error_report_window())
+        self.logs_action = menu.addAction(self._('logs'))
+        self.logs_action.triggered.connect(self.open_logs_folder)
+
         return menu
+
+    @classmethod
+    def open_logs_folder(cls):
+        logs_folderpath = Path.home() / 'OTLWizardProjects' / 'logs'
+        log_filename_list = os.listdir(logs_folderpath)
+        if log_filename_list:
+            log_filename_list.sort(reverse=True)
+            last_log_filepath = logs_folderpath / log_filename_list[0]
+            subprocess.Popen(f'explorer /select,"{last_log_filepath}"')
+        else:
+            subprocess.Popen(f'explorer /select,"{logs_folderpath}"')
 
     @staticmethod
     def open_wiki():
