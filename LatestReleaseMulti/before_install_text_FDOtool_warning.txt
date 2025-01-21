@@ -1,0 +1,9 @@
+OPGELET!
+Als u met SDF-bestanden wil werken in OTL-wizard 2, moet u deze installer met administrator rechten uitvoeren. (Alleen voor Windows gebruikers)
+De tool, genaamd FDOToolbox, die nodig is om SDF-bestanden te gebruiken zal geinstalleerd worden na deze installatie.
+Als U geen nood hebt aan deze functionaliteit mag u die installatie weigeren wanneer het opstart.
+
+CAUTION!
+If you want to work with SDF files in OTL Wizard 2, you need to run this installer with administrator rights. (Windows users only)
+The tool, called FDOToolbox, which is needed to use SDF files will be installed after this installation.
+If you do not need this functionality, you may refuse this installation when it starts.
