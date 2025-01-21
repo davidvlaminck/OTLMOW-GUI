@@ -2,7 +2,7 @@ import asyncio
 import logging
 from copy import deepcopy
 from pathlib import Path
-from typing import List, Optional, Union, Callable
+from typing import Optional, Union, Callable
 
 from otlmow_converter.DotnotationDictConverter import DotnotationDictConverter
 from otlmow_model.OtlmowModel.BaseClasses.OTLObject import dynamic_create_type_from_uri, \

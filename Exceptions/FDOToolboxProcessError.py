@@ -8,6 +8,6 @@ class FDOToolboxProcessError(Exception):
         super().__init__()
 
     def __str__(self):
-        translation = self._(
-            "An error occured during FDO toolbox call:  \nCall: {0} \nError:\n{1}")
+        # "An error occured during FDO toolbox call:  \nCall: {0} \nError:\n{1}"
+        translation = self._("FDOToolbox_call_error_message")
         return translation.format(self.command, self.fdo_toolbox_error)

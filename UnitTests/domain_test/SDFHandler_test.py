@@ -48,18 +48,19 @@ def test_get_classes_from_SDF_file(root_directory,rel_sdf_file_path,expected_out
 @pytest.mark.skip
 @pytest.mark.parametrize("rel_sdf_file_path,expected_exception,expected_error_msg", [
     ("UnitTests/test_files/input/DA-2025-00023_export_sdf_corrupted_example.sdf",FDOToolboxProcessError,
-     ('An error occured during FDO toolbox call:  \n'
- 'Call: "C:\\Program Files\\FDO Toolbox\\FdoCmd.exe" list-classes --from-file '
- '"{0}" \n'
- 'Error:\n'
- '\n'
- '\n'
- 'OSGeo.FDO.Common.Exception: File is not an SDF file, or is an SDF file with '
- 'an unsupported version.  ---> OSGeo.FDO.Common.Exception: An error occurred '
- 'during SDF database access.  \n'
- '   --- End of inner exception stack trace ---\n'
- '   at OSGeo.FDO.Connections.IConnectionImp.Open()\n'
- '   at FdoCmd.Commands.ProviderConnectionCommand.Execute()'))
+     ('Er is een fout opgetreden tijdens de FDO-toolbox-oproep: \n'
+      'Oproep: "C:\\Program Files\\FDO Toolbox\\FdoCmd.exe" list-classes '
+      '--from-file '
+      '"C:\\Users\\chris\\PycharmProjects\\OTLMOW-GUI\\UnitTests\\test_files\\input\\DA-2025-00023_export_sdf_corrupted_example.sdf" \n'
+      'Fout:\n'
+      '\n'
+      '\n'
+      'OSGeo.FDO.Common.Exception: File is not an SDF file, or is an SDF file with '
+      'an unsupported version.  ---> OSGeo.FDO.Common.Exception: An error occurred '
+      'during SDF database access.  \n'
+      '   --- End of inner exception stack trace ---\n'
+      '   at OSGeo.FDO.Connections.IConnectionImp.Open()\n'
+      '   at FdoCmd.Commands.ProviderConnectionCommand.Execute()\n'))
 ], ids=["invalid_sdf_content"])
 def test_get_classes_from_SDF_file_error(root_directory,create_translations,rel_sdf_file_path,expected_exception,expected_error_msg):
 
@@ -102,27 +103,27 @@ def test_get_objects_from_class(root_directory,rel_sdf_file_path, sdf_class,expe
 @pytest.mark.skip
 @pytest.mark.parametrize("rel_sdf_file_path,sdf_class,expected_exception,expected_error_msg", [
      ("UnitTests/test_files/input/DA-2025-00023_export_sdf_corrupted_example.sdf","",FDOToolboxProcessError,
-     ('An error occured during FDO toolbox call:  \n'
-     'Call: "C:\\Program Files\\FDO Toolbox\\FdoCmd.exe" query-features --class "" '
-     '--from-file '
-     '"{0}"  '
-     '--format CSV \n'
-     'Error:\n'
-     '\n'
-     '\n'
-     'OSGeo.FDO.Common.Exception: File is not an SDF file, or is an SDF file with '
-     'an unsupported version.  ---> OSGeo.FDO.Common.Exception: An error occurred '
-     'during SDF database access.  \n'
-     '   --- End of inner exception stack trace ---\n'
-     '   at OSGeo.FDO.Connections.IConnectionImp.Open()\n'
-     '   at FdoCmd.Commands.ProviderConnectionCommand.Execute()')),
+      ('Er is een fout opgetreden tijdens de FDO-toolbox-oproep: \n'
+       'Oproep: "C:\\Program Files\\FDO Toolbox\\FdoCmd.exe" query-features --class '
+       '"" --from-file '
+       '"C:\\Users\\chris\\PycharmProjects\\OTLMOW-GUI\\UnitTests\\test_files\\input\\DA-2025-00023_export_sdf_corrupted_example.sdf"  '
+       '--format CSV \n'
+       'Fout:\n'
+       '\n'
+       '\n'
+       'OSGeo.FDO.Common.Exception: File is not an SDF file, or is an SDF file with '
+       'an unsupported version.  ---> OSGeo.FDO.Common.Exception: An error occurred '
+       'during SDF database access.  \n'
+       '   --- End of inner exception stack trace ---\n'
+       '   at OSGeo.FDO.Connections.IConnectionImp.Open()\n'
+       '   at FdoCmd.Commands.ProviderConnectionCommand.Execute()\n')),
     ("UnitTests/test_files/input/DA-2024-03992_export_sdf_example.sdf","class_not_in_sdf",FDOToolboxProcessError,
-     (('An error occured during FDO toolbox call:  \n'
-     'Call: "C:\\Program Files\\FDO Toolbox\\FdoCmd.exe" query-features --class '
+     (('Er is een fout opgetreden tijdens de FDO-toolbox-oproep: \n'
+     'Oproep: "C:\\Program Files\\FDO Toolbox\\FdoCmd.exe" query-features --class '
      '"class_not_in_sdf" --from-file '
-     '"{0}"  '
+     '"C:\\Users\\chris\\PycharmProjects\\OTLMOW-GUI\\UnitTests\\test_files\\input\\DA-2024-03992_export_sdf_example.sdf"  '
      '--format CSV \n'
-     'Error:\n'
+     'Fout:\n'
      '\n'
      '\n'
      "OSGeo.FDO.Common.Exception: Class 'class_not_in_sdf' is not found. \n"
@@ -132,7 +133,7 @@ def test_get_objects_from_class(root_directory,rel_sdf_file_path, sdf_class,expe
      '   at '
      'FdoCmd.Commands.ProviderConnectionCommand`1.ExecuteConnection(IConnection '
      'conn, String provider)\n'
-     '   at FdoCmd.Commands.ProviderConnectionCommand.Execute()')))
+     '   at FdoCmd.Commands.ProviderConnectionCommand.Execute()\n')))
 ], ids=["invalid_sdf_content",
         "class_not_in_sdf"])
 def test_get_objects_from_class_error(root_directory,create_translations,rel_sdf_file_path,sdf_class,expected_exception,expected_error_msg):
@@ -236,16 +237,17 @@ def test_convert_SDF_to_CSV(root_directory,create_translations,cleanup_after_cre
     ("UnitTests/test_files/input/wrong_type_for_sdf.txt",
      Path("UnitTests/test_files/output_test/convert_SDF_to_CSV_DA-2024-03992_export/da-2024-03992_export.csv"),
      WrongFileTypeError,
-     'The path to the provided file is not a SDF-file file with extension (.sdf)'),
+     ('Het pad naar het opgegeven bestand is niet een SDF-file bestand met extensie (.sdf)\n')),
 
     ("UnitTests/test_files/input/DA-2025-00023_export_sdf_corrupted_example.sdf",
      Path(
          "UnitTests/test_files/output_test/convert_SDF_to_CSV_DA-2024-03992_export/da-2024-03992_export.csv"),
      FDOToolboxProcessError,
-     ('An error occured during FDO toolbox call:  \n'
-      'Call: "C:\\Program Files\\FDO Toolbox\\FdoCmd.exe" list-classes --from-file '
+     ('Er is een fout opgetreden tijdens de FDO-toolbox-oproep: \n'
+      'Oproep: "C:\\Program Files\\FDO Toolbox\\FdoCmd.exe" list-classes '
+      '--from-file '
       '"C:\\Users\\chris\\PycharmProjects\\OTLMOW-GUI\\UnitTests\\test_files\\input\\DA-2025-00023_export_sdf_corrupted_example.sdf" \n'
-      'Error:\n'
+      'Fout:\n'
       '\n'
       '\n'
       'OSGeo.FDO.Common.Exception: File is not an SDF file, or is an SDF file with '
@@ -253,7 +255,7 @@ def test_convert_SDF_to_CSV(root_directory,create_translations,cleanup_after_cre
       'during SDF database access.  \n'
       '   --- End of inner exception stack trace ---\n'
       '   at OSGeo.FDO.Connections.IConnectionImp.Open()\n'
-      '   at FdoCmd.Commands.ProviderConnectionCommand.Execute()'))
+      '   at FdoCmd.Commands.ProviderConnectionCommand.Execute()\n'))
 ], ids=["no_file",
         "not_a_sdf_file",
         "invalid_sdf_content"])
@@ -292,10 +294,13 @@ def test_convert_SDF_to_CSV_FDOToolbox_not_installed_error(root_directory,create
     rel_sdf_file_path = "UnitTests/test_files/input/DA-2024-03992_export_sdf_example.sdf"
     rel_csv_output_file_path = Path("UnitTests/test_files/output_test/convert_SDF_to_CSV_DA-2024-03992_export/da-2024-03992_export.csv")
     expected_exception = FDOToolboxNotInstalledError
-    expected_error_msg = ('FDO toolbox executable could not be found. Most likely because it is not '
-                         'installed. Make sure it is installed in the correct directory so that the '
-                         'following path exists: \n'
-                         'C:\\Program Files\\FDO Toolbox\\FdoCmd1_wrong.exe')
+    expected_error_msg = ('FDO toolbox executable kon niet gevonden worden.\n'
+                         'Waarschijnlijk omdat het niet (correct) is geïnstalleerd",\n'
+                         'U kunt de OTL wizard installer opnieuw uitvoeren met admin privileges om '
+                         'deze fout te verhelpen.\n'
+                         'Zorg ervoor dat het in de juiste directory is geïnstalleerd, zodat het '
+                         'volgende pad bestaat: \n'
+                         'C:\\Program Files\\FDO Toolbox\\FdoCmd1_wrong.exe\n')
 
     sdf_path_example = root_directory / rel_sdf_file_path
     csv_output_path = root_directory / rel_csv_output_file_path
