@@ -10,6 +10,7 @@ from otlmow_modelbuilder.SQLDataClasses.OSLOClass import OSLOClass
 from otlmow_template.SubsetTemplateCreator import SubsetTemplateCreator
 
 from Domain import global_vars
+from Domain.logger.OTLLogger import OTLLogger
 from Domain.step_domain.InsertDataDomain import InsertDataDomain
 from Domain.step_domain.RelationChangeDomain import RelationChangeDomain
 from GUI.dialog_windows.ExportToTemplateWindow import ExportToTemplateWindow
@@ -34,7 +35,7 @@ class TemplateDomain:
                         add_geo_artefact: bool, add_attribute_info: bool, highlight_deprecated_attributes: bool,
                         amount_of_examples: int, model_directory: Path = None) -> None:
         try:
-            logging.debug("Creating template")
+            OTLLogger.logger.debug("Creating template")
             template_creator = SubsetTemplateCreator()
 
             if selected_classes_dir and 'http://purl.org/dc/terms/Agent' in selected_classes_dir:
@@ -49,11 +50,11 @@ class TemplateDomain:
                 abbreviate_excel_sheettitles=True)
         except PermissionError as e:
             document_path_str = str(document_path)
-            logging.debug(f"Permission to file was denied: {document_path_str}")
+            OTLLogger.logger.debug(f"Permission to file was denied: {document_path_str}")
             NotificationWindow(GlobalTranslate._("permission_to_file_was_denied_likely_due_to_the_file_being_open_in_excel") + ":\n" + document_path_str, title=GlobalTranslate._("permission_denied"))
         except Exception as e:
-            logging.debug("Error while creating template")
-            logging.error(e)
+            OTLLogger.logger.debug("Error while creating template")
+            OTLLogger.logger.error(e)
             raise e
 
 
@@ -118,4 +119,4 @@ class TemplateDomain:
         elif platform.system() == 'Windows':
             os.startfile(document_path)
         else:
-            logging.error("Opening a file on this OS is not implemented yet")
+            OTLLogger.logger.error("Opening a file on this OS is not implemented yet")

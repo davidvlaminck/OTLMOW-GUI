@@ -5,7 +5,7 @@ from pathlib import Path
 from otlmow_converter.OtlmowConverter import OtlmowConverter
 from otlmow_model.OtlmowModel.Classes.ImplementatieElement.RelatieObject import RelatieObject
 
-
+from Domain.logger.OTLLogger import OTLLogger
 from Domain.step_domain.RelationChangeDomain import RelationChangeDomain
 from Domain.enums import FileState
 
@@ -81,10 +81,10 @@ class ExportDataDomain:
         :rtype: tuple[list, list]
         """
 
-        logging.debug("started splitting relations and objects for export")
+        OTLLogger.logger.debug("started splitting relations and objects for export")
         assets_in_memory = []
         relations_in_memory = []
-        logging.debug(f'objects in memory: {objects_in_memory}')
+        OTLLogger.logger.debug(f'objects in memory: {objects_in_memory}')
         for obj in objects_in_memory:
             if hasattr(obj, 'bronAssetId') or isinstance(obj, RelatieObject):
                 relations_in_memory.append(obj)
@@ -105,7 +105,7 @@ class ExportDataDomain:
             tuple: A tuple containing the paths for the relations file and the assets file.
         """
 
-        logging.debug("started creating relation and class path for export")
+        OTLLogger.logger.debug("started creating relation and class path for export")
         parent_directory = Path(end_file).parent
         file_stem = Path(end_file).stem
         file_suffix = Path(end_file).suffixes[0]

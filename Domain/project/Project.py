@@ -6,6 +6,7 @@ import json
 import logging
 import os
 import shutil
+import time
 import zipfile
 from pathlib import Path
 from typing import Optional, Union, cast
@@ -18,6 +19,7 @@ from otlmow_model.OtlmowModel.Classes.ImplementatieElement.RelatieObject import 
 from Domain import global_vars
 from Domain.Helpers import Helpers
 from Domain.database.ModelBuilder import ModelBuilder
+from Domain.logger.OTLLogger import OTLLogger
 from Domain.project.ProjectFile import ProjectFile
 from Domain.enums import FileState
 from Domain.project.ProgramFileStructure import ProgramFileStructure
@@ -109,7 +111,7 @@ class Project:
         :raises FileNotFoundError:  If the project directory or the project details file does not
                                     exist.
         """
-
+        OTLLogger.logger.info(f"loading project details: {project_path.name}",extra={"timing":True})
         if project_path and not project_path.exists():
             raise FileNotFoundError(f"Project dir {project_path} does not exist")
 
@@ -137,7 +139,8 @@ class Project:
         else:
             otl_version = project_details['otl_version']
 
-        logging.info(f"Loading project: {project_details['eigen_referentie']}")
+        OTLLogger.logger.info(f"loading project details: {project_path.name}"
+                              ,extra={"timing":True})
         return cls(project_path=project_path,
                    subset_path=project_path / project_details['subset'],
                    saved_documents_overview_path= Path(project_path,  cls.saved_documents_filename),
@@ -171,7 +174,7 @@ class Project:
 
         otl_wizard_project_dir = ProgramFileStructure.get_otl_wizard_projects_dir()
         project_dir_path = otl_wizard_project_dir / self.project_path.name
-        logging.debug("Saving project to %s", project_dir_path)
+        OTLLogger.logger.debug("Saving project to %s", project_dir_path)
         project_dir_path.mkdir(exist_ok=True, parents=True)
 
         self.save_project_details(project_dir_path=project_dir_path)
@@ -409,7 +412,7 @@ class Project:
                 project_dir_path.mkdir(exist_ok=False, parents=True)
             except FileExistsError as ex:
                 # TODO: warning user with dialog window when the project already exists
-                logging.error("Project dir %s already exists", project_dir_path)
+                OTLLogger.logger.error("Project dir %s already exists", project_dir_path)
                 raise ex
 
             project_file.extractall(path=project_dir_path)
@@ -425,7 +428,7 @@ class Project:
         :return: None
         """
 
-        logging.debug("Deleting project %s", self.project_path)
+        OTLLogger.logger.debug("Deleting project %s", self.project_path)
         shutil.rmtree(path=self.project_path)
 
 
@@ -442,10 +445,10 @@ class Project:
         :rtype: bool
         """
 
-        logging.debug("Started searching for project files in memory that are OTL conform")
+        OTLLogger.logger.debug("Started searching for project files in memory that are OTL conform")
 
         if not self.saved_project_files:
-            logging.debug("No project files in memory")
+            OTLLogger.logger.debug("No project files in memory")
             return False
         return any(
             template.state == FileState.OK for template in self.saved_project_files
@@ -553,10 +556,10 @@ class Project:
                     saved_documents = json.load(fp=saved_document)
                 except json.decoder.JSONDecodeError as e:
                     # happens when the saved_documents.json file is empty
-                    logging.warning(e)
+                    OTLLogger.logger.warning(e)
                     saved_documents = []
             saved_documents_str = str(saved_documents)
-            logging.debug(f"Loaded saved object lists: {saved_documents_str}")
+            OTLLogger.logger.debug(f"Loaded saved object lists: {saved_documents_str}")
             self.saved_project_files = []
 
             location_dir = self.get_project_files_dir_path()
@@ -676,7 +679,7 @@ class Project:
         :return: None
         """
 
-        logging.debug(f"Started clearing out the whole template folder of "
+        OTLLogger.logger.debug(f"Started clearing out the whole template folder of "
                       f"project: {self.eigen_referentie}")
         new_project_files_folder = self.get_project_files_dir_path()
         old_project_files_folder = self.get_old_project_files_dir_path()
@@ -687,7 +690,7 @@ class Project:
         if new_project_files_folder.exists():
             shutil.rmtree(path=new_project_files_folder)
 
-        logging.debug("Finished clearing out the whole template folder")
+        OTLLogger.logger.debug("Finished clearing out the whole template folder")
 
     def save_project_filepaths_to_file(self) -> None:
         """
@@ -802,7 +805,7 @@ class Project:
         if end_location == filepath:
             return end_location
         shutil.copy(src=filepath, dst=end_location)
-        logging.debug(f"Created a copy of the template file {filepath.name} in the project folder")
+        OTLLogger.logger.debug(f"Created a copy of the template file {filepath.name} in the project folder")
         return end_location
 
 
@@ -817,9 +820,9 @@ class Project:
         :raises ExcelFileUnavailableError: If a file cannot be deleted due to its unavailability.
         """
 
-        logging.debug("memory contains %s", self.saved_project_files)
+        OTLLogger.logger.debug("memory contains %s", self.saved_project_files)
         for file in self.saved_project_files:
-            logging.debug("starting to delete file %s",file.file_path)
+            OTLLogger.logger.debug("starting to delete file %s",file.file_path)
             try:
                 self._delete_project_file(file_path=file.file_path)
             except ExcelFileUnavailableError as e:
@@ -880,15 +883,15 @@ class Project:
 
         try:
             file_path_str = str(file_path)
-            logging.debug(f"file path = {file_path_str}")
+            OTLLogger.logger.debug(f"file path = {file_path_str}")
             Path(file_path).unlink()
             return True
         except FileNotFoundError as e:
-            logging.error(e)
+            OTLLogger.logger.error(e)
             return False
         except PermissionError as e:
             #TODO: make other errors + dialog windows for cases with non-excel files if necessary
-            logging.error(e)
+            OTLLogger.logger.error(e)
             raise ExcelFileUnavailableError(file_path=file_path, exception=e) from e
 
     def change_subset(self, new_path: Path) -> None:

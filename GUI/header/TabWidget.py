@@ -4,6 +4,7 @@ from pathlib import Path
 from PyQt6.QtWidgets import QTabWidget, QVBoxLayout
 
 from Domain import global_vars
+from Domain.logger.OTLLogger import OTLLogger
 from GUI.screens.Screen import Screen
 from GUI.header.HeaderBar import HeaderBar
 from GUI.header.StepperWidget import StepperWidget
@@ -63,7 +64,7 @@ class TabWidget(Screen):
 
     def reset_ui(self, _):
         self._ = _
-        logging.debug("resetting a tab widget")
+        # OTLLogger.logger.debug("resetting a tab widget")
         self.header.reset_ui(_)
         if hasattr(self, 'tab2'):
             self.tab2.reset_ui(_)

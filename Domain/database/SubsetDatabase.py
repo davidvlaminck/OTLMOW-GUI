@@ -3,6 +3,7 @@ import sqlite3
 from pathlib import Path
 from sqlite3 import Connection
 
+from Domain.logger.OTLLogger import OTLLogger
 from Exceptions.NotASqlliteFileError import NotASqlliteFileError
 
 
@@ -18,7 +19,7 @@ class SubsetDatabase:
             try:
                 self.connection = sqlite3.connect(db_path)
             except sqlite3.OperationalError as e:
-                logging.error(e)
+                OTLLogger.logger.error(e)
                 raise NotASqlliteFileError(e)
         else:
             raise FileNotFoundError(f'{db_path} is not a valid path. File does not exist.')
@@ -41,5 +42,5 @@ class SubsetDatabase:
             return False
 
     def close_connection(self) -> None:
-        logging.debug("Closing connection to subset database")
+        OTLLogger.logger.debug("Closing connection to subset database")
         self.connection.close()

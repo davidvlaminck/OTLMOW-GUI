@@ -5,6 +5,7 @@ from pathlib import Path
 
 from Domain import global_vars
 from Domain.global_vars import projects
+from Domain.logger.OTLLogger import OTLLogger
 from Domain.project.Project import Project
 from Domain.project.ProgramFileStructure import ProgramFileStructure
 from Domain.database.SubsetDatabase import SubsetDatabase
@@ -54,7 +55,7 @@ class HomeDomain:
                 project = Project.load_project(project_path=project_dir)
                 projects[project.eigen_referentie] = project
             except FileNotFoundError:
-                logging.warning('Project dir %s is not a valid project directory', project_dir)
+                OTLLogger.logger.warning('Project dir %s is not a valid project directory', project_dir)
 
         return projects
 

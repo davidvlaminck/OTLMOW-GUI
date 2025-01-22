@@ -18,6 +18,7 @@ from otlmow_model.OtlmowModel.Helpers import OTLObjectHelper, RelationValidator
 from Domain import global_vars
 from Domain.Helpers import Helpers
 from Domain.SDFHandler import SDFHandler
+from Domain.logger.OTLLogger import OTLLogger
 from Domain.project.Project import Project
 from Domain.step_domain.RelationChangeDomain import RelationChangeDomain, save_assets
 from Domain.enums import FileState
@@ -117,7 +118,7 @@ class InsertDataDomain:
         :returns: The path to the modified Excel document.
         """
 
-        logging.debug("starting excel changes")
+        OTLLogger.logger.debug("starting excel changes")
         wb = load_workbook(doc)
         temp_path = cls.create_temp_path(path_to_template_file_and_extension=doc)
         if 'Keuzelijsten' in wb.sheetnames:
@@ -132,7 +133,7 @@ class InsertDataDomain:
     def create_temporary_SDF_conversion_to_CSV_files(cls, sdf_filepath: Path) -> list[str]:
 
         temp_csv_path = cls.create_temp_path(path_to_template_file_and_extension=sdf_filepath).with_suffix(".csv")
-        logging.debug(f"Converting SDF file: {sdf_filepath}\n To temporary CSV file: {temp_csv_path}")
+        OTLLogger.logger.debug(f"Converting SDF file: {sdf_filepath}\n To temporary CSV file: {temp_csv_path}")
         temp_csv_path_str_list = SDFHandler.convert_SDF_to_CSV(sdf_filepath=sdf_filepath,csv_output_path=temp_csv_path)
 
         return temp_csv_path_str_list
@@ -412,7 +413,7 @@ class InsertDataDomain:
                         source_typeURI=relation.bron.typeURI,
                         target_typeURI=relation.doel.typeURI)
                 except Exception as e:
-                    logging.warning(e)
+                    OTLLogger.logger.warning(e)
                     is_valid_relation = False
 
                 if not is_valid_relation:
@@ -505,7 +506,7 @@ class InsertDataDomain:
                 rel
                 for rel in concrete_source_relations_of_type_relation
                 if rel[2] == relation.doel.typeURI]:
-                logging.debug("Error in logic")
+                OTLLogger.logger.debug("Error in logic")
             else:
                 # source asset doesn't have this relation to target
                 cls.raise_wrong_doel_or_target(

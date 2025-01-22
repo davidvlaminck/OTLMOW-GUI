@@ -14,6 +14,7 @@ from PyQt6.QtWidgets import QFrame, QHBoxLayout, QLabel, QVBoxLayout, QWidget, Q
 
 
 from Domain import global_vars
+from Domain.logger.OTLLogger import OTLLogger
 from Domain.step_domain.HomeDomain import HomeDomain
 from GUI.Styling import Styling
 from GUI.screens.general_elements.ButtonWidget import ButtonWidget
@@ -249,9 +250,9 @@ class HeaderBar(QFrame):
         if project is None:
             return
         HomeDomain.projects[project.eigen_referentie] = project
-        logging.debug("Projects global")
+        OTLLogger.logger.debug("Projects global")
         for eigen_ref in HomeDomain.projects.keys():
-            logging.debug(eigen_ref)
+            OTLLogger.logger.debug(eigen_ref)
 
         HomeDomain.reload_projects()
         HomeDomain.update_frontend()

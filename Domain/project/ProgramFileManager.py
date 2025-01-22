@@ -5,6 +5,7 @@ from pathlib import Path
 
 from Domain import global_vars
 from Domain.Settings import Settings
+from Domain.logger.OTLLogger import OTLLogger
 from Domain.project.ProgramFileStructure import ProgramFileStructure
 from Domain.project.Project import Project
 
@@ -29,7 +30,7 @@ class ProgramFileManager:
 
         tempdir = Path(tempfile.gettempdir()) / 'temp-otlmow'
         tempdir_str = str(tempdir)
-        logging.debug(f"tempdir {tempdir_str}")
+        OTLLogger.logger.debug(f"tempdir {tempdir_str}")
         if not tempdir.exists():
             os.makedirs(tempdir)
         [f.unlink() for f in Path(tempdir).glob("*") if f.is_file()]

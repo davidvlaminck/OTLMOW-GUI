@@ -6,6 +6,7 @@ from typing import List, Callable
 from PyQt6.QtWidgets import QStackedWidget, QWidget
 
 from Domain import global_vars
+from Domain.logger.OTLLogger import OTLLogger
 from Domain.project.Project import Project
 from Domain.step_domain.HomeDomain import HomeDomain
 from Domain.step_domain.RelationChangeDomain import RelationChangeDomain
@@ -87,7 +88,7 @@ class MainWindow(QStackedWidget):
 
     def closeEvent(self, event):
         # Handle window close event
-        logging.debug("Window is closing...")
+        OTLLogger.logger.debug("Window is closing...")
 
         # Stop the asyncio event loop
         loop = asyncio.get_event_loop()

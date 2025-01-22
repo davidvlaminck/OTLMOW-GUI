@@ -6,6 +6,7 @@ from PyQt6.QtGui import QStandardItem, QFont
 from PyQt6.QtWidgets import QFrame
 from otlmow_model.OtlmowModel.Helpers import OTLObjectHelper
 
+from Domain.logger.OTLLogger import OTLLogger
 from Domain.step_domain.RelationChangeDomain import RelationChangeDomain
 from GUI.dialog_windows.AddExternalAssetWindow import AddExternalAssetWindow
 from GUI.screens.RelationChange_elements.AbstractInstanceListWidget import \
@@ -65,7 +66,7 @@ class ObjectListWidget(AbstractInstanceListWidget):
 
         # update the selected_counts on all type_folder_items
         for type_folder_type, selected_item_count in dict_type_to_selected_item_count.items():
-            logging.debug( f"{type_folder_type}: {selected_item_count}")
+            OTLLogger.logger.debug( f"{type_folder_type}: {selected_item_count}")
 
             type_folder_item = dict_type_to_type_folder_item[type_folder_type]
 

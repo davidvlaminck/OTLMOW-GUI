@@ -6,6 +6,7 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QWidget, QHBoxLayout, QFrame
 
 from Domain import global_vars
+from Domain.logger.OTLLogger import OTLLogger
 from Domain.project.ProgramFileManager import ProgramFileManager
 from GUI.screens.general_elements.ButtonWidget import ButtonWidget
 
@@ -63,7 +64,7 @@ class StepperWidget(QWidget):
             self.step3.setDisabled(False)
             self.step4.setDisabled(False)
         else:
-            logging.debug('set disabled')
+            # OTLLogger.logger.debug('set disabled')
             self.step3.setDisabled(True)
             self.step4.setDisabled(True)
 

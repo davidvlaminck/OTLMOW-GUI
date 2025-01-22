@@ -9,6 +9,7 @@ from otlmow_model.OtlmowModel.Helpers import OTLObjectHelper
 from otlmow_model.OtlmowModel.BaseClasses.OTLObject import \
     OTLObject
 
+from Domain.logger.OTLLogger import OTLLogger
 from Domain.step_domain.RelationChangeDomain import RelationChangeDomain
 from GUI.screens.RelationChange_elements.AbstractInstanceListWidget import \
     AbstractInstanceListWidget, IMG_DIR
@@ -95,7 +96,7 @@ class PossibleRelationListWidget(AbstractInstanceListWidget):
 
         # update the selected_counts on all type_folder_items
         for type_folder_type, selected_item_count in dict_type_to_selected_item_count.items():
-            logging.debug( f"{type_folder_type}: {selected_item_count}")
+            OTLLogger.logger.debug( f"{type_folder_type}: {selected_item_count}")
 
             type_folder_item = dict_type_to_type_folder_item[type_folder_type]
 
@@ -193,7 +194,7 @@ class PossibleRelationListWidget(AbstractInstanceListWidget):
                     if source_object is None:
                         raise ValueError("source_object is None")
                 except Exception as e:
-                    logging.debug(f"target or source are None in relation {relation.typeURI} \n{e}")
+                    OTLLogger.logger.debug(f"target or source are None in relation {relation.typeURI} \n{e}")
                     continue
                 # if the target of the relation is the current selected object then you should
                 # display the source object of the relation
@@ -256,7 +257,7 @@ class PossibleRelationListWidget(AbstractInstanceListWidget):
                         is_relation=OTLObjectHelper.is_relation(relation))
                     real_source_id: str = RelationChangeHelpers.get_corrected_identificator(
                         otl_object=source_object)
-                    logging.debug(f"Couldn't make relation {abbr_relation_typeURI}: {real_source_id} {direction} {target_screen_name} because \n{e}")
+                    OTLLogger.logger.debug(f"Couldn't make relation {abbr_relation_typeURI}: {real_source_id} {direction} {target_screen_name} because \n{e}")
         list_of_corresponding_values.sort(key=lambda val: (
             val['text'].target_typeURI, val['text'].screen_name, val['text'].typeURI))
         return list_of_corresponding_values

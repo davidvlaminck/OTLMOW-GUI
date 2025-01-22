@@ -69,7 +69,7 @@ class OTLWizard(QApplication):
 
         self.meipass = sys._MEIPASS if hasattr(sys, '_MEIPASS') else None
         Styling.applyStyling(self,self.meipass)
-        # self.applicationStateChanged.connect(lambda state: logging.debug(f"applicationStateChanged changed {state}"))
+        # self.applicationStateChanged.connect(lambda state: OTLLogger.logger.debug(f"applicationStateChanged changed {state}"))
         self.paletteChanged.connect(lambda state: Styling.applyStyling(self,self.meipass))
 
 
@@ -97,15 +97,15 @@ class OTLWizard(QApplication):
 
     @asyncClose
     async def quit(self):
-        logging.debug("closing application")
+        OTLLogger.logger.debug("closing application")
         if self.demo_project:
             self.demo_project.delete_project_dir_by_path()
         super().quit()
 
 def excepthook(exc_type, exc_value, exc_tb):
     tb = "".join(traceback.format_exception(exc_type, exc_value, exc_tb))
-    logging.error("error caught!")
-    logging.error("error message: \n: " + tb)
+    OTLLogger.logger.error("error caught!")
+    OTLLogger.logger.error("error message: \n: " + tb)
     error_screen = ErrorScreen(tb)
     error_screen.show()
     # QApplication.quit()
@@ -114,7 +114,7 @@ def excepthook(exc_type, exc_value, exc_tb):
 if __name__ == '__main__':
     program_settings = Settings.get_or_create_settings_file()
     OTLLogger.init()
-    logging.debug("Application started")
+    OTLLogger.logger.debug("Application started")
 
     app = OTLWizard(program_settings, sys.argv)
 
@@ -123,7 +123,7 @@ if __name__ == '__main__':
 
         pyi_splash.update_text('UI Loaded ...')
         pyi_splash.close()
-        logging.info('Splash screen closed.')
+        OTLLogger.logger.info('Splash screen closed.')
 
 
 

@@ -6,6 +6,7 @@ from PyQt6.QtWidgets import QVBoxLayout, QWidget, QLabel, QPushButton, QFrame, Q
     QListWidget, \
     QFileDialog, QListWidgetItem, QTreeWidget, QTreeWidgetItem, QHeaderView, QSizePolicy
 
+from Domain.logger.OTLLogger import OTLLogger
 from Exceptions.NoIdentificatorError import NoIdentificatorError
 from otlmow_converter.Exceptions.ExceptionsGroup import ExceptionsGroup
 from otlmow_converter.Exceptions.FailedToImportFileError import FailedToImportFileError
@@ -213,11 +214,11 @@ class InsertDataScreen(Screen):
         error_set, objects_lists = InsertDataDomain.load_and_validate_documents()
 
         if error_set:
-            logging.debug('negative feedback needed')
+            OTLLogger.logger.debug('negative feedback needed')
             self.negative_feedback_message()
             self.fill_error_feedback_list(error_set=error_set)
         else:
-            logging.debug('positive feedback needed')
+            OTLLogger.logger.debug('positive feedback needed')
             self.main_window.reset_ui(self._)
             self.positive_feedback_message()
 
@@ -364,7 +365,7 @@ class InsertDataScreen(Screen):
             None
         """
 
-        logging.debug("constructing feedback message")
+        OTLLogger.logger.debug("constructing feedback message")
         frame_layout = QHBoxLayout()
 
         self.message.setProperty('class', 'feedback-message')
@@ -647,7 +648,7 @@ class InsertDataScreen(Screen):
             None
         """
 
-        logging.debug("[CLEAR] update_file_list")
+        OTLLogger.logger.debug("[CLEAR] update_file_list")
 
         all_valid = InsertDataDomain.sync_backend_documents_with_frontend()
         self.control_button.setDisabled(all_valid)
@@ -704,7 +705,7 @@ class InsertDataScreen(Screen):
             None
         """
 
-        logging.debug("[CLEAR] clear_feedback")
+        OTLLogger.logger.debug("[CLEAR] clear_feedback")
         self.asset_info.clear()
         self.clear_feedback_message()
 
@@ -725,7 +726,7 @@ class InsertDataScreen(Screen):
             None
         """
 
-        logging.debug(str(exception))
+        OTLLogger.logger.debug(str(exception))
         doc_name = Path(doc).name
         error_widget = QListWidgetItem()
 

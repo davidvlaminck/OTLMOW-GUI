@@ -19,6 +19,7 @@ from otlmow_modelbuilder.SQLDataClasses.OSLORelatie import OSLORelatie
 
 from Domain import global_vars
 from Domain.Helpers import Helpers
+from Domain.logger.OTLLogger import OTLLogger
 from Domain.project.Project import Project
 from GUI.screens.RelationChange_elements.RelationChangeHelpers import RelationChangeHelpers
 from GUI.screens.screen_interface.RelationChangeScreenInterface import \
@@ -323,7 +324,7 @@ class RelationChangeDomain:
                                                           type_uri=relation_object.bron.typeURI)
                 except ValueError as e:
                     # should there be a wrong typeURI
-                    logging.debug(e)
+                    OTLLogger.logger.debug(e)
 
             target_object = RelationChangeDomain.get_object(identificator=target_id)
             if not target_object:
@@ -332,7 +333,7 @@ class RelationChangeDomain:
                                                           type_uri=relation_object.doel.typeURI)
                 except ValueError as e:
                     # should there be a wrong typeURI
-                    logging.debug(e)
+                    OTLLogger.logger.debug(e)
 
     @classmethod
     def get_all_relations(cls) -> list[RelatieObject]:
@@ -369,7 +370,7 @@ class RelationChangeDomain:
 
         if filtered_objects:
             if len(filtered_objects) > 1:
-                logging.debug(f"ERROR RelationChangeDomain.get_object function found multiple "
+                OTLLogger.logger.debug(f"ERROR RelationChangeDomain.get_object function found multiple "
                               f"objects with id: {identificator}")
                 pass  # TODO: raise error of 2 objects with the same identificator in the list
             else:
@@ -574,7 +575,7 @@ class RelationChangeDomain:
                     cls.collector.find_all_concrete_relations(objectUri=selected_object.typeURI,
                                                               allow_duplicates=False)
         except ValueError as e:
-            logging.debug(e)
+            OTLLogger.logger.debug(e)
             cls.possible_relations_per_class_dict[selected_object.typeURI] = (
                 RelationChangeDomain.get_all_concrete_relation_from_full_model(
                     selected_object=selected_object))
@@ -850,7 +851,7 @@ class RelationChangeDomain:
                 target_type = RelationChangeHelpers.get_abbreviated_typeURI(
                         target_object.typeURI, True)
 
-            logging.debug(
+            OTLLogger.logger.debug(
                 f"Couldn't make relation between source_type:{source_type} source_id:{source_id} {OSLO_relation.richting} target_type:{target_type} target_id:{target_id} for relation typeURI {OSLO_relation.objectUri}: \n {e}")
             return None
 

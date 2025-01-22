@@ -8,6 +8,7 @@ from otlmow_model.OtlmowModel.BaseClasses.OTLObject import create_dict_from_asse
 from otlmow_model.OtlmowModel.Helpers.OTLObjectHelper import compare_two_lists_of_objects_attribute_level
 
 from Domain import global_vars
+from Domain.logger.OTLLogger import OTLLogger
 from Domain.project.ProgramFileStructure import ProgramFileStructure
 from Domain.project.Project import Project
 from Domain.project.ProgramFileManager import ProgramFileManager
@@ -29,7 +30,7 @@ class AssetChangeDomain:
         diff_lists = cls.generate_difference_between_two_lists(list1=original_data, list2=new_data,
                                                                model_directory=model_directory)
         diff_lists_str = str(diff_lists)
-        logging.debug(f"diff lists {diff_lists_str}")
+        OTLLogger.logger.debug(f"diff lists {diff_lists_str}")
         original_data_dict = {item.assetId.identificator: item for item in original_data}
         for item in diff_lists:
             old_item = original_data_dict.get(item.assetId.identificator)
@@ -58,7 +59,7 @@ class AssetChangeDomain:
     @classmethod
     def get_diff_report(cls, original_documents: list) -> List[ReportItem]:
         model_dir = ProgramFileStructure.get_otl_wizard_model_dir()
-        logging.debug(f"original docs {original_documents}")
+        OTLLogger.logger.debug(f"original docs {original_documents}")
         original_assets = []
         for x in original_documents:
             original_assets.extend(OtlmowConverter().from_file_to_objects(file_path=Path(x)))
@@ -69,7 +70,7 @@ class AssetChangeDomain:
 
     @classmethod
     def replace_files_with_diff_report(cls, original_documents: List[str], project: Project, file_name: str) -> None:
-        logging.debug("started replacing files with diff report")
+        OTLLogger.logger.debug("started replacing files with diff report")
         changed_assets = cls.generate_changed_assets_from_files(project=project)
         original_assets = cls.generate_original_assets_from_files(original_documents=original_documents)
         diff_1 = compare_two_lists_of_objects_attribute_level(first_list=original_assets,
@@ -87,7 +88,7 @@ class AssetChangeDomain:
     def generate_changed_assets_from_files(project: Project) -> list:
         changed_assets = []
         for file in project.get_saved_projectfiles():
-            logging.debug(f"file state {file.state}")
+            OTLLogger.logger.debug(f"file state {file.state}")
             if file.state == FileState.OK:
                 changed_assets.extend(OtlmowConverter().from_file_to_objects(file_path=Path(file.file_path)))
         return changed_assets
