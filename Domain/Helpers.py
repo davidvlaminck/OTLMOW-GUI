@@ -2,11 +2,11 @@ import asyncio
 from pathlib import Path
 from typing import Optional
 
+from otlmow_converter.OtlmowConverter import OtlmowConverter
 from otlmow_model.OtlmowModel.Helpers.generated_lists import get_hardcoded_class_dict
 
 from Domain.logger.OTLLogger import OTLLogger
 from GUI.screens.RelationChange_elements.RelationChangeHelpers import RelationChangeHelpers
-from LatestReleaseMulti.OTLWizard.data.otlmow_converter.OtlmowConverter import OtlmowConverter
 
 
 class Helpers:

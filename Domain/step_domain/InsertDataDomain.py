@@ -309,9 +309,7 @@ class InsertDataDomain:
                     temp_path = InsertDataDomain.remove_dropdown_values_from_excel(doc=file_path)
                     assets, exception_group = InsertDataDomain.check_document(
                         doc_location=temp_path)
-                elif file_path.suffix == '.csv':
-                    assets, exception_group = InsertDataDomain.check_document(
-                        doc_location=file_path)
+
                 elif file_path.suffix == '.sdf':
                     # SDF files will make multiple CSV files, one for each class
                     temp_path_list = InsertDataDomain.create_temporary_SDF_conversion_to_CSV_files(
@@ -332,7 +330,9 @@ class InsertDataDomain:
                         message=f'Failed to create objects from Excel file {file_path}')
                     for exception in sdf_exception_list:
                         exception_group.add_exception(exception)
-
+                else:
+                    assets, exception_group = InsertDataDomain.check_document(
+                        doc_location=file_path)
 
                 # second checks done by the GUI
                 if exception_group is None:

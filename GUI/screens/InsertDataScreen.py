@@ -1,4 +1,5 @@
 import logging
+import traceback
 from pathlib import Path
 
 from PyQt6.QtCore import Qt, QSize
@@ -727,6 +728,7 @@ class InsertDataScreen(Screen):
         """
 
         OTLLogger.logger.debug(str(exception))
+        traceback.print_exception(exception)
         doc_name = Path(doc).name
         error_widget = QListWidgetItem()
 

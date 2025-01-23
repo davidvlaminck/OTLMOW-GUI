@@ -11,6 +11,8 @@ from PyQt6.QtWidgets import QVBoxLayout, QLabel, QWidget, QFrame, QHBoxLayout, Q
 from otlmow_model.OtlmowModel.BaseClasses.OTLObject import OTLObject
 from otlmow_visuals.PyVisWrapper import PyVisWrapper
 
+from Domain import global_vars
+from Domain.logger.OTLLogger import OTLLogger
 from Domain.step_domain.RelationChangeDomain import RelationChangeDomain
 from GUI.screens.general_elements.ButtonWidget import ButtonWidget
 from GUI.screens.Screen import Screen
@@ -117,9 +119,17 @@ class DataVisualisationScreen(Screen):
         self.color_label_title.setText(self._("relations legend") + ":")
 
     def reload_html(self):
+        OTLLogger.logger.debug(
+            f"Executing DataVisualisationScreen.reload_html() for project {global_vars.current_project.eigen_referentie}",
+            extra={"timing_ref": f"reload_html_{global_vars.current_project.eigen_referentie}"})
+
         self.objects_in_memory = self.load_assets()
         self.fill_frame_layout_legend()
         self.create_html(objects_in_memory=self.objects_in_memory)
+        object_count = len(self.objects_in_memory)
+        OTLLogger.logger.debug(
+            f"Executing DataVisualisationScreen.reload_html() for project {global_vars.current_project.eigen_referentie} ({object_count} objects)",
+            extra={"timing_ref": f"reload_html_{global_vars.current_project.eigen_referentie}"})
 
     def load_assets(self) -> List[OTLObject]:
         return RelationChangeDomain.get_quicksave_instances()

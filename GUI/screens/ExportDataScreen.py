@@ -1,3 +1,4 @@
+from copy import deepcopy
 from pathlib import Path
 import qtawesome as qta
 
@@ -22,6 +23,9 @@ class ExportDataScreen(Screen):
         self.file_type_label = QLabel()
         self.main_window = None
         self.relations_split_optionality = QCheckBox()
+        self.supported_export_formats:dict = deepcopy(global_vars.supported_file_formats)
+        if "SDF" in self.supported_export_formats:
+            self.supported_export_formats.pop("SDF") # not yet supported for export in V0.5.0
         self.init_ui()
 
     def init_ui(self) -> None:
@@ -89,7 +93,7 @@ class ExportDataScreen(Screen):
 
         self.file_type_label.setText(self._('select file type for export') + ":")
 
-        self.file_extension_selection.addItems(list(global_vars.supported_file_formats.keys()))
+        self.file_extension_selection.addItems(list(self.supported_export_formats.keys()))
         self.file_extension_selection.currentTextChanged.connect(self.show_additional_options)
 
         frame_layout.addWidget(self.file_type_label)
@@ -156,8 +160,8 @@ class ExportDataScreen(Screen):
         file_picker.setDirectory(file_path)
 
         chosen_file_format = self.file_extension_selection.currentText()
-        if chosen_file_format in global_vars.supported_file_formats:
-            file_suffix = global_vars.supported_file_formats[chosen_file_format]
+        if chosen_file_format in self.supported_export_formats:
+            file_suffix = self.supported_export_formats[chosen_file_format]
             filter_filepicker = f"{chosen_file_format} files (*.{file_suffix})"
             document_loc = file_picker.getSaveFileName(filter=filter_filepicker)
         else:
