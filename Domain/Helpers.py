@@ -1,9 +1,12 @@
+import asyncio
 from pathlib import Path
 from typing import Optional
 
 from otlmow_model.OtlmowModel.Helpers.generated_lists import get_hardcoded_class_dict
 
+from Domain.logger.OTLLogger import OTLLogger
 from GUI.screens.RelationChange_elements.RelationChangeHelpers import RelationChangeHelpers
+from LatestReleaseMulti.OTLWizard.data.otlmow_converter.OtlmowConverter import OtlmowConverter
 
 
 class Helpers:
@@ -56,3 +59,12 @@ class Helpers:
             return False
         else:
             return True
+
+    @classmethod
+    def converter_from_file_to_object(cls,file_path,**kwargs):
+        OTLLogger.logger.debug(f"Execute OtlmowConverter.from_file_to_objects({file_path.name})",
+                               extra={"timing_ref": f"file_to_objects_{file_path.stem}"})
+        object_lists = list(OtlmowConverter.from_file_to_objects(file_path,**kwargs))
+        OTLLogger.logger.debug(f"Execute OtlmowConverter.from_file_to_objects({file_path.name}) ({len(object_lists)} objects)",
+                               extra={"timing_ref": f"file_to_objects_{file_path.stem}"})
+        return object_lists

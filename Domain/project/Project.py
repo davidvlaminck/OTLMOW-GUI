@@ -111,7 +111,7 @@ class Project:
         :raises FileNotFoundError:  If the project directory or the project details file does not
                                     exist.
         """
-        OTLLogger.logger.info(f"loading project details: {project_path.name}",extra={"timing":True})
+        OTLLogger.logger.info(f"loading project details: {project_path.name}",extra={"timing_ref":f"details_{project_path.name}"})
         if project_path and not project_path.exists():
             raise FileNotFoundError(f"Project dir {project_path} does not exist")
 
@@ -140,7 +140,7 @@ class Project:
             otl_version = project_details['otl_version']
 
         OTLLogger.logger.info(f"loading project details: {project_path.name}"
-                              ,extra={"timing":True})
+                              ,extra={"timing_ref":f"details_{project_path.name}"})
         return cls(project_path=project_path,
                    subset_path=project_path / project_details['subset'],
                    saved_documents_overview_path= Path(project_path,  cls.saved_documents_filename),
@@ -247,8 +247,18 @@ class Project:
         path = self.get_last_quick_save_path()
 
         if path:
+            OTLLogger.logger.debug(
+                f"Execute Project.load_validated_assets({path.name}) for project {self.eigen_referentie}",
+                extra={
+                    "timing_ref": f"load_assets_{path.stem}"})
             # noinspection PyTypeChecker
-            return list(OtlmowConverter.from_file_to_objects(path))
+            saved_objects = Helpers.converter_from_file_to_object(path)
+            object_count = len(saved_objects)
+            OTLLogger.logger.debug(
+                f"Execute Project.load_validated_assets({path.name}) for project {self.eigen_referentie} ({object_count} objects)",
+                extra={
+                    "timing_ref": f"load_assets_{path.stem}"})
+            return saved_objects
 
         return []
 
@@ -301,11 +311,18 @@ class Project:
 
 
     def make_quick_save(self, save_path: Path) -> None:
+        object_count = len(self.assets_in_memory)
+        OTLLogger.logger.debug(f"Execute Project.make_quick_save({save_path.name}) for project {self.eigen_referentie} ({object_count} objects)", extra={
+            "timing_ref": f"make_quick_save_{save_path.stem}"})
+
         OtlmowConverter.from_objects_to_file(file_path=save_path,
                                              sequence_of_objects=self.assets_in_memory)
         self.last_quick_save = save_path
         self.save_project_to_dir()
-
+        OTLLogger.logger.debug(
+            f"Execute Project.make_quick_save({save_path.name}) for project {self.eigen_referentie} ({object_count} objects)",
+            extra={
+                "timing_ref": f"make_quick_save_{save_path.stem}"})
 
     def remove_too_old_quicksaves(self, current_date: datetime, max_days_stored: datetime,
                                    date_format: str) -> None:
@@ -445,7 +462,7 @@ class Project:
         :rtype: bool
         """
 
-        OTLLogger.logger.debug("Started searching for project files in memory that are OTL conform")
+        # OTLLogger.logger.debug("Started searching for project files in memory that are OTL conform")
 
         if not self.saved_project_files:
             OTLLogger.logger.debug("No project files in memory")
@@ -550,7 +567,14 @@ class Project:
         project_dir_path = ProgramFileStructure.get_otl_wizard_projects_dir() / self.project_path.name
         saved_documents_path: Path = project_dir_path / Project.saved_documents_filename
 
+
+
         if saved_documents_path.exists():
+
+            OTLLogger.logger.debug(
+                f"Loading saved documents: {self.project_path.name}/{Project.saved_documents_filename}",
+                extra={"timing_ref": f"load_quicksave_{self.project_path.name}"})
+
             with open(file=saved_documents_path,mode="r") as saved_document:
                 try:
                     saved_documents = json.load(fp=saved_document)
@@ -559,7 +583,7 @@ class Project:
                     OTLLogger.logger.warning(e)
                     saved_documents = []
             saved_documents_str = str(saved_documents)
-            OTLLogger.logger.debug(f"Loaded saved object lists: {saved_documents_str}")
+
             self.saved_project_files = []
 
             location_dir = self.get_project_files_dir_path()
@@ -592,6 +616,9 @@ class Project:
                     state=state)
                 self.saved_project_files.append(file)
 
+            OTLLogger.logger.debug(
+                f"Loading saved documents: {self.project_path.name}/{Project.saved_documents_filename}",
+                extra={"timing_ref": f"load_quicksave_{self.project_path.name}"})
         return self
 
     def get_quicksaves_dir_path(self) -> Path:

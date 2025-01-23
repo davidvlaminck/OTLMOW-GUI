@@ -1,6 +1,7 @@
 import datetime
 import logging
 import os
+import traceback
 from datetime import timedelta
 from pathlib import Path
 
@@ -32,8 +33,11 @@ class OTLLogger(logging.Logger):
         cls.logger.setLevel(logging.DEBUG)
 
         for handler in cls.logger.handlers:
-            handler.setFormatter(logging.Formatter(fmt='%(asctime)s ln %(lineno)-4d:%(filename)-25s %(levelname)-8s %(message)s',
-             datefmt='%Y-%m-%d %H:%M:%S'))
+            # handler.setFormatter(logging.Formatter(fmt='%(asctime)s ln %(lineno)-4d:%(filename)-25s %(levelname)-8s %(message)s',
+            #  datefmt='%Y-%m-%d %H:%M:%S'))
+            handler.setFormatter(logging.Formatter(
+                fmt='%(asctime)s %(message)s',
+                                   datefmt='%Y-%m-%d %H:%M:%S'))
 
     @classmethod
     def create_logging_file(cls) -> Path:
@@ -63,25 +67,30 @@ class OTLLogger(logging.Logger):
 
     def _alter_msg(self,msg,extra):
 
-        if not extra:
+        ref_key = None
+        if extra and "timing_ref" in extra :
+            ref_key = extra["timing_ref"]
+
+        if not  ref_key:
             # return "{status:5s}({time:07.3f}s) {msg}".format(status="", time=0,msg=msg)
             return msg
 
         current_time = datetime.datetime.now()
-        ref_key = msg
-        if ref_key in OTLLogger.ref_key_to_time_dict:
+        if ref_key and ref_key in OTLLogger.ref_key_to_time_dict:
             ref_time = OTLLogger.ref_key_to_time_dict.pop(ref_key)
             time_dif:datetime.timedelta = current_time - ref_time
             time_dif_seconds = time_dif.seconds + time_dif.microseconds/1000000
             state = "END"
             return "{msg} {status:5s}({time:07.3f}s) ".format(status=state, time=time_dif_seconds,
                                                               msg=msg)
+            return "{msg} {status:5s} {ref} ({time:07.3f}s) ".format(status=state, time=time_dif_seconds,
+                                                              ref=ref_key, msg=msg)
         else:
             state = "START"
             OTLLogger.ref_key_to_time_dict[ref_key] = current_time
             time_dif_seconds = 0
-            return "{msg} {status:5s}".format(status=state,
-                                                              msg=msg)
+            return "{msg} {status:5s} {ref}".format(status=state,
+                                                              msg=msg,ref=ref_key)
 
 
 
@@ -89,38 +98,65 @@ class OTLLogger(logging.Logger):
     def debug(self, msg, *args, exc_info=None, stack_info=False, stacklevel=1, extra=None):
 
         msg = self._alter_msg(msg,extra)
-
-        super().debug(msg, *args, exc_info=exc_info, stack_info=stack_info, stacklevel=stacklevel,
+        stack =traceback.extract_stack(f=None, limit=2)
+        filename = Path(stack[0].filename).name
+        lineno = stack[0].lineno
+        levelname = "DEBUG"
+        super().debug(f"ln {lineno:4d}:{filename:25s}  {levelname:8s}  {msg}" , *args, exc_info=exc_info, stack_info=stack_info, stacklevel=stacklevel,
                       extra=extra)
 
     def info(self, msg, *args, exc_info=None, stack_info=False, stacklevel=1, extra=None):
-        msg = self._alter_msg(msg,extra)
-        super().info(msg, *args, exc_info=exc_info, stack_info=stack_info, stacklevel=stacklevel,
+        msg = self._alter_msg(msg, extra)
+        stack = traceback.extract_stack(f=None, limit=2)
+        filename = Path(stack[0].filename).name
+        lineno = stack[0].lineno
+        levelname = "INFO"
+        super().info(f"ln {lineno:4d}:{filename:25s}  {levelname:8s}  {msg}", *args, exc_info=exc_info, stack_info=stack_info, stacklevel=stacklevel,
                      extra=extra)
 
     def warning(self, msg, *args, exc_info=None, stack_info=False, stacklevel=1, extra=None):
-        msg = self._alter_msg(msg,extra)
-        super().warning(msg, *args, exc_info=exc_info, stack_info=stack_info,
+        msg = self._alter_msg(msg, extra)
+        stack = traceback.extract_stack(f=None, limit=2)
+        filename = Path(stack[0].filename).name
+        lineno = stack[0].lineno
+        levelname = "WARN"
+        super().warning(f"ln {lineno:4d}:{filename:25s}  {levelname:8s}  {msg}", *args, exc_info=exc_info, stack_info=stack_info,
                         stacklevel=stacklevel, extra=extra)
 
     def warn(self, msg, *args, exc_info=None, stack_info=False, stacklevel=1, extra=None):
-        msg = self._alter_msg(msg,extra)
-        super().warn(msg, *args, exc_info=exc_info, stack_info=stack_info, stacklevel=stacklevel,
+        msg = self._alter_msg(msg, extra)
+        stack = traceback.extract_stack(f=None, limit=2)
+        filename = Path(stack[0].filename).name
+        lineno = stack[0].lineno
+        levelname = "WARN"
+        super().warn(f"ln {lineno:4d}:{filename:25s}  {levelname:8s}  {msg}", *args, exc_info=exc_info, stack_info=stack_info, stacklevel=stacklevel,
                      extra=extra)
 
     def error(self, msg, *args, exc_info=None, stack_info=False, stacklevel=1, extra=None):
-        msg = self._alter_msg(msg,extra)
-        super().error(msg, *args, exc_info=exc_info, stack_info=stack_info, stacklevel=stacklevel,
+        msg = self._alter_msg(msg, extra)
+        stack = traceback.extract_stack(f=None, limit=2)
+        filename = Path(stack[0].filename).name
+        lineno = stack[0].lineno
+        levelname = "ERR"
+        super().error(f"ln {lineno:4d}:{filename:25s}  {levelname:8s}  {msg}", *args, exc_info=exc_info, stack_info=stack_info, stacklevel=stacklevel,
                       extra=extra)
 
     def critical(self, msg, *args, exc_info=None, stack_info=False, stacklevel=1, extra=None):
-        msg = self._alter_msg(msg,extra)
-        super().critical(msg, *args, exc_info=exc_info, stack_info=stack_info,
+        msg = self._alter_msg(msg, extra)
+        stack = traceback.extract_stack(f=None, limit=2)
+        filename = Path(stack[0].filename).name
+        lineno = stack[0].lineno
+        levelname = "CRIT"
+        super().critical(f"ln {lineno:4d}:{filename:25s}  {levelname:8s}  {msg}", *args, exc_info=exc_info, stack_info=stack_info,
                          stacklevel=stacklevel, extra=extra)
 
     def exception(self, msg, *args, exc_info=True, stack_info=False, stacklevel=1, extra=None):
-        msg = self._alter_msg(msg,extra)
-        super().exception(msg, *args, exc_info=exc_info, stack_info=stack_info,
+        msg = self._alter_msg(msg, extra)
+        stack = traceback.extract_stack(f=None, limit=2)
+        filename = Path(stack[0].filename).name
+        lineno = stack[0].lineno
+        levelname = "EXCE"
+        super().exception(f"ln {lineno:4d}:{filename:25s}  {levelname:8s}  {msg}", *args, exc_info=exc_info, stack_info=stack_info,
                           stacklevel=stacklevel, extra=extra)
 
 

@@ -484,7 +484,12 @@ class RelationChangeDomain:
 
         :return: None
         """
-
+        log_typeURI = RelationChangeHelpers.get_abbreviated_typeURI(selected_object.typeURI)
+        selected_object_id: str = RelationChangeHelpers.get_corrected_identificator(
+            selected_object)
+        OTLLogger.logger.debug(
+            f"Execute RelationChangeDomain.add_all_possible_relations_between_selected_and_related_objects({log_typeURI}) for project {global_vars.current_project.eigen_referentie}",
+            extra={"timing_ref": f"add_possible_relations_real_objects"})
         for relation in relation_list:
             if relation.bron_uri == selected_object.typeURI:
                 for related_object in related_objects:
@@ -507,7 +512,15 @@ class RelationChangeDomain:
                     if relation.bron_uri == related_object.typeURI:
                         cls.add_relation_between(relation=relation,selected_object=selected_object,
                                                  related_object=related_object, reverse=True)
+            relation_count = 0
 
+            if (cls.possible_object_to_object_relations_dict[selected_object_id]):
+                for rel_obj in cls.possible_object_to_object_relations_dict[selected_object_id].keys():
+                    relation_count += len(cls.possible_object_to_object_relations_dict[selected_object_id][rel_obj])
+
+        OTLLogger.logger.debug(
+            f"Execute RelationChangeDomain.add_all_possible_relations_between_selected_and_related_objects({log_typeURI}) for project {global_vars.current_project.eigen_referentie} ({relation_count} relations)",
+            extra={"timing_ref": f"add_possible_relations_real_objects"})
     @classmethod
     def add_inactive_relations_to_possible_relations(cls, selected_id: str) -> None:
         """
@@ -563,7 +576,9 @@ class RelationChangeDomain:
 
         :return: None
         """
-
+        log_typeURI = RelationChangeHelpers.get_abbreviated_typeURI(selected_object.typeURI)
+        OTLLogger.logger.debug(f"Execute RelationChangeDomain.collect_possible_relations_to_class_types_from({log_typeURI}) for project {global_vars.current_project.eigen_referentie}",
+                               extra={"timing_ref": f"collect_possible_relations_classes"})
         try:
             if cls.external_objects or cls.agent_objects:
                 # this is the long search, but it includes relations with external assets
@@ -579,6 +594,11 @@ class RelationChangeDomain:
             cls.possible_relations_per_class_dict[selected_object.typeURI] = (
                 RelationChangeDomain.get_all_concrete_relation_from_full_model(
                     selected_object=selected_object))
+
+        relation_count = len(cls.possible_relations_per_class_dict[selected_object.typeURI])
+        OTLLogger.logger.debug(
+            f"Execute RelationChangeDomain.collect_possible_relations_to_class_types_from({log_typeURI}) for project {global_vars.current_project.eigen_referentie} ({relation_count} relations)",
+            extra={"timing_ref": f"collect_possible_relations_classes"})
 
     @classmethod
     def get_all_concrete_relation_from_full_model(cls, selected_object:RelationInteractor):
@@ -948,13 +968,16 @@ class RelationChangeDomain:
 
         :return: None
         """
-
+        OTLLogger.logger.debug("Execute RelationChangeDomain.update_frontend",
+                               extra={"timing_ref": f"update_frontend"})
         cls.get_screen().fill_object_list(objects=cls.shown_objects)
         cls.get_screen().fill_existing_relations_list(relations_objects=cls.existing_relations,
                                                       last_added=cls.last_added_to_existing)
 
         cls.set_possible_relations(selected_object=cls.selected_object)
 
+        OTLLogger.logger.debug("Execute RelationChangeDomain.update_frontend",
+                               extra={"timing_ref": f"update_frontend"})
     @classmethod
     @save_assets
     def remove_multiple_existing_relations(cls, indices: list[int]) -> None:

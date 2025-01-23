@@ -20,7 +20,7 @@ class RelationChangeHelpers:
     outgoing_direction_icon: str = "-->"
     incoming_direction_icon: str = "<--"
     @classmethod
-    def get_abbreviated_typeURI(cls, typeURI, add_namespace, is_relation=False):
+    def get_abbreviated_typeURI(cls, typeURI, add_namespace=False, is_relation=False):
         split_typeURI = typeURI.split("#")
         type_name = split_typeURI[-1]
 

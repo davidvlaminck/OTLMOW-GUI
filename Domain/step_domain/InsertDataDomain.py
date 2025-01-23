@@ -94,8 +94,9 @@ class InsertDataDomain:
 
         exception_group = None
         try:
-            assets = OtlmowConverter.from_file_to_objects(file_path=doc_location_path, include_tab_info=True,
-                                                 delimiter=delimiter)
+            assets = Helpers.converter_from_file_to_object( file_path=doc_location_path,
+                                                            include_tab_info=True,
+                                                            delimiter=delimiter)
         except ExceptionsGroup as group:
             exception_group = group
             assets = group.objects
@@ -133,7 +134,6 @@ class InsertDataDomain:
     def create_temporary_SDF_conversion_to_CSV_files(cls, sdf_filepath: Path) -> list[str]:
 
         temp_csv_path = cls.create_temp_path(path_to_template_file_and_extension=sdf_filepath).with_suffix(".csv")
-        OTLLogger.logger.debug(f"Converting SDF file: {sdf_filepath}\n To temporary CSV file: {temp_csv_path}")
         temp_csv_path_str_list = SDFHandler.convert_SDF_to_CSV(sdf_filepath=sdf_filepath,csv_output_path=temp_csv_path)
 
         return temp_csv_path_str_list
@@ -297,7 +297,7 @@ class InsertDataDomain:
             - A list of successfully loaded objects.
         :rtype: tuple[list[dict],list]
         """
-
+        OTLLogger.logger.debug(f"Executing InsertDataDomain.load_and_validate_documents() for project {global_vars.current_project.eigen_referentie}", extra={"timing_ref":f"validate_{global_vars.current_project.eigen_referentie}"})
         error_set: list[dict] = []
         objects_lists = []
 
@@ -360,6 +360,10 @@ class InsertDataDomain:
             objects_in_memory=objects_in_memory)
         RelationChangeDomain.set_instances(objects_list=objects_in_memory)
         global_vars.otl_wizard.main_window.step3_visuals.reload_html()
+        object_count = len(objects_in_memory)
+        OTLLogger.logger.debug(
+            f"Executing InsertDataDomain.load_and_validate_documents() for project {global_vars.current_project.eigen_referentie} ({object_count} objects)",
+            extra={"timing_ref": f"validate_{global_vars.current_project.eigen_referentie}"})
 
         return error_set, objects_lists
 

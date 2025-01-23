@@ -6,6 +6,7 @@ import sys
 from pathlib import Path
 
 from Domain import global_vars
+from Domain.logger.OTLLogger import OTLLogger
 from Exceptions.FDOToolboxNotInstalledError import FDOToolboxNotInstalledError
 
 ROOT_DIR =  Path(Path(__file__).absolute()).parent.parent
@@ -78,7 +79,11 @@ class SDFHandler:
         return output + "\n" # added for compatibility with old OTL-wizard csv generation
 
     @classmethod
-    def convert_SDF_to_CSV(cls, sdf_filepath:Path=None, csv_output_path:Path=None) -> list[str]:
+    def convert_SDF_to_CSV(cls, sdf_filepath:Path, csv_output_path:Path) -> list[str]:
+
+        OTLLogger.logger.debug(
+            f"Executing Domain.SDFHandler.SDFHandler.convert_SDF_to_CSV for {sdf_filepath.name}",
+            extra={"timing_ref": f"validate_{sdf_filepath.name}"})
 
         output_csv_filepath_list = []
 
@@ -115,6 +120,10 @@ class SDFHandler:
 
             logging.debug(f"created file: {filepath_of_output_csv_for_one_class}")
             output_csv_filepath_list.append(filepath_of_output_csv_for_one_class)
+
+        OTLLogger.logger.debug(
+            f"Executing Domain.SDFHandler.SDFHandler.convert_SDF_to_CSV for {sdf_filepath.name}",
+            extra={"timing_ref": f"validate_{sdf_filepath.name}"})
 
         return output_csv_filepath_list
 

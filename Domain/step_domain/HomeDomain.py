@@ -44,7 +44,8 @@ class HomeDomain:
 
         :raises FileNotFoundError: If a project directory cannot be loaded due to missing files.
         """
-
+        OTLLogger.logger.info(f"Execute HomeDomain.get_all_otl_wizard_projects",
+                              extra={"timing_ref": f"get_all_otl_wizard_projects"})
         otl_wizard_project_dir = ProgramFileStructure.get_otl_wizard_projects_dir()
 
         project_dirs = [project_dir for project_dir in otl_wizard_project_dir.iterdir() if
@@ -56,6 +57,10 @@ class HomeDomain:
                 projects[project.eigen_referentie] = project
             except FileNotFoundError:
                 OTLLogger.logger.warning('Project dir %s is not a valid project directory', project_dir)
+
+        project_count = len(projects)
+        OTLLogger.logger.info(f"Execute HomeDomain.get_all_otl_wizard_projects ({project_count} projects)",
+                              extra={"timing_ref": f"get_all_otl_wizard_projects"})
 
         return projects
 

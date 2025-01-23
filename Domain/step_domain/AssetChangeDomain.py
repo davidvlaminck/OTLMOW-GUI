@@ -8,6 +8,7 @@ from otlmow_model.OtlmowModel.BaseClasses.OTLObject import create_dict_from_asse
 from otlmow_model.OtlmowModel.Helpers.OTLObjectHelper import compare_two_lists_of_objects_attribute_level
 
 from Domain import global_vars
+from Domain.Helpers import Helpers
 from Domain.logger.OTLLogger import OTLLogger
 from Domain.project.ProgramFileStructure import ProgramFileStructure
 from Domain.project.Project import Project
@@ -62,10 +63,10 @@ class AssetChangeDomain:
         OTLLogger.logger.debug(f"original docs {original_documents}")
         original_assets = []
         for x in original_documents:
-            original_assets.extend(OtlmowConverter().from_file_to_objects(file_path=Path(x)))
+            original_assets.extend(Helpers.converter_from_file_to_object(file_path=Path(x)))
         new_assets = []
         for x in global_vars.current_project.get_saved_projectfiles():
-            new_assets.extend(OtlmowConverter().from_file_to_objects(file_path=Path(x.file_path)))
+            new_assets.extend(Helpers.converter_from_file_to_object(file_path=Path(x.file_path)))
         return cls.generate_diff_report(original_assets, new_assets, model_dir)
 
     @classmethod
@@ -90,14 +91,14 @@ class AssetChangeDomain:
         for file in project.get_saved_projectfiles():
             OTLLogger.logger.debug(f"file state {file.state}")
             if file.state == FileState.OK:
-                changed_assets.extend(OtlmowConverter().from_file_to_objects(file_path=Path(file.file_path)))
+                changed_assets.extend(Helpers.converter_from_file_to_object(file_path=Path(file.file_path)))
         return changed_assets
 
     @staticmethod
     def generate_original_assets_from_files(original_documents: List[str]) -> List[OTLObject]:
         original_assets = []
         for path in original_documents:
-            original_assets.extend(OtlmowConverter().from_file_to_objects(file_path=Path(path)))
+            original_assets.extend(Helpers.converter_from_file_to_object(file_path=Path(path)))
         return original_assets
 
     @staticmethod

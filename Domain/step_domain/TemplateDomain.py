@@ -34,8 +34,8 @@ class TemplateDomain:
     def create_template(cls,subset_path: Path, document_path: Path, selected_classes_dir: List, generate_choice_list: bool,
                         add_geo_artefact: bool, add_attribute_info: bool, highlight_deprecated_attributes: bool,
                         amount_of_examples: int, model_directory: Path = None) -> None:
+        OTLLogger.logger.debug("Creating template", extra={"timing_ref": f"create_template_{document_path.name}"})
         try:
-            OTLLogger.logger.debug("Creating template")
             template_creator = SubsetTemplateCreator()
 
             if selected_classes_dir and 'http://purl.org/dc/terms/Agent' in selected_classes_dir:
@@ -56,7 +56,7 @@ class TemplateDomain:
             OTLLogger.logger.debug("Error while creating template")
             OTLLogger.logger.error(e)
             raise e
-
+        OTLLogger.logger.debug("Creating template", extra={"timing_ref": f"create_template_{document_path.name}"})
 
     @classmethod
     def update_subset_information(cls, screen):
@@ -73,9 +73,11 @@ class TemplateDomain:
         cls.classes.clear()
         cls.has_a_class_with_deprecated_attributes = False
         cls.get_screen().set_gui_list_to_loading_state()
+        OTLLogger.logger.debug("Load OTL classes from Subset", extra={"timing_ref": f"class_from_subset_{global_vars.current_project.eigen_referentie}"})
         try:
             await asyncio.sleep(0)  # Give the UI thread the chance to switch the screen to
                                     # TemplateScreen
+
             modelbuilder = global_vars.current_project.get_model_builder()
 
             cls.classes = modelbuilder.filter_relations_and_abstract()
@@ -86,7 +88,7 @@ class TemplateDomain:
         except FileNotFoundError as e:
             #TODO: give proper feedback to user if the subset file is not found
             cls.get_screen().set_gui_list_to_no_classes_found()
-
+        OTLLogger.logger.debug("Load OTL classes from Subset", extra={"timing_ref": f"class_from_subset_{global_vars.current_project.eigen_referentie}"})
         cls.get_screen().update_project_info(global_vars.current_project)
 
 
