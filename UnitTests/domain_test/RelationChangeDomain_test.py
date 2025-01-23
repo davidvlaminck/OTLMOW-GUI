@@ -9,6 +9,7 @@ from typing import Optional
 from pytestqt.plugin import qtbot
 from pytestqt.qtbot import QtBot
 
+from Domain.Helpers import Helpers
 from GUI.screens.InsertDataScreen import InsertDataScreen
 from GUI.screens.RelationChangeScreen import RelationChangeScreen
 from UnitTests.TestClasses.Classes.ImplementatieElement.AIMObject import AIMObject
@@ -65,6 +66,7 @@ def id(aim_object: AIMObject):
 
 def test_full_set_possible_relations(root_directory:Path,
                                 mock_screen: InsertDataScreen,
+                                     setup_simpel_vergelijking_template5,
                                 # mock_fill_possible_relations_list: RelationChangeScreen,
                                 setup_test_project,
                                 mock_step3_visuals,
@@ -72,8 +74,7 @@ def test_full_set_possible_relations(root_directory:Path,
                                 mock_save_validated_assets_function,
                                 mock_load_validated_assets):
 
-    test_object_lists_file_path: list[str] = [
-        str(root_directory / "demo_projects" / "simpel_vergelijkings_project" / "simpel_vergelijking_template5.xlsx")]
+    test_object_lists_file_path: list[str] = setup_simpel_vergelijking_template5
 
     InsertDataDomain.add_files_to_backend_list(test_object_lists_file_path)
 
@@ -90,13 +91,13 @@ def test_full_set_possible_relations(root_directory:Path,
     # search with regex for (#Verkeersbordopstelling'|#Pictogram'|#Funderingsmassief'|#verkeersbordsteun'|BevestigingGC'|#Draagconstructie'|#Fundering'|#ConstructieElement')
     # with external objects added every relation possible in the entire OTL model is found
     class1 = "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Verkeersbordsteun"
-    assert len(RelationChangeDomain.possible_relations_per_class_dict[class1]) == 72
+    assert len(RelationChangeDomain.possible_relations_per_class_dict[class1]) == 74
 
     class2 = "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Funderingsmassief"
-    assert len(RelationChangeDomain.possible_relations_per_class_dict[class2]) == 707
+    assert len(RelationChangeDomain.possible_relations_per_class_dict[class2]) == 731
 
     class3 = "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Pictogram"
-    assert len(RelationChangeDomain.possible_relations_per_class_dict[class3]) == 114
+    assert len(RelationChangeDomain.possible_relations_per_class_dict[class3]) == 118
 
     class4 = "https://wegenenverkeer.data.vlaanderen.be/ns/installatie#Verkeersbordopstelling"
     assert len(RelationChangeDomain.possible_relations_per_class_dict[class4]) == 33
@@ -241,21 +242,23 @@ def test_full_set_possible_relations(root_directory:Path,
     poss_rel[vopstel2_id][id(pictogram2)] = [RelationChangeDomain.create_relation_object(vsteun_hoortbij_vopstel, pictogram2,verkeersbordopstelling2)]
 
 
-    poss_rel = RelationChangeDomain.sort_nested_dict(poss_rel)
+    poss_rel = Helpers.sort_nested_dict(poss_rel)
 
     for selected_object_id in poss_rel.keys():
         print("test with selected_object id:{0}".format(selected_object_id))
         for rel_object_id  in poss_rel[selected_object_id].keys():
             assert RelationChangeDomain.possible_object_to_object_relations_dict[selected_object_id][rel_object_id] == poss_rel[selected_object_id][rel_object_id]
 
+
+
 def test_full_add_possible_relation_to_existing_relation(root_directory:Path,
+                                                         setup_simpel_vergelijking_template2,
                                 mock_screen: InsertDataScreen,
                                 mock_fill_possible_relations_list: RelationChangeScreen,
                                 setup_test_project,
                                 mock_step3_visuals,mock_save_validated_assets_function,
                                  mock_load_validated_assets):
-    test_object_lists_file_path: list[str] = [
-        str(root_directory / "demo_projects" / "simpel_vergelijkings_project" / "simpel_vergelijking_template2.xlsx")]
+    test_object_lists_file_path: list[str] = setup_simpel_vergelijking_template2
 
     InsertDataDomain.add_files_to_backend_list(test_object_lists_file_path)
 
@@ -286,12 +289,12 @@ def test_full_add_possible_relation_to_existing_relation(root_directory:Path,
 
 
 def test_full_set_possible_relations_unique_situations(root_directory: Path,
+                                                       setup_simpel_vergelijking_template4,
                                      mock_screen: InsertDataScreen,
                                      mock_fill_possible_relations_list: RelationChangeScreen,
                                      setup_test_project,
                                      mock_step3_visuals):
-    test_object_lists_file_path: list[str] = [
-        str(root_directory / "demo_projects" / "simpel_vergelijkings_project" / "simpel_vergelijking_template4.xlsx")]
+    test_object_lists_file_path: list[str] = setup_simpel_vergelijking_template4
 
     InsertDataDomain.add_files_to_backend_list(test_object_lists_file_path)
 
@@ -317,13 +320,13 @@ def test_full_set_possible_relations_unique_situations(root_directory: Path,
 
 
 def test_full_add_possible_relation_to_existing_relation(root_directory: Path,
+                                                         setup_simpel_vergelijking_template2,
                                                          mock_screen: InsertDataScreen,
                                                          mock_fill_possible_relations_list: RelationChangeScreen,
                                                          setup_test_project,
                                                          mock_step3_visuals,mock_save_validated_assets_function,
                                  mock_load_validated_assets):
-    test_object_lists_file_path: list[str] = [
-        str(root_directory / "demo_projects" / "simpel_vergelijkings_project" / "simpel_vergelijking_template2.xlsx")]
+    test_object_lists_file_path: list[str] = setup_simpel_vergelijking_template2
 
     InsertDataDomain.add_files_to_backend_list(test_object_lists_file_path)
 
@@ -365,6 +368,7 @@ def test_full_add_possible_relation_to_existing_relation(root_directory: Path,
 
 
 def test_full_add_possible_relation_to_existing_relation(root_directory:Path,
+                                                         setup_simpel_vergelijking_template5,
                                 mock_screen: InsertDataScreen,
                                 mock_fill_possible_relations_list: RelationChangeScreen,
                                 setup_test_project,
@@ -372,8 +376,7 @@ def test_full_add_possible_relation_to_existing_relation(root_directory:Path,
                                 mock_save_validated_assets_function,
                                 mock_load_validated_assets
                                                          ):
-    test_object_lists_file_path: list[str] = [
-        str(root_directory / "demo_projects" / "simpel_vergelijkings_project" / "simpel_vergelijking_template5.xlsx")]
+    test_object_lists_file_path: list[str] = setup_simpel_vergelijking_template5
 
     InsertDataDomain.add_files_to_backend_list(test_object_lists_file_path)
 
@@ -404,13 +407,13 @@ def test_full_add_possible_relation_to_existing_relation(root_directory:Path,
     assert relation_object not in RelationChangeDomain.possible_object_to_object_relations_dict[bron_asset_id][target_asset_id]
 
 def test_full_remove_existing_relation(root_directory:Path,
+                                       setup_simpel_vergelijking_template5,
                                 mock_screen: InsertDataScreen,
                                 mock_fill_possible_relations_list: RelationChangeScreen,
                                 setup_test_project,
                                 mock_step3_visuals,mock_save_validated_assets_function,
                                  mock_load_validated_assets):
-    test_object_lists_file_path: list[str] = [
-        str(root_directory / "demo_projects" / "simpel_vergelijkings_project" / "simpel_vergelijking_template5.xlsx")]
+    test_object_lists_file_path: list[str] = setup_simpel_vergelijking_template5
 
     InsertDataDomain.add_files_to_backend_list(test_object_lists_file_path)
 
@@ -440,8 +443,10 @@ def test_full_remove_existing_relation(root_directory:Path,
     assert removed_relation not in RelationChangeDomain.existing_relations
 
     # force update of the backend possible relations lists
-    RelationChangeDomain.set_possible_relations(RelationChangeDomain.get_object(bron_asset_id))
-    RelationChangeDomain.set_possible_relations(RelationChangeDomain.get_object(target_asset_id))
+    RelationChangeDomain.set_possible_relations(
+        selected_object=RelationChangeDomain.get_object(identificator=bron_asset_id))
+    RelationChangeDomain.set_possible_relations(
+        selected_object=RelationChangeDomain.get_object(identificator=target_asset_id))
 
     l1 = RelationChangeDomain.possible_object_to_object_relations_dict[bron_asset_id][target_asset_id]
     l2 = RelationChangeDomain.possible_object_to_object_relations_dict[target_asset_id][bron_asset_id]
@@ -471,7 +476,7 @@ def test_full_remove_existing_relation(root_directory:Path,
 
 @pytest.fixture
 def mock_project() -> Project:
-    return Project()
+    return Project("test")
 
 @pytest.fixture
 def mock_oslo_collector() -> Function:
@@ -535,9 +540,10 @@ def test_set_objects_empty_list(mock_project: Project,
 
     assert len(RelationChangeDomain.shown_objects) == 0
 
-def test_set_objects_single_item_list(mock_screen: RelationChangeScreen,mock_collect_all,mock_rel_screen,mock_save_validated_assets_function,
-                                 mock_load_validated_assets):
-    RelationChangeDomain.init_static(Project())
+def test_set_objects_single_item_list(mock_screen: RelationChangeScreen,mock_collect_all,
+                                      mock_rel_screen,mock_save_validated_assets_function,
+                                      mock_load_validated_assets,mock_step3_visuals):
+    RelationChangeDomain.init_static(Project(eigen_referentie="test"))
     test_object = AllCasesTestClass()
     test_object.assetId.identificator = "dummy_identificator"
     RelationChangeDomain.set_instances([test_object])
@@ -546,8 +552,8 @@ def test_set_objects_single_item_list(mock_screen: RelationChangeScreen,mock_col
     assert RelationChangeDomain.shown_objects[0].assetId.identificator == "dummy_identificator"
 
 def test_set_objects_double_item_list(mock_screen,mock_collect_all,mock_rel_screen,mock_save_validated_assets_function,
-                                 mock_load_validated_assets):
-    RelationChangeDomain.init_static(Project())
+                                 mock_load_validated_assets,mock_step3_visuals):
+    RelationChangeDomain.init_static(Project(eigen_referentie="test"))
     test_object = AllCasesTestClass()
     test_object.assetId.identificator = "dummy_identificator"
 

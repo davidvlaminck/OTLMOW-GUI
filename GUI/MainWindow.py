@@ -1,9 +1,15 @@
 import asyncio
 import logging
-from typing import List
+
+from typing import List, Callable
 
 from PyQt6.QtWidgets import QStackedWidget, QWidget
 
+from Domain import global_vars
+from Domain.logger.OTLLogger import OTLLogger
+from Domain.project.Project import Project
+from Domain.step_domain.HomeDomain import HomeDomain
+from Domain.step_domain.RelationChangeDomain import RelationChangeDomain
 from GUI.dialog_windows.NotificationWindow import NotificationWindow
 from GUI.screens.AssetDataChangeScreen import AssetDataChangeScreen
 from GUI.screens.DataVisualisationScreen import DataVisualisationScreen
@@ -17,40 +23,42 @@ from GUI.header.TabWidget import TabWidget
 
 
 class MainWindow(QStackedWidget):
-    def __init__(self, language):
+    def __init__(self, language: Callable):
         super().__init__()
         self._ = language
 
-        self.home_screen:Screen = HomeScreen(self._)
-        self.step1:Screen = TemplateScreen(self._)
-        self.step1_tabwidget:Screen = TabWidget(self._, page_nr=1, widget1=self.step1,
+        self.home_screen:HomeScreen = HomeScreen(self._)
+        self.step1:TemplateScreen = TemplateScreen(self._)
+        self.step1_tabwidget:TabWidget = TabWidget(self._, page_nr=1, widget1=self.step1,
                                          description1="template",
                                          has_save_btn=False)
-        self.step2:Screen = InsertDataScreen(self._)
-        self.step2_tabwidget:Screen = TabWidget(self._, page_nr=2, widget1=self.step2,
+        self.step2:InsertDataScreen = InsertDataScreen(self._)
+        self.step2_tabwidget:TabWidget = TabWidget(self._, page_nr=2, widget1=self.step2,
                                          description1="insert_data",
                                          has_save_btn=False)
-        self.step3_visuals:Screen = DataVisualisationScreen(self._)
-        self.step3_data:Screen = AssetDataChangeScreen(self._)
-        self.step3_relations:Screen = RelationChangeScreen(self._)
-        self.step_3_tabwidget:Screen = TabWidget(self._, page_nr=3, widget1=self.step3_relations,
+        self.step3_visuals:DataVisualisationScreen = DataVisualisationScreen(self._)
+        self.step3_data:AssetDataChangeScreen = AssetDataChangeScreen(self._)
+        self.step3_relations:RelationChangeScreen = RelationChangeScreen(self._)
+        self.step_3_tabwidget:TabWidget = TabWidget(self._, page_nr=3, widget1=self.step3_relations,
                                           description1="relation_change",
                                           widget2=self.step3_visuals,
                                           description2="data visuals",
                                           widget3=self.step3_data,
                                           description3="data_change",
                                           has_save_btn=False)
-        self.step4_export:Screen = ExportDataScreen(self._)
-        self.step4_tabwidget:Screen = TabWidget(self._, page_nr=4,
+        self.step4_export:ExportDataScreen = ExportDataScreen(self._)
+        self.step4_tabwidget:TabWidget = TabWidget(self._, page_nr=4,
                                                 widget1=self.step4_export,
                                                 description1="export_data",
                                                 has_save_btn=False)
         self.add_widget(self.home_screen)
-        self.stepper_widgets:Screen = [self.step1_tabwidget, self.step2_tabwidget, self.step_3_tabwidget,
+        self.stepper_widgets:list[Screen] = [self.step1_tabwidget, self.step2_tabwidget, self.step_3_tabwidget,
                            self.step4_tabwidget]
         self.add_tabs_with_stepper_to_widget(self.stepper_widgets)
         self.home_screen.table.main_window = self
         self.step1.main_window = self
+
+        HomeDomain.init_static(self.home_screen)
 
         # dummy translation so the pybabel system doesn't remove them
         self._("template")
@@ -80,7 +88,7 @@ class MainWindow(QStackedWidget):
 
     def closeEvent(self, event):
         # Handle window close event
-        logging.debug("Window is closing...")
+        OTLLogger.logger.debug("Window is closing...")
 
         # Stop the asyncio event loop
         loop = asyncio.get_event_loop()
@@ -97,3 +105,28 @@ class MainWindow(QStackedWidget):
         message = self._(e.error_window_message_key)
         title = self._(e.error_window_title_key)
         NotificationWindow("{0}:\n{1}".format(message, e.file_path), title)
+
+    def go_to_project(self) -> None:
+        self.setCurrentIndex(1)
+
+    def enable_steps(self) -> None:
+        self.reset_ui(self._)
+
+    def setCurrentIndex(self, index):
+        # if you go to the RelationChangeScreen the information is updated if the project had changed
+        if index == 3 and (not RelationChangeDomain.project or RelationChangeDomain.project != global_vars.current_project):
+            RelationChangeDomain.init_static(project=global_vars.current_project)
+
+        super().setCurrentIndex(index)
+
+    def update_color_scheme(self):
+        # Import button on the home_screen
+        self.home_screen.header.update_color_scheme()
+        self.step3_relations.update_color_scheme()
+
+        # the color of disabled steps in the step bar in a project
+        self.step1_tabwidget.stepper_widget.enable_steps()
+        self.step2_tabwidget.stepper_widget.enable_steps()
+        self.step_3_tabwidget.stepper_widget.enable_steps()
+        self.step4_tabwidget.stepper_widget.enable_steps()
+

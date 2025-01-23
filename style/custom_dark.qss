@@ -1,0 +1,343 @@
+.primary-button{
+    background-color: #004d5c;
+    color: #e0e0e0;
+    height: 25px;
+    border-radius: 5px;
+    padding-left: 15px;
+    padding-right: 10px;
+    font-family: Roboto;
+}
+
+.add-external-button{
+    background: transparent;
+    color: #FFFFFF;
+    height: 23px;
+    font-family: Roboto;
+    border: 1px solid #004d5c;
+}
+
+.invisible{
+    background-color: #00000000;
+    color: #00000000;
+    height: 25px;
+    border-radius: 5px;
+    padding-left: 15px;
+    padding-right: 10px;
+    font-family: Roboto;
+}
+
+.new-project-btn{
+    background-color: #004d5c;
+    color: #e0e0e0;
+    border: 1px solid #004d5c;
+    height: 25px;
+    border-radius: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    font-family: Roboto;
+}
+
+QHeaderView::section{
+    color: #B35F35;
+    font-family: Roboto;
+    text-align: left;
+    margin-top: 20px;
+    margin-left: 5px;
+}
+
+QTableWidget::item{
+    selection-background-color: #4d4d4d;
+    selection-color: #e0e0e0;
+}
+
+@QTableWidget{
+    background-color: #2e2e2e;
+    font-family: Roboto;
+}
+
+.header{
+    background-color: #B35F35;
+    font-family: Roboto;
+}
+
+.search{
+    background-color: #2e2e2e;
+    border: 1px solid #5e5e5e;
+    border-radius: 5px;
+}
+
+.alter-button{
+    icon-size: 25px;
+    border: none;
+}
+
+.title{
+    font-family: Roboto;
+    font-style: bold;
+    font-size: 14px;
+    color: #e0e0e0;
+}
+
+.settings{
+    background-color: #B35F35;
+    icon-size: 25px;
+    border: none;
+}
+
+HomeScreen{
+    background-color: #1f1f1f;
+}
+
+.secondary-button{
+    background: transparent;
+    color: #FFFFFF;
+    padding: 3px;
+    padding-left: 10px;
+    padding-right: 10px;
+    border: 1px solid #004d5c;
+}
+
+QApplication{
+    background-color: #2e2e2e;
+}
+
+.subtitle[text]{
+    color: #B35F35;
+}
+
+.return-button{
+    background: transparent;
+    border: none;
+}
+
+.return-button[text]{
+    color: #B35F35;
+}
+
+.stepper-line{
+    color: #5e5e5e;
+    opacity: 0.5;
+}
+
+.background-box{
+    background-color: #2e2e2e;
+    margin-left: 16px;
+    margin-right: 16px;
+}
+
+.sub-header{
+    background-color: #2e2e2e;
+    border-bottom: 1px solid #B35F35;
+}
+
+.error-message{
+    background-color: darkred;
+}
+
+.feedback-message[text]{
+    color: #e0e0e0;
+    font-family: Roboto;
+    font-size: 20px;
+}
+
+.current-page-button{
+    background-color: #B35F35;
+    height: 25px;
+    border-radius: 5px;
+    border: 2px solid #B35F35;
+}
+
+.current-page-button[text]{
+    color: #e0e0e0;
+    font-family: Roboto;
+}
+
+.next-page-button{
+    background: transparent;
+    border: 2px solid #B35F35;
+    height: 25px;
+    border-radius: 5px;
+}
+
+.next-page-button[text]{
+    color: #B35F35;
+    font-family: Roboto;
+}
+
+.stepper-button{
+    background: transparent;
+    border: none;
+    icon-size: 25px;
+}
+
+.sub-title{
+    color: #B35F35;
+    font-family: Roboto;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+}
+
+.list{
+    border: 1px solid #333333;
+    background-color: #2e2e2e;
+}
+
+.possible-relation-list{
+    border-top: 1px solid #333333;
+    border-right: 1px solid #333333;
+    border-bottom: 1px solid #333333;
+    border-left: 0px solid #333333;
+    background-color: #2e2e2e;
+}
+
+.object-list{
+    border-top: 1px solid #333333;
+    border-right: 1px solid #4d4d4d;
+    border-bottom: 1px solid #333333;
+    border-left: 1px solid #333333;
+    background-color: #2e2e2e;
+}
+
+.attribute_field{
+    border: 1px solid #4d4d4d;
+    background-color: #4d4d4d;
+}
+
+.attribute_field_possible_relation{
+    border-top: 1px solid #4d4d4d;
+    border-right: 1px solid #4d4d4d;
+    border-bottom: 1px solid #4d4d4d;
+    border-left: 1px solid #333333;
+    background-color: #4d4d4d;
+}
+
+QListWidget::item:selected{
+    background-color: #004d5c;
+    color: white;
+}
+
+QTreeView::item:selected{
+    background-color: #004d5c;
+    color: white;
+}
+
+QTabBar::tab{
+    height: 30px;
+    width: 300px;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 550;
+}
+
+.change-table{
+    border: 1px solid #333333;
+}
+
+.import-button{
+    background-color: #2e2e2e;
+    border: 1px solid #004d5c;
+    border-radius: 5px;
+    color: #FFFFFF;
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: 550;
+    height: 25px;
+    width: 100px;
+}
+
+.settings-title{
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: 700;
+}
+
+.settings-checkbox{
+    font-family: Roboto;
+    padding-left: 20px;
+}
+
+QCheckBox:disabled{
+    color: DimGray;
+}
+
+.settings-label{
+    font-family: Roboto;
+    font-style: normal;
+    padding-left: 10px;
+}
+
+.info-label{
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: 700;
+}
+
+*{
+    font-family: Roboto;
+}
+
+.project-title{
+    color: #e0e0e0;
+    font-weight: 500;
+    font-size: 13px;
+}
+
+.primary-button:disabled{
+    background-color: grey;
+}
+
+.secondary-button:disabled{
+    background-color: grey;
+    color: white;
+    border: 1px solid grey;
+}
+
+.settings:menu-indicator{
+    image: none;
+}
+
+.white_text{
+    color: #e0e0e0;
+}
+
+QTreeView::item{
+    border-right: none;
+}
+
+.remove_relation-button{
+    background-color: #b54b4b;
+    color: #752e2e;
+    height: 25px;
+    border-radius: 5px;
+    border: 1px solid #752e2e;
+    padding-left: 15px;
+    padding-right: 10px;
+    font-family: Roboto;
+}
+
+.remove_relation-button:disabled{
+    background-color: grey;
+    color: white;
+    border: unset;
+}
+
+.add_relation-button{
+    background-color: #004d5c;
+    color: #e0e0e0;
+    height: 25px;
+    border-radius: 5px;
+    border: 1px solid #689a4c;
+    padding-left: 15px;
+    padding-right: 10px;
+    font-family: Roboto;
+    margin-left: 5px;
+}
+
+.add_relation-button:disabled{
+    background-color: grey;
+    color: white;
+    border: unset;
+}
+

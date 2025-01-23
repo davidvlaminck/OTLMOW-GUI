@@ -2,20 +2,22 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QDialog, QLabel, QVBoxLayout, QHBoxLayout, QLineEdit, QDialogButtonBox, \
     QComboBox
 
-from Domain.step_domain.HomeDomain import HomeDomain
+from Domain.Helpers import Helpers
 
 from Domain.step_domain.RelationChangeDomain import RelationChangeDomain
 
 
 class AddExternalAssetWindow:
-    options_to_data_dict = {}
+
+
     def __init__(self, language_settings):
-        self.home_domain = HomeDomain(language_settings)
         self.error_label = QLabel()
         self._ = language_settings
 
         self.input_asset_id_or_name: QLineEdit = QLineEdit()
         self.combobox_asset_type: QComboBox = QComboBox()
+
+
 
     def draw_add_external_asset_window(self):
 
@@ -39,7 +41,7 @@ class AddExternalAssetWindow:
         container_subset = QHBoxLayout()
         label_asset_type = QLabel(self._("asset_type") + ":")
 
-        self.combobox_asset_type = self.create_combobox(RelationChangeDomain.all_OTL_asset_types_dict)
+        self.combobox_asset_type = self.create_combobox(Helpers.all_OTL_asset_types_dict)
         self.combobox_asset_type.setPlaceholderText(self._("asset_type_dummy"))
         container_subset.addWidget(label_asset_type, alignment=Qt.AlignmentFlag.AlignLeft)
         container_subset.addWidget(self.combobox_asset_type)
@@ -69,7 +71,7 @@ class AddExternalAssetWindow:
         id_or_name = self.input_asset_id_or_name.text()
         combobox_choice = self.combobox_asset_type.currentText()
 
-        type_uri = RelationChangeDomain.all_OTL_asset_types_dict[combobox_choice]
+        type_uri = Helpers.all_OTL_asset_types_dict[combobox_choice]
 
         RelationChangeDomain.create_and_add_new_external_asset(id_or_name=id_or_name, type_uri=type_uri)
         dialog_window.close()

@@ -45,7 +45,7 @@ We are working on a way to deploy this to the different operating systems. This 
 1. Install babel in a seperate python environment so it doesn't end up in the requirements.txt  
 `pip install babel`
 2. Generate the locale\base.pot file from the strings in your python code by running using the seperate python environment:  
-    `pybabel extract -F babel.cfg -o locale\base.pot .\Domain .\GUI`
+    `pybabel extract -F babel.cfg -o locale\base.pot .\Domain .\GUI .\Exceptions`
 2. Update the `locale\\<language_code>\LC_MESSAGES\message.po` files to the new base.pot using the seperate python environment   with:  
     `pybabel update -i .\locale\base.pot -d locale --no-fuzzy-matching`
 3. Find your `new_text_key` in the `locale\\<language_code>\LC_MESSAGES\message.po` of each language and fill in the

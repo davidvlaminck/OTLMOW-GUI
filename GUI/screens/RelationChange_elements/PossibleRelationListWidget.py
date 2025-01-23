@@ -1,12 +1,15 @@
+import logging
 from collections import namedtuple
 from typing import Union
 
+from PyQt6.QtCore import QItemSelectionModel
 from PyQt6.QtGui import QStandardItem, QPixmap, QIcon, QFont
 from PyQt6.QtWidgets import QFrame
 from otlmow_model.OtlmowModel.Helpers import OTLObjectHelper
 from otlmow_model.OtlmowModel.BaseClasses.OTLObject import \
     OTLObject
 
+from Domain.logger.OTLLogger import OTLLogger
 from Domain.step_domain.RelationChangeDomain import RelationChangeDomain
 from GUI.screens.RelationChange_elements.AbstractInstanceListWidget import \
     AbstractInstanceListWidget, IMG_DIR
@@ -62,8 +65,18 @@ class PossibleRelationListWidget(AbstractInstanceListWidget):
     def object_selected_listener(self, item) -> None:
         pass
 
-    def on_item_selected_listener(self, selected, deselected):
+    def on_item_selected_listener(self, selected: QItemSelectionModel, deselected:QItemSelectionModel):
         no_item_selected = True
+
+        for index in deselected.indexes():
+            if index.column() == 0:
+                item = self.list_gui.model.itemFromIndex(index)
+                if item and item.isSelectable():
+                    type_folder_item = item.parent()
+                    self.reset_selected_item_count(type_folder_item=type_folder_item)
+
+        dict_type_to_type_folder_item = {}
+        dict_type_to_selected_item_count = {}
         # Get the currently selected indexes
         for index in self.list_gui.selectionModel().selectedIndexes():
             if index.column() == 0:
@@ -71,8 +84,32 @@ class PossibleRelationListWidget(AbstractInstanceListWidget):
                 if item and item.isSelectable():
                     no_item_selected = False
 
-        self.possible_relations_selected()
+                    # keep count of selected items in folder
+                    parent_type_folder_item = item.parent()
+                    parent_type_folder_type = parent_type_folder_item.data(self.data_1_index)
+                    if parent_type_folder_type in dict_type_to_selected_item_count.keys():
+                        dict_type_to_selected_item_count[parent_type_folder_type] += 1
+                    else:
+                        dict_type_to_selected_item_count[parent_type_folder_type] = 1
+                        dict_type_to_type_folder_item[
+                            parent_type_folder_type] = parent_type_folder_item
 
+        # update the selected_counts on all type_folder_items
+        for type_folder_type, selected_item_count in dict_type_to_selected_item_count.items():
+            OTLLogger.logger.debug( f"{type_folder_type}: {selected_item_count}")
+
+            type_folder_item = dict_type_to_type_folder_item[type_folder_type]
+
+            item_count = self.update_selected_count_data(type_folder_item=type_folder_item,
+                                                         selected_item_count=selected_item_count)
+
+            # apply new information to the folder_item display text
+            self.set_type_folder_text(type_folder_item=type_folder_item,
+                                      otl_type=type_folder_type,
+                                      item_count=item_count,
+                                      selected_item_count=selected_item_count)
+
+        self.possible_relations_selected()
         self.set_list_button_enabled(not no_item_selected)
 
     def set_list_button_enabled(self, item_selected:bool):
@@ -126,7 +163,7 @@ class PossibleRelationListWidget(AbstractInstanceListWidget):
         #                                                                      data.index)
 
     def possible_relations_selected(self):
-        Data = self.Data
+        Data = self.Data # a named tuple type defined as variable of the class put into local var
         data_list: list[Data] = self.get_selected_data()
 
         RelationChangeDomain.select_possible_relation_data(data_list)
@@ -136,69 +173,91 @@ class PossibleRelationListWidget(AbstractInstanceListWidget):
             self.Data(self.list_gui.model.itemFromIndex(model_i).data(self.data_1_index)[0],
                       self.list_gui.model.itemFromIndex(model_i).data(self.data_1_index)[1],
                       self.list_gui.model.itemFromIndex(model_i).data(self.data_1_index)[2], False)
-            # self.Data(self.list_gui.model.itemFromIndex(model_i).data(self.data_1_index),
-            #           self.list_gui.model.itemFromIndex(model_i).data(self.data_2_index),
-            #           self.list_gui.model.itemFromIndex(model_i).data(self.data_3_index),False)
+
             for model_i in self.list_gui.selectionModel().selectedIndexes()
-            if model_i.column() == 0]
+            if model_i.column() == 0] # we want one model_i per row, so only column == 0 is taken
+
 
     def extract_text_and_data_per_item(self, source_object: OTLObject, objects: Union[list[OTLObject],dict] , last_added):
         list_of_corresponding_values = []
         for target_identificator, target_relations in objects.items():
 
             for i, relation in enumerate(target_relations):
+                relation_source_id:str = relation.bronAssetId.identificator
+                relation_target_id: str = relation.doelAssetId.identificator
 
                 target_object: OTLObject = RelationChangeDomain.get_object(
-                    relation.doelAssetId.identificator)
-
-                if target_object is None:
-                    raise ValueError("target_object is None")
-                if source_object is None:
-                    raise ValueError("source_object is None")
+                                                                identificator=relation_target_id)
+                try:
+                    if target_object is None:
+                        raise ValueError("target_object is None")
+                    if source_object is None:
+                        raise ValueError("source_object is None")
+                except Exception as e:
+                    OTLLogger.logger.debug(f"target or source are None in relation {relation.typeURI} \n{e}")
+                    continue
                 # if the target of the relation is the current selected object then you should
                 # display the source object of the relation
-                if target_object == source_object:
+                if target_object and source_object and target_object == source_object:
                     target_object =  RelationChangeDomain.get_object(
-                    relation.bronAssetId.identificator)
+                                                          identificator=relation_source_id)
 
                 #  if the new target_object is still the same as the source_object something is wrong
-                if target_object == source_object:
+                if target_object and source_object and target_object == source_object:
                     raise ValueError()
 
-
+                # determine the icon that indicates direction
                 direction = ""
-                if OTLObjectHelper.is_directional_relation(relation):
-                    if relation.bronAssetId.identificator == target_identificator:
-                        direction = RelationChangeHelpers.get_screen_icon_direction(
-                            "Destination -> Source")
-                        target_object = RelationChangeDomain.get_object(
-                            relation.bronAssetId.identificator)
+                if OTLObjectHelper.is_directional_relation(otl_object=relation):
+                    if relation_source_id == target_identificator:
+                        direction = RelationChangeHelpers.incoming_direction_icon
+
                     else:
-                        direction = RelationChangeHelpers.get_screen_icon_direction(
-                            "Source -> Destination")
-
+                        direction = RelationChangeHelpers.outgoing_direction_icon
                 else:
-                    direction = RelationChangeHelpers.get_screen_icon_direction("Unspecified")
+                    direction = RelationChangeHelpers.unspecified_direction_icon
 
-                screen_name = RelationChangeHelpers.get_screen_name(target_object)
+                real_source_id: str = RelationChangeHelpers.get_corrected_identificator(
+                    otl_object=source_object)
+                abbr_relation_typeURI: str = RelationChangeHelpers.get_abbreviated_typeURI(
+                    typeURI=relation.typeURI,
+                    add_namespace=False,
+                    is_relation=OTLObjectHelper.is_relation(relation))
+                target_screen_name:str = RelationChangeHelpers.get_screen_name(otl_object=target_object)
 
-                add_target_namespace = RelationChangeHelpers.is_unique_across_namespaces(
-                    target_object.typeURI,
-                    RelationChangeDomain.shown_objects)
-                abbr_target_object_typeURI = RelationChangeHelpers.get_abbreviated_typeURI(
-                    target_object.typeURI,
-                    add_target_namespace,
-                    OTLObjectHelper.is_relation(target_object))
+                try:
+                    add_target_namespace:bool = RelationChangeHelpers.is_unique_across_namespaces(
+                        typeURI=target_object.typeURI,
+                        objects=RelationChangeDomain.shown_objects)
+                    abbr_target_object_typeURI:str = RelationChangeHelpers.get_abbreviated_typeURI(
+                        typeURI=target_object.typeURI,
+                        add_namespace=add_target_namespace,
+                        is_relation=OTLObjectHelper.is_relation(target_object))
 
-                abbr_relation_typeURI = RelationChangeHelpers.get_abbreviated_typeURI(
-                    relation.typeURI, False,
-                    OTLObjectHelper.is_relation(relation))
+                    is_last_added:bool =    (relation.assetId.identificator in
+                                            [e.assetId.identificator for e in last_added])
 
-                list_of_corresponding_values.append({
-                    "text": self.Text(abbr_relation_typeURI, direction, screen_name,
-                                      abbr_target_object_typeURI,relation.typeURI),
-                    "data": self.Data(RelationChangeHelpers.get_correct_identificator(source_object), target_identificator, i,relation.assetId.identificator in [e.assetId.identificator for e in last_added])
-                })
+                    list_of_corresponding_values.append({
+                        "text": self.Text(typeURI=abbr_relation_typeURI,
+                                          direction=direction,
+                                          screen_name=target_screen_name,
+                                          target_typeURI=abbr_target_object_typeURI,
+                                          full_typeURI=relation.typeURI),
+                        "data": self.Data(source_id=real_source_id ,
+                                          target_id=target_identificator,
+                                          index=i,
+                                          last_added=is_last_added)
+                    })
+                except Exception as e:
+                    target_screen_name: str = RelationChangeHelpers.get_screen_name(
+                        otl_object=target_object)
+                    abbr_relation_typeURI: str = RelationChangeHelpers.get_abbreviated_typeURI(
+                        typeURI=relation.typeURI,
+                        add_namespace=False,
+                        is_relation=OTLObjectHelper.is_relation(relation))
+                    real_source_id: str = RelationChangeHelpers.get_corrected_identificator(
+                        otl_object=source_object)
+                    OTLLogger.logger.debug(f"Couldn't make relation {abbr_relation_typeURI}: {real_source_id} {direction} {target_screen_name} because \n{e}")
         list_of_corresponding_values.sort(key=lambda val: (
             val['text'].target_typeURI, val['text'].screen_name, val['text'].typeURI))
         return list_of_corresponding_values

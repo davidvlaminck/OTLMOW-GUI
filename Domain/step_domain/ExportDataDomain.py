@@ -5,17 +5,30 @@ from pathlib import Path
 from otlmow_converter.OtlmowConverter import OtlmowConverter
 from otlmow_model.OtlmowModel.Classes.ImplementatieElement.RelatieObject import RelatieObject
 
-
+from Domain.logger.OTLLogger import OTLLogger
 from Domain.step_domain.RelationChangeDomain import RelationChangeDomain
 from Domain.enums import FileState
 
 
 
 class ExportDataDomain:
+    """
+    Handles the generation and management of export files for assets and relations.
+    This class provides methods to create, split, and organize data for export, ensuring that the
+    output meets specified requirements.
+
+    Attributes:
+        None
+
+    Methods:
+        generate_files(end_file: Path, separate_per_class_csv_option: bool = False, separate_relations_option: bool = False) -> None: Generates output files based on the current assets and relations in memory.
+        split_relations_and_objects(objects_in_memory: list) -> tuple: Splits a list of objects into two categories: assets and relations.
+        create_relation_and_asset_path(end_file: Path | str) -> tuple: Creates file paths for relations and assets based on the provided end file path.
+    """
 
     @classmethod
     def generate_files(cls, end_file: Path, separate_per_class_csv_option : bool =False,
-                       separate_relations_option:bool =False):
+                       separate_relations_option:bool =False) -> None:
         """
         Generates output files based on the current assets and relations in memory.
         This class method allows for the option to separate relations and assets into
@@ -55,21 +68,23 @@ class ExportDataDomain:
                                                  abbreviate_excel_sheettitles=True)
 
     @classmethod
-    def extract_objects_from_files(cls,project):
-        logging.debug("started extracting objects from files for export")
-        valid_file_paths = [file.file_path for file in project.get_saved_projectfiles() if file.state == FileState.OK]
-        objects_in_memory = []
-        for path in valid_file_paths:
-            objects_in_memory.extend(OtlmowConverter.from_file_to_objects(
-                file_path=Path(path), model_directory=project.subset_path))
-        return objects_in_memory
-
-    @classmethod
     def split_relations_and_objects(cls,objects_in_memory):
-        logging.debug("started splitting relations and objects for export")
+        """
+        Splits a list of objects into two categories: assets and relations. This method iterates
+        through the provided objects, classifying them based on their attributes, and returns
+        two separate lists for further processing.
+
+        :param objects_in_memory: A list of objects to be classified into assets and relations.
+        :type objects_in_memory: list
+
+        :return: A tuple containing two lists: the first list of assets and the second list of relations.
+        :rtype: tuple[list, list]
+        """
+
+        OTLLogger.logger.debug("started splitting relations and objects for export")
         assets_in_memory = []
         relations_in_memory = []
-        logging.debug(f'objects in memory: {objects_in_memory}')
+        OTLLogger.logger.debug(f'objects in memory: {objects_in_memory}')
         for obj in objects_in_memory:
             if hasattr(obj, 'bronAssetId') or isinstance(obj, RelatieObject):
                 relations_in_memory.append(obj)
@@ -90,7 +105,7 @@ class ExportDataDomain:
             tuple: A tuple containing the paths for the relations file and the assets file.
         """
 
-        logging.debug("started creating relation and class path for export")
+        OTLLogger.logger.debug("started creating relation and class path for export")
         parent_directory = Path(end_file).parent
         file_stem = Path(end_file).stem
         file_suffix = Path(end_file).suffixes[0]

@@ -1,12 +1,9 @@
-from pathlib import Path
-from typing import List
 
-import qtawesome as qta
-from PyQt6.QtGui import QPixmap
-from PyQt6.QtWidgets import QVBoxLayout, QFrame, QHBoxLayout, QPushButton, \
-    QWidget, QLineEdit, QLabel
-from otlmow_model.OtlmowModel.Classes.ImplementatieElement.AIMObject import \
-    AIMObject
+from typing import List, Optional
+
+from PyQt6.QtWidgets import QVBoxLayout, QFrame, QHBoxLayout, QWidget
+from otlmow_model.OtlmowModel.BaseClasses.RelationInteractor import RelationInteractor
+from otlmow_model.OtlmowModel.Classes.ImplementatieElement.AIMObject import AIMObject
 from otlmow_model.OtlmowModel.Classes.ImplementatieElement.RelatieObject import RelatieObject
 
 from Domain.step_domain.RelationChangeDomain import RelationChangeDomain
@@ -17,13 +14,36 @@ from GUI.screens.RelationChange_elements.ExistingRelationListWidget import \
 from GUI.screens.RelationChange_elements.ObjectListWidget import ObjectListWidget
 from GUI.screens.RelationChange_elements.PossibleRelationListWidget import \
     PossibleRelationListWidget
-
-
 from GUI.screens.RelationChange_elements.RelationChangeHelpers import RelationChangeHelpers
-from GUI.screens.Screen import Screen
+from GUI.screens.screen_interface.RelationChangeScreenInterface import \
+    RelationChangeScreenInterface
 
 
-class RelationChangeScreen(Screen):
+class RelationChangeScreen(RelationChangeScreenInterface):
+    """
+    Represents the screen for managing relation changes in the application.
+
+    This class provides the user interface for displaying and modifying relations
+    between objects, including options for selecting, expanding, and defining relations.
+    It integrates various UI components to facilitate user interactions and data management.
+
+    Args:
+        language_settings (optional): Language settings for the user interface.
+
+    Attributes:
+        selected_object_col1 (optional): The currently selected object in the first column.
+        container_insert_data_screen (QVBoxLayout): Layout for organizing UI components vertically.
+        window (optional): Reference to the main window for the screen.
+        window_layout (optional): Layout for the window.
+        input_field (optional): Input field for user data entry.
+        input_file_button (optional): Button for selecting input files.
+        frame_layout (optional): Layout for organizing frame components.
+        objects_list_gui (ObjectListWidget): GUI component for displaying object lists.
+        possible_relation_list_gui (PossibleRelationListWidget): GUI component for displaying possible relations.
+        existing_relation_list_gui (ExistingRelationListWidget): GUI component for displaying existing relations.
+    """
+
+
     def __init__(self, language_settings=None):
         super().__init__()
         self._ = language_settings
@@ -36,6 +56,7 @@ class RelationChangeScreen(Screen):
         self.window_layout = None
 
         self.input_field = None
+        self.input_file_button = None
 
         self.frame_layout = None
 
@@ -46,11 +67,46 @@ class RelationChangeScreen(Screen):
         self.init_ui()
 
 
+    def set_gui_lists_to_loading_state(self) -> None:
+        """
+        Sets the GUI lists to a loading state.
+
+        This method clears the current contents of the objects and relations lists
+        in the user interface and adds a loading placeholder to indicate that data
+        is being processed. It provides visual feedback to the user while the
+        application retrieves or updates data.
+
+        :param self: The instance of the class.
+        :returns: None
+        """
+
+        self.objects_list_gui.clear()
+        self.possible_relation_list_gui.clear()
+        self.existing_relation_list_gui.clear()
+
+        self.objects_list_gui.add_loading_placeholder()
+        self.possible_relation_list_gui.add_loading_placeholder()
+        self.existing_relation_list_gui.add_loading_placeholder()
+
+
     def paintEvent(self, a0):
         self.synchronize_subtext_label_heights()
         super().paintEvent(a0)
 
-    def synchronize_subtext_label_heights(self):
+
+    def synchronize_subtext_label_heights(self) -> None:
+        """
+        Synchronizes the heights of subtext labels across different GUI lists.
+
+        This method adjusts the minimum height of the subtext labels in the objects
+        list and existing relations list to match the height of the subtext label in
+        the possible relations list. This ensures a consistent appearance in the user
+        interface.
+
+        :param self: The instance of the class.
+        :returns: None
+        """
+
         frame_rect_height = self.possible_relation_list_gui.list_subtext_label.frameRect().height()
         frame_rect_object = self.objects_list_gui.list_subtext_label.frameRect()
         frame_rect_exist = self.existing_relation_list_gui.list_subtext_label.frameRect()
@@ -59,57 +115,137 @@ class RelationChangeScreen(Screen):
         if frame_rect_height != frame_rect_exist.height():
             self.existing_relation_list_gui.list_subtext_label.setMinimumHeight(frame_rect_height)
 
+
     def init_ui(self) -> None:
-        # self.container_insert_data_screen.addSpacing(5)
+        """
+        Initializes the user interface for the relation change screen.
+
+        This method sets up the main layout by adding the menu to the container
+        and configuring the layout margins. It ensures that the user interface
+        is properly structured for user interaction.
+
+        :param self: The instance of the class.
+        :returns: None
+        """
+
         self.container_insert_data_screen.addWidget(self.create_menu())
-        # self.container_insert_data_screen.addStretch()
         self.container_insert_data_screen.setContentsMargins(0, 0, 0, 0)
+
         self.setLayout(self.container_insert_data_screen)
 
+
     def create_menu(self) -> QWidget:
+        """
+        Creates and configures the menu for the relation change screen.
+
+        This method initializes a QWidget that serves as the menu container,
+        setting its layout and adding the necessary components. It ensures that
+        the menu is properly structured and styled for the user interface.
+
+        :param self: The instance of the class.
+        :returns: The configured menu widget.
+        :rtype: QWidget
+        """
+
         self.window = QWidget()
         self.window.setProperty('class', 'background-box')
+
         self.window_layout = QVBoxLayout()
         self.window_layout.setContentsMargins(0,0,0,0)
-        # self.window_layout.addSpacing(10)
         self.window_layout.addWidget(self.horizontal_layout())
+
         self.window.setLayout(self.window_layout)
 
         return self.window
 
-    def input_file_selector(self) -> QFrame:
-        frame = QFrame()
-        frame_layout = QHBoxLayout()
-        self.input_field = QLineEdit()
-        self.input_field.setReadOnly(True)
-        self.input_field.setPlaceholderText(self._('functionality under development'))
-        self.input_file_button = QPushButton()
-        self.input_file_button.setIcon(qta.icon('mdi.folder-open-outline'))
-        self.input_file_button.setDisabled(True)
-        frame_layout.addWidget(self.input_field)
-        frame_layout.addWidget(self.input_file_button)
-        frame_layout.addStretch()
-        frame.setLayout(frame_layout)
-        return frame
 
-    def fill_object_list(self, objects: List[AIMObject]) -> None:
-        self.objects_list_gui.fill_list(None, objects, [])
-        
-    def fill_existing_relations_list(self, relations_objects: List[RelatieObject], last_added: list[RelatieObject] = None) -> None:
+    def fill_object_list(self, objects: List[RelationInteractor]) -> None:
+        """
+        Fills the object list GUI with the provided AIM objects.
+
+        This method updates the objects list in the user interface by passing the
+        specified list of AIM objects to the GUI component responsible for displaying
+        the objects. It ensures that the list is populated with the current data for
+        user interaction.
+
+        :param self: The instance of the class.
+        :param objects: A list of AIM objects to be displayed in the object list.
+        :type objects: List[AIMObject]
+        :returns: None
+        """
+
+        self.objects_list_gui.fill_list(source_object=None, objects=objects, last_added=[])
+
+
+    def fill_existing_relations_list(self, relations_objects: List[RelatieObject],
+                                     last_added: list[RelatieObject] = None) -> None:
+        """
+        Fills the existing relations list GUI with the provided relation objects.
+
+        This method updates the existing relations list in the user interface by
+        populating it with the specified relation objects and any last added relations.
+        It ensures that the list reflects the current state of relations for user interaction.
+
+        :param self: The instance of the class.
+        :param relations_objects: A list of relation objects to be displayed in the existing relations list.
+        :type relations_objects: List[RelatieObject]
+        :param last_added: An optional list of last added relation objects to highlight in the list.
+        :type last_added: list[RelatieObject], optional
+        :returns: None
+        """
+
         if last_added is None:
             last_added = []
-        self.existing_relation_list_gui.fill_list(None, relations_objects, last_added)
+        self.existing_relation_list_gui.fill_list(source_object=None,
+                                                  objects=relations_objects,
+                                                  last_added=last_added)
 
-    def fill_possible_relations_list(self, source_object: AIMObject,
-                                     relations: dict[str, list[RelatieObject]], last_added=None) -> None:
+
+    def fill_possible_relations_list(self, source_object: Optional[RelationInteractor],
+                                     relations: dict[str, list[RelatieObject]],
+                                     last_added=None) -> None:
+        """
+        Fills the possible relations list GUI with relations for a given source object.
+
+        This method updates the possible relations list in the user interface by
+        populating it with relations associated with the specified source object.
+        It also highlights any previously added relations to provide context for the user.
+
+        :param self: The instance of the class.
+        :param source_object: The source object for which possible relations are being displayed.
+        :type source_object: AIMObject
+        :param relations: A dictionary mapping relation types to lists of relation objects.
+        :type relations: dict[str, list[RelatieObject]]
+        :param last_added: An optional list of last added relation objects to highlight in the list.
+        :type last_added: list[RelatieObject], optional
+        :returns: None
+        """
+
         if last_added is None:
             last_added = []
-        self.possible_relation_list_gui.fill_list(source_object, relations,last_added)
+        self.possible_relation_list_gui.fill_list(source_object=source_object,
+                                                  objects=relations,
+                                                  last_added=last_added)
 
-    def horizontal_layout(self):
+
+    def horizontal_layout(self) -> QFrame:
+        """
+        Creates a horizontal layout for displaying object and relation lists.
+
+        This method constructs a QFrame containing a horizontal layout that includes
+        three object list GUI components: the objects list, possible relations list,
+        and existing relations list. It sets the layout's spacing and stretch factors
+        to ensure a balanced and responsive design.
+
+        :param self: The instance of the class.
+        :returns: The configured frame containing the horizontal layout.
+        :rtype: QFrame
+        """
+
         frame = QFrame()
         self.frame_layout = QHBoxLayout()
         self.frame_layout.setSpacing(0)
+
         self.frame_layout.addWidget(self.objects_list_gui.create_object_list_gui())
         self.frame_layout.addWidget(self.possible_relation_list_gui.create_object_list_gui(multi_select=True))
         self.frame_layout.addWidget(self.existing_relation_list_gui.create_object_list_gui(multi_select=True))
@@ -118,52 +254,149 @@ class RelationChangeScreen(Screen):
         self.frame_layout.setStretch(1, 1)
         self.frame_layout.setStretch(2, 1)
 
-        # self.frame_layout.addWidget(self.map_widget())
-        # self.frame_layout.addSpacing(20)
         frame.setLayout(self.frame_layout)
         return frame
 
-    def map_widget(self):
-        root_dir = Path(__file__).parent
-        img_dir = root_dir.parent.parent / 'img/'
-        pixmap = QPixmap(str(img_dir) + '/Dienstkaart-cropped-resized.png')
-        image_label = QLabel()
-        image_label.setPixmap(pixmap)
-        return image_label
 
     def reset_ui(self, _):
         self._ = _
 
-    def fill_object_attribute_field(self, object_attribute_dict:dict):
-        self.objects_list_gui.fill_object_attribute_field(object_attribute_dict)
+    def fill_object_attribute_field(self, object_attribute_dict: dict) -> None:
+        """
+        Fills the object attribute field with the provided attributes.
 
-    def fill_possible_relation_attribute_field(self, possible_relation_attribute_dict:dict):
-        self.possible_relation_list_gui.fill_object_attribute_field(possible_relation_attribute_dict)
+        This method updates the object attribute field in the user interface by
+        passing a dictionary of object attributes to the corresponding GUI component.
+        It ensures that the displayed attributes are current and reflect the selected object.
 
-    def fill_existing_relation_attribute_field(self, existing_relation_attribute_dict: dict):
+        :param self: The instance of the class.
+        :param object_attribute_dict: A dictionary containing object attributes to be displayed.
+        :type object_attribute_dict: dict
+        :returns: None
+        """
+
+        self.objects_list_gui.fill_object_attribute_field(
+            object_attribute_dict=object_attribute_dict)
+
+    def fill_possible_relation_attribute_field(self,
+                                               possible_relation_attribute_dict: dict) -> None:
+        """
+        Fills the possible relation attribute field with the provided attributes.
+
+        This method updates the possible relation attribute field in the user interface
+        by passing a dictionary of possible relation attributes to the corresponding GUI
+        component. It ensures that the displayed attributes accurately reflect the selected
+        possible relation.
+
+        :param self: The instance of the class.
+        :param possible_relation_attribute_dict: A dictionary containing possible relation attributes to be displayed.
+        :type possible_relation_attribute_dict: dict
+        :returns: None
+        """
+
+        self.possible_relation_list_gui.fill_object_attribute_field(
+            object_attribute_dict=possible_relation_attribute_dict)
+
+    def fill_existing_relation_attribute_field(self,
+                                               existing_relation_attribute_dict: dict) -> None:
+        """
+        Fills the existing relation attribute field with the provided attributes.
+
+        This method updates the existing relation attribute field in the user interface
+        by passing a dictionary of existing relation attributes to the corresponding GUI
+        component. It ensures that the displayed attributes accurately reflect the selected
+        existing relation.
+
+        :param self: The instance of the class.
+        :param existing_relation_attribute_dict: A dictionary containing existing relation attributes to be displayed.
+        :type existing_relation_attribute_dict: dict
+        :returns: None
+        """
+
         self.existing_relation_list_gui.fill_object_attribute_field(
-            existing_relation_attribute_dict)
+            object_attribute_dict=existing_relation_attribute_dict)
 
-    def expand_existing_relations_folder_of(self, relation_typeURI:str):
+    def expand_existing_relations_folder_of(self, relation_typeURI: str) -> None:
+        """Expands the folder of existing relations for a specified relation type.
+
+        This method determines if the given relation type URI is unique across namespaces
+        and retrieves its abbreviated form. It then expands the corresponding folder
+        in the existing relations list GUI to display related items.
+
+        :param self: The instance of the class.
+        :param relation_typeURI: The type URI of the relation whose folder is to be expanded.
+        :type relation_typeURI: str
+        :returns: None
+        """
+
         add_namespace = RelationChangeHelpers.is_unique_across_namespaces(
-            relation_typeURI,
-            RelationChangeDomain.shown_objects)
+            typeURI=relation_typeURI,
+            objects=RelationChangeDomain.shown_objects)
         abbr_relation_typeURI = RelationChangeHelpers.get_abbreviated_typeURI(
             typeURI=relation_typeURI,
             add_namespace=add_namespace,
             is_relation=True)
-        self.existing_relation_list_gui.expand_folder_of(abbr_relation_typeURI)
+        self.existing_relation_list_gui.expand_folder_of(typeURI=abbr_relation_typeURI)
 
-    def expand_possible_relations_folder_of(self, relation_typeURI:str):
+    def expand_possible_relations_folder_of(self, relation_typeURI: str) -> None:
+        """Expands the folder of possible relations for a specified relation type.
+
+        This method checks if the given relation type URI is unique across namespaces
+        and retrieves its abbreviated form. It then expands the corresponding folder
+        in the possible relations list GUI to display related items.
+
+        :param self: The instance of the class.
+        :param relation_typeURI: The type URI of the relation whose folder is to be expanded.
+        :type relation_typeURI: str
+        :returns: None
+        """
+
         add_namespace = RelationChangeHelpers.is_unique_across_namespaces(
-            relation_typeURI,
-            RelationChangeDomain.shown_objects)
+            typeURI=relation_typeURI,
+            objects=RelationChangeDomain.shown_objects)
         abbr_relation_typeURI = RelationChangeHelpers.get_abbreviated_typeURI(
             typeURI=relation_typeURI,
             add_namespace=add_namespace,
             is_relation=True)
         self.possible_relation_list_gui.expand_folder_of(abbr_relation_typeURI)
 
-    def showMultiSelectionHeeftBetrokkeneAttributeDialogWindow(self, data_list_and_relation_objects:list):
-        dialogWindow = DefineHeeftBetrokkeneRelationWindow(self._, data_list_and_relation_objects)
+    def showMultiSelectionHeeftBetrokkeneAttributeDialogWindow(self,
+                                                               data_list_and_relation_objects: list) -> None:
+        """Displays a dialog window for defining the 'HeeftBetrokkene' relation.
+
+        This method initializes and opens a dialog window that allows the user to
+        define the 'HeeftBetrokkene' relation based on the provided data list and
+        relation objects. It ensures that the user can interactively set the necessary
+        attributes for the relation.
+
+        :param self: The instance of the class.
+        :param data_list_and_relation_objects: A list containing data and relation objects
+                                                relevant to the 'Heeft Betrokkene' relation.
+        :type data_list_and_relation_objects: list
+        :returns: None
+        """
+
+        dialogWindow = DefineHeeftBetrokkeneRelationWindow(
+            language_settings=self._,
+            data_list_and_relation_objects=data_list_and_relation_objects)
         dialogWindow.draw_define_heeft_betrokkene_rol_window()
+
+    def clear_possible_relation_elements(self) -> None:
+        """
+        Clears all possible relation elements from the user interface.
+        This method resets the displayed lists and fields related to possible relations,
+        ensuring that no outdated or irrelevant information is shown.
+
+        :return: None
+        """
+
+        self.fill_possible_relations_list(None, {})
+        self.fill_object_attribute_field({})
+        self.fill_possible_relation_attribute_field({})
+
+    def update_color_scheme(self):
+        self.objects_list_gui.update_color_scheme()
+        self.possible_relation_list_gui.update_color_scheme()
+        self.existing_relation_list_gui.update_color_scheme()
+
+

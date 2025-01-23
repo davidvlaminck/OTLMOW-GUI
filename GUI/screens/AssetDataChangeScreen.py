@@ -7,6 +7,7 @@ from PyQt6.QtWidgets import QVBoxLayout, QFrame, QHBoxLayout, QLabel, QPushButto
     QHeaderView, QTreeWidget, QFileDialog, QTreeWidgetItem, QTableView
 
 from Domain import global_vars
+from Domain.logger.OTLLogger import OTLLogger
 from Domain.step_domain.AssetChangeDomain import AssetChangeDomain
 from GUI.screens.general_elements.ButtonWidget import ButtonWidget
 from GUI.dialog_windows.ChooseFileNameWindow import ChooseFileNameWindow
@@ -45,8 +46,9 @@ class AssetDataChangeScreen(Screen):
         window = QWidget()
         window.setProperty('class', 'background-box')
         window_layout = QVBoxLayout()
-        window_layout.addWidget(self.upper_side())
-        window_layout.addWidget(self.lower_side())
+        # window_layout.addWidget(self.upper_side())
+        # window_layout.addWidget(self.lower_side())
+        window_layout.addWidget(QLabel("Under Construction"))
         window.setLayout(window_layout)
         return window
 
@@ -146,12 +148,13 @@ class AssetDataChangeScreen(Screen):
         file_picker.setNameFilter(filters)
 
         if file_picker.exec():
-            logging.debug("file picker executed")
+            OTLLogger.logger.debug("file picker executed")
             self.add_file_to_list(file_picker.selectedFiles())
 
     def add_file_to_list(self, files):
         self.control_button.setDisabled(False)
-        logging.debug(f"adding file to list {str(files)}")
+        files_str = str(files)
+        OTLLogger.logger.debug(f"adding file to list {files_str}")
         for file in files:
             list_item = QTreeWidgetItem()
             doc_name = Path(file).name
@@ -202,7 +205,7 @@ class AssetDataChangeScreen(Screen):
     def replace_file_with_diff_report(self):
         original_documents = [self.input_file_field.topLevelItem(i).data(0, 1) for i in
                               range(self.input_file_field.topLevelItemCount())]
-        logging.debug(f"original documents {original_documents}")
+        OTLLogger.logger.debug(f"original documents {original_documents}")
         project = global_vars.current_project
         dialog_window = ChooseFileNameWindow(self._, project, original_documents)
         try:
@@ -210,11 +213,11 @@ class AssetDataChangeScreen(Screen):
             self.main_window.widget(2).tab1.load_saved_documents_in_project()
             self.positive_feedback_message()
         except Exception as e:
-            logging.debug(e)
+            OTLLogger.logger.debug(e)
             self.negative_feedback_message()
 
     def construct_feedback_message(self):
-        logging.debug("constructing feedback message")
+        # OTLLogger.logger.debug("constructing feedback message")
         frame_layout = QHBoxLayout()
         frame_layout.addWidget(self.message_icon)
         self.message.setProperty('class', 'feedback-message')

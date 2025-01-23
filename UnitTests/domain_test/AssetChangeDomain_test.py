@@ -1,6 +1,7 @@
 import logging
 from pathlib import Path
 
+from Domain.logger.OTLLogger import OTLLogger
 from Domain.step_domain.AssetChangeDomain import AssetChangeDomain, ReportItem
 from Domain.enums import ReportAction
 from UnitTests.project_files_test.OTLWizardProjects.Model.OtlmowModel.Classes.Onderdeel.AllCasesTestClass import \
@@ -12,7 +13,7 @@ model_directory_path = Path(__file__).parent.parent / 'project_files_test' / 'OT
 
 
 def test_generate_report():
-    logging.debug(str(model_directory_path))
+    OTLLogger.logger.debug(str(model_directory_path))
     instance_1_1 = AllCasesTestClass()
     instance_1_1.assetId.identificator = '1'
     instance_1_1.isActief = True

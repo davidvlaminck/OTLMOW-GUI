@@ -1,0 +1,334 @@
+[
+    {
+        "toestand": "uit-gebruik",
+        "isActief": true,
+        "assetId": {
+            "identificator": "dummy_hxOTHWe",
+            "toegekendDoor": "dummy_GfaE"
+        },
+        "bestekPostNummer": [
+            "dummy_ZFsldo"
+        ],
+        "datumOprichtingObject": "2012-02-03",
+        "notitie": "dummy_UIKtqsinxn",
+        "standaardBestekPostNummer": [
+            "dummy_ddvuQMNpqH"
+        ],
+        "theoretischeLevensduur": 67,
+        "afbeelding": [
+            {
+                "bestandsnaam": "dummy_xEEIhxjFOV",
+                "mimeType": "application-vnd.openxmlformats-officedocument.wordprocessingml.document",
+                "omschrijving": "dummy_ncnHoW",
+                "uri": "http://TCyQVsJASN.dummy"
+            }
+        ],
+        "isBotsvriendelijk": false,
+        "operationeleStatus": "actief",
+        "positieTovRijweg": "midden",
+        "wegSegment": [
+            {
+                "externReferentienummer": "dummy_kblEa",
+                "externePartij": "dummy_Rwa"
+            }
+        ],
+        "typeURI": "https://wegenenverkeer.data.vlaanderen.be/ns/installatie#Verkeersbordopstelling"
+    },
+    {
+        "toestand": "uit-gebruik",
+        "isActief": true,
+        "assetId": {
+            "identificator": "dummy_LGG",
+            "toegekendDoor": "dummy_O"
+        },
+        "bestekPostNummer": [
+            "dummy_qhzW"
+        ],
+        "datumOprichtingObject": "2003-04-26",
+        "notitie": "dummy_pHmx",
+        "standaardBestekPostNummer": [
+            "dummy_CWWD"
+        ],
+        "theoretischeLevensduur": 39,
+        "afbeelding": [
+            {
+                "bestandsnaam": "dummy_NsCZgBsVn",
+                "mimeType": "text-plain",
+                "omschrijving": "dummy_fU",
+                "uri": "http://NdYntJxSUtvzl.dummy"
+            }
+        ],
+        "isBotsvriendelijk": false,
+        "operationeleStatus": "actief-met-geplande-verwijdering",
+        "positieTovRijweg": "midden",
+        "wegSegment": [
+            {
+                "externReferentienummer": "dummy_URvp",
+                "externePartij": "dummy_OMtmtTh"
+            }
+        ],
+        "typeURI": "https://wegenenverkeer.data.vlaanderen.be/ns/installatie#Verkeersbordopstelling"
+    },
+    {
+        "toestand": "overgedragen",
+        "isActief": false,
+        "assetId": {
+            "identificator": "dummy_TyBGmXfXC",
+            "toegekendDoor": "dummy_Il"
+        },
+        "bestekPostNummer": [
+            "dummy_bzJNOCVhP"
+        ],
+        "datumOprichtingObject": "2017-09-09",
+        "notitie": "dummy_LUrrpZTJFy",
+        "standaardBestekPostNummer": [
+            "dummy_aYtzBTGBHQ"
+        ],
+        "theoretischeLevensduur": 5,
+        "aanzetpeil": 57.96,
+        "hoogte": 3.71,
+        "afmetingGrondvlak": {
+            "rechthoekig": {
+                "breedte": 62.93,
+                "lengte": 48.01
+            }
+        },
+        "funderingshoogte": 11.65,
+        "isPermanent": false,
+        "isPrefab": false,
+        "materiaal": "inox",
+        "volume": 74.11,
+        "typeURI": "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Funderingsmassief"
+    },
+    {
+        "toestand": "in-opbouw",
+        "isActief": false,
+        "assetId": {
+            "identificator": "dummy_FNrHuPZCWV",
+            "toegekendDoor": "dummy_wKUsXpdixr"
+        },
+        "bestekPostNummer": [
+            "dummy_iCdhiGE"
+        ],
+        "datumOprichtingObject": "2001-06-28",
+        "notitie": "dummy_qBuaNfLvKs",
+        "standaardBestekPostNummer": [
+            "dummy_FKv"
+        ],
+        "theoretischeLevensduur": 7,
+        "aanzetpeil": 26.7,
+        "hoogte": 3.4,
+        "afmetingGrondvlak": {
+            "rechthoekig": {
+                "breedte": 4.78,
+                "lengte": 18.51
+            }
+        },
+        "funderingshoogte": 24.56,
+        "isPermanent": true,
+        "isPrefab": false,
+        "materiaal": "staal",
+        "volume": 40.2,
+        "typeURI": "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Funderingsmassief"
+    },
+    {
+        "toestand": "in-opbouw",
+        "isActief": true,
+        "assetId": {
+            "identificator": "dummy_a",
+            "toegekendDoor": "dummy_PnEQq"
+        },
+        "bestekPostNummer": [
+            "dummy_mp"
+        ],
+        "datumOprichtingObject": "2019-10-02",
+        "notitie": "dummy_ZszahHl",
+        "standaardBestekPostNummer": [
+            "dummy_n"
+        ],
+        "theoretischeLevensduur": 27,
+        "nalichtingstijd": 39,
+        "opschrift": "dummy_drTTNduz",
+        "symbool": "vluchtend-persoon",
+        "typeURI": "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Pictogram"
+    },
+    {
+        "toestand": "gepland",
+        "isActief": true,
+        "assetId": {
+            "identificator": "dummy_long_identificator_pictogram",
+            "toegekendDoor": "dummy_Ek"
+        },
+        "bestekPostNummer": [
+            "dummy_AoigeDNpf"
+        ],
+        "datumOprichtingObject": "2004-01-03",
+        "notitie": "dummy_Jp",
+        "standaardBestekPostNummer": [
+            "dummy_yMDK"
+        ],
+        "theoretischeLevensduur": 39,
+        "nalichtingstijd": 4,
+        "opschrift": "dummy_zZJ",
+        "symbool": "nummer-veiligheidsnis",
+        "typeURI": "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Pictogram"
+    },
+    {
+        "toestand": "overgedragen",
+        "isActief": true,
+        "assetId": {
+            "identificator": "dummy_vbeo",
+            "toegekendDoor": "dummy_JNihuWw"
+        },
+        "bestekPostNummer": [
+            "dummy_NratsxlNcl"
+        ],
+        "datumOprichtingObject": "2000-03-26",
+        "notitie": "dummy_xZIw",
+        "standaardBestekPostNummer": [
+            "dummy_aXoooLO"
+        ],
+        "theoretischeLevensduur": 41,
+        "naam": "dummy_J",
+        "breedte": 68.82,
+        "diameter": 24.2,
+        "fabricagevoorschrift": "dummy_aeESM",
+        "lengte": 51.45,
+        "lengteBovengronds": 32.48,
+        "lengteOndergronds": 19.36,
+        "operationeleStatus": "tijdelijk-actief",
+        "type": "botsvriendelijke-steun-type-100NE2",
+        "wanddikte": 32.08,
+        "typeURI": "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Verkeersbordsteun"
+    },
+    {
+        "toestand": "in-opbouw",
+        "isActief": false,
+        "assetId": {
+            "identificator": "dummy_TjwXqP",
+            "toegekendDoor": "dummy_afJZZphX"
+        },
+        "bestekPostNummer": [
+            "dummy_pKywpsiAoi"
+        ],
+        "datumOprichtingObject": "2011-04-22",
+        "notitie": "dummy_lPDNDUFkW",
+        "standaardBestekPostNummer": [
+            "dummy_Z"
+        ],
+        "theoretischeLevensduur": 74,
+        "naam": "dummy_s",
+        "breedte": 62.5,
+        "diameter": 19.94,
+        "fabricagevoorschrift": "dummy_Xyl",
+        "lengte": 65.42,
+        "lengteBovengronds": 75.44,
+        "lengteOndergronds": 30.04,
+        "operationeleStatus": "actief-met-tijdelijke-wijziging",
+        "type": "botsvriendelijke-steun-type-100NE2",
+        "wanddikte": 20.8,
+        "typeURI": "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Verkeersbordsteun"
+    },
+    {
+        "assetId": {
+            "identificator": "dummy_Q",
+            "toegekendDoor": "OTL_wizard_2"
+        },
+        "typeURI": "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Bewegingssensor"
+    },
+    {
+        "assetId": {
+            "identificator": "dummy_bcjseEAj",
+            "toegekendDoor": "OTL_wizard_2"
+        },
+        "typeURI": "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#BetonnenHeipaal"
+    },
+    {
+        "bron": {
+            "typeURI": "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Bewegingssensor"
+        },
+        "doel": {
+            "typeURI": "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#BetonnenHeipaal"
+        },
+        "isActief": true,
+        "assetId": {
+            "identificator": "dummy_bevestiging_2",
+            "toegekendDoor": "dummy_zQp"
+        },
+        "bronAssetId": {
+            "identificator": "dummy_Q",
+            "toegekendDoor": "dummy_okopD"
+        },
+        "doelAssetId": {
+            "identificator": "dummy_bcjseEAj",
+            "toegekendDoor": "dummy_dY"
+        },
+        "typeURI": "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Bevestiging"
+    },
+    {
+        "bron": {
+            "typeURI": "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Verkeersbordsteun"
+        },
+        "doel": {
+            "typeURI": "https://wegenenverkeer.data.vlaanderen.be/ns/installatie#Verkeersbordopstelling"
+        },
+        "isActief": true,
+        "assetId": {
+            "identificator": "dummy_hoort_bij",
+            "toegekendDoor": "dummy_LxexRM"
+        },
+        "bronAssetId": {
+            "identificator": "dummy_vbeo",
+            "toegekendDoor": "dummy_Ouee"
+        },
+        "doelAssetId": {
+            "identificator": "dummy_LGG",
+            "toegekendDoor": "dummy_ZT"
+        },
+        "typeURI": "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#HoortBij"
+    },
+    {
+        "bron": {
+            "typeURI": "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Pictogram"
+        },
+        "doel": {
+            "typeURI": "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Funderingsmassief"
+        },
+        "isActief": false,
+        "assetId": {
+            "identificator": "dummy_bevestiging_1",
+            "toegekendDoor": "dummy_zQp"
+        },
+        "bronAssetId": {
+            "identificator": "dummy_a",
+            "toegekendDoor": "dummy_okopD"
+        },
+        "doelAssetId": {
+            "identificator": "dummy_TyBGmXfXC",
+            "toegekendDoor": "dummy_dY"
+        },
+        "typeURI": "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Bevestiging"
+    },
+    {
+        "bron": {
+            "typeURI": "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Funderingsmassief"
+        },
+        "doel": {
+            "typeURI": "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Funderingsmassief"
+        },
+        "isActief": false,
+        "assetId": {
+            "identificator": "dummy_ligt_op",
+            "toegekendDoor": "dummy_LxexRM"
+        },
+        "bronAssetId": {
+            "identificator": "dummy_FNrHuPZCWV",
+            "toegekendDoor": "dummy_Ouee"
+        },
+        "doelAssetId": {
+            "identificator": "dummy_TyBGmXfXC",
+            "toegekendDoor": "dummy_ZT"
+        },
+        "typeURI": "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#LigtOp"
+    }
+]

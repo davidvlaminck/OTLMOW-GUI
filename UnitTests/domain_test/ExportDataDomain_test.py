@@ -1,4 +1,5 @@
 import os
+import shutil
 
 from openpyxl.reader.excel import load_workbook
 from pytestqt.qtbot import QtBot
@@ -55,7 +56,10 @@ def get_export_path_with_cleanup(root_directory: Path) -> Path:
         os.remove(export_path)
 
 
+
+
 def test_unedited_generate_files(root_directory: Path,
+                                 setup_simpel_vergelijking_template5,
                                  mock_screen: InsertDataScreen,
                                 mock_fill_possible_relations_list: RelationChangeScreen,
                                 setup_test_project,
@@ -66,9 +70,7 @@ def test_unedited_generate_files(root_directory: Path,
 
 
 
-    test_object_lists_file_path: list[str] = [
-        str(root_directory / "demo_projects" / "simpel_vergelijkings_project" /
-            "simpel_vergelijking_template5.xlsx")]
+    test_object_lists_file_path: list[str] = setup_simpel_vergelijking_template5
 
     InsertDataDomain.add_files_to_backend_list(test_object_lists_file_path)
 
@@ -103,7 +105,7 @@ def test_unedited_generate_files(root_directory: Path,
     assert list_values == list_expected_values
 
 
-def test_add_remove_generate_files(root_directory: Path,
+def test_add_remove_generate_files(root_directory: Path,setup_simpel_vergelijking_template5,
                                 mock_project_home_path,
                                  mock_screen: InsertDataScreen,
                                 mock_fill_possible_relations_list: RelationChangeScreen,
@@ -113,9 +115,7 @@ def test_add_remove_generate_files(root_directory: Path,
                                    mock_save_validated_assets_function,
                                    mock_load_validated_assets):
 
-    test_object_lists_file_path: list[str] = [
-        str(root_directory / "demo_projects" / "simpel_vergelijkings_project" /
-            "simpel_vergelijking_template5.xlsx")]
+    test_object_lists_file_path: list[str] = setup_simpel_vergelijking_template5
 
     InsertDataDomain.add_files_to_backend_list(test_object_lists_file_path)
 
@@ -183,6 +183,7 @@ def get_export_path_export_with_cleanup(root_directory: Path) -> Path:
         os.remove(export_path)
 
 def test_add_remove_inactive_relations_and_generate_files(root_directory: Path,
+                                                          setup_simpel_vergelijking_template5,
                                  mock_screen: InsertDataScreen,
                                 mock_fill_possible_relations_list: RelationChangeScreen,
                                 setup_test_project,
@@ -191,9 +192,7 @@ def test_add_remove_inactive_relations_and_generate_files(root_directory: Path,
                                    mock_save_validated_assets_function,
                                    mock_load_validated_assets):
 
-    test_object_lists_file_path: list[str] = [
-        str(root_directory / "demo_projects" / "simpel_vergelijkings_project" /
-            "simpel_vergelijking_template5.xlsx")]
+    test_object_lists_file_path: list[str] = setup_simpel_vergelijking_template5
 
     InsertDataDomain.add_files_to_backend_list(test_object_lists_file_path)
 
@@ -213,10 +212,12 @@ def test_add_remove_inactive_relations_and_generate_files(root_directory: Path,
     target_id_2 = 'dummy_TyBGmXfXC'
     index_2 = 0
 
-    RelationChangeDomain.set_possible_relations(RelationChangeDomain.get_object(source_id_2))
-    added_relation =  RelationChangeDomain.add_possible_relation_to_existing_relations(source_id_2,
-                                                                     target_id_2,
-                                                                     index_2)
+    RelationChangeDomain.set_possible_relations(
+        selected_object=RelationChangeDomain.get_object(identificator=source_id_2))
+    added_relation =  RelationChangeDomain.add_possible_relation_to_existing_relations(
+        bron_asset_id=source_id_2,
+        target_asset_id=target_id_2,
+        relation_object_index= index_2)
     print(f"second added relation {added_relation.typeURI}" )
 
     to_remove_index = -1

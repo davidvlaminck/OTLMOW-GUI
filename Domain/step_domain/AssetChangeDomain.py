@@ -8,6 +8,9 @@ from otlmow_model.OtlmowModel.BaseClasses.OTLObject import create_dict_from_asse
 from otlmow_model.OtlmowModel.Helpers.OTLObjectHelper import compare_two_lists_of_objects_attribute_level
 
 from Domain import global_vars
+from Domain.Helpers import Helpers
+from Domain.logger.OTLLogger import OTLLogger
+from Domain.project.ProgramFileStructure import ProgramFileStructure
 from Domain.project.Project import Project
 from Domain.project.ProgramFileManager import ProgramFileManager
 from Domain.enums import ReportAction, FileState
@@ -27,7 +30,8 @@ class AssetChangeDomain:
         report_list = []
         diff_lists = cls.generate_difference_between_two_lists(list1=original_data, list2=new_data,
                                                                model_directory=model_directory)
-        logging.debug(f"diff lists {str(diff_lists)}")
+        diff_lists_str = str(diff_lists)
+        OTLLogger.logger.debug(f"diff lists {diff_lists_str}")
         original_data_dict = {item.assetId.identificator: item for item in original_data}
         for item in diff_lists:
             old_item = original_data_dict.get(item.assetId.identificator)
@@ -55,25 +59,25 @@ class AssetChangeDomain:
 
     @classmethod
     def get_diff_report(cls, original_documents: list) -> List[ReportItem]:
-        model_dir = ProgramFileManager.get_otl_wizard_model_dir()
-        logging.debug(f"original docs {original_documents}")
+        model_dir = ProgramFileStructure.get_otl_wizard_model_dir()
+        OTLLogger.logger.debug(f"original docs {original_documents}")
         original_assets = []
         for x in original_documents:
-            original_assets.extend(OtlmowConverter().from_file_to_objects(file_path=Path(x)))
+            original_assets.extend(Helpers.converter_from_file_to_object(file_path=Path(x)))
         new_assets = []
         for x in global_vars.current_project.get_saved_projectfiles():
-            new_assets.extend(OtlmowConverter().from_file_to_objects(file_path=Path(x.file_path)))
+            new_assets.extend(Helpers.converter_from_file_to_object(file_path=Path(x.file_path)))
         return cls.generate_diff_report(original_assets, new_assets, model_dir)
 
     @classmethod
     def replace_files_with_diff_report(cls, original_documents: List[str], project: Project, file_name: str) -> None:
-        logging.debug("started replacing files with diff report")
+        OTLLogger.logger.debug("started replacing files with diff report")
         changed_assets = cls.generate_changed_assets_from_files(project=project)
         original_assets = cls.generate_original_assets_from_files(original_documents=original_documents)
         diff_1 = compare_two_lists_of_objects_attribute_level(first_list=original_assets,
                                                               second_list=changed_assets,
-                                                              model_directory=ProgramFileManager.get_otl_wizard_model_dir())
-        ProgramFileManager.delete_template_folder()
+                                                              model_directory=ProgramFileStructure.get_otl_wizard_model_dir())
+        # ProgramFileStructure.delete_template_folder()
         project.saved_project_files = []
         tempdir = ProgramFileManager.create_empty_temporary_map()
         temp_loc = Path(tempdir) / file_name
@@ -85,16 +89,16 @@ class AssetChangeDomain:
     def generate_changed_assets_from_files(project: Project) -> list:
         changed_assets = []
         for file in project.get_saved_projectfiles():
-            logging.debug(f"file state {file.state}")
+            OTLLogger.logger.debug(f"file state {file.state}")
             if file.state == FileState.OK:
-                changed_assets.extend(OtlmowConverter().from_file_to_objects(file_path=Path(file.file_path)))
+                changed_assets.extend(Helpers.converter_from_file_to_object(file_path=Path(file.file_path)))
         return changed_assets
 
     @staticmethod
     def generate_original_assets_from_files(original_documents: List[str]) -> List[OTLObject]:
         original_assets = []
         for path in original_documents:
-            original_assets.extend(OtlmowConverter().from_file_to_objects(file_path=Path(path)))
+            original_assets.extend(Helpers.converter_from_file_to_object(file_path=Path(path)))
         return original_assets
 
     @staticmethod
@@ -111,8 +115,8 @@ class AssetChangeDomain:
     def generate_complex_asset_report(item, attribute, complex_list, old_item_dict) -> List[ReportItem]:
         return [ReportItem(
             id=item.assetId.identificator, actie=ReportAction.ATC, attribute=attribute,
-            original_value=f"{str(key)}: {str(old_item_dict.get(attribute).get(key))}",
-            new_value=f"{str(key)}: {str(value)}"
+            original_value="{0}: {1}".format(str(key),str(old_item_dict.get(attribute).get(key))),
+            new_value="{0}: {1}".format(str(key),str(value))
         ) for key, value in complex_list.items()]
 
     @staticmethod

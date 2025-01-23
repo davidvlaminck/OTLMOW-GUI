@@ -1,4 +1,4 @@
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt, QModelIndex
 from PyQt6.QtGui import QStandardItemModel, QStandardItem
 from PyQt6.QtWidgets import QTreeView, QVBoxLayout
 
@@ -74,3 +74,9 @@ class FolderTreeView(QTreeView):
         if event.type() == event.Type.ToolTip:
             return False  # Ignore tooltip events
         return super().event(event)
+
+    def toggle_expand_state_of_item_at_row(self, table_coord: QModelIndex):
+        if self.isExpanded(table_coord):
+            self.collapse(table_coord)
+        else:
+            self.expand(table_coord)

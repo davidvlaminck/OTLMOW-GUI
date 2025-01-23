@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: jasper.berton@mow.vlaanderen.be\n"
-"POT-Creation-Date: 2024-12-09 14:32+0100\n"
+"POT-Creation-Date: 2025-01-21 11:39+0100\n"
 "PO-Revision-Date: 2023-10-19 13:13+0200\n"
 "Last-Translator: Jasper Berton <jasper.berton@mow.vlaanderen.be>\n"
 "Language: nl_BE\n"
@@ -18,290 +18,210 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.16.0\n"
 
-#: Domain/HomeDomain.py:44
+#: Domain/step_domain/HomeDomain.py:111
 msgid "own_reference_empty_error"
 msgstr "Eigen referentie is leeg"
 
-#: Domain/HomeDomain.py:46
+#: Domain/step_domain/HomeDomain.py:113
 msgid "bestek_empty_error"
 msgstr "Bestek is leeg"
 
-#: Domain/HomeDomain.py:48
+#: Domain/step_domain/HomeDomain.py:115
 msgid "db_path_empty_error"
 msgstr "Subset is leeg"
 
-#: Domain/HomeDomain.py:50
+#: Domain/step_domain/HomeDomain.py:117
 msgid "wrong_database_error"
 msgstr ""
 
-#: Domain/TemplateDomain.py:37
+#: Domain/step_domain/TemplateDomain.py:53
 msgid "permission_to_file_was_denied_likely_due_to_the_file_being_open_in_excel"
 msgstr ""
 "U hebt geen toegang tot deze file! \n"
 "Waarschijnlijk omdat de file nog open is in excel"
 
-#: Domain/TemplateDomain.py:37
+#: Domain/step_domain/TemplateDomain.py:53
 msgid "permission_denied"
 msgstr "Geen toestemming om de file te openen"
 
-#: GUI/HeaderBar.py:77 GUI/HeaderBar.py:242
-msgid "new_project_button"
-msgstr "Nieuw Project"
-
-#: GUI/HeaderBar.py:144 GUI/HeaderBar.py:246
-msgid "help"
-msgstr "Help"
-
-#: GUI/DialogWindows/MenuActionsWindow.py:13 GUI/HeaderBar.py:146
-#: GUI/HeaderBar.py:247
-msgid "about"
-msgstr "Over..."
-
-#: GUI/HeaderBar.py:148 GUI/HeaderBar.py:248
-msgid "report error"
-msgstr "Rapporteer probleem"
-
-#: GUI/HeaderBar.py:180 GUI/HeaderBar.py:243
-msgid "return_to_home_screen"
-msgstr "terug naar startscherm"
-
-#: GUI/HeaderBar.py:200 GUI/HeaderBar.py:244
-msgid "save_button"
-msgstr "Bewaar"
-
-#: GUI/HeaderBar.py:225 GUI/HeaderBar.py:245
-msgid "import"
-msgstr "Importeren"
-
-#: GUI/MainWindow.py:56
+#: GUI/MainWindow.py:63
 msgid "template"
 msgstr "Aanmaken template"
 
-#: GUI/MainWindow.py:57
+#: GUI/MainWindow.py:64
 msgid "insert_data"
 msgstr "Data inladen"
 
-#: GUI/MainWindow.py:58
+#: GUI/MainWindow.py:65
 msgid "data visuals"
 msgstr "Data visualisatie"
 
-#: GUI/MainWindow.py:59
+#: GUI/MainWindow.py:66
 msgid "data_change"
 msgstr "Data veranderen"
 
-#: GUI/MainWindow.py:60
+#: GUI/MainWindow.py:67
 msgid "relation_change"
 msgstr "Relaties veranderen"
 
-#: GUI/MainWindow.py:61
+#: GUI/MainWindow.py:68
 msgid "export_data"
 msgstr "Data exporteren"
 
-#: GUI/MessageBox.py:16
-msgid "delete"
-msgstr "Verwijderen"
-
-#: GUI/MessageBox.py:17
-msgid "project_deletion_question"
-msgstr "Bent u zeker dat u dit project wilt verwijderen?"
-
-#: GUI/DialogWindows/ChooseFileNameWindow.py:25
-#: GUI/DialogWindows/SuggestUpdateWindow.py:38 GUI/MessageBox.py:19
-msgid "yes"
-msgstr "Ja"
-
-#: GUI/DialogWindows/ChooseFileNameWindow.py:26
-#: GUI/DialogWindows/SuggestUpdateWindow.py:40 GUI/MessageBox.py:20
-msgid "no"
-msgstr "Nee"
-
-#: GUI/DialogWindows/UpsertProjectWindow.py:43
-#: GUI/DialogWindows/UpsertProjectWindow.py:61 GUI/OverviewTable.py:43
-#: GUI/OverviewTable.py:163
-msgid "own_reference"
-msgstr "Eigen referentie"
-
-#: GUI/DialogWindows/UpsertProjectWindow.py:45
-#: GUI/DialogWindows/UpsertProjectWindow.py:62 GUI/OverviewTable.py:43
-#: GUI/OverviewTable.py:163
-msgid "service_order"
-msgstr "Bestek - (dienstbevel)"
-
-#: GUI/DialogWindows/ChangeSubsetWindow.py:31
-#: GUI/DialogWindows/UpsertProjectWindow.py:47
-#: GUI/DialogWindows/UpsertProjectWindow.py:63 GUI/OverviewTable.py:43
-#: GUI/OverviewTable.py:163 GUI/Screens/TemplateScreen.py:166
-msgid "subset"
-msgstr "Subset"
-
-#: GUI/OverviewTable.py:43 GUI/OverviewTable.py:163
-msgid "last_edited"
-msgstr "Laatst bewerkt"
-
-#: GUI/OverviewTable.py:91
-msgid "no_result"
-msgstr "Geen resultaten gevonden voor dit zoekresultaat"
-
-#: GUI/OverviewTable.py:164
-msgid "no_results"
-msgstr "Geen resultaten gevonden voor dit zoekresultaat"
-
-#: GUI/StepperWidget.py:71
-msgid "step1"
-msgstr "Aanmaken van template"
-
-#: GUI/StepperWidget.py:72
-msgid "step2"
-msgstr "Asset Data invoeren"
-
-#: GUI/StepperWidget.py:73
-msgid "step3"
-msgstr "Asset Data bewerken"
-
-#: GUI/StepperWidget.py:74
-msgid "step4"
-msgstr "Asset Data exporteren"
-
-#: GUI/TableModel.py:11
-msgid "id"
-msgstr "Id"
-
-#: GUI/TableModel.py:11
-msgid "action"
-msgstr "Actie"
-
-#: GUI/TableModel.py:11
-msgid "name_attribute"
-msgstr "Naam attribuut"
-
-#: GUI/TableModel.py:11
-msgid "old_attribute"
-msgstr "Oud attribuut"
-
-#: GUI/TableModel.py:12
-msgid "new_attribute"
-msgstr "Nieuw attribuut"
-
-#: GUI/DialogWindows/AddExternalAssetWindow.py:36
+#: GUI/dialog_windows/AddExternalAssetWindow.py:29
 msgid "add_external_asset_title"
 msgstr "Voeg extern OTL-asset toe"
 
-#: GUI/DialogWindows/AddExternalAssetWindow.py:42
+#: GUI/dialog_windows/AddExternalAssetWindow.py:35
 msgid "asset_id_or_name"
 msgstr "Identificator/Naam"
 
-#: GUI/DialogWindows/AddExternalAssetWindow.py:44
+#: GUI/dialog_windows/AddExternalAssetWindow.py:37
 msgid "asset_id_dummy"
 msgstr "extern asset 1"
 
-#: GUI/DialogWindows/AddExternalAssetWindow.py:49
-#: GUI/DialogWindows/DefineHeeftBetrokkeneRelationWindow.py:62
-#: GUI/Screens/RelationChangeElements/PossibleRelationListWidget.py:26
+#: GUI/dialog_windows/AddExternalAssetWindow.py:42
+#: GUI/dialog_windows/DefineHeeftBetrokkeneRelationWindow.py:51
+#: GUI/screens/RelationChange_elements/PossibleRelationListWidget.py:25
 msgid "asset_type"
 msgstr "OTL-asset type"
 
-#: GUI/DialogWindows/AddExternalAssetWindow.py:52
-#: GUI/DialogWindows/DefineHeeftBetrokkeneRelationWindow.py:65
+#: GUI/dialog_windows/AddExternalAssetWindow.py:45
+#: GUI/dialog_windows/DefineHeeftBetrokkeneRelationWindow.py:54
 msgid "asset_type_dummy"
 msgstr "Onderdeel#Verkeersbord"
 
-#: GUI/DialogWindows/AddExternalAssetWindow.py:90
-#: GUI/DialogWindows/ChangeSubsetWindow.py:68
-#: GUI/DialogWindows/DefineHeeftBetrokkeneRelationWindow.py:118
-#: GUI/DialogWindows/RemoveProjectFilesWindow.py:33
-#: GUI/DialogWindows/UpsertProjectWindow.py:96
+#: GUI/dialog_windows/AddExternalAssetWindow.py:83
+#: GUI/dialog_windows/ChangeSubsetWindow.py:108
+#: GUI/dialog_windows/DefineHeeftBetrokkeneRelationWindow.py:107
+#: GUI/dialog_windows/RemoveProjectFilesWindow.py:33
+#: GUI/dialog_windows/UpsertProjectWindow.py:146
 msgid "submit"
 msgstr "Bevestigen"
 
-#: GUI/DialogWindows/AddExternalAssetWindow.py:92
-#: GUI/DialogWindows/ChangeSubsetWindow.py:70
-#: GUI/DialogWindows/DefineHeeftBetrokkeneRelationWindow.py:120
-#: GUI/DialogWindows/RemoveProjectFilesWindow.py:35
-#: GUI/DialogWindows/RevalidateDocumentsWindow.py:33
-#: GUI/DialogWindows/UpsertProjectWindow.py:98
+#: GUI/dialog_windows/AddExternalAssetWindow.py:85
+#: GUI/dialog_windows/ChangeSubsetWindow.py:110
+#: GUI/dialog_windows/DefineHeeftBetrokkeneRelationWindow.py:109
+#: GUI/dialog_windows/RemoveProjectFilesWindow.py:35
+#: GUI/dialog_windows/RevalidateDocumentsWindow.py:33
+#: GUI/dialog_windows/UpsertProjectWindow.py:148
 msgid "cancel"
 msgstr "Annuleren"
 
-#: GUI/DialogWindows/ChangeSubsetWindow.py:26 GUI/Screens/TemplateScreen.py:129
-#: GUI/Screens/TemplateScreen.py:286
+#: GUI/dialog_windows/ChangeSubsetWindow.py:24
+#: GUI/screens/TemplateScreen.py:250 GUI/screens/TemplateScreen.py:494
 msgid "change_subset"
 msgstr "Aanpassen subset"
 
-#: GUI/DialogWindows/ChooseFileNameWindow.py:22
+#: GUI/dialog_windows/ChangeSubsetWindow.py:31
+#: GUI/dialog_windows/UpsertProjectWindow.py:84
+#: GUI/dialog_windows/UpsertProjectWindow.py:87
+#: GUI/screens/Home_elements/OverviewTable.py:50
+#: GUI/screens/Home_elements/OverviewTable.py:246
+#: GUI/screens/TemplateScreen.py:323
+msgid "subset"
+msgstr "Subset"
+
+#: GUI/dialog_windows/ChooseFileNameWindow.py:21
 msgid "warning overwriting files"
 msgstr "Waarschuwing: overschrijven bestanden"
 
-#: GUI/DialogWindows/ChooseFileNameWindow.py:23
+#: GUI/dialog_windows/ChooseFileNameWindow.py:22
 msgid "warning overwriting files text"
 msgstr "Bent u zeker dat u de bestanden van stap 2 wilt overschrijven?"
 
-#: GUI/DialogWindows/DefineHeeftBetrokkeneRelationWindow.py:42
+#: GUI/dialog_windows/ChooseFileNameWindow.py:24
+#: GUI/dialog_windows/RemoveProjectWindow.py:20
+#: GUI/dialog_windows/SuggestUpdateWindow.py:35
+msgid "yes"
+msgstr "Ja"
+
+#: GUI/dialog_windows/ChooseFileNameWindow.py:25
+#: GUI/dialog_windows/RemoveProjectWindow.py:21
+#: GUI/dialog_windows/SuggestUpdateWindow.py:37
+msgid "no"
+msgstr "Nee"
+
+#: GUI/dialog_windows/DefineHeeftBetrokkeneRelationWindow.py:31
 msgid "needs_attribute"
 msgstr "Attribuut waarde nodig"
 
-#: GUI/DialogWindows/DefineHeeftBetrokkeneRelationWindow.py:52
+#: GUI/dialog_windows/DefineHeeftBetrokkeneRelationWindow.py:41
 msgid "define_attribute_to_add_heeft_betrokkene_relation"
 msgstr ""
 "Welke rol heeft Agent '{0}' tot asset '{1}' in deze HeeftBetrokkene "
 "relatie?"
 
-#: GUI/DialogWindows/DefineHeeftBetrokkeneRelationWindow.py:56
+#: GUI/dialog_windows/DefineHeeftBetrokkeneRelationWindow.py:45
 msgid "define_attribute_to_add_heeft_betrokkene_relations"
 msgstr ""
 "Welke rol heeft Agent '{0}' in de HeeftBetrokkene relaties tot de "
 "selecteerde assets?"
 
-#: GUI/DialogWindows/LanguageWindow.py:23
+#: GUI/dialog_windows/LanguageWindow.py:22
 msgid "change_language_title"
 msgstr "Taal veranderen"
 
-#: GUI/DialogWindows/LanguageWindow.py:25
+#: GUI/dialog_windows/LanguageWindow.py:26
 msgid "language_option_dutch"
 msgstr "Nederlands"
 
-#: GUI/DialogWindows/LanguageWindow.py:26
+#: GUI/dialog_windows/LanguageWindow.py:27
 msgid "language_option_english"
 msgstr "English"
 
-#: GUI/DialogWindows/MenuActionsWindow.py:16
+#: GUI/dialog_windows/MenuActionsWindow.py:13 GUI/header/HeaderBar.py:150
+#: GUI/header/HeaderBar.py:251
+msgid "about"
+msgstr "Over..."
+
+#: GUI/dialog_windows/MenuActionsWindow.py:16
 msgid "made_by"
 msgstr "Gemaakt door"
 
-#: GUI/DialogWindows/MenuActionsWindow.py:28
+#: GUI/dialog_windows/MenuActionsWindow.py:28
 msgid "error_title"
 msgstr "Probleem melden"
 
-#: GUI/DialogWindows/MenuActionsWindow.py:29
+#: GUI/dialog_windows/MenuActionsWindow.py:29
 msgid "error_report"
 msgstr ""
 "Indien u een probleem ondervindt, gelieve dit te melden aan de "
 "ontwikkelaars hieronder vermeld."
 
-#: GUI/DialogWindows/MenuActionsWindow.py:30
+#: GUI/dialog_windows/MenuActionsWindow.py:30
 msgid "contact"
 msgstr "Contact"
 
-#: GUI/DialogWindows/MenuActionsWindow.py:41
+#: GUI/dialog_windows/MenuActionsWindow.py:41
 msgid "version"
 msgstr "Versie"
 
-#: GUI/DialogWindows/ProjectPickerWindow.py:17
+#: GUI/dialog_windows/ProjectPickerWindow.py:17
 msgid "select_OTL_project"
 msgstr "Selecteer OTL project"
 
-#: GUI/DialogWindows/RemoveProjectFilesWindow.py:16
+#: GUI/dialog_windows/RemoveProjectFilesWindow.py:16
 msgid "remove_project_files_title"
 msgstr "Verwijder project bestanden"
 
-#: GUI/DialogWindows/RemoveProjectFilesWindow.py:19
+#: GUI/dialog_windows/RemoveProjectFilesWindow.py:19
 msgid "remove_project_files_question"
 msgstr "Bent u zeker dat u dit project wilt verwijderen?"
 
-#: GUI/DialogWindows/RevalidateDocumentsWindow.py:14
+#: GUI/dialog_windows/RemoveProjectWindow.py:17
+msgid "delete"
+msgstr "Verwijderen"
+
+#: GUI/dialog_windows/RemoveProjectWindow.py:18
+msgid "project_deletion_question"
+msgstr "Bent u zeker dat u dit project wilt verwijderen?"
+
+#: GUI/dialog_windows/RevalidateDocumentsWindow.py:14
 msgid "revalidate_documents_files_title"
 msgstr "Overscrhijf waarschuwing"
 
-#: GUI/DialogWindows/RevalidateDocumentsWindow.py:17
+#: GUI/dialog_windows/RevalidateDocumentsWindow.py:17
 msgid "revalidate_documents_files_question"
 msgstr ""
 "Door de documenten te valideren worden alle wijzigingen uit stap '3. "
@@ -311,15 +231,15 @@ msgstr ""
 "Als u deze wilt behouden exporteer dan eerst alle data via stap '4. Asset"
 " Data exporteren'"
 
-#: GUI/DialogWindows/RevalidateDocumentsWindow.py:31
+#: GUI/dialog_windows/RevalidateDocumentsWindow.py:31
 msgid "continue"
 msgstr "Doorgaan"
 
-#: GUI/DialogWindows/SuggestUpdateWindow.py:21
+#: GUI/dialog_windows/SuggestUpdateWindow.py:18
 msgid "update_available_title"
 msgstr "Nieuwe versie van OTL-Wizard 2 beschikbaar"
 
-#: GUI/DialogWindows/SuggestUpdateWindow.py:24
+#: GUI/dialog_windows/SuggestUpdateWindow.py:21
 msgid "update_available_text"
 msgstr ""
 "Er is een nieuwe versie van OTL wizard 2 beschikbaar.\n"
@@ -329,143 +249,199 @@ msgstr ""
 "\n"
 "Wilt u naar webpagina gaan waar u deze nieuwe versie kan downloaden?"
 
-#: GUI/DialogWindows/UpsertProjectWindow.py:33
+#: GUI/dialog_windows/UpsertProjectWindow.py:46
 msgid "alter_project_title"
 msgstr "Aanpassen project"
 
-#: GUI/DialogWindows/UpsertProjectWindow.py:35
+#: GUI/dialog_windows/UpsertProjectWindow.py:51
 msgid "new_project_title"
 msgstr "Nieuw Project"
 
-#: GUI/Screens/AssetDataChangeScreen.py:76
-#: GUI/Screens/AssetDataChangeScreen.py:126
+#: GUI/dialog_windows/UpsertProjectWindow.py:107
+#: GUI/dialog_windows/UpsertProjectWindow.py:109
+#: GUI/screens/Home_elements/OverviewTable.py:50
+#: GUI/screens/Home_elements/OverviewTable.py:246
+msgid "service_order"
+msgstr "Bestek - (dienstbevel)"
+
+#: GUI/dialog_windows/UpsertProjectWindow.py:125
+#: GUI/dialog_windows/UpsertProjectWindow.py:127
+#: GUI/screens/Home_elements/OverviewTable.py:50
+#: GUI/screens/Home_elements/OverviewTable.py:246
+msgid "own_reference"
+msgstr "Eigen referentie"
+
+#: GUI/header/HeaderBar.py:81 GUI/header/HeaderBar.py:246
+msgid "new_project_button"
+msgstr "Nieuw Project"
+
+#: GUI/header/HeaderBar.py:148 GUI/header/HeaderBar.py:250
+msgid "help"
+msgstr "Help"
+
+#: GUI/header/HeaderBar.py:152 GUI/header/HeaderBar.py:252
+msgid "report error"
+msgstr "Rapporteer probleem"
+
+#: GUI/header/HeaderBar.py:182 GUI/header/HeaderBar.py:247
+msgid "return_to_home_screen"
+msgstr "terug naar startscherm"
+
+#: GUI/header/HeaderBar.py:202 GUI/header/HeaderBar.py:248
+msgid "save_button"
+msgstr "Bewaar"
+
+#: GUI/header/HeaderBar.py:226 GUI/header/HeaderBar.py:249
+msgid "import"
+msgstr "Importeren"
+
+#: GUI/header/StepperWidget.py:72
+msgid "step1"
+msgstr "Aanmaken van template"
+
+#: GUI/header/StepperWidget.py:73
+msgid "step2"
+msgstr "Asset Data invoeren"
+
+#: GUI/header/StepperWidget.py:74
+msgid "step3"
+msgstr "Asset Data bewerken"
+
+#: GUI/header/StepperWidget.py:75
+msgid "step4"
+msgstr "Asset Data exporteren"
+
+#: GUI/screens/AssetDataChangeScreen.py:75
+#: GUI/screens/AssetDataChangeScreen.py:125
 msgid "original_file_load"
 msgstr "Origineel bestand inladen"
 
-#: GUI/Screens/AssetDataChangeScreen.py:90
-#: GUI/Screens/AssetDataChangeScreen.py:130
-#: GUI/Screens/AssetDataChangeScreen.py:136 GUI/Screens/InsertDataScreen.py:98
+#: GUI/screens/AssetDataChangeScreen.py:89
+#: GUI/screens/AssetDataChangeScreen.py:129
+#: GUI/screens/AssetDataChangeScreen.py:135 GUI/screens/InsertDataScreen.py:161
 msgid "choose_file"
 msgstr "Kies uw bestand..."
 
-#: GUI/Screens/AssetDataChangeScreen.py:93
-#: GUI/Screens/AssetDataChangeScreen.py:128
+#: GUI/screens/AssetDataChangeScreen.py:92
+#: GUI/screens/AssetDataChangeScreen.py:127
 msgid "show differences"
 msgstr "Toon verschillen"
 
-#: GUI/Screens/AssetDataChangeScreen.py:98
-#: GUI/Screens/AssetDataChangeScreen.py:129
+#: GUI/screens/AssetDataChangeScreen.py:97
+#: GUI/screens/AssetDataChangeScreen.py:128
 msgid "apply differences"
 msgstr "Toepassen verschillen"
 
-#: GUI/Screens/AssetDataChangeScreen.py:103
-#: GUI/Screens/AssetDataChangeScreen.py:131
+#: GUI/screens/AssetDataChangeScreen.py:102
+#: GUI/screens/AssetDataChangeScreen.py:130
 msgid "empty fields"
 msgstr "Reset velden"
 
-#: GUI/Screens/AssetDataChangeScreen.py:127
+#: GUI/screens/AssetDataChangeScreen.py:126
 msgid "new_file_load"
 msgstr "Nieuw bestand inladen"
 
-#: GUI/Screens/AssetDataChangeScreen.py:228
+#: GUI/screens/AssetDataChangeScreen.py:228
 msgid "the changes were correctly written to a new file"
 msgstr "Veranderingen zijn succesvol weggeschreven naar een nieuw bestand"
 
-#: GUI/Screens/AssetDataChangeScreen.py:237 GUI/Screens/InsertDataScreen.py:218
+#: GUI/screens/AssetDataChangeScreen.py:237 GUI/screens/InsertDataScreen.py:516
 msgid "error"
 msgstr "Error"
 
-#: GUI/Screens/ConversionScreen.py:29
+#: GUI/screens/ConversionScreen.py:29
 msgid "file_conversion"
 msgstr "Bestand conversie"
 
-#: GUI/Screens/ConversionScreen.py:44 GUI/Screens/ConversionScreen.py:68
+#: GUI/screens/ConversionScreen.py:44 GUI/screens/ConversionScreen.py:68
 msgid "convert"
 msgstr "Converteren"
 
-#: GUI/Screens/ConversionScreen.py:54 GUI/Screens/ConversionScreen.py:67
+#: GUI/screens/ConversionScreen.py:54 GUI/screens/ConversionScreen.py:67
 msgid "file_for_conversion"
 msgstr "Bestand voor conversie"
 
-#: GUI/Screens/DataVisualisationScreen.py:61
-#: GUI/Screens/DataVisualisationScreen.py:114
+#: GUI/screens/DataVisualisationScreen.py:55
+#: GUI/screens/DataVisualisationScreen.py:112
 msgid "relations legend"
 msgstr "Mogelijke relaties"
 
-#: GUI/Screens/ExportDataScreen.py:38 GUI/Screens/ExportDataScreen.py:105
+#: GUI/screens/ExportDataScreen.py:57 GUI/screens/ExportDataScreen.py:141
 msgid "export_to_davie"
 msgstr "Data naar Davie exporteren"
 
-#: GUI/Screens/ExportDataScreen.py:47 GUI/Screens/ExportDataScreen.py:102
+#: GUI/screens/ExportDataScreen.py:60 GUI/screens/ExportDataScreen.py:138
 msgid "export relations and assets in different files"
 msgstr "Exporteer relaties en assets in verschillende bestanden"
 
-#: GUI/Screens/ExportDataScreen.py:49 GUI/Screens/ExportDataScreen.py:103
+#: GUI/screens/ExportDataScreen.py:62 GUI/screens/ExportDataScreen.py:139
 msgid "export assets in different files"
 msgstr "Exporteer aparte bestanden voor elke asset type"
 
-#: GUI/Screens/ExportDataScreen.py:64 GUI/Screens/ExportDataScreen.py:101
+#: GUI/screens/ExportDataScreen.py:90 GUI/screens/ExportDataScreen.py:137
 msgid "select file type for export"
 msgstr "selecteer bestandstype voor export"
 
-#: GUI/Screens/ExportDataScreen.py:76 GUI/Screens/ExportDataScreen.py:100
-#: GUI/Screens/TemplateScreen.py:89 GUI/Screens/TemplateScreen.py:285
+#: GUI/screens/ExportDataScreen.py:114 GUI/screens/ExportDataScreen.py:136
+#: GUI/screens/TemplateScreen.py:154 GUI/screens/TemplateScreen.py:493
 msgid "export"
 msgstr "Exporteren"
 
-#: GUI/Screens/ExportDataScreen.py:87 GUI/Screens/ExportDataScreen.py:104
+#: GUI/screens/ExportDataScreen.py:140
 msgid "file_to_upload"
 msgstr "Bestand om te uploaden"
 
-#: GUI/Screens/HomeScreen.py:92 GUI/Screens/HomeScreen.py:99
+#: GUI/screens/HomeScreen.py:167 GUI/screens/HomeScreen.py:202
 msgid "search_text"
 msgstr "Geef een project of bestek in om te zoeken"
 
-#: GUI/Screens/InsertDataScreen.py:88 GUI/Screens/InsertDataScreen.py:224
+#: GUI/screens/InsertDataScreen.py:150 GUI/screens/InsertDataScreen.py:524
 msgid "control_button"
 msgstr "Valideren"
 
-#: GUI/Screens/InsertDataScreen.py:94
+#: GUI/screens/InsertDataScreen.py:156
 msgid "reset_fields"
 msgstr "Reset velden"
 
-#: GUI/Screens/InsertDataScreen.py:163 GUI/Screens/InsertDataScreen.py:223
+#: GUI/screens/InsertDataScreen.py:308 GUI/screens/InsertDataScreen.py:523
 msgid "input_file"
 msgstr "Bestanden inladen:"
 
-#: GUI/Screens/InsertDataScreen.py:204
+#: GUI/screens/InsertDataScreen.py:452
 msgid "all_info_correct"
 msgstr "Alle gegevens zijn otl-conform"
 
-#: GUI/Screens/InsertDataScreen.py:209
+#: GUI/screens/InsertDataScreen.py:474
 msgid "warning"
 msgstr "Waarschuwing"
 
-#: GUI/Screens/InsertDataScreen.py:307
+#: GUI/screens/InsertDataScreen.py:733
 msgid "{doc_name}: Data nodig in een datasheet om objecten in te laden.\n"
 msgstr "{doc_name}: Data nodig in een datasheet om objecten in te laden.\n"
 
-#: GUI/Screens/InsertDataScreen.py:310
+#: GUI/screens/InsertDataScreen.py:737
 msgid "{doc_name}: No type uri in {tab}\n"
 msgstr "{doc_name}: Kolom TypeUri niet gevonden in werkblad {tab}\n"
 
-#: GUI/Screens/InsertDataScreen.py:312
+#: GUI/screens/InsertDataScreen.py:741
 msgid "{doc_name}: invalid columns in {tab}, bad columns are {bad_columns} \n"
 msgstr ""
 "{doc_name}: Foutieve kolommen in werkblad {tab}, desbetreffende kolommen "
 "zijn {bad_columns} \n"
 
-#: GUI/Screens/InsertDataScreen.py:315
+#: GUI/screens/InsertDataScreen.py:745
 msgid "{doc_name}: type uri not in first row of {tab}\n"
 msgstr "{doc_name}: TypeUri staat niet in de eerste rij van werkblad {tab}\n"
 
-#: GUI/Screens/InsertDataScreen.py:321
+#: GUI/screens/InsertDataScreen.py:751
 msgid ""
 "{doc_name}: There are assets without an assetId.identificator in "
 "worksheet {tab}\n"
-msgstr "{doc_name}: Er zijn assets zonder een assetId.identificator in werkblad {tab}\n"
+msgstr ""
+"{doc_name}: Er zijn assets zonder een assetId.identificator in werkblad "
+"{tab}\n"
 
-#: GUI/Screens/InsertDataScreen.py:323
+#: GUI/screens/InsertDataScreen.py:755
 msgid ""
 "{doc_name}:\n"
 "Relation of type: \"{type_uri}\"\n"
@@ -473,176 +449,245 @@ msgid ""
 "This relation cannot be made between the typeURI's.\n"
 "{wrong_field}= \"{wrong_value}\"\n"
 "{wrong_field2}= \"{wrong_value2}\"\n"
-" in tab {tab}\n"
+"in tab {tab}\n"
 msgstr ""
+"{doc_name}:\n"
+"Relatie van type: \"{type_uri}\"\n"
+"met assetId.identificator: \"{identificator}\",\n"
+"Deze relatie kan niet gemaakt worden tussen deze typeURI's.\n"
+"{wrong_field}= \"{wrong_value}\"\n"
+"{wrong_field2}= \"{wrong_value2}\"\n"
+"voor veld \"{wrong_field}\".\n"
+"in werkblad {tab}\n"
 
-#: GUI/Screens/InsertDataScreen.py:335
+#: GUI/screens/InsertDataScreen.py:771
 msgid ""
 "{doc_name}:\n"
 "Relation of type: \"{type_uri}\"\n"
 "with assetId.identificator: \"{identificator}\",\n"
 "has the non-existing TypeURI value: \"{wrong_value}\"\n"
 "for field \"{wrong_field}\".\n"
-" in tab {tab}\n"
+"in tab {tab}\n"
 msgstr ""
+"{doc_name}:\n"
+"Relatie van type: \"{type_uri}\"\n"
+"met assetId.identificator: \"{identificator}\",\n"
+"heeft een onbestaande TypeURI waarde: \"{wrong_value}\"\n"
+"voor veld \"{wrong_field}\".\n"
+"in werkblad {tab}\n"
 
-#: GUI/Screens/RelationChangeScreen.py:87
-msgid "functionality under development"
-msgstr "Functionaliteit in ontwikkeling"
-
-#: GUI/Screens/TemplateScreen.py:59 GUI/Screens/TemplateScreen.py:209
-#: GUI/Screens/TemplateScreen.py:283
+#: GUI/screens/TemplateScreen.py:126 GUI/screens/TemplateScreen.py:369
+#: GUI/screens/TemplateScreen.py:491
 msgid "select_all_classes"
 msgstr "Selecteer alle asset types"
 
-#: GUI/Screens/TemplateScreen.py:63 GUI/Screens/TemplateScreen.py:289
+#: GUI/screens/TemplateScreen.py:130 GUI/screens/TemplateScreen.py:497
 msgid "general_settings"
 msgstr "Algemene instellingen"
 
-#: GUI/Screens/TemplateScreen.py:64 GUI/Screens/TemplateScreen.py:282
+#: GUI/screens/TemplateScreen.py:132 GUI/screens/TemplateScreen.py:490
 msgid "no_choice_list"
 msgstr "Geen keuzelijsten opmaken"
 
-#: GUI/Screens/TemplateScreen.py:66 GUI/Screens/TemplateScreen.py:281
+#: GUI/screens/TemplateScreen.py:135 GUI/screens/TemplateScreen.py:489
 msgid "geometry_column_added"
 msgstr "Geometrie kolom toevoegen aan tabel"
 
-#: GUI/Screens/TemplateScreen.py:71 GUI/Screens/TemplateScreen.py:290
-msgid "example_settings"
-msgstr "Instellingen voor voorbeelden"
+#: GUI/screens/TemplateScreen.py:139
+msgid "add_non_otl_conform_information"
+msgstr "Instellingen om non-OTL-conforme info toe te voegen"
 
-#: GUI/Screens/TemplateScreen.py:74 GUI/Screens/TemplateScreen.py:284
-msgid "amount_of_examples"
-msgstr "Genereer voorbeeldrijen"
+#: GUI/screens/TemplateScreen.py:142
+msgid "show_deprecated_attributes"
+msgstr "Deprecated attributen aanduiden"
 
-#: GUI/Screens/TemplateScreen.py:78 GUI/Screens/TemplateScreen.py:280
+#: GUI/screens/TemplateScreen.py:146 GUI/screens/TemplateScreen.py:488
 msgid "export_attribute_info"
 msgstr "Exporteer een omschrijving van elk attribuut"
 
-#: GUI/Screens/TemplateScreen.py:141 GUI/Screens/TemplateScreen.py:287
+#: GUI/screens/TemplateScreen.py:150 GUI/screens/TemplateScreen.py:498
+msgid "example_settings"
+msgstr "Instellingen voor voorbeelden"
+
+#: GUI/screens/TemplateScreen.py:198 GUI/screens/TemplateScreen.py:492
+msgid "amount_of_examples"
+msgstr "Genereer voorbeeldrijen"
+
+#: GUI/screens/TemplateScreen.py:274 GUI/screens/TemplateScreen.py:495
 msgid "operator"
 msgstr "Operator"
 
-#: GUI/Screens/TemplateScreen.py:153 GUI/Screens/TemplateScreen.py:288
+#: GUI/screens/TemplateScreen.py:298 GUI/screens/TemplateScreen.py:496
 msgid "otl_version"
 msgstr "OTL versie"
 
-#: GUI/Screens/TemplateScreen.py:187
-msgid "loading"
-msgstr "Data aan het inladen..."
-
-#: GUI/Screens/TemplateScreen.py:204
-msgid "no classes found in specified path"
-msgstr "Geen asset types gevonden in het opgegeven pad"
-
-#: GUI/Screens/TemplateScreen.py:237 GUI/Screens/TemplateScreen.py:292
+#: GUI/screens/TemplateScreen.py:414 GUI/screens/TemplateScreen.py:500
 msgid "{selected} classes selected"
 msgstr "{selected} types geselecteerd"
 
-#: GUI/Screens/TemplateScreen.py:291
+#: GUI/screens/TemplateScreen.py:499
 msgid "deprecated_settings"
 msgstr "Instellingen voor deprecated attributen"
 
-#: GUI/Screens/RelationChangeElements/AbstractInstanceListWidget.py:345
+#: GUI/screens/RelationChange_elements/AbstractInstanceListWidget.py:521
+#: GUI/screens/TemplateScreen.py:513
+msgid "loading"
+msgstr "Data aan het inladen..."
+
+#: GUI/screens/TemplateScreen.py:531
+msgid "no classes found in specified path"
+msgstr "Geen asset types gevonden in het opgegeven pad"
+
+#: GUI/screens/AssetDataChange_elements/TableModel.py:11
+msgid "id"
+msgstr "Id"
+
+#: GUI/screens/AssetDataChange_elements/TableModel.py:11
+msgid "action"
+msgstr "Actie"
+
+#: GUI/screens/AssetDataChange_elements/TableModel.py:11
+msgid "name_attribute"
+msgstr "Naam attribuut"
+
+#: GUI/screens/AssetDataChange_elements/TableModel.py:11
+msgid "old_attribute"
+msgstr "Oud attribuut"
+
+#: GUI/screens/AssetDataChange_elements/TableModel.py:12
+msgid "new_attribute"
+msgstr "Nieuw attribuut"
+
+#: GUI/screens/Home_elements/OverviewTable.py:50
+#: GUI/screens/Home_elements/OverviewTable.py:246
+msgid "last_edited"
+msgstr "Laatst bewerkt"
+
+#: GUI/screens/Home_elements/OverviewTable.py:247
+msgid "no_results"
+msgstr "Geen resultaten gevonden voor dit zoekresultaat"
+
+#: GUI/screens/RelationChange_elements/AbstractInstanceListWidget.py:356
 msgid "search_button"
 msgstr "Zoeken"
 
-#: GUI/Screens/RelationChangeElements/AbstractInstanceListWidget.py:375
+#: GUI/screens/RelationChange_elements/AbstractInstanceListWidget.py:386
 msgid "no_instance_selected"
 msgstr "Geen object geselecteerd"
 
-#: GUI/Screens/RelationChangeElements/AbstractInstanceListWidget.py:457
-#: GUI/Screens/RelationChangeElements/ObjectListWidget.py:104
+#: GUI/screens/RelationChange_elements/AbstractInstanceListWidget.py:493
+#: GUI/screens/RelationChange_elements/ObjectListWidget.py:144
 msgid "no_options_available"
 msgstr "Geen opties beschikbaar"
 
-#: GUI/Screens/RelationChangeElements/ExistingRelationListWidget.py:24
+#: GUI/screens/RelationChange_elements/ExistingRelationListWidget.py:23
 msgid "source_asset"
 msgstr "Bron asset"
 
-#: GUI/Screens/RelationChangeElements/ExistingRelationListWidget.py:24
+#: GUI/screens/RelationChange_elements/ExistingRelationListWidget.py:23
 msgid "target_asset"
 msgstr "Doel asset"
 
-#: GUI/Screens/RelationChangeElements/ExistingRelationListWidget.py:27
+#: GUI/screens/RelationChange_elements/ExistingRelationListWidget.py:26
 msgid "existing_relations_list"
 msgstr "Bestaande relaties"
 
-#: GUI/Screens/RelationChangeElements/ExistingRelationListWidget.py:28
+#: GUI/screens/RelationChange_elements/ExistingRelationListWidget.py:27
 msgid "existing_relations_description"
 msgstr ""
 "Toont de bestaande relaties in het project"
 "                                                         "
 
-#: GUI/Screens/RelationChangeElements/ExistingRelationListWidget.py:29
+#: GUI/screens/RelationChange_elements/ExistingRelationListWidget.py:28
 msgid "existing_relation_attributes"
 msgstr "Bestaande relatie attributen (laatste geselecteerd)"
 
-#: GUI/Screens/RelationChangeElements/ExistingRelationListWidget.py:56
+#: GUI/screens/RelationChange_elements/ExistingRelationListWidget.py:90
 msgid "remove_relation"
 msgstr "Verwijder relaties"
 
-#: GUI/Screens/RelationChangeElements/ExistingRelationListWidget.py:152
-#: GUI/Screens/RelationChangeElements/PossibleRelationListWidget.py:221
+#: GUI/screens/RelationChange_elements/ExistingRelationListWidget.py:186
+#: GUI/screens/RelationChange_elements/PossibleRelationListWidget.py:276
 msgid "no_relation_selected"
 msgstr "Geen relatie geselecteerd"
 
-#: GUI/Screens/RelationChangeElements/ObjectListWidget.py:23
+#: GUI/screens/RelationChange_elements/ObjectListWidget.py:23
 msgid "OTL_asset"
 msgstr "OTL-asset"
 
-#: GUI/Screens/RelationChangeElements/ObjectListWidget.py:26
+#: GUI/screens/RelationChange_elements/ObjectListWidget.py:26
 msgid "class_list"
 msgstr "OTL-assets"
 
-#: GUI/Screens/RelationChangeElements/ObjectListWidget.py:27
+#: GUI/screens/RelationChange_elements/ObjectListWidget.py:27
 msgid "otl_asset_description"
 msgstr ""
 "Selecteer hier een OTL-asset om een relatie voor te maken"
 "                                         "
 
-#: GUI/Screens/RelationChangeElements/ObjectListWidget.py:28
+#: GUI/screens/RelationChange_elements/ObjectListWidget.py:28
 msgid "object_attributes"
 msgstr "OTL-asset attributen"
 
-#: GUI/Screens/RelationChangeElements/ObjectListWidget.py:51
+#: GUI/screens/RelationChange_elements/ObjectListWidget.py:87
 msgid "add_external_asset"
 msgstr "Voeg extern OTL-asset toe"
 
-#: GUI/Screens/RelationChangeElements/PossibleRelationListWidget.py:26
+#: GUI/screens/RelationChange_elements/PossibleRelationListWidget.py:25
 msgid "related_asset"
 msgstr "Doel of bron"
 
-#: GUI/Screens/RelationChangeElements/PossibleRelationListWidget.py:29
+#: GUI/screens/RelationChange_elements/PossibleRelationListWidget.py:28
 msgid "relations_list"
 msgstr "Mogelijke relaties"
 
-#: GUI/Screens/RelationChangeElements/PossibleRelationListWidget.py:30
+#: GUI/screens/RelationChange_elements/PossibleRelationListWidget.py:29
 msgid "possible_relation_subscription"
 msgstr ""
 "Hier worden alle mogelijke relaties tussen de geselecteerd OTL-asset en "
 "alle andere assets getoond"
 
-#: GUI/Screens/RelationChangeElements/PossibleRelationListWidget.py:31
+#: GUI/screens/RelationChange_elements/PossibleRelationListWidget.py:30
 msgid "possible_relation_partner_asset_attributes"
 msgstr "Gerelateerde asset attributen (laatst geselecteerd)"
 
-#: GUI/Screens/RelationChangeElements/PossibleRelationListWidget.py:44
+#: GUI/screens/RelationChange_elements/PossibleRelationListWidget.py:43
 msgid "Select_an_OTL-asset_to_see_possible_relations"
 msgstr "Selecteer een OTL-asset om zijn mogelijke relaties te zien"
 
-#: GUI/Screens/RelationChangeElements/PossibleRelationListWidget.py:89
+#: GUI/screens/RelationChange_elements/PossibleRelationListWidget.py:122
 msgid "add_relation"
 msgstr "Voeg relaties toe"
 
-#: GUI/Screens/RelationChangeElements/RelationChangeHelpers.py:43
-#: GUI/Screens/RelationChangeElements/RelationChangeHelpers.py:53
+#: GUI/screens/RelationChange_elements/RelationChangeHelpers.py:47
+#: GUI/screens/RelationChange_elements/RelationChangeHelpers.py:58
 msgid "external"
 msgstr "extern"
 
-#: GUI/Screens/RelationChangeElements/RelationChangeHelpers.py:126
+#: GUI/screens/RelationChange_elements/RelationChangeHelpers.py:134
 msgid "no_identificator"
 msgstr "geen identificator"
+
+#: Exceptions/FDOToolboxNotInstalledError.py:14
+msgid "FDOToolbox_not_installed_error_message"
+msgstr ""
+"FDO toolbox executable kon niet gevonden worden.\n"
+"Waarschijnlijk omdat het niet (correct) is geïnstalleerd,\n"
+"U kunt de OTL wizard installer opnieuw uitvoeren met admin privileges om deze fout te verhelpen.\n"
+"Zorg ervoor dat het in de juiste directory is geïnstalleerd, zodat het volgende pad bestaat: \n{0}\n"
+
+#: Exceptions/FDOToolboxProcessError.py:12
+msgid "FDOToolbox_call_error_message"
+msgstr "Er is een fout opgetreden tijdens de FDO-toolbox-oproep: \nOproep: {0} \nFout:\n{1}\n"
+
+
+#: Exceptions/NoIdentificatorError.py:13
+msgid "There are assets without an assetId.identificator in worksheet {0}"
+msgstr "Er zijn assets zonder een assetId.identificator\n in werkblad {0}\n"
+
+#: Exceptions/WrongFileTypeError.py:12
+msgid "The path to the provided file is not a {0} file with extension ({1})"
+msgstr "Het pad naar het opgegeven bestand is niet een {0} bestand met extensie ({1})\n"
 
 #~ msgid "Data visualisation"
 #~ msgstr "Data visualisatie"
@@ -695,9 +740,6 @@ msgstr "geen identificator"
 #~ msgid "search"
 #~ msgstr "Geef een project of bestek in om te zoeken"
 
-#~ msgid "show_deprecated_attributes"
-#~ msgstr "Deprecated attributen aanduiden"
-
 #~ msgid ""
 #~ "{doc_name}:\n"
 #~ "Relation of type: \"{type_uri}\"\n"
@@ -731,5 +773,11 @@ msgstr "geen identificator"
 #~ "in werkblad: {tab}"
 
 #~ msgid "There are assets without an assetId.identificator in worksheet {0}"
-#~ msgstr ""
+#~ msgstr "Er zijn assets zonder een assetId.identificator in werblad {0}"
+
+#~ msgid "no_result"
+#~ msgstr "Geen resultaten gevonden voor dit zoekresultaat"
+
+#~ msgid "functionality under development"
+#~ msgstr "Functionaliteit in ontwikkeling"
 

@@ -1,10 +1,13 @@
 import logging
+import traceback
 from pathlib import Path
 
 from PyQt6.QtCore import Qt, QSize
-from PyQt6.QtWidgets import QVBoxLayout, QWidget, QLabel, QPushButton, QFrame, QHBoxLayout, QListWidget, \
-    QFileDialog, QListWidgetItem, QTreeWidget, QTreeWidgetItem, QHeaderView
+from PyQt6.QtWidgets import QVBoxLayout, QWidget, QLabel, QPushButton, QFrame, QHBoxLayout, \
+    QListWidget, \
+    QFileDialog, QListWidgetItem, QTreeWidget, QTreeWidgetItem, QHeaderView, QSizePolicy
 
+from Domain.logger.OTLLogger import OTLLogger
 from Exceptions.NoIdentificatorError import NoIdentificatorError
 from otlmow_converter.Exceptions.ExceptionsGroup import ExceptionsGroup
 from otlmow_converter.Exceptions.FailedToImportFileError import FailedToImportFileError
@@ -28,6 +31,33 @@ import qtawesome as qta
 
 
 class InsertDataScreen(Screen):
+    """
+    Represents the screen for inserting and validating documents with objects.
+
+    This class manages the user interface for inserting data, including 
+    file selection, validation, and feedback display. It provides methods 
+    for interacting with project files and displaying relevant messages to 
+    the user.
+
+    Args:
+        language_settings (optional): Language settings for the user interface.
+
+    Attributes:
+        container_insert_data_screen (QVBoxLayout): Layout for the insert data screen.
+        message_icon (QLabel): Label for displaying message icons.
+        message (QLabel): Label for displaying messages to the user.
+        input_file_label (QLabel): Label for the input file section.
+        project_files_overview_field (QTreeWidget): Widget for displaying project files.
+        feedback_message_box (QFrame): Frame for displaying feedback messages.
+        asset_info (QListWidget): List widget for displaying asset information.
+        input_file_button (ButtonWidget): Button for selecting input files.
+        control_button (ButtonWidget): Button for controlling data processing.
+        reset_button (ButtonWidget): Button for resetting the input fields.
+        assets (list): List to store asset information.
+        main_window (optional): Reference to the main application window.
+    """
+    feedback_message_icon_color = "white"
+
     def __init__(self, language_settings=None):
         super().__init__()
         self._ = language_settings
@@ -51,28 +81,74 @@ class InsertDataScreen(Screen):
 
         self.init_ui()
 
-    def init_ui(self):
+
+    def init_ui(self) -> None:
+        """
+        Sets up the user interface for the insert data screen.
+
+        This method configures the layout by adding spacing and a menu to the
+        insert data screen. It ensures that the UI elements are properly aligned
+        and displayed within the designated container.
+
+        :param self: The instance of the class.
+        :returns: None
+        """
+
         self.container_insert_data_screen.addSpacing(10)
         self.container_insert_data_screen.addWidget(self.create_menu())
-        self.container_insert_data_screen.addStretch()
+        self.container_insert_data_screen.addSpacing(10)
         self.container_insert_data_screen.setContentsMargins(0, 0, 0, 0)
         self.setLayout(self.container_insert_data_screen)
 
-    def create_menu(self):
+
+    def create_menu(self) -> QWidget:  # sourcery skip: class-extract-method
+        """
+        Creates a menu layout for the insert data screen.
+
+        This method constructs a QWidget that serves as a menu, organizing
+        its components into a horizontal layout. It includes left and right
+        sections that expand to fill available space, ensuring a responsive
+        design.
+
+        :param self: The instance of the class.
+        :returns: QWidget -- The constructed menu widget.
+        """
+
         window = QWidget()
         window.setProperty('class', 'background-box')
         window_layout = QHBoxLayout()
+
         left_side = self.left_side()
+        left_side.setSizePolicy(QSizePolicy.Policy.Expanding,QSizePolicy.Policy.Expanding )
+
         right_side = self.right_side()
+        right_side.setSizePolicy(QSizePolicy.Policy.Expanding,QSizePolicy.Policy.Expanding )
+
         window_layout.setContentsMargins(32, 0, 16, 0)
         window_layout.addWidget(left_side)
         window_layout.addWidget(right_side)
+
         window.setLayout(window_layout)
+
         return window
 
-    def button_set(self):
+
+    def button_set(self) -> QFrame:
+        """
+        Creates and configures a frame containing control buttons.
+
+        This method sets up a button frame with three buttons: a control button,
+        a reset button, and a file selection button. Each button is configured
+        with appropriate text, properties, and click event handlers to manage
+        user interactions.
+
+        :param self: The instance of the class.
+        :returns: QFrame -- The configured button frame containing the buttons.
+        """
+
         button_frame = QFrame()
         button_frame_layout = QHBoxLayout()
+
         self.control_button.setText(self._('control_button'))
         self.control_button.setDisabled(True)
         self.control_button.clicked.connect(lambda: self.try_to_validate_documents())
@@ -81,6 +157,7 @@ class InsertDataScreen(Screen):
         reset_button = QPushButton()
         reset_button.setText(self._('reset_fields'))
         reset_button.setProperty('class', 'secondary-button')
+        # noinspection PyUnresolvedReferences
         reset_button.clicked.connect(lambda: self.reset_button_functionality())
 
         self.input_file_button.setText(self._('choose_file'))
@@ -91,37 +168,80 @@ class InsertDataScreen(Screen):
         button_frame_layout.addStretch()
         button_frame_layout.addWidget(self.control_button)
         button_frame_layout.addWidget(reset_button)
+        button_frame_layout.setContentsMargins(11, 11, 11, 0)
+
         button_frame.setLayout(button_frame_layout)
+
+        self.warning_feedback_message()
+        self.clear_feedback_message()
+
         return button_frame
 
 
-    def try_to_validate_documents(self):
-        # if there is a quick_save warn the user that the are overwriting the previous changes
+    def try_to_validate_documents(self) -> None:
+        """
+        Attempts to validate documents and handle potential overwrites.
+
+        This method checks if there is a recent quick save for the current project.
+        If a quick save exists, it prompts the user with a warning about overwriting
+        previous changes; otherwise, it proceeds to validate the documents.
+
+        :param self: The instance of the class.
+        :returns: None
+        """
+
+        # if there is a quick_save warns the user that they are overwriting the previous changes
         if global_vars.current_project.get_last_quick_save_path():
             RevalidateDocumentsWindow(self,self._)
         else:
             self.validate_documents()
             self.validate_documents()
 
-    def validate_documents(self):
+
+    def validate_documents(self) -> None:
+        """
+        Validates documents and provides user feedback based on the results.
+
+        This method clears any previous feedback and then attempts to load and
+        validate the documents. Depending on whether errors are found, it
+        provides appropriate feedback to the user and updates the UI accordingly.
+
+        :param self: The instance of the class.
+        :returns: None
+        """
+
         self.clear_feedback()
-        # doc_list: list[str] = [documents.topLevelItem(i).data(1, 1) for i in range(documents.topLevelItemCount())]
 
         error_set, objects_lists = InsertDataDomain.load_and_validate_documents()
 
         if error_set:
-            logging.debug('negative feedback needed')
+            OTLLogger.logger.debug('negative feedback needed')
             self.negative_feedback_message()
-            self.fill_error_feedback_list(error_set)
+            self.fill_error_feedback_list(error_set=error_set)
         else:
-            logging.debug('positive feedback needed')
+            OTLLogger.logger.debug('positive feedback needed')
             self.main_window.reset_ui(self._)
             self.positive_feedback_message()
 
         self.fill_feedback_list(objects_lists)
-        # self.fill_list()
 
-    def fill_error_feedback_list(self, error_set):
+
+    def fill_error_feedback_list(self, error_set: list[dict]):
+        """Processes a set of errors and populates the feedback list.
+
+        This method iterates through the provided error set, extracting exceptions
+        and their associated document paths. It adds each error to the feedback
+        list, handling both individual exceptions and groups of exceptions.
+
+        Args:
+            self: The instance of the class.
+            error_set (list): A list of error items, each containing an exception
+                              and a document path.
+
+        Returns:
+            None
+        """
+
         for item in error_set:
             exception = item["exception"]
             doc = item["path_str"]
@@ -132,89 +252,300 @@ class InsertDataScreen(Screen):
             else:
                 self.add_error_to_feedback_list(exception, doc)
 
-    def add_input_file_field(self):
-        input_file = QFrame()
+
+    def add_input_file_field(self) -> QFrame:
+        """
+        Creates and configures a frame for displaying project files.
+
+        This method sets up a QFrame that contains a layout for displaying
+        project files in a table format. It configures the table's column
+        count, size policy, and header properties to ensure a user-friendly
+        interface.
+
+        Args:
+            self: The instance of the class.
+
+        Returns:
+            QFrame: The configured frame containing the project files overview field.
+        """
+
+        input_file_frame = QFrame()
         input_file_layout = QHBoxLayout()
+
         self.project_files_overview_field.setColumnCount(3)
+        self.project_files_overview_field.setSizePolicy(QSizePolicy.Policy.Expanding,QSizePolicy.Policy.Expanding )
+
         header = self.project_files_overview_field.header()
         header.setSectionResizeMode(1, QHeaderView.ResizeMode.Stretch)
         header.setStretchLastSection(False)
         self.project_files_overview_field.setHeaderHidden(True)
-        input_file_layout.addWidget(self.project_files_overview_field)
-        input_file.setLayout(input_file_layout)
-        return input_file
 
-    def left_side(self):
+        input_file_layout.addWidget(self.project_files_overview_field)
+
+        input_file_frame.setLayout(input_file_layout)
+
+        return input_file_frame
+
+
+    def left_side(self) -> QFrame:
+        """
+        Constructs the left side layout of the insert data screen.
+
+        This method creates a QFrame that organizes various UI components
+        vertically, including an input file label, input file field,
+        control buttons, and a feedback message. It ensures proper spacing
+        and layout for a cohesive user interface.
+
+        Args:
+            self: The instance of the class.
+
+        Returns:
+            QFrame: The configured frame representing the left side of the screen.
+        """
+
         left_side = QFrame()
         left_side_layout = QVBoxLayout()
-        # left_side_layout.addSpacing(100)
+        left_side_layout.addSpacing(10)
+
         self.input_file_label.setText(self._('input_file'))
+
         left_side_layout.addWidget(self.input_file_label)
-        left_side_layout.addWidget(self.add_input_file_field(), alignment=Qt.AlignmentFlag.AlignBottom)
-        left_side_layout.addWidget(self.button_set(), alignment=Qt.AlignmentFlag.AlignTop)
-        left_side_layout.addSpacing(30)
-        left_side_layout.addStretch()
+        left_side_layout.addWidget(self.add_input_file_field())
+        left_side_layout.addWidget(self.button_set(),alignment=Qt.AlignmentFlag.AlignBottom)
+        left_side_layout.addSpacing(10)
+        left_side_layout.setStretch(2, 1)
+
+
         left_side.setLayout(left_side_layout)
         return left_side
 
-    def right_side(self):
+
+    def right_side(self) -> QFrame:
+        """
+        Constructs the right side layout of the insert data screen.
+
+        This method creates a QFrame that organizes various UI components
+        vertically, including a list and a feedback message box. It ensures
+        proper spacing and layout for a cohesive user interface.
+
+        Args:
+            self: The instance of the class.
+
+        Returns:
+            QFrame: The configured frame representing the right side of the screen.
+        """
+
         right_side = QFrame()
         right_side_layout = QVBoxLayout()
-        list_item = self.add_list()
+
         self.construct_feedback_message()
-        # right_side_layout.addSpacing(100)
-        right_side_layout.addWidget(list_item)
-        right_side_layout.addWidget(self.feedback_message_box, alignment=Qt.AlignmentFlag.AlignTop)
+
+        right_side_layout.addSpacing(10)
+        right_side_layout.addWidget(self.add_list())
+        right_side_layout.addWidget(self.feedback_message_box)
+        right_side_layout.addSpacing(10)
+        right_side_layout.setStretch(1, 1)
+
         right_side.setLayout(right_side_layout)
-        right_side_layout.addStretch()
+
         return right_side
 
-    def construct_feedback_message(self):
-        logging.debug("constructing feedback message")
+
+    def construct_feedback_message(self) -> None:
+        """
+        Constructs and configures the feedback message display.
+
+        This method sets up the layout for the feedback message box,
+        including an icon and the message itself. It ensures that the
+        message is styled appropriately for user visibility.
+
+        Args:
+            self: The instance of the class.
+
+        Returns:
+            None
+        """
+
+        OTLLogger.logger.debug("constructing feedback message")
         frame_layout = QHBoxLayout()
-        frame_layout.addWidget(self.message_icon)
+
         self.message.setProperty('class', 'feedback-message')
+
+        frame_layout.addWidget(self.message_icon)
         frame_layout.addWidget(self.message)
-        frame_layout.addStretch()
+
         self.feedback_message_box.setLayout(frame_layout)
 
-    def add_list(self):
+
+    @classmethod
+    def construct_dummy_feedback_message(cls) -> QFrame:
+        """Creates a dummy feedback message display.
+
+        This method constructs a QFrame that contains a placeholder for a
+        feedback message. It sets up the layout to ensure that the dummy
+        message is displayed correctly within the user interface.
+
+        Args:
+            cls: this class
+
+        Returns:
+            QFrame: The configured frame containing the dummy feedback message.
+        """
+
+        dummy_feedback = QFrame()
+        frame_layout = QHBoxLayout()
+
+        dummy_message = QLabel()
+        dummy_message.setProperty('class', 'feedback-message')
+
+        frame_layout.addWidget(QLabel())
+        frame_layout.addWidget(dummy_message)
+
+        dummy_feedback.setLayout(frame_layout)
+
+        return dummy_feedback
+
+
+    def add_list(self) -> QFrame:
+        """Creates and configures a frame for displaying asset information.
+
+        This method sets up a QFrame that contains a layout for displaying
+        asset information. It ensures that the asset info widget is properly
+        sized and positioned within the frame.
+
+        Args:
+            self: The instance of the class.
+
+        Returns:
+            QFrame: The configured frame containing the asset information.
+        """
+
         frame = QFrame()
         frame_layout = QHBoxLayout()
+
+        self.asset_info.setSizePolicy(QSizePolicy.Policy.Expanding,QSizePolicy.Policy.Expanding)
+
         frame_layout.addWidget(self.asset_info)
-        frame_layout.setContentsMargins(0, 30, 50, 85)
+        frame_layout.setContentsMargins(0, 30, 0, 85)
+
         frame.setLayout(frame_layout)
+
         return frame
 
 
-    def positive_feedback_message(self):
-        self.message_icon.setPixmap(qta.icon('mdi.check', color="white").pixmap(QSize(48, 48)))
+    def positive_feedback_message(self) -> None:
+        """
+        Displays a positive feedback message to the user.
+
+        This method updates the feedback message box to indicate that all
+        information is correct. It sets an appropriate icon, message text,
+        and styles the message box for visual clarity.
+
+        Args:
+            self: The instance of the class.
+
+        Returns:
+            None
+        """
+        self.message_icon.setVisible(True)
+        self.message_icon.setPixmap(qta.icon(
+            'mdi.check',
+            color=InsertDataScreen.feedback_message_icon_color).pixmap(QSize(48, 48)))
         self.message.setText(self._('all_info_correct'))
         self.feedback_message_box.setStyleSheet('background-color: #1DCA94; border-radius: 10px;')
 
-    def warning_feedback_message(self):
-        self.message_icon.setPixmap(qta.icon('mdi.alert', color="white").pixmap(QSize(48, 48)))
+
+    def warning_feedback_message(self) -> None:
+        """
+        Displays a warning feedback message to the user.
+
+        This method updates the feedback message box to indicate a warning condition.
+        It sets an appropriate icon, message text, and styles the message box to visually alert
+        the user.
+
+        Args:
+            self: The instance of the class.
+
+        Returns:
+            None
+        """
+        self.message_icon.setVisible(True)
+        self.message_icon.setPixmap(qta.icon(
+            'mdi.alert',
+            color=InsertDataScreen.feedback_message_icon_color).pixmap(QSize(48, 48)))
         self.message.setText(self._('warning'))
         self.feedback_message_box.setStyleSheet('background-color: #F8AA62; border-radius: 10px;')
 
-    def clear_feedback_message(self):
+
+    def clear_feedback_message(self) -> None:
+        """
+        Clears the feedback message display.
+
+        This method resets the feedback message box by clearing the message
+        text and removing any custom styles. It prepares the UI for new
+        feedback messages.
+
+        Args:
+            self: The instance of the class.
+
+        Returns:
+            None
+        """
+
         self.message.setText('')
+        self.message_icon.setVisible(False)
         self.feedback_message_box.setStyleSheet('')
 
-    def negative_feedback_message(self):
-        self.message_icon.setPixmap(qta.icon('mdi.alert-circle-outline', color="white").pixmap(QSize(48, 48)))
+
+    def negative_feedback_message(self) -> None:
+        """
+        Displays a negative feedback message to the user.
+
+        This method updates the feedback message box to indicate an error
+        condition. It sets an appropriate icon, message text, and styles the
+        message box to visually alert the user of the issue.
+
+        Args:
+            self: The instance of the class.
+
+        Returns:
+            None
+        """
+        self.message_icon.setVisible(True)
+        self.message_icon.setPixmap(qta.icon(
+            'mdi.alert-circle-outline',
+            color=InsertDataScreen.feedback_message_icon_color).pixmap(QSize(48, 48)))
         self.message.setText(self._('error'))
+
         self.feedback_message_box.setStyleSheet('background-color: #CC3300; border-radius: 10px;')
 
-    def reset_ui(self, _):
-        self._ = _
+
+    def reset_ui(self, language) -> None:
+        self._ = language
         self.input_file_label.setText(self._('input_file'))
         self.control_button.setText(self._('control_button'))
         self.clear_feedback()
         self.update_file_list()
 
-    def open_file_picker(self):
+
+    def open_file_picker(self) -> None:
+        """
+        Opens a file picker dialog for selecting files.
+
+        This method initializes and displays a file picker dialog, allowing
+        the user to select one or more files from their system. It sets the
+        dialog's title, directory, and file filters based on supported file
+        formats, and processes the selected files upon confirmation.
+
+        Args:
+            self: The instance of the class.
+
+        Returns:
+            None
+        """
+
         file_path = str(Path.home())
+
         file_picker = QFileDialog()
         file_picker.setWindowTitle("Selecteer bestand")
         file_picker.setDirectory(file_path)
@@ -228,86 +559,202 @@ class InsertDataScreen(Screen):
             filters += f"{keys} files (*.{value})"
             if i < len(global_vars.supported_file_formats) -1:
                 filters += ";;" # the last value cannot have ;; behind it
+
         file_picker.setNameFilter(filters)
-        # file_picker.setNameFilter("EXCEL files (*.xlsx);;CSV files (*.csv);;JSON files (*.json)")
+
         if file_picker.exec():
-            InsertDataDomain.add_files_to_backend_list(file_picker.selectedFiles())
+            InsertDataDomain.add_files_to_backend_list(files=file_picker.selectedFiles())
             self.clear_feedback()
 
-    def add_file_to_frontend_list(self, file: str, asset_state: FileState = FileState.WARNING):
+
+    def add_file_to_frontend_list(self,
+                                  file: str,
+                                  asset_state: FileState = FileState.WARNING) -> None:
+        """Adds a file to the frontend list with a specified asset state.
+
+        This method creates a new list item in the project files overview field
+        for the specified file, setting its display name and icon based on the
+        provided asset state. It also enables the control button and adds a
+        delete button next to the list item for user interaction.
+
+        Args:
+            self: The instance of the class.
+            file (str): The path of the file to be added to the list.
+            asset_state (FileState, optional): The state of the asset, which
+                                                determines the icon displayed.
+                                                Defaults to FileState.WARNING.
+
+        Returns:
+            None
+        """
+
         self.control_button.setDisabled(False)
 
-        list_item = QTreeWidgetItem()
         doc_name = Path(file).name
+
+        list_item = QTreeWidgetItem()
         list_item.setText(1, doc_name)
+
         if asset_state == FileState.OK:
             list_item.setIcon(0, qta.icon('mdi.check', color="green"))
         elif asset_state == FileState.WARNING:
             list_item.setIcon(0, qta.icon('mdi.alert', color="orange"))
         elif asset_state == FileState.ERROR:
             list_item.setIcon(0, qta.icon('mdi.close', color="red"))
+
         list_item.setData(1, 1, file)
         list_item.setSizeHint(1, QSize(0, 30))
-        self.project_files_overview_field.addTopLevelItem(list_item)
+
         button = ButtonWidget()
         button.clicked.connect(self.delete_file_from_list)
         button.setIcon(qta.icon('mdi.close'))
+
+        self.project_files_overview_field.addTopLevelItem(list_item)
         self.project_files_overview_field.setItemWidget(list_item, 2, button)
 
+    def delete_file_from_list(self) -> None:
+        # sourcery skip: use-named-expression
+        """
+        Deletes the selected file from the project files list.
 
-    def delete_file_from_list(self):
+        This method retrieves the currently selected item in the project files
+        overview field and deletes the corresponding file from the backend.
+        If no item is selected, no action is taken.
+
+        Args:
+            self: The instance of the class.
+
+        Returns:
+            None
+        """
+
         items = self.project_files_overview_field.selectedItems()
-        item_file_path = items[0].data(1,1)
 
-        InsertDataDomain.delete_backend_document(item_file_path=item_file_path)
+        if items:
+            item_file_path = items[0].data(1,1)
+            InsertDataDomain.delete_backend_document(item_file_path=item_file_path)
 
+    def update_file_list(self) -> None:
+        """
+        Updates the frontend file list to synchronize with the backend.
 
+        This method clears the current file list and synchronizes it with the
+        backend documents. It also disables the control button if all documents
+        are valid, indicating that no further actions can be taken.
 
-    def update_file_list(self):
-        logging.debug("[CLEAR] update_file_list")
+        Args:
+            self: The instance of the class.
+
+        Returns:
+            None
+        """
+
+        OTLLogger.logger.debug("[CLEAR] update_file_list")
 
         all_valid = InsertDataDomain.sync_backend_documents_with_frontend()
         self.control_button.setDisabled(all_valid)
 
-    def reset_button_functionality(self):
+    def reset_button_functionality(self) -> None:
+        """
+        Resets the project by removing project files.
+
+        This method opens a window to confirm the removal of project files associated with the
+        current project and synchronizes the backend documents with the frontend.
+        It also clears any existing feedback messages to provide a fresh state.
+
+        Args:
+            self: The instance of the class.
+
+        Returns:
+            None
+        """
+
         RemoveProjectFilesWindow(project=global_vars.current_project, language_settings=self._)
         InsertDataDomain.sync_backend_documents_with_frontend()
         self.clear_feedback()
 
-    def clear_all(self):
+    def clear_all(self) -> None:
+        """
+        Clears all feedback and resets the project files overview field.
+
+        This method removes any feedback messages displayed to the user and
+        clears the contents of the project files overview field, providing a
+        fresh state for user interaction.
+
+        Args:
+            self: The instance of the class.
+
+        Returns:
+            None
+        """
+
         self.clear_feedback()
         self.project_files_overview_field.clear()
 
-    def clear_feedback(self):
-        logging.debug("[CLEAR] clear_feedback")
+    def clear_feedback(self) -> None:
+        """
+        Clears the feedback information displayed to the user.
+
+        This method removes any asset information and resets the feedback
+        message display, ensuring that the user interface is free of previous
+        feedback.
+
+        Args:
+            self: The instance of the class.
+
+        Returns:
+            None
+        """
+
+        OTLLogger.logger.debug("[CLEAR] clear_feedback")
         self.asset_info.clear()
         self.clear_feedback_message()
 
-    def add_error_to_feedback_list(self, e, doc):
+    def add_error_to_feedback_list(self, exception: Exception, doc: str) -> None:
+        """Adds an error message to the feedback list based on the exception type.
 
-        
-        logging.debug(  f"{str(e)}")
+        This method constructs a user-friendly error message from the provided
+        exception and document name, then adds it to the feedback list. It
+        handles various types of errors, formatting the message accordingly,
+        and highlights the error in red for visibility.
+
+        Args:
+            self: The instance of the class.
+            exception (Exception): The exception that occurred, used to determine the error message.
+            doc (str): The path of the document associated with the error.
+
+        Returns:
+            None
+        """
+
+        OTLLogger.logger.debug(str(exception))
+        traceback.print_exception(exception)
         doc_name = Path(doc).name
         error_widget = QListWidgetItem()
-        
-        
-        if str(e) == "argument of type 'NoneType' is not iterable":
-            error_text = self._("{doc_name}: Data nodig in een datasheet om objecten in te laden.\n").format(
+
+        if str(exception) == "argument of type 'NoneType' is not iterable":
+            error_text = self._(
+                "{doc_name}: Data nodig in een datasheet om objecten in te laden.\n").format(
                 doc_name=doc_name)
-        elif issubclass(type(e), NoTypeUriInTableError):
-            error_text = self._("{doc_name}: No type uri in {tab}\n").format(doc_name=doc_name, tab=str(e.tab))
-        elif issubclass(type(e), InvalidColumnNamesInExcelTabError):
-            error_text = self._("{doc_name}: invalid columns in {tab}, bad columns are {bad_columns} \n").format(
-                doc_name=doc_name, tab=e.tab, bad_columns=str(e.bad_columns))
-        elif issubclass(type(e), TypeUriNotInFirstRowError):
-            error_text = self._("{doc_name}: type uri not in first row of {tab}\n").format(doc_name=doc_name, tab=str(e.tab))
-        elif issubclass(type(e), FailedToImportFileError): # as of otlmow_converter==1.4 never instantiated
-            error_text = self._(f'{doc_name}: {e} \n')
-        # elif issubclass(type(e), NoIdentificatorError):
-        #     error_text = self._(f'{doc_name}: {e} \n')
-        elif issubclass(type(e), NoIdentificatorError):
-            error_text = self._("{doc_name}: There are assets without an assetId.identificator in worksheet {tab}\n").format(doc_name=doc_name, tab=str(e.tab))
-        elif issubclass(type(e), RelationHasInvalidTypeUriForSourceAndTarget):
+        elif issubclass(type(exception), NoTypeUriInTableError):
+            error_text = self._(
+                "{doc_name}: No type uri in {tab}\n").format(
+                doc_name=doc_name, tab=str(exception.tab))
+        elif issubclass(type(exception), InvalidColumnNamesInExcelTabError):
+            error_text = self._(
+                "{doc_name}: invalid columns in {tab}, bad columns are {bad_columns} \n").format(
+                doc_name=doc_name, tab=exception.tab, bad_columns=str(exception.bad_columns))
+        elif issubclass(type(exception), TypeUriNotInFirstRowError):
+            error_text = self._(
+                "{doc_name}: type uri not in first row of {tab}\n").format(
+                doc_name=doc_name, tab=str(exception.tab))
+        elif issubclass(type(exception), FailedToImportFileError): # as of otlmow_converter==1.4 never instantiated
+            error_text = self._(f'{doc_name}: {exception} \n')
+        elif issubclass(type(exception), NoIdentificatorError):
+            error_text = self._(
+                "{doc_name}: There are assets without an assetId.identificator in "
+                "worksheet {tab}\n").format(doc_name=doc_name, tab=str(exception.tab))
+        elif issubclass(type(exception), RelationHasInvalidTypeUriForSourceAndTarget):
                 error_text = self._(
                     "{doc_name}:\n"+
                     "Relation of type: \"{type_uri}\"\n"+
@@ -315,40 +762,73 @@ class InsertDataScreen(Screen):
                     "This relation cannot be made between the typeURI's.\n"+
                     "{wrong_field}= \"{wrong_value}\"\n"+
                     "{wrong_field2}= \"{wrong_value2}\"\n in tab {tab}\n").format(
-                    doc_name=doc_name, type_uri=e.relation_type_uri,
-                    identificator=e.relation_identificator, wrong_field=e.wrong_field,
-                    wrong_value=e.wrong_value, wrong_field2=e.wrong_field2,
-                    wrong_value2=e.wrong_value2,tab=e.tab)
-        elif issubclass(type(e), RelationHasNonExistingTypeUriForSourceOrTarget) :
+                    doc_name=doc_name, 
+                    type_uri=exception.relation_type_uri,
+                    identificator=exception.relation_identificator, 
+                    wrong_field=exception.wrong_field,
+                    wrong_value=exception.wrong_value, 
+                    wrong_field2=exception.wrong_field2,
+                    wrong_value2=exception.wrong_value2,
+                    tab=exception.tab)
+        elif issubclass(type(exception), RelationHasNonExistingTypeUriForSourceOrTarget) :
             error_text = self._(
                 "{doc_name}:\n" 
                 "Relation of type: \"{type_uri}\"\n"
                 "with assetId.identificator: \"{identificator}\",\n"
                 "has the non-existing TypeURI value: \"{wrong_value}\"\n"
                 "for field \"{wrong_field}\".\n in tab {tab}\n").format(
-                doc_name=doc_name, type_uri=e.relation_type_uri,identificator=e.relation_identificator, wrong_field=e.wrong_field, wrong_value=e.wrong_value,tab=e.tab)
+                doc_name=doc_name, 
+                type_uri=exception.relation_type_uri,
+                identificator=exception.relation_identificator, 
+                wrong_field=exception.wrong_field, 
+                wrong_value=exception.wrong_value,
+                tab=exception.tab)
 
         else:
-            error_text = self._(f'{doc_name}: {e}\n')
+            error_text = self._(f'{doc_name}: {exception}\n')
         error_widget.setText(error_text)
+
         self.asset_info.addItem(error_widget)
+
         item = self.asset_info.findItems(error_text, Qt.MatchFlag.MatchExactly)
         for item in item:
             self.asset_info.item(self.asset_info.row(item)).setForeground(Qt.GlobalColor.red)
 
-    def fill_feedback_list(self, assets):
+    def fill_feedback_list(self, assets: list) -> None:
+        """
+        µFills the feedback list with asset information based on the provided assets.
+
+        This method processes a list of assets, counting the number of objects
+        by type and adding formatted messages to the feedback list. It also
+        summarizes the total number of objects loaded that conform to the OTL
+        standard.
+
+        Args:
+            self: The instance of the class.
+            assets (list): A list of assets to be processed. If None, no action is taken.
+
+        Returns:
+            None
+        """
+
         total_assets = 0
         if assets is None:
             return
         for asset in assets:
-            asset_dict = count_assets_by_type(asset)
+            asset_dict = count_assets_by_type(objects=asset)
             for key, value in asset_dict.items():
                 key_split = key.split('#')
+
                 asset_widget = QListWidgetItem()
                 asset_widget.setText(f'{value} objecten van het type {key_split[-1]} ingeladen\n')
+
                 total_assets += value
+
                 self.asset_info.addItem(asset_widget)
+
         asset_widget = QListWidgetItem()
         asset_widget.setText(
-            f'In het totaal zijn er {total_assets} objecten ingeladen die conform zijn met de OTL standaard\n')
+            f'In het totaal zijn er {total_assets} objecten ingeladen die conform zijn met de OTL '
+            f'standaard\n')
+
         self.asset_info.addItem(asset_widget)

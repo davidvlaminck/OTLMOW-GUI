@@ -1,3 +1,4 @@
+import os.path
 from pathlib import Path
 
 from PyQt6.QtCore import Qt
@@ -5,81 +6,140 @@ from PyQt6.QtWidgets import QDialogButtonBox, QDialog, QVBoxLayout, QFrame, QHBo
     QFileDialog
 import qtawesome as qta
 
+from Domain import global_vars
 from Domain.step_domain.HomeDomain import HomeDomain
 from Exceptions.WrongDatabaseError import WrongDatabaseError
 
 
-class ChangeSubsetWindow:
+class ChangeSubsetWindow(QDialog):
 
     def __init__(self, language_settings):
-        self.home_domain = HomeDomain(language_settings)
+        super().__init__()
         self._ = language_settings
-        self.error_label = QLabel()
-        self.input_subset = QLineEdit()
 
-    def change_subset_window(self, project, main_window):
-        dialog = QDialog()
-        self.error_label.setText("")
-        self.error_label.setStyleSheet("color: red")
-        dialog.setModal(True)
-        dialog.setMinimumWidth(700)
-        dialog.setWindowTitle(self._("change_subset"))
+        project = global_vars.current_project
+
+        self.setModal(True)
+        self.setMinimumWidth(700)
+        self.setWindowTitle(self._("change_subset"))
+
         layout = QVBoxLayout()
 
         frame = QFrame()
         horizontal_layout = QHBoxLayout()
-        label = QLabel(self._("subset") + ":")
+
+        self.subset_label = QLabel(self._("subset") + ":")
+
+        self.input_subset = QLineEdit()
         self.input_subset.setReadOnly(True)
-        old_project_path = Path(project.project_path)
         self.input_subset.setText(str(project.subset_path))
+
         file_picker_btn = QPushButton()
         file_picker_btn.setIcon(qta.icon('mdi.folder-open-outline'))
         file_picker_btn.clicked.connect(lambda: self.open_file_picker(self.input_subset))
-        horizontal_layout.addWidget(label, alignment=Qt.AlignmentFlag.AlignLeft)
+
+        horizontal_layout.addWidget(self.subset_label, alignment=Qt.AlignmentFlag.AlignLeft)
         horizontal_layout.addWidget(self.input_subset)
         horizontal_layout.addWidget(file_picker_btn)
+
         frame.setLayout(horizontal_layout)
+        layout.addWidget(frame)
+
+        self.error_label = QLabel()
+        self.error_label.setText("")
+        self.error_label.setStyleSheet("color: red")
+
         button_box = self.create_button_box()
         button_box.accepted.connect(
-            lambda: self.validate_change_subset(project, dialog, main_window, self.input_subset.text(), old_project_path))
-        button_box.rejected.connect(dialog.reject)
+            lambda: self.validate_change_subset(input_subset=self.input_subset.text(), old_project_path=project.project_path))
+        button_box.rejected.connect(self.reject)
 
-        layout.addWidget(frame)
         layout.addWidget(self.error_label)
         layout.addWidget(button_box)
-        dialog.setLayout(layout)
-        dialog.show()
-        dialog.exec()
-        main_window.reset_ui(self._)
+        self.setLayout(layout)
 
-    def validate_change_subset(self, project, dialog, main_window, input_subset: str, old_project_path: Path):
+        self.show()
+        self.exec()
+
+    def validate_change_subset(self, input_subset: str, old_project_path: Path) -> None:
+        """
+        Validates and applies a change to the current subset.
+
+        This function attempts to change the subset to the specified input path. If the change is
+        unsuccessful due to a WrongDatabaseError, it updates the error label with the error message
+        and resets the input field to the old project path.
+
+        Args:
+            self: The instance of the class.
+            input_subset (str): The new subset path to be validated and applied.
+            old_project_path (Path): The path of the old project to revert to in case of an error.
+
+        Returns:
+            None
+        """
+
         try:
-            self.home_domain.change_subset(project=project, new_path=input_subset, main_window=main_window)
+            HomeDomain.change_subset(new_path=input_subset)
         except WrongDatabaseError as e:
             self.error_label.setText(str(e))
             self.input_subset.setText(str(old_project_path))
             return
-        dialog.close()
 
-    def create_button_box(self):
+        self.close()
+
+    def create_button_box(self) -> QDialogButtonBox:
+        """
+        Creates a button box for the dialog window.
+
+        This function initializes a QDialogButtonBox with "Ok" and "Cancel" buttons, setting their
+        properties and text labels. It provides a user-friendly interface for submitting or
+        canceling actions within the dialog.
+
+        Args:
+            self: The instance of the class.
+
+        Returns:
+            QDialogButtonBox: The configured button box containing the action buttons.
+        """
+
         button_box = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
         button_box.setProperty("class", "button-box")
         button_box.button(QDialogButtonBox.StandardButton.Ok).setProperty("class", "primary-button")
         button_box.button(QDialogButtonBox.StandardButton.Ok).setText(self._("submit"))
         button_box.button(QDialogButtonBox.StandardButton.Cancel).setProperty("class", "secondary-button")
         button_box.button(QDialogButtonBox.StandardButton.Cancel).setText(self._("cancel"))
+
         return button_box
 
-    @staticmethod
-    def open_file_picker(input_subset):
-        if input_subset.text() == "":
-            file_path = str(Path.home())
-        else:
-            file_path = input_subset.text()
+    @classmethod
+    def open_file_picker(cls, input_subset) -> None:
+        """
+        Opens a file picker dialog to select a subset file.
+
+        This class method retrieves the starting directory for the file picker based on the
+        current input and allows the user to select a database file. It updates the input field
+        with the selected file path and stores the directory for future use.
+
+        Args:
+            cls: The class itself.
+            input_subset: The input field where the selected file path will be set.
+
+        Returns:
+            None
+        """
+
+        file_path = global_vars.get_start_dir_subset_selection(
+            input_subset_str= input_subset.text())
+
         file_picker = QFileDialog()
         file_picker.setWindowTitle("Selecteer subset")
         file_picker.setDirectory(file_path)
         file_picker.setNameFilter("Database files (*.db)")
         file_picker.setOption(QFileDialog.Option.ShowDirsOnly, True)
+
         if file_picker.exec():
-            input_subset.setText(file_picker.selectedFiles()[0])
+            selected = file_picker.selectedFiles()[0]
+            input_subset.setText(selected)
+            if selected:
+                global_vars.last_subset_selected_dir = os.path.dirname(selected)
+

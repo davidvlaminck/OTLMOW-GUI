@@ -2,7 +2,7 @@ import abc
 from pathlib import Path
 from typing import Optional, Collection
 
-from PyQt6.QtCore import Qt, QModelIndex
+from PyQt6.QtCore import Qt, QModelIndex, QItemSelectionModel
 from PyQt6.QtGui import QColor, QStandardItem, QPixmap, QIcon, QPainter, QBrush, QFont
 from PyQt6.QtWidgets import QTreeWidget, QFrame, QVBoxLayout, QLabel, QListWidget, QListWidgetItem, \
     QHeaderView, QTreeWidgetItem, QHBoxLayout, QLineEdit, QPushButton, QTreeView, \
@@ -12,6 +12,7 @@ import qtawesome as qta
 from otlmow_visuals.PyVisWrapper import PyVisWrapper
 
 from Domain.step_domain.RelationChangeDomain import RelationChangeDomain
+from GUI.Styling import Styling
 from GUI.screens.general_elements.ButtonWidget import ButtonWidget
 from GUI.screens.RelationChange_elements.FolderTreeView import FolderTreeView
 from UnitTests.TestClasses.Classes.ImplementatieElement.AIMObject import AIMObject
@@ -28,7 +29,7 @@ class AbstractInstanceListWidget:
         self.search_bar = None
         self.clear_search_bar_button = None
 
-        self.list_gui = None
+        self.list_gui: Optional[FolderTreeView] = None
         self.list_button = ButtonWidget()
 
         self.list_label = None
@@ -40,11 +41,13 @@ class AbstractInstanceListWidget:
         # self.type_to_items_dict = {}
         self.type_open_status = {}
         self.selected_object = None
+        self.selected_item = None
         self.list_gui_style_class = list_gui_style_class
 
         self.item_type_data_index = 3
         self.data_1_index = 4
         self.data_last_added_index = 5
+        self.data_item_count_index = 8
 
         # self.data_1_index = 4
         # self.data_2_index = 5
@@ -52,7 +55,6 @@ class AbstractInstanceListWidget:
         # self.data_last_added_index = 9
 
         self.color_legend = PyVisWrapper().relatie_color_dict
-        self.last_added_color = QColor("#d0ffcc")
         self.needs_source_object= needs_source_object
 
         self.labels = labels
@@ -64,6 +66,7 @@ class AbstractInstanceListWidget:
     class LastAddedHighlightDelegate(QStyledItemDelegate):
 
         def __init__(self, list_widget):
+
             super().__init__()
             self.parent : AbstractInstanceListWidget = list_widget
             self.second_paint = False
@@ -80,7 +83,7 @@ class AbstractInstanceListWidget:
 
             # Apply custom background for specific rows or items
             if  self.parent.list_gui.model.itemFromIndex(index.siblingAtColumn(0)).data(self.parent.data_last_added_index) :
-                painter.fillRect(option.rect, QBrush(self.parent.last_added_color))
+                painter.fillRect(option.rect, QBrush(Styling.last_added_color))
 
             painter.restore()
             super().paint(painter, option, index)
@@ -139,22 +142,33 @@ class AbstractInstanceListWidget:
 
         return frame
 
-    def clicked_item_listener(self, model_index: QModelIndex):
-        model_index = model_index.siblingAtColumn(0)
-        if self.list_gui.model.itemFromIndex(model_index).hasChildren():
-            if self.list_gui.isExpanded(model_index):
-                self.list_gui.collapse(model_index)
+    def clicked_item_listener(self, table_coord: QModelIndex) -> None:
+        """
+        Intended to connect to self.list_gui.clicked signal which is triggered when an item in the
+        list is clicked
 
-            else:
-                self.list_gui.expand(model_index)
+        Responds to item click events in the list widget by checking if the clicked item is a
+        folder. If the item is a folder, it toggles the expand state of that item in the GUI.
 
+        :param table_coord: The index of the clicked item in the table.
+        :type table_coord: QModelIndex
 
+        :return: None
+        """
+
+        table_coord = table_coord.siblingAtColumn(0)
+        if self.is_item_a_type_folder_at_row(table_coord):
+           self.list_gui.toggle_expand_state_of_item_at_row(table_coord)
+
+    def is_item_a_type_folder_at_row(self, model_index):
+        return self.list_gui.model.itemFromIndex(model_index).hasChildren()
 
     def fill_list(self, source_object: Optional[AIMObject], objects: Collection, last_added) -> None:
         # sourcery skip: remove-dict-keys
         # objects = RelationChangeDomain.objects
         self.list_gui.setSortingEnabled(False)
         self.list_gui.clear()
+
         item_list = []
         type_to_instance_dict = {}
         self.list_gui.itemDelegate().first_paint = False
@@ -208,7 +222,6 @@ class AbstractInstanceListWidget:
                             self.search_text in folder_item.text().lower()):
                         search_match = True
 
-                        # self.type_to_items_dict[asset_type].append(instance_item)
                         instance_item.setEditable(False)  # Make the item name non-editable
                         if self.is_last_added(text_and_data):
                             instance_item.setBackground(QBrush(QColor("#ecf0f1")))
@@ -220,8 +233,6 @@ class AbstractInstanceListWidget:
 
                     if len(instance_item_tuple) > 1:
                         instance_item_tuple[1].setData(instance_item_tuple[0].data(self.data_1_index), self.data_1_index)
-                        # instance_item_tuple[1].setData(instance_item_tuple[0].data(self.data_2_index), self.data_2_index)
-                        # instance_item_tuple[1].setData(instance_item_tuple[0].data(self.data_3_index), self.data_3_index)
                         instance_item_tuple[1].setData(instance_item_tuple[0].data(self.item_type_data_index), self.item_type_data_index)
                         instance_item_tuple[1].setEditable(False)
                         self.multi_col_list = True
@@ -273,6 +284,9 @@ class AbstractInstanceListWidget:
         self.select_object_id(previously_selected_item=previously_selected_item)
         if not previously_selected_item:
             self.set_list_button_enabled( False)
+            self.selected_object = None
+            self.selected_item = None
+
 
         if self.needs_source_object and not source_object:
             self.list_gui.model.setHeaderData(0, Qt.Orientation.Horizontal,"")
@@ -297,7 +311,7 @@ class AbstractInstanceListWidget:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def on_item_selected_listener(self, selected, deselected):
+    def on_item_selected_listener(self,  selected: QItemSelectionModel, deselected:QItemSelectionModel):
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -343,7 +357,7 @@ class AbstractInstanceListWidget:
         self.search_bar.textChanged.connect(self.search_listener)
 
         self.clear_search_bar_button = QPushButton()
-        self.clear_search_bar_button.setIcon(qta.icon('mdi.close'))
+        self.set_clear_icon(self.clear_search_bar_button)
         self.clear_search_bar_button.clicked.connect(self.clear_search_listener)
         self.clear_search_bar_button.setProperty('class', 'secondary-button')
 
@@ -371,22 +385,47 @@ class AbstractInstanceListWidget:
     def get_no_instance_selected_message(self):
         return self._("no_instance_selected")
 
-    def create_asset_type_item(self, asset_type):
-        item = QListWidgetItem()
-        item.setText(f"{asset_type}")
-        item.setData(self.data_1_index, asset_type)
-        item.setData(self.item_type_data_index, "type")
-        return item
 
     def create_asset_type_standard_item(self, asset_type, text_and_data_list):
-        item = QStandardItem(f"{asset_type}")
+        item_count = len(text_and_data_list)
+        selected_item_count = 0
+
+        item = QStandardItem()
+        self.set_type_folder_text(type_folder_item= item,
+                                  otl_type= asset_type,
+                                  item_count=item_count,
+                                  selected_item_count=selected_item_count)
         item.setEditable(False)  # Make the folder name non-editable
         item.setSelectable(False)  # Optional: make the folder itself non-selectable
 
         item.setData(asset_type,self.data_1_index)
         item.setData("type", self.item_type_data_index)
         item.setData(False, self.data_last_added_index)
+
+        # there are only so many data indexes you can use so we have to bundle information
+        item.setData([selected_item_count,item_count],self.data_item_count_index)
+
         return item
+
+    def set_type_folder_text(self, type_folder_item, otl_type, item_count, selected_item_count = 0):
+        if not selected_item_count:
+            type_folder_item.setText(f"{otl_type} ({item_count})")
+        else:
+            type_folder_item.setText(f"{otl_type} ({selected_item_count}/{item_count})")
+
+    def update_selected_count_data(self, type_folder_item, selected_item_count):
+        item_count = type_folder_item.data(self.data_item_count_index)[1]
+        type_folder_item.setData([selected_item_count, item_count], self.data_item_count_index)
+        return item_count
+
+    def reset_selected_item_count(self, type_folder_item):
+        selected_item_count = 0
+        item_count = self.update_selected_count_data(type_folder_item, selected_item_count)
+        asset_type = type_folder_item.data(self.data_1_index)
+        self.set_type_folder_text(type_folder_item=type_folder_item,
+                                  otl_type=asset_type,
+                                  item_count=item_count,
+                                  selected_item_count=selected_item_count)
 
     def select_object_id(self, previously_selected_item: QStandardItem):
         pass
@@ -476,3 +515,27 @@ class AbstractInstanceListWidget:
         placeholder_font.setItalic(True)
         place_holder_item.setFont(0,placeholder_font)
         field.addTopLevelItem(place_holder_item)
+
+    def add_loading_placeholder(self):
+        place_holder_item = QStandardItem(
+            self._("loading"))
+        place_holder_item.setEditable(False)
+        place_holder_item.setEnabled(False)
+        place_holder_item.setSelectable(False)
+
+        placeholder_font = QFont()
+        placeholder_font.setItalic(True)
+        place_holder_item.setFont(placeholder_font)
+
+        self.list_gui.addItem(place_holder_item)
+
+    def clear(self):
+        self.list_gui.clear()
+        self.attribute_field.clear()
+
+    # noinspection PyMethodMayBeStatic
+    def set_clear_icon(self, button: QPushButton):
+        button.setIcon(qta.icon('mdi.close', color=Styling.button_icon_color))
+
+    def update_color_scheme(self):
+        self.set_clear_icon(self.clear_search_bar_button)

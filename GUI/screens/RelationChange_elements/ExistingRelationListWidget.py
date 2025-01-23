@@ -1,10 +1,12 @@
+import logging
 from collections import namedtuple
 
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt, QItemSelectionModel
 from PyQt6.QtGui import QStandardItem
 from PyQt6.QtWidgets import QFrame
 from otlmow_model.OtlmowModel.Helpers import OTLObjectHelper
 
+from Domain.logger.OTLLogger import OTLLogger
 from Domain.step_domain.RelationChangeDomain import RelationChangeDomain
 from GUI.screens.RelationChange_elements.AbstractInstanceListWidget import \
     AbstractInstanceListWidget
@@ -31,14 +33,49 @@ class ExistingRelationListWidget(AbstractInstanceListWidget):
         self.frame_layout.setContentsMargins(11, 0, 0, 0)
         return frame
 
-    def on_item_selected_listener(self, selected, deselected):
+    def on_item_selected_listener(self,  selected: QItemSelectionModel, deselected:QItemSelectionModel):
         no_item_selected = True
+
+        for index in deselected.indexes():
+            if index.column() == 0:
+                item = self.list_gui.model.itemFromIndex(index)
+                if item and item.isSelectable():
+                    type_folder_item = item.parent()
+                    self.reset_selected_item_count(type_folder_item=type_folder_item)
+
+        dict_type_to_type_folder_item = {}
+        dict_type_to_selected_item_count = {}
         # Get the currently selected indexes
         for index in self.list_gui.selectionModel().selectedIndexes():
             if index.column() == 0:
                 item = self.list_gui.model.itemFromIndex(index)
                 if item and item.isSelectable():
                     no_item_selected = False
+
+                    # keep count of selected items in folder
+                    parent_type_folder_item = item.parent()
+                    parent_type_folder_type = parent_type_folder_item.data(self.data_1_index)
+                    if parent_type_folder_type in dict_type_to_selected_item_count.keys():
+                        dict_type_to_selected_item_count[parent_type_folder_type] += 1
+                    else:
+                        dict_type_to_selected_item_count[parent_type_folder_type] = 1
+                        dict_type_to_type_folder_item[
+                            parent_type_folder_type] = parent_type_folder_item
+
+        # update the selected_counts on all type_folder_items
+        for type_folder_type, selected_item_count in dict_type_to_selected_item_count.items():
+            OTLLogger.logger.debug(f"{type_folder_type}: {selected_item_count}")
+
+            type_folder_item = dict_type_to_type_folder_item[type_folder_type]
+
+            item_count = self.update_selected_count_data(type_folder_item=type_folder_item,
+                                                         selected_item_count=selected_item_count)
+
+            # apply new information to the folder_item display text
+            self.set_type_folder_text(type_folder_item=type_folder_item,
+                                      otl_type=type_folder_type,
+                                      item_count=item_count,
+                                      selected_item_count=selected_item_count)
 
         self.existing_relations_selected()
         self.set_list_button_enabled(not no_item_selected)

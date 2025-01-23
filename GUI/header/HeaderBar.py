@@ -1,5 +1,7 @@
 import asyncio
 import logging
+import os
+import subprocess
 import webbrowser
 from asyncio import sleep
 from datetime import datetime
@@ -12,6 +14,9 @@ from PyQt6.QtWidgets import QFrame, QHBoxLayout, QLabel, QVBoxLayout, QWidget, Q
 
 
 from Domain import global_vars
+from Domain.logger.OTLLogger import OTLLogger
+from Domain.step_domain.HomeDomain import HomeDomain
+from GUI.Styling import Styling
 from GUI.screens.general_elements.ButtonWidget import ButtonWidget
 from GUI.dialog_windows.LanguageWindow import LanguageWindow
 from GUI.dialog_windows.MenuActionsWindow import MenuActionsWindow
@@ -20,11 +25,12 @@ from GUI.dialog_windows.UpsertProjectWindow import UpsertProjectWindow
 from GUI.screens.Home_elements.OverviewTable import OverviewTable
 
 
-ROOT_DIR = Path(__file__).parent.parent
+ROOT_DIR = Path(__file__).parent.parent.parent
 
 IMG_DIR = ROOT_DIR / 'img/'
 
 class HeaderBar(QFrame):
+
     def __init__(self, language, main_window=None, table: OverviewTable = None, has_save_btn: bool = True):
         super().__init__()
         self.new_project_button = ButtonWidget()
@@ -32,7 +38,7 @@ class HeaderBar(QFrame):
         self.table = table
         self.main_window = main_window
         self.return_button = ButtonWidget()
-        self.subtitel = QLabel()
+        self.subtitle = QLabel()
         self.save_button = ButtonWidget()
         self.import_button = ButtonWidget()
         self.reference_title = QLabel()
@@ -43,25 +49,26 @@ class HeaderBar(QFrame):
         self.pixmap_icon = None
         self.initialised = False
         self.quick_save_animation_task = None
+        self.header = None
 
     def construct_header_bar(self):
         self.setProperty('class', 'header')
-        header = QHBoxLayout()
+        self.header = QHBoxLayout()
         title = QLabel('OTLWizard')
         title.setProperty('class', 'title')
-        header.addWidget(title)
-        header.addSpacing(30)
+        self.header.addWidget(title)
+        self.header.addSpacing(30)
         self.create_new_project_button()
         self.create_import_button()
-        header.addWidget(self.new_project_button)
-        header.addWidget(self.import_button)
-        # header.addWidget(self.create_loading_icon())
-        header.addStretch()
-        header.setAlignment(self.new_project_button, Qt.AlignmentFlag.AlignLeft)
+        self.header.addWidget(self.new_project_button)
+        self.header.addWidget(self.import_button)
+        # self.header.addWidget(self.create_loading_icon())
+        self.header.addStretch()
+        self.header.setAlignment(self.new_project_button, Qt.AlignmentFlag.AlignLeft)
         user_settings = self.construct_settings_bar()
-        header.addLayout(user_settings)
-        header.setAlignment(user_settings, Qt.AlignmentFlag.AlignRight)
-        self.setLayout(header)
+        self.header.addLayout(user_settings)
+        self.header.setAlignment(user_settings, Qt.AlignmentFlag.AlignRight)
+        self.setLayout(self.header)
 
     def start_event_loop(self):
 
@@ -80,7 +87,7 @@ class HeaderBar(QFrame):
             lambda: self.start_dialog_window(is_project=True))
 
     def create_loading_icon(self):
-        self.pixmap_icon = QPixmap(f'{str(IMG_DIR)}/wizard.ico')
+        self.pixmap_icon = QPixmap(str(IMG_DIR / 'wizard.ico'))
 
         header_sub = QFrame()
         header_sub_layout = QHBoxLayout()
@@ -147,7 +154,21 @@ class HeaderBar(QFrame):
         self.about_action.triggered.connect(lambda: MenuActionsWindow(self._).create_about_window())
         self.report_action = menu.addAction(self._('report error'))
         self.report_action.triggered.connect(lambda: MenuActionsWindow(self._).create_error_report_window())
+        self.logs_action = menu.addAction(self._('logs'))
+        self.logs_action.triggered.connect(self.open_logs_folder)
+
         return menu
+
+    @classmethod
+    def open_logs_folder(cls):
+        logs_folderpath = Path.home() / 'OTLWizardProjects' / 'logs'
+        log_filename_list = os.listdir(logs_folderpath)
+        if log_filename_list:
+            log_filename_list.sort(reverse=True)
+            last_log_filepath = logs_folderpath / log_filename_list[0]
+            subprocess.Popen(f'explorer /select,"{last_log_filepath}"')
+        else:
+            subprocess.Popen(f'explorer /select,"{logs_folderpath}"')
 
     @staticmethod
     def open_wiki():
@@ -155,11 +176,9 @@ class HeaderBar(QFrame):
 
     def start_dialog_window(self, id_: int = None, is_project=False) -> None:
         if is_project:
-            upsert_project_window = UpsertProjectWindow(self._)
-            upsert_project_window.draw_upsert_project(project=id_, overview_table=self.table)
+            UpsertProjectWindow(language_settings=self._,project=id_)
         else:
-            language_window = LanguageWindow(self._)
-            language_window.language_window(main_window=self.main_window)
+            LanguageWindow(language_settings=self._,main_window=self.main_window)
 
     def header_bar_detail_screen(self):
         if self.initialised:
@@ -220,8 +239,7 @@ class HeaderBar(QFrame):
 
 
     def create_import_button(self):
-        self.import_button.setIcon(qta.icon("mdi.download",
-                                            color="#0E5A69"))
+        self.set_import_icon(self.import_button)
         self.import_button.setText(self._("import"))
         self.import_button.setProperty('class', 'import-button')
         self.import_button.clicked.connect(
@@ -231,11 +249,14 @@ class HeaderBar(QFrame):
         project = ProjectPickerWindow(self._).open_project_file_picker()
         if project is None:
             return
-        global_vars.projects.append(project)
-        logging.debug("Projects global")
-        for p in global_vars.projects:
-            logging.debug(p.eigen_referentie)
-        self.table.reset_ui(self._)
+        HomeDomain.projects[project.eigen_referentie] = project
+        OTLLogger.logger.debug("Projects global")
+        for eigen_ref in HomeDomain.projects.keys():
+            OTLLogger.logger.debug(eigen_ref)
+
+        HomeDomain.reload_projects()
+        HomeDomain.update_frontend()
+        # self.table.reset_ui(self._)
 
     def reset_ui(self, _):
         self._ = _
@@ -250,3 +271,9 @@ class HeaderBar(QFrame):
             self.reference_title.setText(global_vars.current_project.eigen_referentie)
         else:
             self.reference_title.setText("")
+
+    def set_import_icon(self, button: ButtonWidget):
+        button.setIcon(qta.icon("mdi.download",
+                                            color=Styling.button_icon_color))
+    def update_color_scheme(self):
+        self.set_import_icon(self.import_button)

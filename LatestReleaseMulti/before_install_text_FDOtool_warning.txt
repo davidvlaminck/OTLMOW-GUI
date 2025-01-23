@@ -1,0 +1,17 @@
+NEDERLANDS
+De installatie van OTL Wizard 2.0 bestaat uit 2 delen:
+
+1. De OTL-wizard 2: de basis functionaliteit
+2. De FDO Toolbox:  voor het openen van SDF-bestanden
+
+Om stap 2 te kunnen uitvoeren moet je beiden stappen uitvoeren met admin rechten.
+Als u geen admin rechten hebt voor uw computer of SDF-bestand functionaliteit niet nodig hebt, mag u stap 2 overslaan.
+
+ENGLISH
+The installation of OTL Wizard 2.0 consists of 2 parts:
+
+1. The OTL Wizard 2: the basic functionality
+2. The FDO Toolbox: for opening SDF files
+
+To be able to perform step 2, you must perform both steps with admin rights.
+If you do not have admin rights for your computer or do not need SDF file functionality, you may skip step 2.
