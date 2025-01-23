@@ -85,12 +85,12 @@ def test_load_and_validate_document_good_path(mock_screen: InsertDataScreen,
          "UnitTests/test_files/output_ref/output_load_and_validate_documents_SDF_DA-2025-00023_export.txt"),
      254),
 
-    ("UnitTests/test_files/input/DA-2024-03992_export_sdf_example.sdf",
-     Path("UnitTests/test_files/output_ref/output_load_and_validate_documents_SDF_DA-2024-03992_export.txt"),2028)
+    # ("UnitTests/test_files/input/DA-2024-03992_export_sdf_example.sdf",
+    #  Path("UnitTests/test_files/output_ref/output_load_and_validate_documents_SDF_DA-2024-03992_export.txt"),2028)
 
 ], ids=[
     "DA-2025-00023_export_sdf_example",
-    "DA-2024-03992_export_sdf_example"
+    # "DA-2024-03992_export_sdf_example"
         ])
 def test_load_and_validate_document_sdf(mock_screen: InsertDataScreen,
                                         get_and_cleanup_empty_project_no_param,

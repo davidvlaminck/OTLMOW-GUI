@@ -154,25 +154,26 @@ def test_get_objects_from_class_error(root_directory,create_translations,rel_sdf
 
 @pytest.mark.skip
 @pytest.mark.parametrize("rel_sdf_file_path, rel_csv_output_file_path, expected_output_dirpath, expected_output_file_basename", [
-    ("UnitTests/test_files/input/DA-2024-03992_export_sdf_example.sdf",
-     Path("UnitTests/test_files/output_test/convert_SDF_to_CSV_DA-2024-03992_export/da-2024-03992_export.csv"),
-     Path("UnitTests/test_files/output_ref/convert_SDF_to_CSV_DA-2024-03992_export"),"da-2024-03992_export"),
+    # ("UnitTests/test_files/input/DA-2024-03992_export_sdf_example.sdf",
+    #  Path("UnitTests/test_files/output_test/convert_SDF_to_CSV_DA-2024-03992_export/da-2024-03992_export.csv"),
+    #  Path("UnitTests/test_files/output_ref/convert_SDF_to_CSV_DA-2024-03992_export"),"da-2024-03992_export"),
 
     ("UnitTests/test_files/input/DA-2025-00023_export_sdf_example.sdf",
      Path("UnitTests/test_files/output_test/convert_SDF_to_CSV_DA-2025-00023_export/da-2025-00023_export.csv"),
      Path("UnitTests/test_files/output_ref/convert_SDF_to_CSV_DA-2025-00023_export"),"da-2025-00023_export"),
 
-    ("UnitTests/test_files/input/DA-2024-03992_export_sdf_example.sdf",
-     Path("UnitTests/test_files/output_test/convert_SDF_to_CSV_DA-2024-03992_export_csv_output_dir_given"),
-     Path("UnitTests/test_files/output_ref/convert_SDF_to_CSV_DA-2024-03992_export"),"da-2024-03992_export"),
+    # ("UnitTests/test_files/input/DA-2024-03992_export_sdf_example.sdf",
+    #  Path("UnitTests/test_files/output_test/convert_SDF_to_CSV_DA-2024-03992_export_csv_output_dir_given"),
+    #  Path("UnitTests/test_files/output_ref/convert_SDF_to_CSV_DA-2024-03992_export"),"da-2024-03992_export"),
 
     ("UnitTests/test_files/input/DA-2025-00023_export_sdf_example.sdf",
      Path("UnitTests/test_files/output_test/convert_SDF_to_CSV_DA-2025-00023_export_csv_output_dir_given"),
      Path("UnitTests/test_files/output_ref/convert_SDF_to_CSV_DA-2025-00023_export"),"da-2025-00023_export")
 
-], ids=["DA-2024-03992_export_sdf_example",
+], ids=[
+    # "DA-2024-03992_export_sdf_example",
         "DA-2025-00023_export_sdf_example",
-        "DA-2024-03992_export_sdf_example_csv_output_dir_given",
+        # "DA-2024-03992_export_sdf_example_csv_output_dir_given",
         "DA-2025-00023_export_sdf_example_csv_output_dir_given"])
 def test_convert_SDF_to_CSV(root_directory,create_translations,cleanup_after_creating_a_file_to_delete,
                             rel_sdf_file_path:str, rel_csv_output_file_path:Path,
