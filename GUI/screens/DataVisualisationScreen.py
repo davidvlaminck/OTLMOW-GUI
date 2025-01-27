@@ -24,6 +24,8 @@ HTML_DIR = Path.home() / 'OTLWizardProjects' / 'img' / 'html'
 
 class DataVisualisationScreen(Screen):
 
+    object_count_limit = 300
+
     def __init__(self, _):
         super().__init__()
 
@@ -36,6 +38,7 @@ class DataVisualisationScreen(Screen):
         self.container_insert_data_screen = QVBoxLayout()
         self._ = _
         self.view = QWebEngineView()
+        self.too_many_objects_message = QLabel()
         self.color_label_title = QLabel()
         self.init_ui()
 
@@ -57,11 +60,14 @@ class DataVisualisationScreen(Screen):
         self.view.settings().setAttribute(QWebEngineSettings.WebAttribute.ShowScrollBars, False)
         self.view.setContentsMargins(0, 0, 0, 0)
         self.view.setSizePolicy(QSizePolicy.Policy.Expanding,QSizePolicy.Policy.Expanding )
-       
+
+        self.too_many_objects_message.setVisible(False)
+
         self.color_label_title.setText(self._("relations legend") + ":")
         
         window_layout.addWidget(self.create_button_container())
         window_layout.addWidget(self.view,2)
+        window_layout.addWidget(self.too_many_objects_message,2)
         window_layout.addWidget(self.color_label_title)
         window_layout.addWidget(self.create_color_legend())
         
@@ -135,10 +141,25 @@ class DataVisualisationScreen(Screen):
         return RelationChangeDomain.get_quicksave_instances()
 
     def create_html(self, objects_in_memory:List[OTLObject]):
-        html_loc = HTML_DIR / "visuals.html"
-        previous_cwd = os.getcwd()
-        os.chdir(Path.home() / 'OTLWizardProjects')
-        PyVisWrapper().show(list_of_objects=objects_in_memory,
-                            html_path=Path(html_loc), launch_html=False)
-        os.chdir(previous_cwd)
-        self.view.setHtml(open(html_loc).read())
+        object_count = len(objects_in_memory)
+        if object_count > DataVisualisationScreen.object_count_limit:
+            self.view.setVisible(False)
+            if not self.too_many_objects_message.isVisible():
+                self.too_many_objects_message.setVisible(True)
+
+            translation = self._("There are too many assets and relations to create a visualisation.\nmaximum: {0}\ncurrent: {1}")
+            self.too_many_objects_message.setText(translation.format(
+                DataVisualisationScreen.object_count_limit,
+                object_count))
+
+        else:
+            self.too_many_objects_message.setVisible(False)
+            if not self.view.isVisible():
+                self.view.setVisible(True)
+            html_loc = HTML_DIR / "visuals.html"
+            previous_cwd = os.getcwd()
+            os.chdir(Path.home() / 'OTLWizardProjects')
+            PyVisWrapper().show(list_of_objects=objects_in_memory,
+                                html_path=Path(html_loc), launch_html=False)
+            os.chdir(previous_cwd)
+            self.view.setHtml(open(html_loc).read())

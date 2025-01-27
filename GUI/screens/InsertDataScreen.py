@@ -761,7 +761,7 @@ class InsertDataScreen(Screen):
                     "with assetId.identificator: \"{identificator}\"\n"+
                     "This relation cannot be made between the typeURI's.\n"+
                     "{wrong_field}= \"{wrong_value}\"\n"+
-                    "{wrong_field2}= \"{wrong_value2}\"\n in tab {tab}\n").format(
+                    "{wrong_field2}= \"{wrong_value2}\"\nin tab {tab}\n").format(
                     doc_name=doc_name, 
                     type_uri=exception.relation_type_uri,
                     identificator=exception.relation_identificator, 
@@ -776,7 +776,7 @@ class InsertDataScreen(Screen):
                 "Relation of type: \"{type_uri}\"\n"
                 "with assetId.identificator: \"{identificator}\",\n"
                 "has the non-existing TypeURI value: \"{wrong_value}\"\n"
-                "for field \"{wrong_field}\".\n in tab {tab}\n").format(
+                "for field \"{wrong_field}\".\nin tab {tab}\n").format(
                 doc_name=doc_name, 
                 type_uri=exception.relation_type_uri,
                 identificator=exception.relation_identificator, 
