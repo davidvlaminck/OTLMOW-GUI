@@ -81,8 +81,8 @@ class OTLLogger(logging.Logger):
             time_dif:datetime.timedelta = current_time - ref_time
             time_dif_seconds = time_dif.seconds + time_dif.microseconds/1000000
             state = "END"
-            return "{msg} {status:5s}({time:07.3f}s) ".format(status=state, time=time_dif_seconds,
-                                                              msg=msg)
+            # return "{msg} {status:5s}({time:07.3f}s) ".format(status=state, time=time_dif_seconds,
+            #                                                   msg=msg)
             return "{msg} {status:5s} {ref} ({time:07.3f}s) ".format(status=state, time=time_dif_seconds,
                                                               ref=ref_key, msg=msg)
         else:
