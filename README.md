@@ -71,3 +71,20 @@ tranlation for that text in like:
     with the absolute path to the root of your project
 5. Open `LatestReleaseMulti/inno_setup_installer_setup_script.iss` with Inno Setup Compiler and compile.  
     This should create `LatestReleaseMulti/OTL wizard 2 installer.exe`
+
+## Custom logging implementation usage
+
+This project has a custom logging class called OTLLogger.py, it is build on the standard logging library.  
+Instead of using `logging.debug("message")` you should use `OTLLogger.logger.debug("message")`
+  
+This custom logger can also display the time between 2 `OTLLogger.logger.debug()` calls by adding the same `timing_ref` 
+to the extra argument in both log calls. Example:  
+```
+OTLLogger.logger.debug(f"Execute OtlmowConverter.from_file_to_objects({file_path.name})", 
+                            extra={"timing_ref": f"file_to_objects_{file_path.stem}"})
+
+object_lists = list(OtlmowConverter.from_file_to_objects(file_path,**kwargs))
+
+OTLLogger.logger.debug(f"Execute OtlmowConverter.from_file_to_objects({file_path.name}) ({len(object_lists)} objects)", 
+                            extra={"timing_ref": f"file_to_objects_{file_path.stem}"})
+```
