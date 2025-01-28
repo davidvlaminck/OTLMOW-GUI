@@ -19,7 +19,7 @@ from otlmow_model.OtlmowModel.Classes.ImplementatieElement.RelatieObject import 
 from Domain import global_vars
 from Domain.Helpers import Helpers
 from Domain.database.ModelBuilder import ModelBuilder
-from Domain.logger.OTLLogger import OTLLogger
+from Domain.logger.OTLLogger import OTLLogger, add_loading_screen
 from Domain.project.ProjectFile import ProjectFile
 from Domain.enums import FileState
 from Domain.project.ProgramFileStructure import ProgramFileStructure
@@ -247,19 +247,23 @@ class Project:
         path = self.get_last_quick_save_path()
 
         if path:
-            OTLLogger.logger.debug(
-                f"Execute Project.load_validated_assets({path.name}) for project {self.eigen_referentie}",
-                extra={
-                    "timing_ref": f"load_assets_{path.stem}"})
+            # RelationChangeScreen
             # noinspection PyTypeChecker
             saved_objects = Helpers.converter_from_file_to_object(path)
             object_count = len(saved_objects)
+            timing_ref = f"load_assets_{path.stem}"
+            # if OTLLogger.loading_window:
+            #     OTLLogger.attempt_destoy_loading_screen( timing_ref)
             OTLLogger.logger.debug(
                 f"Execute Project.load_validated_assets({path.name}) for project {self.eigen_referentie} ({object_count} objects)",
                 extra={
-                    "timing_ref": f"load_assets_{path.stem}"})
-            return saved_objects
+                    "timing_ref":  timing_ref})
 
+            return saved_objects
+        # OTLLogger.logger.debug(
+        #     f"Execute Project.load_validated_assets({path.name}) for project {self.eigen_referentie} ({object_count} objects)",
+        #     extra={
+        #         "timing_ref": f"load_assets_{path.stem}"})
         return []
 
     def save_validated_assets(self, asynchronous = True) -> None:
@@ -305,7 +309,7 @@ class Project:
         else:
             self.make_quick_save(save_path=save_path)
 
-
+    @add_loading_screen
     async def make_quick_save_async(self, save_path: Path) -> None:
         self.make_quick_save(save_path=save_path)
 

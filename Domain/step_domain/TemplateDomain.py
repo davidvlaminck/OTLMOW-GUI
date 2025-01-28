@@ -10,7 +10,7 @@ from otlmow_modelbuilder.SQLDataClasses.OSLOClass import OSLOClass
 from otlmow_template.SubsetTemplateCreator import SubsetTemplateCreator
 
 from Domain import global_vars
-from Domain.logger.OTLLogger import OTLLogger
+from Domain.logger.OTLLogger import OTLLogger, add_loading_screen
 from Domain.step_domain.InsertDataDomain import InsertDataDomain
 from Domain.step_domain.RelationChangeDomain import RelationChangeDomain
 from GUI.dialog_windows.ExportToTemplateWindow import ExportToTemplateWindow
@@ -69,6 +69,7 @@ class TemplateDomain:
             event_loop.create_task(cls.fill_list())
 
     @classmethod
+    @add_loading_screen
     async def fill_list(cls):
         cls.classes.clear()
         cls.has_a_class_with_deprecated_attributes = False

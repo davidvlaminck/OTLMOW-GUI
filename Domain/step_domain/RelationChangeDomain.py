@@ -19,7 +19,7 @@ from otlmow_modelbuilder.SQLDataClasses.OSLORelatie import OSLORelatie
 
 from Domain import global_vars
 from Domain.Helpers import Helpers
-from Domain.logger.OTLLogger import OTLLogger
+from Domain.logger.OTLLogger import OTLLogger, add_loading_screen
 from Domain.project.Project import Project
 from GUI.screens.RelationChange_elements.RelationChangeHelpers import RelationChangeHelpers
 from GUI.screens.screen_interface.RelationChangeScreenInterface import \
@@ -214,7 +214,9 @@ class RelationChangeDomain:
                 # should only go here if you are testing
                 cls.load_project_relation_data()
 
+
     @classmethod
+    @add_loading_screen
     async def load_project_relation_data(cls) -> None:
         """
         Loads project relation data asynchronously.
@@ -228,11 +230,19 @@ class RelationChangeDomain:
         """
 
         cls.get_screen().set_gui_lists_to_loading_state()
+        path = cls.project.get_last_quick_save_path()
+        if path:
+            timing_ref = f"load_assets_{path.stem}"
+            OTLLogger.logger.debug(
+                f"Execute Project.load_validated_assets({path.name}) for project {cls.project.eigen_referentie}",
+                extra={
+                    "timing_ref": timing_ref})
+            # OTLLogger.attempt_show_loading_screen(timing_ref)
 
         await asyncio.sleep(0)  # Give the UI thread the chance to switch the screen to
-        # RelationChangeScreen
+                                # RelationChangeScreen
         await asyncio.sleep(0)  # Give the UI thread another chance to switch the screen to
-        # RelationChangeScreen
+                                # RelationChangeScreen
 
         cls.set_instances(objects_list=cls.project.load_validated_assets())
         global_vars.otl_wizard.main_window.step3_visuals.reload_html()

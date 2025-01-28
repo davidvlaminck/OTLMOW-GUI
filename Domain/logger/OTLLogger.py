@@ -1,3 +1,4 @@
+import asyncio
 import datetime
 import logging
 import os
@@ -6,12 +7,34 @@ from datetime import timedelta
 from pathlib import Path
 
 from Domain.project.ProgramFileStructure import ProgramFileStructure
+from GUI.dialog_windows.LoadingImageWindow import LoadingImageWindow
+from GUI.dialog_windows.LoadingWindow import LoadingWindow
 
+def add_loading_screen(func):
+    """Decorator that saves assets after executing the decorated function.
+
+    This decorator wraps a function to ensure that after its execution, the current
+    project's assets in memory are updated and saved. It also starts the event loop
+    for the header in the main window to animate the OTL Wizard 2 logo during saving.
+
+    :param func: The function to be decorated.
+    :returns: The wrapper function that includes the saving logic.
+    """
+
+    async def wrapper_func(*args, **kwargs):
+        OTLLogger.attempt_show_loading_screen(func.__name__)
+        await asyncio.sleep(0)
+        res = await func(*args, **kwargs)
+        OTLLogger.attempt_destoy_loading_screen(func.__name__)
+        return res
+
+    return wrapper_func
 
 class OTLLogger(logging.Logger):
 
     logger = None
     ref_key_to_time_dict = {}
+    loading_window = None
 
 
     def __init__(self, name, level=0):
@@ -81,13 +104,13 @@ class OTLLogger(logging.Logger):
             time_dif:datetime.timedelta = current_time - ref_time
             time_dif_seconds = time_dif.seconds + time_dif.microseconds/1000000
             state = "END"
-            # return "{msg} {status:5s}({time:07.3f}s) ".format(status=state, time=time_dif_seconds,
-            #                                                   msg=msg)
+
             return "{msg} {status:5s} {ref} ({time:07.3f}s) ".format(status=state, time=time_dif_seconds,
                                                               ref=ref_key, msg=msg)
         else:
             state = "START"
             OTLLogger.ref_key_to_time_dict[ref_key] = current_time
+            # OTLLogger.attempt_show_loading_screen(ref_key)
             time_dif_seconds = 0
             return "{msg} {status:5s} {ref}".format(status=state,
                                                               msg=msg,ref=ref_key)
@@ -159,4 +182,18 @@ class OTLLogger(logging.Logger):
         super().exception(f"ln {lineno:4d}:{filename:25s}  {levelname:8s}  {msg}", *args, exc_info=exc_info, stack_info=stack_info,
                           stacklevel=stacklevel, extra=extra)
 
+    @classmethod
+    def attempt_show_loading_screen(cls, ref:str):
+        # only create the loading screen if it hasn't already been created
+        if not OTLLogger.loading_window:
+            loading_window = LoadingImageWindow()
+            OTLLogger.loading_window = {ref:loading_window}
 
+
+    @classmethod
+    def attempt_destoy_loading_screen(cls, ref:str):
+        # only destory the loading screen in ref was the one who initiated the loading screen
+        if OTLLogger.loading_window and ref in OTLLogger.loading_window:
+            current_loading_window = OTLLogger.loading_window[ref]
+            current_loading_window.close()
+            OTLLogger.loading_window = None
