@@ -1,4 +1,4 @@
-import logging
+import asyncio
 import traceback
 from pathlib import Path
 
@@ -194,11 +194,12 @@ class InsertDataScreen(Screen):
         if global_vars.current_project.get_last_quick_save_path():
             RevalidateDocumentsWindow(self,self._)
         else:
-            self.validate_documents()
-            self.validate_documents()
+            event_loop = asyncio.get_event_loop()
+            event_loop.create_task(self.validate_documents())
 
 
-    def validate_documents(self) -> None:
+
+    async def validate_documents(self) -> None:
         """
         Validates documents and provides user feedback based on the results.
 
@@ -212,7 +213,7 @@ class InsertDataScreen(Screen):
 
         self.clear_feedback()
 
-        error_set, objects_lists = InsertDataDomain.load_and_validate_documents()
+        error_set, objects_lists = await InsertDataDomain.async_load_and_validate_documents()
 
         if error_set:
             OTLLogger.logger.debug('negative feedback needed')

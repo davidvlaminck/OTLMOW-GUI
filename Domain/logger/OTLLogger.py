@@ -24,6 +24,7 @@ def add_loading_screen(func):
     async def wrapper_func(*args, **kwargs):
         OTLLogger.attempt_show_loading_screen(func.__name__)
         await asyncio.sleep(0)
+        await asyncio.sleep(0)
         res = await func(*args, **kwargs)
         OTLLogger.attempt_destoy_loading_screen(func.__name__)
         return res

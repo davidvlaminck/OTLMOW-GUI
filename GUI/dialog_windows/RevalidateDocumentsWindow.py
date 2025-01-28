@@ -1,3 +1,5 @@
+import asyncio
+
 from PyQt6.QtWidgets import QDialog, QVBoxLayout, QLabel, QDialogButtonBox
 
 
@@ -34,6 +36,7 @@ class RevalidateDocumentsWindow:
         return button_box
 
     def validate_documents_again(self, dialog):
-        self.screen.validate_documents()
+        event_loop = asyncio.get_event_loop()
+        event_loop.create_task(self.screen.validate_documents())
         dialog.close()
 

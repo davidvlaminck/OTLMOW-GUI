@@ -18,7 +18,7 @@ from otlmow_model.OtlmowModel.Helpers import OTLObjectHelper, RelationValidator
 from Domain import global_vars
 from Domain.Helpers import Helpers
 from Domain.SDFHandler import SDFHandler
-from Domain.logger.OTLLogger import OTLLogger
+from Domain.logger.OTLLogger import OTLLogger, add_loading_screen
 from Domain.project.Project import Project
 from Domain.step_domain.RelationChangeDomain import RelationChangeDomain, save_assets
 from Domain.enums import FileState
@@ -278,6 +278,11 @@ class InsertDataDomain:
         global_vars.current_project.remove_project_file(Path(item_file_path))
 
         InsertDataDomain.sync_backend_documents_with_frontend()
+    @classmethod
+    @add_loading_screen
+    async def async_load_and_validate_documents(cls) -> tuple[list[dict], list]:
+        return cls.load_and_validate_documents()
+
 
     @classmethod
     @save_assets
