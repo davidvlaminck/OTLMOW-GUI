@@ -5,6 +5,7 @@ from pathlib import Path
 from otlmow_converter.OtlmowConverter import OtlmowConverter
 from otlmow_model.OtlmowModel.Classes.ImplementatieElement.RelatieObject import RelatieObject
 
+from Domain.Helpers import Helpers
 from Domain.logger.OTLLogger import OTLLogger
 from Domain.step_domain.RelationChangeDomain import RelationChangeDomain
 from Domain.enums import FileState
@@ -25,6 +26,7 @@ class ExportDataDomain:
         split_relations_and_objects(objects_in_memory: list) -> tuple: Splits a list of objects into two categories: assets and relations.
         create_relation_and_asset_path(end_file: Path | str) -> tuple: Creates file paths for relations and assets based on the provided end file path.
     """
+
 
     @classmethod
     def generate_files(cls, end_file: Path, separate_per_class_csv_option : bool =False,
@@ -50,19 +52,19 @@ class ExportDataDomain:
         if separate_relations_option:
             relations_path, assets_path = cls.create_relation_and_asset_path(end_file)
             if relations_in_memory:
-                OtlmowConverter.from_objects_to_file(file_path=relations_path,
+                Helpers.converter_from_object_to_file(file_path=relations_path,
                                                      sequence_of_objects=relations_in_memory,
                                                      split_per_type=separate_per_class_csv_option,
                                                      abbreviate_excel_sheettitles=True)
             if assets_in_memory:
-                OtlmowConverter.from_objects_to_file(file_path=assets_path,
+                Helpers.converter_from_object_to_file(file_path=assets_path,
                                                      sequence_of_objects=assets_in_memory,
                                                      split_per_type=separate_per_class_csv_option,
                                                      abbreviate_excel_sheettitles=True)
         else:
             objects_in_memory = deepcopy(assets_in_memory)
             objects_in_memory.extend(relations_in_memory)
-            OtlmowConverter.from_objects_to_file(file_path=Path(end_file),
+            Helpers.converter_from_object_to_file(file_path=Path(end_file),
                                                  sequence_of_objects=objects_in_memory,
                                                  split_per_type=separate_per_class_csv_option,
                                                  abbreviate_excel_sheettitles=True)

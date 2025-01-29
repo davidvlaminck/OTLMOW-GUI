@@ -2,10 +2,12 @@ import asyncio
 import logging
 import os
 import platform
+import traceback
 from pathlib import Path
 from typing import List
 
 from PyQt6.QtWidgets import QListWidgetItem
+from otlmow_converter.Exceptions.ExceptionsGroup import ExceptionsGroup
 from otlmow_modelbuilder.SQLDataClasses.OSLOClass import OSLOClass
 from otlmow_template.SubsetTemplateCreator import SubsetTemplateCreator
 
@@ -52,9 +54,21 @@ class TemplateDomain:
             document_path_str = str(document_path)
             OTLLogger.logger.debug(f"Permission to file was denied: {document_path_str}")
             NotificationWindow(GlobalTranslate._("permission_to_file_was_denied_likely_due_to_the_file_being_open_in_excel") + ":\n" + document_path_str, title=GlobalTranslate._("permission_denied"))
+        except ExceptionsGroup as e:
+            OTLLogger.logger.debug("Error while creating template")
+            OTLLogger.logger.error(e)
+            OTLLogger.logger.error("".join(traceback.format_exception(e)))
+            for ex in e.exceptions:
+                OTLLogger.logger.error(ex)
+                OTLLogger.logger.error("".join(traceback.format_exception(ex)))
+
+            OTLLogger.attempt_destoy_loading_screen(ref="crash")
+            raise e
         except Exception as e:
             OTLLogger.logger.debug("Error while creating template")
             OTLLogger.logger.error(e)
+            OTLLogger.logger.error("".join(traceback.format_exception(e)))
+            OTLLogger.attempt_destoy_loading_screen(ref="crash")
             raise e
         OTLLogger.logger.debug("Creating template", extra={"timing_ref": f"create_template_{document_path.name}"})
 
@@ -69,7 +83,6 @@ class TemplateDomain:
             event_loop.create_task(cls.fill_list())
 
     @classmethod
-    @add_loading_screen
     async def fill_list(cls):
         cls.classes.clear()
         cls.has_a_class_with_deprecated_attributes = False
@@ -98,6 +111,16 @@ class TemplateDomain:
     @classmethod
     def get_screen(cls) -> TemplateScreenInterface:
         return global_vars.otl_wizard.main_window.step1
+
+    @classmethod
+    @add_loading_screen
+    async def async_export_template(cls, document_path:Path ,selected_classes: list[str],
+                        generate_choice_list: bool, geometry_column_added: bool,
+                        export_attribute_info: bool, highlight_deprecated_attributes:bool,
+                        amount_of_examples: int):
+        return cls.export_template(document_path,selected_classes,generate_choice_list,
+                                   geometry_column_added,export_attribute_info,
+                                   highlight_deprecated_attributes,amount_of_examples)
 
     @classmethod
     def export_template(cls, document_path:Path ,selected_classes: list[str],

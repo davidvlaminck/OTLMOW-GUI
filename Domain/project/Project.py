@@ -309,7 +309,6 @@ class Project:
         else:
             self.make_quick_save(save_path=save_path)
 
-    @add_loading_screen
     async def make_quick_save_async(self, save_path: Path) -> None:
         self.make_quick_save(save_path=save_path)
 

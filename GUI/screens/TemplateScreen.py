@@ -1,3 +1,4 @@
+import asyncio
 from pathlib import Path
 
 from PyQt6.QtCore import Qt
@@ -455,14 +456,15 @@ class TemplateScreen(TemplateScreenInterface):
             
             document_path = Path(document_path_str)
 
-            TemplateDomain.export_template(
+            event_loop = asyncio.get_event_loop()
+            event_loop.create_task(TemplateDomain.async_export_template(
                 document_path=document_path,
                 selected_classes=selected_classes,
                 generate_choice_list=not self.no_choice_list.isChecked(),
                 geometry_column_added=self.geometry_column_added.isChecked(),
                 export_attribute_info=self.export_attribute_info.isChecked(),
                 highlight_deprecated_attributes=self.show_deprecated_attributes.isChecked(),
-                amount_of_examples=self.amount_of_examples.value())
+                amount_of_examples=self.amount_of_examples.value()))
 
 
     def change_subset(self) -> None:

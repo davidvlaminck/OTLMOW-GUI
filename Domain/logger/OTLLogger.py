@@ -195,7 +195,12 @@ class OTLLogger(logging.Logger):
     @classmethod
     def attempt_destoy_loading_screen(cls, ref:str):
         # only destory the loading screen in ref was the one who initiated the loading screen
-        if OTLLogger.loading_window and ref in OTLLogger.loading_window:
-            current_loading_window = OTLLogger.loading_window[ref]
-            current_loading_window.close()
-            OTLLogger.loading_window = None
+        if OTLLogger.loading_window:
+            if ref in OTLLogger.loading_window:
+                current_loading_window = OTLLogger.loading_window[ref]
+                current_loading_window.close()
+                OTLLogger.loading_window = None
+            elif ref == "crash":
+                current_loading_window = list(OTLLogger.loading_window.values())[0]
+                current_loading_window.close()
+                OTLLogger.loading_window = None

@@ -1,8 +1,9 @@
 import asyncio
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Iterable
 
 from otlmow_converter.OtlmowConverter import OtlmowConverter
+from otlmow_model.OtlmowModel.BaseClasses.OTLObject import OTLObject
 from otlmow_model.OtlmowModel.Helpers.generated_lists import get_hardcoded_class_dict
 
 from Domain.logger.OTLLogger import OTLLogger
@@ -65,6 +66,19 @@ class Helpers:
         OTLLogger.logger.debug(f"Execute OtlmowConverter.from_file_to_objects({file_path.name})",
                                extra={"timing_ref": f"file_to_objects_{file_path.stem}"})
         object_lists = list(OtlmowConverter.from_file_to_objects(file_path,**kwargs))
-        OTLLogger.logger.debug(f"Execute OtlmowConverter.from_file_to_objects({file_path.name}) ({len(object_lists)} objects)",
+        object_count = len(object_lists)
+        OTLLogger.logger.debug(f"Execute OtlmowConverter.from_file_to_objects({file_path.name}) ({object_count} objects)",
                                extra={"timing_ref": f"file_to_objects_{file_path.stem}"})
         return object_lists
+
+    @classmethod
+    def converter_from_object_to_file(cls, file_path: Path, sequence_of_objects: Iterable[OTLObject], **kwargs) -> None:
+        OTLLogger.logger.debug(f"Execute OtlmowConverter.from_objects_to_file({file_path.name})",
+                               extra={"timing_ref": f"sequence_of_objects_{file_path.stem}"})
+        OtlmowConverter.from_objects_to_file(file_path=file_path,
+                                             sequence_of_objects=sequence_of_objects,
+                                             **kwargs)
+        object_count = len(list(sequence_of_objects))
+        OTLLogger.logger.debug(
+            f"Execute OtlmowConverter.from_objects_to_file({file_path.name}) ({object_count} objects)",
+            extra={"timing_ref": f"sequence_of_objects_{file_path.stem}"})
