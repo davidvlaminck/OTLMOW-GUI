@@ -2,7 +2,9 @@ import asyncio
 import datetime
 import logging
 import os
+import sys
 import traceback
+import warnings
 from datetime import timedelta
 from pathlib import Path
 
@@ -48,18 +50,23 @@ class OTLLogger(logging.Logger):
         logging_file = cls.create_logging_file()
         cls.remove_old_logging_files()
 
-        file_handler = logging.FileHandler(logging_file)
-        stderr_handler = logging.StreamHandler()
+        file_handler = logging.FileHandler(logging_file) # logger will write to file
+        stderr_handler = logging.StreamHandler() # logger will write to stderr
 
-        cls.logger.addHandler(stderr_handler) #
+        cls.logger.addHandler(stderr_handler)
         cls.logger.addHandler(file_handler)
-        logging.getLogger().addHandler(file_handler)
+        logging.getLogger().addHandler(file_handler) # loggers from other libraries will write to file
 
         cls.logger.setLevel(logging.DEBUG)
 
+        # Warning are written to console and to file
+        # Function to redirect warnings to the logger
+        def log_runtime_warnings(message, category, filename, lineno, file=None, line=None):
+            cls.logger.warning(f"{category.__name__}: {message} (File: {filename}, Line: {lineno})")
+        # Redirect warnings to logger
+        warnings.showwarning = log_runtime_warnings
+
         for handler in cls.logger.handlers:
-            # handler.setFormatter(logging.Formatter(fmt='%(asctime)s ln %(lineno)-4d:%(filename)-25s %(levelname)-8s %(message)s',
-            #  datefmt='%Y-%m-%d %H:%M:%S'))
             handler.setFormatter(logging.Formatter(
                 fmt='%(asctime)s %(message)s',
                                    datefmt='%Y-%m-%d %H:%M:%S'))
