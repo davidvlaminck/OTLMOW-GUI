@@ -53,6 +53,7 @@ class OTLLogger(logging.Logger):
 
         cls.logger.addHandler(stderr_handler) #
         cls.logger.addHandler(file_handler)
+        logging.getLogger().addHandler(file_handler)
 
         cls.logger.setLevel(logging.DEBUG)
 
