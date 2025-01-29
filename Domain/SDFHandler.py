@@ -18,7 +18,10 @@ from GUI.translation.GlobalTranslate import GlobalTranslate
 
 
 class SDFHandler:
-
+    """
+    documentation for FDOcmd.exe:
+    https://jumpinjackie.github.io/fdotoolbox/userdoc/1.5.0/cmdline.html?highlight=fdocmd
+    """
 
 
     @classmethod
