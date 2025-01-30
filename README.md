@@ -88,3 +88,6 @@ object_lists = list(OtlmowConverter.from_file_to_objects(file_path,**kwargs))
 OTLLogger.logger.debug(f"Execute OtlmowConverter.from_file_to_objects({file_path.name}) ({len(object_lists)} objects)", 
                             extra={"timing_ref": f"file_to_objects_{file_path.stem}"})
 ```
+
+## The sleeping cat GIF link
+https://giphy.com/gifs/xUA7aZtd2GIfzYDR5e

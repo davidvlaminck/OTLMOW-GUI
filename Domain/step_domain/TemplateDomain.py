@@ -12,10 +12,11 @@ from otlmow_modelbuilder.SQLDataClasses.OSLOClass import OSLOClass
 from otlmow_template.SubsetTemplateCreator import SubsetTemplateCreator
 
 from Domain import global_vars
-from Domain.logger.OTLLogger import OTLLogger, add_loading_screen
+from Domain.logger.OTLLogger import OTLLogger
 from Domain.step_domain.InsertDataDomain import InsertDataDomain
 from Domain.step_domain.RelationChangeDomain import RelationChangeDomain
 from GUI.dialog_windows.ExportToTemplateWindow import ExportToTemplateWindow
+from GUI.dialog_windows.LoadingImageWindow import add_loading_screen
 from GUI.dialog_windows.NotificationWindow import NotificationWindow
 from GUI.screens.screen_interface.TemplateScreenInterface import TemplateScreenInterface
 from GUI.translation.GlobalTranslate import GlobalTranslate

@@ -1,37 +1,13 @@
-import asyncio
 import datetime
 import logging
 import os
-import sys
 import traceback
 import warnings
-from datetime import timedelta
+
 from pathlib import Path
 
 from Domain.project.ProgramFileStructure import ProgramFileStructure
-from GUI.dialog_windows.LoadingImageWindow import LoadingImageWindow
-from GUI.dialog_windows.LoadingWindow import LoadingWindow
 
-def add_loading_screen(func):
-    """Decorator that saves assets after executing the decorated function.
-
-    This decorator wraps a function to ensure that after its execution, the current
-    project's assets in memory are updated and saved. It also starts the event loop
-    for the header in the main window to animate the OTL Wizard 2 logo during saving.
-
-    :param func: The function to be decorated.
-    :returns: The wrapper function that includes the saving logic.
-    """
-
-    async def wrapper_func(*args, **kwargs):
-        OTLLogger.attempt_show_loading_screen(func.__name__)
-        await asyncio.sleep(0)
-        await asyncio.sleep(0)
-        res = await func(*args, **kwargs)
-        OTLLogger.attempt_destoy_loading_screen(func.__name__)
-        return res
-
-    return wrapper_func
 
 class OTLLogger(logging.Logger):
 
@@ -52,11 +28,14 @@ class OTLLogger(logging.Logger):
 
         file_handler = logging.FileHandler(logging_file) # logger will write to file
         stderr_handler = logging.StreamHandler() # logger will write to stderr
-
+        #
         cls.logger.addHandler(stderr_handler)
         cls.logger.addHandler(file_handler)
+
+        logging.getLogger().addHandler(stderr_handler)
         logging.getLogger().addHandler(file_handler) # loggers from other libraries will write to file
 
+        # cls.logger = logging.getLogger()
         cls.logger.setLevel(logging.DEBUG)
 
         # Warning are written to console and to file
@@ -191,23 +170,4 @@ class OTLLogger(logging.Logger):
         super().exception(f"ln {lineno:4d}:{filename:25s}  {levelname:8s}  {msg}", *args, exc_info=exc_info, stack_info=stack_info,
                           stacklevel=stacklevel, extra=extra)
 
-    @classmethod
-    def attempt_show_loading_screen(cls, ref:str):
-        # only create the loading screen if it hasn't already been created
-        if not OTLLogger.loading_window:
-            loading_window = LoadingImageWindow()
-            OTLLogger.loading_window = {ref:loading_window}
 
-
-    @classmethod
-    def attempt_destoy_loading_screen(cls, ref:str):
-        # only destory the loading screen in ref was the one who initiated the loading screen
-        if OTLLogger.loading_window:
-            if ref in OTLLogger.loading_window:
-                current_loading_window = OTLLogger.loading_window[ref]
-                current_loading_window.close()
-                OTLLogger.loading_window = None
-            elif ref == "crash":
-                current_loading_window = list(OTLLogger.loading_window.values())[0]
-                current_loading_window.close()
-                OTLLogger.loading_window = None

@@ -18,15 +18,17 @@ from otlmow_model.OtlmowModel.Helpers import OTLObjectHelper, RelationValidator
 from Domain import global_vars
 from Domain.Helpers import Helpers
 from Domain.SDFHandler import SDFHandler
-from Domain.logger.OTLLogger import OTLLogger, add_loading_screen
+from Domain.logger.OTLLogger import OTLLogger
 from Domain.project.Project import Project
-from Domain.step_domain.RelationChangeDomain import RelationChangeDomain, save_assets
+from Domain.step_domain.RelationChangeDomain import RelationChangeDomain, save_assets, \
+    async_save_assets
 from Domain.enums import FileState
 from Exceptions.NoIdentificatorError import NoIdentificatorError
 from Exceptions.RelationHasInvalidTypeUriForSourceAndTarget import \
     RelationHasInvalidTypeUriForSourceAndTarget
 from Exceptions.RelationHasNonExistingTypeUriForSourceOrTarget import \
     RelationHasNonExistingTypeUriForSourceOrTarget
+from GUI.dialog_windows.LoadingImageWindow import add_loading_screen
 from GUI.screens.RelationChange_elements.RelationChangeHelpers import RelationChangeHelpers
 from GUI.translation.GlobalTranslate import GlobalTranslate
 from UnitTests.TestClasses.Classes.ImplementatieElement.AIMObject import AIMObject
@@ -74,7 +76,7 @@ class InsertDataDomain:
         cls.sync_backend_documents_with_frontend()
 
     @classmethod
-    def check_document(cls, doc_location: Union[str, Path], delimiter: str=";") -> Iterable[OTLObject]:
+    async def check_document(cls, doc_location: Union[str, Path], delimiter: str=";") -> Iterable[OTLObject]:
         """
         Checks a document and converts it into a list of OTL objects.
 
@@ -94,7 +96,7 @@ class InsertDataDomain:
 
         exception_group = None
         try:
-            assets = Helpers.converter_from_file_to_object( file_path=doc_location_path,
+            assets = await Helpers.converter_from_file_to_object( file_path=doc_location_path,
                                                             include_tab_info=True,
                                                             delimiter=delimiter)
         except ExceptionsGroup as group:
@@ -281,12 +283,12 @@ class InsertDataDomain:
     @classmethod
     @add_loading_screen
     async def async_load_and_validate_documents(cls) -> tuple[list[dict], list]:
-        return cls.load_and_validate_documents()
+        return await cls.load_and_validate_documents()
 
 
     @classmethod
-    @save_assets
-    def load_and_validate_documents(cls) -> tuple[list[dict], list]:
+    @async_save_assets
+    async def load_and_validate_documents(cls) -> tuple[list[dict], list]:
         """
         Loads and validates documents from the current project's saved files.
 
@@ -312,7 +314,7 @@ class InsertDataDomain:
                 exception_group = None
                 if file_path.suffix in ['.xls', '.xlsx']:
                     temp_path = InsertDataDomain.remove_dropdown_values_from_excel(doc=file_path)
-                    assets, exception_group = InsertDataDomain.check_document(
+                    assets, exception_group = await InsertDataDomain.check_document(
                         doc_location=temp_path)
 
                 elif file_path.suffix == '.sdf':
@@ -323,7 +325,7 @@ class InsertDataDomain:
                     assets = []
                     sdf_exception_list = []
                     for temp_path in temp_path_list:
-                        assets_subset, exception_group_subset = InsertDataDomain.check_document(
+                        assets_subset, exception_group_subset = await InsertDataDomain.check_document(
                             doc_location=temp_path ,
                             delimiter=",")
                         assets.extend(assets_subset)
@@ -336,7 +338,7 @@ class InsertDataDomain:
                     for exception in sdf_exception_list:
                         exception_group.add_exception(exception)
                 else:
-                    assets, exception_group = InsertDataDomain.check_document(
+                    assets, exception_group = await InsertDataDomain.check_document(
                         doc_location=file_path)
 
                 # second checks done by the GUI

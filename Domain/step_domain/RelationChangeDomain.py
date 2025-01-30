@@ -19,8 +19,9 @@ from otlmow_modelbuilder.SQLDataClasses.OSLORelatie import OSLORelatie
 
 from Domain import global_vars
 from Domain.Helpers import Helpers
-from Domain.logger.OTLLogger import OTLLogger, add_loading_screen
+from Domain.logger.OTLLogger import OTLLogger
 from Domain.project.Project import Project
+from GUI.dialog_windows.LoadingImageWindow import add_loading_screen
 from GUI.screens.RelationChange_elements.RelationChangeHelpers import RelationChangeHelpers
 from GUI.screens.screen_interface.RelationChangeScreenInterface import \
     RelationChangeScreenInterface
@@ -48,6 +49,26 @@ def save_assets(func):
 
     return wrapper_func
 
+
+def async_save_assets(func):
+    """Decorator that saves assets after executing the decorated function.
+
+    This decorator wraps a function to ensure that after its execution, the current
+    project's assets in memory are updated and saved. It also starts the event loop
+    for the header in the main window to animate the OTL Wizard 2 logo during saving.
+
+    :param func: The function to be decorated.
+    :returns: The wrapper function that includes the saving logic.
+    """
+
+    async def wrapper_func(*args, **kwargs):
+        res = await func(*args, **kwargs)
+        global_vars.current_project.assets_in_memory = RelationChangeDomain.get_quicksave_instances()
+        global_vars.current_project.save_validated_assets()
+        global_vars.otl_wizard.main_window.step_3_tabwidget.header.start_event_loop()
+        return res
+
+    return wrapper_func
 
 class RelationChangeDomain:
     """

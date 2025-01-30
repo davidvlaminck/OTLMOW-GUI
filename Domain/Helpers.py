@@ -62,10 +62,10 @@ class Helpers:
             return True
 
     @classmethod
-    def converter_from_file_to_object(cls,file_path,**kwargs):
+    async def converter_from_file_to_object(cls,file_path,**kwargs):
         OTLLogger.logger.debug(f"Execute OtlmowConverter.from_file_to_objects({file_path.name})",
                                extra={"timing_ref": f"file_to_objects_{file_path.stem}"})
-        object_lists = list(OtlmowConverter.from_file_to_objects(file_path,**kwargs))
+        object_lists = list(await OtlmowConverter.from_file_to_objects(file_path,**kwargs))
         object_count = len(object_lists)
         OTLLogger.logger.debug(f"Execute OtlmowConverter.from_file_to_objects({file_path.name}) ({object_count} objects)",
                                extra={"timing_ref": f"file_to_objects_{file_path.stem}"})
