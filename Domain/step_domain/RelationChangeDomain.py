@@ -522,11 +522,11 @@ class RelationChangeDomain:
                     if relation.bron_uri == related_object.typeURI:
                         cls.add_relation_between(relation=relation,selected_object=selected_object,
                                                  related_object=related_object, reverse=True)
-            relation_count = 0
 
-            if (cls.possible_object_to_object_relations_dict[selected_object_id]):
-                for rel_obj in cls.possible_object_to_object_relations_dict[selected_object_id].keys():
-                    relation_count += len(cls.possible_object_to_object_relations_dict[selected_object_id][rel_obj])
+        relation_count = 0
+        if (cls.possible_object_to_object_relations_dict[selected_object_id]):
+            for rel_obj in cls.possible_object_to_object_relations_dict[selected_object_id].keys():
+                relation_count += len(cls.possible_object_to_object_relations_dict[selected_object_id][rel_obj])
 
         OTLLogger.logger.debug(
             f"Execute RelationChangeDomain.add_all_possible_relations_between_selected_and_related_objects({log_typeURI}) for project {global_vars.current_project.eigen_referentie} ({relation_count} relations)",
