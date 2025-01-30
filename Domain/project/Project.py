@@ -15,6 +15,7 @@ from otlmow_converter.OtlmowConverter import OtlmowConverter
 from otlmow_model.OtlmowModel.BaseClasses.RelationInteractor import RelationInteractor
 from otlmow_model.OtlmowModel.Classes.ImplementatieElement.AIMObject import AIMObject
 from otlmow_model.OtlmowModel.Classes.ImplementatieElement.RelatieObject import RelatieObject
+from universalasync import async_to_sync_wraps
 
 from Domain import global_vars
 from Domain.Helpers import Helpers
@@ -226,7 +227,8 @@ class Project:
         with open(project_dir_path / self.project_details_filename, "w") as project_details_file:
             json.dump(project_details_dict, project_details_file)
 
-    def load_validated_assets(self) -> list[Union[RelatieObject, RelationInteractor]]:
+    @async_to_sync_wraps
+    async def load_validated_assets(self) -> list[Union[RelatieObject, RelationInteractor]]:
         # sourcery skip: assign-if-exp, reintroduce-else, use-named-expression
         """
         Loads validated assets from the most recent quick save file.
@@ -249,7 +251,7 @@ class Project:
         if path:
             # RelationChangeScreen
             # noinspection PyTypeChecker
-            saved_objects = Helpers.converter_from_file_to_object(path)
+            saved_objects = await Helpers.converter_from_file_to_object(path)
             object_count = len(saved_objects)
             timing_ref = f"load_assets_{path.stem}"
             # if LoadingImageWindow.loading_window:

@@ -5,6 +5,7 @@ from typing import Optional, Iterable
 from otlmow_converter.OtlmowConverter import OtlmowConverter
 from otlmow_model.OtlmowModel.BaseClasses.OTLObject import OTLObject
 from otlmow_model.OtlmowModel.Helpers.generated_lists import get_hardcoded_class_dict
+from universalasync import async_to_sync_wraps
 
 from Domain.logger.OTLLogger import OTLLogger
 from GUI.screens.RelationChange_elements.RelationChangeHelpers import RelationChangeHelpers
@@ -62,6 +63,7 @@ class Helpers:
             return True
 
     @classmethod
+    @async_to_sync_wraps
     async def converter_from_file_to_object(cls,file_path,**kwargs):
         OTLLogger.logger.debug(f"Execute OtlmowConverter.from_file_to_objects({file_path.name})",
                                extra={"timing_ref": f"file_to_objects_{file_path.stem}"})

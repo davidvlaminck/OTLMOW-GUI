@@ -16,6 +16,7 @@ from otlmow_model.OtlmowModel.Helpers import RelationCreator, OTLObjectHelper
 from otlmow_model.OtlmowModel.Helpers.OTLObjectHelper import is_relation
 from otlmow_modelbuilder.OSLOCollector import OSLOCollector
 from otlmow_modelbuilder.SQLDataClasses.OSLORelatie import OSLORelatie
+from universalasync import async_to_sync_wraps
 
 from Domain import global_vars
 from Domain.Helpers import Helpers
@@ -265,7 +266,7 @@ class RelationChangeDomain:
         await asyncio.sleep(0)  # Give the UI thread another chance to switch the screen to
                                 # RelationChangeScreen
 
-        cls.set_instances(objects_list=cls.project.load_validated_assets())
+        cls.set_instances(objects_list=await cls.project.load_validated_assets())
         global_vars.otl_wizard.main_window.step3_visuals.reload_html()
 
     @classmethod
@@ -426,7 +427,8 @@ class RelationChangeDomain:
             otl_object) == id_to_check
 
     @classmethod
-    def set_possible_relations(cls, selected_object: RelationInteractor):
+    @async_to_sync_wraps
+    async def set_possible_relations(cls, selected_object: RelationInteractor):
         """
         Sets the possible relations for the specified selected object and updates the user
         interface accordingly. This method manages the collection and display of relations based
@@ -472,7 +474,7 @@ class RelationChangeDomain:
         possible_relations_for_this_object = cls.get_possible_relations_for(selected_id=selected_id)
 
         # noinspection PyTypeChecker
-        object_attributes_dict = DotnotationDictConverter.to_dict(otl_object=selected_object)
+        object_attributes_dict = await DotnotationDictConverter.to_dict(otl_object=selected_object)
 
         cls.get_screen().fill_possible_relations_list(source_object=selected_object,
                                                       relations=possible_relations_for_this_object,
@@ -991,7 +993,7 @@ class RelationChangeDomain:
             relation_typeURI=relation_object.typeURI)
 
     @classmethod
-    def update_frontend(cls):
+    async def update_frontend(cls):
         """
         Updates the user interface to reflect the current state of objects and relations.
         This method populates the object list and existing relations list, and sets the possible
@@ -1005,7 +1007,7 @@ class RelationChangeDomain:
         cls.get_screen().fill_existing_relations_list(relations_objects=cls.existing_relations,
                                                       last_added=cls.last_added_to_existing)
 
-        cls.set_possible_relations(selected_object=cls.selected_object)
+        await cls.set_possible_relations(selected_object=cls.selected_object)
 
         OTLLogger.logger.debug("Execute RelationChangeDomain.update_frontend",
                                extra={"timing_ref": f"update_frontend"})

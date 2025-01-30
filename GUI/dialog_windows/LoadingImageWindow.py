@@ -48,6 +48,11 @@ class LoadingImageWindow(QDialog):
         self.setWindowTitle(LoadingImageWindow.title)
         # self.setFixedSize(625, 468)
         self.setFixedSize(625, 320)
+        self.setModal(True)  # Makes it a modal dialog
+
+        # Remove the close button
+        # self.setWindowFlags(self.windowFlags() & ~Qt.WindowType.WindowCloseButtonHint)
+        self.setWindowFlags(Qt.WindowType.CustomizeWindowHint | Qt.WindowType.WindowTitleHint)
 
         # Main layout
         layout = QVBoxLayout()
@@ -71,19 +76,11 @@ class LoadingImageWindow(QDialog):
         font.setPointSize(32)  # Adjust font size as needed
         text_label.setFont(font)
 
-        # Buttons layout
-        # buttons_layout = QHBoxLayout()
-        # ok_button = QPushButton("OK", self)
-        # ok_button.clicked.connect(self.accept)
-        #
-        # buttons_layout.addStretch()
-        # buttons_layout.addWidget(ok_button)
-        # buttons_layout.addStretch()
+
 
         # Add widgets to main layout
         layout.addWidget(movie_label)
         layout.addWidget(text_label)
-        # layout.addLayout(buttons_layout)
 
         self.setLayout(layout)
         self.opening = True
@@ -94,26 +91,33 @@ class LoadingImageWindow(QDialog):
             self.open()
             self.movie.start()
 
-    async def delayed_open(self):
-        # only open loading window after 1 second after initialisation
-        # and only if the command to close it hasn't come yet by then
-        OTLLogger.logger.debug("delayed open loadingscreen", extra={"timing_ref":"open_loading_screen"})
-        await asyncio.sleep(1)
-        if self.opening:
-            OTLLogger.logger.debug("still opening loadingscreen",
-                                   extra={"timing_ref":"open_loading_screen"})
-            self.open()
-            self.movie.start()
-            OTLLogger.logger.debug(f"movie scale {self.movie.scaledSize()}")
-        else:
-            OTLLogger.logger.debug("canceled opening loadingscreen",
-                                   extra={"timing_ref": "open_loading_screen"})
+    def closeEvent(self, event):
+        # Ignore the close event to prevent closing with the 'X' button
+        event.ignore()
+
     def close(self):
         self.opening = False
 
         if not self.isHidden():
             self.movie.stop()
             return super().close()
+
+
+    async def delayed_open(self):
+        # only open loading window after 1 second after initialisation
+        # and only if the command to close it hasn't come yet by then
+        OTLLogger.logger.debug("delayed open loadingscreen",
+                               extra={"timing_ref": "open_loading_screen"})
+        await asyncio.sleep(1)
+        if self.opening:
+            OTLLogger.logger.debug("still opening loadingscreen",
+                                   extra={"timing_ref": "open_loading_screen"})
+            self.open()
+            self.movie.start()
+            OTLLogger.logger.debug(f"movie scale {self.movie.scaledSize()}")
+        else:
+            OTLLogger.logger.debug("canceled opening loadingscreen",
+                                   extra={"timing_ref": "open_loading_screen"})
 
     @classmethod
     def attempt_show_loading_screen(cls, ref: str):
