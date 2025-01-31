@@ -17,40 +17,6 @@ from otlmow_model.OtlmowModel.Helpers.OTLObjectHelper import is_relation
 from otlmow_modelbuilder.OSLOCollector import OSLOCollector
 
 
-
-
-def create_type_from_attribute_in_element(element: Element, attr_instance: OTLAttribuut):
-    if attr_instance.field == FloatOrDecimalField:
-        simple_type = ET.SubElement(element, "{http://www.w3.org/2001/XMLSchema}simpleType")
-        restriction = ET.SubElement(simple_type, "{http://www.w3.org/2001/XMLSchema}restriction", base="xs:decimal")
-        ET.SubElement(restriction, "{http://www.w3.org/2001/XMLSchema}totalDigits", value="19")
-        ET.SubElement(restriction, "{http://www.w3.org/2001/XMLSchema}fractionDigits", value="10")
-    elif attr_instance.field == BooleanField:
-        simple_type = ET.SubElement(element, "{http://www.w3.org/2001/XMLSchema}simpleType")
-        ET.SubElement(simple_type, "{http://www.w3.org/2001/XMLSchema}restriction", base="xs:boolean")
-    elif attr_instance.field in {StringField, DateField, DateTimeField, TimeField, URIField} or attr_instance.field.objectUri == 'http://www.w3.org/2001/XMLSchema#string':
-        simple_type = ET.SubElement(element, "{http://www.w3.org/2001/XMLSchema}simpleType")
-        restriction = ET.SubElement(simple_type, "{http://www.w3.org/2001/XMLSchema}restriction", base="xs:string")
-        ET.SubElement(restriction, "{http://www.w3.org/2001/XMLSchema}maxLength", value="9999")
-    elif issubclass(attr_instance.field, KeuzelijstField):
-        simple_type = ET.SubElement(element, "{http://www.w3.org/2001/XMLSchema}simpleType")
-        restriction = ET.SubElement(simple_type, "{http://www.w3.org/2001/XMLSchema}restriction", base="xs:string")
-        ET.SubElement(restriction, "{http://www.w3.org/2001/XMLSchema}enumeration", value='-')
-        element.attrib.update({'default': '-'})
-        max_length = 50
-        for keuze, keuzelijstwaarde in attr_instance.field.options.items():
-            if keuzelijstwaarde.status != 'ingebruik':
-                continue
-            ET.SubElement(restriction, "{http://www.w3.org/2001/XMLSchema}enumeration", value=keuze)
-            max_length = max(max_length, len(keuze))
-        ET.SubElement(restriction, "{http://www.w3.org/2001/XMLSchema}maxLength", value=str(max_length))
-    elif issubclass(attr_instance.field, IntegerField):
-        simple_type = ET.SubElement(element, "{http://www.w3.org/2001/XMLSchema}simpleType")
-        restriction = ET.SubElement(simple_type, "{http://www.w3.org/2001/XMLSchema}restriction", base="xs:int")
-    else:
-        raise NotImplementedError(f"Field {attr_instance.field} not implemented")
-
-
 class XSDCreator:
     @classmethod
     def create_xsd_from_subset(cls, subset_path: Path, xsd_path: Path, model_directory: Path = None) -> None:
@@ -174,7 +140,7 @@ class XSDCreator:
             if documentation.text is not None:
                 documentation.text = documentation.text[:159]
 
-            create_type_from_attribute_in_element(element, attr_instance)
+            cls.create_type_from_attribute_in_element(element, attr_instance)
 
         # hard add typeURI
         element = ET.SubElement(attribute_sequence, "{http://www.w3.org/2001/XMLSchema}element",
@@ -213,3 +179,35 @@ class XSDCreator:
         # write file
         with open(xsd_path, 'w') as file:
             file.writelines(new_data)
+
+    @classmethod
+    def create_type_from_attribute_in_element(cls, element: Element, attr_instance: OTLAttribuut):
+        if attr_instance.field == FloatOrDecimalField:
+            simple_type = ET.SubElement(element, "{http://www.w3.org/2001/XMLSchema}simpleType")
+            restriction = ET.SubElement(simple_type, "{http://www.w3.org/2001/XMLSchema}restriction", base="xs:decimal")
+            ET.SubElement(restriction, "{http://www.w3.org/2001/XMLSchema}totalDigits", value="19")
+            ET.SubElement(restriction, "{http://www.w3.org/2001/XMLSchema}fractionDigits", value="10")
+        elif attr_instance.field == BooleanField:
+            simple_type = ET.SubElement(element, "{http://www.w3.org/2001/XMLSchema}simpleType")
+            ET.SubElement(simple_type, "{http://www.w3.org/2001/XMLSchema}restriction", base="xs:boolean")
+        elif attr_instance.field in {StringField, DateField, DateTimeField, TimeField, URIField} or attr_instance.field.objectUri == 'http://www.w3.org/2001/XMLSchema#string':
+            simple_type = ET.SubElement(element, "{http://www.w3.org/2001/XMLSchema}simpleType")
+            restriction = ET.SubElement(simple_type, "{http://www.w3.org/2001/XMLSchema}restriction", base="xs:string")
+            ET.SubElement(restriction, "{http://www.w3.org/2001/XMLSchema}maxLength", value="9999")
+        elif issubclass(attr_instance.field, KeuzelijstField):
+            simple_type = ET.SubElement(element, "{http://www.w3.org/2001/XMLSchema}simpleType")
+            restriction = ET.SubElement(simple_type, "{http://www.w3.org/2001/XMLSchema}restriction", base="xs:string")
+            ET.SubElement(restriction, "{http://www.w3.org/2001/XMLSchema}enumeration", value='-')
+            element.attrib.update({'default': '-'})
+            max_length = 50
+            for keuze, keuzelijstwaarde in attr_instance.field.options.items():
+                if keuzelijstwaarde.status != 'ingebruik':
+                    continue
+                ET.SubElement(restriction, "{http://www.w3.org/2001/XMLSchema}enumeration", value=keuze)
+                max_length = max(max_length, len(keuze))
+            ET.SubElement(restriction, "{http://www.w3.org/2001/XMLSchema}maxLength", value=str(max_length))
+        elif issubclass(attr_instance.field, IntegerField):
+            simple_type = ET.SubElement(element, "{http://www.w3.org/2001/XMLSchema}simpleType")
+            restriction = ET.SubElement(simple_type, "{http://www.w3.org/2001/XMLSchema}restriction", base="xs:int")
+        else:
+            raise NotImplementedError(f"Field {attr_instance.field} not implemented")
