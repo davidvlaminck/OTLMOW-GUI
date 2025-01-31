@@ -1,8 +1,10 @@
 import unittest
 from pathlib import Path
 import xml.etree.cElementTree as ET
+import lxml.etree as etree
 
 from Domain.XSDCreator import XSDCreator
+import xmltodict
 
 
 def test_create_xsd_from_subset_wegkantkast():
@@ -11,10 +13,13 @@ def test_create_xsd_from_subset_wegkantkast():
 
     XSDCreator.create_xsd_from_subset(kast_path, created_path)
 
-    result = ET.tostring(ET.parse(created_path).getroot())
-    expected = ET.tostring(ET.parse(Path(__file__).parent / 'xsd_export_wegkantkast.xsd').getroot())
+    created_xml = Path(created_path).read_text()
+    expected_xml = (Path(__file__).parent / 'xsd_export_wegkantkast.xsd').read_text()
 
-    assert expected == result
+    created_xml_dict = xmltodict.parse(created_xml)
+    expected_xml_dict = xmltodict.parse(expected_xml)
+
+    assert created_xml_dict == expected_xml_dict
 
 
 @unittest.skip('Test is not yet implemented')
