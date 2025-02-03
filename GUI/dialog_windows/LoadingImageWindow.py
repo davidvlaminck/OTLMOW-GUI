@@ -5,6 +5,8 @@ from PyQt6.QtWidgets import QApplication, QDialog, QLabel, QVBoxLayout, QPushBut
 from PyQt6.QtGui import QPixmap, QFont, QMovie
 from PyQt6.QtCore import Qt, QSize
 
+from Domain import global_vars
+from Domain.global_vars import test_mode
 from Domain.logger.OTLLogger import OTLLogger
 
 ROOT_DIR = Path(__file__).parent.parent.parent
@@ -21,6 +23,10 @@ def add_loading_screen(func):
     """
 
     async def wrapper_func(*args, **kwargs):
+        if global_vars.test_mode:
+            res = await func(*args, **kwargs)
+            return res
+
         LoadingImageWindow.attempt_show_loading_screen(func.__name__)
         await asyncio.sleep(0)
         await asyncio.sleep(0)

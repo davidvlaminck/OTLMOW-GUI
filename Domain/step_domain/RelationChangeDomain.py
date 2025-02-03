@@ -195,7 +195,7 @@ class RelationChangeDomain:
 
 
     @classmethod
-    def init_static(cls, project: Project) -> None:
+    def init_static(cls, project: Project,asynchronous = True) -> None:
         """
         Initializes static resources for the RelationChangeDomain class.
         Call this when the project or project.subset_path changes or everytime you go to the window
@@ -229,15 +229,19 @@ class RelationChangeDomain:
             Helpers.create_external_typeURI_options()
 
         if global_vars.current_project:
-            try:
-                event_loop = asyncio.get_event_loop()
-                event_loop.create_task(cls.load_project_relation_data())
-            except DeprecationWarning:
-                # should only go here if you are testing
+            if asynchronous:
+                try:
+                    event_loop = asyncio.get_event_loop()
+                    event_loop.create_task(cls.load_project_relation_data())
+                except DeprecationWarning:
+                    # should only go here if you are testing
+                    cls.load_project_relation_data()
+            else:
                 cls.load_project_relation_data()
 
 
     @classmethod
+    @async_to_sync_wraps
     @add_loading_screen
     async def load_project_relation_data(cls) -> None:
         """
@@ -427,6 +431,7 @@ class RelationChangeDomain:
             otl_object) == id_to_check
 
     @classmethod
+    @async_to_sync_wraps
     @async_to_sync_wraps
     async def set_possible_relations(cls, selected_object: RelationInteractor):
         """
@@ -993,6 +998,7 @@ class RelationChangeDomain:
             relation_typeURI=relation_object.typeURI)
 
     @classmethod
+    @async_to_sync_wraps
     async def update_frontend(cls):
         """
         Updates the user interface to reflect the current state of objects and relations.

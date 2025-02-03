@@ -304,23 +304,20 @@ class Project:
         if asynchronous:
             try:
                 event_loop = asyncio.get_event_loop()
-                event_loop.create_task(self.make_quick_save_async(save_path=save_path))
+                event_loop.create_task(self.make_quick_save(save_path=save_path))
             except DeprecationWarning:
                 # should only go here if you are testing
                 self.make_quick_save(save_path=save_path)
         else:
             self.make_quick_save(save_path=save_path)
 
-    async def make_quick_save_async(self, save_path: Path) -> None:
-        self.make_quick_save(save_path=save_path)
-
-
-    def make_quick_save(self, save_path: Path) -> None:
+    @async_to_sync_wraps
+    async def make_quick_save(self, save_path: Path) -> None:
         object_count = len(self.assets_in_memory)
         OTLLogger.logger.debug(f"Execute Project.make_quick_save({save_path.name}) for project {self.eigen_referentie} ({object_count} objects)", extra={
             "timing_ref": f"make_quick_save_{save_path.stem}"})
 
-        OtlmowConverter.from_objects_to_file(file_path=save_path,
+        await OtlmowConverter.from_objects_to_file(file_path=save_path,
                                              sequence_of_objects=self.assets_in_memory)
         self.last_quick_save = save_path
         self.save_project_to_dir()

@@ -2,7 +2,7 @@ import os
 import shutil
 from collections import namedtuple
 from pathlib import Path
-from unittest.mock import Mock
+from unittest.mock import Mock, AsyncMock
 
 from _pytest.fixtures import fixture
 from typing_extensions import NamedTuple
@@ -16,6 +16,7 @@ from Domain.project.ProgramFileManager import ProgramFileManager
 from Domain.step_domain.RelationChangeDomain import RelationChangeDomain
 
 OTLLogger.logger = Mock()
+global_vars.test_mode=True
 
 @fixture
 def cleanup_after_creating_a_file_to_delete():
@@ -95,7 +96,7 @@ def setup_test_project(root_directory: Path, mock_step3_visuals,mock_get_otl_wiz
 
     local_mock_RelationChangeDomain_get_screen = RelationChangeDomain.get_screen
     RelationChangeDomain.get_screen = Mock()
-    RelationChangeDomain.init_static(global_vars.current_project)
+    RelationChangeDomain.init_static(global_vars.current_project, asynchronous=False)
     RelationChangeDomain.get_screen = local_mock_RelationChangeDomain_get_screen
 
 
@@ -108,7 +109,7 @@ def setup_test_project(root_directory: Path, mock_step3_visuals,mock_get_otl_wiz
 def mock_load_validated_assets() -> None:
     original_load_validated_assets = Project.load_validated_assets
 
-    Project.load_validated_assets = Mock(return_value=RelationChangeDomain.get_quicksave_instances())
+    Project.load_validated_assets = AsyncMock(return_value=RelationChangeDomain.get_quicksave_instances())
     yield
     Project.load_validated_assets = original_load_validated_assets
 

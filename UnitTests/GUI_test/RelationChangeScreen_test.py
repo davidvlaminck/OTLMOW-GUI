@@ -1,3 +1,5 @@
+from unittest.mock import AsyncMock
+
 from openpyxl.descriptors.excel import Relation
 from otlmow_model.OtlmowModel.Classes.Onderdeel.LigtOp import LigtOp
 from otlmow_modelbuilder.OSLOCollector import OSLOCollector
@@ -56,7 +58,7 @@ def mock_step3_visuals() -> None:
 @fixture
 def mock_load_validated_assets() -> None:
     original_load_validated_assets = Project.load_validated_assets
-    Project.load_validated_assets = Mock()
+    Project.load_validated_assets = AsyncMock()
     yield
     Project.load_validated_assets = original_load_validated_assets
 
@@ -363,8 +365,8 @@ def test_fill_class_list_empty_list(qtbot,
     test_objects_list = []
 
     local_mock = RelationChangeDomain.set_instances
-    RelationChangeDomain.set_instances = Mock()
-    RelationChangeDomain.init_static(mock_project)
+    RelationChangeDomain.set_instances = AsyncMock()
+    RelationChangeDomain.init_static(mock_project, asynchronous= False)
     RelationChangeDomain.set_instances = local_mock
 
     RelationChangeDomain.set_instances(test_objects_list)
@@ -390,8 +392,8 @@ def test_fill_class_list_single_item_list(qtbot,
     test_objects_list = [test_object]
 
     local_mock = RelationChangeDomain.set_instances
-    RelationChangeDomain.set_instances = Mock()
-    RelationChangeDomain.init_static(mock_project)
+    RelationChangeDomain.set_instances = AsyncMock()
+    RelationChangeDomain.init_static(mock_project, asynchronous= False)
     RelationChangeDomain.set_instances = local_mock
 
     RelationChangeDomain.set_instances(test_objects_list)
@@ -423,8 +425,8 @@ def test_fill_class_list_double_item_list(qtbot,
     test_objects_list = [test_object, test_object2]
 
     local_mock = RelationChangeDomain.set_instances
-    RelationChangeDomain.set_instances = Mock()
-    RelationChangeDomain.init_static(mock_project)
+    RelationChangeDomain.set_instances = AsyncMock()
+    RelationChangeDomain.init_static(mock_project, asynchronous=False)
     RelationChangeDomain.set_instances = local_mock
 
     RelationChangeDomain.set_instances(test_objects_list)
@@ -456,8 +458,8 @@ def test_fill_class_list_with_2_same_name_but_diff_namespace_items(qtbot,
     test_objects_list = [test_object, test_object2, test_object3]
 
     local_mock = RelationChangeDomain.set_instances
-    RelationChangeDomain.set_instances = Mock()
-    RelationChangeDomain.init_static(mock_project)
+    RelationChangeDomain.set_instances = AsyncMock()
+    RelationChangeDomain.init_static(mock_project, asynchronous=False)
     RelationChangeDomain.set_instances = local_mock
 
     RelationChangeDomain.set_instances(test_objects_list)
@@ -507,8 +509,8 @@ def test_fill_possible_relations_list_with_2_same_name_but_diff_namespace_items(
     test_objects_list = [test_object, test_object2, test_object3]
 
     local_mock = RelationChangeDomain.set_instances
-    RelationChangeDomain.set_instances = Mock()
-    RelationChangeDomain.init_static(mock_project)
+    RelationChangeDomain.set_instances = AsyncMock()
+    RelationChangeDomain.init_static(mock_project, asynchronous=False)
     RelationChangeDomain.set_instances = local_mock
 
     RelationChangeDomain.set_instances(test_objects_list)

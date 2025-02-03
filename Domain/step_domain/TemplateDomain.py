@@ -10,6 +10,7 @@ from PyQt6.QtWidgets import QListWidgetItem
 from otlmow_converter.Exceptions.ExceptionsGroup import ExceptionsGroup
 from otlmow_modelbuilder.SQLDataClasses.OSLOClass import OSLOClass
 from otlmow_template.SubsetTemplateCreator import SubsetTemplateCreator
+from universalasync import async_to_sync_wraps
 
 from Domain import global_vars
 from Domain.logger.OTLLogger import OTLLogger
@@ -21,6 +22,8 @@ from GUI.dialog_windows.NotificationWindow import NotificationWindow
 from GUI.screens.screen_interface.TemplateScreenInterface import TemplateScreenInterface
 from GUI.translation.GlobalTranslate import GlobalTranslate
 
+from UnitTests.general_fixtures.DomainFixtures import *
+from UnitTests.general_fixtures.GUIFixtures import *
 
 class TemplateDomain:
 
@@ -84,6 +87,7 @@ class TemplateDomain:
             event_loop.create_task(cls.fill_list())
 
     @classmethod
+    @async_to_sync_wraps
     async def fill_list(cls):
         cls.classes.clear()
         cls.has_a_class_with_deprecated_attributes = False
@@ -114,6 +118,7 @@ class TemplateDomain:
         return global_vars.otl_wizard.main_window.step1
 
     @classmethod
+    @async_to_sync_wraps
     @add_loading_screen
     async def async_export_template(cls, document_path:Path ,selected_classes: list[str],
                         generate_choice_list: bool, geometry_column_added: bool,
