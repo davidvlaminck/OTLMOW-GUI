@@ -75,6 +75,7 @@ class XSDCreator:
             if 'geometry' in attribute_names_in_subset:
                 attribute_names_in_subset.remove('geometry')
             class_instance.fill_with_dummy_data()
+            DotnotationHelper.clear_list_of_list_attributes(class_instance)
 
             cls.add_otl_attributes_in_attribute_sequence(attribute_names_in_subset, attribute_sequence, class_instance)
 
