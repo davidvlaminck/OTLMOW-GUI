@@ -16,7 +16,6 @@
     <xs:complexType name="OTL_WegkantkastType" abstract="false" fdo:geometryName="Geometry">
         <xs:annotation>
             <xs:documentation>Behuizing in de vorm van een kast typisch gebruikt buiten,langs de kant van de weg.
-                (export by OTL Wizard)
             </xs:documentation>
         </xs:annotation>
         <xs:complexContent>
@@ -32,8 +31,8 @@
                     </xs:element>
                     <xs:element name="Geometry" type="gml:AbstractGeometryType" fdo:hasMeasure="false"
                                 fdo:hasElevation="true" fdo:srsName="Default"
-                                fdo:geometricTypes="point multipoint polygon multipolygon "
-                                fdo:geometryTypes="point multipoint polygon multipolygon ">
+                                fdo:geometricTypes="polygon point "
+                                fdo:geometryTypes="polygon point ">
                         <xs:annotation>
                             <xs:documentation>Default geometry property</xs:documentation>
                         </xs:annotation>
@@ -94,8 +93,7 @@
                     </xs:element>
                     <xs:element name="bestekPostNummer[]" minOccurs="0" default="">
                         <xs:annotation>
-                            <xs:documentation>Een verwijzing naar een postnummer uit het specifieke bestek waar het
-                                object mee verband houdt.
+                            <xs:documentation>Een verwijzing naar een postnummer uit het specifieke bestek waar het object mee verband houdt.
                             </xs:documentation>
                         </xs:annotation>
                         <xs:simpleType>
@@ -106,8 +104,7 @@
                     </xs:element>
                     <xs:element name="datumOprichtingObject" minOccurs="0" default="">
                         <xs:annotation>
-                            <xs:documentation>De datum waarop het object op het terrein is beginnen bestaan, bv. de
-                                datum van aanleg.
+                            <xs:documentation>De datum waarop het object op het terrein is beginnen bestaan, bv. de datum van aanleg.
                             </xs:documentation>
                         </xs:annotation>
                         <xs:simpleType>
@@ -118,8 +115,7 @@
                     </xs:element>
                     <xs:element name="elektrischSchema[]_bestandsnaam" minOccurs="0" default="">
                         <xs:annotation>
-                            <xs:documentation>De naam van het Document inclusief de bestandsextensie, van de naam
-                                gescheiden door een punt.
+                            <xs:documentation>De naam van het Document inclusief de bestandsextensie, van de naam gescheiden door een punt.
                             </xs:documentation>
                         </xs:annotation>
                         <xs:simpleType>
@@ -134,7 +130,7 @@
                         </xs:annotation>
                         <xs:simpleType>
                             <xs:restriction base="xs:string">
-                                <xs:maxLength value="50"/>
+                                <xs:maxLength value="71"/>
                                 <xs:enumeration value="-"/>
                                 <xs:enumeration value="application-acad"/>
                                 <xs:enumeration value="application-acadmap"/>
@@ -142,12 +138,10 @@
                                 <xs:enumeration value="application-pdf"/>
                                 <xs:enumeration value="application-rtf"/>
                                 <xs:enumeration value="application-rvt"/>
-                                <xs:enumeration
-                                        value="application-vnd.openxmlformats-officedocument.spreadsheetml.sheet"/>
-                                <xs:enumeration
-                                        value="application-vnd.openxmlformats-officedocument.wordprocessingml.document"/>
-                                <xs:enumeration value="application-xml"/>
+                                <xs:enumeration value="application-vnd.openxmlformats-officedocument.spreadsheetml.sheet"/>
+                                <xs:enumeration value="application-vnd.openxmlformats-officedocument.wordprocessingml.document"/>
                                 <xs:enumeration value="application-x-x509-ca-cert"/>
+                                <xs:enumeration value="application-xml"/>
                                 <xs:enumeration value="application-zip"/>
                                 <xs:enumeration value="image-dxf"/>
                                 <xs:enumeration value="image-jpeg"/>
@@ -187,8 +181,7 @@
                     </xs:element>
                     <xs:element name="elektrischSchema[]_uri" minOccurs="0" default="">
                         <xs:annotation>
-                            <xs:documentation>De verwijzing naar de bestandslocatie via een link. Bij lokale bestanden
-                                kan dit eventueel ook een pad zijn.
+                            <xs:documentation>De verwijzing naar de bestandslocatie via een link. Bij lokale bestanden kan dit eventueel ook een pad zijn.
                             </xs:documentation>
                         </xs:annotation>
                         <xs:simpleType>
@@ -199,8 +192,7 @@
                     </xs:element>
                     <xs:element name="heeftMaaibescherming" minOccurs="0" default="">
                         <xs:annotation>
-                            <xs:documentation>Geeft aan of de kast voorzien is van bescherming tegen schade bij het
-                                maaien van de omgeving rond de kast.
+                            <xs:documentation>Geeft aan of de kast voorzien is van bescherming tegen schade bij het maaien van de omgeving rond de kast.
                             </xs:documentation>
                         </xs:annotation>
                         <xs:simpleType>
@@ -209,8 +201,7 @@
                     </xs:element>
                     <xs:element name="isActief" minOccurs="0" default="">
                         <xs:annotation>
-                            <xs:documentation>Geeft aan of het object actief kan gebruikt worden of (zacht) verwijderd
-                                is uit het asset beheer systeem.
+                            <xs:documentation>Geeft aan of het object actief kan gebruikt worden of (zacht) verwijderd is uit het asset beheer systeem.
                             </xs:documentation>
                         </xs:annotation>
                         <xs:simpleType>
@@ -244,8 +235,7 @@
                     </xs:element>
                     <xs:element name="naam" minOccurs="0" default="">
                         <xs:annotation>
-                            <xs:documentation>De mensleesbare naam van een asset zoals dit bv. ook terug te vinden is op
-                                een etiket op het object zelf. De assetbeheerder kent deze naam toe of geeft de opdr
+                            <xs:documentation>De mensleesbare naam van een asset zoals dit bv. ook terug te vinden is op een etiket op het object zelf. De assetbeheerder kent deze naam toe of geeft de opdr
                             </xs:documentation>
                         </xs:annotation>
                         <xs:simpleType>
@@ -277,7 +267,7 @@
                     <xs:element name="typeURI" minOccurs="0"
                                 default="https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Wegkantkast">
                         <xs:annotation>
-                            <xs:documentation>De URI van het object volgens https://www.w3.org/2001/XMLSchema#anyURI .
+                            <xs:documentation>De URI van het object volgens https://www.w3.org/2001/XMLSchema#anyURI.
                             </xs:documentation>
                         </xs:annotation>
                         <xs:simpleType>
