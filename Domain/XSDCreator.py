@@ -85,6 +85,9 @@ class XSDCreator:
 
     @classmethod
     def add_geometry_in_attribute_sequence(cls, attribute_sequence: Element, class_instance: OTLObject) -> None:
+        if not hasattr(class_instance, '_geometry_types'):
+            return
+
         geo_types = ' '.join(class_instance._geometry_types).replace(' Z', '').lower()
         if geo_types != '':
             geo_types += ' '
