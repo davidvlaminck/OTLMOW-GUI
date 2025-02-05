@@ -86,11 +86,12 @@ class XSDCreator:
     @classmethod
     def add_geometry_in_attribute_sequence(cls, attribute_sequence: Element, class_instance: OTLObject) -> None:
         if not hasattr(class_instance, '_geometry_types'):
-            return
+            geo_types = ""
+        else:
+            geo_types = ' '.join(class_instance._geometry_types).replace(' Z', '').lower()
+            if geo_types != '':
+                geo_types += ' '
 
-        geo_types = ' '.join(class_instance._geometry_types).replace(' Z', '').lower()
-        if geo_types != '':
-            geo_types += ' '
         geometry = ET.SubElement(
             attribute_sequence, "{http://www.w3.org/2001/XMLSchema}element",
             attrib={'name': "Geometry", 'type': "http://www.opengis.net/gml/AbstractGeometryType",
