@@ -25,6 +25,7 @@ from Domain.project.ProjectFile import ProjectFile
 from Domain.enums import FileState
 from Domain.project.ProgramFileStructure import ProgramFileStructure
 from Exceptions.ExcelFileUnavailableError import ExcelFileUnavailableError
+from GUI.dialog_windows.LoadingImageWindow import add_loading_screen
 
 
 class Project:
@@ -228,6 +229,7 @@ class Project:
             json.dump(project_details_dict, project_details_file)
 
     @async_to_sync_wraps
+    @add_loading_screen
     async def load_validated_assets(self) -> list[Union[RelatieObject, RelationInteractor]]:
         # sourcery skip: assign-if-exp, reintroduce-else, use-named-expression
         """

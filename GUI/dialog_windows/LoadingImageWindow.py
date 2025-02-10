@@ -55,6 +55,7 @@ class LoadingImageWindow(QDialog):
         # self.setFixedSize(625, 468)
         self.setFixedSize(625, 320)
         self.setModal(True)  # Makes it a modal dialog
+        self.setWindowFlag(Qt.WindowStaysOnTopHint)
 
         # Remove the close button
         # self.setWindowFlags(self.windowFlags() & ~Qt.WindowType.WindowCloseButtonHint)

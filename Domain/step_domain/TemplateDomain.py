@@ -14,16 +14,11 @@ from universalasync import async_to_sync_wraps
 
 from Domain import global_vars
 from Domain.logger.OTLLogger import OTLLogger
-from Domain.step_domain.InsertDataDomain import InsertDataDomain
-from Domain.step_domain.RelationChangeDomain import RelationChangeDomain
-from GUI.dialog_windows.ExportToTemplateWindow import ExportToTemplateWindow
-from GUI.dialog_windows.LoadingImageWindow import add_loading_screen
+from GUI.dialog_windows.LoadingImageWindow import add_loading_screen, LoadingImageWindow
 from GUI.dialog_windows.NotificationWindow import NotificationWindow
 from GUI.screens.screen_interface.TemplateScreenInterface import TemplateScreenInterface
 from GUI.translation.GlobalTranslate import GlobalTranslate
 
-from UnitTests.general_fixtures.DomainFixtures import *
-from UnitTests.general_fixtures.GUIFixtures import *
 
 class TemplateDomain:
 
@@ -37,7 +32,9 @@ class TemplateDomain:
 
 
     @classmethod
-    def create_template(cls,subset_path: Path, document_path: Path, selected_classes_dir: List, generate_choice_list: bool,
+    @async_to_sync_wraps
+    @add_loading_screen
+    async def create_template(cls,subset_path: Path, document_path: Path, selected_classes_dir: List, generate_choice_list: bool,
                         add_geo_artefact: bool, add_attribute_info: bool, highlight_deprecated_attributes: bool,
                         amount_of_examples: int, model_directory: Path = None) -> None:
         OTLLogger.logger.debug("Creating template", extra={"timing_ref": f"create_template_{document_path.name}"})
@@ -47,7 +44,7 @@ class TemplateDomain:
             if selected_classes_dir and 'http://purl.org/dc/terms/Agent' in selected_classes_dir:
                 selected_classes_dir.remove('http://purl.org/dc/terms/Agent')
 
-            template_creator.generate_template_from_subset(
+            await template_creator.generate_template_from_subset(
                 path_to_subset=subset_path, path_to_template_file_and_extension=document_path,
                 list_of_otl_objectUri=selected_classes_dir, generate_choice_list=generate_choice_list,
                 add_geo_artefact=add_geo_artefact, add_attribute_info=add_attribute_info,
@@ -66,13 +63,13 @@ class TemplateDomain:
                 OTLLogger.logger.error(ex)
                 OTLLogger.logger.error("".join(traceback.format_exception(ex)))
 
-            OTLLogger.attempt_destoy_loading_screen(ref="crash")
+            LoadingImageWindow.attempt_destoy_loading_screen(ref="crash")
             raise e
         except Exception as e:
             OTLLogger.logger.debug("Error while creating template")
             OTLLogger.logger.error(e)
             OTLLogger.logger.error("".join(traceback.format_exception(e)))
-            OTLLogger.attempt_destoy_loading_screen(ref="crash")
+            LoadingImageWindow.attempt_destoy_loading_screen(ref="crash")
             raise e
         OTLLogger.logger.debug("Creating template", extra={"timing_ref": f"create_template_{document_path.name}"})
 
@@ -124,12 +121,12 @@ class TemplateDomain:
                         generate_choice_list: bool, geometry_column_added: bool,
                         export_attribute_info: bool, highlight_deprecated_attributes:bool,
                         amount_of_examples: int):
-        return cls.export_template(document_path,selected_classes,generate_choice_list,
+        return await cls.export_template(document_path,selected_classes,generate_choice_list,
                                    geometry_column_added,export_attribute_info,
                                    highlight_deprecated_attributes,amount_of_examples)
 
     @classmethod
-    def export_template(cls, document_path:Path ,selected_classes: list[str],
+    async def export_template(cls, document_path:Path ,selected_classes: list[str],
                         generate_choice_list: bool, geometry_column_added: bool,
                         export_attribute_info: bool, highlight_deprecated_attributes:bool,
                         amount_of_examples: int):
@@ -138,7 +135,7 @@ class TemplateDomain:
 
         if not document_path or not project:
             return
-        TemplateDomain.create_template(subset_path=project.subset_path,
+        await TemplateDomain.create_template(subset_path=project.subset_path,
                                        document_path=Path(document_path),
                                        selected_classes_dir= selected_classes,
                                        generate_choice_list=generate_choice_list,
