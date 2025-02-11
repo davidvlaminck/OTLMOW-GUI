@@ -24,7 +24,7 @@ with open(csv_path_str) as f:
 # for row in csv_reader:
 #     print(row)
 
-assets = Helpers.converter_from_file_to_object( Path(csv_path_str),
+assets, exceptions_group = Helpers.converter_from_file_to_object( Path(csv_path_str),
                                                             include_tab_info=True,
                                                             delimiter=",")
 print(assets)
