@@ -916,8 +916,9 @@ class RelationChangeDomain:
         return relation_object
 
     @classmethod
+    @async_to_sync_wraps
     @save_assets
-    def add_multiple_possible_relations_to_existing_relations(cls, data_list):
+    async def add_multiple_possible_relations_to_existing_relations(cls, data_list):
         """
         Adds multiple possible relations to existing relations based on the provided data list.
         This method checks for specific attributes in the relations and either displays a dialog
@@ -948,7 +949,7 @@ class RelationChangeDomain:
                 RelationChangeDomain.add_possible_relation_to_existing_relations(
                     bron_asset_id=data.source_id,target_asset_id=data.target_id,
                     relation_object_index=data.index) for data in data_list]
-        cls.update_frontend()
+        await cls.update_frontend()
 
     @classmethod
     def add_possible_relation_to_existing_relations(cls, bron_asset_id:str, target_asset_id:str,
@@ -1018,8 +1019,9 @@ class RelationChangeDomain:
         OTLLogger.logger.debug("Execute RelationChangeDomain.update_frontend",
                                extra={"timing_ref": f"update_frontend"})
     @classmethod
+    @async_to_sync_wraps
     @save_assets
-    def remove_multiple_existing_relations(cls, indices: list[int]) -> None:
+    async def remove_multiple_existing_relations(cls, indices: list[int]) -> None:
         """
         Removes multiple existing relations based on the provided indices. This method updates the
         internal state by removing the specified relations and refreshes the user interface to
@@ -1033,7 +1035,7 @@ class RelationChangeDomain:
 
         cls.last_added_to_possible = [cls.remove_existing_relation(index) for index in indices]
 
-        cls.update_frontend()
+        await cls.update_frontend()
 
     @classmethod
     def remove_existing_relation(cls, index: int) -> RelatieObject:
@@ -1059,7 +1061,8 @@ class RelationChangeDomain:
         return removed_relation
 
     @classmethod
-    def select_existing_relation_indices(cls, indices: list[int]) -> None:
+    @async_to_sync_wraps
+    async def select_existing_relation_indices(cls, indices: list[int]) -> None:
         """
         Selects existing relations based on the provided indices and updates the user interface
         accordingly. This method retrieves the last selected relation and populates the attribute
@@ -1079,11 +1082,12 @@ class RelationChangeDomain:
         last_index = indices[-1]
         last_selected_relation = cls.existing_relations[last_index]
         cls.get_screen().fill_existing_relation_attribute_field(
-            existing_relation_attribute_dict=DotnotationDictConverter.to_dict(
+            existing_relation_attribute_dict=await DotnotationDictConverter.to_dict(
                 last_selected_relation))
 
     @classmethod
-    def select_possible_relation_data(cls, selected_relations_data: list) -> None:
+    @async_to_sync_wraps
+    async def select_possible_relation_data(cls, selected_relations_data: list) -> None:
         """
         Selects and displays data for possible relations based on the provided selected relations
         data. This method updates the user interface with the attributes of the last selected
@@ -1112,7 +1116,7 @@ class RelationChangeDomain:
 
         # noinspection PyTypeChecker
         cls.get_screen().fill_possible_relation_attribute_field(
-            possible_relation_attribute_dict=DotnotationDictConverter.to_dict(
+            possible_relation_attribute_dict=await DotnotationDictConverter.to_dict(
                                              otl_object=last_selected_relation_partner_asset))
 
     @classmethod

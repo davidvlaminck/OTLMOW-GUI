@@ -253,21 +253,15 @@ class Project:
         if path:
             # RelationChangeScreen
             # noinspection PyTypeChecker
-            saved_objects = await Helpers.converter_from_file_to_object(path)
+            saved_objects, exceptions_group = await Helpers.converter_from_file_to_object(path)
             object_count = len(saved_objects)
             timing_ref = f"load_assets_{path.stem}"
-            # if LoadingImageWindow.loading_window:
-            #     OTLLogger.attempt_destoy_loading_screen( timing_ref)
             OTLLogger.logger.debug(
                 f"Execute Project.load_validated_assets({path.name}) for project {self.eigen_referentie} ({object_count} objects)",
                 extra={
                     "timing_ref":  timing_ref})
 
             return saved_objects
-        # OTLLogger.logger.debug(
-        #     f"Execute Project.load_validated_assets({path.name}) for project {self.eigen_referentie} ({object_count} objects)",
-        #     extra={
-        #         "timing_ref": f"load_assets_{path.stem}"})
         return []
 
     def save_validated_assets(self, asynchronous = True) -> None:
