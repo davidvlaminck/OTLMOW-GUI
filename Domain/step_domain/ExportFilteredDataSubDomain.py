@@ -31,7 +31,7 @@ class ReportItem:
     original_value: str
     new_value: str
 
-class AssetChangeDomain:
+class ExportFilteredDataSubDomain:
 
     @classmethod
     def generate_diff_report(cls, original_data: list, new_data: list, model_directory: Path) -> List[ReportItem]:

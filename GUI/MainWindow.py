@@ -11,7 +11,6 @@ from Domain.project.Project import Project
 from Domain.step_domain.HomeDomain import HomeDomain
 from Domain.step_domain.RelationChangeDomain import RelationChangeDomain
 from GUI.dialog_windows.NotificationWindow import NotificationWindow
-from GUI.screens.AssetDataChangeScreen import AssetDataChangeScreen
 from GUI.screens.DataVisualisationScreen import DataVisualisationScreen
 from GUI.screens.ExportDataScreen import ExportDataScreen
 from GUI.screens.HomeScreen import HomeScreen

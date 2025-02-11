@@ -1,6 +1,6 @@
 from PyQt6.QtWidgets import QMessageBox, QPushButton
 
-from Domain.step_domain.AssetChangeDomain import AssetChangeDomain
+from Domain.step_domain.AssetChangeDomain import ExportFilteredDataSubDomain
 
 
 class ChooseFileNameWindow:
@@ -12,8 +12,8 @@ class ChooseFileNameWindow:
 
     def accept(self, dialog_window):
         file_name = "changed_files.json"
-        AssetChangeDomain().replace_files_with_diff_report(project=self.project, original_documents=self.new_files,
-                                                           file_name=file_name)
+        ExportFilteredDataSubDomain().replace_files_with_diff_report(project=self.project, original_documents=self.new_files,
+                                                                     file_name=file_name)
         dialog_window.close()
 
     def warning_overwrite_screen(self):

@@ -7,9 +7,9 @@ from PyQt6.QtWidgets import QVBoxLayout, QFrame, QHBoxLayout, QLabel, QTreeWidge
 
 from Domain import global_vars
 from Domain.logger.OTLLogger import OTLLogger
-from Domain.step_domain.AssetChangeDomain import AssetChangeDomain
+from Domain.step_domain.AssetChangeDomain import ExportFilteredDataSubDomain
 from GUI.dialog_windows.ChooseFileNameWindow import ChooseFileNameWindow
-from GUI.screens.AssetDataChange_elements.TableModel import TableModel
+from GUI.screens.ExportData_elements.TableModel import TableModel
 from GUI.screens.ExportData_elements.AbstractExportDataSubScreen import AbstractExportDataSubScreen
 from GUI.screens.general_elements.ButtonWidget import ButtonWidget
 import qtawesome as qta
@@ -180,7 +180,7 @@ class ExportFilteredDataSubScreen(AbstractExportDataSubScreen):
         original_documents = [self.original_file_field.topLevelItem(i).data(0, 1) for i in
                               range(self.original_file_field.topLevelItemCount())]
         event_loop = asyncio.get_event_loop()
-        event_loop.create_task(AssetChangeDomain.get_diff_report(original_documents=original_documents))
+        event_loop.create_task(ExportFilteredDataSubDomain.get_diff_report(original_documents=original_documents))
 
 
     def insert_change_report(self,report:dict):
@@ -289,8 +289,8 @@ class ExportFilteredDataSubScreen(AbstractExportDataSubScreen):
             OTLLogger.logger.debug(f"original documents {original_documents}")
 
             event_loop = asyncio.get_event_loop()
-            event_loop.create_task(AssetChangeDomain.export_diff_report(project=global_vars.current_project,
-                                                 original_documents=original_documents,
-                                                 file_name=document_loc[0],
-                                                 separate_per_class_csv_option=csv_option,
-                                                 separate_relations_option=split_relations_and_objects))
+            event_loop.create_task(ExportFilteredDataSubDomain.export_diff_report(project=global_vars.current_project,
+                                                                                  original_documents=original_documents,
+                                                                                  file_name=document_loc[0],
+                                                                                  separate_per_class_csv_option=csv_option,
+                                                                                  separate_relations_option=split_relations_and_objects))

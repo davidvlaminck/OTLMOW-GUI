@@ -2,7 +2,7 @@ import logging
 from pathlib import Path
 
 from Domain.logger.OTLLogger import OTLLogger
-from Domain.step_domain.AssetChangeDomain import AssetChangeDomain, ReportItem
+from Domain.step_domain.AssetChangeDomain import ExportFilteredDataSubDomain, ReportItem
 from Domain.enums import ReportAction
 from UnitTests.project_files_test.OTLWizardProjects.Model.OtlmowModel.Classes.Onderdeel.AllCasesTestClass import \
     AllCasesTestClass
@@ -46,8 +46,8 @@ def test_generate_report():
     instance_list_1 = [ instance_1_2, instance_1_3]
     instance_list_2 = [ instance_2_2, instance_2_4]
 
-    report = AssetChangeDomain().generate_diff_report(original_data=instance_list_1, new_data=instance_list_2,
-                                                      model_directory=model_directory_path)
+    report = ExportFilteredDataSubDomain().generate_diff_report(original_data=instance_list_1, new_data=instance_list_2,
+                                                                model_directory=model_directory_path)
 
     assert report == [
         ReportItem(id='2', actie=ReportAction.ATC, attribute='isActief', original_value='True', new_value='False'),
