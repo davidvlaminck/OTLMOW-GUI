@@ -44,7 +44,10 @@ class AssetChangeDomain:
         for item in diff_lists:
             old_item = original_data_dict.get(item.assetId.identificator)
             if old_item is None:
-                report_list.append(cls.generate_new_asset_report(item))
+                if is_relation(item):
+                    report_list.append(cls.generate_new_relation_report(item))
+                else:
+                    report_list.append(cls.generate_new_asset_report(item))
             else:
                 report_list.extend(cls.generate_asset_change_report(item, old_item))
         return report_list
@@ -142,6 +145,16 @@ class AssetChangeDomain:
         return ReportItem(
             id=item.assetId.identificator,
             actie=ReportAction.ASS,
+            attribute="",
+            original_value="",
+            new_value=""
+        )
+
+    @classmethod
+    def generate_new_relation_report(cls, item) -> ReportItem:
+        return ReportItem(
+            id=item.assetId.identificator,
+            actie=ReportAction.REL,
             attribute="",
             original_value="",
             new_value=""

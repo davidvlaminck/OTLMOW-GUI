@@ -17,3 +17,4 @@ class ReportAction(Enum):
     ATR = 'attribute removed'
     ATC = 'attribute changed'
     ASS = 'asset added'
+    REL = 'relation added'
