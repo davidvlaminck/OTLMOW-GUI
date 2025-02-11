@@ -1,9 +1,12 @@
 import asyncio
+import datetime
+import traceback
 from pathlib import Path
 
 from PyQt6.QtWidgets import QApplication, QDialog, QLabel, QVBoxLayout, QPushButton, QHBoxLayout
 from PyQt6.QtGui import QPixmap, QFont, QMovie
 from PyQt6.QtCore import Qt, QSize
+from fontTools.merge.util import avg_int
 
 from Domain import global_vars
 from Domain.global_vars import test_mode
@@ -89,14 +92,28 @@ class LoadingImageWindow(QDialog):
         layout.addWidget(movie_label)
         layout.addWidget(text_label)
 
+        self.paintIntervals = []
+
         self.setLayout(layout)
         self.opening = True
+        self.last_time = datetime.datetime.now()
         if delayed_opening:
             event_loop = asyncio.get_event_loop()
             event_loop.create_task(self.delayed_open())
         else:
             self.open()
             self.movie.start()
+
+    def paintEvent(self, *args, **kwargs):
+
+
+
+        current_time = datetime.datetime.now()
+        time_dif: datetime.timedelta = current_time - self.last_time
+        self.last_time = current_time
+        time_dif_seconds = time_dif.seconds + time_dif.microseconds / 1000000
+
+        self.paintIntervals.append(time_dif_seconds)
 
     def closeEvent(self, event):
         # Ignore the close event to prevent closing with the 'X' button
@@ -138,10 +155,27 @@ class LoadingImageWindow(QDialog):
         # only destory the loading screen in ref was the one who initiated the loading screen
         if LoadingImageWindow.loading_window:
             if ref in LoadingImageWindow.loading_window:
+
                 current_loading_window = LoadingImageWindow.loading_window[ref]
+                if current_loading_window.paintIntervals:
+                    interval_count = len(current_loading_window.paintIntervals)
+                    total_time = sum(current_loading_window.paintIntervals)
+                    max_interval = max(current_loading_window.paintIntervals)
+                    min_interval = min(current_loading_window.paintIntervals)
+                    avg_interval =  total_time/interval_count
+                    text = "PaintEvent intervals: count: {interval_count}, tot: {tot:07.3f}s, max: {max:07.3f}s, min: {min:07.3f}s,avg: {avg:07.3f}s, all: [".format(interval_count=interval_count,tot=total_time,max=max_interval,min=min_interval,avg=avg_interval)
+                    for time in current_loading_window .paintIntervals:
+                        text += "{time:07.3f},".format(time=time)
+
+                    text += "]"
+                    OTLLogger.logger.debug(text)
+
                 current_loading_window.close()
                 LoadingImageWindow.loading_window = None
             elif ref == "crash":
+                OTLLogger.logger.debug("ImageLoadingScreen closed by crash!!")
+                stack = traceback.extract_stack(limit=3)
+                OTLLogger.logger.debug(stack)
                 current_loading_window = list(LoadingImageWindow.loading_window.values())[0]
                 current_loading_window.close()
                 LoadingImageWindow.loading_window = None
