@@ -6,6 +6,7 @@ from typing import List
 from otlmow_converter.OtlmowConverter import OtlmowConverter
 from otlmow_model.OtlmowModel.BaseClasses.OTLObject import create_dict_from_asset, OTLObject
 from otlmow_model.OtlmowModel.Helpers.OTLObjectHelper import compare_two_lists_of_objects_attribute_level
+from universalasync import async_to_sync_wraps
 
 from Domain import global_vars
 from Domain.Helpers import Helpers
@@ -14,6 +15,11 @@ from Domain.project.ProgramFileStructure import ProgramFileStructure
 from Domain.project.Project import Project
 from Domain.project.ProgramFileManager import ProgramFileManager
 from Domain.enums import ReportAction, FileState
+from Domain.step_domain.ExportDataDomain import ExportDataDomain
+from Domain.step_domain.InsertDataDomain import InsertDataDomain
+from Domain.step_domain.RelationChangeDomain import async_save_assets
+from GUI.dialog_windows.LoadingImageWindow import add_loading_screen
+
 
 @dataclass
 class ReportItem:
@@ -58,16 +64,20 @@ class AssetChangeDomain:
         return report_list
 
     @classmethod
-    def get_diff_report(cls, original_documents: list) -> List[ReportItem]:
+    @add_loading_screen
+    @async_save_assets
+    async def get_diff_report(cls, original_documents: list) -> List[ReportItem]:
         model_dir = ProgramFileStructure.get_otl_wizard_model_dir()
         OTLLogger.logger.debug(f"original docs {original_documents}")
         original_assets = []
         for x in original_documents:
-            original_assets.extend(Helpers.converter_from_file_to_object(file_path=Path(x)))
+            assets, exception_group = await InsertDataDomain.check_document( doc_location=Path(x))
+            original_assets.extend(assets)
         new_assets = []
         for x in global_vars.current_project.get_saved_projectfiles():
-            new_assets.extend(Helpers.converter_from_file_to_object(file_path=Path(x.file_path)))
-        return cls.generate_diff_report(original_assets, new_assets, model_dir)
+            assets, exception_group = await InsertDataDomain.check_document( doc_location=Path(x.file_path))
+            new_assets.extend(assets)
+        cls.get_screen().insert_change_report(cls.generate_diff_report(original_assets, new_assets, model_dir))
 
     @classmethod
     def replace_files_with_diff_report(cls, original_documents: List[str], project: Project, file_name: str) -> None:
@@ -84,25 +94,68 @@ class AssetChangeDomain:
         OtlmowConverter().from_objects_to_file(file_path=temp_loc, sequence_of_objects=diff_1)
         project.copy_and_add_project_file(file_path=temp_loc, state=FileState.OK)
 
+    @classmethod
+    def replace_files_with_diff_report(cls, original_documents: List[str], project: Project,
+                                       file_name: str) -> None:
+        OTLLogger.logger.debug("started replacing files with diff report")
+        changed_assets = cls.generate_changed_assets_from_files(project=project)
+        original_assets = cls.generate_original_assets_from_files(
+            original_documents=original_documents)
+        diff_1 = compare_two_lists_of_objects_attribute_level(first_list=original_assets,
+                                                              second_list=changed_assets,
+                                                              model_directory=ProgramFileStructure.get_otl_wizard_model_dir())
+        # ProgramFileStructure.delete_template_folder()
+        project.saved_project_files = []
+        tempdir = ProgramFileManager.create_empty_temporary_map()
+        temp_loc = Path(tempdir) / file_name
+        OtlmowConverter().from_objects_to_file(file_path=temp_loc, sequence_of_objects=diff_1)
+        project.copy_and_add_project_file(file_path=temp_loc, state=FileState.OK)
 
-    @staticmethod
-    def generate_changed_assets_from_files(project: Project) -> list:
+    @classmethod
+    @async_to_sync_wraps
+    @add_loading_screen
+    async def export_diff_report(cls, original_documents: List[str],
+                           project: Project,
+                           file_name: str,
+                           separate_per_class_csv_option,
+                           separate_relations_option) -> None:
+        OTLLogger.logger.debug("started replacing files with diff report")
+        changed_assets = await cls.generate_changed_assets_from_files(project=project)
+        original_assets = await cls.generate_original_assets_from_files(original_documents=original_documents)
+        diff_1 = compare_two_lists_of_objects_attribute_level(first_list=original_assets,
+                                                              second_list=changed_assets,
+                                                              model_directory=ProgramFileStructure.get_otl_wizard_model_dir())
+
+        assets= sorted(diff_1,key=lambda relation1: relation1.typeURI)
+        #TODO: filter on relations in the diff_1 list
+        # relations = sorted(diff_1,key=lambda relation1: relation1.typeURI)
+        relations = []
+        ExportDataDomain.export_to_files(assets, relations, file_name,
+                            separate_per_class_csv_option, separate_relations_option)
+
+
+    @classmethod
+    @async_to_sync_wraps
+    async def generate_changed_assets_from_files(cls,project: Project) -> list:
         changed_assets = []
         for file in project.get_saved_projectfiles():
             OTLLogger.logger.debug(f"file state {file.state}")
             if file.state == FileState.OK:
-                changed_assets.extend(Helpers.converter_from_file_to_object(file_path=Path(file.file_path)))
+                assets, exceptions_group = await InsertDataDomain.check_document( doc_location=Path(file.file_path))
+                changed_assets.extend(assets)
         return changed_assets
 
-    @staticmethod
-    def generate_original_assets_from_files(original_documents: List[str]) -> List[OTLObject]:
+    @classmethod
+    @async_to_sync_wraps
+    async def generate_original_assets_from_files(cls,original_documents: List[str]) -> List[OTLObject]:
         original_assets = []
         for path in original_documents:
-            original_assets.extend(Helpers.converter_from_file_to_object(file_path=Path(path)))
+            assets, exceptions_group = await InsertDataDomain.check_document( doc_location=Path(path))
+            original_assets.extend(assets)
         return original_assets
 
-    @staticmethod
-    def generate_new_asset_report(item) -> ReportItem:
+    @classmethod
+    def generate_new_asset_report(cls,item) -> ReportItem:
         return ReportItem(
             id=item.assetId.identificator,
             actie=ReportAction.ASS,
@@ -111,16 +164,16 @@ class AssetChangeDomain:
             new_value=""
         )
 
-    @staticmethod
-    def generate_complex_asset_report(item, attribute, complex_list, old_item_dict) -> List[ReportItem]:
+    @classmethod
+    def generate_complex_asset_report(cls,item, attribute, complex_list, old_item_dict) -> List[ReportItem]:
         return [ReportItem(
             id=item.assetId.identificator, actie=ReportAction.ATC, attribute=attribute,
             original_value="{0}: {1}".format(str(key),str(old_item_dict.get(attribute).get(key))),
             new_value="{0}: {1}".format(str(key),str(value))
         ) for key, value in complex_list.items()]
 
-    @staticmethod
-    def generate_simple_asset_report(item, key, value, old_item_dict) -> ReportItem:
+    @classmethod
+    def generate_simple_asset_report(cls,item, key, value, old_item_dict) -> ReportItem:
         return ReportItem(
             id=item.assetId.identificator,
             actie=ReportAction.ATC,
@@ -129,10 +182,13 @@ class AssetChangeDomain:
             new_value=str(value)
         )
 
-    @staticmethod
-    def generate_difference_between_two_lists(list1: list, list2: list, model_directory: Path) -> list:
+    @classmethod
+    def generate_difference_between_two_lists(cls,list1: list, list2: list, model_directory: Path) -> list:
         diff_1 = compare_two_lists_of_objects_attribute_level(
             first_list=list1, second_list=list2, model_directory=model_directory)
         return compare_two_lists_of_objects_attribute_level(
             first_list=list1, second_list=diff_1, model_directory=model_directory)
 
+    @classmethod
+    def get_screen(cls):
+        return global_vars.otl_wizard.main_window.step4_export.sub_screen_option_2_only_unedited_data

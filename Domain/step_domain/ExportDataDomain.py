@@ -2,9 +2,11 @@ import logging
 from copy import deepcopy
 from pathlib import Path
 
+from PyQt6.QtWidgets import QFileDialog
 from otlmow_converter.OtlmowConverter import OtlmowConverter
 from otlmow_model.OtlmowModel.Classes.ImplementatieElement.RelatieObject import RelatieObject
 
+from Domain import global_vars
 from Domain.Helpers import Helpers
 from Domain.logger.OTLLogger import OTLLogger
 from Domain.step_domain.RelationChangeDomain import RelationChangeDomain
@@ -49,25 +51,38 @@ class ExportDataDomain:
         """
         assets_in_memory = sorted(RelationChangeDomain.get_internal_objects(), key=lambda relation1: relation1.typeURI)
         relations_in_memory = sorted(RelationChangeDomain.get_persistent_relations(), key=lambda relation1: relation1.typeURI)
+        cls.export_to_files(assets_in_memory, relations_in_memory, end_file,
+                            separate_per_class_csv_option, separate_relations_option)
+
+    @classmethod
+    def export_to_files(cls, assets, relations, end_file, separate_per_class_csv_option,
+                        separate_relations_option):
         if separate_relations_option:
             relations_path, assets_path = cls.create_relation_and_asset_path(end_file)
-            if relations_in_memory:
-                Helpers.converter_from_object_to_file(file_path=relations_path,
-                                                     sequence_of_objects=relations_in_memory,
-                                                     split_per_type=separate_per_class_csv_option,
-                                                     abbreviate_excel_sheettitles=True)
-            if assets_in_memory:
-                Helpers.converter_from_object_to_file(file_path=assets_path,
-                                                     sequence_of_objects=assets_in_memory,
-                                                     split_per_type=separate_per_class_csv_option,
-                                                     abbreviate_excel_sheettitles=True)
+            if relations:
+                Helpers.start_async_converter_from_object_to_file(file_path=relations_path,
+                                                                  sequence_of_objects=relations,
+                                                                  split_per_type=separate_per_class_csv_option,
+                                                                  abbreviate_excel_sheettitles=True)
+            else:
+                OTLLogger.logger.info(
+                    f"No Relations in memory for project {global_vars.current_project.eigen_referentie}")
+            if assets:
+                Helpers.start_async_converter_from_object_to_file(file_path=assets_path,
+                                                                  sequence_of_objects=assets,
+                                                                  split_per_type=separate_per_class_csv_option,
+                                                                  abbreviate_excel_sheettitles=True)
+            else:
+                OTLLogger.logger.info(
+                    f"No Assets in memory for project {global_vars.current_project.eigen_referentie}")
+
         else:
-            objects_in_memory = deepcopy(assets_in_memory)
-            objects_in_memory.extend(relations_in_memory)
-            Helpers.converter_from_object_to_file(file_path=Path(end_file),
-                                                 sequence_of_objects=objects_in_memory,
-                                                 split_per_type=separate_per_class_csv_option,
-                                                 abbreviate_excel_sheettitles=True)
+            objects_in_memory = deepcopy(assets)
+            objects_in_memory.extend(relations)
+            Helpers.start_async_converter_from_object_to_file(file_path=Path(end_file),
+                                                              sequence_of_objects=objects_in_memory,
+                                                              split_per_type=separate_per_class_csv_option,
+                                                              abbreviate_excel_sheettitles=True)
 
     @classmethod
     def split_relations_and_objects(cls,objects_in_memory):
@@ -118,3 +133,5 @@ class ExportDataDomain:
         relations_path = Path(parent_directory) / relations_file_name
         assets_path = Path(parent_directory) / assets_file_name
         return relations_path, assets_path
+
+

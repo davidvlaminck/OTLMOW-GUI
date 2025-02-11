@@ -2,6 +2,7 @@ import asyncio
 from pathlib import Path
 from typing import Optional, Iterable
 
+from otlmow_converter.Exceptions.ExceptionsGroup import ExceptionsGroup
 from otlmow_converter.OtlmowConverter import OtlmowConverter
 from otlmow_model.OtlmowModel.BaseClasses.OTLObject import OTLObject
 from otlmow_model.OtlmowModel.Helpers.generated_lists import get_hardcoded_class_dict
@@ -66,13 +67,21 @@ class Helpers:
     @classmethod
     @async_to_sync_wraps
     async def converter_from_file_to_object(cls,file_path,**kwargs):
+
         OTLLogger.logger.debug(f"Execute OtlmowConverter.from_file_to_objects({file_path.name})",
                                extra={"timing_ref": f"file_to_objects_{file_path.stem}"})
-        object_lists = list(await OtlmowConverter.from_file_to_objects(file_path,**kwargs))
+        exception_group = None
+        object_count = 0
+        try:
+            object_lists = list(await OtlmowConverter.from_file_to_objects(file_path,**kwargs))
+        except ExceptionsGroup as group:
+            exception_group = group
+            object_lists = group.objects
+
         object_count = len(object_lists)
         OTLLogger.logger.debug(f"Execute OtlmowConverter.from_file_to_objects({file_path.name}) ({object_count} objects)",
                                extra={"timing_ref": f"file_to_objects_{file_path.stem}"})
-        return object_lists
+        return object_lists,exception_group
 
     @classmethod
     def start_async_converter_from_object_to_file(cls, file_path: Path,

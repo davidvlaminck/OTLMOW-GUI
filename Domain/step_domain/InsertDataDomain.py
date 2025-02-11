@@ -98,9 +98,43 @@ class InsertDataDomain:
 
         exception_group = None
         try:
-            assets = await Helpers.converter_from_file_to_object( file_path=doc_location_path,
-                                                            include_tab_info=True,
-                                                            delimiter=delimiter)
+            if doc_location_path.suffix in ['.xls', '.xlsx']:
+                temp_path = InsertDataDomain.remove_dropdown_values_from_excel(doc=doc_location_path)
+                assets, exception_group =  await Helpers.converter_from_file_to_object(
+                    file_path=temp_path,include_tab_info=True )
+
+            elif doc_location_path.suffix == '.sdf':
+                # SDF files will make multiple CSV files, one for each class
+                temp_path_list = InsertDataDomain.create_temporary_SDF_conversion_to_CSV_files(
+                    sdf_filepath=doc_location_path)
+
+                assets = []
+                sdf_exception_list = []
+                for temp_path in temp_path_list:
+                    assets_subset, exception_group_subset = await Helpers.converter_from_file_to_object(
+                        file_path=temp_path,
+                        delimiter=",",
+                        include_tab_info=True )
+                    assets.extend(assets_subset)
+                    if exception_group is not None:
+                        sdf_exception_list.extend(exception_group.exceptions)
+
+                exception_group = ExceptionsGroup(
+                    message=f'Failed to create objects from Excel file {doc_location_path}')
+                for exception in sdf_exception_list:
+                    exception_group.add_exception(exception)
+            else:
+                assets, exception_group = await Helpers.converter_from_file_to_object(
+                    file_path=doc_location_path,include_tab_info=True )
+
+            # second checks done by the GUI
+            if exception_group is None:
+                exception_group = ExceptionsGroup(
+                    message=f'Failed to create objects from Excel file {doc_location_path}')
+
+            cls.check_for_invalid_relations(assets=assets, exception_group=exception_group)
+            cls.check_for_empty_identificators(assets=assets, exception_group=exception_group)
+
         except ExceptionsGroup as group:
             exception_group = group
             assets = group.objects
@@ -310,43 +344,8 @@ class InsertDataDomain:
         for project_file in global_vars.current_project.get_saved_projectfiles():
             file_path = project_file.file_path
             try:
-                exception_group = None
-                if file_path.suffix in ['.xls', '.xlsx']:
-                    temp_path = InsertDataDomain.remove_dropdown_values_from_excel(doc=file_path)
-                    assets, exception_group = await InsertDataDomain.check_document(
-                        doc_location=temp_path)
+                assets, exception_group = await cls.check_document(file_path)
 
-                elif file_path.suffix == '.sdf':
-                    # SDF files will make multiple CSV files, one for each class
-                    temp_path_list = InsertDataDomain.create_temporary_SDF_conversion_to_CSV_files(
-                        sdf_filepath=file_path)
-
-                    assets = []
-                    sdf_exception_list = []
-                    for temp_path in temp_path_list:
-                        assets_subset, exception_group_subset = await InsertDataDomain.check_document(
-                            doc_location=temp_path ,
-                            delimiter=",")
-                        assets.extend(assets_subset)
-                        if exception_group is not None:
-                            sdf_exception_list.extend(exception_group.exceptions)
-
-
-                    exception_group = ExceptionsGroup(
-                        message=f'Failed to create objects from Excel file {file_path}')
-                    for exception in sdf_exception_list:
-                        exception_group.add_exception(exception)
-                else:
-                    assets, exception_group = await InsertDataDomain.check_document(
-                        doc_location=file_path)
-
-                # second checks done by the GUI
-                if exception_group is None:
-                    exception_group = ExceptionsGroup(
-                        message=f'Failed to create objects from Excel file {file_path}')
-
-                cls.check_for_invalid_relations(assets= assets,exception_group=exception_group)
-                cls.check_for_empty_identificators(assets=assets,exception_group=exception_group)
                 if len(exception_group.exceptions) > 0:
                     raise exception_group
 

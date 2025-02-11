@@ -46,9 +46,9 @@ class AssetDataChangeScreen(Screen):
         window = QWidget()
         window.setProperty('class', 'background-box')
         window_layout = QVBoxLayout()
-        # window_layout.addWidget(self.upper_side())
-        # window_layout.addWidget(self.lower_side())
-        window_layout.addWidget(QLabel("Under Construction"))
+        window_layout.addWidget(self.upper_side())
+        window_layout.addWidget(self.lower_side())
+        # window_layout.addWidget(QLabel("Under Construction"))
         window.setLayout(window_layout)
         return window
 
@@ -71,19 +71,7 @@ class AssetDataChangeScreen(Screen):
         frame.setLayout(frame_layout)
         return frame
 
-    def input_original_file_field(self):
-        input_file = QFrame()
-        input_file_layout = QHBoxLayout()
-        self.original_file_label.setText(self._('original_file_load'))
 
-        self.input_file_field.setHeaderHidden(True)
-        self.input_file_field.setColumnCount(2)
-        self.input_file_field.header().setStretchLastSection(False)
-        self.input_file_field.header().setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
-        input_file_layout.addWidget(self.original_file_label)
-        input_file_layout.addWidget(self.input_file_field)
-        input_file.setLayout(input_file_layout)
-        return input_file
 
     def button_group(self):
         frame = QFrame()
@@ -113,13 +101,7 @@ class AssetDataChangeScreen(Screen):
         frame.setLayout(frame_layout)
         return frame
 
-    def change_table(self):
-        self.table.setEnabled(True)
-        self.table.verticalHeader().setHidden(True)
-        self.table.horizontalHeader().setStretchLastSection(False)
-        self.table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
-        self.table.setShowGrid(False)
-        self.table.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
+
 
     def reset_ui(self, _):
         self._ = _
@@ -173,20 +155,7 @@ class AssetDataChangeScreen(Screen):
         if self.input_file_field.topLevelItemCount() == 0:
             self.control_button.setDisabled(True)
 
-    def clear_user_fields(self):
-        self.input_file_field.clear()
-        if self.model is not None:
-            self.model._data = []
-        self.table.clearSpans()
-        self.control_button.setDisabled(True)
-        self.export_button.setDisabled(True)
 
-    def navigate_to_diff_report(self, table):
-        original_documents = [self.input_file_field.topLevelItem(i).data(0, 1) for i in
-                              range(self.input_file_field.topLevelItemCount())]
-        report = AssetChangeDomain().get_diff_report(original_documents=original_documents)
-        self.fill_up_change_table(report, table)
-        self.export_button.setDisabled(False)
 
     def fill_up_change_table(self, report, table):
         data = [
@@ -216,25 +185,4 @@ class AssetDataChangeScreen(Screen):
             OTLLogger.logger.debug(e)
             self.negative_feedback_message()
 
-    def construct_feedback_message(self):
-        # OTLLogger.logger.debug("constructing feedback message")
-        frame_layout = QHBoxLayout()
-        frame_layout.addWidget(self.message_icon)
-        self.message.setProperty('class', 'feedback-message')
-        frame_layout.addWidget(self.message)
-        frame_layout.addStretch()
-        self.feedback_message_box.setLayout(frame_layout)
 
-    def positive_feedback_message(self):
-        self.message_icon.setPixmap(qta.icon('mdi.check', color="white").pixmap(QSize(48, 48)))
-        self.message.setText(self._('the changes were correctly written to a new file'))
-        self.feedback_message_box.setStyleSheet('background-color: #1DCA94; border-radius: 10px;')
-
-    def clear_feedback_message(self):
-        self.message.setText('')
-        self.feedback_message_box.setStyleSheet('')
-
-    def negative_feedback_message(self):
-        self.message_icon.setPixmap(qta.icon('mdi.alert-circle-outline', color="white").pixmap(QSize(48, 48)))
-        self.message.setText(self._('error'))
-        self.feedback_message_box.setStyleSheet('background-color: #CC3300; border-radius: 10px;')
