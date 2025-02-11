@@ -113,8 +113,10 @@ class MainWindow(QStackedWidget):
         self.reset_ui(self._)
 
     def setCurrentIndex(self, index):
-        # if you go to the RelationChangeScreen the information is updated if the project had changed
-        if index == 3 and (not RelationChangeDomain.project or RelationChangeDomain.project != global_vars.current_project):
+        # if you go to the RelationChangeScreen or ExportDataScreen
+        # the information is updated if the project has changed
+        if (index in [3, 4] and (not RelationChangeDomain.project or
+                                            RelationChangeDomain.project != global_vars.current_project)):
             RelationChangeDomain.init_static(project=global_vars.current_project)
 
         super().setCurrentIndex(index)

@@ -5,7 +5,8 @@ from typing import List
 
 from otlmow_converter.OtlmowConverter import OtlmowConverter
 from otlmow_model.OtlmowModel.BaseClasses.OTLObject import create_dict_from_asset, OTLObject
-from otlmow_model.OtlmowModel.Helpers.OTLObjectHelper import compare_two_lists_of_objects_attribute_level
+from otlmow_model.OtlmowModel.Helpers.OTLObjectHelper import \
+    compare_two_lists_of_objects_attribute_level, is_relation
 from universalasync import async_to_sync_wraps
 
 from Domain import global_vars
@@ -17,8 +18,9 @@ from Domain.project.ProgramFileManager import ProgramFileManager
 from Domain.enums import ReportAction, FileState
 from Domain.step_domain.ExportDataDomain import ExportDataDomain
 from Domain.step_domain.InsertDataDomain import InsertDataDomain
-from Domain.step_domain.RelationChangeDomain import async_save_assets
+from Domain.step_domain.RelationChangeDomain import async_save_assets, RelationChangeDomain
 from GUI.dialog_windows.LoadingImageWindow import add_loading_screen
+from UnitTests.TestClasses.Classes.ImplementatieElement.RelatieObject import RelatieObject
 
 
 @dataclass
@@ -73,43 +75,13 @@ class AssetChangeDomain:
         for x in original_documents:
             assets, exception_group = await InsertDataDomain.check_document( doc_location=Path(x))
             original_assets.extend(assets)
-        new_assets = []
-        for x in global_vars.current_project.get_saved_projectfiles():
-            assets, exception_group = await InsertDataDomain.check_document( doc_location=Path(x.file_path))
-            new_assets.extend(assets)
+        # new_assets = []
+        # for x in global_vars.current_project.get_saved_projectfiles():
+        #     assets, exception_group = await InsertDataDomain.check_document( doc_location=Path(x.file_path))
+        #     new_assets.extend(assets)
+        new_assets = RelationChangeDomain.get_export_instances()
+
         cls.get_screen().insert_change_report(cls.generate_diff_report(original_assets, new_assets, model_dir))
-
-    @classmethod
-    def replace_files_with_diff_report(cls, original_documents: List[str], project: Project, file_name: str) -> None:
-        OTLLogger.logger.debug("started replacing files with diff report")
-        changed_assets = cls.generate_changed_assets_from_files(project=project)
-        original_assets = cls.generate_original_assets_from_files(original_documents=original_documents)
-        diff_1 = compare_two_lists_of_objects_attribute_level(first_list=original_assets,
-                                                              second_list=changed_assets,
-                                                              model_directory=ProgramFileStructure.get_otl_wizard_model_dir())
-        # ProgramFileStructure.delete_template_folder()
-        project.saved_project_files = []
-        tempdir = ProgramFileManager.create_empty_temporary_map()
-        temp_loc = Path(tempdir) / file_name
-        OtlmowConverter().from_objects_to_file(file_path=temp_loc, sequence_of_objects=diff_1)
-        project.copy_and_add_project_file(file_path=temp_loc, state=FileState.OK)
-
-    @classmethod
-    def replace_files_with_diff_report(cls, original_documents: List[str], project: Project,
-                                       file_name: str) -> None:
-        OTLLogger.logger.debug("started replacing files with diff report")
-        changed_assets = cls.generate_changed_assets_from_files(project=project)
-        original_assets = cls.generate_original_assets_from_files(
-            original_documents=original_documents)
-        diff_1 = compare_two_lists_of_objects_attribute_level(first_list=original_assets,
-                                                              second_list=changed_assets,
-                                                              model_directory=ProgramFileStructure.get_otl_wizard_model_dir())
-        # ProgramFileStructure.delete_template_folder()
-        project.saved_project_files = []
-        tempdir = ProgramFileManager.create_empty_temporary_map()
-        temp_loc = Path(tempdir) / file_name
-        OtlmowConverter().from_objects_to_file(file_path=temp_loc, sequence_of_objects=diff_1)
-        project.copy_and_add_project_file(file_path=temp_loc, state=FileState.OK)
 
     @classmethod
     @async_to_sync_wraps
@@ -120,17 +92,28 @@ class AssetChangeDomain:
                            separate_per_class_csv_option,
                            separate_relations_option) -> None:
         OTLLogger.logger.debug("started replacing files with diff report")
-        changed_assets = await cls.generate_changed_assets_from_files(project=project)
-        original_assets = await cls.generate_original_assets_from_files(original_documents=original_documents)
-        diff_1 = compare_two_lists_of_objects_attribute_level(first_list=original_assets,
+        # changed_assets = await cls.generate_changed_assets_from_files(project=project)
+
+        changed_assets = sorted(RelationChangeDomain.get_internal_objects(),
+                                  key=lambda relation1: relation1.typeURI)
+        changed_relations = sorted(RelationChangeDomain.get_persistent_relations(),
+                                     key=lambda relation1: relation1.typeURI)
+
+        original_objects = await cls.generate_original_assets_from_files(original_documents=original_documents)
+        original_assets = [original_object for original_object in original_objects if not is_relation(original_object)]
+        original_relations =[original_object for original_object in original_objects if is_relation(original_object)]
+
+        diff_1_assets = compare_two_lists_of_objects_attribute_level(first_list=original_assets,
                                                               second_list=changed_assets,
                                                               model_directory=ProgramFileStructure.get_otl_wizard_model_dir())
+        diff_1_relations = compare_two_lists_of_objects_attribute_level(first_list=original_relations,
+                                                                     second_list=changed_relations,
+                                                                     model_directory=ProgramFileStructure.get_otl_wizard_model_dir())
 
-        assets= sorted(diff_1,key=lambda relation1: relation1.typeURI)
-        #TODO: filter on relations in the diff_1 list
-        # relations = sorted(diff_1,key=lambda relation1: relation1.typeURI)
-        relations = []
-        ExportDataDomain.export_to_files(assets, relations, file_name,
+        assets = sorted(diff_1_assets,key=lambda relation1: relation1.typeURI)
+        relations = sorted(diff_1_relations, key=lambda relation1: relation1.typeURI)
+
+        ExportDataDomain.export_to_files(assets, relations , file_name,
                             separate_per_class_csv_option, separate_relations_option)
 
 
