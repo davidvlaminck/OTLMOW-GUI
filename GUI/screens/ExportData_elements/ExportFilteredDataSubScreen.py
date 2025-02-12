@@ -80,7 +80,6 @@ class ExportFilteredDataSubScreen(AbstractExportDataSubScreen):
         frame_layout = QVBoxLayout()
         frame_layout.addWidget(self.input_original_file_field())
         frame_layout.addWidget(self.button_group())
-        frame_layout.addStretch()
         frame_layout.setContentsMargins(0, 0, 0, 0)
         frame.setLayout(frame_layout)
         return frame
