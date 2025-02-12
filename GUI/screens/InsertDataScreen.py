@@ -29,6 +29,8 @@ from GUI.dialog_windows.RevalidateDocumentsWindow import RevalidateDocumentsWind
 from GUI.screens.Screen import Screen
 import qtawesome as qta
 
+from GUI.translation.ValidationErrorReportTranslations import ValidationErrorReportTranslations
+
 
 class InsertDataScreen(Screen):
     """
@@ -733,62 +735,9 @@ class InsertDataScreen(Screen):
         doc_name = Path(doc).name
         error_widget = QListWidgetItem()
 
-        if str(exception) == "argument of type 'NoneType' is not iterable":
-            error_text = self._(
-                "{doc_name}: Data nodig in een datasheet om objecten in te laden.\n").format(
-                doc_name=doc_name)
-        elif issubclass(type(exception), NoTypeUriInTableError):
-            error_text = self._(
-                "{doc_name}: No type uri in {tab}\n").format(
-                doc_name=doc_name, tab=str(exception.tab))
-        elif issubclass(type(exception), InvalidColumnNamesInExcelTabError):
-            error_text = self._(
-                "{doc_name}: invalid columns in {tab}, bad columns are {bad_columns} \n").format(
-                doc_name=doc_name, tab=exception.tab, bad_columns=str(exception.bad_columns))
-        elif issubclass(type(exception), TypeUriNotInFirstRowError):
-            error_text = self._(
-                "{doc_name}: type uri not in first row of {tab}\n").format(
-                doc_name=doc_name, tab=str(exception.tab))
-        elif issubclass(type(exception), FailedToImportFileError): # as of otlmow_converter==1.4 never instantiated
-            error_text = self._(f'{doc_name}: {exception} \n')
-        elif issubclass(type(exception), NoIdentificatorError):
-            error_text = self._(
-                "{doc_name}: There are assets without an assetId.identificator in "
-                "worksheet {tab}\n").format(doc_name=doc_name, tab=str(exception.tab))
-        elif issubclass(type(exception), RelationHasInvalidTypeUriForSourceAndTarget):
-                error_text = self._(
-                    "{doc_name}:\n"+
-                    "Relation of type: \"{type_uri}\"\n"+
-                    "with assetId.identificator: \"{identificator}\"\n"+
-                    "This relation cannot be made between the typeURI's.\n"+
-                    "{wrong_field}= \"{wrong_value}\"\n"+
-                    "{wrong_field2}= \"{wrong_value2}\"\nin tab {tab}\n").format(
-                    doc_name=doc_name, 
-                    type_uri=exception.relation_type_uri,
-                    identificator=exception.relation_identificator, 
-                    wrong_field=exception.wrong_field,
-                    wrong_value=exception.wrong_value, 
-                    wrong_field2=exception.wrong_field2,
-                    wrong_value2=exception.wrong_value2,
-                    tab=exception.tab)
-        elif issubclass(type(exception), RelationHasNonExistingTypeUriForSourceOrTarget) :
-            error_text = self._(
-                "{doc_name}:\n" 
-                "Relation of type: \"{type_uri}\"\n"
-                "with assetId.identificator: \"{identificator}\",\n"
-                "has the non-existing TypeURI value: \"{wrong_value}\"\n"
-                "for field \"{wrong_field}\".\nin tab {tab}\n").format(
-                doc_name=doc_name, 
-                type_uri=exception.relation_type_uri,
-                identificator=exception.relation_identificator, 
-                wrong_field=exception.wrong_field, 
-                wrong_value=exception.wrong_value,
-                tab=exception.tab)
+        error_text = ValidationErrorReportTranslations.translate_exception(doc_name, exception)
 
-        else:
-            error_text = self._(f'{doc_name}: {exception}\n')
         error_widget.setText(error_text)
-
         self.asset_info.addItem(error_widget)
 
         item = self.asset_info.findItems(error_text, Qt.MatchFlag.MatchExactly)

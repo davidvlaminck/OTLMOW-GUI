@@ -212,3 +212,9 @@ class ExportFilteredDataSubDomain:
     @classmethod
     def get_screen(cls):
         return global_vars.otl_wizard.main_window.step4_export.sub_screen_option_2_only_unedited_data
+
+    @classmethod
+    def remove_all_original_documents(cls):
+        cls.original_documents.clear()
+
+        cls.update_frontend()
