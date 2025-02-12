@@ -72,5 +72,5 @@ class ValidationErrorReportTranslations:
                 tab=exception.tab)
 
         else:
-            error_text = self._(f'{doc_name}: {exception}\n')
+            error_text = GlobalTranslate._(f'{doc_name}: {exception}\n')
         return error_text

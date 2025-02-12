@@ -119,15 +119,18 @@ class ExportFilteredDataSubScreen(AbstractExportDataSubScreen):
         self.feedback_message_box.setLayout(frame_layout)
 
     def positive_feedback_message(self):
+        self.message_icon.setVisible(True)
         self.message_icon.setPixmap(qta.icon('mdi.check', color="white").pixmap(QSize(48, 48)))
         self.message.setText(self._('all_info_correct'))
         self.feedback_message_box.setStyleSheet('background-color: #1DCA94; border-radius: 10px;')
 
     def clear_feedback_message(self):
         self.message.setText('')
+        self.message_icon.setVisible(False)
         self.feedback_message_box.setStyleSheet('')
 
     def negative_feedback_message(self):
+        self.message_icon.setVisible(True)
         self.message_icon.setPixmap(qta.icon('mdi.alert-circle-outline', color="white").pixmap(QSize(48, 48)))
         self.message.setText(self._('error'))
         self.feedback_message_box.setStyleSheet('background-color: #CC3300; border-radius: 10px;')
@@ -207,6 +210,9 @@ class ExportFilteredDataSubScreen(AbstractExportDataSubScreen):
         self.model = TableModel(data, self._)
         self.feedback_diff_table.setModel(self.model)
 
+    def clear_change_table(self):
+        self.fill_up_change_table([])
+
     def open_original_file_picker(self):
         file_path = str(Path.home())
         file_picker = QFileDialog()
@@ -233,6 +239,8 @@ class ExportFilteredDataSubScreen(AbstractExportDataSubScreen):
         files_str = str(files)
         OTLLogger.logger.debug(f"adding file to list {files_str}")
         self.original_file_field.clear()
+        self.clear_change_table()
+        self.clear_feedback_message()
 
         for doc_name in files.keys():
             list_item = QTreeWidgetItem()
@@ -244,9 +252,12 @@ class ExportFilteredDataSubScreen(AbstractExportDataSubScreen):
             button.setIcon(qta.icon('mdi.close'))
             self.original_file_field.setItemWidget(list_item, 1, button)
 
+
+
         if self.original_file_field.topLevelItemCount() == 0:
             self.control_button.setDisabled(True)
             self.export_btn.setDisabled(True)
+
         else:
             self.control_button.setDisabled(False)
             self.export_btn.setDisabled(False)
