@@ -49,8 +49,6 @@ class ExportFilteredDataSubScreen(AbstractExportDataSubScreen):
 
         super().__init__(language_settings=language_settings)
 
-
-
     def init_ui(self) -> None:
         """
         Initializes the user interface for the export data screen. This method sets up the layout
