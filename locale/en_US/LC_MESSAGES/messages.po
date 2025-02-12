@@ -380,7 +380,7 @@ msgstr ""
 
 #: GUI/screens/ExportDataScreen.py:61 GUI/screens/ExportDataScreen.py:145
 msgid "export_to_davie"
-msgstr "Export data ready for Davie"
+msgstr "Export data ready for DAVIE"
 
 #: GUI/screens/ExportDataScreen.py:64 GUI/screens/ExportDataScreen.py:142
 msgid "export relations and assets in different files"

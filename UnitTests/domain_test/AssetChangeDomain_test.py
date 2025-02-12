@@ -2,7 +2,7 @@ import logging
 from pathlib import Path
 
 from Domain.logger.OTLLogger import OTLLogger
-from Domain.step_domain.AssetChangeDomain import ExportFilteredDataSubDomain, ReportItem
+from Domain.step_domain.ExportFilteredDataSubDomain import ExportFilteredDataSubDomain, ReportItem
 from Domain.enums import ReportAction
 from UnitTests.project_files_test.OTLWizardProjects.Model.OtlmowModel.Classes.Onderdeel.AllCasesTestClass import \
     AllCasesTestClass

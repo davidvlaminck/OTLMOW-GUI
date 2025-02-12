@@ -1,14 +1,28 @@
 import asyncio
+import traceback
 from pathlib import Path
 
 from PyQt6.QtCore import QSize
 from PyQt6.QtWidgets import QVBoxLayout, QFrame, QHBoxLayout, QLabel, QTreeWidget, QHeaderView, \
     QPushButton, QTableView, QTableWidget, QFileDialog, QTreeWidgetItem
+from otlmow_converter.Exceptions.ExceptionsGroup import ExceptionsGroup
+from otlmow_converter.Exceptions.FailedToImportFileError import FailedToImportFileError
+from otlmow_converter.Exceptions.InvalidColumnNamesInExcelTabError import \
+    InvalidColumnNamesInExcelTabError
+from otlmow_converter.Exceptions.NoTypeUriInTableError import NoTypeUriInTableError
+from otlmow_converter.Exceptions.TypeUriNotInFirstRowError import TypeUriNotInFirstRowError
 
 from Domain import global_vars
 from Domain.logger.OTLLogger import OTLLogger
-from Domain.step_domain.AssetChangeDomain import ExportFilteredDataSubDomain
+from Domain.step_domain.ExportFilteredDataSubDomain import ExportFilteredDataSubDomain
+from Exceptions.NoIdentificatorError import NoIdentificatorError
+from Exceptions.RelationHasInvalidTypeUriForSourceAndTarget import \
+    RelationHasInvalidTypeUriForSourceAndTarget
+from Exceptions.RelationHasNonExistingTypeUriForSourceOrTarget import \
+    RelationHasNonExistingTypeUriForSourceOrTarget
 from GUI.dialog_windows.ChooseFileNameWindow import ChooseFileNameWindow
+from GUI.screens.ExportData_elements.ChangesTableView import ChangesTableView
+from GUI.screens.ExportData_elements.TableErrorModel import TableErrorModel
 from GUI.screens.ExportData_elements.TableModel import TableModel
 from GUI.screens.ExportData_elements.AbstractExportDataSubScreen import AbstractExportDataSubScreen
 from GUI.screens.general_elements.ButtonWidget import ButtonWidget
@@ -24,7 +38,7 @@ class ExportFilteredDataSubScreen(AbstractExportDataSubScreen):
         # self.export_button = ButtonWidget()
         self.input_file_button = QPushButton()
         self.feedback_diff_label = QLabel()
-        self.feedback_diff_table = QTableView()
+        self.feedback_diff_table = ChangesTableView()
         self.message_icon = QLabel()
         self.message = QLabel()
         self.feedback_message_box = QFrame()
@@ -104,7 +118,7 @@ class ExportFilteredDataSubScreen(AbstractExportDataSubScreen):
 
     def positive_feedback_message(self):
         self.message_icon.setPixmap(qta.icon('mdi.check', color="white").pixmap(QSize(48, 48)))
-        self.message.setText(self._('the changes were correctly written to a new file'))
+        self.message.setText(self._('all_info_correct'))
         self.feedback_message_box.setStyleSheet('background-color: #1DCA94; border-radius: 10px;')
 
     def clear_feedback_message(self):
@@ -120,7 +134,7 @@ class ExportFilteredDataSubScreen(AbstractExportDataSubScreen):
         self.feedback_diff_table.setEnabled(True)
         self.feedback_diff_table.verticalHeader().setHidden(True)
         self.feedback_diff_table.horizontalHeader().setStretchLastSection(False)
-        self.feedback_diff_table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
+        self.feedback_diff_table.resetPainting()
         self.feedback_diff_table.setShowGrid(False)
         self.feedback_diff_table.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
 
@@ -177,17 +191,11 @@ class ExportFilteredDataSubScreen(AbstractExportDataSubScreen):
         # self.export_button.setDisabled(True)
 
     def navigate_to_diff_report(self, table):
-        original_documents = [self.original_file_field.topLevelItem(i).data(0, 1) for i in
-                              range(self.original_file_field.topLevelItemCount())]
         event_loop = asyncio.get_event_loop()
-        event_loop.create_task(ExportFilteredDataSubDomain.get_diff_report(original_documents=original_documents))
+        event_loop.create_task(ExportFilteredDataSubDomain.get_diff_report())
 
 
-    def insert_change_report(self,report:dict):
-        self.fill_up_change_table(report, self.feedback_diff_table)
-        # self.export_button.setDisabled(False)
-
-    def fill_up_change_table(self, report, table):
+    def fill_up_change_table(self, report):
         data = [
             [
                 str(rep.id),
@@ -199,21 +207,7 @@ class ExportFilteredDataSubScreen(AbstractExportDataSubScreen):
             for rep in report
         ]
         self.model = TableModel(data, self._)
-        table.setModel(self.model)
-
-    def replace_file_with_diff_report(self):
-        original_documents = [self.original_file_field.topLevelItem(i).data(0, 1) for i in
-                              range(self.original_file_field.topLevelItemCount())]
-        OTLLogger.logger.debug(f"original documents {original_documents}")
-        project = global_vars.current_project
-        dialog_window = ChooseFileNameWindow(self._, project, original_documents)
-        try:
-            dialog_window.warning_overwrite_screen()
-            self.main_window.widget(2).tab1.load_saved_documents_in_project()
-            self.positive_feedback_message()
-        except Exception as e:
-            OTLLogger.logger.debug(e)
-            self.negative_feedback_message()
+        self.feedback_diff_table.setModel(self.model)
 
     def open_original_file_picker(self):
         file_path = str(Path.home())
@@ -233,29 +227,37 @@ class ExportFilteredDataSubScreen(AbstractExportDataSubScreen):
 
         if file_picker.exec():
             OTLLogger.logger.debug("file picker executed")
-            self.add_file_to_list(file_picker.selectedFiles())
+            ExportFilteredDataSubDomain.add_original_documents(file_picker.selectedFiles())
+            
 
-    def add_file_to_list(self, files):
-        self.control_button.setDisabled(False)
+    def update_original_files_list(self, files:dict[str,Path]):
+        
         files_str = str(files)
         OTLLogger.logger.debug(f"adding file to list {files_str}")
-        for file in files:
+        self.original_file_field.clear()
+
+        for doc_name in files.keys():
             list_item = QTreeWidgetItem()
-            doc_name = Path(file).name
             list_item.setText(0, doc_name)
-            list_item.setData(0, 1, file)
+            list_item.setData(0, 1, doc_name)
             self.original_file_field.addTopLevelItem(list_item)
             button = ButtonWidget()
             button.clicked.connect(lambda: self.delete_file_from_list())
             button.setIcon(qta.icon('mdi.close'))
             self.original_file_field.setItemWidget(list_item, 1, button)
 
-    def delete_file_from_list(self):
-        items = self.original_file_field.selectedItems()
-        self.original_file_field.removeItemWidget(items[0], 1)
-        self.original_file_field.takeTopLevelItem(self.original_file_field.indexOfTopLevelItem(items[0]))
         if self.original_file_field.topLevelItemCount() == 0:
             self.control_button.setDisabled(True)
+            self.export_btn.setDisabled(True)
+        else:
+            self.control_button.setDisabled(False)
+            self.export_btn.setDisabled(False)
+
+    def delete_file_from_list(self):
+        items = self.original_file_field.selectedItems()
+        doc_name = items[0].data(0,1)
+        ExportFilteredDataSubDomain.delete_original_file(doc_name=doc_name)
+        
 
     def open_file_picker(self):
         """
@@ -284,13 +286,116 @@ class ExportFilteredDataSubScreen(AbstractExportDataSubScreen):
             csv_option = self.extra_option_csv.isChecked()
             split_relations_and_objects = self.relations_split_optionality.isChecked()
 
-            original_documents = [self.original_file_field.topLevelItem(i).data(0, 1) for i in
-                                  range(self.original_file_field.topLevelItemCount())]
-            OTLLogger.logger.debug(f"original documents {original_documents}")
-
             event_loop = asyncio.get_event_loop()
             event_loop.create_task(ExportFilteredDataSubDomain.export_diff_report(project=global_vars.current_project,
-                                                                                  original_documents=original_documents,
                                                                                   file_name=document_loc[0],
                                                                                   separate_per_class_csv_option=csv_option,
                                                                                   separate_relations_option=split_relations_and_objects))
+
+    def add_error_to_feedback_list(self, exception: Exception, doc: str) -> None:
+        """Adds an error message to the feedback list based on the exception type.
+
+        This method constructs a user-friendly error message from the provided
+        exception and document name, then adds it to the feedback list. It
+        handles various types of errors, formatting the message accordingly,
+        and highlights the error in red for visibility.
+
+        Args:
+            self: The instance of the class.
+            exception (Exception): The exception that occurred, used to determine the error message.
+            doc (str): The path of the document associated with the error.
+
+        Returns:
+            None
+        """
+
+        OTLLogger.logger.debug(str(exception))
+        traceback.print_exception(exception)
+        doc_name = Path(doc).name
+
+        if str(exception) == "argument of type 'NoneType' is not iterable":
+            error_text = self._(
+                "{doc_name}: Data nodig in een datasheet om objecten in te laden.\n").format(
+                doc_name=doc_name)
+        elif issubclass(type(exception), NoTypeUriInTableError):
+            error_text = self._(
+                "{doc_name}: No type uri in {tab}\n").format(
+                doc_name=doc_name, tab=str(exception.tab))
+        elif issubclass(type(exception), InvalidColumnNamesInExcelTabError):
+            error_text = self._(
+                "{doc_name}: invalid columns in {tab}, bad columns are {bad_columns} \n").format(
+                doc_name=doc_name, tab=exception.tab, bad_columns=str(exception.bad_columns))
+        elif issubclass(type(exception), TypeUriNotInFirstRowError):
+            error_text = self._(
+                "{doc_name}: type uri not in first row of {tab}\n").format(
+                doc_name=doc_name, tab=str(exception.tab))
+        elif issubclass(type(exception), FailedToImportFileError): # as of otlmow_converter==1.4 never instantiated
+            error_text = self._(f'{doc_name}: {exception} \n')
+        elif issubclass(type(exception), NoIdentificatorError):
+            error_text = self._(
+                "{doc_name}: There are assets without an assetId.identificator in "
+                "worksheet {tab}\n").format(doc_name=doc_name, tab=str(exception.tab))
+        elif issubclass(type(exception), RelationHasInvalidTypeUriForSourceAndTarget):
+                error_text = self._(
+                    "{doc_name}:\n"+
+                    "Relation of type: \"{type_uri}\"\n"+
+                    "with assetId.identificator: \"{identificator}\"\n"+
+                    "This relation cannot be made between the typeURI's.\n"+
+                    "{wrong_field}= \"{wrong_value}\"\n"+
+                    "{wrong_field2}= \"{wrong_value2}\"\nin tab {tab}\n").format(
+                    doc_name=doc_name,
+                    type_uri=exception.relation_type_uri,
+                    identificator=exception.relation_identificator,
+                    wrong_field=exception.wrong_field,
+                    wrong_value=exception.wrong_value,
+                    wrong_field2=exception.wrong_field2,
+                    wrong_value2=exception.wrong_value2,
+                    tab=exception.tab)
+        elif issubclass(type(exception), RelationHasNonExistingTypeUriForSourceOrTarget) :
+            error_text = self._(
+                "{doc_name}:\n" 
+                "Relation of type: \"{type_uri}\"\n"
+                "with assetId.identificator: \"{identificator}\",\n"
+                "has the non-existing TypeURI value: \"{wrong_value}\"\n"
+                "for field \"{wrong_field}\".\nin tab {tab}\n").format(
+                doc_name=doc_name,
+                type_uri=exception.relation_type_uri,
+                identificator=exception.relation_identificator,
+                wrong_field=exception.wrong_field,
+                wrong_value=exception.wrong_value,
+                tab=exception.tab)
+
+        else:
+            error_text = self._(f'{doc_name}: {exception}\n')
+
+
+        return error_text
+
+    def fill_up_change_table_with_error_feedback(self, error_set: list[dict]):
+        """Processes a set of errors and populates the feedback list.
+
+        This method iterates through the provided error set, extracting exceptions
+        and their associated document paths. It adds each error to the feedback
+        list, handling both individual exceptions and groups of exceptions.
+
+        Args:
+            self: The instance of the class.
+            error_set (list): A list of error items, each containing an exception
+                              and a document path.
+
+        Returns:
+            None
+        """
+        data = []
+        for item in error_set:
+            exception = item["exception"]
+            doc = item["path_str"]
+
+            if isinstance(exception, ExceptionsGroup):
+                for ex in exception.exceptions:
+                    data.append([self.add_error_to_feedback_list(ex, doc)])
+            else:
+                data.append([self.add_error_to_feedback_list(exception, doc)])
+
+        self.model = TableErrorModel(data, self._)
+        self.feedback_diff_table.setModel(self.model)

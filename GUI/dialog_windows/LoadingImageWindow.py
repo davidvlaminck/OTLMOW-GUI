@@ -163,7 +163,7 @@ class LoadingImageWindow(QDialog):
                     max_interval = max(current_loading_window.paintIntervals)
                     min_interval = min(current_loading_window.paintIntervals)
                     avg_interval =  total_time/interval_count
-                    text = "PaintEvent intervals: count: {interval_count}, tot: {tot:07.3f}s, max: {max:07.3f}s, min: {min:07.3f}s,avg: {avg:07.3f}s, all: [".format(interval_count=interval_count,tot=total_time,max=max_interval,min=min_interval,avg=avg_interval)
+                    text = "Loading screen frame intervals: count: {interval_count}, tot: {tot:07.3f}s, max: {max:07.3f}s, min: {min:07.3f}s,avg: {avg:07.3f}s, all: [".format(interval_count=interval_count,tot=total_time,max=max_interval,min=min_interval,avg=avg_interval)
                     for time in current_loading_window .paintIntervals:
                         text += "{time:07.3f},".format(time=time)
 

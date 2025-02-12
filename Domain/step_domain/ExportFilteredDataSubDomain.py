@@ -32,14 +32,30 @@ class ReportItem:
     new_value: str
 
 class ExportFilteredDataSubDomain:
+    original_documents:dict[str,Path] = {}
+    @classmethod
+    def add_original_documents(cls,paths_str:list[str]):
+        for path_str in paths_str:
+            path = Path(path_str)
+            filename = path.name
+            cls.original_documents[filename] = path
+        cls.update_frontend()
+
+    @classmethod
+    def delete_original_file(cls,doc_name:str):
+        cls.original_documents.pop(doc_name)
+        cls.update_frontend()
+
+    @classmethod
+    def update_frontend(cls):
+        cls.get_screen().update_original_files_list(cls.original_documents)
 
     @classmethod
     def generate_diff_report(cls, original_data: list, new_data: list, model_directory: Path) -> List[ReportItem]:
         report_list = []
         diff_lists = cls.generate_difference_between_two_lists(list1=original_data, list2=new_data,
                                                                model_directory=model_directory)
-        diff_lists_str = str(diff_lists)
-        OTLLogger.logger.debug(f"diff lists {diff_lists_str}")
+
         original_data_dict = {item.assetId.identificator: item for item in original_data}
         for item in diff_lists:
             old_item = original_data_dict.get(item.assetId.identificator)
@@ -71,31 +87,39 @@ class ExportFilteredDataSubDomain:
     @classmethod
     @add_loading_screen
     @async_save_assets
-    async def get_diff_report(cls, original_documents: list) -> List[ReportItem]:
+    async def get_diff_report(cls) -> None:
         model_dir = ProgramFileStructure.get_otl_wizard_model_dir()
-        OTLLogger.logger.debug(f"original docs {original_documents}")
         original_assets = []
-        for x in original_documents:
+        exception_group = None
+        error_set = []
+        for x in cls.original_documents.values():
             assets, exception_group = await InsertDataDomain.check_document( doc_location=Path(x))
             original_assets.extend(assets)
-        # new_assets = []
-        # for x in global_vars.current_project.get_saved_projectfiles():
-        #     assets, exception_group = await InsertDataDomain.check_document( doc_location=Path(x.file_path))
-        #     new_assets.extend(assets)
+            if exception_group and exception_group.exceptions:
+                for ex in exception_group.exceptions:
+                    error_set.append({"exception": ex, "path_str": Path(x).name})
+        if error_set:
+            cls.get_screen().negative_feedback_message()
+            cls.get_screen().fill_up_change_table_with_error_feedback(error_set)
+            return
+
         new_assets = RelationChangeDomain.get_export_instances()
 
-        cls.get_screen().insert_change_report(cls.generate_diff_report(original_assets, new_assets, model_dir))
+        cls.get_screen().positive_feedback_message()
+        cls.get_screen().fill_up_change_table(cls.generate_diff_report(original_assets, new_assets, model_dir))
 
     @classmethod
     @async_to_sync_wraps
     @add_loading_screen
-    async def export_diff_report(cls, original_documents: List[str],
+    async def export_diff_report(cls,
                            project: Project,
                            file_name: str,
                            separate_per_class_csv_option,
                            separate_relations_option) -> None:
         OTLLogger.logger.debug("started replacing files with diff report")
         # changed_assets = await cls.generate_changed_assets_from_files(project=project)
+
+        original_documents = [str(original_doc) for original_doc in cls.original_documents.values()]
 
         changed_assets = sorted(RelationChangeDomain.get_internal_objects(),
                                   key=lambda relation1: relation1.typeURI)

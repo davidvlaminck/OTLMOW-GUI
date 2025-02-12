@@ -1,6 +1,6 @@
 from PyQt6.QtWidgets import QMessageBox, QPushButton
 
-from Domain.step_domain.AssetChangeDomain import ExportFilteredDataSubDomain
+from Domain.step_domain.ExportFilteredDataSubDomain import ExportFilteredDataSubDomain
 
 
 class ChooseFileNameWindow:
