@@ -208,3 +208,63 @@ def get_and_cleanup_empty_project_no_param(mock_otl_wizard_dir_no_param):
 
     if project_path_rm.exists():
         shutil.rmtree(project_path_rm)
+
+@fixture
+def mock_otl_wizard_dir(root_directory):
+    original_get_otl_wizard_projects_dir = ProgramFileStructure.get_otl_wizard_projects_dir
+    ProgramFileStructure.get_otl_wizard_projects_dir = Mock(return_value=root_directory  / "OTLWizardProjects" / "Projects")
+
+    yield
+    ProgramFileStructure.get_otl_wizard_projects_dir = original_get_otl_wizard_projects_dir
+
+@fixture
+def get_and_cleanup_empty_project(mock_otl_wizard_dir,request):
+    eigen_referentie = request.param[0]
+    project_path = request.param[1]
+    subset_path= request.param[2]
+    saved_documents_overview_path= request.param[3]
+    bestek= request.param[4]
+    laatst_bewerkt= request.param[5]
+    last_quick_save= request.param[6]
+    subset_operator= request.param[7]
+    otl_version= request.param[8]
+    expected_project_path= request.param[9]
+    expected_subset_operator= request.param[10]
+    expected_otl_version= request.param[11]
+    expected_saved_documents_overview_path= request.param[12]
+    expected_last_quick_save= request.param[13]
+    print()
+
+    # remove remnants from failed or aborted tests if necessary
+    project_path_rm = ProgramFileStructure.get_otl_wizard_projects_dir() / eigen_referentie
+    if project_path_rm.exists():
+        shutil.rmtree(project_path_rm)
+    if expected_project_path:
+        project_path2_rm = ProgramFileStructure.get_otl_wizard_projects_dir() / expected_project_path
+        if project_path2_rm.exists():
+            shutil.rmtree(project_path2_rm)
+
+    yield (Project(eigen_referentie=eigen_referentie, project_path= project_path,
+                  subset_path=subset_path,
+                  saved_documents_overview_path=saved_documents_overview_path,bestek=bestek,
+                  laatst_bewerkt=laatst_bewerkt, subset_operator=subset_operator,
+                  otl_version=otl_version,
+                  last_quick_save=last_quick_save),
+           {'bestek':bestek,
+            'eigen_referentie': eigen_referentie,
+            'laatst_bewerkt' : laatst_bewerkt,
+            'subset': subset_path,
+            'subset_operator':expected_subset_operator,
+            'otl_version': expected_otl_version,
+            'last_quick_save':expected_last_quick_save},
+            request.param)
+
+    # eigen_referentie = "empty_project"
+    # yield Project(eigen_referentie=eigen_referentie,last_quick_save=Path("last_quick_save") )
+    project_path = ProgramFileStructure.get_otl_wizard_projects_dir() / eigen_referentie
+    if project_path.exists():
+        shutil.rmtree(project_path)
+    if expected_project_path:
+        project_path2 = ProgramFileStructure.get_otl_wizard_projects_dir() / expected_project_path
+        if project_path2.exists():
+            shutil.rmtree(project_path2)

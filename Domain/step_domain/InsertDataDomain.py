@@ -321,7 +321,7 @@ class InsertDataDomain:
     @async_to_sync_wraps
     @add_loading_screen
     @async_save_assets
-    async def load_and_validate_documents(cls) -> tuple[list[dict], list]:
+    async def load_and_validate_documents(cls,**kwargs) -> tuple[list[dict], list]:
         """
         Loads and validates documents from the current project's saved files.
 
@@ -363,7 +363,7 @@ class InsertDataDomain:
 
         global_vars.otl_wizard.main_window.step3_visuals.create_html(
             objects_in_memory=objects_in_memory)
-        RelationChangeDomain.set_instances(objects_list=objects_in_memory)
+        RelationChangeDomain.set_instances(objects_list=objects_in_memory,**kwargs)
         global_vars.otl_wizard.main_window.step3_visuals.reload_html()
         object_count = len(objects_in_memory)
         OTLLogger.logger.debug(

@@ -5,6 +5,7 @@ from pathlib import Path
 from PyQt6.QtWidgets import QFileDialog
 from otlmow_converter.OtlmowConverter import OtlmowConverter
 from otlmow_model.OtlmowModel.Classes.ImplementatieElement.RelatieObject import RelatieObject
+from universalasync import async_to_sync_wraps
 
 from Domain import global_vars
 from Domain.Helpers import Helpers
@@ -31,7 +32,8 @@ class ExportDataDomain:
 
 
     @classmethod
-    def generate_files(cls, end_file: Path, separate_per_class_csv_option : bool =False,
+    @async_to_sync_wraps
+    async def generate_files(cls, end_file: Path, separate_per_class_csv_option : bool =False,
                        separate_relations_option:bool =False, **kwargs) -> None:
         """
         Generates output files based on the current assets and relations in memory.
@@ -51,16 +53,17 @@ class ExportDataDomain:
         """
         assets_in_memory = sorted(RelationChangeDomain.get_internal_objects(), key=lambda relation1: relation1.typeURI)
         relations_in_memory = sorted(RelationChangeDomain.get_persistent_relations(), key=lambda relation1: relation1.typeURI)
-        cls.export_to_files(assets_in_memory, relations_in_memory, end_file,
+        await cls.export_to_files(assets_in_memory, relations_in_memory, end_file,
                             separate_per_class_csv_option, separate_relations_option, **kwargs)
 
     @classmethod
-    def export_to_files(cls, assets, relations, end_file, separate_per_class_csv_option,
+    @async_to_sync_wraps
+    async def export_to_files(cls, assets, relations, end_file, separate_per_class_csv_option,
                         separate_relations_option, **kwargs):
         if separate_relations_option:
             relations_path, assets_path = cls.create_relation_and_asset_path(end_file)
             if relations:
-                Helpers.start_async_converter_from_object_to_file(file_path=relations_path,
+                await Helpers.start_async_converter_from_object_to_file(file_path=relations_path,
                                                                   sequence_of_objects=relations,
                                                                   split_per_type=separate_per_class_csv_option,
                                                                   abbreviate_excel_sheettitles=True, **kwargs)
@@ -68,7 +71,7 @@ class ExportDataDomain:
                 OTLLogger.logger.info(
                     f"No Relations in memory for project {global_vars.current_project.eigen_referentie}")
             if assets:
-                Helpers.start_async_converter_from_object_to_file(file_path=assets_path,
+                await Helpers.start_async_converter_from_object_to_file(file_path=assets_path,
                                                                   sequence_of_objects=assets,
                                                                   split_per_type=separate_per_class_csv_option,
                                                                   abbreviate_excel_sheettitles=True, **kwargs)
@@ -79,7 +82,7 @@ class ExportDataDomain:
         else:
             objects_in_memory = deepcopy(assets)
             objects_in_memory.extend(relations)
-            Helpers.start_async_converter_from_object_to_file(file_path=Path(end_file),
+            await Helpers.start_async_converter_from_object_to_file(file_path=Path(end_file),
                                                               sequence_of_objects=objects_in_memory,
                                                               split_per_type=separate_per_class_csv_option,
                                                               abbreviate_excel_sheettitles=True, **kwargs)

@@ -294,8 +294,7 @@ class ExportFilteredDataSubScreen(AbstractExportDataSubScreen):
             split_relations_and_objects = self.relations_split_optionality.isChecked()
 
             event_loop = asyncio.get_event_loop()
-            event_loop.create_task(ExportFilteredDataSubDomain.export_diff_report(project=global_vars.current_project,
-                                                                                  file_name=document_loc[0],
+            event_loop.create_task(ExportFilteredDataSubDomain.export_diff_report(file_name=document_loc[0],
                                                                                   separate_per_class_csv_option=csv_option,
                                                                                   separate_relations_option=split_relations_and_objects))
 

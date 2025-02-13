@@ -112,12 +112,10 @@ class ExportFilteredDataSubDomain:
     @async_to_sync_wraps
     @add_loading_screen
     async def export_diff_report(cls,
-                           project: Project,
                            file_name: str,
-                           separate_per_class_csv_option,
-                           separate_relations_option) -> None:
-        OTLLogger.logger.debug("started replacing files with diff report")
-        # changed_assets = await cls.generate_changed_assets_from_files(project=project)
+                           separate_per_class_csv_option:bool = False,
+                           separate_relations_option:bool = False,**kwargs) -> None:
+        OTLLogger.logger.debug("started exporting diff report")
 
         original_documents = [str(original_doc) for original_doc in cls.original_documents.values()]
 
@@ -140,8 +138,8 @@ class ExportFilteredDataSubDomain:
         assets = sorted(diff_1_assets,key=lambda relation1: relation1.typeURI)
         relations = sorted(diff_1_relations, key=lambda relation1: relation1.typeURI)
 
-        ExportDataDomain.export_to_files(assets, relations , file_name,
-                            separate_per_class_csv_option, separate_relations_option)
+        await ExportDataDomain.export_to_files(assets, relations , file_name,
+                            separate_per_class_csv_option, separate_relations_option,**kwargs)
 
 
     @classmethod

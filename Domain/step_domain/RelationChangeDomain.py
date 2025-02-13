@@ -274,7 +274,7 @@ class RelationChangeDomain:
         global_vars.otl_wizard.main_window.step3_visuals.reload_html()
 
     @classmethod
-    def set_instances(cls, objects_list: list[Union[RelatieObject, RelationInteractor]]) -> None:
+    def set_instances(cls, objects_list: list[Union[RelatieObject, RelationInteractor]],**kwargs) -> None:
         # sourcery skip: use-contextlib-suppress
         """Processes and categorizes AIM objects for relation management.
 
@@ -330,14 +330,14 @@ class RelationChangeDomain:
         cls.add_external_objects_to_shown_objects()
         cls.add_agent_objects_to_shown_objects()
 
-        cls.create_and_add_missing_external_assets_from_relations()
+        cls.create_and_add_missing_external_assets_from_relations(**kwargs)
 
         cls.get_screen().fill_object_list(cls.shown_objects)
         cls.get_screen().fill_possible_relations_list(None, {})
         cls.get_screen().fill_existing_relations_list(cls.existing_relations)
 
     @classmethod
-    def create_and_add_missing_external_assets_from_relations(cls) -> None:
+    def create_and_add_missing_external_assets_from_relations(cls, **kwargs) -> None:
         """
         Creates and adds missing external assets based on existing relations.
 
@@ -356,8 +356,8 @@ class RelationChangeDomain:
             source_object = RelationChangeDomain.get_object(identificator=source_id)
             if not source_object:
                 try:
-                    cls.create_and_add_new_external_asset(id_or_name=source_id,
-                                                          type_uri=relation_object.bron.typeURI)
+                    cls. async_create_and_add_new_external_asset(id_or_name=source_id,
+                                                          type_uri=relation_object.bron.typeURI, **kwargs)
                 except ValueError as e:
                     # should there be a wrong typeURI
                     OTLLogger.logger.debug(e)
@@ -365,8 +365,8 @@ class RelationChangeDomain:
             target_object = RelationChangeDomain.get_object(identificator=target_id)
             if not target_object:
                 try:
-                    cls.create_and_add_new_external_asset(id_or_name=target_id,
-                                                          type_uri=relation_object.doel.typeURI)
+                    cls.async_create_and_add_new_external_asset(id_or_name=target_id,
+                                                          type_uri=relation_object.doel.typeURI, **kwargs)
                 except ValueError as e:
                     # should there be a wrong typeURI
                     OTLLogger.logger.debug(e)
@@ -1229,9 +1229,18 @@ class RelationChangeDomain:
         cls.shown_objects.extend(cls.agent_objects)
         cls.external_object_added = True
 
+    @classmethod
+    def async_create_and_add_new_external_asset(cls, id_or_name: str, type_uri: str,synchronous=False):
+        if not synchronous:
+            event_loop = asyncio.get_event_loop()
+            event_loop.create_task(cls.create_and_add_new_external_asset(id_or_name=id_or_name,type_uri=type_uri))
+        else:
+            cls.create_and_add_new_external_asset(id_or_name=id_or_name, type_uri=type_uri)
+
     # noinspection PyUnresolvedReferences,PyTypeChecker
     @classmethod
-    def create_and_add_new_external_asset(cls, id_or_name: str, type_uri: str):
+    @async_to_sync_wraps
+    async def create_and_add_new_external_asset(cls, id_or_name: str, type_uri: str):
         """
         Creates a new external asset based on the provided identifier or name and type URI,
         and adds it to the appropriate collections. This method distinguishes between agent objects
@@ -1258,4 +1267,4 @@ class RelationChangeDomain:
         cls.shown_objects.append(new_external_object)
 
         cls.external_object_added = True
-        cls.update_frontend()
+        await cls.update_frontend()
