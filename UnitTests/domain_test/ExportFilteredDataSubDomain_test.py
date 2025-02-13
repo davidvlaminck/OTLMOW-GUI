@@ -82,7 +82,7 @@ def test_export_diff_report(root_directory: Path,
     project.copy_and_add_project_file(edited_file_path,FileState.WARNING)
 
     InsertDataDomain.init_static()
-    InsertDataDomain.load_and_validate_documents(synchronous=True)
+    InsertDataDomain.load_and_validate_documents()
 
     ExportFilteredDataSubDomain.add_original_documents(paths_str=[str(original_file_path.absolute())])
 

@@ -74,7 +74,7 @@ class InsertDataDomain:
         """
         if not Helpers.all_OTL_asset_types_dict:
             Helpers.create_external_typeURI_options()
-        cls.sync_backend_documents_with_frontend()
+        cls.update_frontend()
 
     @classmethod
     @async_to_sync_wraps
@@ -223,7 +223,7 @@ class InsertDataDomain:
             filepath = cls.remove_dropdown_values_from_excel(doc=filepath)
 
         project.copy_and_add_project_file(file_path=filepath, state=state)
-        cls.sync_backend_documents_with_frontend()
+        cls.update_frontend()
 
     @classmethod
     def return_temporary_path(cls, file_path: Path) -> Path:
@@ -276,7 +276,7 @@ class InsertDataDomain:
         cls.get_screen().update_file_list()
 
     @classmethod
-    def sync_backend_documents_with_frontend(cls) -> bool:
+    def update_frontend(cls) -> bool:
         """
         Synchronizes the backend project files with the frontend display.
 
@@ -315,7 +315,7 @@ class InsertDataDomain:
         """
         global_vars.current_project.remove_project_file(Path(item_file_path))
 
-        InsertDataDomain.sync_backend_documents_with_frontend()
+        InsertDataDomain.update_frontend()
 
     @classmethod
     @async_to_sync_wraps
@@ -357,7 +357,7 @@ class InsertDataDomain:
 
         # state can be changed to either OK or ERROR
         global_vars.current_project.save_project_filepaths_to_file()
-        cls.sync_backend_documents_with_frontend()
+        cls.update_frontend()
 
         objects_in_memory = cls.flatten_list(objects_lists=objects_lists)
 

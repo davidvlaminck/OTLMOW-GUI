@@ -654,7 +654,7 @@ class InsertDataScreen(Screen):
 
         OTLLogger.logger.debug("[CLEAR] update_file_list")
 
-        all_valid = InsertDataDomain.sync_backend_documents_with_frontend()
+        all_valid = InsertDataDomain.update_frontend()
         self.control_button.setDisabled(all_valid)
 
     def reset_button_functionality(self) -> None:
@@ -673,7 +673,7 @@ class InsertDataScreen(Screen):
         """
 
         RemoveProjectFilesWindow(project=global_vars.current_project, language_settings=self._)
-        InsertDataDomain.sync_backend_documents_with_frontend()
+        InsertDataDomain.update_frontend()
         self.clear_feedback()
 
     def clear_all(self) -> None:

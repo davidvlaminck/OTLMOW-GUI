@@ -56,7 +56,7 @@ class LoadingImageWindow(QDialog):
 
         self.setWindowTitle(LoadingImageWindow.title)
         # self.setFixedSize(625, 468)
-        self.setFixedSize(625, 320)
+        self.setFixedSize(625, 350)
         self.setModal(True)  # Makes it a modal dialog
         self.setWindowFlag(Qt.WindowStaysOnTopHint)
 

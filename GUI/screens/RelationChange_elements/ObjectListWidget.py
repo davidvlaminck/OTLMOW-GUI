@@ -67,7 +67,7 @@ class ObjectListWidget(AbstractInstanceListWidget):
 
         # update the selected_counts on all type_folder_items
         for type_folder_type, selected_item_count in dict_type_to_selected_item_count.items():
-            OTLLogger.logger.debug( f"{type_folder_type}: {selected_item_count}")
+            # OTLLogger.logger.debug( f"{type_folder_type}: {selected_item_count}")
 
             type_folder_item = dict_type_to_type_folder_item[type_folder_type]
 

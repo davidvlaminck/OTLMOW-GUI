@@ -8,7 +8,10 @@ from PyQt6.QtWidgets import QStackedWidget, QWidget
 from Domain import global_vars
 from Domain.logger.OTLLogger import OTLLogger
 from Domain.project.Project import Project
+from Domain.step_domain.ExportDataDomain import ExportDataDomain
+from Domain.step_domain.ExportFilteredDataSubDomain import ExportFilteredDataSubDomain
 from Domain.step_domain.HomeDomain import HomeDomain
+from Domain.step_domain.InsertDataDomain import InsertDataDomain
 from Domain.step_domain.RelationChangeDomain import RelationChangeDomain
 from Domain.step_domain.TemplateDomain import TemplateDomain
 from GUI.dialog_windows.NotificationWindow import NotificationWindow
@@ -122,7 +125,13 @@ class MainWindow(QStackedWidget):
         #everytime you go to a specific page update the frontend to always show the last Domain state
         if index == 1:
             TemplateDomain.update_frontend()
-
+        elif index == 2:
+            InsertDataDomain.update_frontend()
+        elif index == 3:
+            RelationChangeDomain.update_frontend()
+        elif index == 4:
+            ExportDataDomain.update_frontend()
+            ExportFilteredDataSubDomain.update_frontend()
 
         super().setCurrentIndex(index)
 

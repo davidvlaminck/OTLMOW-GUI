@@ -251,15 +251,20 @@ class Project:
         path = self.get_last_quick_save_path()
 
         if path:
-            # RelationChangeScreen
-            # noinspection PyTypeChecker
-            saved_objects, exceptions_group = await Helpers.converter_from_file_to_object(path)
-            object_count = len(saved_objects)
             timing_ref = f"load_assets_{path.stem}"
             OTLLogger.logger.debug(
-                f"Execute Project.load_validated_assets({path.name}) for project {self.eigen_referentie} ({object_count} objects)",
-                extra={
-                    "timing_ref":  timing_ref})
+                f"Execute Project.load_validated_assets({path.name}) for project "
+                f"{self.eigen_referentie}",
+                extra={"timing_ref": timing_ref})
+
+            # noinspection PyTypeChecker
+            saved_objects, exceptions_group = await Helpers.converter_from_file_to_object(path)
+
+            object_count = len(saved_objects)
+            OTLLogger.logger.debug(
+                f"Execute Project.load_validated_assets({path.name}) for project"
+                f" {self.eigen_referentie} ({object_count} objects)",
+                extra={"timing_ref":  timing_ref})
 
             return saved_objects
         return []

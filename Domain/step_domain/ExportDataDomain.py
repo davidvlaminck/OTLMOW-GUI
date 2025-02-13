@@ -139,7 +139,7 @@ class ExportDataDomain:
 
     @classmethod
     def update_frontend(cls):
-        cls.get_screen().sub_screen_option_2_only_unedited_data.update_original_files_list(cls.original_documents)
+        pass
 
     @classmethod
     def get_screen(cls):
