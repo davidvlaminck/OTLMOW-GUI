@@ -259,25 +259,11 @@ class RelationChangeDomain:
         """
 
         cls.get_screen().set_gui_lists_to_loading_state()
-        path = cls.project.get_last_quick_save_path()
-        if path:
-            timing_ref = f"load_assets_{path.stem}"
-            OTLLogger.logger.debug(
-                f"Execute Project.load_validated_assets({path.name}) for project {cls.project.eigen_referentie}",
-                extra={
-                    "timing_ref": timing_ref})
-            # OTLLogger.attempt_show_loading_screen(timing_ref)
-
-        await asyncio.sleep(0)  # Give the UI thread the chance to switch the screen to
-                                # RelationChangeScreen
-        await asyncio.sleep(0)  # Give the UI thread another chance to switch the screen to
-                                # RelationChangeScreen
-
         cls.set_instances(objects_list=await cls.project.load_validated_assets())
         global_vars.otl_wizard.main_window.step3_visuals.reload_html()
 
     @classmethod
-    def set_instances(cls, objects_list: list[Union[RelatieObject, RelationInteractor]],**kwargs) -> None:
+    def set_instances(cls, objects_list: list[Union[RelatieObject, RelationInteractor]]) -> None:
         # sourcery skip: use-contextlib-suppress
         """Processes and categorizes AIM objects for relation management.
 
@@ -333,14 +319,14 @@ class RelationChangeDomain:
         cls.add_external_objects_to_shown_objects()
         cls.add_agent_objects_to_shown_objects()
 
-        cls.create_and_add_missing_external_assets_from_relations(**kwargs)
+        cls.create_and_add_missing_external_assets_from_relations()
 
         cls.get_screen().fill_object_list(cls.shown_objects)
         cls.get_screen().fill_possible_relations_list(None, {})
         cls.get_screen().fill_existing_relations_list(cls.existing_relations)
 
     @classmethod
-    def create_and_add_missing_external_assets_from_relations(cls, **kwargs) -> None:
+    def create_and_add_missing_external_assets_from_relations(cls) -> None:
         """
         Creates and adds missing external assets based on existing relations.
 
@@ -359,8 +345,8 @@ class RelationChangeDomain:
             source_object = RelationChangeDomain.get_object(identificator=source_id)
             if not source_object:
                 try:
-                    cls. async_create_and_add_new_external_asset(id_or_name=source_id,
-                                                          type_uri=relation_object.bron.typeURI, **kwargs)
+                    cls.create_and_add_new_external_asset(id_or_name=source_id,
+                                                          type_uri=relation_object.bron.typeURI)
                 except ValueError as e:
                     # should there be a wrong typeURI
                     OTLLogger.logger.debug(e)
@@ -368,8 +354,8 @@ class RelationChangeDomain:
             target_object = RelationChangeDomain.get_object(identificator=target_id)
             if not target_object:
                 try:
-                    cls.async_create_and_add_new_external_asset(id_or_name=target_id,
-                                                          type_uri=relation_object.doel.typeURI, **kwargs)
+                    cls.create_and_add_new_external_asset(id_or_name=target_id,
+                                                          type_uri=relation_object.doel.typeURI)
                 except ValueError as e:
                     # should there be a wrong typeURI
                     OTLLogger.logger.debug(e)
@@ -951,7 +937,7 @@ class RelationChangeDomain:
                 RelationChangeDomain.add_possible_relation_to_existing_relations(
                     bron_asset_id=data.source_id,target_asset_id=data.target_id,
                     relation_object_index=data.index) for data in data_list]
-        await cls.update_frontend()
+        cls.update_frontend()
 
     @classmethod
     def add_possible_relation_to_existing_relations(cls, bron_asset_id:str, target_asset_id:str,
@@ -1001,8 +987,7 @@ class RelationChangeDomain:
             relation_typeURI=relation_object.typeURI)
 
     @classmethod
-    @async_to_sync_wraps
-    async def update_frontend(cls):
+    def update_frontend(cls):
         """
         Updates the user interface to reflect the current state of objects and relations.
         This method populates the object list and existing relations list, and sets the possible
@@ -1016,7 +1001,7 @@ class RelationChangeDomain:
         cls.get_screen().fill_existing_relations_list(relations_objects=cls.existing_relations,
                                                       last_added=cls.last_added_to_existing)
 
-        await cls.set_possible_relations(selected_object=cls.selected_object)
+        cls.set_possible_relations(selected_object=cls.selected_object)
 
         OTLLogger.logger.debug("Execute RelationChangeDomain.update_frontend",
                                extra={"timing_ref": f"update_frontend"})
@@ -1037,7 +1022,7 @@ class RelationChangeDomain:
 
         cls.last_added_to_possible = [cls.remove_existing_relation(index) for index in indices]
 
-        await cls.update_frontend()
+        cls.update_frontend()
 
     @classmethod
     def remove_existing_relation(cls, index: int) -> RelatieObject:
@@ -1231,18 +1216,9 @@ class RelationChangeDomain:
         cls.shown_objects.extend(cls.agent_objects)
         cls.external_object_added = True
 
-    @classmethod
-    def async_create_and_add_new_external_asset(cls, id_or_name: str, type_uri: str,synchronous=False):
-        if not synchronous:
-            event_loop = asyncio.get_event_loop()
-            event_loop.create_task(cls.create_and_add_new_external_asset(id_or_name=id_or_name,type_uri=type_uri))
-        else:
-            cls.create_and_add_new_external_asset(id_or_name=id_or_name, type_uri=type_uri)
-
     # noinspection PyUnresolvedReferences,PyTypeChecker
     @classmethod
-    @async_to_sync_wraps
-    async def create_and_add_new_external_asset(cls, id_or_name: str, type_uri: str):
+    def create_and_add_new_external_asset(cls, id_or_name: str, type_uri: str):
         """
         Creates a new external asset based on the provided identifier or name and type URI,
         and adds it to the appropriate collections. This method distinguishes between agent objects
@@ -1269,4 +1245,4 @@ class RelationChangeDomain:
         cls.shown_objects.append(new_external_object)
 
         cls.external_object_added = True
-        await cls.update_frontend()
+        cls.update_frontend()
