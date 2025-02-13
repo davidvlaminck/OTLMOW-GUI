@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-01-27 15:12+0100\n"
+"POT-Creation-Date: 2025-02-13 10:37+0100\n"
 "PO-Revision-Date: 2023-10-19 13:11+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en_US\n"
@@ -34,37 +34,37 @@ msgstr "Subset is empty"
 msgid "wrong_database_error"
 msgstr ""
 
-#: Domain/step_domain/TemplateDomain.py:54
+#: Domain/step_domain/TemplateDomain.py:57
 msgid "permission_to_file_was_denied_likely_due_to_the_file_being_open_in_excel"
 msgstr ""
 "You don't have permission to edit this file! \n"
 "This is likely because it is is still open in excel."
 
-#: Domain/step_domain/TemplateDomain.py:54
+#: Domain/step_domain/TemplateDomain.py:57
 msgid "permission_denied"
 msgstr "No permission to open the file"
 
-#: GUI/MainWindow.py:64
+#: GUI/MainWindow.py:63
 msgid "template"
-msgstr ""
+msgstr "Template"
 
-#: GUI/MainWindow.py:65
+#: GUI/MainWindow.py:64
 msgid "insert_data"
 msgstr "Insert data"
 
-#: GUI/MainWindow.py:66
+#: GUI/MainWindow.py:65
 msgid "data visuals"
 msgstr "Data visualisation"
 
-#: GUI/MainWindow.py:67
+#: GUI/MainWindow.py:66
 msgid "data_change"
 msgstr "Data changes"
 
-#: GUI/MainWindow.py:68
+#: GUI/MainWindow.py:67
 msgid "relation_change"
 msgstr "Relation changes"
 
-#: GUI/MainWindow.py:69
+#: GUI/MainWindow.py:68
 msgid "export_data"
 msgstr "Export data"
 
@@ -82,7 +82,7 @@ msgstr "extern asset 1"
 
 #: GUI/dialog_windows/AddExternalAssetWindow.py:42
 #: GUI/dialog_windows/DefineHeeftBetrokkeneRelationWindow.py:51
-#: GUI/screens/RelationChange_elements/PossibleRelationListWidget.py:26
+#: GUI/screens/RelationChange_elements/PossibleRelationListWidget.py:27
 msgid "asset_type"
 msgstr "OTL-asset type"
 
@@ -103,13 +103,13 @@ msgstr "Submit"
 #: GUI/dialog_windows/ChangeSubsetWindow.py:110
 #: GUI/dialog_windows/DefineHeeftBetrokkeneRelationWindow.py:109
 #: GUI/dialog_windows/RemoveProjectFilesWindow.py:35
-#: GUI/dialog_windows/RevalidateDocumentsWindow.py:33
+#: GUI/dialog_windows/RevalidateDocumentsWindow.py:35
 #: GUI/dialog_windows/UpsertProjectWindow.py:148
 msgid "cancel"
 msgstr "Cancel"
 
 #: GUI/dialog_windows/ChangeSubsetWindow.py:24
-#: GUI/screens/TemplateScreen.py:250 GUI/screens/TemplateScreen.py:494
+#: GUI/screens/TemplateScreen.py:251 GUI/screens/TemplateScreen.py:496
 msgid "change_subset"
 msgstr "Change subset"
 
@@ -118,7 +118,7 @@ msgstr "Change subset"
 #: GUI/dialog_windows/UpsertProjectWindow.py:87
 #: GUI/screens/Home_elements/OverviewTable.py:50
 #: GUI/screens/Home_elements/OverviewTable.py:246
-#: GUI/screens/TemplateScreen.py:323
+#: GUI/screens/TemplateScreen.py:324
 msgid "subset"
 msgstr "Subset"
 
@@ -218,11 +218,11 @@ msgstr "Delete project"
 msgid "project_deletion_question"
 msgstr "Are you sure you want to delete this project?"
 
-#: GUI/dialog_windows/RevalidateDocumentsWindow.py:14
+#: GUI/dialog_windows/RevalidateDocumentsWindow.py:16
 msgid "revalidate_documents_files_title"
 msgstr "Overwrite warning"
 
-#: GUI/dialog_windows/RevalidateDocumentsWindow.py:17
+#: GUI/dialog_windows/RevalidateDocumentsWindow.py:19
 msgid "revalidate_documents_files_question"
 msgstr ""
 "By validating the documents all changes in step '3. Change Asset Data' "
@@ -232,7 +232,7 @@ msgstr ""
 "If you wish to keep these you should export all the data via step '4. "
 "Export Asset Data'"
 
-#: GUI/dialog_windows/RevalidateDocumentsWindow.py:31
+#: GUI/dialog_windows/RevalidateDocumentsWindow.py:33
 msgid "continue"
 msgstr "Continue"
 
@@ -286,7 +286,7 @@ msgstr "Report issue"
 
 #: GUI/header/HeaderBar.py:157
 msgid "logs"
-msgstr ""
+msgstr "Logs"
 
 #: GUI/header/HeaderBar.py:199 GUI/header/HeaderBar.py:264
 msgid "return_to_home_screen"
@@ -316,44 +316,6 @@ msgstr "Change Asset Data"
 msgid "step4"
 msgstr "Export Asset Data"
 
-#: GUI/screens/AssetDataChangeScreen.py:77
-#: GUI/screens/AssetDataChangeScreen.py:127
-msgid "original_file_load"
-msgstr "Original file to load:"
-
-#: GUI/screens/AssetDataChangeScreen.py:91
-#: GUI/screens/AssetDataChangeScreen.py:131
-#: GUI/screens/AssetDataChangeScreen.py:137 GUI/screens/InsertDataScreen.py:163
-msgid "choose_file"
-msgstr "Pick your file..."
-
-#: GUI/screens/AssetDataChangeScreen.py:94
-#: GUI/screens/AssetDataChangeScreen.py:129
-msgid "show differences"
-msgstr "Show differences"
-
-#: GUI/screens/AssetDataChangeScreen.py:99
-#: GUI/screens/AssetDataChangeScreen.py:130
-msgid "apply differences"
-msgstr "Apply differences"
-
-#: GUI/screens/AssetDataChangeScreen.py:104
-#: GUI/screens/AssetDataChangeScreen.py:132
-msgid "empty fields"
-msgstr "Reset fields"
-
-#: GUI/screens/AssetDataChangeScreen.py:128
-msgid "new_file_load"
-msgstr "New file to load:"
-
-#: GUI/screens/AssetDataChangeScreen.py:230
-msgid "the changes were correctly written to a new file"
-msgstr "Changes were correctly written to a new file"
-
-#: GUI/screens/AssetDataChangeScreen.py:239 GUI/screens/InsertDataScreen.py:518
-msgid "error"
-msgstr "Error"
-
 #: GUI/screens/ConversionScreen.py:29
 msgid "file_conversion"
 msgstr "File conversion"
@@ -374,199 +336,183 @@ msgstr "Color legend relations:"
 #: GUI/screens/DataVisualisationScreen.py:150
 msgid ""
 "There are too many assets and relations to create a visualisation.\n"
-" maximum: {0}\n"
+"maximum: {0}\n"
 "current: {1}"
 msgstr ""
+"There are too many assets and relations to create a visualisation.\n"
+"maximum: {0}\n"
+"current: {1}"
 
-#: GUI/screens/ExportDataScreen.py:61 GUI/screens/ExportDataScreen.py:145
+#: GUI/screens/ExportDataScreen.py:74 GUI/screens/ExportDataScreen.py:160
 msgid "export_to_davie"
 msgstr "Export data ready for DAVIE"
 
-#: GUI/screens/ExportDataScreen.py:64 GUI/screens/ExportDataScreen.py:142
-msgid "export relations and assets in different files"
-msgstr "Export relations and assets in different files"
-
-#: GUI/screens/ExportDataScreen.py:66 GUI/screens/ExportDataScreen.py:143
+#: GUI/screens/ExportDataScreen.py:78
+#: GUI/screens/ExportData_elements/AbstractExportDataSubScreen.py:116
+#: GUI/screens/ExportData_elements/AbstractExportDataSubScreen.py:121
 msgid "export assets in different files"
 msgstr "Export asset types in different files"
 
-#: GUI/screens/ExportDataScreen.py:94 GUI/screens/ExportDataScreen.py:141
-msgid "select file type for export"
-msgstr "Select file type for export"
+#: GUI/screens/ExportDataScreen.py:126
+msgid "All data"
+msgstr "All data"
 
-#: GUI/screens/ExportDataScreen.py:118 GUI/screens/ExportDataScreen.py:140
-#: GUI/screens/TemplateScreen.py:154 GUI/screens/TemplateScreen.py:493
-msgid "export"
-msgstr "Export"
-
-#: GUI/screens/ExportDataScreen.py:144
-msgid "file_to_upload"
-msgstr "file to upload:"
+#: GUI/screens/ExportDataScreen.py:127
+msgid "Without unedited data"
+msgstr "Without unedited data"
 
 #: GUI/screens/HomeScreen.py:167 GUI/screens/HomeScreen.py:202
 msgid "search_text"
 msgstr "Enter project or service order to search"
 
-#: GUI/screens/InsertDataScreen.py:152 GUI/screens/InsertDataScreen.py:526
+#: GUI/screens/InsertDataScreen.py:154 GUI/screens/InsertDataScreen.py:529
 msgid "control_button"
 msgstr "Control"
 
-#: GUI/screens/InsertDataScreen.py:158
+#: GUI/screens/InsertDataScreen.py:160
 msgid "reset_fields"
 msgstr "Reset fields"
 
-#: GUI/screens/InsertDataScreen.py:310 GUI/screens/InsertDataScreen.py:525
+#: GUI/screens/ExportData_elements/ExportFilteredDataSubScreen.py:163
+#: GUI/screens/ExportData_elements/ExportFilteredDataSubScreen.py:217
+#: GUI/screens/InsertDataScreen.py:165
+msgid "choose_file"
+msgstr "Pick your file..."
+
+#: GUI/screens/InsertDataScreen.py:313 GUI/screens/InsertDataScreen.py:528
 msgid "input_file"
 msgstr "Load in file:"
 
-#: GUI/screens/InsertDataScreen.py:454
+#: GUI/screens/ExportData_elements/ExportFilteredDataSubScreen.py:122
+#: GUI/screens/InsertDataScreen.py:457
 msgid "all_info_correct"
 msgstr "All data is otl-conform"
 
-#: GUI/screens/InsertDataScreen.py:476
+#: GUI/screens/InsertDataScreen.py:479
 msgid "warning"
 msgstr "Warning"
 
-#: GUI/screens/InsertDataScreen.py:736
-msgid "{doc_name}: Data nodig in een datasheet om objecten in te laden.\n"
-msgstr "{doc_name}: Data needed in datasheet to load in objects.\n"
+#: GUI/screens/ExportData_elements/ExportFilteredDataSubScreen.py:133
+#: GUI/screens/ExportData_elements/TableErrorModel.py:11
+#: GUI/screens/InsertDataScreen.py:521
+msgid "error"
+msgstr "Error"
 
-#: GUI/screens/InsertDataScreen.py:740
-msgid "{doc_name}: No type uri in {tab}\n"
-msgstr "{doc_name}: No TypeUri found in worksheet {tab}\n"
-
-#: GUI/screens/InsertDataScreen.py:744
-msgid "{doc_name}: invalid columns in {tab}, bad columns are {bad_columns} \n"
-msgstr ""
-"{doc_name}: invalid columns found in worksheet {tab}, bad columns are "
-"{bad_columns}\n"
-
-#: GUI/screens/InsertDataScreen.py:748
-msgid "{doc_name}: type uri not in first row of {tab}\n"
-msgstr "{doc_name}: TypeUri not found in first row of worksheet {tab}\n"
-
-#: GUI/screens/InsertDataScreen.py:754
-msgid ""
-"{doc_name}: There are assets without an assetId.identificator in "
-"worksheet {tab}\n"
-msgstr ""
-"{doc_name}: There are assets without an assetId.identificator in "
-"worksheet {tab}\n"
-
-#: GUI/screens/InsertDataScreen.py:758
-msgid ""
-"{doc_name}:\n"
-"Relation of type: \"{type_uri}\"\n"
-"with assetId.identificator: \"{identificator}\"\n"
-"This relation cannot be made between the typeURI's.\n"
-"{wrong_field}= \"{wrong_value}\"\n"
-"{wrong_field2}= \"{wrong_value2}\"\n"
-"in tab {tab}\n"
-
-msgstr ""
-"{doc_name}:\n"
-"Relation of type: \"{type_uri}\"\n"
-"with assetId.identificator: \"{identificator}\"\n"
-"This relation cannot be made between the typeURI's.\n"
-"{wrong_field}= \"{wrong_value}\"\n"
-"{wrong_field2}= \"{wrong_value2}\"\n"
-"in tab {tab}\n"
-
-#: GUI/screens/InsertDataScreen.py:774
-msgid ""
-"{doc_name}:\n"
-"Relation of type: \"{type_uri}\"\n"
-"with assetId.identificator: \"{identificator}\",\n"
-"has the non-existing TypeURI value: \"{wrong_value}\"\n"
-"for field \"{wrong_field}\".\n"
-" in tab {tab}\n"
-msgstr ""
-"{doc_name}:\n"
-"Relation of type: \"{type_uri}\"\n"
-"with assetId.identificator: \"{identificator}\",\n"
-"has the non-existing TypeURI value: \"{wrong_value}\"\n"
-"for field \"{wrong_field}\".\n"
-" in tab {tab}\n"
-
-#: GUI/screens/TemplateScreen.py:126 GUI/screens/TemplateScreen.py:369
-#: GUI/screens/TemplateScreen.py:491
+#: GUI/screens/TemplateScreen.py:127 GUI/screens/TemplateScreen.py:370
+#: GUI/screens/TemplateScreen.py:493
 msgid "select_all_classes"
 msgstr "Select all asset types"
 
-#: GUI/screens/TemplateScreen.py:130 GUI/screens/TemplateScreen.py:497
+#: GUI/screens/TemplateScreen.py:131 GUI/screens/TemplateScreen.py:499
 msgid "general_settings"
 msgstr "General settings"
 
-#: GUI/screens/TemplateScreen.py:132 GUI/screens/TemplateScreen.py:490
+#: GUI/screens/TemplateScreen.py:133 GUI/screens/TemplateScreen.py:492
 msgid "no_choice_list"
 msgstr "Do not generate choice lists"
 
-#: GUI/screens/TemplateScreen.py:135 GUI/screens/TemplateScreen.py:489
+#: GUI/screens/TemplateScreen.py:136 GUI/screens/TemplateScreen.py:491
 msgid "geometry_column_added"
 msgstr "Add geometry column to the template"
 
-#: GUI/screens/TemplateScreen.py:139
+#: GUI/screens/TemplateScreen.py:140
 msgid "add_non_otl_conform_information"
 msgstr "Settings to add non-OTL-conform info"
 
-#: GUI/screens/TemplateScreen.py:142
+#: GUI/screens/TemplateScreen.py:143
 msgid "show_deprecated_attributes"
 msgstr "Highlight deprecated attributes in template"
 
-#: GUI/screens/TemplateScreen.py:146 GUI/screens/TemplateScreen.py:488
+#: GUI/screens/TemplateScreen.py:147 GUI/screens/TemplateScreen.py:490
 msgid "export_attribute_info"
 msgstr "Export additional attribute information"
 
-#: GUI/screens/TemplateScreen.py:150 GUI/screens/TemplateScreen.py:498
+#: GUI/screens/TemplateScreen.py:151 GUI/screens/TemplateScreen.py:500
 msgid "example_settings"
 msgstr "Example settings"
 
-#: GUI/screens/TemplateScreen.py:198 GUI/screens/TemplateScreen.py:492
+#: GUI/screens/ExportData_elements/AbstractExportDataSubScreen.py:91
+#: GUI/screens/ExportData_elements/AbstractExportDataSubScreen.py:113
+#: GUI/screens/TemplateScreen.py:155 GUI/screens/TemplateScreen.py:495
+msgid "export"
+msgstr "Export"
+
+#: GUI/screens/TemplateScreen.py:199 GUI/screens/TemplateScreen.py:494
 msgid "amount_of_examples"
 msgstr "Generate rows of example data"
 
-#: GUI/screens/TemplateScreen.py:274 GUI/screens/TemplateScreen.py:495
+#: GUI/screens/TemplateScreen.py:275 GUI/screens/TemplateScreen.py:497
 msgid "operator"
 msgstr "Operator"
 
-#: GUI/screens/TemplateScreen.py:298 GUI/screens/TemplateScreen.py:496
+#: GUI/screens/TemplateScreen.py:299 GUI/screens/TemplateScreen.py:498
 msgid "otl_version"
 msgstr "OTL version"
 
-#: GUI/screens/TemplateScreen.py:414 GUI/screens/TemplateScreen.py:500
+#: GUI/screens/TemplateScreen.py:415 GUI/screens/TemplateScreen.py:502
 msgid "{selected} classes selected"
 msgstr "{selected} asset types selected"
 
-#: GUI/screens/TemplateScreen.py:499
+#: GUI/screens/TemplateScreen.py:501
 msgid "deprecated_settings"
 msgstr "Settings for deprecated attributes"
 
-#: GUI/screens/RelationChange_elements/AbstractInstanceListWidget.py:521
-#: GUI/screens/TemplateScreen.py:513
+#: GUI/screens/RelationChange_elements/AbstractInstanceListWidget.py:517
+#: GUI/screens/TemplateScreen.py:515
 msgid "loading"
 msgstr "Loading"
 
-#: GUI/screens/TemplateScreen.py:531
+#: GUI/screens/TemplateScreen.py:533
 msgid "no classes found in specified path"
 msgstr "No asset types found in specified path"
 
-#: GUI/screens/AssetDataChange_elements/TableModel.py:11
+#: GUI/screens/ExportData_elements/AbstractExportDataSubScreen.py:52
+#: GUI/screens/ExportData_elements/AbstractExportDataSubScreen.py:114
+msgid "select file type for export"
+msgstr "Select file type for export"
+
+#: GUI/screens/ExportData_elements/AbstractExportDataSubScreen.py:69
+#: GUI/screens/ExportData_elements/AbstractExportDataSubScreen.py:115
+msgid "export relations and assets in different files"
+msgstr "Export relations and assets in different files"
+
+#: GUI/screens/ExportData_elements/AbstractExportDataSubScreen.py:117
+msgid "file_to_upload"
+msgstr "file to upload:"
+
+#: GUI/screens/ExportData_elements/ExportFilteredDataSubScreen.py:100
+msgid "changes preview"
+msgstr "Changes preview"
+
+#: GUI/screens/ExportData_elements/ExportFilteredDataSubScreen.py:148
+msgid "original_file_load"
+msgstr "Original file to load:"
+
+#: GUI/screens/ExportData_elements/ExportFilteredDataSubScreen.py:166
+msgid "show differences"
+msgstr "Show differences"
+
+#: GUI/screens/ExportData_elements/ExportFilteredDataSubScreen.py:176
+msgid "empty fields"
+msgstr "Reset fields"
+
+#: GUI/screens/ExportData_elements/TableModel.py:11
 msgid "id"
 msgstr "Id"
 
-#: GUI/screens/AssetDataChange_elements/TableModel.py:11
+#: GUI/screens/ExportData_elements/TableModel.py:11
 msgid "action"
 msgstr "Action"
 
-#: GUI/screens/AssetDataChange_elements/TableModel.py:11
+#: GUI/screens/ExportData_elements/TableModel.py:11
 msgid "name_attribute"
 msgstr "Name of attribute"
 
-#: GUI/screens/AssetDataChange_elements/TableModel.py:11
+#: GUI/screens/ExportData_elements/TableModel.py:11
 msgid "old_attribute"
 msgstr "Old attribute"
 
-#: GUI/screens/AssetDataChange_elements/TableModel.py:12
+#: GUI/screens/ExportData_elements/TableModel.py:12
 msgid "new_attribute"
 msgstr "New attribute"
 
@@ -579,61 +525,61 @@ msgstr "Last edited"
 msgid "no_results"
 msgstr "No results found for this search value"
 
-#: GUI/screens/RelationChange_elements/AbstractInstanceListWidget.py:356
+#: GUI/screens/RelationChange_elements/AbstractInstanceListWidget.py:352
 msgid "search_button"
 msgstr "Search"
 
-#: GUI/screens/RelationChange_elements/AbstractInstanceListWidget.py:386
+#: GUI/screens/RelationChange_elements/AbstractInstanceListWidget.py:382
 msgid "no_instance_selected"
 msgstr "No object selected"
 
-#: GUI/screens/RelationChange_elements/AbstractInstanceListWidget.py:493
+#: GUI/screens/RelationChange_elements/AbstractInstanceListWidget.py:489
 #: GUI/screens/RelationChange_elements/ObjectListWidget.py:145
 msgid "no_options_available"
 msgstr "No options available"
 
-#: GUI/screens/RelationChange_elements/ExistingRelationListWidget.py:24
+#: GUI/screens/RelationChange_elements/ExistingRelationListWidget.py:25
 msgid "source_asset"
 msgstr "Source asset"
 
-#: GUI/screens/RelationChange_elements/ExistingRelationListWidget.py:24
+#: GUI/screens/RelationChange_elements/ExistingRelationListWidget.py:25
 msgid "target_asset"
 msgstr "Target asset"
 
-#: GUI/screens/RelationChange_elements/ExistingRelationListWidget.py:27
+#: GUI/screens/RelationChange_elements/ExistingRelationListWidget.py:28
 msgid "existing_relations_list"
 msgstr "Existing relations"
 
-#: GUI/screens/RelationChange_elements/ExistingRelationListWidget.py:28
+#: GUI/screens/RelationChange_elements/ExistingRelationListWidget.py:29
 msgid "existing_relations_description"
 msgstr "Shows the existing relations in the project"
 
-#: GUI/screens/RelationChange_elements/ExistingRelationListWidget.py:29
+#: GUI/screens/RelationChange_elements/ExistingRelationListWidget.py:30
 msgid "existing_relation_attributes"
 msgstr "Existing relation attributes (last selected)"
 
-#: GUI/screens/RelationChange_elements/ExistingRelationListWidget.py:91
+#: GUI/screens/RelationChange_elements/ExistingRelationListWidget.py:92
 msgid "remove_relation"
 msgstr "Remove relations"
 
-#: GUI/screens/RelationChange_elements/ExistingRelationListWidget.py:187
-#: GUI/screens/RelationChange_elements/PossibleRelationListWidget.py:277
+#: GUI/screens/RelationChange_elements/ExistingRelationListWidget.py:191
+#: GUI/screens/RelationChange_elements/PossibleRelationListWidget.py:281
 msgid "no_relation_selected"
 msgstr "No relation selected"
 
-#: GUI/screens/RelationChange_elements/ObjectListWidget.py:24
+#: GUI/screens/RelationChange_elements/ObjectListWidget.py:25
 msgid "OTL_asset"
 msgstr "OTL-asset"
 
-#: GUI/screens/RelationChange_elements/ObjectListWidget.py:27
+#: GUI/screens/RelationChange_elements/ObjectListWidget.py:28
 msgid "class_list"
 msgstr "OTL-assets"
 
-#: GUI/screens/RelationChange_elements/ObjectListWidget.py:28
+#: GUI/screens/RelationChange_elements/ObjectListWidget.py:29
 msgid "otl_asset_description"
 msgstr "Select an OTL-asset here to make a relation with it"
 
-#: GUI/screens/RelationChange_elements/ObjectListWidget.py:29
+#: GUI/screens/RelationChange_elements/ObjectListWidget.py:30
 msgid "object_attributes"
 msgstr "OTL-asset attributes"
 
@@ -641,29 +587,29 @@ msgstr "OTL-asset attributes"
 msgid "add_external_asset"
 msgstr "Add external OTL-asset"
 
-#: GUI/screens/RelationChange_elements/PossibleRelationListWidget.py:26
+#: GUI/screens/RelationChange_elements/PossibleRelationListWidget.py:27
 msgid "related_asset"
 msgstr "Target or source"
 
-#: GUI/screens/RelationChange_elements/PossibleRelationListWidget.py:29
+#: GUI/screens/RelationChange_elements/PossibleRelationListWidget.py:30
 msgid "relations_list"
 msgstr "Possible relations"
 
-#: GUI/screens/RelationChange_elements/PossibleRelationListWidget.py:30
+#: GUI/screens/RelationChange_elements/PossibleRelationListWidget.py:31
 msgid "possible_relation_subscription"
 msgstr ""
 "Shows the possible relations that the selected OTL-asset can have with "
 "all the other OTL-assets"
 
-#: GUI/screens/RelationChange_elements/PossibleRelationListWidget.py:31
+#: GUI/screens/RelationChange_elements/PossibleRelationListWidget.py:32
 msgid "possible_relation_partner_asset_attributes"
 msgstr "Related asset attributes (last selected)"
 
-#: GUI/screens/RelationChange_elements/PossibleRelationListWidget.py:44
+#: GUI/screens/RelationChange_elements/PossibleRelationListWidget.py:45
 msgid "Select_an_OTL-asset_to_see_possible_relations"
 msgstr "Select an OTL-asset to see it's possible relations"
 
-#: GUI/screens/RelationChange_elements/PossibleRelationListWidget.py:123
+#: GUI/screens/RelationChange_elements/PossibleRelationListWidget.py:124
 #, fuzzy
 msgid "add_relation"
 msgstr "Possible relations:"
@@ -676,6 +622,66 @@ msgstr "external"
 #: GUI/screens/RelationChange_elements/RelationChangeHelpers.py:134
 msgid "no_identificator"
 msgstr "no identificator"
+
+#: GUI/translation/ValidationErrorReportTranslations.py:22
+msgid "{doc_name}: Data nodig in een datasheet om objecten in te laden.\n"
+msgstr "{doc_name}: Data needed in datasheet to load in objects.\n"
+
+#: GUI/translation/ValidationErrorReportTranslations.py:26
+msgid "{doc_name}: No type uri in {tab}\n"
+msgstr "{doc_name}: No TypeUri found in worksheet {tab}\n"
+
+#: GUI/translation/ValidationErrorReportTranslations.py:30
+msgid "{doc_name}: invalid columns in {tab}, bad columns are {bad_columns} \n"
+msgstr ""
+"{doc_name}: invalid columns found in worksheet {tab}, bad columns are "
+"{bad_columns}\n"
+
+#: GUI/translation/ValidationErrorReportTranslations.py:34
+msgid "{doc_name}: type uri not in first row of {tab}\n"
+msgstr "{doc_name}: TypeUri not found in first row of worksheet {tab}\n"
+
+#: GUI/translation/ValidationErrorReportTranslations.py:41
+msgid ""
+"{doc_name}: There are assets without an assetId.identificator in "
+"worksheet {tab}\n"
+msgstr ""
+"{doc_name}: There are assets without an assetId.identificator in "
+"worksheet {tab}\n"
+
+#: GUI/translation/ValidationErrorReportTranslations.py:45
+msgid ""
+"{doc_name}:\n"
+"Relation of type: \"{type_uri}\"\n"
+"with assetId.identificator: \"{identificator}\"\n"
+"This relation cannot be made between the typeURI's.\n"
+"{wrong_field}= \"{wrong_value}\"\n"
+"{wrong_field2}= \"{wrong_value2}\"\n"
+"in tab {tab}\n"
+msgstr ""
+"{doc_name}:\n"
+"Relation of type: \"{type_uri}\"\n"
+"with assetId.identificator: \"{identificator}\"\n"
+"This relation cannot be made between the typeURI's.\n"
+"{wrong_field}= \"{wrong_value}\"\n"
+"{wrong_field2}= \"{wrong_value2}\"\n"
+"in tab {tab}\n"
+
+#: GUI/translation/ValidationErrorReportTranslations.py:61
+msgid ""
+"{doc_name}:\n"
+"Relation of type: \"{type_uri}\"\n"
+"with assetId.identificator: \"{identificator}\",\n"
+"has the non-existing TypeURI value: \"{wrong_value}\"\n"
+"for field \"{wrong_field}\".\n"
+"in tab {tab}\n"
+msgstr ""
+"{doc_name}:\n"
+"Relation of type: \"{type_uri}\"\n"
+"with assetId.identificator: \"{identificator}\",\n"
+"has the non-existing TypeURI value: \"{wrong_value}\"\n"
+"for field \"{wrong_field}\".\n"
+"in tab {tab}\n"
 
 #: Exceptions/FDOToolboxNotInstalledError.py:14
 msgid "FDOToolbox_not_installed_error_message"
@@ -794,4 +800,34 @@ msgstr "The path to the provided file is not a {0} file with extension ({1})\n"
 
 #~ msgid "functionality under development"
 #~ msgstr "Functionality under development"
+
+#~ msgid "apply differences"
+#~ msgstr "Apply differences"
+
+#~ msgid "new_file_load"
+#~ msgstr "New file to load:"
+
+#~ msgid "the changes were correctly written to a new file"
+#~ msgstr "Changes were correctly written to a new file"
+
+#~ msgid ""
+#~ "There are too many assets and relations to create a visualisation.\n"
+#~ " maximum: {0}\n"
+#~ "current: {1}"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "{doc_name}:\n"
+#~ "Relation of type: \"{type_uri}\"\n"
+#~ "with assetId.identificator: \"{identificator}\",\n"
+#~ "has the non-existing TypeURI value: \"{wrong_value}\"\n"
+#~ "for field \"{wrong_field}\".\n"
+#~ " in tab {tab}\n"
+#~ msgstr ""
+#~ "{doc_name}:\n"
+#~ "Relation of type: \"{type_uri}\"\n"
+#~ "with assetId.identificator: \"{identificator}\",\n"
+#~ "has the non-existing TypeURI value: \"{wrong_value}\"\n"
+#~ "for field \"{wrong_field}\".\n"
+#~ " in tab {tab}\n"
 
