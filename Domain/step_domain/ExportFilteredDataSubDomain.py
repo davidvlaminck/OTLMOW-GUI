@@ -33,6 +33,16 @@ class ReportItem:
 
 class ExportFilteredDataSubDomain:
     original_documents:dict[str,Path] = {}
+
+
+    @classmethod
+    def init_static(cls):
+        cls.clear_data()
+
+    @classmethod
+    def clear_data(cls):
+        cls.original_documents = {}
+
     @classmethod
     def add_original_documents(cls,paths_str:list[str]):
         for path_str in paths_str:

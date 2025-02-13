@@ -10,6 +10,7 @@ from Domain.logger.OTLLogger import OTLLogger
 from Domain.project.Project import Project
 from Domain.step_domain.HomeDomain import HomeDomain
 from Domain.step_domain.RelationChangeDomain import RelationChangeDomain
+from Domain.step_domain.TemplateDomain import TemplateDomain
 from GUI.dialog_windows.NotificationWindow import NotificationWindow
 from GUI.screens.DataVisualisationScreen import DataVisualisationScreen
 from GUI.screens.ExportDataScreen import ExportDataScreen
@@ -117,6 +118,11 @@ class MainWindow(QStackedWidget):
         if (index in [3, 4] and (not RelationChangeDomain.project or
                                             RelationChangeDomain.project != global_vars.current_project)):
             RelationChangeDomain.init_static(project=global_vars.current_project)
+
+        #everytime you go to a specific page update the frontend to always show the last Domain state
+        if index == 1:
+            TemplateDomain.update_frontend()
+
 
         super().setCurrentIndex(index)
 

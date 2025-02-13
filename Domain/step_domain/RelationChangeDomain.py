@@ -214,16 +214,7 @@ class RelationChangeDomain:
         cls.collector = OSLOCollector(project.subset_path)
         cls.collector.collect_all()
 
-        cls.selected_object = None
-
-        cls.shown_objects = []
-        cls.internal_objects = []
-        cls.external_objects = []
-        cls.existing_relations = []
-        cls.possible_relations_per_class_dict = {}
-        cls.possible_object_to_object_relations_dict = {}
-        cls.aim_id_relations = []
-        cls.external_object_added = False
+        cls.clear_data()
 
         if not Helpers.all_OTL_asset_types_dict:
             Helpers.create_external_typeURI_options()
@@ -239,6 +230,18 @@ class RelationChangeDomain:
             else:
                 cls.load_project_relation_data()
 
+    @classmethod
+    def clear_data(cls):
+        cls.selected_object = None
+
+        cls.shown_objects = []
+        cls.internal_objects = []
+        cls.external_objects = []
+        cls.existing_relations = []
+        cls.possible_relations_per_class_dict = {}
+        cls.possible_object_to_object_relations_dict = {}
+        cls.aim_id_relations = []
+        cls.external_object_added = False
 
     @classmethod
     @async_to_sync_wraps
@@ -431,7 +434,6 @@ class RelationChangeDomain:
             otl_object) == id_to_check
 
     @classmethod
-    @async_to_sync_wraps
     @async_to_sync_wraps
     async def set_possible_relations(cls, selected_object: RelationInteractor):
         """

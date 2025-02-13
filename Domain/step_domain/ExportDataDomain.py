@@ -137,4 +137,10 @@ class ExportDataDomain:
         assets_path = Path(parent_directory) / assets_file_name
         return relations_path, assets_path
 
+    @classmethod
+    def update_frontend(cls):
+        cls.get_screen().sub_screen_option_2_only_unedited_data.update_original_files_list(cls.original_documents)
 
+    @classmethod
+    def get_screen(cls):
+        return global_vars.otl_wizard.main_window.step4_export
