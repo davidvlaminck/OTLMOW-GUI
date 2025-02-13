@@ -3,6 +3,7 @@ from pathlib import Path
 
 import pytest
 from _pytest.fixtures import fixture
+from otlmow_converter.FileFormats.ExcelImporter import ExcelImporter
 from pytestqt.qtbot import QtBot
 
 from Domain.logger.OTLLogger import OTLLogger
@@ -74,6 +75,7 @@ def test_export_diff_report(root_directory: Path,
     edited_file_path = root_directory / "UnitTests"/"test_files"/"input"/"slagbomen_project_edited_agent.xlsx"
     original_file_path = root_directory / "UnitTests"/"test_files"/"input"/"original_slagbomen_DAVIE_export.xlsx"
     output_file_path = root_directory / "UnitTests" / "test_files" / "output_test" / "output_slagbomen_project_edited_agent_diff.xlsx"
+    output_ref_file_path = root_directory / "UnitTests" / "test_files" / "output_ref" / "output_slagbomen_project_edited_agent_diff_export.xlsx"
     cleanup_after_creating_a_file_to_delete.append(output_file_path)
 
     project.save_project_to_dir()
@@ -87,7 +89,15 @@ def test_export_diff_report(root_directory: Path,
     #ACT
     ExportFilteredDataSubDomain.export_diff_report(file_name=output_file_path,synchronous=True)
 
-    # assert(output_file_path.exists())
+    #TEST
+    assert(output_file_path.exists())
+
+
+    objects_ref = ExcelImporter.to_objects(output_ref_file_path)
+    objects_output = ExcelImporter.to_objects(output_file_path)
+
+    assert objects_ref == objects_output
+
 
 
 
