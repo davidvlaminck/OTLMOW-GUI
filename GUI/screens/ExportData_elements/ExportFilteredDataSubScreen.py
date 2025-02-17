@@ -71,8 +71,8 @@ class ExportFilteredDataSubScreen(AbstractExportDataSubScreen):
     def create_filter_unedited_data_box(self):
         frame:QFrame = QFrame()
         layout:QHBoxLayout = QHBoxLayout()
-        layout.addWidget(self.left_side())
-        layout.addWidget(self.right_side())
+        layout.addWidget(self.left_side(),stretch=1)
+        layout.addWidget(self.right_side(),stretch=2)
         frame.setLayout(layout)
         return frame
 

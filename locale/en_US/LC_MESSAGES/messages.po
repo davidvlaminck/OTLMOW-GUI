@@ -238,11 +238,18 @@ msgstr "Continue"
 
 #: GUI/dialog_windows/SuggestUpdateWindow.py:18
 msgid "otl_model_out_of_date_title"
-msgstr ""
+msgstr "Local OTL-model is out-of-date"
 
 #: GUI/dialog_windows/SuggestUpdateWindow.py:19
 msgid "otl_model_out_of_date_text"
 msgstr ""
+"The loaded subset is made with a higher OTL-model version compared to your local OTL-model version.\n"
+"To prevent issues during template generation, you should update to a newer version of OTL Wizard 2"
+"\n"
+"This new version is version {1}\n"
+"Your program is on version {0}\n"
+"\n"
+"Do you want to go the webpage where you can download the new version?"
 
 #: GUI/dialog_windows/SuggestUpdateWindow.py:21
 msgid "update_available_title"
@@ -251,7 +258,7 @@ msgstr "A new version of OTL-Wizard 2  is available"
 #: GUI/dialog_windows/SuggestUpdateWindow.py:22
 msgid "update_available_text"
 msgstr ""
-" There is a new version of OTL-Wizard 2 available.\n"
+"There is a new version of OTL-Wizard 2 available.\n"
 "\n"
 "This new version is version {1}\n"
 "Your program is on version {0}\n"
