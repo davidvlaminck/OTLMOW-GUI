@@ -35,7 +35,6 @@ class SuggestUpdateWindow:
         button_box.rejected.connect(dialog.reject)
         layout.addWidget(button_box)
         dialog.setLayout(layout)
-        dialog.show()
         dialog.exec()
 
     def create_button_box(self):
