@@ -215,6 +215,8 @@ class HomeDomain:
 
         global_vars.otl_wizard.main_window.enable_steps()
 
+
+
     @classmethod
     def process_upsert_dialog_input(cls, input_bestek: str, input_eigen_ref: str,
                                     input_subset: str, project: Project = None) -> None:

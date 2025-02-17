@@ -393,17 +393,20 @@ class TemplateScreen(TemplateScreenInterface):
         :return: None
         :raises FileNotFoundError: If the project data cannot be accessed.
         """
-
-        try:
-            # model_builder = ModelBuilder(self.project.subset_path)
-            self.subset_name.setText(project.get_subset_db_name())
-            self.operator_name.setText(project.get_operator_name())
-            self.otl_version.setText(project.get_otl_version())
-        except FileNotFoundError as e:
-            self.subset_name.setText("/")
-            self.operator_name.setText("/")
-            self.otl_version.setText("/")
-
+        if project:
+            try:
+                # model_builder = ModelBuilder(self.project.subset_path)
+                self.subset_name.setText(project.get_subset_db_name())
+                self.operator_name.setText(project.get_operator_name())
+                self.otl_version.setText(project.get_otl_version())
+            except FileNotFoundError as e:
+                self.subset_name.setText("/")
+                self.operator_name.setText("/")
+                self.otl_version.setText("/")
+        else:
+            self.subset_name.setText("Loading")
+            self.operator_name.setText("Loading")
+            self.otl_version.setText("Loading")
 
     def update_label_under_list(self):
         counter = sum(

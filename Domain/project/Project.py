@@ -15,6 +15,7 @@ from otlmow_converter.OtlmowConverter import OtlmowConverter
 from otlmow_model.OtlmowModel.BaseClasses.RelationInteractor import RelationInteractor
 from otlmow_model.OtlmowModel.Classes.ImplementatieElement.AIMObject import AIMObject
 from otlmow_model.OtlmowModel.Classes.ImplementatieElement.RelatieObject import RelatieObject
+
 from universalasync import async_to_sync_wraps
 
 from Domain import global_vars
@@ -26,6 +27,8 @@ from Domain.enums import FileState
 from Domain.project.ProgramFileStructure import ProgramFileStructure
 from Exceptions.ExcelFileUnavailableError import ExcelFileUnavailableError
 from GUI.dialog_windows.LoadingImageWindow import add_loading_screen
+from GUI.dialog_windows.SuggestUpdateWindow import SuggestUpdateWindow
+from GUI.translation.GlobalTranslate import GlobalTranslate
 
 
 class Project:
@@ -551,6 +554,7 @@ class Project:
 
         if self.subset_path and not self.otl_version:
             self.otl_version = self.get_model_builder().get_otl_version()
+
 
         return self.otl_version
 

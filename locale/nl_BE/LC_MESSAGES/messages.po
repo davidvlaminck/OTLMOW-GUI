@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: jasper.berton@mow.vlaanderen.be\n"
-"POT-Creation-Date: 2025-02-13 10:37+0100\n"
+"POT-Creation-Date: 2025-02-17 09:17+0100\n"
 "PO-Revision-Date: 2023-10-19 13:13+0200\n"
 "Last-Translator: Jasper Berton <jasper.berton@mow.vlaanderen.be>\n"
 "Language: nl_BE\n"
@@ -18,53 +18,53 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.16.0\n"
 
-#: Domain/step_domain/HomeDomain.py:117
+#: Domain/step_domain/HomeDomain.py:119
 msgid "own_reference_empty_error"
 msgstr "Eigen referentie is leeg"
 
-#: Domain/step_domain/HomeDomain.py:119
+#: Domain/step_domain/HomeDomain.py:121
 msgid "bestek_empty_error"
 msgstr "Bestek is leeg"
 
-#: Domain/step_domain/HomeDomain.py:121
+#: Domain/step_domain/HomeDomain.py:123
 msgid "db_path_empty_error"
 msgstr "Subset is leeg"
 
-#: Domain/step_domain/HomeDomain.py:123
+#: Domain/step_domain/HomeDomain.py:125
 msgid "wrong_database_error"
 msgstr ""
 
-#: Domain/step_domain/TemplateDomain.py:57
+#: Domain/step_domain/TemplateDomain.py:61
 msgid "permission_to_file_was_denied_likely_due_to_the_file_being_open_in_excel"
 msgstr ""
 "U hebt geen toegang tot deze file! \n"
 "Waarschijnlijk omdat de file nog open is in excel"
 
-#: Domain/step_domain/TemplateDomain.py:57
+#: Domain/step_domain/TemplateDomain.py:61
 msgid "permission_denied"
 msgstr "Geen toestemming om de file te openen"
 
-#: GUI/MainWindow.py:63
+#: GUI/MainWindow.py:67
 msgid "template"
 msgstr "Aanmaken template"
 
-#: GUI/MainWindow.py:64
+#: GUI/MainWindow.py:68
 msgid "insert_data"
 msgstr "Data inladen"
 
-#: GUI/MainWindow.py:65
+#: GUI/MainWindow.py:69
 msgid "data visuals"
 msgstr "Data visualisatie"
 
-#: GUI/MainWindow.py:66
+#: GUI/MainWindow.py:70
 msgid "data_change"
 msgstr "Data veranderen"
 
-#: GUI/MainWindow.py:67
+#: GUI/MainWindow.py:71
 msgid "relation_change"
 msgstr "Relaties veranderen"
 
-#: GUI/MainWindow.py:68
+#: GUI/MainWindow.py:72
 msgid "export_data"
 msgstr "Data exporteren"
 
@@ -109,7 +109,7 @@ msgid "cancel"
 msgstr "Annuleren"
 
 #: GUI/dialog_windows/ChangeSubsetWindow.py:24
-#: GUI/screens/TemplateScreen.py:251 GUI/screens/TemplateScreen.py:496
+#: GUI/screens/TemplateScreen.py:251 GUI/screens/TemplateScreen.py:499
 msgid "change_subset"
 msgstr "Aanpassen subset"
 
@@ -132,13 +132,13 @@ msgstr "Bent u zeker dat u de bestanden van stap 2 wilt overschrijven?"
 
 #: GUI/dialog_windows/ChooseFileNameWindow.py:24
 #: GUI/dialog_windows/RemoveProjectWindow.py:20
-#: GUI/dialog_windows/SuggestUpdateWindow.py:35
+#: GUI/dialog_windows/SuggestUpdateWindow.py:45
 msgid "yes"
 msgstr "Ja"
 
 #: GUI/dialog_windows/ChooseFileNameWindow.py:25
 #: GUI/dialog_windows/RemoveProjectWindow.py:21
-#: GUI/dialog_windows/SuggestUpdateWindow.py:37
+#: GUI/dialog_windows/SuggestUpdateWindow.py:47
 msgid "no"
 msgstr "Nee"
 
@@ -236,10 +236,25 @@ msgid "continue"
 msgstr "Doorgaan"
 
 #: GUI/dialog_windows/SuggestUpdateWindow.py:18
+msgid "otl_model_out_of_date_title"
+msgstr "Lokale OTL-model is verouderd"
+
+#: GUI/dialog_windows/SuggestUpdateWindow.py:19
+msgid "otl_model_out_of_date_text"
+msgstr ""
+"De ingeladen subset is van een hogere OTL-model versie dan de versie van het lokale OTL-model.\n"
+"U moet een nieuwere versie van de OTL wizard 2 hebben om problemen met de template creatie te voorkomen.\n"
+"\n"
+"De nieuwe versie is versie {1}\n"
+"Uw programma zit op versie {0}\n"
+"\n"
+"Wilt u naar webpagina gaan waar u deze nieuwe versie kan downloaden?"
+
+#: GUI/dialog_windows/SuggestUpdateWindow.py:21
 msgid "update_available_title"
 msgstr "Nieuwe versie van OTL-Wizard 2 beschikbaar"
 
-#: GUI/dialog_windows/SuggestUpdateWindow.py:21
+#: GUI/dialog_windows/SuggestUpdateWindow.py:22
 msgid "update_available_text"
 msgstr ""
 "Er is een nieuwe versie van OTL wizard 2 beschikbaar.\n"
@@ -399,19 +414,19 @@ msgid "error"
 msgstr "Error"
 
 #: GUI/screens/TemplateScreen.py:127 GUI/screens/TemplateScreen.py:370
-#: GUI/screens/TemplateScreen.py:493
+#: GUI/screens/TemplateScreen.py:496
 msgid "select_all_classes"
 msgstr "Selecteer alle asset types"
 
-#: GUI/screens/TemplateScreen.py:131 GUI/screens/TemplateScreen.py:499
+#: GUI/screens/TemplateScreen.py:131 GUI/screens/TemplateScreen.py:502
 msgid "general_settings"
 msgstr "Algemene instellingen"
 
-#: GUI/screens/TemplateScreen.py:133 GUI/screens/TemplateScreen.py:492
+#: GUI/screens/TemplateScreen.py:133 GUI/screens/TemplateScreen.py:495
 msgid "no_choice_list"
 msgstr "Geen keuzelijsten opmaken"
 
-#: GUI/screens/TemplateScreen.py:136 GUI/screens/TemplateScreen.py:491
+#: GUI/screens/TemplateScreen.py:136 GUI/screens/TemplateScreen.py:494
 msgid "geometry_column_added"
 msgstr "Geometrie kolom toevoegen aan tabel"
 
@@ -423,46 +438,46 @@ msgstr "Instellingen om non-OTL-conforme info toe te voegen"
 msgid "show_deprecated_attributes"
 msgstr "Deprecated attributen aanduiden"
 
-#: GUI/screens/TemplateScreen.py:147 GUI/screens/TemplateScreen.py:490
+#: GUI/screens/TemplateScreen.py:147 GUI/screens/TemplateScreen.py:493
 msgid "export_attribute_info"
 msgstr "Exporteer een omschrijving van elk attribuut"
 
-#: GUI/screens/TemplateScreen.py:151 GUI/screens/TemplateScreen.py:500
+#: GUI/screens/TemplateScreen.py:151 GUI/screens/TemplateScreen.py:503
 msgid "example_settings"
 msgstr "Instellingen voor voorbeelden"
 
 #: GUI/screens/ExportData_elements/AbstractExportDataSubScreen.py:91
 #: GUI/screens/ExportData_elements/AbstractExportDataSubScreen.py:113
-#: GUI/screens/TemplateScreen.py:155 GUI/screens/TemplateScreen.py:495
+#: GUI/screens/TemplateScreen.py:155 GUI/screens/TemplateScreen.py:498
 msgid "export"
 msgstr "Exporteren"
 
-#: GUI/screens/TemplateScreen.py:199 GUI/screens/TemplateScreen.py:494
+#: GUI/screens/TemplateScreen.py:199 GUI/screens/TemplateScreen.py:497
 msgid "amount_of_examples"
 msgstr "Genereer voorbeeldrijen"
 
-#: GUI/screens/TemplateScreen.py:275 GUI/screens/TemplateScreen.py:497
+#: GUI/screens/TemplateScreen.py:275 GUI/screens/TemplateScreen.py:500
 msgid "operator"
 msgstr "Operator"
 
-#: GUI/screens/TemplateScreen.py:299 GUI/screens/TemplateScreen.py:498
+#: GUI/screens/TemplateScreen.py:299 GUI/screens/TemplateScreen.py:501
 msgid "otl_version"
 msgstr "OTL versie"
 
-#: GUI/screens/TemplateScreen.py:415 GUI/screens/TemplateScreen.py:502
+#: GUI/screens/TemplateScreen.py:418 GUI/screens/TemplateScreen.py:505
 msgid "{selected} classes selected"
 msgstr "{selected} types geselecteerd"
 
-#: GUI/screens/TemplateScreen.py:501
+#: GUI/screens/TemplateScreen.py:504
 msgid "deprecated_settings"
 msgstr "Instellingen voor deprecated attributen"
 
 #: GUI/screens/RelationChange_elements/AbstractInstanceListWidget.py:517
-#: GUI/screens/TemplateScreen.py:515
+#: GUI/screens/TemplateScreen.py:518
 msgid "loading"
 msgstr "Data aan het inladen..."
 
-#: GUI/screens/TemplateScreen.py:533
+#: GUI/screens/TemplateScreen.py:536
 msgid "no classes found in specified path"
 msgstr "Geen asset types gevonden in het opgegeven pad"
 

@@ -1,4 +1,5 @@
 import asyncio
+import logging
 from pathlib import Path
 from typing import Optional, Iterable
 
@@ -6,6 +7,7 @@ from otlmow_converter.Exceptions.ExceptionsGroup import ExceptionsGroup
 from otlmow_converter.OtlmowConverter import OtlmowConverter
 from otlmow_model.OtlmowModel.BaseClasses.OTLObject import OTLObject
 from otlmow_model.OtlmowModel.Helpers.generated_lists import get_hardcoded_class_dict
+from packaging.version import Version
 from universalasync import async_to_sync_wraps
 
 from Domain.logger.OTLLogger import OTLLogger
@@ -110,3 +112,9 @@ class Helpers:
         OTLLogger.logger.debug(
             f"Execute OtlmowConverter.from_objects_to_file({file_path.name}) ({object_count} objects)",
             extra={"timing_ref": f"sequence_of_objects_{file_path.stem}"})
+
+    @classmethod
+    def is_version_equal_or_higher(cls, current_version:str, other_version:str) -> bool:
+        res = Version(current_version) >= Version(other_version)
+        OTLLogger.logger.info(f"Version comparison {current_version} >= {other_version} => {res}")
+        return  res

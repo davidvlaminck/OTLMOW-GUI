@@ -13,11 +13,16 @@ from otlmow_template.SubsetTemplateCreator import SubsetTemplateCreator
 from universalasync import async_to_sync_wraps
 
 from Domain import global_vars
+from Domain.Helpers import Helpers
 from Domain.logger.OTLLogger import OTLLogger
+from Domain.network.Updater import Updater
 from GUI.dialog_windows.LoadingImageWindow import add_loading_screen, LoadingImageWindow
 from GUI.dialog_windows.NotificationWindow import NotificationWindow
+from GUI.dialog_windows.SuggestUpdateWindow import SuggestUpdateWindow
 from GUI.screens.screen_interface.TemplateScreenInterface import TemplateScreenInterface
 from GUI.translation.GlobalTranslate import GlobalTranslate
+
+import importlib.metadata
 
 
 class TemplateDomain:
@@ -79,6 +84,8 @@ class TemplateDomain:
 
     @classmethod
     def init_static(cls):
+
+
         if global_vars.current_project:
             event_loop = asyncio.get_event_loop()
             event_loop.create_task(cls.fill_list())
@@ -96,20 +103,34 @@ class TemplateDomain:
 
             modelbuilder = global_vars.current_project.get_model_builder()
 
+            metadata = importlib.metadata.metadata("otlmow-model")
+            otl_model_version = metadata['Version']
+            subset_otl_version = global_vars.current_project.get_otl_version()
+            if not Helpers.is_version_equal_or_higher(otl_model_version, subset_otl_version):
+                OTLLogger.logger.info("otlmow-model version is outdated")
+                SuggestUpdateWindow(language_settings=GlobalTranslate._,
+                                    local_version=Updater.local_version,
+                                    new_version=Updater.master_version,
+                                    otl_model_out_of_date=True)
+            else:
+                OTLLogger.logger.info("otlmow-model version is high enough")
+
             cls.classes = modelbuilder.filter_relations_and_abstract()
             cls.has_a_class_with_deprecated_attributes = TemplateDomain.check_for_no_deprecated_present()
 
-            cls.get_screen().set_classes(classes=cls.classes,has_a_class_with_deprecated_attributes=cls.has_a_class_with_deprecated_attributes)
+
 
         except FileNotFoundError as e:
             #TODO: give proper feedback to user if the subset file is not found
             cls.get_screen().set_gui_list_to_no_classes_found()
         OTLLogger.logger.debug("Load OTL classes from Subset", extra={"timing_ref": f"class_from_subset_{global_vars.current_project.eigen_referentie}"})
-        await cls.update_frontend()
+        cls.update_frontend()
 
     @classmethod
-    async def update_frontend(cls):
+    def update_frontend(cls):
         cls.get_screen().update_project_info(global_vars.current_project)
+        cls.get_screen().set_classes(classes=cls.classes,
+                                     has_a_class_with_deprecated_attributes=cls.has_a_class_with_deprecated_attributes)
 
     @classmethod
     def get_screen(cls) -> TemplateScreenInterface:
