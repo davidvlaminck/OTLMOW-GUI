@@ -481,7 +481,7 @@ msgstr ""
 
 #: GUI/screens/TemplateScreen.py:257 GUI/screens/TemplateScreen.py:618
 msgid "amount_of_examples"
-msgstr "Genereer voorbeeldrijen"
+msgstr "Genereer voorbeeldassets"
 
 #: GUI/screens/TemplateScreen.py:258
 msgid "Adds example assets to each OTL-class"

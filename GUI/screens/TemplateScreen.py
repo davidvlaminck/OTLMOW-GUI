@@ -1,4 +1,6 @@
 import asyncio
+from copy import deepcopy
+from enum import IntEnum
 from pathlib import Path
 from typing import NamedTuple
 
@@ -39,12 +41,12 @@ class TemplateScreen(TemplateScreenInterface):
         otl_title (QLabel): Label for the OTL title.
         change_subset_btn (ButtonWidget): Button for changing the subset.
         general_settings_title (QLabel): Title label for general settings.
-        no_choice_list (QCheckBox): Checkbox for no choice list option.
-        geometry_column_added (QCheckBox): Checkbox for geometry column addition.
+        add_choice_list (QCheckBox): Checkbox for no choice list option.
+        add_geometry_attributes (QCheckBox): Checkbox for geometry column addition.
         export_button (ButtonWidget): Button for exporting data.
         export_attribute_info (QCheckBox): Checkbox for exporting attribute information.
         show_deprecated_attributes (QCheckBox): Checkbox for showing deprecated attributes.
-        example_amount_label (QLabel): Label for the example amount setting.
+        example_amount_checkbox (QLabel): Label for the example amount setting.
         non_otl_conform_settings_title (QLabel): Title label for non-OTL conform settings.
         amount_of_examples (QSpinBox): Spin box for specifying the amount of examples.
         example_settings_title (QLabel): Title label for example settings.
@@ -119,18 +121,38 @@ class TemplateScreen(TemplateScreenInterface):
                                             default_on=True,
                                             tooltip= self.default_choice_list_tooltip.format(filetype="Excel")
                                         ),
-                                        example_assets= FileTypeSettingPropertySetting(
-                                            enabled=True,
-                                            change_state_if_enabled=True,
-                                            default_on=True,
-                                            tooltip=self.default_example_checkbox_tooltip
-                                        ),
                                         geometry_attributes= FileTypeSettingPropertySetting(
                                             enabled=True,
                                             change_state_if_enabled=True,
                                             default_on=True,
                                             tooltip=self.default_geometry_tooltip
+                                        ),
+                                        example_assets= FileTypeSettingPropertySetting(
+                                            enabled=True,
+                                            change_state_if_enabled=True,
+                                            default_on=False,
+                                            tooltip=self.default_example_checkbox_tooltip
                                         )),
+                                    "CSV": FileTypeSetting(
+                                        choice_lists=FileTypeSettingPropertySetting(
+                                            enabled=False,
+                                            change_state_if_enabled=True,
+                                            default_on=False,
+                                            tooltip=self.always_off_choice_list_tooltip.format(filetype="CSV")
+                                        ),
+                                        geometry_attributes=FileTypeSettingPropertySetting(
+                                            enabled=True,
+                                            change_state_if_enabled=True,
+                                            default_on=True,
+                                            tooltip=self.default_geometry_tooltip
+                                        ),
+                                        example_assets=FileTypeSettingPropertySetting(
+                                            enabled=True,
+                                            change_state_if_enabled=False,
+                                            default_on=True,
+                                            tooltip=self.default_example_checkbox_tooltip
+                                        ),
+                                    ),
                                     "JSON": FileTypeSetting(
                                         choice_lists=FileTypeSettingPropertySetting(
                                             enabled=False,
@@ -138,17 +160,17 @@ class TemplateScreen(TemplateScreenInterface):
                                             default_on=False,
                                             tooltip=self.always_off_choice_list_tooltip.format(filetype="JSON")
                                         ),
-                                        example_assets=FileTypeSettingPropertySetting(
-                                            enabled=True,
-                                            change_state_if_enabled=False,
-                                            default_on=False,
-                                            tooltip=self.default_example_checkbox_tooltip
-                                        ),
                                         geometry_attributes=FileTypeSettingPropertySetting(
                                             enabled=True,
                                             change_state_if_enabled=True,
                                             default_on=True,
                                             tooltip=self.default_geometry_tooltip
+                                        ),
+                                        example_assets=FileTypeSettingPropertySetting(
+                                            enabled=True,
+                                            change_state_if_enabled=False,
+                                            default_on=False,
+                                            tooltip=self.default_example_checkbox_tooltip
                                         ),
                                     ),
                                     'GeoJSON': FileTypeSetting(
@@ -156,39 +178,39 @@ class TemplateScreen(TemplateScreenInterface):
                                             enabled=False,
                                             change_state_if_enabled=True,
                                             default_on=False,
-                                            tooltip=self.always_off_choice_list_tooltip.format(filetype="JSON")
-                                        ),
-                                        example_assets=FileTypeSettingPropertySetting(
-                                            enabled=True,
-                                            change_state_if_enabled=False,
-                                            default_on=False,
-                                            tooltip=self.default_example_checkbox_tooltip
+                                            tooltip=self.always_off_choice_list_tooltip.format(filetype="GeoJSON")
                                         ),
                                         geometry_attributes=FileTypeSettingPropertySetting(
                                             enabled=True,
                                             change_state_if_enabled=True,
                                             default_on=True,
                                             tooltip=self.default_geometry_tooltip
+                                        ),
+                                        example_assets=FileTypeSettingPropertySetting(
+                                            enabled=True,
+                                            change_state_if_enabled=False,
+                                            default_on=False,
+                                            tooltip=self.default_example_checkbox_tooltip
                                         ),
                                     ),
                                     'SDF': FileTypeSetting(
                                         choice_lists=FileTypeSettingPropertySetting(
                                             enabled=False,
                                             change_state_if_enabled=True,
-                                            default_on=False,
-                                            tooltip=self.always_off_choice_list_tooltip.format(filetype="JSON")
+                                            default_on=True,
+                                            tooltip=self.always_on_choice_list_tooltip.format(filetype="SDF")
+                                        ),
+                                        geometry_attributes=FileTypeSettingPropertySetting(
+                                            enabled=False,
+                                            change_state_if_enabled=True,
+                                            default_on=True,
+                                            tooltip=self.always_on_geometry_tooltip.format(filetype="SDF")
                                         ),
                                         example_assets=FileTypeSettingPropertySetting(
                                             enabled=True,
                                             change_state_if_enabled=False,
                                             default_on=False,
                                             tooltip=self.default_example_checkbox_tooltip
-                                        ),
-                                        geometry_attributes=FileTypeSettingPropertySetting(
-                                            enabled=True,
-                                            change_state_if_enabled=True,
-                                            default_on=True,
-                                            tooltip=self.default_geometry_tooltip
                                         ),
                                     ),
                                     }
@@ -296,7 +318,7 @@ class TemplateScreen(TemplateScreenInterface):
         main_layout.addWidget(self.add_choice_list)
         main_layout.addWidget(self.add_geometry_attributes)
         main_layout.addWidget(self.create_example_generation_container())
-
+        main_layout.addSpacing(10)
         main_layout.addWidget(self.export_button, alignment=Qt.AlignmentFlag.AlignLeft)
 
         main_layout.addStretch()
@@ -403,8 +425,8 @@ class TemplateScreen(TemplateScreenInterface):
         layout.addWidget(self.options_menu())
         layout.setContentsMargins(16, 0, 16, 0)
         window.setLayout(layout)
-        horizontal_layout.addWidget(window)
-        horizontal_layout.addWidget(self.create_list())
+        horizontal_layout.addWidget(window,stretch=1)
+        horizontal_layout.addWidget(self.create_list(),stretch=2)
         horizontal_layout.addSpacing(20)
         full_window.setLayout(horizontal_layout)
 
@@ -631,8 +653,14 @@ class TemplateScreen(TemplateScreenInterface):
         
         selected_classes = [item.data(1) for item in self.all_classes.selectedItems()]
         file_picker = ExportToTemplateWindow()
-        
-        document_path_str = file_picker.get_file_location()
+        chosen_file_format = self.file_extension_selection.currentText()
+        document_path_str = None
+        if chosen_file_format in self.supported_export_formats:
+            file_suffix = self.supported_export_formats[chosen_file_format]
+            filter_filepicker = f"{chosen_file_format} files (*.{file_suffix})"
+            document_path  = file_picker.getSaveFileName(filter=filter_filepicker)
+            if document_path:
+                document_path_str = document_path[0]
         if document_path_str:
             
             document_path = Path(document_path_str)
@@ -661,58 +689,62 @@ class TemplateScreen(TemplateScreenInterface):
                 amount_of_examples=amount_of_examples))
 
     def update_settings_based_on_filetype(self,filetype:str):
-        if filetype == "Excel":
+        # if filetype == "Excel":
 
-            # self.add_choice_list.setChecked(self.file_type_settings[filetype].choice_lists.default_on)
-            # self.add_choice_list.setEnabled(self.file_type_settings[filetype].choice_lists.enabled)
-            # self.add_choice_list.setToolTip(self.file_type_settings[filetype].choice_lists.tooltip)
+        self.add_choice_list.setChecked(self.file_type_settings[filetype].choice_lists.default_on)
+        self.add_choice_list.setEnabled(self.file_type_settings[filetype].choice_lists.enabled)
+        self.add_choice_list.setToolTip(self.file_type_settings[filetype].choice_lists.tooltip)
+
+        self.example_amount_checkbox.setChecked(self.file_type_settings[filetype].example_assets.default_on)
+        self.example_amount_checkbox.setEnabled(self.file_type_settings[filetype].example_assets.enabled)
+        self.example_amount_checkbox.setToolTip(self.file_type_settings[filetype].example_assets.tooltip)
+
+        self.add_geometry_attributes.setChecked(self.file_type_settings[filetype].geometry_attributes.default_on)
+        self.add_geometry_attributes.setEnabled(self.file_type_settings[filetype].geometry_attributes.enabled)
+        self.add_geometry_attributes.setToolTip(self.file_type_settings[filetype].geometry_attributes.tooltip)
+
+
+            # self.add_choice_list.setChecked(True)
+            # self.add_choice_list.setEnabled(True)
+            # self.add_choice_list.setToolTip(
+            #     self._("Adds choice lists to relevant attributes").format(filetype=filetype))
             #
-            # self.add_geometry_attributes.setChecked(self.file_type_settings[filetype].geometry_attributes.default_on)
-            # self.add_geometry_attributes.setEnabled(self.file_type_settings[filetype].geometry_attributes.enabled)
-            # self.add_geometry_attributes.setToolTip(self.file_type_settings[filetype].geometry_attributes.tooltip)
-            #
-
-            self.add_choice_list.setChecked(True)
-            self.add_choice_list.setEnabled(True)
-            self.add_choice_list.setToolTip(
-                self._("Adds choice lists to relevant attributes").format(filetype=filetype))
-
-            self.add_geometry_attributes.setChecked(True)
-            self.add_geometry_attributes.setEnabled(True)
-            self.add_geometry_attributes.setToolTip(
-                self._("Adds geometry information for each asset"))
-        elif filetype == 'CSV':
-            self.add_choice_list.setChecked(False)
-            self.add_choice_list.setEnabled(False)
-            self.add_choice_list.setToolTip(self._("{filetype} cannot contain choice lists").format(filetype=filetype))
-
-            self.add_geometry_attributes.setChecked(True)
-            self.add_geometry_attributes.setEnabled(True)
-            self.add_geometry_attributes.setToolTip(
-                self._("Adds geometry information for each asset"))
-        elif filetype == 'JSON':
-            self.add_choice_list.setChecked(False)
-            self.add_choice_list.setEnabled(False)
-            self.add_choice_list.setToolTip(self._("{filetype} cannot contain choice lists").format(filetype=filetype))
-
-            self.add_geometry_attributes.setChecked(True)
-            self.add_geometry_attributes.setEnabled(True)
-            self.add_geometry_attributes.setToolTip(
-                self._("Adds geometry information for each asset"))
-        elif filetype == 'GeoJSON':
-            self.add_choice_list.setChecked(False)
-            self.add_choice_list.setEnabled(False)
-            self.add_choice_list.setToolTip(self._("{filetype} cannot contain choice lists").format(filetype=filetype))
-
-            self.add_geometry_attributes.setChecked(True)
-        elif filetype == 'SDF':
-            self.add_choice_list.setChecked(True)
-            self.add_choice_list.setEnabled(False)
-            self.add_choice_list.setToolTip(self._("For {filetype} choice lists cannot be disabled").format(filetype=filetype))
-
-            self.add_geometry_attributes.setChecked(True)
-            self.add_geometry_attributes.setEnabled(False)
-            self.add_choice_list.setToolTip(self._("For {filetype} geometry attributes cannot be disabled").format(filetype=filetype))
+            # self.add_geometry_attributes.setChecked(True)
+            # self.add_geometry_attributes.setEnabled(True)
+            # self.add_geometry_attributes.setToolTip(
+            #     self._("Adds geometry information for each asset"))
+        # elif filetype == 'CSV':
+        #     self.add_choice_list.setChecked(False)
+        #     self.add_choice_list.setEnabled(False)
+        #     self.add_choice_list.setToolTip(self._("{filetype} cannot contain choice lists").format(filetype=filetype))
+        #
+        #     self.add_geometry_attributes.setChecked(True)
+        #     self.add_geometry_attributes.setEnabled(True)
+        #     self.add_geometry_attributes.setToolTip(
+        #         self._("Adds geometry information for each asset"))
+        # elif filetype == 'JSON':
+        #     self.add_choice_list.setChecked(False)
+        #     self.add_choice_list.setEnabled(False)
+        #     self.add_choice_list.setToolTip(self._("{filetype} cannot contain choice lists").format(filetype=filetype))
+        #
+        #     self.add_geometry_attributes.setChecked(True)
+        #     self.add_geometry_attributes.setEnabled(True)
+        #     self.add_geometry_attributes.setToolTip(
+        #         self._("Adds geometry information for each asset"))
+        # elif filetype == 'GeoJSON':
+        #     self.add_choice_list.setChecked(False)
+        #     self.add_choice_list.setEnabled(False)
+        #     self.add_choice_list.setToolTip(self._("{filetype} cannot contain choice lists").format(filetype=filetype))
+        #
+        #     self.add_geometry_attributes.setChecked(True)
+        # elif filetype == 'SDF':
+        #     self.add_choice_list.setChecked(True)
+        #     self.add_choice_list.setEnabled(False)
+        #     self.add_choice_list.setToolTip(self._("For {filetype} choice lists cannot be disabled").format(filetype=filetype))
+        #
+        #     self.add_geometry_attributes.setChecked(True)
+        #     self.add_geometry_attributes.setEnabled(False)
+        #     self.add_choice_list.setToolTip(self._("For {filetype} geometry attributes cannot be disabled").format(filetype=filetype))
     def change_subset(self) -> None:
         """
         Opens a window to change the current subset.
