@@ -1,3 +1,4 @@
 # htmlcov folder is no longer included in linguist (calculates Languages report in repo)
 UnitTests/htmlcov/* linguist-vendored
 *.exe filter=lfs diff=lfs merge=lfs -text
+*.zip filter=lfs diff=lfs merge=lfs -text
