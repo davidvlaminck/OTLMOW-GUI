@@ -84,8 +84,13 @@ class TemplateScreen(TemplateScreenInterface):
         self.file_extension_selection: QComboBox = QComboBox()
         self.file_type_label: QLabel = QLabel()
         self.supported_export_formats: dict = deepcopy(global_vars.supported_file_formats)
+
         if "SDF" in self.supported_export_formats:
-            self.supported_export_formats.pop("SDF")  # not yet supported for export in V0.5.0
+            self.supported_export_formats.pop("SDF")  # not yet supported for export in V0.5.3
+        if "JSON" in self.supported_export_formats:
+            self.supported_export_formats.pop("JSON")  # Doesn't support template creation
+        if "GEOJSON" in self.supported_export_formats:
+            self.supported_export_formats.pop("GEOJSON")  # Doesn't support template creation
 
         FileTypeSettingPropertySetting = NamedTuple("FileTypeSettingPropertySetting",[
             ("enabled",bool),
