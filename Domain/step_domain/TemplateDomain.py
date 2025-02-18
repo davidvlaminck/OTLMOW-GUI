@@ -165,9 +165,10 @@ class TemplateDomain:
                                        add_attribute_info=export_attribute_info,
                                        highlight_deprecated_attributes=highlight_deprecated_attributes,
                                        amount_of_examples=amount_of_examples)
-        if platform.system() == 'Linux':
-            os.open(document_path, os.O_WRONLY)
-        elif platform.system() == 'Windows':
-            os.startfile(document_path)
-        else:
-            OTLLogger.logger.error("Opening a file on this OS is not implemented yet")
+        if ".xlsx" in str(document_path):
+            if platform.system() == 'Linux':
+                os.open(document_path, os.O_WRONLY)
+            elif platform.system() == 'Windows':
+                os.startfile(document_path)
+            else:
+                OTLLogger.logger.error("Opening a file on this OS is not implemented yet")
