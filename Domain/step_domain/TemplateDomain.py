@@ -39,19 +39,24 @@ class TemplateDomain:
     @classmethod
     @async_to_sync_wraps
     @add_loading_screen
-    async def create_template(cls,subset_path: Path, document_path: Path, selected_classes_dir: List, generate_choice_list: bool,
-                        add_geo_artefact: bool, add_attribute_info: bool, highlight_deprecated_attributes: bool,
-                        amount_of_examples: int, model_directory: Path = None) -> None:
+    async def create_template(cls, subset_path: Path, document_path: Path, selected_classes_typeURI_list: List, generate_choice_list: bool,
+                              add_geo_artefact: bool, add_attribute_info: bool, highlight_deprecated_attributes: bool,
+                              amount_of_examples: int, model_directory: Path = None) -> None:
         OTLLogger.logger.debug("Creating template", extra={"timing_ref": f"create_template_{document_path.name}"})
         try:
             template_creator = SubsetTemplateCreator()
 
-            if selected_classes_dir and 'http://purl.org/dc/terms/Agent' in selected_classes_dir:
-                selected_classes_dir.remove('http://purl.org/dc/terms/Agent')
+            if not selected_classes_typeURI_list:
+                # if selected_class_dir is empty fill it with all classes in the domain
+                selected_classes_typeURI_list = [oslo_class.objectUri for oslo_class in cls.classes]
+
+            if selected_classes_typeURI_list and 'http://purl.org/dc/terms/Agent' in selected_classes_typeURI_list:
+                # filter out agent
+                selected_classes_typeURI_list.remove('http://purl.org/dc/terms/Agent')
 
             await template_creator.generate_template_from_subset(
                 path_to_subset=subset_path, path_to_template_file_and_extension=document_path,
-                list_of_otl_objectUri=selected_classes_dir, generate_choice_list=generate_choice_list,
+                list_of_otl_objectUri=selected_classes_typeURI_list, generate_choice_list=generate_choice_list,
                 add_geo_artefact=add_geo_artefact, add_attribute_info=add_attribute_info,
                 highlight_deprecated_attributes=highlight_deprecated_attributes, amount_of_examples=amount_of_examples,
                 model_directory=model_directory,
@@ -158,13 +163,13 @@ class TemplateDomain:
         if not document_path or not project:
             return
         await TemplateDomain.create_template(subset_path=project.subset_path,
-                                       document_path=Path(document_path),
-                                       selected_classes_dir= selected_classes,
-                                       generate_choice_list=generate_choice_list,
-                                       add_geo_artefact=geometry_column_added,
-                                       add_attribute_info=export_attribute_info,
-                                       highlight_deprecated_attributes=highlight_deprecated_attributes,
-                                       amount_of_examples=amount_of_examples)
+                                             document_path=Path(document_path),
+                                             selected_classes_typeURI_list= selected_classes,
+                                             generate_choice_list=generate_choice_list,
+                                             add_geo_artefact=geometry_column_added,
+                                             add_attribute_info=export_attribute_info,
+                                             highlight_deprecated_attributes=highlight_deprecated_attributes,
+                                             amount_of_examples=amount_of_examples)
         if ".xlsx" in str(document_path):
             if platform.system() == 'Linux':
                 os.open(document_path, os.O_WRONLY)
