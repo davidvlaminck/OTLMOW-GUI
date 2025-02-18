@@ -44,13 +44,39 @@ class SDFHandler:
     def _filter_out_coordinate_system_not_installed_error(cls, command:str, error:str) -> None:
         # The following error occurs even though the program works properly
         # Here we filter out this error to be able to capture and use other critical errors
-        pattern = re.compile(
+        pattern1 = re.compile(
             r'\(\d+\) DefaultDir: "C:\\ProgramData\\Autodesk\\Geospatial Coordinate Systems" is not a directory! Install the Coordinate System library into this directory or set MENTOR_DICTIONARY_PATH to where they are currently installed\.\n'
             r'\(\d+\) MgCoordinateSystemInitializationFailedException caught in CCoordinateSystemCatalog constructor - The coordinate system initialization failed\.\n\n'
             r'- MgCoordinateSystemCatalog\.SetDefaultDictionaryDirAndFileNames\(\) line 603 file \.\.\\CoordinateSystem\\CoordSysCatalog\.cpp\n'
             r'- MgCoordinateSystemCatalog\.GetDefaultDictionaryDir\(\) line 263 file \.\.\\CoordinateSystem\\CoordSysCatalog\.cpp'
         )
-        filtered_error, instance_count = pattern.subn("", error)
+        filtered_error, instance_count = pattern1.subn("", error)
+
+        # pattern2 = re.compile()
+        # The following error occurs with the create-file command even though the program works properly
+        # Here we filter out this error to be able to capture and use other critical errors
+        negative_precision_error = ('\n'
+                             '\n'
+                             'OSGeo.FDO.Common.Exception: A Data Property cannot have a negative '
+                             'precision. \n'
+                             '   at OSGeo.FDO.Schema.DataPropertyDefinition.set_Precision(Int32 value)\n'
+                             '   at '
+                             'FdoToolbox.Core.Feature.SchemaCapabilityChecker.FixDataProperties(ClassDefinition& '
+                             'classDef)\n'
+                             '   at '
+                             'FdoToolbox.Core.Feature.SchemaCapabilityChecker.AlterClassDefinition(ClassDefinition '
+                             'classDef, IncompatibleClass incClass, Func`1 getActiveSpatialContext, '
+                             'Action`2 fixGeomSc)\n'
+                             '   at '
+                             'FdoToolbox.Core.Feature.SchemaCapabilityChecker.AlterSchema(FeatureSchema '
+                             'schema, IncompatibleSchema incompatibleSchema, Func`1 '
+                             'getActiveSpatialContext)\n'
+                             '   at FdoToolbox.Core.Feature.FdoFeatureService.LoadSchemasFromXml(String '
+                             'xmlFile, Boolean fix)\n'
+                             '   at FdoCmd.Commands.CreateFileCommand.Execute()')
+
+        filtered_error = filtered_error.replace(negative_precision_error,"")
+
         if filtered_error:
             raise FDOToolboxProcessError(language=GlobalTranslate._, command=command,
                                          fdo_toolbox_error=filtered_error)
@@ -141,6 +167,24 @@ class SDFHandler:
     def _check_if_FDOToolbox_is_installed(cls):
         if not os.path.exists(global_vars.FDO_toolbox_path_str):
             raise FDOToolboxNotInstalledError(GlobalTranslate._)
+
+    @classmethod
+    def convert_XSD_to_SDF(cls,input_xsd_path:Path, output_sdf_path:Path) -> bool:
+        sdf_file_path_str = output_sdf_path.absolute()
+        input_xsd_path_str = input_xsd_path.absolute()
+
+        command = (f'"{global_vars.FDO_toolbox_path_str}" create-file '
+                   f'--file "{sdf_file_path_str}"  --schema-path "{input_xsd_path_str}"')
+
+        print(command)
+
+        output, error = cls.run_command(command)
+        OTLLogger.logger.debug(f"convert_XSD_to_SDF:\n{output}")
+
+        if error:
+
+            cls._filter_out_coordinate_system_not_installed_error(command, error)
+
 
 
 if __name__ == "__main__":

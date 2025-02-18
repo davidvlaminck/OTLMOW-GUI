@@ -2,6 +2,7 @@ from pathlib import Path
 
 import pytest
 from _pytest.fixtures import fixture
+from openpyxl.styles.builtins import output
 
 from Domain.SDFHandler import SDFHandler
 from Exceptions.FDOToolboxNotInstalledError import FDOToolboxNotInstalledError
@@ -312,3 +313,38 @@ def test_convert_SDF_to_CSV_FDOToolbox_not_installed_error(root_directory,create
                                       csv_output_path=csv_output_path)
 
     assert str(exc_info.value) == expected_error_msg
+
+@pytest.mark.parametrize(
+    "rel_input_xsd_path, rel_output_sdf_path, expected_output_dirpath, expected_output_file_basename",
+    [
+        (Path("UnitTests/test_files/input/created_wegkantkast.xsd"),
+     Path("UnitTests/test_files/output_test/created-wegkantkast-3-2-empty.sdf"),
+     Path("UnitTests/test_files/output_ref"),"created-wegkantkast-3-2-empty.sdf")
+     ],
+    ids=[
+        "created-wegkantkast"
+    ])
+def test_convert_XSD_to_SDF(root_directory,create_translations,cleanup_after_creating_a_file_to_delete,
+                       rel_input_xsd_path: Path, rel_output_sdf_path: Path,
+                       expected_output_dirpath:Path,expected_output_file_basename:str):
+    OTLLogger.init()
+
+    #SETUP
+    input_xsd_path = root_directory / rel_input_xsd_path
+    output_sdf_path = root_directory / rel_output_sdf_path
+    cleanup_after_creating_a_file_to_delete.append(output_sdf_path)
+
+    #ACT
+    SDFHandler.convert_XSD_to_SDF(input_xsd_path=input_xsd_path,output_sdf_path=output_sdf_path)
+
+    #TEST
+    assert output_sdf_path.exists()
+
+    with open(output_sdf_path, mode="r") as output_sdf_file:
+        output_test = output_sdf_file.read()
+
+    expected_output_path = root_directory / expected_output_dirpath / expected_output_file_basename
+    with open(expected_output_path.absolute(), mode="r") as expected_output_file:
+        expected_output = expected_output_file.read()
+
+    assert output_test == expected_output
