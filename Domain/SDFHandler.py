@@ -4,8 +4,13 @@ import re
 import subprocess
 import sys
 from pathlib import Path
+from typing import Optional
+
+from universalasync import async_to_sync_wraps
 
 from Domain import global_vars
+from Domain.Helpers import Helpers
+from Domain.XSDCreator import XSDCreator
 from Domain.logger.OTLLogger import OTLLogger
 from Exceptions.FDOToolboxNotInstalledError import FDOToolboxNotInstalledError
 
@@ -55,27 +60,27 @@ class SDFHandler:
         # pattern2 = re.compile()
         # The following error occurs with the create-file command even though the program works properly
         # Here we filter out this error to be able to capture and use other critical errors
-        negative_precision_error = ('\n'
-                             '\n'
-                             'OSGeo.FDO.Common.Exception: A Data Property cannot have a negative '
-                             'precision. \n'
-                             '   at OSGeo.FDO.Schema.DataPropertyDefinition.set_Precision(Int32 value)\n'
-                             '   at '
-                             'FdoToolbox.Core.Feature.SchemaCapabilityChecker.FixDataProperties(ClassDefinition& '
-                             'classDef)\n'
-                             '   at '
-                             'FdoToolbox.Core.Feature.SchemaCapabilityChecker.AlterClassDefinition(ClassDefinition '
-                             'classDef, IncompatibleClass incClass, Func`1 getActiveSpatialContext, '
-                             'Action`2 fixGeomSc)\n'
-                             '   at '
-                             'FdoToolbox.Core.Feature.SchemaCapabilityChecker.AlterSchema(FeatureSchema '
-                             'schema, IncompatibleSchema incompatibleSchema, Func`1 '
-                             'getActiveSpatialContext)\n'
-                             '   at FdoToolbox.Core.Feature.FdoFeatureService.LoadSchemasFromXml(String '
-                             'xmlFile, Boolean fix)\n'
-                             '   at FdoCmd.Commands.CreateFileCommand.Execute()')
-
-        filtered_error = filtered_error.replace(negative_precision_error,"")
+        # negative_precision_error = ('\n'
+        #                      '\n'
+        #                      'OSGeo.FDO.Common.Exception: A Data Property cannot have a negative '
+        #                      'precision. \n'
+        #                      '   at OSGeo.FDO.Schema.DataPropertyDefinition.set_Precision(Int32 value)\n'
+        #                      '   at '
+        #                      'FdoToolbox.Core.Feature.SchemaCapabilityChecker.FixDataProperties(ClassDefinition& '
+        #                      'classDef)\n'
+        #                      '   at '
+        #                      'FdoToolbox.Core.Feature.SchemaCapabilityChecker.AlterClassDefinition(ClassDefinition '
+        #                      'classDef, IncompatibleClass incClass, Func`1 getActiveSpatialContext, '
+        #                      'Action`2 fixGeomSc)\n'
+        #                      '   at '
+        #                      'FdoToolbox.Core.Feature.SchemaCapabilityChecker.AlterSchema(FeatureSchema '
+        #                      'schema, IncompatibleSchema incompatibleSchema, Func`1 '
+        #                      'getActiveSpatialContext)\n'
+        #                      '   at FdoToolbox.Core.Feature.FdoFeatureService.LoadSchemasFromXml(String '
+        #                      'xmlFile, Boolean fix)\n'
+        #                      '   at FdoCmd.Commands.CreateFileCommand.Execute()')
+        #
+        # filtered_error = filtered_error.replace(negative_precision_error,"")
 
         if filtered_error:
             raise FDOToolboxProcessError(language=GlobalTranslate._, command=command,
@@ -169,14 +174,12 @@ class SDFHandler:
             raise FDOToolboxNotInstalledError(GlobalTranslate._)
 
     @classmethod
-    def convert_XSD_to_SDF(cls,input_xsd_path:Path, output_sdf_path:Path) -> bool:
+    def _convert_XSD_to_SDF(cls, input_xsd_path:Path, output_sdf_path:Path) -> None:
         sdf_file_path_str = output_sdf_path.absolute()
         input_xsd_path_str = input_xsd_path.absolute()
 
         command = (f'"{global_vars.FDO_toolbox_path_str}" create-file '
                    f'--file "{sdf_file_path_str}"  --schema-path "{input_xsd_path_str}"')
-
-        print(command)
 
         output, error = cls.run_command(command)
         OTLLogger.logger.debug(f"convert_XSD_to_SDF:\n{output}")
@@ -185,7 +188,23 @@ class SDFHandler:
 
             cls._filter_out_coordinate_system_not_installed_error(command, error)
 
+    @classmethod
+    @async_to_sync_wraps
+    async def create_filtered_SDF_from_subset(cls, subset_path: Path, sdf_path: Path,
+                                        selected_classes_typeURI_list: Optional[list[str]]=None,
+                                        model_directory: Path = None) -> None:
 
+        cls._check_if_FDOToolbox_is_installed()
+
+        temp_path: Path = Helpers.create_temp_path(path_to_template_file_and_extension=sdf_path)
+        temp_path = temp_path.parent / f'{temp_path.name}.xsd'
+
+        await XSDCreator.create_filtered_xsd_from_subset(
+            subset_path=subset_path,xsd_path=temp_path,
+            selected_classes_typeURI_list=selected_classes_typeURI_list,
+            model_directory=model_directory)
+
+        SDFHandler._convert_XSD_to_SDF(input_xsd_path=temp_path,output_sdf_path=sdf_path)
 
 if __name__ == "__main__":
     logger = logging.getLogger()

@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import pytest
+import xmltodict
 from _pytest.fixtures import fixture
 from openpyxl.styles.builtins import output
 
@@ -327,7 +328,6 @@ def test_convert_SDF_to_CSV_FDOToolbox_not_installed_error(root_directory,create
 def test_convert_XSD_to_SDF(root_directory,create_translations,cleanup_after_creating_a_file_to_delete,
                        rel_input_xsd_path: Path, rel_output_sdf_path: Path,
                        expected_output_dirpath:Path,expected_output_file_basename:str):
-    OTLLogger.init()
 
     #SETUP
     input_xsd_path = root_directory / rel_input_xsd_path
@@ -335,7 +335,7 @@ def test_convert_XSD_to_SDF(root_directory,create_translations,cleanup_after_cre
     cleanup_after_creating_a_file_to_delete.append(output_sdf_path)
 
     #ACT
-    SDFHandler.convert_XSD_to_SDF(input_xsd_path=input_xsd_path,output_sdf_path=output_sdf_path)
+    SDFHandler._convert_XSD_to_SDF(input_xsd_path=input_xsd_path, output_sdf_path=output_sdf_path)
 
     #TEST
     assert output_sdf_path.exists()
@@ -348,3 +348,30 @@ def test_convert_XSD_to_SDF(root_directory,create_translations,cleanup_after_cre
         expected_output = expected_output_file.read()
 
     assert output_test == expected_output
+
+
+
+def test_create_sdf_from_filtered_subset_slagbomen(root_directory,cleanup_after_creating_a_file_to_delete):
+    # SETUP
+    kast_path = root_directory / 'UnitTests' /'test_files' / 'input' / 'voorbeeld-slagboom.db'
+    created_path = root_directory / 'UnitTests' / 'test_files' / 'output_test' / 'xsd_export_no_contactor_no_kokerafsluiting.sdf'
+    selected_classes_typeURI_list = ["https://wegenenverkeer.data.vlaanderen.be/ns/installatie#Slagboom",
+                                     "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Slagboomarm",
+                                     "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#SlagboomarmVerlichting",
+                                     "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Slagboomkolom"]
+    cleanup_after_creating_a_file_to_delete.append(created_path)
+
+    # ACT
+    SDFHandler.create_filtered_SDF_from_subset(subset_path=kast_path, sdf_path=created_path,
+                                               selected_classes_typeURI_list=selected_classes_typeURI_list)
+
+    # TEST
+    created_sdf = Path(created_path)
+    expected_sdf = (root_directory / 'UnitTests' / 'test_files' / 'output_ref' /  'test_sdf_slagboom_new.sdf')
+
+    with open(created_sdf,mode="rb") as created_sdf_file:
+        created_sdf_bytes = created_sdf_file.read()
+    with open(expected_sdf, mode="rb") as expected_sdf_file:
+        expected_sdf_bytes= expected_sdf_file.read()
+
+    assert created_sdf_bytes == expected_sdf_bytes

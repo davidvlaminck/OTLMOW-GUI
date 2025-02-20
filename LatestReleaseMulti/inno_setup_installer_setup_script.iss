@@ -76,7 +76,7 @@ procedure RunOtherInstaller;
 var
   ResultCode: Integer;
 begin
-  if not Exec(ExpandConstant('{app}\additional_programs\FDOToolbox-Release-v1.5.2-x64-Setup.exe'), '', '', SW_SHOWNORMAL,
+  if not Exec(ExpandConstant('{app}\additional_programs\FDOToolbox-Release-v1.5.3-x64-Setup.exe'), '', '', SW_SHOWNORMAL,
     ewWaitUntilTerminated, ResultCode)
   then
     MsgBox('NEDERLANDS' + #13#10 +

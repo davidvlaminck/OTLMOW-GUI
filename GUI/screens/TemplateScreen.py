@@ -85,12 +85,12 @@ class TemplateScreen(TemplateScreenInterface):
         self.file_type_label: QLabel = QLabel()
         self.supported_export_formats: dict = deepcopy(global_vars.supported_file_formats)
 
-        if "SDF" in self.supported_export_formats:
-            self.supported_export_formats.pop("SDF")  # not yet supported for export in V0.5.3
+        # if "SDF" in self.supported_export_formats:
+        #     self.supported_export_formats.pop("SDF")  # not yet supported for export in V0.5.3
         if "JSON" in self.supported_export_formats:
             self.supported_export_formats.pop("JSON")  # Doesn't support template creation
         if "GEOJSON" in self.supported_export_formats:
-            self.supported_export_formats.pop("GEOJSON")  # Doesn't support template creation
+            self.supported_export_formats.pop("GeoJSON")  # Doesn't support template creation
 
         FileTypeSettingPropertySetting = NamedTuple("FileTypeSettingPropertySetting",[
             ("enabled",bool),
@@ -100,7 +100,8 @@ class TemplateScreen(TemplateScreenInterface):
         FileTypeSetting = NamedTuple("FileTypeSetting", [
             ("choice_lists",FileTypeSettingPropertySetting),
             ("example_assets",FileTypeSettingPropertySetting),
-            ("geometry_attributes", FileTypeSettingPropertySetting)])
+            ("geometry_attributes", FileTypeSettingPropertySetting),
+            ("expansive_info", FileTypeSettingPropertySetting)])
 
         self.default_choice_list_tooltip = self._("Adds choice lists to relevant "
                                                            "attributes")
@@ -108,15 +109,24 @@ class TemplateScreen(TemplateScreenInterface):
             "For {filetype} choice lists cannot be disabled")
         self.always_off_choice_list_tooltip = self._("{filetype} cannot contain choice lists")
 
-        self.default_example_checkbox_tooltip = self._("Adds example assets to each OTL-class")
-        self.always_on_example_checkbox_tooltip = self._(
-            "For {filetype} generated examples cannot be disabled")
-        self.always_off_example_checkbox_tooltip = self._("{filetype} cannot add generated examples")
-
         self.default_geometry_tooltip = self._("Adds geometry information for each asset")
         self.always_on_geometry_tooltip = self._(
             "For {filetype} geometry attributes cannot be disabled")
         self.always_off_geometry_tooltip = self._("{filetype} cannot contain geometry attributes")
+
+        self.default_example_checkbox_tooltip = self._("Adds example assets to each OTL-class")
+        self.always_on_example_checkbox_tooltip = self._(
+            "For {filetype} generated examples cannot be disabled")
+        self.always_off_example_checkbox_tooltip = self._(
+            "{filetype} cannot add generated examples")
+
+        self.default_expansive_info_radiobutton_tooltip = (
+            self._("Adds extra rows with a description of every attribute and, an indication if the"
+                   " attribute is deprecated \n(Delete extra rows before uploading to DAVIE)"))
+        self.always_on_expansive_info_radiobutton_tooltip = self._(
+            "For {filetype} expansive information cannot be disabled")
+        self.always_off_expansive_info_radiobutton_tooltip = self._(
+            "{filetype} cannot add expansive information")
 
         self.file_type_settings:dict[str,FileTypeSetting] = {}
         self.file_type_settings = {"Excel":FileTypeSetting(
@@ -137,7 +147,14 @@ class TemplateScreen(TemplateScreenInterface):
                                             change_state_if_enabled=True,
                                             default_on=False,
                                             tooltip=self.default_example_checkbox_tooltip
-                                        )),
+                                        ),
+                                        expansive_info=FileTypeSettingPropertySetting(
+                                            enabled=False,
+                                            change_state_if_enabled=False,
+                                            default_on=True,
+                                            tooltip=self.default_example_checkbox_tooltip
+                                        ),
+                                    ),
                                     "CSV": FileTypeSetting(
                                         choice_lists=FileTypeSettingPropertySetting(
                                             enabled=False,
@@ -153,6 +170,12 @@ class TemplateScreen(TemplateScreenInterface):
                                         ),
                                         example_assets=FileTypeSettingPropertySetting(
                                             enabled=True,
+                                            change_state_if_enabled=False,
+                                            default_on=True,
+                                            tooltip=self.default_example_checkbox_tooltip
+                                        ),
+                                        expansive_info=FileTypeSettingPropertySetting(
+                                            enabled=False,
                                             change_state_if_enabled=False,
                                             default_on=True,
                                             tooltip=self.default_example_checkbox_tooltip
@@ -177,6 +200,12 @@ class TemplateScreen(TemplateScreenInterface):
                                             default_on=False,
                                             tooltip=self.default_example_checkbox_tooltip
                                         ),
+                                        expansive_info=FileTypeSettingPropertySetting(
+                                            enabled=False,
+                                            change_state_if_enabled=False,
+                                            default_on=True,
+                                            tooltip=self.default_example_checkbox_tooltip
+                                        ),
                                     ),
                                     'GeoJSON': FileTypeSetting(
                                         choice_lists=FileTypeSettingPropertySetting(
@@ -197,6 +226,12 @@ class TemplateScreen(TemplateScreenInterface):
                                             default_on=False,
                                             tooltip=self.default_example_checkbox_tooltip
                                         ),
+                                        expansive_info=FileTypeSettingPropertySetting(
+                                            enabled=False,
+                                            change_state_if_enabled=False,
+                                            default_on=True,
+                                            tooltip=self.default_example_checkbox_tooltip
+                                        ),
                                     ),
                                     'SDF': FileTypeSetting(
                                         choice_lists=FileTypeSettingPropertySetting(
@@ -212,10 +247,16 @@ class TemplateScreen(TemplateScreenInterface):
                                             tooltip=self.always_on_geometry_tooltip.format(filetype="SDF")
                                         ),
                                         example_assets=FileTypeSettingPropertySetting(
-                                            enabled=True,
+                                            enabled=False,
                                             change_state_if_enabled=False,
                                             default_on=False,
-                                            tooltip=self.default_example_checkbox_tooltip
+                                            tooltip=self.always_off_example_checkbox_tooltip.format(filetype="SDF")
+                                        ),
+                                        expansive_info=FileTypeSettingPropertySetting(
+                                            enabled=False,
+                                            change_state_if_enabled=False,
+                                            default_on=True,
+                                            tooltip=self.always_off_expansive_info_radiobutton_tooltip.format(filetype="SDF")
                                         ),
                                     ),
                                     }
@@ -346,8 +387,7 @@ class TemplateScreen(TemplateScreenInterface):
         self.radio_button_davie_conform.setToolTip(self._("Generates a template that is ready for upload to DAVIE"))
 
         self.radio_button_expanded_info.setText(self._('Expanded info'))
-        self.radio_button_expanded_info.setToolTip(
-            self._("Adds extra rows with a description of every attribute and, an indication if the attribute is deprecated \n(Delete extra rows before uploading to DAVIE)"))
+        self.radio_button_expanded_info.setToolTip(self.default_expansive_info_radiobutton_tooltip)
 
         self.radio_button_group.addButton(self.radio_button_davie_conform, self.TemplateOptionId.DAVIE_CONFORM)
         # self.button_group.setId(self.radio_button_export_all_data,
@@ -707,6 +747,14 @@ class TemplateScreen(TemplateScreenInterface):
         self.add_geometry_attributes.setChecked(self.file_type_settings[filetype].geometry_attributes.default_on)
         self.add_geometry_attributes.setEnabled(self.file_type_settings[filetype].geometry_attributes.enabled)
         self.add_geometry_attributes.setToolTip(self.file_type_settings[filetype].geometry_attributes.tooltip)
+
+        if ((not self.file_type_settings[filetype].expansive_info.enabled) and
+            self.radio_button_expanded_info.isChecked()):
+            self.radio_button_expanded_info.setChecked(False)
+            self.radio_button_davie_conform.setChecked(True)
+
+        self.radio_button_expanded_info.setEnabled(self.file_type_settings[filetype].geometry_attributes.enabled)
+        self.radio_button_expanded_info.setToolTip(self.file_type_settings[filetype].expansive_info.tooltip)
 
 
             # self.add_choice_list.setChecked(True)
