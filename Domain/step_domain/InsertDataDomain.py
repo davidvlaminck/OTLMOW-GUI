@@ -1,7 +1,7 @@
 import contextlib
 import logging
 import os
-import tempfile
+
 
 from pathlib import Path
 from typing import List, Iterable, Optional, cast, Union
@@ -176,29 +176,6 @@ class InsertDataDomain:
 
         return temp_csv_path_str_list
 
-    @classmethod
-    def create_temp_path(cls, path_to_template_file_and_extension: Path) -> Path:
-        """
-        Creates a temporary path for storing files based on a template file.
-
-        This method generates a temporary directory specifically for storing
-        files related to the OTL project. It constructs the path using the
-        name of the provided template file and ensures that the directory
-        exists before returning the full path.
-
-        :param cls: The class itself.
-        :param path_to_template_file_and_extension: The path to the template file
-                                                    for which the temporary path is created.
-        :type path_to_template_file_and_extension: Path
-        :returns: The path to the newly created temporary file location.
-        :rtype: Path
-        """
-
-        tempdir = Path(tempfile.gettempdir()) / 'temp-otlmow'
-        if not tempdir.exists():
-            os.makedirs(tempdir)
-        doc_name = Path(path_to_template_file_and_extension).name
-        return Path(tempdir) / doc_name
 
     @classmethod
     def add_template_file_to_project(cls, filepath: Path, project: Project,
@@ -244,7 +221,7 @@ class InsertDataDomain:
         if Path(file_path).suffix in ['.xls', '.xlsx']:
             return cls.remove_dropdown_values_from_excel(doc=file_path)
         elif Path(file_path).suffix == '.csv':
-            return cls.create_temp_path(path_to_template_file_and_extension=file_path)
+            return Helpers.create_temp_path(path_to_template_file_and_extension=file_path)
 
     @classmethod
     def add_files_to_backend_list(cls, files: list[str],

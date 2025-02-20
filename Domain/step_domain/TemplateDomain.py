@@ -14,6 +14,7 @@ from universalasync import async_to_sync_wraps
 
 from Domain import global_vars
 from Domain.Helpers import Helpers
+from Domain.SDFHandler import SDFHandler
 from Domain.logger.OTLLogger import OTLLogger
 from Domain.network.Updater import Updater
 from GUI.dialog_windows.LoadingImageWindow import add_loading_screen, LoadingImageWindow
@@ -54,13 +55,23 @@ class TemplateDomain:
                 # filter out agent
                 selected_classes_typeURI_list.remove('http://purl.org/dc/terms/Agent')
 
-            await template_creator.generate_template_from_subset(
-                path_to_subset=subset_path, path_to_template_file_and_extension=document_path,
-                list_of_otl_objectUri=selected_classes_typeURI_list, generate_choice_list=generate_choice_list,
-                add_geo_artefact=add_geo_artefact, add_attribute_info=add_attribute_info,
-                highlight_deprecated_attributes=highlight_deprecated_attributes, amount_of_examples=amount_of_examples,
-                model_directory=model_directory,
-                abbreviate_excel_sheettitles=True)
+            if ".sdf" == document_path.suffix:
+                await SDFHandler.create_filtered_SDF_from_subset(
+                    subset_path=subset_path,
+                    sdf_path=document_path,
+                    selected_classes_typeURI_list=selected_classes_typeURI_list,
+                    model_directory=model_directory)
+
+            else:
+                await template_creator.generate_template_from_subset(
+                    path_to_subset=subset_path, path_to_template_file_and_extension=document_path,
+                    list_of_otl_objectUri=selected_classes_typeURI_list,
+                    generate_choice_list=generate_choice_list,
+                    add_geo_artefact=add_geo_artefact, add_attribute_info=add_attribute_info,
+                    highlight_deprecated_attributes=highlight_deprecated_attributes,
+                    amount_of_examples=amount_of_examples,
+                    model_directory=model_directory,
+                    abbreviate_excel_sheettitles=True)
         except PermissionError as e:
             document_path_str = str(document_path)
             OTLLogger.logger.debug(f"Permission to file was denied: {document_path_str}")

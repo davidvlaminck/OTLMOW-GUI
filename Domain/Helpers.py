@@ -1,7 +1,9 @@
 import asyncio
 import logging
+import os
 from pathlib import Path
 from typing import Optional, Iterable
+import tempfile
 
 from otlmow_converter.Exceptions.ExceptionsGroup import ExceptionsGroup
 from otlmow_converter.OtlmowConverter import OtlmowConverter
@@ -118,3 +120,27 @@ class Helpers:
         res = Version(current_version) >= Version(other_version)
         OTLLogger.logger.info(f"Version comparison {current_version} >= {other_version} => {res}")
         return  res
+
+    @classmethod
+    def create_temp_path(cls, path_to_template_file_and_extension: Path) -> Path:
+        """
+        Creates a temporary path for storing files based on a template file.
+
+        This method generates a temporary directory specifically for storing
+        files related to the OTL project. It constructs the path using the
+        name of the provided template file and ensures that the directory
+        exists before returning the full path.
+
+        :param cls: The class itself.
+        :param path_to_template_file_and_extension: The path to the template file
+                                                    for which the temporary path is created.
+        :type path_to_template_file_and_extension: Path
+        :returns: The path to the newly created temporary file location.
+        :rtype: Path
+        """
+
+        tempdir = Path(tempfile.gettempdir()) / 'temp-otlmow'
+        if not tempdir.exists():
+            os.makedirs(tempdir)
+        doc_name = Path(path_to_template_file_and_extension).name
+        return Path(tempdir) / doc_name
