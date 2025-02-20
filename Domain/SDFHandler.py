@@ -88,6 +88,37 @@ class SDFHandler:
 
 
     @classmethod
+    def _validate_SDF_file(cls, sdf_filepath: Path) -> None:
+        if not sdf_filepath.exists():
+            raise FileNotFoundError(f'{sdf_filepath} is not a valid path. File does not exist.')
+        if sdf_filepath.suffix != ".sdf":
+            raise WrongFileTypeError(language=GlobalTranslate._,
+                                     expected_filetype_name="SDF-file",
+                                     expected_filetype_suffix=".sdf")
+
+    @classmethod
+    def _validate_XSD_file(cls, xsd_filepath:Path) -> None:
+        if not xsd_filepath.exists():
+            raise FileNotFoundError(f'{xsd_filepath} is not a valid path. File does not exist.')
+        # XSD files a special type of xml file sometimes the extension is .xml
+        if xsd_filepath.suffix != ".xml" and xsd_filepath.suffix != ".xsd":
+            raise WrongFileTypeError(language=GlobalTranslate._,
+                                     expected_filetype_name="XSD-file",
+                                     expected_filetype_suffix=".xsd")
+
+    @classmethod
+    def _force_to_SDF_extension(cls, sdf_filepath:Path) -> Path:
+        if sdf_filepath.suffix != ".sdf":
+            return sdf_filepath.parent / f"{sdf_filepath.name}.sdf"
+        return sdf_filepath
+
+    @classmethod
+    def _force_to_SQLite_extension(cls, sqlite_filepath: Path) -> Path:
+        if sqlite_filepath.suffix != ".db":
+            return sqlite_filepath.parent / f"{sqlite_filepath.name}.db"
+        return sqlite_filepath
+
+    @classmethod
     def _validate_SDF_file(cls, sdf_filepath) -> None:
         if not sdf_filepath.exists():
             raise FileNotFoundError(f'{sdf_filepath} is not a valid path. File does not exist.')
@@ -175,17 +206,38 @@ class SDFHandler:
 
     @classmethod
     def _convert_XSD_to_SDF(cls, input_xsd_path:Path, output_sdf_path:Path) -> None:
+
+        output_sdf_path = cls._force_to_SDF_extension(output_sdf_path)
+
         sdf_file_path_str = output_sdf_path.absolute()
         input_xsd_path_str = input_xsd_path.absolute()
 
         command = (f'"{global_vars.FDO_toolbox_path_str}" create-file '
                    f'--file "{sdf_file_path_str}"  --schema-path "{input_xsd_path_str}"')
-
+        OTLLogger.logger.debug(f"convert_XSD_to_SDF:\n{command}", extra={"ref_timing":"convert_XSD_to_SDF"})
         output, error = cls.run_command(command)
-        OTLLogger.logger.debug(f"convert_XSD_to_SDF:\n{output}")
+        OTLLogger.logger.debug(f"convert_XSD_to_SDF:\n{output}", extra={"ref_timing":"convert_XSD_to_SDF"})
 
         if error:
+            cls._filter_out_coordinate_system_not_installed_error(command, error)
 
+    @classmethod
+    def _convert_XSD_to_SQLite(cls, input_xsd_path: Path, output_sdf_path: Path) -> None:
+
+        output_sdf_path = cls._force_to_SQLite_extension(output_sdf_path)
+
+        sdf_file_path_str = output_sdf_path.absolute()
+        input_xsd_path_str = input_xsd_path.absolute()
+
+        command = (f'"{global_vars.FDO_toolbox_path_str}" create-file '
+                   f'--file "{sdf_file_path_str}"  --schema-path "{input_xsd_path_str}"')
+        OTLLogger.logger.debug(f"convert_XSD_to_SDF:\n{command}",
+                               extra={"ref_timing": "convert_XSD_to_SQLite"})
+        output, error = cls.run_command(command)
+        OTLLogger.logger.debug(f"convert_XSD_to_SDF:\n{output}",
+                               extra={"ref_timing": "convert_XSD_to_SQLite"})
+
+        if error:
             cls._filter_out_coordinate_system_not_installed_error(command, error)
 
     @classmethod
@@ -205,6 +257,25 @@ class SDFHandler:
             model_directory=model_directory)
 
         SDFHandler._convert_XSD_to_SDF(input_xsd_path=temp_path,output_sdf_path=sdf_path)
+
+    @classmethod
+    @async_to_sync_wraps
+    async def create_filtered_SQLite_from_subset(cls, subset_path: Path, sdf_path: Path,
+                                              selected_classes_typeURI_list: Optional[
+                                                  list[str]] = None,
+                                              model_directory: Path = None) -> None:
+
+        cls._check_if_FDOToolbox_is_installed()
+
+        temp_path: Path = Helpers.create_temp_path(path_to_template_file_and_extension=sdf_path)
+        temp_path = temp_path.parent / f'{temp_path.name}.xsd'
+
+        await XSDCreator.create_filtered_xsd_from_subset(
+            subset_path=subset_path, xsd_path=temp_path,
+            selected_classes_typeURI_list=selected_classes_typeURI_list,
+            model_directory=model_directory)
+
+        SDFHandler._convert_XSD_to_SQLite(input_xsd_path=temp_path, output_sdf_path=sdf_path)
 
 if __name__ == "__main__":
     logger = logging.getLogger()

@@ -375,3 +375,30 @@ def test_create_sdf_from_filtered_subset_slagbomen(root_directory,cleanup_after_
         expected_sdf_bytes= expected_sdf_file.read()
 
     assert created_sdf_bytes == expected_sdf_bytes
+
+
+
+def test_create_sqlite_from_filtered_subset_slagbomen(root_directory,cleanup_after_creating_a_file_to_delete):
+    # SETUP
+    subset_path = root_directory / 'UnitTests' /'test_files' / 'input' / 'voorbeeld-slagboom.db'
+    created_path = root_directory / 'UnitTests' / 'test_files' / 'output_test' / 'sqlite_export_no_contactor_no_kokerafsluiting.db'
+    selected_classes_typeURI_list = ["https://wegenenverkeer.data.vlaanderen.be/ns/installatie#Slagboom",
+                                     "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Slagboomarm",
+                                     "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#SlagboomarmVerlichting",
+                                     "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Slagboomkolom"]
+    cleanup_after_creating_a_file_to_delete.append(created_path)
+
+    # ACT
+    SDFHandler.create_filtered_SQLite_from_subset(subset_path=subset_path, sdf_path=created_path,
+                                               selected_classes_typeURI_list=selected_classes_typeURI_list)
+
+    #TEST
+    created_sdf = Path(created_path)
+    expected_sdf = (root_directory / 'UnitTests' / 'test_files' / 'output_ref' /  'sqlite_export_no_contactor_no_kokerafsluiting.db')
+
+    with open(created_sdf,mode="rb") as created_sdf_file:
+        created_sdf_bytes = created_sdf_file.read()
+    with open(expected_sdf, mode="rb") as expected_sdf_file:
+        expected_sdf_bytes= expected_sdf_file.read()
+
+    assert created_sdf_bytes == expected_sdf_bytes
