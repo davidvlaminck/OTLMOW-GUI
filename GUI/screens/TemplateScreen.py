@@ -149,10 +149,10 @@ class TemplateScreen(TemplateScreenInterface):
                                             tooltip=self.default_example_checkbox_tooltip
                                         ),
                                         expansive_info=FileTypeSettingPropertySetting(
-                                            enabled=False,
+                                            enabled=True,
                                             change_state_if_enabled=False,
-                                            default_on=True,
-                                            tooltip=self.default_example_checkbox_tooltip
+                                            default_on=False,
+                                            tooltip=self.default_expansive_info_radiobutton_tooltip
                                         ),
                                     ),
                                     "CSV": FileTypeSetting(
@@ -175,10 +175,10 @@ class TemplateScreen(TemplateScreenInterface):
                                             tooltip=self.default_example_checkbox_tooltip
                                         ),
                                         expansive_info=FileTypeSettingPropertySetting(
-                                            enabled=False,
+                                            enabled=True,
                                             change_state_if_enabled=False,
-                                            default_on=True,
-                                            tooltip=self.default_example_checkbox_tooltip
+                                            default_on=False,
+                                            tooltip=self.default_expansive_info_radiobutton_tooltip
                                         ),
                                     ),
                                     "JSON": FileTypeSetting(
@@ -201,10 +201,10 @@ class TemplateScreen(TemplateScreenInterface):
                                             tooltip=self.default_example_checkbox_tooltip
                                         ),
                                         expansive_info=FileTypeSettingPropertySetting(
-                                            enabled=False,
+                                            enabled=True,
                                             change_state_if_enabled=False,
-                                            default_on=True,
-                                            tooltip=self.default_example_checkbox_tooltip
+                                            default_on=False,
+                                            tooltip=self.default_expansive_info_radiobutton_tooltip
                                         ),
                                     ),
                                     'GeoJSON': FileTypeSetting(
@@ -227,10 +227,10 @@ class TemplateScreen(TemplateScreenInterface):
                                             tooltip=self.default_example_checkbox_tooltip
                                         ),
                                         expansive_info=FileTypeSettingPropertySetting(
-                                            enabled=False,
+                                            enabled=True,
                                             change_state_if_enabled=False,
-                                            default_on=True,
-                                            tooltip=self.default_example_checkbox_tooltip
+                                            default_on=False,
+                                            tooltip=self.default_expansive_info_radiobutton_tooltip
                                         ),
                                     ),
                                     'SDF': FileTypeSetting(
@@ -255,7 +255,7 @@ class TemplateScreen(TemplateScreenInterface):
                                         expansive_info=FileTypeSettingPropertySetting(
                                             enabled=False,
                                             change_state_if_enabled=False,
-                                            default_on=True,
+                                            default_on=False,
                                             tooltip=self.always_off_expansive_info_radiobutton_tooltip.format(filetype="SDF")
                                         ),
                                     ),
@@ -753,7 +753,7 @@ class TemplateScreen(TemplateScreenInterface):
             self.radio_button_expanded_info.setChecked(False)
             self.radio_button_davie_conform.setChecked(True)
 
-        self.radio_button_expanded_info.setEnabled(self.file_type_settings[filetype].geometry_attributes.enabled)
+        self.radio_button_expanded_info.setEnabled(self.file_type_settings[filetype].expansive_info.enabled)
         self.radio_button_expanded_info.setToolTip(self.file_type_settings[filetype].expansive_info.tooltip)
 
 
