@@ -10,7 +10,6 @@ from otlmow_model.OtlmowModel.Helpers.OTLObjectHelper import \
 from universalasync import async_to_sync_wraps
 
 from Domain import global_vars
-from Domain.Helpers import Helpers
 from Domain.logger.OTLLogger import OTLLogger
 from Domain.project.ProgramFileStructure import ProgramFileStructure
 from Domain.project.Project import Project

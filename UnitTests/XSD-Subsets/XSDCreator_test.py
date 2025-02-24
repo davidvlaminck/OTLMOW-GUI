@@ -14,7 +14,7 @@ def root_directory() -> Path:
     return Path(__file__).parent.parent.parent
 
 #TODO fix test after discussion with David
-@unittest.skip('Difference between old OTL-wizard generated XSD and new python generate XSD')
+# @unittest.skip('Difference between old OTL-wizard generated XSD and new python generate XSD')
 def test_create_xsd_from_filtered_subset_slagbomen(root_directory,cleanup_after_creating_a_file_to_delete):
     # SETUP
     kast_path = root_directory / 'UnitTests' /'test_files' / 'input' / 'voorbeeld-slagboom.db'

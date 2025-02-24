@@ -20,6 +20,7 @@ from universalasync import async_to_sync_wraps
 
 from Domain import global_vars
 from Domain.Helpers import Helpers
+from Domain.ConverterHelper import ConverterHelper
 from Domain.database.ModelBuilder import ModelBuilder
 from Domain.logger.OTLLogger import OTLLogger
 from Domain.project.ProjectFile import ProjectFile
@@ -261,7 +262,7 @@ class Project:
                 extra={"timing_ref": timing_ref})
 
             # noinspection PyTypeChecker
-            saved_objects, exceptions_group = await Helpers.converter_from_file_to_object(path)
+            saved_objects, exceptions_group = await ConverterHelper.converter_from_file_to_object(path)
 
             object_count = len(saved_objects)
             OTLLogger.logger.debug(

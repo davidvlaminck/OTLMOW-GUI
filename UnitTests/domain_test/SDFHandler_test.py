@@ -389,8 +389,8 @@ def test_create_sqlite_from_filtered_subset_slagbomen(root_directory,cleanup_aft
     cleanup_after_creating_a_file_to_delete.append(created_path)
 
     # ACT
-    SDFHandler.create_filtered_SQLite_from_subset(subset_path=subset_path, sdf_path=created_path,
-                                               selected_classes_typeURI_list=selected_classes_typeURI_list)
+    SDFHandler.create_filtered_SQLite_from_subset(subset_path=subset_path, sqlite_path=created_path,
+                                                  selected_classes_typeURI_list=selected_classes_typeURI_list)
 
     #TEST
     created_sdf = Path(created_path)

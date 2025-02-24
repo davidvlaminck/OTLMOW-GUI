@@ -28,8 +28,8 @@ class AbstractExportDataSubScreen(Screen):
         self.main_window = None
         self.relations_split_optionality = QCheckBox()
         self.supported_export_formats:dict = deepcopy(global_vars.supported_file_formats)
-        if "SDF" in self.supported_export_formats:
-            self.supported_export_formats.pop("SDF") # not yet supported for export in V0.5.0
+        # if "SDF" in self.supported_export_formats:
+        #     self.supported_export_formats.pop("SDF") # not yet supported for export in V0.5.0
         self.init_ui()
 
     @abstractmethod

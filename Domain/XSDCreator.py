@@ -4,6 +4,7 @@ from pathlib import Path
 from typing import Optional
 from xml.etree.ElementTree import Element
 
+from otlmow_converter.DotnotationDictConverter import DotnotationDictConverter
 from otlmow_converter.DotnotationHelper import DotnotationHelper
 from otlmow_model.OtlmowModel.BaseClasses.BooleanField import BooleanField
 from otlmow_model.OtlmowModel.BaseClasses.DateField import DateField
@@ -11,13 +12,18 @@ from otlmow_model.OtlmowModel.BaseClasses.DateTimeField import DateTimeField
 from otlmow_model.OtlmowModel.BaseClasses.FloatOrDecimalField import FloatOrDecimalField
 from otlmow_model.OtlmowModel.BaseClasses.IntegerField import IntegerField
 from otlmow_model.OtlmowModel.BaseClasses.KeuzelijstField import KeuzelijstField
-from otlmow_model.OtlmowModel.BaseClasses.OTLObject import dynamic_create_instance_from_uri, OTLAttribuut, OTLObject
+from otlmow_model.OtlmowModel.BaseClasses.OTLObject import dynamic_create_instance_from_uri, \
+    OTLAttribuut, OTLObject, dynamic_create_type_from_uri
 from otlmow_model.OtlmowModel.BaseClasses.StringField import StringField
 from otlmow_model.OtlmowModel.BaseClasses.TimeField import TimeField
 from otlmow_model.OtlmowModel.BaseClasses.URIField import URIField
+from otlmow_model.OtlmowModel.Exceptions.CanNotClearAttributeError import CanNotClearAttributeError
+from otlmow_model.OtlmowModel.Helpers import OTLObjectHelper
 from otlmow_model.OtlmowModel.Helpers.OTLObjectHelper import is_relation
 from otlmow_modelbuilder.OSLOCollector import OSLOCollector
 from universalasync import async_to_sync_wraps
+
+from Domain.logger.OTLLogger import OTLLogger
 
 
 class XSDCreator:
@@ -97,6 +103,129 @@ class XSDCreator:
             DotnotationHelper.clear_list_of_list_attributes(class_instance)
 
             cls.add_otl_attributes_in_attribute_sequence(attribute_names_in_subset, attribute_sequence, class_instance)
+            await asyncio.sleep(0)
+
+        tree.write(xsd_path, encoding='utf-8', xml_declaration=True, method='xml')
+
+        cls._tweak_file(xsd_path)
+
+    @classmethod
+    @async_to_sync_wraps
+    async def create_xsd_from_objects(cls,object_list: list[OTLObject], xsd_path: Path,
+                                              model_directory: Path = None) -> None:
+
+
+        ET.register_namespace("xs", 'http://www.w3.org/2001/XMLSchema')
+        ET.register_namespace("gml", 'http://www.opengis.net/gml')
+        ET.register_namespace("Schema1", 'http://fdo.osgeo.org/schemas/feature/Schema1')
+        ET.register_namespace("fdo", 'http://fdo.osgeo.org/schemas')
+
+        schema = ET.Element("{http://www.w3.org/2001/XMLSchema}schema",
+                            targetNamespace="http://fdo.osgeo.org/schemas/feature/Schema1",
+                            elementFormDefault="qualified", attributeFormDefault="unqualified")
+        annotation = ET.SubElement(schema, "{http://www.w3.org/2001/XMLSchema}annotation")
+        documentation = ET.SubElement(annotation,
+                                      "{http://www.w3.org/2001/XMLSchema}documentation")
+        documentation.text = "Default schema"
+        tree = ET.ElementTree(schema)
+
+        classes_already_in_xsd = []
+
+        class_to_attr_list_dict = {}
+
+        for object_ in object_list:
+
+            class_ = dynamic_create_type_from_uri(object_.typeURI, model_directory=model_directory)
+            class_name = class_.__name__
+            if is_relation(object_):
+                continue
+
+            attribute_names_in_subset = [attr.naam for attr in object_]
+
+            if object_.typeURI in class_to_attr_list_dict:
+                class_to_attr_list_dict[object_.typeURI].extend(attribute_names_in_subset)
+            else:
+                class_to_attr_list_dict[object_.typeURI]= attribute_names_in_subset
+
+        # for object_ in object_list:
+        #
+        #     if object_.typeURI in classes_already_in_xsd:
+        #         continue
+        #     else:
+        #         classes_already_in_xsd.append(object_.typeURI)
+        #
+        #     class_ = dynamic_create_type_from_uri(object_.typeURI,model_directory=model_directory)
+        #     class_name = class_.__name__
+        #
+        #     if is_relation(object_):
+        #         continue
+
+        for typeURI, attribute_names in class_to_attr_list_dict.items():
+
+            class_instance = dynamic_create_instance_from_uri(typeURI,
+                                                              model_directory=model_directory)
+            class_ = dynamic_create_type_from_uri(typeURI, model_directory=model_directory)
+            class_name = class_.__name__
+            attribute_names_in_subset = list(set(attribute_names))
+            class_element = ET.SubElement(
+                schema, "{http://www.w3.org/2001/XMLSchema}element",
+                attrib={'name': f"OTL_{class_name}",
+                        'type': f"http://fdo.osgeo.org/schemas/feature/Schema1/OTL_{class_name}Type",
+                        'abstract': "false",
+                        'substitutionGroup': "http://www.opengis.net/gml/_Feature"})
+            key = ET.SubElement(class_element, "{http://www.w3.org/2001/XMLSchema}key",
+                                name=f"OTL_{class_name}Key")
+            ET.SubElement(key, "{http://www.w3.org/2001/XMLSchema}selector",
+                          xpath=f".//OTL_{class_name}")
+            ET.SubElement(key, "{http://www.w3.org/2001/XMLSchema}field", xpath="FeatId")
+
+            complex_type = ET.SubElement(schema, "{http://www.w3.org/2001/XMLSchema}complexType",
+                                         attrib={'name': f"OTL_{class_name}Type",
+                                                 'abstract': "false",
+                                                 '{http://fdo.osgeo.org/schemas}geometryName': "Geometry"})
+            annotation = ET.SubElement(complex_type,
+                                       "{http://www.w3.org/2001/XMLSchema}annotation")
+            documentation = ET.SubElement(annotation,
+                                          "{http://www.w3.org/2001/XMLSchema}documentation")
+            documentation.text = object_.__doc__
+            if documentation.text is not None:
+                documentation.text = documentation.text[:159]
+            complex_content = ET.SubElement(complex_type,
+                                            "{http://www.w3.org/2001/XMLSchema}complexContent")
+            extension = ET.SubElement(complex_content,
+                                      "{http://www.w3.org/2001/XMLSchema}extension",
+                                      attrib={
+                                          'base': "http://www.opengis.net/gml/AbstractFeatureType"})
+            attribute_sequence = ET.SubElement(extension,
+                                               "{http://www.w3.org/2001/XMLSchema}sequence")
+
+            cls.add_feat_id_in_attribute_sequence(attribute_sequence)
+
+            cls.add_geometry_in_attribute_sequence(attribute_sequence, class_instance)
+
+            # attribute_names_in_subset = [attr.naam for attr in object_]
+
+            # object_dict = await DotnotationDictConverter.to_dict(object_)
+            # attribute_names_in_subset = list(object_dict.keys())
+
+            # attribute_names_in_subset = [attribuut.name for attribuut in
+            #                              collector.find_attributes_by_class(class_)]
+
+            if 'geometry' in attribute_names_in_subset:
+                attribute_names_in_subset.remove('geometry')
+            # for attr in object_:
+            #     try:
+            #         object_.clear_value(attr.naam)
+            #     except CanNotClearAttributeError as e:
+            #         pass
+            # object_.fill_with_dummy_data() #TODO check if this is necessary conflict naam and naampad
+            class_instance.fill_with_dummy_data()
+            DotnotationHelper.clear_list_of_list_attributes(class_instance)
+
+            OTLLogger.logger.debug(f"{typeURI}: {attribute_names_in_subset}")
+
+            cls.add_otl_attributes_in_attribute_sequence(attribute_names_in_subset,
+                                                         attribute_sequence, class_instance)
             await asyncio.sleep(0)
 
         tree.write(xsd_path, encoding='utf-8', xml_declaration=True, method='xml')

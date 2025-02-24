@@ -17,12 +17,6 @@ sqlite_path_str = "C:\\Users\\chris\\Documents\\job_related\\wegen_en_verkeer\\n
 with open(csv_path_str) as f:
     text = f.read()
 
-# print(text)
-#
-# csv_reader = csv.reader(text)
-#
-# for row in csv_reader:
-#     print(row)
 
 assets, exceptions_group = Helpers.converter_from_file_to_object( Path(csv_path_str),
                                                             include_tab_info=True,

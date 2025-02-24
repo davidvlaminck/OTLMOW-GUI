@@ -18,6 +18,7 @@ from universalasync import async_to_sync_wraps
 
 from Domain import global_vars
 from Domain.Helpers import Helpers
+from Domain.ConverterHelper import ConverterHelper
 from Domain.SDFHandler import SDFHandler
 from Domain.logger.OTLLogger import OTLLogger
 from Domain.project.Project import Project
@@ -100,7 +101,7 @@ class InsertDataDomain:
         try:
             if doc_location_path.suffix in ['.xls', '.xlsx']:
                 temp_path = InsertDataDomain.remove_dropdown_values_from_excel(doc=doc_location_path)
-                assets, exception_group =  await Helpers.converter_from_file_to_object(
+                assets, exception_group =  await ConverterHelper.converter_from_file_to_object(
                     file_path=temp_path,include_tab_info=True )
 
             elif doc_location_path.suffix == '.sdf':
@@ -111,7 +112,7 @@ class InsertDataDomain:
                 assets = []
                 sdf_exception_list = []
                 for temp_path in temp_path_list:
-                    assets_subset, exception_group_subset = await Helpers.converter_from_file_to_object(
+                    assets_subset, exception_group_subset = await ConverterHelper.converter_from_file_to_object(
                         file_path=temp_path,
                         delimiter=",",
                         include_tab_info=True )
@@ -124,7 +125,7 @@ class InsertDataDomain:
                 for exception in sdf_exception_list:
                     exception_group.add_exception(exception)
             else:
-                assets, exception_group = await Helpers.converter_from_file_to_object(
+                assets, exception_group = await ConverterHelper.converter_from_file_to_object(
                     file_path=doc_location_path,include_tab_info=True )
 
             # second checks done by the GUI
@@ -159,7 +160,7 @@ class InsertDataDomain:
 
         OTLLogger.logger.debug("starting excel changes")
         wb = load_workbook(doc)
-        temp_path = cls.create_temp_path(path_to_template_file_and_extension=doc)
+        temp_path = Helpers.create_temp_path(path_to_template_file_and_extension=doc)
         if 'Keuzelijsten' in wb.sheetnames:
             wb.remove(wb['Keuzelijsten'])
         if 'dropdownvalues' in wb.sheetnames:
@@ -171,7 +172,7 @@ class InsertDataDomain:
     @classmethod
     def create_temporary_SDF_conversion_to_CSV_files(cls, sdf_filepath: Path) -> list[str]:
 
-        temp_csv_path = cls.create_temp_path(path_to_template_file_and_extension=sdf_filepath).with_suffix(".csv")
+        temp_csv_path = Helpers.create_temp_path(path_to_template_file_and_extension=sdf_filepath).with_suffix(".csv")
         temp_csv_path_str_list = SDFHandler.convert_SDF_to_CSV(sdf_filepath=sdf_filepath,csv_output_path=temp_csv_path)
 
         return temp_csv_path_str_list

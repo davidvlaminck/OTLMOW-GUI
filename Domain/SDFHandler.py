@@ -1,11 +1,16 @@
 import logging
 import os
 import re
+import sqlite3
 import subprocess
 import sys
 from pathlib import Path
 from typing import Optional
 
+import otlmow_converter
+from otlmow_converter.DotnotationDictConverter import DotnotationDictConverter
+from otlmow_converter.OtlmowConverter import OtlmowConverter
+from otlmow_model.OtlmowModel.Helpers import OTLObjectHelper
 from universalasync import async_to_sync_wraps
 
 from Domain import global_vars
@@ -13,6 +18,9 @@ from Domain.Helpers import Helpers
 from Domain.XSDCreator import XSDCreator
 from Domain.logger.OTLLogger import OTLLogger
 from Exceptions.FDOToolboxNotInstalledError import FDOToolboxNotInstalledError
+from Exceptions.NotASqlliteFileError import NotASqlliteFileError
+from UnitTests.TestModel.OtlmowModel.BaseClasses.OTLObject import OTLObject, \
+    dynamic_create_type_from_uri
 
 ROOT_DIR =  Path(Path(__file__).absolute()).parent.parent
 sys.path.insert(0,str(ROOT_DIR.absolute()))# needed for python to import project files
@@ -45,6 +53,21 @@ class SDFHandler:
         else:
             return []
 
+    @classmethod
+    def _get_schema_name_from_SDF_file(cls,sdf_file_path:Path) -> str:
+
+        sdf_file_path_str = sdf_file_path.absolute()
+        command = f'"{global_vars.FDO_toolbox_path_str}" list-schemas --from-file "{sdf_file_path_str}"'
+
+        output, error = cls.run_command(command=command)
+
+        if error:
+            cls._filter_out_coordinate_system_not_installed_error(command=command, error=error)
+
+        if output:
+            return output
+        else:
+            return ""
     @classmethod
     def _filter_out_coordinate_system_not_installed_error(cls, command:str, error:str) -> None:
         # The following error occurs even though the program works properly
@@ -109,13 +132,13 @@ class SDFHandler:
     @classmethod
     def _force_to_SDF_extension(cls, sdf_filepath:Path) -> Path:
         if sdf_filepath.suffix != ".sdf":
-            return sdf_filepath.parent / f"{sdf_filepath.name}.sdf"
+            return sdf_filepath.parent / f"{sdf_filepath.stem}.sdf"
         return sdf_filepath
 
     @classmethod
     def _force_to_SQLite_extension(cls, sqlite_filepath: Path) -> Path:
         if sqlite_filepath.suffix != ".db":
-            return sqlite_filepath.parent / f"{sqlite_filepath.name}.db"
+            return sqlite_filepath.parent / f"{sqlite_filepath.stem}.db"
         return sqlite_filepath
 
     @classmethod
@@ -222,11 +245,11 @@ class SDFHandler:
             cls._filter_out_coordinate_system_not_installed_error(command, error)
 
     @classmethod
-    def _convert_XSD_to_SQLite(cls, input_xsd_path: Path, output_sdf_path: Path) -> None:
+    def _convert_XSD_to_SQLite(cls, input_xsd_path: Path, output_sqlite_path: Path) -> None:
 
-        output_sdf_path = cls._force_to_SQLite_extension(output_sdf_path)
+        output_sqlite_path = cls._force_to_SQLite_extension(output_sqlite_path)
 
-        sdf_file_path_str = output_sdf_path.absolute()
+        sdf_file_path_str = output_sqlite_path.absolute()
         input_xsd_path_str = input_xsd_path.absolute()
 
         command = (f'"{global_vars.FDO_toolbox_path_str}" create-file '
@@ -248,8 +271,9 @@ class SDFHandler:
 
         cls._check_if_FDOToolbox_is_installed()
 
-        temp_path: Path = Helpers.create_temp_path(path_to_template_file_and_extension=sdf_path)
-        temp_path = temp_path.parent / f'{temp_path.name}.xsd'
+        temp_xsd_filename_path = Path(f'{sdf_path.stem}.xsd')
+        temp_path: Path = Helpers.create_temp_path(
+            path_to_template_file_and_extension=temp_xsd_filename_path)
 
         await XSDCreator.create_filtered_xsd_from_subset(
             subset_path=subset_path,xsd_path=temp_path,
@@ -260,22 +284,113 @@ class SDFHandler:
 
     @classmethod
     @async_to_sync_wraps
-    async def create_filtered_SQLite_from_subset(cls, subset_path: Path, sdf_path: Path,
-                                              selected_classes_typeURI_list: Optional[
+    async def create_filtered_SQLite_from_subset(cls, subset_path: Path, sqlite_path: Path,
+                                                 selected_classes_typeURI_list: Optional[
                                                   list[str]] = None,
-                                              model_directory: Path = None) -> None:
+                                                 model_directory: Path = None) -> None:
 
         cls._check_if_FDOToolbox_is_installed()
 
-        temp_path: Path = Helpers.create_temp_path(path_to_template_file_and_extension=sdf_path)
-        temp_path = temp_path.parent / f'{temp_path.name}.xsd'
+        temp_xsd_filename_path = Path(f'{sqlite_path.stem}.xsd')
+        temp_path: Path = Helpers.create_temp_path(
+            path_to_template_file_and_extension=temp_xsd_filename_path)
+
 
         await XSDCreator.create_filtered_xsd_from_subset(
             subset_path=subset_path, xsd_path=temp_path,
             selected_classes_typeURI_list=selected_classes_typeURI_list,
             model_directory=model_directory)
 
-        SDFHandler._convert_XSD_to_SQLite(input_xsd_path=temp_path, output_sdf_path=sdf_path)
+        SDFHandler._convert_XSD_to_SQLite(input_xsd_path=temp_path, output_sqlite_path=sqlite_path)
+
+    @classmethod
+    def copy_SQLite_data_to_SDF_file(cls,source_sqlite_path:Path,target_sdf_path:Path, dest_class:str):
+
+        source_sqlite_file_path_str = source_sqlite_path.absolute()
+        target_sdf_path_str = target_sdf_path.absolute()
+
+        schema_name = cls._get_schema_name_from_SDF_file(target_sdf_path)
+        print(f"schema  {schema_name}")
+
+        command = (f'"{global_vars.FDO_toolbox_path_str}" copy-class --dst-class {dest_class} --dst-connect-params File "{target_sdf_path_str}" --dst-schema {schema_name} --src-class {dest_class} --src-connect-params File "{source_sqlite_file_path_str}" --src-schema Default --dst-provider OSGeo.SDF --src-provider OSGeo.SQLite')
+        OTLLogger.logger.debug(f"convert_XSD_to_SDF:\n{command}",
+                               extra={"ref_timing": "copy_SQLite_data_to_SDF_file"})
+        output, error = cls.run_command(command)
+        OTLLogger.logger.debug(f"convert_XSD_to_SDF:\n{output}",
+                               extra={"ref_timing": "copy_SQLite_data_to_SDF_file"})
+
+        if error:
+            cls._filter_out_coordinate_system_not_installed_error(command, error)
+
+    @classmethod
+    @async_to_sync_wraps
+    async def convert_object_to_SDF_file(cls, object_list: list[OTLObject], output_sdf_path:Path):
+
+        # create temporary XSD schema from objects in memory
+        temp_xsd_filename_path = output_sdf_path.parent / f'{output_sdf_path.stem}.xsd'
+        temp_path: Path = Helpers.create_temp_path(
+            path_to_template_file_and_extension=temp_xsd_filename_path)
+        # temp_path = temp_xsd_filename_path
+        await XSDCreator.create_xsd_from_objects(object_list=object_list,xsd_path=temp_path)
+
+
+
+        # create temporary sqlite from XSD schema
+        temp_sqlite_filename_path = output_sdf_path.parent / f'{output_sdf_path.stem}.db'
+        temp_path_sqlite: Path = Helpers.create_temp_path(
+            path_to_template_file_and_extension=temp_sqlite_filename_path)
+        # temp_path_sqlite = temp_sqlite_filename_path
+
+        cls._convert_XSD_to_SQLite(input_xsd_path=temp_path, output_sqlite_path=temp_path_sqlite)
+
+        # create SDF from XSD schema
+        cls._convert_XSD_to_SDF(input_xsd_path=temp_path, output_sdf_path=output_sdf_path)
+
+        # fill SQLite file with object data
+        try:
+            connection = sqlite3.connect(temp_path_sqlite)
+            cursor = connection.cursor()
+
+
+            for object_ in object_list:
+                object_dict = await DotnotationDictConverter.to_dict(object_)
+                object_class = dynamic_create_type_from_uri(object_.typeURI)
+
+
+
+                table_name = f"OTL_{object_class.__name__}"
+
+                placeholders = ', '.join(['?'] * len(object_dict))
+                columns_str = ', '.join('"' +col.replace(".","_")+'"' for col in object_dict.keys())
+                sql = f'INSERT INTO "{table_name}" ({columns_str}) VALUES ({placeholders})'
+
+                values = list(object_dict.values())
+                for i in range(len(values)):
+                    if isinstance(values[i],str):
+                        values[i] = values[i].replace(" Z "," XYZ ")
+                logging.debug(values)
+
+                # Execute the statement
+                cursor.execute(sql, values)
+
+            # Commit changes and close the connection
+            connection.commit()
+
+            connection.close()
+        except sqlite3.OperationalError as e:
+            OTLLogger.logger.error(e)
+            raise NotASqlliteFileError(e)
+
+        for object_ in object_list:
+
+            object_class = dynamic_create_type_from_uri(object_.typeURI)
+
+            table_name = f"OTL_{object_class.__name__}"
+
+            # copy SQLite data into SDF file
+            cls.copy_SQLite_data_to_SDF_file(source_sqlite_path=temp_path_sqlite,
+                                             target_sdf_path=output_sdf_path,dest_class=table_name)
+
 
 if __name__ == "__main__":
     logger = logging.getLogger()
