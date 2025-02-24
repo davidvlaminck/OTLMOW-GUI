@@ -905,7 +905,7 @@ class RelationChangeDomain:
 
     @classmethod
     @async_to_sync_wraps
-    @save_assets
+    @async_save_assets
     async def add_multiple_possible_relations_to_existing_relations(cls, data_list):
         """
         Adds multiple possible relations to existing relations based on the provided data list.
@@ -1007,7 +1007,7 @@ class RelationChangeDomain:
                                extra={"timing_ref": f"update_frontend"})
     @classmethod
     @async_to_sync_wraps
-    @save_assets
+    @async_save_assets
     async def remove_multiple_existing_relations(cls, indices: list[int]) -> None:
         """
         Removes multiple existing relations based on the provided indices. This method updates the
