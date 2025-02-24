@@ -159,7 +159,7 @@ class InsertDataDomain:
 
         OTLLogger.logger.debug("starting excel changes")
         wb = load_workbook(doc)
-        temp_path = cls.create_temp_path(path_to_template_file_and_extension=doc)
+        temp_path = Helpers.create_temp_path(path_to_template_file_and_extension=doc)
         if 'Keuzelijsten' in wb.sheetnames:
             wb.remove(wb['Keuzelijsten'])
         if 'dropdownvalues' in wb.sheetnames:
