@@ -112,7 +112,7 @@ class InsertDataDomain:
                 sdf_exception_list = []
                 for temp_path in temp_path_list:
                     assets_subset, exception_group_subset = await Helpers.converter_from_file_to_object(
-                        file_path=temp_path,
+                        file_path=Path(temp_path),
                         delimiter=",",
                         include_tab_info=True )
                     assets.extend(assets_subset)
@@ -171,7 +171,7 @@ class InsertDataDomain:
     @classmethod
     def create_temporary_SDF_conversion_to_CSV_files(cls, sdf_filepath: Path) -> list[str]:
 
-        temp_csv_path = cls.create_temp_path(path_to_template_file_and_extension=sdf_filepath).with_suffix(".csv")
+        temp_csv_path = Helpers.create_temp_path(path_to_template_file_and_extension=sdf_filepath).with_suffix(".csv")
         temp_csv_path_str_list = SDFHandler.convert_SDF_to_CSV(sdf_filepath=sdf_filepath,csv_output_path=temp_csv_path)
 
         return temp_csv_path_str_list
