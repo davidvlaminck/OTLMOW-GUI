@@ -39,6 +39,32 @@ def add_loading_screen(func):
 
     return wrapper_func
 
+def add_loading_screen_no_delay(func):
+    """Decorator that saves assets after executing the decorated function.
+
+    This decorator wraps a function to ensure that after its execution, the current
+    project's assets in memory are updated and saved. It also starts the event loop
+    for the header in the main window to animate the OTL Wizard 2 logo during saving.
+
+    :param delay: if there is a delay in opening the loading screen
+    :param func: The function to be decorated.
+    :returns: The wrapper function that includes the saving logic.
+    """
+
+    async def wrapper_func(*args, **kwargs):
+        if global_vars.test_mode:
+            res = await func(*args, **kwargs)
+            return res
+
+        LoadingImageWindow.attempt_show_loading_screen(func.__name__, delay=False)
+        await asyncio.sleep(0)
+        await asyncio.sleep(0)
+        res = await func(*args, **kwargs)
+        LoadingImageWindow.attempt_destoy_loading_screen(func.__name__)
+        return res
+
+    return wrapper_func
+
 
 class LoadingImageWindow(QDialog):
     ref_key_to_time_dict = {}
@@ -144,10 +170,10 @@ class LoadingImageWindow(QDialog):
                                    extra={"timing_ref": "open_loading_screen"})
 
     @classmethod
-    def attempt_show_loading_screen(cls, ref: str):
+    def attempt_show_loading_screen(cls, ref: str,delay = True):
         # only create the loading screen if it hasn't already been created
         if not LoadingImageWindow.loading_window:
-            loading_window = LoadingImageWindow(delayed_opening=True)
+            loading_window = LoadingImageWindow(delayed_opening=delay)
             LoadingImageWindow.loading_window = {ref: loading_window}
 
     @classmethod

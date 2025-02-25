@@ -19,7 +19,7 @@ from Domain.enums import ReportAction, FileState
 from Domain.step_domain.ExportDataDomain import ExportDataDomain
 from Domain.step_domain.InsertDataDomain import InsertDataDomain
 from Domain.step_domain.RelationChangeDomain import async_save_assets, RelationChangeDomain
-from GUI.dialog_windows.LoadingImageWindow import add_loading_screen
+from GUI.dialog_windows.LoadingImageWindow import add_loading_screen, add_loading_screen_no_delay
 from UnitTests.TestClasses.Classes.ImplementatieElement.RelatieObject import RelatieObject
 
 
@@ -95,7 +95,7 @@ class ExportFilteredDataSubDomain:
         return report_list
 
     @classmethod
-    @add_loading_screen
+    @add_loading_screen_no_delay
     @async_save_assets
     async def get_diff_report(cls) -> None:
         model_dir = ProgramFileStructure.get_otl_wizard_model_dir()
@@ -154,6 +154,7 @@ class ExportFilteredDataSubDomain:
 
     @classmethod
     @async_to_sync_wraps
+    @add_loading_screen_no_delay
     async def generate_changed_assets_from_files(cls,project: Project) -> list:
         changed_assets = []
         for file in project.get_saved_projectfiles():

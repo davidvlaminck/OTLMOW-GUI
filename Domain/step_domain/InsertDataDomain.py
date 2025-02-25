@@ -1,8 +1,3 @@
-import contextlib
-import logging
-import os
-
-
 from pathlib import Path
 from typing import List, Iterable, Optional, cast, Union
 
@@ -11,6 +6,7 @@ from otlmow_converter.Exceptions.ExceptionsGroup import ExceptionsGroup
 
 from otlmow_model.OtlmowModel.BaseClasses.OTLObject import OTLObject, \
     dynamic_create_instance_from_uri
+from otlmow_model.OtlmowModel.BaseClasses.RelationInteractor import RelationInteractor
 from otlmow_model.OtlmowModel.Classes.Agent import Agent
 from otlmow_model.OtlmowModel.Classes.ImplementatieElement.RelatieObject import RelatieObject
 from otlmow_model.OtlmowModel.Helpers import OTLObjectHelper, RelationValidator
@@ -21,7 +17,7 @@ from Domain.Helpers import Helpers
 from Domain.SDFHandler import SDFHandler
 from Domain.logger.OTLLogger import OTLLogger
 from Domain.project.Project import Project
-from Domain.step_domain.RelationChangeDomain import RelationChangeDomain, save_assets, \
+from Domain.step_domain.RelationChangeDomain import RelationChangeDomain, \
     async_save_assets
 from Domain.enums import FileState
 from Exceptions.NoIdentificatorError import NoIdentificatorError
@@ -29,11 +25,11 @@ from Exceptions.RelationHasInvalidTypeUriForSourceAndTarget import \
     RelationHasInvalidTypeUriForSourceAndTarget
 from Exceptions.RelationHasNonExistingTypeUriForSourceOrTarget import \
     RelationHasNonExistingTypeUriForSourceOrTarget
-from GUI.dialog_windows.LoadingImageWindow import add_loading_screen
+from GUI.dialog_windows.LoadingImageWindow import add_loading_screen, add_loading_screen_no_delay
 from GUI.screens.RelationChange_elements.RelationChangeHelpers import RelationChangeHelpers
 from GUI.translation.GlobalTranslate import GlobalTranslate
 from UnitTests.TestClasses.Classes.ImplementatieElement.AIMObject import AIMObject
-from otlmow_converter.OtlmowConverter import OtlmowConverter
+
 
 
 class InsertDataDomain:
@@ -296,7 +292,7 @@ class InsertDataDomain:
 
     @classmethod
     @async_to_sync_wraps
-    @add_loading_screen
+    @add_loading_screen_no_delay
     @async_save_assets
     async def load_and_validate_documents(cls,**kwargs) -> tuple[list[dict], list]:
         """
@@ -340,7 +336,7 @@ class InsertDataDomain:
 
         global_vars.otl_wizard.main_window.step3_visuals.create_html(
             objects_in_memory=objects_in_memory)
-        RelationChangeDomain.set_instances(objects_list=objects_in_memory,**kwargs)
+        RelationChangeDomain.set_instances(objects_list=objects_in_memory)
         global_vars.otl_wizard.main_window.step3_visuals.reload_html()
         object_count = len(objects_in_memory)
         OTLLogger.logger.debug(
@@ -483,7 +479,7 @@ class InsertDataDomain:
             return
 
         # RelationValidator.is_valid_relation doesn't say if bron or doel is wrong
-        source_instance = dynamic_create_instance_from_uri(relation.bron.typeURI)
+        source_instance:RelationInteractor = dynamic_create_instance_from_uri(relation.bron.typeURI)
         concrete_source_relations = list(source_instance._get_all_concrete_relations())
         if concrete_source_relations_of_type_relation := {
             rel for rel in concrete_source_relations if rel[1] == relation.typeURI
