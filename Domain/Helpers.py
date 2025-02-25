@@ -88,16 +88,15 @@ class Helpers:
         return object_lists,exception_group
 
     @classmethod
-    @async_to_sync_wraps
-    async def start_async_converter_from_object_to_file(cls, file_path: Path,
+    def start_async_converter_from_object_to_file(cls, file_path: Path,
                                             sequence_of_objects: Iterable[OTLObject],
                                             synchronous: bool=False,**kwargs) -> None:
 
         if not synchronous:
             event_loop = asyncio.get_event_loop()
-            await event_loop.create_task(Helpers.converter_from_object_to_file(file_path=file_path,sequence_of_objects=sequence_of_objects,**kwargs))
+            event_loop.create_task(Helpers.converter_from_object_to_file(file_path=file_path,sequence_of_objects=sequence_of_objects,**kwargs))
         else:
-            await Helpers.converter_from_object_to_file(file_path=file_path,
+            Helpers.converter_from_object_to_file(file_path=file_path,
                                                   sequence_of_objects=sequence_of_objects,
                                                   **kwargs)
 
