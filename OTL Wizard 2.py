@@ -38,7 +38,11 @@ project_dir = ROOT_DIR / 'demo_projects/'
 
 LANG_DIR = ROOT_DIR / 'locale/'
 
-
+if '_PYI_SPLASH_IPC' in os.environ and importlib.util.find_spec("pyi_splash"):
+    import pyi_splash
+    pyi_splash.update_text('UI Loaded ...')
+    pyi_splash.close()
+    # OTLLogger.logger.info('Splash screen closed.')
 
 # Used to add demo data to the application for showcase purpose only
 def demo_data():

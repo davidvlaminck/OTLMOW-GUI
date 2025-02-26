@@ -1,6 +1,7 @@
 import logging
 import webbrowser
 
+from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QDialog, QVBoxLayout, QLabel, QDialogButtonBox
 
 from Domain import global_vars
@@ -35,6 +36,12 @@ class SuggestUpdateWindow:
         button_box.rejected.connect(dialog.reject)
         layout.addWidget(button_box)
         dialog.setLayout(layout)
+
+        dialog.setWindowFlags(dialog.windowFlags() | Qt.WindowStaysOnTopHint)  # Keep it on top
+
+        dialog.raise_()
+        dialog.activateWindow()
+
         dialog.exec()
 
     def create_button_box(self):
