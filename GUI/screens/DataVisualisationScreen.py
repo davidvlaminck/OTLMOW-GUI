@@ -141,7 +141,7 @@ class DataVisualisationScreen(Screen):
         self.view.page().runJavaScript(js_code)
 
     def load_assets(self) -> List[OTLObject]:
-        return RelationChangeDomain.get_quicksave_instances()
+        return   [asset for asset in RelationChangeDomain.get_quicksave_instances() if asset.isActief != False]
 
     def create_html(self, objects_in_memory:List[OTLObject]):
         object_count = len(objects_in_memory)
