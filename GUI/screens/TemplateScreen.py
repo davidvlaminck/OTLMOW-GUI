@@ -89,7 +89,7 @@ class TemplateScreen(TemplateScreenInterface):
         #     self.supported_export_formats.pop("SDF")  # not yet supported for export in V0.5.3
         if "JSON" in self.supported_export_formats:
             self.supported_export_formats.pop("JSON")  # Doesn't support template creation
-        if "GEOJSON" in self.supported_export_formats:
+        if "GeoJSON" in self.supported_export_formats:
             self.supported_export_formats.pop("GeoJSON")  # Doesn't support template creation
 
         FileTypeSettingPropertySetting = NamedTuple("FileTypeSettingPropertySetting",[
