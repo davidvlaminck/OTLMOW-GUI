@@ -268,10 +268,6 @@ class AbstractInstanceListWidget:
         self.list_gui.resizeColumnToContents(0)  # Resizes the first column based on its content
         if self.multi_col_list:
             self.list_gui.resizeColumnToContents(1)
-        # if self.multi_col_list:
-        #     self.list_gui.resize_columns(self.multi_col_list)
-        # else:
-        # self.list_gui.setSizeAdjustPolicy(QTreeView.SizeAdjustPolicy.AdjustToContents)
 
         self.list_gui.collapseAll()
 

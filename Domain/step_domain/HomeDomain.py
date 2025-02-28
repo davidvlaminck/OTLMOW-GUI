@@ -9,6 +9,8 @@ from Domain.logger.OTLLogger import OTLLogger
 from Domain.project.Project import Project
 from Domain.project.ProgramFileStructure import ProgramFileStructure
 from Domain.database.SubsetDatabase import SubsetDatabase
+from Domain.step_domain.ExportDataDomain import ExportDataDomain
+from Domain.step_domain.ExportFilteredDataSubDomain import ExportFilteredDataSubDomain
 from Domain.step_domain.InsertDataDomain import InsertDataDomain
 from Domain.step_domain.RelationChangeDomain import RelationChangeDomain
 from Domain.step_domain.TemplateDomain import TemplateDomain
@@ -208,7 +210,12 @@ class HomeDomain:
 
         TemplateDomain.init_static()
         InsertDataDomain.init_static()
+        RelationChangeDomain.clear_data()
+        ExportFilteredDataSubDomain.clear_data()
+
         global_vars.otl_wizard.main_window.enable_steps()
+
+
 
     @classmethod
     def process_upsert_dialog_input(cls, input_bestek: str, input_eigen_ref: str,

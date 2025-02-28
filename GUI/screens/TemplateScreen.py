@@ -1,10 +1,16 @@
+import asyncio
+from copy import deepcopy
+from enum import IntEnum
 from pathlib import Path
+from typing import NamedTuple
 
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QFrame, QCheckBox, QSpinBox, \
-    QLabel, QListWidget, QListWidgetItem
+    QLabel, QListWidget, QListWidgetItem, QButtonGroup, QRadioButton, QComboBox, QSizePolicy
 from otlmow_modelbuilder.SQLDataClasses.OSLOClass import OSLOClass
 
+from Domain import global_vars
+from Domain.logger.OTLLogger import OTLLogger
 from Domain.project.Project import Project
 from Domain.step_domain.TemplateDomain import TemplateDomain
 from GUI.dialog_windows.ExportToTemplateWindow import ExportToTemplateWindow
@@ -35,12 +41,12 @@ class TemplateScreen(TemplateScreenInterface):
         otl_title (QLabel): Label for the OTL title.
         change_subset_btn (ButtonWidget): Button for changing the subset.
         general_settings_title (QLabel): Title label for general settings.
-        no_choice_list (QCheckBox): Checkbox for no choice list option.
-        geometry_column_added (QCheckBox): Checkbox for geometry column addition.
+        add_choice_list (QCheckBox): Checkbox for no choice list option.
+        add_geometry_attributes (QCheckBox): Checkbox for geometry column addition.
         export_button (ButtonWidget): Button for exporting data.
         export_attribute_info (QCheckBox): Checkbox for exporting attribute information.
         show_deprecated_attributes (QCheckBox): Checkbox for showing deprecated attributes.
-        example_amount_label (QLabel): Label for the example amount setting.
+        example_amount_checkbox (QLabel): Label for the example amount setting.
         non_otl_conform_settings_title (QLabel): Title label for non-OTL conform settings.
         amount_of_examples (QSpinBox): Spin box for specifying the amount of examples.
         example_settings_title (QLabel): Title label for example settings.
@@ -49,6 +55,13 @@ class TemplateScreen(TemplateScreenInterface):
         selected (int): Counter for the number of selected classes.
         label_counter (QLabel): Label for displaying the count of selected classes.
     """
+
+    class TemplateOptionId(IntEnum):
+        DAVIE_CONFORM = 0
+        EXTRA_INFO = 1
+
+
+
 
     def __init__(self, language_settings=None):
         super().__init__()
@@ -67,14 +80,195 @@ class TemplateScreen(TemplateScreenInterface):
         self.otl_title = QLabel()
         self.change_subset_btn = ButtonWidget()
 
+        # Combobox to select the export file type
+        self.file_extension_selection: QComboBox = QComboBox()
+        self.file_type_label: QLabel = QLabel()
+        self.supported_export_formats: dict = deepcopy(global_vars.supported_file_formats)
+
+        # if "SDF" in self.supported_export_formats:
+        #     self.supported_export_formats.pop("SDF")  # not yet supported for export in V0.5.3
+        if "JSON" in self.supported_export_formats:
+            self.supported_export_formats.pop("JSON")  # Doesn't support template creation
+        if "GeoJSON" in self.supported_export_formats:
+            self.supported_export_formats.pop("GeoJSON")  # Doesn't support template creation
+
+        FileTypeSettingPropertySetting = NamedTuple("FileTypeSettingPropertySetting",[
+            ("enabled",bool),
+            ("change_state_if_enabled",bool),
+            ("default_on",bool),
+            ("tooltip",str)])
+        FileTypeSetting = NamedTuple("FileTypeSetting", [
+            ("choice_lists",FileTypeSettingPropertySetting),
+            ("example_assets",FileTypeSettingPropertySetting),
+            ("geometry_attributes", FileTypeSettingPropertySetting),
+            ("expansive_info", FileTypeSettingPropertySetting)])
+
+        self.default_choice_list_tooltip = self._("Adds choice lists to relevant "
+                                                           "attributes")
+        self.always_on_choice_list_tooltip = self._(
+            "For {filetype} choice lists cannot be disabled")
+        self.always_off_choice_list_tooltip = self._("{filetype} cannot contain choice lists")
+
+        self.default_geometry_tooltip = self._("Adds geometry information for each asset")
+        self.always_on_geometry_tooltip = self._(
+            "For {filetype} geometry attributes cannot be disabled")
+        self.always_off_geometry_tooltip = self._("{filetype} cannot contain geometry attributes")
+
+        self.default_example_checkbox_tooltip = self._("Adds example assets to each OTL-class")
+        self.always_on_example_checkbox_tooltip = self._(
+            "For {filetype} generated examples cannot be disabled")
+        self.always_off_example_checkbox_tooltip = self._(
+            "{filetype} cannot add generated examples")
+
+        self.default_expansive_info_radiobutton_tooltip = (
+            self._("Adds extra rows with a description of every attribute and, an indication if the"
+                   " attribute is deprecated \n(Delete extra rows before uploading to DAVIE)"))
+        self.always_on_expansive_info_radiobutton_tooltip = self._(
+            "For {filetype} expansive information cannot be disabled")
+        self.always_off_expansive_info_radiobutton_tooltip = self._(
+            "{filetype} cannot add expansive information")
+
+        self.file_type_settings:dict[str,FileTypeSetting] = {}
+        self.file_type_settings = {"Excel":FileTypeSetting(
+                                        choice_lists= FileTypeSettingPropertySetting(
+                                            enabled=True,
+                                            change_state_if_enabled=True,
+                                            default_on=True,
+                                            tooltip= self.default_choice_list_tooltip.format(filetype="Excel")
+                                        ),
+                                        geometry_attributes= FileTypeSettingPropertySetting(
+                                            enabled=True,
+                                            change_state_if_enabled=True,
+                                            default_on=True,
+                                            tooltip=self.default_geometry_tooltip
+                                        ),
+                                        example_assets= FileTypeSettingPropertySetting(
+                                            enabled=True,
+                                            change_state_if_enabled=True,
+                                            default_on=False,
+                                            tooltip=self.default_example_checkbox_tooltip
+                                        ),
+                                        expansive_info=FileTypeSettingPropertySetting(
+                                            enabled=True,
+                                            change_state_if_enabled=False,
+                                            default_on=False,
+                                            tooltip=self.default_expansive_info_radiobutton_tooltip
+                                        ),
+                                    ),
+                                    "CSV": FileTypeSetting(
+                                        choice_lists=FileTypeSettingPropertySetting(
+                                            enabled=False,
+                                            change_state_if_enabled=True,
+                                            default_on=False,
+                                            tooltip=self.always_off_choice_list_tooltip.format(filetype="CSV")
+                                        ),
+                                        geometry_attributes=FileTypeSettingPropertySetting(
+                                            enabled=True,
+                                            change_state_if_enabled=True,
+                                            default_on=True,
+                                            tooltip=self.default_geometry_tooltip
+                                        ),
+                                        example_assets=FileTypeSettingPropertySetting(
+                                            enabled=True,
+                                            change_state_if_enabled=False,
+                                            default_on=True,
+                                            tooltip=self.default_example_checkbox_tooltip
+                                        ),
+                                        expansive_info=FileTypeSettingPropertySetting(
+                                            enabled=True,
+                                            change_state_if_enabled=False,
+                                            default_on=False,
+                                            tooltip=self.default_expansive_info_radiobutton_tooltip
+                                        ),
+                                    ),
+                                    "JSON": FileTypeSetting(
+                                        choice_lists=FileTypeSettingPropertySetting(
+                                            enabled=False,
+                                            change_state_if_enabled=True,
+                                            default_on=False,
+                                            tooltip=self.always_off_choice_list_tooltip.format(filetype="JSON")
+                                        ),
+                                        geometry_attributes=FileTypeSettingPropertySetting(
+                                            enabled=True,
+                                            change_state_if_enabled=True,
+                                            default_on=True,
+                                            tooltip=self.default_geometry_tooltip
+                                        ),
+                                        example_assets=FileTypeSettingPropertySetting(
+                                            enabled=True,
+                                            change_state_if_enabled=False,
+                                            default_on=False,
+                                            tooltip=self.default_example_checkbox_tooltip
+                                        ),
+                                        expansive_info=FileTypeSettingPropertySetting(
+                                            enabled=True,
+                                            change_state_if_enabled=False,
+                                            default_on=False,
+                                            tooltip=self.default_expansive_info_radiobutton_tooltip
+                                        ),
+                                    ),
+                                    'GeoJSON': FileTypeSetting(
+                                        choice_lists=FileTypeSettingPropertySetting(
+                                            enabled=False,
+                                            change_state_if_enabled=True,
+                                            default_on=False,
+                                            tooltip=self.always_off_choice_list_tooltip.format(filetype="GeoJSON")
+                                        ),
+                                        geometry_attributes=FileTypeSettingPropertySetting(
+                                            enabled=True,
+                                            change_state_if_enabled=True,
+                                            default_on=True,
+                                            tooltip=self.default_geometry_tooltip
+                                        ),
+                                        example_assets=FileTypeSettingPropertySetting(
+                                            enabled=True,
+                                            change_state_if_enabled=False,
+                                            default_on=False,
+                                            tooltip=self.default_example_checkbox_tooltip
+                                        ),
+                                        expansive_info=FileTypeSettingPropertySetting(
+                                            enabled=True,
+                                            change_state_if_enabled=False,
+                                            default_on=False,
+                                            tooltip=self.default_expansive_info_radiobutton_tooltip
+                                        ),
+                                    ),
+                                    'SDF': FileTypeSetting(
+                                        choice_lists=FileTypeSettingPropertySetting(
+                                            enabled=False,
+                                            change_state_if_enabled=True,
+                                            default_on=True,
+                                            tooltip=self.always_on_choice_list_tooltip.format(filetype="SDF")
+                                        ),
+                                        geometry_attributes=FileTypeSettingPropertySetting(
+                                            enabled=False,
+                                            change_state_if_enabled=True,
+                                            default_on=True,
+                                            tooltip=self.always_on_geometry_tooltip.format(filetype="SDF")
+                                        ),
+                                        example_assets=FileTypeSettingPropertySetting(
+                                            enabled=False,
+                                            change_state_if_enabled=False,
+                                            default_on=False,
+                                            tooltip=self.always_off_example_checkbox_tooltip.format(filetype="SDF")
+                                        ),
+                                        expansive_info=FileTypeSettingPropertySetting(
+                                            enabled=False,
+                                            change_state_if_enabled=False,
+                                            default_on=False,
+                                            tooltip=self.always_off_expansive_info_radiobutton_tooltip.format(filetype="SDF")
+                                        ),
+                                    ),
+                                    }
+
         # settings checkboxes and counters
         self.general_settings_title = QLabel()
-        self.no_choice_list = QCheckBox()
-        self.geometry_column_added = QCheckBox()
+        self.add_choice_list = QCheckBox()
+        self.add_geometry_attributes = QCheckBox()
         self.export_button = ButtonWidget()
         self.export_attribute_info = QCheckBox()
         self.show_deprecated_attributes = QCheckBox()
-        self.example_amount_label = QLabel()
+        self.example_amount_checkbox = QCheckBox()
         self.non_otl_conform_settings_title = QLabel()
         self.amount_of_examples = QSpinBox()
         self.example_settings_title = QLabel()
@@ -85,8 +279,16 @@ class TemplateScreen(TemplateScreenInterface):
         self.selected = 0
         self.label_counter = QLabel()
 
-        self.init_ui()
+        # radio button for DAVIE conformity or extra info
+        self.template_format_label = QLabel()
+        self.radio_button_group = QButtonGroup()
+        self.radio_button_davie_conform = QRadioButton()
+        self.radio_button_expanded_info = QRadioButton()
 
+
+
+        self.init_ui()
+        self.update_settings_based_on_filetype(self.file_extension_selection.currentText())
 
     def init_ui(self) -> None:
         """
@@ -123,18 +325,19 @@ class TemplateScreen(TemplateScreenInterface):
         options_menu = QFrame()
         main_layout = QVBoxLayout()
 
+
         self.select_all_classes.setText(self._("select_all_classes"))
         self.select_all_classes.stateChanged.connect(lambda: self.select_all_classes_clicked())
 
         self.general_settings_title.setProperty('class', 'settings-title')
         self.general_settings_title.setText(self._("general_settings"))
 
-        self.no_choice_list.setText(self._("no_choice_list"))
-        self.no_choice_list.setProperty('class', 'settings-checkbox')
+        self.add_choice_list.setText(self._("choice_list"))
+        self.add_choice_list.setProperty('class', 'settings-checkbox')
 
-        self.geometry_column_added.setText(self._("geometry_column_added"))
-        self.geometry_column_added.setProperty('class', 'settings-checkbox')
-        self.geometry_column_added.setChecked(True)
+        self.add_geometry_attributes.setText(self._("geometry_attributes"))
+        self.add_geometry_attributes.setProperty('class', 'settings-checkbox')
+        self.add_geometry_attributes.setChecked(True)
 
         self.non_otl_conform_settings_title.setText(self._("add_non_otl_conform_information"))
         self.non_otl_conform_settings_title.setProperty('class', 'settings-title')
@@ -149,29 +352,19 @@ class TemplateScreen(TemplateScreenInterface):
         self.example_settings_title.setProperty('class', 'settings-title')
         self.example_settings_title.setText(self._("example_settings"))
 
-        example_generation_container = self.create_example_generation_container()
-
         self.export_button.setText(self._("export"))
         self.export_button.setProperty('class', 'primary-button')
         self.export_button.clicked.connect(lambda: self.export_template_listener())
 
         # build main layout
+        main_layout.addWidget(self.create_filetype_combobox())
+        main_layout.addWidget(self.create_radio_button_box())
         main_layout.addSpacing(10)
-        main_layout.addWidget(self.general_settings_title)
 
-        main_layout.addWidget(self.no_choice_list)
-        main_layout.addWidget(self.geometry_column_added)
-
+        main_layout.addWidget(self.add_choice_list)
+        main_layout.addWidget(self.add_geometry_attributes)
+        main_layout.addWidget(self.create_example_generation_container())
         main_layout.addSpacing(10)
-        main_layout.addWidget(self.non_otl_conform_settings_title)
-
-        main_layout.addWidget(self.show_deprecated_attributes)
-        main_layout.addWidget(self.export_attribute_info)
-
-        main_layout.addSpacing(10)
-        main_layout.addWidget(self.example_settings_title)
-
-        main_layout.addWidget(example_generation_container)
         main_layout.addWidget(self.export_button, alignment=Qt.AlignmentFlag.AlignLeft)
 
         main_layout.addStretch()
@@ -180,6 +373,51 @@ class TemplateScreen(TemplateScreenInterface):
 
         return options_menu
 
+    def create_radio_button_box(self) -> QFrame:
+
+
+        button_box_frame = QFrame()
+        button_box_layout = QHBoxLayout()
+
+        # self.template_format_label.setProperty('class', 'settings-checkbox')
+        self.template_format_label.setText(self._("Template format") + ":")
+        self.template_format_label.setAlignment(Qt.AlignmentFlag.AlignLeft)
+
+        self.radio_button_davie_conform.setText(self._('DAVIE conform'))
+        self.radio_button_davie_conform.setToolTip(self._("Generates a template that is ready for upload to DAVIE"))
+
+        self.radio_button_expanded_info.setText(self._('Expanded info'))
+        self.radio_button_expanded_info.setToolTip(self.default_expansive_info_radiobutton_tooltip)
+
+        self.radio_button_group.addButton(self.radio_button_davie_conform, self.TemplateOptionId.DAVIE_CONFORM)
+        # self.button_group.setId(self.radio_button_export_all_data,
+        #                         self.ExportOptionId.ALL_DATA)
+
+        self.radio_button_group.addButton(self.radio_button_expanded_info, self.TemplateOptionId.EXTRA_INFO)
+        # self.button_group.setId(self.radio_button_export_only_unedited_data,
+        #                         self.ExportOptionId.ONLY_UNEDITED_DATA)
+
+        # self.button_group.idClicked.connect(self.on_radio_button_click)
+        self.radio_button_davie_conform.setChecked(True)
+
+        button_box_layout.addWidget(self.template_format_label)
+        button_box_layout.addStretch()
+        button_box_layout.addWidget(self.radio_button_davie_conform)
+        button_box_layout.addStretch()
+        button_box_layout.addWidget(self.radio_button_expanded_info)
+        button_box_layout.addStretch()
+
+        button_box_layout.setContentsMargins(0,0,0,0)
+        button_box_frame.setLayout(button_box_layout)
+
+
+        return button_box_frame
+
+    # def on_radio_button_click(self,id:int):
+    #     if id == self.TemplateOptionId.DAVIE_CONFORM:
+    #         OTLLogger.logger.debug("Generate DAVIE conform templates")
+    #     elif id == self.TemplateOptionId.ONLY_UNEDITED_DATA:
+    #         OTLLogger.logger.debug("Generate extra information templates")
 
     def create_example_generation_container(self) -> QFrame:
         """
@@ -195,13 +433,19 @@ class TemplateScreen(TemplateScreenInterface):
 
         example_generation_container = QFrame()
         example_box_layout = QHBoxLayout()
-        self.example_amount_label.setText(self._("amount_of_examples"))
-        self.example_amount_label.setProperty('class', 'settings-label')
-        self.amount_of_examples.setRange(0, 100)
-        self.amount_of_examples.setValue(0)
-        example_box_layout.addWidget(self.example_amount_label)
+        self.example_amount_checkbox.setText(self._("amount_of_examples"))
+        self.example_amount_checkbox.setToolTip(self.default_example_checkbox_tooltip)
+        # self.example_amount_label.setProperty('class', 'settings-label')
+        self.amount_of_examples.setRange(1, 100)
+        self.amount_of_examples.setValue(1)
+        self.amount_of_examples.setToolTip(self._("The amount of example assets added to each OTL-class"))
+        example_box_layout.addWidget(self.example_amount_checkbox)
         example_box_layout.addWidget(self.amount_of_examples)
+        example_box_layout.setContentsMargins(0,0,0,0)
+
         example_generation_container.setLayout(example_box_layout)
+        example_generation_container.setProperty('class', 'settings-checkbox')
+
         return example_generation_container
 
 
@@ -226,10 +470,12 @@ class TemplateScreen(TemplateScreenInterface):
         layout.addWidget(self.options_menu())
         layout.setContentsMargins(16, 0, 16, 0)
         window.setLayout(layout)
-        horizontal_layout.addWidget(window)
-        horizontal_layout.addWidget(self.create_list())
+        horizontal_layout.addWidget(window,stretch=1)
+        horizontal_layout.addWidget(self.create_list(),stretch=2)
         horizontal_layout.addSpacing(20)
         full_window.setLayout(horizontal_layout)
+
+
         return full_window
 
 
@@ -392,17 +638,20 @@ class TemplateScreen(TemplateScreenInterface):
         :return: None
         :raises FileNotFoundError: If the project data cannot be accessed.
         """
-
-        try:
-            # model_builder = ModelBuilder(self.project.subset_path)
-            self.subset_name.setText(project.get_subset_db_name())
-            self.operator_name.setText(project.get_operator_name())
-            self.otl_version.setText(project.get_otl_version())
-        except FileNotFoundError as e:
-            self.subset_name.setText("/")
-            self.operator_name.setText("/")
-            self.otl_version.setText("/")
-
+        if project:
+            try:
+                # model_builder = ModelBuilder(self.project.subset_path)
+                self.subset_name.setText(project.get_subset_db_name())
+                self.operator_name.setText(project.get_operator_name())
+                self.otl_version.setText(project.get_otl_version())
+            except FileNotFoundError as e:
+                self.subset_name.setText("/")
+                self.operator_name.setText("/")
+                self.otl_version.setText("/")
+        else:
+            self.subset_name.setText("Loading")
+            self.operator_name.setText("Loading")
+            self.otl_version.setText("Loading")
 
     def update_label_under_list(self):
         counter = sum(
@@ -449,22 +698,106 @@ class TemplateScreen(TemplateScreenInterface):
         
         selected_classes = [item.data(1) for item in self.all_classes.selectedItems()]
         file_picker = ExportToTemplateWindow()
-        
-        document_path_str = file_picker.get_file_location()
+        chosen_file_format = self.file_extension_selection.currentText()
+        document_path_str = None
+        if chosen_file_format in self.supported_export_formats:
+            file_suffix = self.supported_export_formats[chosen_file_format]
+            filter_filepicker = f"{chosen_file_format} files (*.{file_suffix})"
+            document_path  = file_picker.getSaveFileName(filter=filter_filepicker)
+            if document_path:
+                document_path_str = document_path[0]
         if document_path_str:
             
             document_path = Path(document_path_str)
 
-            TemplateDomain.export_template(
+            checked_radio_button_id = self.radio_button_group.checkedId()
+            if checked_radio_button_id == self.TemplateOptionId.DAVIE_CONFORM:
+                attribute_description = False
+                deprecated_attribute_marker = False
+            else:
+                attribute_description = True
+                deprecated_attribute_marker = True
+
+            if self.example_amount_checkbox.isChecked():
+                amount_of_examples =self.amount_of_examples.value()
+            else:
+                amount_of_examples = 0
+
+            event_loop = asyncio.get_event_loop()
+            event_loop.create_task(TemplateDomain.async_export_template(
                 document_path=document_path,
                 selected_classes=selected_classes,
-                generate_choice_list=not self.no_choice_list.isChecked(),
-                geometry_column_added=self.geometry_column_added.isChecked(),
-                export_attribute_info=self.export_attribute_info.isChecked(),
-                highlight_deprecated_attributes=self.show_deprecated_attributes.isChecked(),
-                amount_of_examples=self.amount_of_examples.value())
+                generate_choice_list=self.add_choice_list.isChecked(),
+                geometry_column_added=self.add_geometry_attributes.isChecked(),
+                export_attribute_info=attribute_description,
+                highlight_deprecated_attributes=deprecated_attribute_marker,
+                amount_of_examples=amount_of_examples))
+
+    def update_settings_based_on_filetype(self,filetype:str):
+        # if filetype == "Excel":
+
+        self.add_choice_list.setChecked(self.file_type_settings[filetype].choice_lists.default_on)
+        self.add_choice_list.setEnabled(self.file_type_settings[filetype].choice_lists.enabled)
+        self.add_choice_list.setToolTip(self.file_type_settings[filetype].choice_lists.tooltip)
+
+        self.example_amount_checkbox.setChecked(self.file_type_settings[filetype].example_assets.default_on)
+        self.example_amount_checkbox.setEnabled(self.file_type_settings[filetype].example_assets.enabled)
+        self.example_amount_checkbox.setToolTip(self.file_type_settings[filetype].example_assets.tooltip)
+
+        self.add_geometry_attributes.setChecked(self.file_type_settings[filetype].geometry_attributes.default_on)
+        self.add_geometry_attributes.setEnabled(self.file_type_settings[filetype].geometry_attributes.enabled)
+        self.add_geometry_attributes.setToolTip(self.file_type_settings[filetype].geometry_attributes.tooltip)
+
+        if ((not self.file_type_settings[filetype].expansive_info.enabled) and
+            self.radio_button_expanded_info.isChecked()):
+            self.radio_button_expanded_info.setChecked(False)
+            self.radio_button_davie_conform.setChecked(True)
+
+        self.radio_button_expanded_info.setEnabled(self.file_type_settings[filetype].expansive_info.enabled)
+        self.radio_button_expanded_info.setToolTip(self.file_type_settings[filetype].expansive_info.tooltip)
 
 
+            # self.add_choice_list.setChecked(True)
+            # self.add_choice_list.setEnabled(True)
+            # self.add_choice_list.setToolTip(
+            #     self._("Adds choice lists to relevant attributes").format(filetype=filetype))
+            #
+            # self.add_geometry_attributes.setChecked(True)
+            # self.add_geometry_attributes.setEnabled(True)
+            # self.add_geometry_attributes.setToolTip(
+            #     self._("Adds geometry information for each asset"))
+        # elif filetype == 'CSV':
+        #     self.add_choice_list.setChecked(False)
+        #     self.add_choice_list.setEnabled(False)
+        #     self.add_choice_list.setToolTip(self._("{filetype} cannot contain choice lists").format(filetype=filetype))
+        #
+        #     self.add_geometry_attributes.setChecked(True)
+        #     self.add_geometry_attributes.setEnabled(True)
+        #     self.add_geometry_attributes.setToolTip(
+        #         self._("Adds geometry information for each asset"))
+        # elif filetype == 'JSON':
+        #     self.add_choice_list.setChecked(False)
+        #     self.add_choice_list.setEnabled(False)
+        #     self.add_choice_list.setToolTip(self._("{filetype} cannot contain choice lists").format(filetype=filetype))
+        #
+        #     self.add_geometry_attributes.setChecked(True)
+        #     self.add_geometry_attributes.setEnabled(True)
+        #     self.add_geometry_attributes.setToolTip(
+        #         self._("Adds geometry information for each asset"))
+        # elif filetype == 'GeoJSON':
+        #     self.add_choice_list.setChecked(False)
+        #     self.add_choice_list.setEnabled(False)
+        #     self.add_choice_list.setToolTip(self._("{filetype} cannot contain choice lists").format(filetype=filetype))
+        #
+        #     self.add_geometry_attributes.setChecked(True)
+        # elif filetype == 'SDF':
+        #     self.add_choice_list.setChecked(True)
+        #     self.add_choice_list.setEnabled(False)
+        #     self.add_choice_list.setToolTip(self._("For {filetype} choice lists cannot be disabled").format(filetype=filetype))
+        #
+        #     self.add_geometry_attributes.setChecked(True)
+        #     self.add_geometry_attributes.setEnabled(False)
+        #     self.add_choice_list.setToolTip(self._("For {filetype} geometry attributes cannot be disabled").format(filetype=filetype))
     def change_subset(self) -> None:
         """
         Opens a window to change the current subset.
@@ -486,10 +819,10 @@ class TemplateScreen(TemplateScreenInterface):
         TemplateDomain.init_static()
             
         self.export_attribute_info.setText(self._("export_attribute_info"))
-        self.geometry_column_added.setText(self._("geometry_column_added"))
-        self.no_choice_list.setText(self._("no_choice_list"))
+        self.add_geometry_attributes.setText(self._("geometry_column_added"))
+        self.add_choice_list.setText(self._("no_choice_list"))
         self.select_all_classes.setText(self._("select_all_classes"))
-        self.example_amount_label.setText(self._("amount_of_examples"))
+        self.example_amount_checkbox.setText(self._("amount_of_examples"))
         self.export_button.setText(self._("export"))
         self.change_subset_btn.setText(self._("change_subset"))
         self.operator_title.setText(self._("operator") + ":")
@@ -558,4 +891,31 @@ class TemplateScreen(TemplateScreenInterface):
             self.all_classes.addItem(item)
             if has_a_class_with_deprecated_attributes:
                 self.show_deprecated_attributes.setEnabled(False)
+
+    def create_filetype_combobox(self) -> QFrame:
+        """
+        Creates a combo box for selecting the file type for export. This method sets up the layout,
+        adds a label and a combo box populated with supported file formats, and connects the c
+        ombo box's change event to a method for displaying additional options.
+
+        :return: A QFrame containing the combo box for file type selection.
+        :rtype: QFrame
+        """
+
+        frame = QFrame()
+        frame_layout = QHBoxLayout()
+
+        self.file_type_label.setText(self._('select file type for export') + ":")
+
+        self.file_extension_selection.addItems(list(self.supported_export_formats.keys()))
+        self.file_extension_selection.currentTextChanged.connect(self.update_settings_based_on_filetype)
+        self.file_extension_selection.setSizePolicy(QSizePolicy(QSizePolicy.Policy.Expanding,QSizePolicy.Policy.Fixed))
+
+        frame_layout.addWidget(self.file_type_label)
+        frame_layout.addWidget(self.file_extension_selection)
+        frame_layout.setContentsMargins(0,0,0,0)
+        frame.setLayout(frame_layout)
+        frame.setToolTip(self._("The type of file the template will be created in"))
+
+        return frame
 

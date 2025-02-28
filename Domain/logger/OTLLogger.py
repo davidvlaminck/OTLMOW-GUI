@@ -2,7 +2,8 @@ import datetime
 import logging
 import os
 import traceback
-from datetime import timedelta
+import warnings
+
 from pathlib import Path
 
 from Domain.project.ProgramFileStructure import ProgramFileStructure
@@ -12,6 +13,7 @@ class OTLLogger(logging.Logger):
 
     logger = None
     ref_key_to_time_dict = {}
+    loading_window = None
 
 
     def __init__(self, name, level=0):
@@ -24,17 +26,26 @@ class OTLLogger(logging.Logger):
         logging_file = cls.create_logging_file()
         cls.remove_old_logging_files()
 
-        file_handler = logging.FileHandler(logging_file)
-        stderr_handler = logging.StreamHandler()
-
-        cls.logger.addHandler(stderr_handler) #
+        file_handler = logging.FileHandler(logging_file) # logger will write to file
+        stderr_handler = logging.StreamHandler() # logger will write to stderr
+        #
+        cls.logger.addHandler(stderr_handler)
         cls.logger.addHandler(file_handler)
 
+        logging.getLogger().addHandler(stderr_handler)
+        logging.getLogger().addHandler(file_handler) # loggers from other libraries will write to file
+
+        # cls.logger = logging.getLogger()
         cls.logger.setLevel(logging.DEBUG)
 
+        # Warning are written to console and to file
+        # Function to redirect warnings to the logger
+        def log_runtime_warnings(message, category, filename, lineno, file=None, line=None):
+            cls.logger.warning(f"{category.__name__}: {message} (File: {filename}, Line: {lineno})")
+        # Redirect warnings to logger
+        warnings.showwarning = log_runtime_warnings
+
         for handler in cls.logger.handlers:
-            # handler.setFormatter(logging.Formatter(fmt='%(asctime)s ln %(lineno)-4d:%(filename)-25s %(levelname)-8s %(message)s',
-            #  datefmt='%Y-%m-%d %H:%M:%S'))
             handler.setFormatter(logging.Formatter(
                 fmt='%(asctime)s %(message)s',
                                    datefmt='%Y-%m-%d %H:%M:%S'))
@@ -81,13 +92,13 @@ class OTLLogger(logging.Logger):
             time_dif:datetime.timedelta = current_time - ref_time
             time_dif_seconds = time_dif.seconds + time_dif.microseconds/1000000
             state = "END"
-            return "{msg} {status:5s}({time:07.3f}s) ".format(status=state, time=time_dif_seconds,
-                                                              msg=msg)
+
             return "{msg} {status:5s} {ref} ({time:07.3f}s) ".format(status=state, time=time_dif_seconds,
                                                               ref=ref_key, msg=msg)
         else:
             state = "START"
             OTLLogger.ref_key_to_time_dict[ref_key] = current_time
+            # OTLLogger.attempt_show_loading_screen(ref_key)
             time_dif_seconds = 0
             return "{msg} {status:5s} {ref}".format(status=state,
                                                               msg=msg,ref=ref_key)

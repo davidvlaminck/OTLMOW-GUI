@@ -2,7 +2,7 @@ import os
 import shutil
 from collections import namedtuple
 from pathlib import Path
-from unittest.mock import Mock
+from unittest.mock import Mock, AsyncMock
 
 from _pytest.fixtures import fixture
 from typing_extensions import NamedTuple
@@ -16,6 +16,7 @@ from Domain.project.ProgramFileManager import ProgramFileManager
 from Domain.step_domain.RelationChangeDomain import RelationChangeDomain
 
 OTLLogger.logger = Mock()
+global_vars.test_mode=True
 
 @fixture
 def cleanup_after_creating_a_file_to_delete():
@@ -95,7 +96,7 @@ def setup_test_project(root_directory: Path, mock_step3_visuals,mock_get_otl_wiz
 
     local_mock_RelationChangeDomain_get_screen = RelationChangeDomain.get_screen
     RelationChangeDomain.get_screen = Mock()
-    RelationChangeDomain.init_static(global_vars.current_project)
+    RelationChangeDomain.init_static(global_vars.current_project, asynchronous=False)
     RelationChangeDomain.get_screen = local_mock_RelationChangeDomain_get_screen
 
 
@@ -108,7 +109,7 @@ def setup_test_project(root_directory: Path, mock_step3_visuals,mock_get_otl_wiz
 def mock_load_validated_assets() -> None:
     original_load_validated_assets = Project.load_validated_assets
 
-    Project.load_validated_assets = Mock(return_value=RelationChangeDomain.get_quicksave_instances())
+    Project.load_validated_assets = AsyncMock(return_value=RelationChangeDomain.get_quicksave_instances())
     yield
     Project.load_validated_assets = original_load_validated_assets
 
@@ -207,3 +208,63 @@ def get_and_cleanup_empty_project_no_param(mock_otl_wizard_dir_no_param):
 
     if project_path_rm.exists():
         shutil.rmtree(project_path_rm)
+
+@fixture
+def mock_otl_wizard_dir(root_directory):
+    original_get_otl_wizard_projects_dir = ProgramFileStructure.get_otl_wizard_projects_dir
+    ProgramFileStructure.get_otl_wizard_projects_dir = Mock(return_value=root_directory  / "OTLWizardProjects" / "Projects")
+
+    yield
+    ProgramFileStructure.get_otl_wizard_projects_dir = original_get_otl_wizard_projects_dir
+
+@fixture
+def get_and_cleanup_empty_project(mock_otl_wizard_dir,request):
+    eigen_referentie = request.param[0]
+    project_path = request.param[1]
+    subset_path= request.param[2]
+    saved_documents_overview_path= request.param[3]
+    bestek= request.param[4]
+    laatst_bewerkt= request.param[5]
+    last_quick_save= request.param[6]
+    subset_operator= request.param[7]
+    otl_version= request.param[8]
+    expected_project_path= request.param[9]
+    expected_subset_operator= request.param[10]
+    expected_otl_version= request.param[11]
+    expected_saved_documents_overview_path= request.param[12]
+    expected_last_quick_save= request.param[13]
+    print()
+
+    # remove remnants from failed or aborted tests if necessary
+    project_path_rm = ProgramFileStructure.get_otl_wizard_projects_dir() / eigen_referentie
+    if project_path_rm.exists():
+        shutil.rmtree(project_path_rm)
+    if expected_project_path:
+        project_path2_rm = ProgramFileStructure.get_otl_wizard_projects_dir() / expected_project_path
+        if project_path2_rm.exists():
+            shutil.rmtree(project_path2_rm)
+
+    yield (Project(eigen_referentie=eigen_referentie, project_path= project_path,
+                  subset_path=subset_path,
+                  saved_documents_overview_path=saved_documents_overview_path,bestek=bestek,
+                  laatst_bewerkt=laatst_bewerkt, subset_operator=subset_operator,
+                  otl_version=otl_version,
+                  last_quick_save=last_quick_save),
+           {'bestek':bestek,
+            'eigen_referentie': eigen_referentie,
+            'laatst_bewerkt' : laatst_bewerkt,
+            'subset': subset_path,
+            'subset_operator':expected_subset_operator,
+            'otl_version': expected_otl_version,
+            'last_quick_save':expected_last_quick_save},
+            request.param)
+
+    # eigen_referentie = "empty_project"
+    # yield Project(eigen_referentie=eigen_referentie,last_quick_save=Path("last_quick_save") )
+    project_path = ProgramFileStructure.get_otl_wizard_projects_dir() / eigen_referentie
+    if project_path.exists():
+        shutil.rmtree(project_path)
+    if expected_project_path:
+        project_path2 = ProgramFileStructure.get_otl_wizard_projects_dir() / expected_project_path
+        if project_path2.exists():
+            shutil.rmtree(project_path2)

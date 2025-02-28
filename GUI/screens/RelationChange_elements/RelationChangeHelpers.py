@@ -45,7 +45,11 @@ class RelationChangeHelpers:
             agent: Agent = cast(Agent, otl_object)
             # agent will always be external
             external_tranlation = GlobalTranslate._("external")
-            naam = " ".join([naam,f"({external_tranlation})"])
+
+            if hasattr(agent, 'naam') and agent.naam:
+                naam = " ".join([agent.naam,f"({external_tranlation})"])
+            else:
+                naam = " ".join([naam,f"({external_tranlation})"])
         else:
             aim_object: AIMObject = cast(AIMObject, otl_object)
             if hasattr(aim_object, 'naam') and aim_object.naam:

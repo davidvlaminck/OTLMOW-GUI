@@ -3,6 +3,8 @@ import sys
 from pathlib import Path
 from typing import Optional
 
+test_mode = False
+
 projects = []
 current_project = None
 otl_wizard = None

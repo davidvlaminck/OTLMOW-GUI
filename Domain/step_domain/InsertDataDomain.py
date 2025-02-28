@@ -1,8 +1,3 @@
-import contextlib
-import logging
-import os
-import tempfile
-
 from pathlib import Path
 from typing import List, Iterable, Optional, cast, Union
 
@@ -11,26 +6,30 @@ from otlmow_converter.Exceptions.ExceptionsGroup import ExceptionsGroup
 
 from otlmow_model.OtlmowModel.BaseClasses.OTLObject import OTLObject, \
     dynamic_create_instance_from_uri
+from otlmow_model.OtlmowModel.BaseClasses.RelationInteractor import RelationInteractor
 from otlmow_model.OtlmowModel.Classes.Agent import Agent
 from otlmow_model.OtlmowModel.Classes.ImplementatieElement.RelatieObject import RelatieObject
 from otlmow_model.OtlmowModel.Helpers import OTLObjectHelper, RelationValidator
+from universalasync import async_to_sync_wraps
 
 from Domain import global_vars
 from Domain.Helpers import Helpers
 from Domain.SDFHandler import SDFHandler
 from Domain.logger.OTLLogger import OTLLogger
 from Domain.project.Project import Project
-from Domain.step_domain.RelationChangeDomain import RelationChangeDomain, save_assets
+from Domain.step_domain.RelationChangeDomain import RelationChangeDomain, \
+    async_save_assets
 from Domain.enums import FileState
 from Exceptions.NoIdentificatorError import NoIdentificatorError
 from Exceptions.RelationHasInvalidTypeUriForSourceAndTarget import \
     RelationHasInvalidTypeUriForSourceAndTarget
 from Exceptions.RelationHasNonExistingTypeUriForSourceOrTarget import \
     RelationHasNonExistingTypeUriForSourceOrTarget
+from GUI.dialog_windows.LoadingImageWindow import add_loading_screen, add_loading_screen_no_delay
 from GUI.screens.RelationChange_elements.RelationChangeHelpers import RelationChangeHelpers
 from GUI.translation.GlobalTranslate import GlobalTranslate
 from UnitTests.TestClasses.Classes.ImplementatieElement.AIMObject import AIMObject
-from otlmow_converter.OtlmowConverter import OtlmowConverter
+
 
 
 class InsertDataDomain:
@@ -71,10 +70,11 @@ class InsertDataDomain:
         """
         if not Helpers.all_OTL_asset_types_dict:
             Helpers.create_external_typeURI_options()
-        cls.sync_backend_documents_with_frontend()
+        cls.update_frontend()
 
     @classmethod
-    def check_document(cls, doc_location: Union[str, Path], delimiter: str=";") -> Iterable[OTLObject]:
+    @async_to_sync_wraps
+    async def check_document(cls, doc_location: Union[str, Path], delimiter: str=";") -> Iterable[OTLObject]:
         """
         Checks a document and converts it into a list of OTL objects.
 
@@ -94,9 +94,43 @@ class InsertDataDomain:
 
         exception_group = None
         try:
-            assets = Helpers.converter_from_file_to_object( file_path=doc_location_path,
-                                                            include_tab_info=True,
-                                                            delimiter=delimiter)
+            if doc_location_path.suffix in ['.xls', '.xlsx']:
+                temp_path = InsertDataDomain.remove_dropdown_values_from_excel(doc=doc_location_path)
+                assets, exception_group =  await Helpers.converter_from_file_to_object(
+                    file_path=temp_path,include_tab_info=True )
+
+            elif doc_location_path.suffix == '.sdf':
+                # SDF files will make multiple CSV files, one for each class
+                temp_path_list = InsertDataDomain.create_temporary_SDF_conversion_to_CSV_files(
+                    sdf_filepath=doc_location_path)
+
+                assets = []
+                sdf_exception_list = []
+                for temp_path in temp_path_list:
+                    assets_subset, exception_group_subset = await Helpers.converter_from_file_to_object(
+                        file_path=Path(temp_path),
+                        delimiter=",",
+                        include_tab_info=True )
+                    assets.extend(assets_subset)
+                    if exception_group is not None:
+                        sdf_exception_list.extend(exception_group.exceptions)
+
+                exception_group = ExceptionsGroup(
+                    message=f'Failed to create objects from Excel file {doc_location_path}')
+                for exception in sdf_exception_list:
+                    exception_group.add_exception(exception)
+            else:
+                assets, exception_group = await Helpers.converter_from_file_to_object(
+                    file_path=doc_location_path,include_tab_info=True )
+
+            # second checks done by the GUI
+            if exception_group is None:
+                exception_group = ExceptionsGroup(
+                    message=f'Failed to create objects from Excel file {doc_location_path}')
+
+            cls.check_for_invalid_relations(assets=assets, exception_group=exception_group)
+            cls.check_for_empty_identificators(assets=assets, exception_group=exception_group)
+
         except ExceptionsGroup as group:
             exception_group = group
             assets = group.objects
@@ -121,7 +155,7 @@ class InsertDataDomain:
 
         OTLLogger.logger.debug("starting excel changes")
         wb = load_workbook(doc)
-        temp_path = cls.create_temp_path(path_to_template_file_and_extension=doc)
+        temp_path = Helpers.create_temp_path(path_to_template_file_and_extension=doc)
         if 'Keuzelijsten' in wb.sheetnames:
             wb.remove(wb['Keuzelijsten'])
         if 'dropdownvalues' in wb.sheetnames:
@@ -133,34 +167,11 @@ class InsertDataDomain:
     @classmethod
     def create_temporary_SDF_conversion_to_CSV_files(cls, sdf_filepath: Path) -> list[str]:
 
-        temp_csv_path = cls.create_temp_path(path_to_template_file_and_extension=sdf_filepath).with_suffix(".csv")
+        temp_csv_path = Helpers.create_temp_path(path_to_template_file_and_extension=sdf_filepath).with_suffix(".csv")
         temp_csv_path_str_list = SDFHandler.convert_SDF_to_CSV(sdf_filepath=sdf_filepath,csv_output_path=temp_csv_path)
 
         return temp_csv_path_str_list
 
-    @classmethod
-    def create_temp_path(cls, path_to_template_file_and_extension: Path) -> Path:
-        """
-        Creates a temporary path for storing files based on a template file.
-
-        This method generates a temporary directory specifically for storing
-        files related to the OTL project. It constructs the path using the
-        name of the provided template file and ensures that the directory
-        exists before returning the full path.
-
-        :param cls: The class itself.
-        :param path_to_template_file_and_extension: The path to the template file
-                                                    for which the temporary path is created.
-        :type path_to_template_file_and_extension: Path
-        :returns: The path to the newly created temporary file location.
-        :rtype: Path
-        """
-
-        tempdir = Path(tempfile.gettempdir()) / 'temp-otlmow'
-        if not tempdir.exists():
-            os.makedirs(tempdir)
-        doc_name = Path(path_to_template_file_and_extension).name
-        return Path(tempdir) / doc_name
 
     @classmethod
     def add_template_file_to_project(cls, filepath: Path, project: Project,
@@ -185,7 +196,7 @@ class InsertDataDomain:
             filepath = cls.remove_dropdown_values_from_excel(doc=filepath)
 
         project.copy_and_add_project_file(file_path=filepath, state=state)
-        cls.sync_backend_documents_with_frontend()
+        cls.update_frontend()
 
     @classmethod
     def return_temporary_path(cls, file_path: Path) -> Path:
@@ -206,7 +217,7 @@ class InsertDataDomain:
         if Path(file_path).suffix in ['.xls', '.xlsx']:
             return cls.remove_dropdown_values_from_excel(doc=file_path)
         elif Path(file_path).suffix == '.csv':
-            return cls.create_temp_path(path_to_template_file_and_extension=file_path)
+            return Helpers.create_temp_path(path_to_template_file_and_extension=file_path)
 
     @classmethod
     def add_files_to_backend_list(cls, files: list[str],
@@ -238,7 +249,7 @@ class InsertDataDomain:
         cls.get_screen().update_file_list()
 
     @classmethod
-    def sync_backend_documents_with_frontend(cls) -> bool:
+    def update_frontend(cls) -> bool:
         """
         Synchronizes the backend project files with the frontend display.
 
@@ -277,11 +288,13 @@ class InsertDataDomain:
         """
         global_vars.current_project.remove_project_file(Path(item_file_path))
 
-        InsertDataDomain.sync_backend_documents_with_frontend()
+        InsertDataDomain.update_frontend()
 
     @classmethod
-    @save_assets
-    def load_and_validate_documents(cls) -> tuple[list[dict], list]:
+    @async_to_sync_wraps
+    @add_loading_screen_no_delay
+    @async_save_assets
+    async def load_and_validate_documents(cls,**kwargs) -> tuple[list[dict], list]:
         """
         Loads and validates documents from the current project's saved files.
 
@@ -304,43 +317,8 @@ class InsertDataDomain:
         for project_file in global_vars.current_project.get_saved_projectfiles():
             file_path = project_file.file_path
             try:
-                exception_group = None
-                if file_path.suffix in ['.xls', '.xlsx']:
-                    temp_path = InsertDataDomain.remove_dropdown_values_from_excel(doc=file_path)
-                    assets, exception_group = InsertDataDomain.check_document(
-                        doc_location=temp_path)
+                assets, exception_group = await cls.check_document(file_path)
 
-                elif file_path.suffix == '.sdf':
-                    # SDF files will make multiple CSV files, one for each class
-                    temp_path_list = InsertDataDomain.create_temporary_SDF_conversion_to_CSV_files(
-                        sdf_filepath=file_path)
-
-                    assets = []
-                    sdf_exception_list = []
-                    for temp_path in temp_path_list:
-                        assets_subset, exception_group_subset = InsertDataDomain.check_document(
-                            doc_location=temp_path ,
-                            delimiter=",")
-                        assets.extend(assets_subset)
-                        if exception_group is not None:
-                            sdf_exception_list.extend(exception_group.exceptions)
-
-
-                    exception_group = ExceptionsGroup(
-                        message=f'Failed to create objects from Excel file {file_path}')
-                    for exception in sdf_exception_list:
-                        exception_group.add_exception(exception)
-                else:
-                    assets, exception_group = InsertDataDomain.check_document(
-                        doc_location=file_path)
-
-                # second checks done by the GUI
-                if exception_group is None:
-                    exception_group = ExceptionsGroup(
-                        message=f'Failed to create objects from Excel file {file_path}')
-
-                cls.check_for_invalid_relations(assets= assets,exception_group=exception_group)
-                cls.check_for_empty_identificators(assets=assets,exception_group=exception_group)
                 if len(exception_group.exceptions) > 0:
                     raise exception_group
 
@@ -352,7 +330,7 @@ class InsertDataDomain:
 
         # state can be changed to either OK or ERROR
         global_vars.current_project.save_project_filepaths_to_file()
-        cls.sync_backend_documents_with_frontend()
+        cls.update_frontend()
 
         objects_in_memory = cls.flatten_list(objects_lists=objects_lists)
 
@@ -501,7 +479,7 @@ class InsertDataDomain:
             return
 
         # RelationValidator.is_valid_relation doesn't say if bron or doel is wrong
-        source_instance = dynamic_create_instance_from_uri(relation.bron.typeURI)
+        source_instance:RelationInteractor = dynamic_create_instance_from_uri(relation.bron.typeURI)
         concrete_source_relations = list(source_instance._get_all_concrete_relations())
         if concrete_source_relations_of_type_relation := {
             rel for rel in concrete_source_relations if rel[1] == relation.typeURI

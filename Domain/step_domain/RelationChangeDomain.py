@@ -16,11 +16,13 @@ from otlmow_model.OtlmowModel.Helpers import RelationCreator, OTLObjectHelper
 from otlmow_model.OtlmowModel.Helpers.OTLObjectHelper import is_relation
 from otlmow_modelbuilder.OSLOCollector import OSLOCollector
 from otlmow_modelbuilder.SQLDataClasses.OSLORelatie import OSLORelatie
+from universalasync import async_to_sync_wraps
 
 from Domain import global_vars
 from Domain.Helpers import Helpers
 from Domain.logger.OTLLogger import OTLLogger
 from Domain.project.Project import Project
+from GUI.dialog_windows.LoadingImageWindow import add_loading_screen
 from GUI.screens.RelationChange_elements.RelationChangeHelpers import RelationChangeHelpers
 from GUI.screens.screen_interface.RelationChangeScreenInterface import \
     RelationChangeScreenInterface
@@ -48,6 +50,26 @@ def save_assets(func):
 
     return wrapper_func
 
+
+def async_save_assets(func):
+    """Decorator that saves assets after executing the decorated function.
+
+    This decorator wraps a function to ensure that after its execution, the current
+    project's assets in memory are updated and saved. It also starts the event loop
+    for the header in the main window to animate the OTL Wizard 2 logo during saving.
+
+    :param func: The function to be decorated.
+    :returns: The wrapper function that includes the saving logic.
+    """
+
+    async def wrapper_func(*args, **kwargs):
+        res = await func(*args, **kwargs)
+        global_vars.current_project.assets_in_memory = RelationChangeDomain.get_quicksave_instances()
+        global_vars.current_project.save_validated_assets()
+        global_vars.otl_wizard.main_window.step_3_tabwidget.header.start_event_loop()
+        return res
+
+    return wrapper_func
 
 class RelationChangeDomain:
     """
@@ -173,7 +195,7 @@ class RelationChangeDomain:
 
 
     @classmethod
-    def init_static(cls, project: Project) -> None:
+    def init_static(cls, project: Project,asynchronous = True) -> None:
         """
         Initializes static resources for the RelationChangeDomain class.
         Call this when the project or project.subset_path changes or everytime you go to the window
@@ -192,6 +214,24 @@ class RelationChangeDomain:
         cls.collector = OSLOCollector(project.subset_path)
         cls.collector.collect_all()
 
+        cls.clear_data()
+
+        if not Helpers.all_OTL_asset_types_dict:
+            Helpers.create_external_typeURI_options()
+
+        if global_vars.current_project:
+            if asynchronous:
+                try:
+                    event_loop = asyncio.get_event_loop()
+                    event_loop.create_task(cls.load_project_relation_data())
+                except DeprecationWarning:
+                    # should only go here if you are testing
+                    cls.load_project_relation_data()
+            else:
+                cls.load_project_relation_data()
+
+    @classmethod
+    def clear_data(cls):
         cls.selected_object = None
 
         cls.shown_objects = []
@@ -203,18 +243,9 @@ class RelationChangeDomain:
         cls.aim_id_relations = []
         cls.external_object_added = False
 
-        if not Helpers.all_OTL_asset_types_dict:
-            Helpers.create_external_typeURI_options()
-
-        if global_vars.current_project:
-            try:
-                event_loop = asyncio.get_event_loop()
-                event_loop.create_task(cls.load_project_relation_data())
-            except DeprecationWarning:
-                # should only go here if you are testing
-                cls.load_project_relation_data()
-
     @classmethod
+    @async_to_sync_wraps
+    @add_loading_screen
     async def load_project_relation_data(cls) -> None:
         """
         Loads project relation data asynchronously.
@@ -228,13 +259,7 @@ class RelationChangeDomain:
         """
 
         cls.get_screen().set_gui_lists_to_loading_state()
-
-        await asyncio.sleep(0)  # Give the UI thread the chance to switch the screen to
-        # RelationChangeScreen
-        await asyncio.sleep(0)  # Give the UI thread another chance to switch the screen to
-        # RelationChangeScreen
-
-        cls.set_instances(objects_list=cls.project.load_validated_assets())
+        cls.set_instances(objects_list=await cls.project.load_validated_assets())
         global_vars.otl_wizard.main_window.step3_visuals.reload_html()
 
     @classmethod
@@ -395,7 +420,8 @@ class RelationChangeDomain:
             otl_object) == id_to_check
 
     @classmethod
-    def set_possible_relations(cls, selected_object: RelationInteractor):
+    @async_to_sync_wraps
+    async def set_possible_relations(cls, selected_object: RelationInteractor):
         """
         Sets the possible relations for the specified selected object and updates the user
         interface accordingly. This method manages the collection and display of relations based
@@ -441,7 +467,7 @@ class RelationChangeDomain:
         possible_relations_for_this_object = cls.get_possible_relations_for(selected_id=selected_id)
 
         # noinspection PyTypeChecker
-        object_attributes_dict = DotnotationDictConverter.to_dict(otl_object=selected_object)
+        object_attributes_dict = await DotnotationDictConverter.to_dict(otl_object=selected_object)
 
         cls.get_screen().fill_possible_relations_list(source_object=selected_object,
                                                       relations=possible_relations_for_this_object,
@@ -512,11 +538,11 @@ class RelationChangeDomain:
                     if relation.bron_uri == related_object.typeURI:
                         cls.add_relation_between(relation=relation,selected_object=selected_object,
                                                  related_object=related_object, reverse=True)
-            relation_count = 0
 
-            if (cls.possible_object_to_object_relations_dict[selected_object_id]):
-                for rel_obj in cls.possible_object_to_object_relations_dict[selected_object_id].keys():
-                    relation_count += len(cls.possible_object_to_object_relations_dict[selected_object_id][rel_obj])
+        relation_count = 0
+        if (cls.possible_object_to_object_relations_dict[selected_object_id]):
+            for rel_obj in cls.possible_object_to_object_relations_dict[selected_object_id].keys():
+                relation_count += len(cls.possible_object_to_object_relations_dict[selected_object_id][rel_obj])
 
         OTLLogger.logger.debug(
             f"Execute RelationChangeDomain.add_all_possible_relations_between_selected_and_related_objects({log_typeURI}) for project {global_vars.current_project.eigen_referentie} ({relation_count} relations)",
@@ -878,8 +904,9 @@ class RelationChangeDomain:
         return relation_object
 
     @classmethod
-    @save_assets
-    def add_multiple_possible_relations_to_existing_relations(cls, data_list):
+    @async_to_sync_wraps
+    @async_save_assets
+    async def add_multiple_possible_relations_to_existing_relations(cls, data_list):
         """
         Adds multiple possible relations to existing relations based on the provided data list.
         This method checks for specific attributes in the relations and either displays a dialog
@@ -979,8 +1006,9 @@ class RelationChangeDomain:
         OTLLogger.logger.debug("Execute RelationChangeDomain.update_frontend",
                                extra={"timing_ref": f"update_frontend"})
     @classmethod
-    @save_assets
-    def remove_multiple_existing_relations(cls, indices: list[int]) -> None:
+    @async_to_sync_wraps
+    @async_save_assets
+    async def remove_multiple_existing_relations(cls, indices: list[int]) -> None:
         """
         Removes multiple existing relations based on the provided indices. This method updates the
         internal state by removing the specified relations and refreshes the user interface to
@@ -1020,7 +1048,8 @@ class RelationChangeDomain:
         return removed_relation
 
     @classmethod
-    def select_existing_relation_indices(cls, indices: list[int]) -> None:
+    @async_to_sync_wraps
+    async def select_existing_relation_indices(cls, indices: list[int]) -> None:
         """
         Selects existing relations based on the provided indices and updates the user interface
         accordingly. This method retrieves the last selected relation and populates the attribute
@@ -1040,11 +1069,12 @@ class RelationChangeDomain:
         last_index = indices[-1]
         last_selected_relation = cls.existing_relations[last_index]
         cls.get_screen().fill_existing_relation_attribute_field(
-            existing_relation_attribute_dict=DotnotationDictConverter.to_dict(
+            existing_relation_attribute_dict=await DotnotationDictConverter.to_dict(
                 last_selected_relation))
 
     @classmethod
-    def select_possible_relation_data(cls, selected_relations_data: list) -> None:
+    @async_to_sync_wraps
+    async def select_possible_relation_data(cls, selected_relations_data: list) -> None:
         """
         Selects and displays data for possible relations based on the provided selected relations
         data. This method updates the user interface with the attributes of the last selected
@@ -1073,7 +1103,7 @@ class RelationChangeDomain:
 
         # noinspection PyTypeChecker
         cls.get_screen().fill_possible_relation_attribute_field(
-            possible_relation_attribute_dict=DotnotationDictConverter.to_dict(
+            possible_relation_attribute_dict=await DotnotationDictConverter.to_dict(
                                              otl_object=last_selected_relation_partner_asset))
 
     @classmethod

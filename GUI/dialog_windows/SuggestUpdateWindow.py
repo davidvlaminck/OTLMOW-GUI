@@ -1,31 +1,47 @@
 import logging
 import webbrowser
 
+from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QDialog, QVBoxLayout, QLabel, QDialogButtonBox
+
+from Domain import global_vars
 
 
 class SuggestUpdateWindow:
 
-    def __init__(self, language_settings, local_version, new_version):
-        self.local_version = local_version
-        self.new_version = new_version
+
+    def __init__(self, language_settings, local_version:str, new_version:str,otl_model_out_of_date:bool = False):
+        self.local_version:str = local_version
+        self.new_version:str = new_version
         self._ = language_settings
+
+        if otl_model_out_of_date:
+            self.dialog_title:str = self._("otl_model_out_of_date_title")
+            self.dialog_text:str = self._("otl_model_out_of_date_text").format(self.local_version,self.new_version)
+        else:
+            self.dialog_title:str  = self._("update_available_title")
+            self.dialog_text:str  = self._("update_available_text").format(self.local_version,self.new_version)
         self.init_ui()
 
     def init_ui(self):
         dialog = QDialog()
         dialog.setModal(True)
-        dialog.setWindowTitle(self._("update_available_title"))
+        dialog.setWindowTitle(self.dialog_title)
         layout = QVBoxLayout()
         question_label = QLabel()
-        question_label.setText(self._("update_available_text").format(self.local_version,self.new_version))
+        question_label.setText(self.dialog_text)
         layout.addWidget(question_label)
         button_box = self.create_button_box()
         button_box.accepted.connect(lambda: self.remove_project_files(dialog))
         button_box.rejected.connect(dialog.reject)
         layout.addWidget(button_box)
         dialog.setLayout(layout)
-        dialog.show()
+
+        dialog.setWindowFlags(dialog.windowFlags() | Qt.WindowStaysOnTopHint)  # Keep it on top
+
+        dialog.raise_()
+        dialog.activateWindow()
+
         dialog.exec()
 
     def create_button_box(self):

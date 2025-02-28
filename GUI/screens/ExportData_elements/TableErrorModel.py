@@ -3,13 +3,12 @@ from typing import Any
 from PyQt6.QtCore import QAbstractTableModel, Qt, QModelIndex
 
 
-class TableModel(QAbstractTableModel):
+class TableErrorModel(QAbstractTableModel):
     def __init__(self, data, language_settings):
-        super(TableModel, self).__init__()
+        super(TableErrorModel, self).__init__()
         self._data = data
         self._ = language_settings
-        self.header_labels = [self._('id'), self._('action'), self._("name_attribute"), self._("old_attribute"),
-                              self._("new_attribute")]
+        self.header_labels = [self._('error')]
 
     def data(self, index: QModelIndex, role: int = ...) -> Any:
         if role == Qt.ItemDataRole.DisplayRole:
@@ -19,7 +18,10 @@ class TableModel(QAbstractTableModel):
         return len(self._data)
 
     def columnCount(self, parent: QModelIndex = ...) -> int:
-        return len(self._data[0])
+        if self._data and self._data[0]:
+            return len(self._data[0])
+        else:
+            return 0
 
     def headerData(self, section: int, orientation: Qt.Orientation, role: int = ...) -> Any:
         if role == Qt.ItemDataRole.DisplayRole and orientation == Qt.Orientation.Horizontal:

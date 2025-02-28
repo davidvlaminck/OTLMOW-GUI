@@ -75,7 +75,7 @@ def test_get_otl_wizard_projects_dir():
 
 def test_create_empty_temporary_map_creates_map_in_correct_location():
     temp_loc = Path(tempfile.gettempdir()) / 'temp-otlmow'
-    temp_loc.rmdir()
+    shutil.rmtree(temp_loc)
     tempdir = ProgramFileManager.create_empty_temporary_map()
     Path(tempfile.gettempdir()) / 'temp-otlmow'
     assert tempdir == Path(tempfile.gettempdir()) / 'temp-otlmow'

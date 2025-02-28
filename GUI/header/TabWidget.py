@@ -53,14 +53,14 @@ class TabWidget(Screen):
         self.layout.setContentsMargins(0, 0, 0, 0)
         self.tabs.setProperty('class', 'tab-widget')
 
-    def onClickFunction(self):
+    def onClickReturnToHomeScreen(self):
         self.main_window.setCurrentIndex(0)
         global_vars.current_project.clear_model_builder_from_memory()
 
 
     def init_ui(self):
-        button = self.header.header_bar_detail_screen()
-        button.clicked.connect(self.onClickFunction)
+        returnToHomeScreenButton = self.header.header_bar_detail_screen()
+        returnToHomeScreenButton.clicked.connect(self.onClickReturnToHomeScreen)
 
     def reset_ui(self, _):
         self._ = _

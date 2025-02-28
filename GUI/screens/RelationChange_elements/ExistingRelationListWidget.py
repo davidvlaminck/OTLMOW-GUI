@@ -1,3 +1,4 @@
+import asyncio
 import logging
 from collections import namedtuple
 
@@ -118,8 +119,9 @@ class ExistingRelationListWidget(AbstractInstanceListWidget):
 
     def existing_relations_selected(self):
         indices: list[int] = self.get_selected_data()
-
-        RelationChangeDomain.select_existing_relation_indices(indices)
+        event_loop = asyncio.get_event_loop()
+        event_loop.create_task(
+        RelationChangeDomain.select_existing_relation_indices(indices))
 
     def get_selected_data(self):
         return [
@@ -131,7 +133,9 @@ class ExistingRelationListWidget(AbstractInstanceListWidget):
 
         # for index in indices:
         #     RelationChangeDomain.remove_existing_relation(index)
-        RelationChangeDomain.remove_multiple_existing_relations(indices)
+        event_loop = asyncio.get_event_loop()
+        event_loop.create_task(RelationChangeDomain.remove_multiple_existing_relations(indices))
+
 
     def extract_text_and_data_per_item(self, source_object, objects, last_added):
         list_of_corresponding_values = []

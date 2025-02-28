@@ -1,3 +1,4 @@
+import asyncio
 import logging
 from collections import namedtuple
 
@@ -66,7 +67,7 @@ class ObjectListWidget(AbstractInstanceListWidget):
 
         # update the selected_counts on all type_folder_items
         for type_folder_type, selected_item_count in dict_type_to_selected_item_count.items():
-            OTLLogger.logger.debug( f"{type_folder_type}: {selected_item_count}")
+            # OTLLogger.logger.debug( f"{type_folder_type}: {selected_item_count}")
 
             type_folder_item = dict_type_to_type_folder_item[type_folder_type]
 
@@ -79,9 +80,8 @@ class ObjectListWidget(AbstractInstanceListWidget):
                                       item_count=item_count,
                                       selected_item_count=selected_item_count)
 
-        RelationChangeDomain.set_possible_relations(selected_object=self.selected_object)
-
-
+        event_loop = asyncio.get_event_loop()
+        event_loop.create_task(RelationChangeDomain.set_possible_relations(selected_object=self.selected_object))
 
     def create_button(self):
         self.list_button.setEnabled(True)

@@ -8,10 +8,13 @@ from PyQt6.QtWidgets import QStackedWidget, QWidget
 from Domain import global_vars
 from Domain.logger.OTLLogger import OTLLogger
 from Domain.project.Project import Project
+from Domain.step_domain.ExportDataDomain import ExportDataDomain
+from Domain.step_domain.ExportFilteredDataSubDomain import ExportFilteredDataSubDomain
 from Domain.step_domain.HomeDomain import HomeDomain
+from Domain.step_domain.InsertDataDomain import InsertDataDomain
 from Domain.step_domain.RelationChangeDomain import RelationChangeDomain
+from Domain.step_domain.TemplateDomain import TemplateDomain
 from GUI.dialog_windows.NotificationWindow import NotificationWindow
-from GUI.screens.AssetDataChangeScreen import AssetDataChangeScreen
 from GUI.screens.DataVisualisationScreen import DataVisualisationScreen
 from GUI.screens.ExportDataScreen import ExportDataScreen
 from GUI.screens.HomeScreen import HomeScreen
@@ -37,14 +40,14 @@ class MainWindow(QStackedWidget):
                                          description1="insert_data",
                                          has_save_btn=False)
         self.step3_visuals:DataVisualisationScreen = DataVisualisationScreen(self._)
-        self.step3_data:AssetDataChangeScreen = AssetDataChangeScreen(self._)
+        # self.step3_data:AssetDataChangeScreen = AssetDataChangeScreen(self._)
         self.step3_relations:RelationChangeScreen = RelationChangeScreen(self._)
         self.step_3_tabwidget:TabWidget = TabWidget(self._, page_nr=3, widget1=self.step3_relations,
                                           description1="relation_change",
                                           widget2=self.step3_visuals,
                                           description2="data visuals",
-                                          widget3=self.step3_data,
-                                          description3="data_change",
+                                          # widget3=self.step3_data,
+                                          # description3="data_change",
                                           has_save_btn=False)
         self.step4_export:ExportDataScreen = ExportDataScreen(self._)
         self.step4_tabwidget:TabWidget = TabWidget(self._, page_nr=4,
@@ -113,9 +116,22 @@ class MainWindow(QStackedWidget):
         self.reset_ui(self._)
 
     def setCurrentIndex(self, index):
-        # if you go to the RelationChangeScreen the information is updated if the project had changed
-        if index == 3 and (not RelationChangeDomain.project or RelationChangeDomain.project != global_vars.current_project):
+        # if you go to the RelationChangeScreen or ExportDataScreen
+        # the information is updated if the project has changed
+        if (index in [3, 4] and (not RelationChangeDomain.project or
+                                            RelationChangeDomain.project != global_vars.current_project)):
             RelationChangeDomain.init_static(project=global_vars.current_project)
+
+        #everytime you go to a specific page update the frontend to always show the last Domain state
+        if index == 1:
+            TemplateDomain.update_frontend()
+        elif index == 2:
+            InsertDataDomain.update_frontend()
+        elif index == 3:
+            RelationChangeDomain.update_frontend()
+        elif index == 4:
+            ExportDataDomain.update_frontend()
+            ExportFilteredDataSubDomain.update_frontend()
 
         super().setCurrentIndex(index)
 

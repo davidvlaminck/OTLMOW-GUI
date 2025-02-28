@@ -22,6 +22,7 @@ PyInstaller.__main__.run([
     '--add-data', 'img:img',
     '--add-data', 'pyproject.toml:.',
     '--icon','img/wizard.png',
+    '--splash','img/wizard1.png',
     '--noconfirm',
     # '--onefile',  # All files packed together in one executable file
     '--noconsole', # no cmd/powershell window with debug output

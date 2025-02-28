@@ -78,7 +78,7 @@ def test_unedited_generate_files(root_directory: Path,
 
     export_path = get_export_path_with_cleanup
 
-    ExportDataDomain.generate_files(export_path, False, False)
+    ExportDataDomain.generate_files(export_path, False, False,synchronous=True)
 
     assert export_path.exists()
 
@@ -146,7 +146,7 @@ def test_add_remove_generate_files(root_directory: Path,setup_simpel_vergelijkin
 
     export_path = get_export_path_with_cleanup
 
-    ExportDataDomain.generate_files(export_path, False, False)
+    ExportDataDomain.generate_files(export_path, False, False,synchronous=True)
 
     assert export_path.exists()
 
@@ -237,7 +237,7 @@ def test_add_remove_inactive_relations_and_generate_files(root_directory: Path,
 
     export_path = get_export_path_export_with_cleanup
 
-    ExportDataDomain.generate_files(export_path, False, False)
+    ExportDataDomain.generate_files(export_path, False, False,synchronous=True)
 
     assert export_path.exists()
 
