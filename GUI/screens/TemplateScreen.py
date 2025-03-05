@@ -27,7 +27,7 @@ class TemplateScreen(TemplateScreenInterface):
     It includes various UI components such as labels, buttons, checkboxes, and lists to facilitate
     user interactions and display relevant information.
 
-    Args:
+    Args:f
         language_settings (optional): Language settings for the user interface.
 
     Attributes:

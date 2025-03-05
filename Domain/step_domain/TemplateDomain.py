@@ -1,12 +1,10 @@
 import asyncio
-import logging
 import os
 import platform
 import traceback
 from pathlib import Path
 from typing import List
 
-from PyQt6.QtWidgets import QListWidgetItem
 from otlmow_converter.Exceptions.ExceptionsGroup import ExceptionsGroup
 from otlmow_modelbuilder.SQLDataClasses.OSLOClass import OSLOClass
 from otlmow_template.SubsetTemplateCreator import SubsetTemplateCreator

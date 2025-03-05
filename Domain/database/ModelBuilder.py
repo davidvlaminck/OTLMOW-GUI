@@ -31,7 +31,12 @@ class ModelBuilder:
         return self.info_dict.get('Operator')
 
     def get_otl_version(self):
-        return self.info_dict.get('BronVersie')
+        if 'BronVersie' in self.info_dict:
+            # Subsets have a 'BronVersie' field to indicate the OTL version
+            return self.info_dict.get('BronVersie')
+        else:
+            # Full OTL-model SQLite files have a 'Version' field to indicate the OTL version
+            return self.info_dict.get('Version')
 
     def close_subset_db(self):
         self.subset_db.close_connection()
