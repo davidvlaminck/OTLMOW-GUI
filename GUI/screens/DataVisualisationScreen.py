@@ -6,6 +6,7 @@ import qtawesome as qta
 
 from pathlib import Path
 
+from PyQt6.QtGui import QFont
 from PyQt6.QtWebEngineCore import QWebEngineSettings
 from PyQt6.QtWebEngineWidgets import QWebEngineView
 from PyQt6.QtWidgets import QVBoxLayout, QLabel, QWidget, QFrame, QHBoxLayout, QSizePolicy
@@ -35,13 +36,15 @@ class DataVisualisationScreen(Screen):
 
         self.frame_layout_legend = None
         self.objects_in_memory = []
-
+        self.refresh_needed_label = QLabel()
         self.container_insert_data_screen = QVBoxLayout()
         self._ = _
         self.view = QWebEngineView()
         self.too_many_objects_message = QLabel()
         self.color_label_title = QLabel()
         self.init_ui()
+
+
 
 
     def init_ui(self):
@@ -113,8 +116,13 @@ class DataVisualisationScreen(Screen):
         refresh_btn.setIcon(qta.icon('mdi.refresh', color='white'))
         refresh_btn.setProperty('class', 'primary-button')
         refresh_btn.clicked.connect(lambda: self.reload_html())
-        
+
+        self.refresh_needed_label.setText(self._("The visualisation is outdated, refresh to see new changes"))
+        self.refresh_needed_label.setStyleSheet('color:#DD1111;')
+        # self.refresh_needed_label.setHidden(True)
+
         frame_layout.addWidget(refresh_btn)
+        frame_layout.addWidget(self.refresh_needed_label)
         frame_layout.addStretch()
         frame_layout.setContentsMargins(0,0,0,0)
         
@@ -123,6 +131,7 @@ class DataVisualisationScreen(Screen):
 
     def reset_ui(self, _):
         super().reset_ui(_)
+        # self.refresh_needed_label.setHidden(True)
         self._ = _
         self.color_label_title.setText(self._("relations legend") + ":")
 
@@ -142,7 +151,9 @@ class DataVisualisationScreen(Screen):
         self.view.page().runJavaScript(js_code)
 
     def load_assets(self) -> List[OTLObject]:
-        return   [asset for asset in RelationChangeDomain.get_quicksave_instances() if asset.isActief != False]
+        assets = RelationChangeDomain.get_visualisation_instances()
+        self.check_if_refresh_message_is_needed()
+        return  assets
 
     def create_html(self, objects_in_memory:List[OTLObject]):
         object_count = len(objects_in_memory)
@@ -195,3 +206,11 @@ class DataVisualisationScreen(Screen):
         with open(file_path, 'w') as file:
             for line in file_data:
                 file.write(line)
+
+    def opened(self):
+        self.check_if_refresh_message_is_needed()
+
+    def check_if_refresh_message_is_needed(self):
+        self.refresh_needed_label.setHidden(RelationChangeDomain.is_visualisation_uptodate())
+
+

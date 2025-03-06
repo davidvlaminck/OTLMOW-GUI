@@ -61,3 +61,5 @@ class Screen(QWidget):
                 if default_value:
                     field.setChecked(True)
 
+    def opened(self):
+        pass
