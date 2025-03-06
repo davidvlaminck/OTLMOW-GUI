@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-03-06 15:03+0100\n"
+"POT-Creation-Date: 2025-03-06 15:37+0100\n"
 "PO-Revision-Date: 2023-10-19 13:11+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en_US\n"
@@ -117,7 +117,7 @@ msgstr "Change subset"
 #: GUI/dialog_windows/UpsertProjectWindow.py:84
 #: GUI/dialog_windows/UpsertProjectWindow.py:87
 #: GUI/screens/Home_elements/OverviewTable.py:50
-#: GUI/screens/Home_elements/OverviewTable.py:246
+#: GUI/screens/Home_elements/OverviewTable.py:249
 #: GUI/screens/TemplateScreen.py:572
 msgid "subset"
 msgstr "Subset"
@@ -277,14 +277,14 @@ msgstr "New Project"
 #: GUI/dialog_windows/UpsertProjectWindow.py:107
 #: GUI/dialog_windows/UpsertProjectWindow.py:109
 #: GUI/screens/Home_elements/OverviewTable.py:50
-#: GUI/screens/Home_elements/OverviewTable.py:246
+#: GUI/screens/Home_elements/OverviewTable.py:249
 msgid "service_order"
 msgstr "Service order"
 
 #: GUI/dialog_windows/UpsertProjectWindow.py:125
 #: GUI/dialog_windows/UpsertProjectWindow.py:127
 #: GUI/screens/Home_elements/OverviewTable.py:50
-#: GUI/screens/Home_elements/OverviewTable.py:246
+#: GUI/screens/Home_elements/OverviewTable.py:249
 msgid "own_reference"
 msgstr "Own reference"
 
@@ -655,11 +655,15 @@ msgid "changes preview"
 msgstr "Changes preview"
 
 #: GUI/screens/Home_elements/OverviewTable.py:50
-#: GUI/screens/Home_elements/OverviewTable.py:246
+#: GUI/screens/Home_elements/OverviewTable.py:249
 msgid "last_edited"
 msgstr "Last edited"
 
-#: GUI/screens/Home_elements/OverviewTable.py:247
+#: GUI/screens/Home_elements/OverviewTable.py:112
+msgid "Double-click to open project"
+msgstr "Dubbelklik om project te openen"
+
+#: GUI/screens/Home_elements/OverviewTable.py:250
 msgid "no_results"
 msgstr "No results found for this search value"
 

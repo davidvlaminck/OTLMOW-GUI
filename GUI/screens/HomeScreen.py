@@ -195,7 +195,7 @@ class HomeScreen(HomeScreenInterface):
 
         :return: None
         """
-        super().reset_ui(_)
+        super().reset_ui(self._)
         if lang_settings is not None:
             self._ = lang_settings
 
