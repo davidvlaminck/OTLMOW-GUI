@@ -36,8 +36,6 @@ class RelationChangeScreenInterface(Screen):
     def horizontal_layout(self) -> QFrame:
         pass
 
-    def reset_ui(self, _):
-        pass
 
     def fill_object_attribute_field(self, object_attribute_dict: dict) -> None:
         pass

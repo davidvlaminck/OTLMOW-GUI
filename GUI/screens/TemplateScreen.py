@@ -82,6 +82,7 @@ class TemplateScreen(TemplateScreenInterface):
 
         # Combobox to select the export file type
         self.file_extension_selection: QComboBox = QComboBox()
+        self.add_resetable_field(self.file_extension_selection)
         self.file_type_label: QLabel = QLabel()
         self.supported_export_formats: dict = deepcopy(global_vars.supported_file_formats)
 
@@ -275,6 +276,7 @@ class TemplateScreen(TemplateScreenInterface):
 
         # class GUI list elements
         self.select_all_classes = QCheckBox()
+        self.add_resetable_field(self.select_all_classes,default_value=True)
         self.all_classes = QListWidget()
         self.selected = 0
         self.label_counter = QLabel()
@@ -283,8 +285,9 @@ class TemplateScreen(TemplateScreenInterface):
         self.template_format_label = QLabel()
         self.radio_button_group = QButtonGroup()
         self.radio_button_davie_conform = QRadioButton()
+        self.add_resetable_field(self.radio_button_davie_conform,True)
         self.radio_button_expanded_info = QRadioButton()
-
+        self.add_resetable_field(self.radio_button_expanded_info, False)
 
 
         self.init_ui()
@@ -326,8 +329,8 @@ class TemplateScreen(TemplateScreenInterface):
         main_layout = QVBoxLayout()
 
 
-        self.select_all_classes.setText(self._("select_all_classes"))
-        self.select_all_classes.stateChanged.connect(lambda: self.select_all_classes_clicked())
+        # self.select_all_classes.setText(self._("select_all_classes"))
+        # self.select_all_classes.stateChanged.connect(lambda: self.select_all_classes_clicked())
 
         self.general_settings_title.setProperty('class', 'settings-title')
         self.general_settings_title.setText(self._("general_settings"))
@@ -613,9 +616,10 @@ class TemplateScreen(TemplateScreenInterface):
         vertical_layout = QVBoxLayout()
 
         self.select_all_classes.setText(self._("select_all_classes"))
-        self.select_all_classes.stateChanged.connect(lambda: self.select_all_classes_clicked())
+        self.select_all_classes.clicked.connect(lambda: self.select_all_classes_clicked())
         self.all_classes.setSelectionMode(QListWidget.SelectionMode.MultiSelection)
-        self.all_classes.itemSelectionChanged.connect(lambda: self.update_label_under_list())
+        # self.all_classes.itemSelectionChanged.connect(lambda: self.update_label_under_list())
+        self.all_classes.itemPressed.connect(lambda: self.list_item_pressed_listener())
         self.label_counter.setText(self._(f"{self.selected} classes selected"))
 
         vertical_layout.addWidget(self.select_all_classes, alignment=Qt.AlignmentFlag.AlignTop)
@@ -654,14 +658,30 @@ class TemplateScreen(TemplateScreenInterface):
             self.otl_version.setText("Loading")
 
     def update_label_under_list(self):
+        total_amount_of_items = self.all_classes.count()
         counter = sum(
             1
-            for i in range(self.all_classes.count())
+            for i in range(total_amount_of_items)
             if self.all_classes.item(i).isSelected()
         )
         self.selected = counter
         self.label_counter.setText(self._("{selected} classes selected").format(selected=self.selected))
 
+
+    def list_item_pressed_listener(self):
+        total_amount_of_items = self.all_classes.count()
+        counter = sum(
+            1
+            for i in range(total_amount_of_items)
+            if self.all_classes.item(i).isSelected()
+        )
+
+        if total_amount_of_items == counter:
+            self.select_all_classes.setChecked(True)
+        else:
+            self.select_all_classes.setChecked(False)
+
+        self.update_label_under_list()
 
     def select_all_classes_clicked(self):
         """
@@ -679,9 +699,17 @@ class TemplateScreen(TemplateScreenInterface):
             return
         elif self.select_all_classes.isChecked():
             self.all_classes.selectAll()
+            self.update_label_under_list()
         else:
-            self.all_classes.clearSelection()
-
+            total_amount_of_items = self.all_classes.count()
+            counter = sum(
+                1
+                for i in range(total_amount_of_items)
+                if self.all_classes.item(i).isSelected()
+            )
+            if total_amount_of_items == counter:
+                self.all_classes.clearSelection()
+                self.update_label_under_list()
 
     def export_template_listener(self) -> None:  # sourcery skip: use-named-expression
         """
@@ -814,9 +842,10 @@ class TemplateScreen(TemplateScreenInterface):
 
 
     def reset_ui(self, _) -> None:
+        super().reset_ui(_)
+        self.update_settings_based_on_filetype(self.file_extension_selection.currentText())
         self._ = _
-        
-        TemplateDomain.init_static()
+
             
         self.export_attribute_info.setText(self._("export_attribute_info"))
         self.add_geometry_attributes.setText(self._("geometry_column_added"))
@@ -891,6 +920,10 @@ class TemplateScreen(TemplateScreenInterface):
             self.all_classes.addItem(item)
             if has_a_class_with_deprecated_attributes:
                 self.show_deprecated_attributes.setEnabled(False)
+        if self.select_all_classes.isChecked():
+            self.select_all_classes_clicked()
+
+
 
     def create_filetype_combobox(self) -> QFrame:
         """

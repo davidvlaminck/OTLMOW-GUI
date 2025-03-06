@@ -30,6 +30,3 @@ class HomeScreenInterface(Screen):
     def remove_table_row(self, row_index: int) -> None:
         pass
 
-    @abstractmethod
-    def reset_ui(self, lang_settings=None) -> None:
-        pass

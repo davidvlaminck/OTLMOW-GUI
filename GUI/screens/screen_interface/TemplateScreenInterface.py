@@ -77,11 +77,6 @@ class TemplateScreenInterface(Screen):
         pass
 
     @abstractmethod
-    def reset_ui(self, _):
-        pass
-
-
-    @abstractmethod
     def set_gui_list_to_loading_state(self) -> None:
         pass
 

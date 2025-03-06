@@ -63,6 +63,7 @@ class TabWidget(Screen):
         returnToHomeScreenButton.clicked.connect(self.onClickReturnToHomeScreen)
 
     def reset_ui(self, _):
+        super().reset_ui(_)
         self._ = _
         # OTLLogger.logger.debug("resetting a tab widget")
         self.header.reset_ui(_)

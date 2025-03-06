@@ -138,7 +138,9 @@ class TemplateDomain:
             #TODO: give proper feedback to user if the subset file is not found
             cls.get_screen().set_gui_list_to_no_classes_found()
         OTLLogger.logger.debug("Load OTL classes from Subset", extra={"timing_ref": f"class_from_subset_{global_vars.current_project.eigen_referentie}"})
+
         cls.update_frontend()
+        cls.get_screen().reset_ui(GlobalTranslate._)
 
     @classmethod
     def update_frontend(cls):

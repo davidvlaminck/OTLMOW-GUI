@@ -259,6 +259,7 @@ class RelationChangeScreen(RelationChangeScreenInterface):
 
 
     def reset_ui(self, _):
+        super().reset_ui(_)
         self._ = _
 
     def fill_object_attribute_field(self, object_attribute_dict: dict) -> None:

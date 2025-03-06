@@ -122,6 +122,7 @@ class DataVisualisationScreen(Screen):
         return frame
 
     def reset_ui(self, _):
+        super().reset_ui(_)
         self._ = _
         self.color_label_title.setText(self._("relations legend") + ":")
 

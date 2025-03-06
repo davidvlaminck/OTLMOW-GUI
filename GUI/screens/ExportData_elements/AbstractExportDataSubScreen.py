@@ -100,6 +100,7 @@ class AbstractExportDataSubScreen(Screen):
         return button_box
 
     def reset_ui(self, _):
+        super().reset_ui(_)
         """
         Creates a button box containing the export button for the export data screen. This method
         sets up the layout for the button, assigns its properties, and connects the button's click
