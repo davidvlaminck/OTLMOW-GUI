@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import NamedTuple
 
 from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QBrush, QColor, QFont
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QFrame, QCheckBox, QSpinBox, \
     QLabel, QListWidget, QListWidgetItem, QButtonGroup, QRadioButton, QComboBox, QSizePolicy
 from otlmow_modelbuilder.SQLDataClasses.OSLOClass import OSLOClass
@@ -262,6 +263,7 @@ class TemplateScreen(TemplateScreenInterface):
                                     ),
                                     }
 
+        self.has_agent = False
         # settings checkboxes and counters
         self.general_settings_title = QLabel()
         self.add_choice_list = QCheckBox()
@@ -658,12 +660,10 @@ class TemplateScreen(TemplateScreenInterface):
             self.otl_version.setText("Loading")
 
     def update_label_under_list(self):
-        total_amount_of_items = self.all_classes.count()
-        counter = sum(
-            1
-            for i in range(total_amount_of_items)
-            if self.all_classes.item(i).isSelected()
-        )
+        total_amount_of_items = self.get_total_amount_of_items()
+
+
+        counter = self.count_selected_items()
         self.selected = counter
         self.label_counter.setText(self._("{selected} classes selected").format(selected=self.selected))
         if counter:
@@ -678,14 +678,23 @@ class TemplateScreen(TemplateScreenInterface):
         else:
             self.select_all_classes.setChecked(False)
 
-
-    def list_item_pressed_listener(self):
-        total_amount_of_items = self.all_classes.count()
-        counter = sum(
+    def count_selected_items(self):
+        return sum(
             1
-            for i in range(total_amount_of_items)
+            for i in range(self.all_classes.count())
             if self.all_classes.item(i).isSelected()
         )
+
+    def get_total_amount_of_items(self):
+
+        count = self.all_classes.count()
+
+        if self.has_agent:
+            count -= 1
+        return count
+    def list_item_pressed_listener(self):
+        total_amount_of_items = self.get_total_amount_of_items()
+        counter = self.count_selected_items()
 
         if total_amount_of_items == counter:
             self.select_all_classes.setChecked(True)
@@ -712,12 +721,8 @@ class TemplateScreen(TemplateScreenInterface):
             self.all_classes.selectAll()
             # self.update_label_under_list()
         else:
-            total_amount_of_items = self.all_classes.count()
-            counter = sum(
-                1
-                for i in range(total_amount_of_items)
-                if self.all_classes.item(i).isSelected()
-            )
+            total_amount_of_items = self.get_total_amount_of_items()
+            counter = self.count_selected_items()
             if total_amount_of_items == counter:
                 self.all_classes.clearSelection()
                 # self.update_label_under_list()
@@ -923,11 +928,22 @@ class TemplateScreen(TemplateScreenInterface):
 
         self.all_classes.clear()
         self.all_classes.setEnabled(True)
-
+        self.has_agent = False
         for value in classes:
             item = QListWidgetItem()
             item.setText(value.name)
             item.setData(1, value.objectUri)
+
+            if value.name == "Agent":
+                item.setBackground(QBrush(QColor("#AAAAAA")))
+                item.setFlags(item.flags() & ~Qt.ItemFlag.ItemIsEnabled)
+                placeholder_font = QFont()
+                placeholder_font.setItalic(True)
+                item.setFont(placeholder_font)
+                item.setToolTip(self._('Agent class is not allowed in the template'))
+                self.has_agent = True
+
+
             self.all_classes.addItem(item)
             if has_a_class_with_deprecated_attributes:
                 self.show_deprecated_attributes.setEnabled(False)

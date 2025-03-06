@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-03-06 15:37+0100\n"
+"POT-Creation-Date: 2025-03-06 16:26+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -106,7 +106,7 @@ msgid "cancel"
 msgstr ""
 
 #: GUI/dialog_windows/ChangeSubsetWindow.py:24
-#: GUI/screens/TemplateScreen.py:499 GUI/screens/TemplateScreen.py:867
+#: GUI/screens/TemplateScreen.py:501 GUI/screens/TemplateScreen.py:872
 msgid "change_subset"
 msgstr ""
 
@@ -115,7 +115,7 @@ msgstr ""
 #: GUI/dialog_windows/UpsertProjectWindow.py:87
 #: GUI/screens/Home_elements/OverviewTable.py:50
 #: GUI/screens/Home_elements/OverviewTable.py:249
-#: GUI/screens/TemplateScreen.py:572
+#: GUI/screens/TemplateScreen.py:574
 msgid "subset"
 msgstr ""
 
@@ -416,128 +416,128 @@ msgstr ""
 msgid "warning"
 msgstr ""
 
-#: GUI/screens/TemplateScreen.py:107
+#: GUI/screens/TemplateScreen.py:108
 msgid "Adds choice lists to relevant attributes"
 msgstr ""
 
-#: GUI/screens/TemplateScreen.py:109
+#: GUI/screens/TemplateScreen.py:110
 msgid "For {filetype} choice lists cannot be disabled"
 msgstr ""
 
-#: GUI/screens/TemplateScreen.py:111
+#: GUI/screens/TemplateScreen.py:112
 msgid "{filetype} cannot contain choice lists"
 msgstr ""
 
-#: GUI/screens/TemplateScreen.py:113
+#: GUI/screens/TemplateScreen.py:114
 msgid "Adds geometry information for each asset"
 msgstr ""
 
-#: GUI/screens/TemplateScreen.py:114
+#: GUI/screens/TemplateScreen.py:115
 msgid "For {filetype} geometry attributes cannot be disabled"
 msgstr ""
 
-#: GUI/screens/TemplateScreen.py:116
+#: GUI/screens/TemplateScreen.py:117
 msgid "{filetype} cannot contain geometry attributes"
 msgstr ""
 
-#: GUI/screens/TemplateScreen.py:118
+#: GUI/screens/TemplateScreen.py:119
 msgid "Adds example assets to each OTL-class"
 msgstr ""
 
-#: GUI/screens/TemplateScreen.py:119
+#: GUI/screens/TemplateScreen.py:120
 msgid "For {filetype} generated examples cannot be disabled"
 msgstr ""
 
-#: GUI/screens/TemplateScreen.py:121
+#: GUI/screens/TemplateScreen.py:122
 msgid "{filetype} cannot add generated examples"
 msgstr ""
 
-#: GUI/screens/TemplateScreen.py:125
+#: GUI/screens/TemplateScreen.py:126
 msgid ""
 "Adds extra rows with a description of every attribute and, an indication "
 "if the attribute is deprecated \n"
 "(Delete extra rows before uploading to DAVIE)"
 msgstr ""
 
-#: GUI/screens/TemplateScreen.py:127
+#: GUI/screens/TemplateScreen.py:128
 msgid "For {filetype} expansive information cannot be disabled"
 msgstr ""
 
-#: GUI/screens/TemplateScreen.py:129
+#: GUI/screens/TemplateScreen.py:130
 msgid "{filetype} cannot add expansive information"
 msgstr ""
 
-#: GUI/screens/TemplateScreen.py:336 GUI/screens/TemplateScreen.py:870
+#: GUI/screens/TemplateScreen.py:338 GUI/screens/TemplateScreen.py:875
 msgid "general_settings"
 msgstr ""
 
-#: GUI/screens/TemplateScreen.py:338
+#: GUI/screens/TemplateScreen.py:340
 msgid "choice_list"
 msgstr ""
 
-#: GUI/screens/TemplateScreen.py:341
+#: GUI/screens/TemplateScreen.py:343
 msgid "geometry_attributes"
 msgstr ""
 
-#: GUI/screens/TemplateScreen.py:345
+#: GUI/screens/TemplateScreen.py:347
 msgid "add_non_otl_conform_information"
 msgstr ""
 
-#: GUI/screens/TemplateScreen.py:348
+#: GUI/screens/TemplateScreen.py:350
 msgid "show_deprecated_attributes"
 msgstr ""
 
-#: GUI/screens/TemplateScreen.py:352 GUI/screens/TemplateScreen.py:861
+#: GUI/screens/TemplateScreen.py:354 GUI/screens/TemplateScreen.py:866
 msgid "export_attribute_info"
 msgstr ""
 
-#: GUI/screens/TemplateScreen.py:356 GUI/screens/TemplateScreen.py:871
+#: GUI/screens/TemplateScreen.py:358 GUI/screens/TemplateScreen.py:876
 msgid "example_settings"
 msgstr ""
 
 #: GUI/screens/ExportData_elements/AbstractExportDataSubScreen.py:91
 #: GUI/screens/ExportData_elements/AbstractExportDataSubScreen.py:114
-#: GUI/screens/TemplateScreen.py:358 GUI/screens/TemplateScreen.py:866
+#: GUI/screens/TemplateScreen.py:360 GUI/screens/TemplateScreen.py:871
 msgid "export"
 msgstr ""
 
-#: GUI/screens/TemplateScreen.py:386
+#: GUI/screens/TemplateScreen.py:388
 msgid "Template format"
 msgstr ""
 
-#: GUI/screens/TemplateScreen.py:389
+#: GUI/screens/TemplateScreen.py:391
 msgid "DAVIE conform"
 msgstr ""
 
-#: GUI/screens/TemplateScreen.py:390
+#: GUI/screens/TemplateScreen.py:392
 msgid "Generates a template that is ready for upload to DAVIE"
 msgstr ""
 
-#: GUI/screens/TemplateScreen.py:392
+#: GUI/screens/TemplateScreen.py:394
 msgid "Expanded info"
 msgstr ""
 
-#: GUI/screens/TemplateScreen.py:439 GUI/screens/TemplateScreen.py:865
+#: GUI/screens/TemplateScreen.py:441 GUI/screens/TemplateScreen.py:870
 msgid "amount_of_examples"
 msgstr ""
 
-#: GUI/screens/TemplateScreen.py:444
+#: GUI/screens/TemplateScreen.py:446
 msgid "The amount of example assets added to each OTL-class"
 msgstr ""
 
-#: GUI/screens/TemplateScreen.py:523 GUI/screens/TemplateScreen.py:868
+#: GUI/screens/TemplateScreen.py:525 GUI/screens/TemplateScreen.py:873
 msgid "operator"
 msgstr ""
 
-#: GUI/screens/TemplateScreen.py:547 GUI/screens/TemplateScreen.py:869
+#: GUI/screens/TemplateScreen.py:549 GUI/screens/TemplateScreen.py:874
 msgid "otl_version"
 msgstr ""
 
-#: GUI/screens/TemplateScreen.py:618 GUI/screens/TemplateScreen.py:864
+#: GUI/screens/TemplateScreen.py:620 GUI/screens/TemplateScreen.py:869
 msgid "select_all_classes"
 msgstr ""
 
-#: GUI/screens/TemplateScreen.py:668 GUI/screens/TemplateScreen.py:873
+#: GUI/screens/TemplateScreen.py:668 GUI/screens/TemplateScreen.py:878
 msgid "{selected} classes selected"
 msgstr ""
 
@@ -549,34 +549,38 @@ msgstr ""
 msgid "Select at least 1 class to export"
 msgstr ""
 
-#: GUI/screens/TemplateScreen.py:862
+#: GUI/screens/TemplateScreen.py:867
 msgid "geometry_column_added"
 msgstr ""
 
-#: GUI/screens/TemplateScreen.py:863
+#: GUI/screens/TemplateScreen.py:868
 msgid "no_choice_list"
 msgstr ""
 
-#: GUI/screens/TemplateScreen.py:872
+#: GUI/screens/TemplateScreen.py:877
 msgid "deprecated_settings"
 msgstr ""
 
 #: GUI/screens/RelationChange_elements/AbstractInstanceListWidget.py:523
-#: GUI/screens/TemplateScreen.py:886
+#: GUI/screens/TemplateScreen.py:891
 msgid "loading"
 msgstr ""
 
-#: GUI/screens/TemplateScreen.py:904
+#: GUI/screens/TemplateScreen.py:909
 msgid "no classes found in specified path"
+msgstr ""
+
+#: GUI/screens/TemplateScreen.py:943
+msgid "Agent class is not allowed in the template"
 msgstr ""
 
 #: GUI/screens/ExportData_elements/AbstractExportDataSubScreen.py:52
 #: GUI/screens/ExportData_elements/AbstractExportDataSubScreen.py:115
-#: GUI/screens/TemplateScreen.py:952
+#: GUI/screens/TemplateScreen.py:968
 msgid "select file type for export"
 msgstr ""
 
-#: GUI/screens/TemplateScreen.py:962
+#: GUI/screens/TemplateScreen.py:978
 msgid "The type of file the template will be created in"
 msgstr ""
 
