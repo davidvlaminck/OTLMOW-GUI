@@ -618,8 +618,8 @@ class TemplateScreen(TemplateScreenInterface):
         self.select_all_classes.setText(self._("select_all_classes"))
         self.select_all_classes.clicked.connect(lambda: self.select_all_classes_clicked())
         self.all_classes.setSelectionMode(QListWidget.SelectionMode.MultiSelection)
-        # self.all_classes.itemSelectionChanged.connect(lambda: self.update_label_under_list())
-        self.all_classes.itemPressed.connect(lambda: self.list_item_pressed_listener())
+        self.all_classes.itemSelectionChanged.connect(lambda: self.update_label_under_list())
+        # self.all_classes.itemPressed.connect(lambda: self.list_item_pressed_listener())
         self.label_counter.setText(self._(f"{self.selected} classes selected"))
 
         vertical_layout.addWidget(self.select_all_classes, alignment=Qt.AlignmentFlag.AlignTop)
@@ -666,6 +666,17 @@ class TemplateScreen(TemplateScreenInterface):
         )
         self.selected = counter
         self.label_counter.setText(self._("{selected} classes selected").format(selected=self.selected))
+        if counter:
+            self.export_button.setEnabled(True)
+            self.export_button.setToolTip(self._("Export template"))
+        else:
+            self.export_button.setEnabled(False)
+            self.export_button.setToolTip(self._("Select at least 1 class to export"))
+
+        if total_amount_of_items == counter:
+            self.select_all_classes.setChecked(True)
+        else:
+            self.select_all_classes.setChecked(False)
 
 
     def list_item_pressed_listener(self):
@@ -681,7 +692,7 @@ class TemplateScreen(TemplateScreenInterface):
         else:
             self.select_all_classes.setChecked(False)
 
-        self.update_label_under_list()
+        # self.update_label_under_list()
 
     def select_all_classes_clicked(self):
         """
@@ -699,7 +710,7 @@ class TemplateScreen(TemplateScreenInterface):
             return
         elif self.select_all_classes.isChecked():
             self.all_classes.selectAll()
-            self.update_label_under_list()
+            # self.update_label_under_list()
         else:
             total_amount_of_items = self.all_classes.count()
             counter = sum(
@@ -709,7 +720,7 @@ class TemplateScreen(TemplateScreenInterface):
             )
             if total_amount_of_items == counter:
                 self.all_classes.clearSelection()
-                self.update_label_under_list()
+                # self.update_label_under_list()
 
     def export_template_listener(self) -> None:  # sourcery skip: use-named-expression
         """
