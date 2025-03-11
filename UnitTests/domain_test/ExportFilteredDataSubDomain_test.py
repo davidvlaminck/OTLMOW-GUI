@@ -87,7 +87,8 @@ def test_export_diff_report(root_directory: Path,
     ExportFilteredDataSubDomain.add_original_documents(paths_str=[str(original_file_path.absolute())])
 
     #ACT
-    ExportFilteredDataSubDomain.export_diff_report(file_name=str(output_file_path),synchronous=True)
+    print("output_file_path: " + str(output_file_path.absolute()))
+    ExportFilteredDataSubDomain.sync_export_diff_report(file_name=str(output_file_path.absolute()),synchronous=True)
 
     #TEST
     assert(output_file_path.exists())
