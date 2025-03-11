@@ -148,7 +148,7 @@ class ExportFilteredDataSubDomain:
         assets = sorted(diff_1_assets,key=lambda relation1: relation1.typeURI)
         relations = sorted(diff_1_relations, key=lambda relation1: relation1.typeURI)
 
-        ExportDataDomain.export_to_files(assets, relations , file_name,
+        await ExportDataDomain.export_to_files(assets, relations , file_name,
                             separate_per_class_csv_option, separate_relations_option,**kwargs)
 
 
