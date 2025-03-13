@@ -71,6 +71,15 @@ class OTLWizard(QApplication):
         app_icon = QIcon(str(Path('img','wizard.ico')))
         self.setWindowIcon(app_icon)
 
+        language = GlobalTranslate(settings, LANG_DIR).get_all()
+        global_vars.otl_wizard = self
+        self.main_window = MainWindow(language)
+        self.main_window.resize(1250, 650)
+        self.main_window.setWindowTitle('OTLWizard')
+        self.main_window.setMinimumSize(800, 600)
+        self.main_window.show()
+
+
         self.meipass = sys._MEIPASS if hasattr(sys, '_MEIPASS') else None
         Styling.applyStyling(self,self.meipass)
         # self.applicationStateChanged.connect(lambda state: OTLLogger.logger.debug(f"applicationStateChanged changed {state}"))
@@ -80,13 +89,7 @@ class OTLWizard(QApplication):
         # self.demo_project = demo_data()
         self.demo_project = None
 
-        language = GlobalTranslate(settings,LANG_DIR).get_all()
-        global_vars.otl_wizard = self
-        self.main_window = MainWindow(language)
-        self.main_window.resize(1250, 650)
-        self.main_window.setWindowTitle('OTLWizard')
-        self.main_window.setMinimumSize(800, 600)
-        self.main_window.show()
+
 
 
         if "--test" in argv:
