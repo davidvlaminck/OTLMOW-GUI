@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from Domain.Helpers import Helpers
+from Domain.util.Helpers import Helpers
 from Domain.enums import FileState
 
 

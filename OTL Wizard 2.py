@@ -67,6 +67,7 @@ class OTLWizard(QApplication):
         sys.excepthook = excepthook
 
         Updater.check_for_updates()
+        Updater.update_oltmow_model()
 
         app_icon = QIcon(str(Path('img','wizard.ico')))
         self.setWindowIcon(app_icon)
@@ -82,7 +83,6 @@ class OTLWizard(QApplication):
 
         self.meipass = sys._MEIPASS if hasattr(sys, '_MEIPASS') else None
         Styling.applyStyling(self,self.meipass)
-        # self.applicationStateChanged.connect(lambda state: OTLLogger.logger.debug(f"applicationStateChanged changed {state}"))
         self.paletteChanged.connect(lambda state: Styling.applyStyling(self,self.meipass))
 
 

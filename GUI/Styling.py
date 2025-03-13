@@ -9,6 +9,9 @@ from PyQt6.QtCore import Qt
 from Domain import global_vars
 import qtawesome as qta
 
+from Domain.ProgramFileStructure import ProgramFileStructure
+
+
 class Styling:
     #general styling
     light_stylesheet_filename = "custom_light.qss"
@@ -42,6 +45,8 @@ class Styling:
             applyStyling(app, meipass)
         """
 
+        style_library_name = "style"
+        style_library_path = ProgramFileStructure.get_dynamic_library_path(style_library_name)
 
         if app.styleHints().colorScheme() == Qt.ColorScheme.Dark:
             style_filename = cls.dark_stylesheet_filename
@@ -52,12 +57,7 @@ class Styling:
             cls.last_added_color = cls.light_last_added_color
             cls.button_icon_color = cls.light_button_icon_color
 
-        style_path = Path('style', style_filename)
-
-        if meipass:  # when in .exe file
-            style_path = Path(os.path.join(meipass, 'style', style_filename))
-        elif not style_path.exists():
-            style_path = Path('data', 'style', style_filename)
+        style_path = style_library_path / style_filename
 
         with open(style_path, 'r') as file:
             app.setStyleSheet(file.read())

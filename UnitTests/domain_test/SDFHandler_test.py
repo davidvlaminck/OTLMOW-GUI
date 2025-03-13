@@ -1,11 +1,6 @@
-from pathlib import Path
-
 import pytest
-import xmltodict
-from _pytest.fixtures import fixture
-from openpyxl.styles.builtins import output
 
-from Domain.SDFHandler import SDFHandler
+from Domain.util.SDFHandler import SDFHandler
 from Exceptions.FDOToolboxNotInstalledError import FDOToolboxNotInstalledError
 from Exceptions.FDOToolboxProcessError import FDOToolboxProcessError
 from Exceptions.WrongFileTypeError import WrongFileTypeError

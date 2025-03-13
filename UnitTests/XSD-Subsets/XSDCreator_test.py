@@ -1,12 +1,9 @@
 import unittest
-from pathlib import Path
 
 import xmltodict
-from pytest_asyncio import fixture
 
-from Domain.XSDCreator import XSDCreator
+from Domain.util.XSDCreator import XSDCreator
 
-from UnitTests.general_fixtures.GUIFixtures import *
 from UnitTests.general_fixtures.DomainFixtures import *
 
 @fixture

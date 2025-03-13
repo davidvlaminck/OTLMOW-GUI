@@ -8,6 +8,8 @@ from pathlib import Path
 
 import toml
 
+from Domain.ProgramFileStructure import ProgramFileStructure
+from Domain.logger.OTLLogger import OTLLogger
 from Domain.network.GitHubDownloader import GitHubDownloader
 
 
@@ -67,3 +69,11 @@ class Updater:
             version_info = json.load(json_file)
 
         return version_info['model_version']
+
+    @classmethod
+    def update_oltmow_model(cls):
+
+
+        library_name = "otlmow_model"
+        otlmow_model_lib_path = ProgramFileStructure.get_dynamic_library_path(library_name)
+

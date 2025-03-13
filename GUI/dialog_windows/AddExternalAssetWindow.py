@@ -2,7 +2,7 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QDialog, QLabel, QVBoxLayout, QHBoxLayout, QLineEdit, QDialogButtonBox, \
     QComboBox
 
-from Domain.Helpers import Helpers
+from Domain.util.Helpers import Helpers
 
 from Domain.step_domain.RelationChangeDomain import RelationChangeDomain
 

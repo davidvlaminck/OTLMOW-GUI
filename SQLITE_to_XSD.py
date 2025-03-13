@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from Domain.XSDCreator import XSDCreator
+from Domain.util.XSDCreator import XSDCreator
 from Domain.logger.OTLLogger import OTLLogger
 
 if __name__ == "__main__":

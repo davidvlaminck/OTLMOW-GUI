@@ -1,26 +1,21 @@
-import logging
 from dataclasses import dataclass
 from pathlib import Path
 from typing import List
 
-from otlmow_converter.OtlmowConverter import OtlmowConverter
 from otlmow_model.OtlmowModel.BaseClasses.OTLObject import create_dict_from_asset, OTLObject
 from otlmow_model.OtlmowModel.Helpers.OTLObjectHelper import \
     compare_two_lists_of_objects_attribute_level, is_relation
 from universalasync import async_to_sync_wraps
 
 from Domain import global_vars
-from Domain.Helpers import Helpers
 from Domain.logger.OTLLogger import OTLLogger
-from Domain.project.ProgramFileStructure import ProgramFileStructure
+from Domain.ProgramFileStructure import ProgramFileStructure
 from Domain.project.Project import Project
-from Domain.project.ProgramFileManager import ProgramFileManager
 from Domain.enums import ReportAction, FileState
 from Domain.step_domain.ExportDataDomain import ExportDataDomain
 from Domain.step_domain.InsertDataDomain import InsertDataDomain
 from Domain.step_domain.RelationChangeDomain import async_save_assets, RelationChangeDomain
 from GUI.dialog_windows.LoadingImageWindow import add_loading_screen, add_loading_screen_no_delay
-from UnitTests.TestClasses.Classes.ImplementatieElement.RelatieObject import RelatieObject
 
 
 @dataclass

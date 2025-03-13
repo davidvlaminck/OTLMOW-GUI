@@ -11,8 +11,8 @@ from otlmow_template.SubsetTemplateCreator import SubsetTemplateCreator
 from universalasync import async_to_sync_wraps
 
 from Domain import global_vars
-from Domain.Helpers import Helpers
-from Domain.SDFHandler import SDFHandler
+from Domain.util.Helpers import Helpers
+from Domain.util.SDFHandler import SDFHandler
 from Domain.logger.OTLLogger import OTLLogger
 from Domain.network.Updater import Updater
 from GUI.dialog_windows.LoadingImageWindow import add_loading_screen, LoadingImageWindow

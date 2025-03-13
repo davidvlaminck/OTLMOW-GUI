@@ -6,7 +6,7 @@ import warnings
 
 from pathlib import Path
 
-from Domain.project.ProgramFileStructure import ProgramFileStructure
+from Domain.ProgramFileStructure import ProgramFileStructure
 
 
 class OTLLogger(logging.Logger):

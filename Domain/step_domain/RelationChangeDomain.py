@@ -1,5 +1,4 @@
 import asyncio
-import logging
 from copy import deepcopy
 from pathlib import Path
 from typing import Optional, Union, Callable
@@ -19,7 +18,7 @@ from otlmow_modelbuilder.SQLDataClasses.OSLORelatie import OSLORelatie
 from universalasync import async_to_sync_wraps
 
 from Domain import global_vars
-from Domain.Helpers import Helpers
+from Domain.util.Helpers import Helpers
 from Domain.logger.OTLLogger import OTLLogger
 from Domain.project.Project import Project
 from GUI.dialog_windows.LoadingImageWindow import add_loading_screen
