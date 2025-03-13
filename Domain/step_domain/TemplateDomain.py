@@ -21,7 +21,7 @@ from GUI.dialog_windows.SuggestUpdateWindow import SuggestUpdateWindow
 from GUI.screens.screen_interface.TemplateScreenInterface import TemplateScreenInterface
 from GUI.translation.GlobalTranslate import GlobalTranslate
 
-import importlib.metadata
+
 
 
 class TemplateDomain:
@@ -116,10 +116,9 @@ class TemplateDomain:
                                     # TemplateScreen
 
             modelbuilder = global_vars.current_project.get_model_builder()
-
-            metadata = importlib.metadata.metadata("otlmow-model")
-            otl_model_version = metadata['Version']
             subset_otl_version = global_vars.current_project.get_otl_version()
+
+            otl_model_version = await Updater.get_local_otl_model_library_version()
             if not Helpers.is_version_equal_or_higher(otl_model_version, subset_otl_version):
                 OTLLogger.logger.info("otlmow-model version is outdated")
                 SuggestUpdateWindow(language_settings=GlobalTranslate._,
@@ -141,6 +140,8 @@ class TemplateDomain:
 
         cls.update_frontend()
         cls.get_screen().reset_ui(GlobalTranslate._)
+
+
 
     @classmethod
     def update_frontend(cls):

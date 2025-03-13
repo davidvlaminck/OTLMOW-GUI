@@ -1,3 +1,4 @@
+import importlib.metadata
 import json
 import logging
 import os
@@ -72,3 +73,22 @@ class Updater:
         library_name = "otlmow_model"
         otlmow_model_lib_path = ProgramFileStructure.get_dynamic_library_path(library_name)
 
+    @classmethod
+    async def get_local_otl_model_library_version(cls):
+
+        # first if there is a version file in the otlmow-model library itself
+        # this is there if the model was downloaded from github
+        library_name = "otlmow_model"
+        otlmow_model_lib_path = ProgramFileStructure.get_dynamic_library_path(library_name)
+        otlmow_model_lib_version_file_path = otlmow_model_lib_path / "version_info.json"
+
+        if otlmow_model_lib_version_file_path.exists():
+            with open(otlmow_model_lib_version_file_path) as version_file:
+                otl_version_dict = json.load(version_file)
+                otl_model_version = otl_version_dict["current"]["model_version"]
+        else:
+
+            # second go off the metadata from the pip install
+            metadata = importlib.metadata.metadata("otlmow-model")
+            otl_model_version = metadata['Version']
+        return otl_model_version
