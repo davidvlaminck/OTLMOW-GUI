@@ -65,7 +65,7 @@ tranlation for that text in like:
 
 1. Make sure you have a python 3.13 environment with the requirements.txt installed set up  
     NOTE: Keep using PyInstaller 6.10.0, newer version can get [false positives](https://github.com/pyinstaller/pyinstaller/issues/5854) on Windows Defender. Lookout for detections of 
-    Wacatac.B!ml,Wacatac.H!ml, Wacapew.C!ml these are false positives. 
+    Wacatac.B!ml, Wacatac.H!ml, Wacapew.C!ml these are false positives. 
     They get detected only when you compile with newer versions and not when you compile with older versions of PyInstaller.
     If any user has a detection, it is most likely because of an outdated Windows Defender. Ask them to update Windows and/or Windows Defender.
 2. Run the `pyinstaller_script.py` in that environment
