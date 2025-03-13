@@ -11,6 +11,7 @@ import toml
 from Domain.ProgramFileStructure import ProgramFileStructure
 from Domain.logger.OTLLogger import OTLLogger
 from Domain.network.GitHubDownloader import GitHubDownloader
+from Domain.util.Helpers import Helpers
 
 
 class Updater:
@@ -24,15 +25,9 @@ class Updater:
     master_version = None
 
     @classmethod
-    def check_for_updates(cls):
+    def check_for_OTL_wizard_updates(cls):
 
-        pyproject_path = Path(f'{cls.pyproject_filename}')
-
-        if hasattr(sys, '_MEIPASS'):  # when in .exe file
-            pyproject_path = Path(os.path.join(sys._MEIPASS, f'{cls.pyproject_filename}'))
-        elif not pyproject_path.exists():
-            pyproject_path = Path(f'data/{cls.pyproject_filename}')
-
+        pyproject_path = ProgramFileStructure.get_dynamic_library_path(cls.pyproject_filename)
         cls.pyproject_config = toml.load(pyproject_path)
 
         # TODO: catch and process ratelimit exceeded error
@@ -43,7 +38,7 @@ class Updater:
             cls.local_version = cls.pyproject_config['project']['version']
             cls.master_version = master_pyproject_config['project']['version']
 
-            if cls.local_version == cls.master_version:
+            if Helpers.is_version_equal_or_higher(cls.local_version, cls.master_version):
                 logging.info(f"Local version {cls.local_version} is up to date with master version")
             else:
                 cls.needs_update = True

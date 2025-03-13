@@ -1,8 +1,6 @@
 from pathlib import Path
 import sys
 
-from Domain.logger.OTLLogger import OTLLogger
-
 
 class ProgramFileStructure:
     @classmethod
@@ -42,6 +40,5 @@ class ProgramFileStructure:
             dynamic_library_path = Path(sys._MEIPASS, library_name)
         elif not dynamic_library_path.exists():
             dynamic_library_path = Path('data', library_name)
-        OTLLogger.logger.debug(f"Supplied dynamic library path: {dynamic_library_path}")
 
         return dynamic_library_path

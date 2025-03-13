@@ -66,7 +66,7 @@ class OTLWizard(QApplication):
 
         sys.excepthook = excepthook
 
-        Updater.check_for_updates()
+        Updater.check_for_OTL_wizard_updates()
         Updater.update_oltmow_model()
 
         app_icon = QIcon(str(Path('img','wizard.ico')))
