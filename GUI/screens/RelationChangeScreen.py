@@ -259,6 +259,7 @@ class RelationChangeScreen(RelationChangeScreenInterface):
 
 
     def reset_ui(self, _):
+        super().reset_ui(_)
         self._ = _
 
     def fill_object_attribute_field(self, object_attribute_dict: dict) -> None:
@@ -399,4 +400,42 @@ class RelationChangeScreen(RelationChangeScreenInterface):
         self.possible_relation_list_gui.update_color_scheme()
         self.existing_relation_list_gui.update_color_scheme()
 
+    def set_object_search_bar_text(self, search_text: str) -> None:
+        """
+        Sets the text of the object search bar in the GUI.
+
+        This method updates the search bar with the provided search text, allowing users to filter the displayed objects based on their input.
+
+        :param search_text: The text to set in the object search bar.
+        :type search_text: str
+
+        :return: None
+        """
+        self.objects_list_gui.set_search_text(search_text)
+
+    def set_possible_relation_search_bar_text(self, search_text: str) -> None:
+        """
+        Sets the text of the possible relation search bar in the GUI.
+
+        This method updates the search bar with the provided search text, enabling users to filter the displayed possible relations based on their input.
+
+        :param search_text: The text to set in the possible relation search bar.
+        :type search_text: str
+
+        :return: None
+        """
+        self.possible_relation_list_gui.set_search_text(search_text)
+
+    def set_existing_relation_search_bar_text(self, search_text: str) -> None:
+        """
+        Sets the text of the existing relation search bar in the GUI.
+
+        This method updates the search bar with the provided search text, allowing users to filter the displayed existing relations based on their input.
+
+        :param search_text: The text to set in the existing relation search bar.
+        :type search_text: str
+
+        :return: None
+        """
+        self.existing_relation_list_gui.set_search_text(search_text)
 

@@ -1,12 +1,10 @@
 import asyncio
-import logging
 import os
 import platform
 import traceback
 from pathlib import Path
 from typing import List
 
-from PyQt6.QtWidgets import QListWidgetItem
 from otlmow_converter.Exceptions.ExceptionsGroup import ExceptionsGroup
 from otlmow_modelbuilder.SQLDataClasses.OSLOClass import OSLOClass
 from otlmow_template.SubsetTemplateCreator import SubsetTemplateCreator
@@ -140,7 +138,9 @@ class TemplateDomain:
             #TODO: give proper feedback to user if the subset file is not found
             cls.get_screen().set_gui_list_to_no_classes_found()
         OTLLogger.logger.debug("Load OTL classes from Subset", extra={"timing_ref": f"class_from_subset_{global_vars.current_project.eigen_referentie}"})
+
         cls.update_frontend()
+        cls.get_screen().reset_ui(GlobalTranslate._)
 
     @classmethod
     def update_frontend(cls):

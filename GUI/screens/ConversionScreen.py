@@ -63,6 +63,7 @@ class ConversionScreen(Screen):
         return input_file
 
     def reset_ui(self, _):
+        super().reset_ui(_)
         self._ = _
         self.input_file_label.setText(self._('file_for_conversion'))
         self.convert_btn.setText(self._('convert'))

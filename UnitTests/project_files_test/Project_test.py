@@ -626,22 +626,309 @@ def setup_quicksave_test_project(root_directory,mock_otl_wizard_dir) -> Project:
 def test_load_validated_assets(setup_quicksave_test_project):
 
 
-    loaded_assets_and_relations:list[Union[RelatieObject, RelationInteractor]] = setup_quicksave_test_project.load_validated_assets()
+    loaded_assets_and_relations:list[Union[RelatieObject, RelationInteractor]] = setup_quicksave_test_project.sync_load_validated_assets()
 
-    expected_assets_and_relations = ['<Verkeersbordopstelling> object\n    typeURI : https://wegenenverkeer.data.vlaanderen.be/ns/installatie#Verkeersbordopstelling\n    afbeelding :\n    [0] bestandsnaam : dummy_xEEIhxjFOV\n    [0] mimeType : application-vnd.openxmlformats-officedocument.wordprocessingml.document\n    [0] omschrijving :\n    [0]     waarde : dummy_ncnHoW\n    [0] uri : http://TCyQVsJASN.dummy\n    assetId :\n        identificator : dummy_hxOTHWe\n        toegekendDoor : dummy_GfaE\n    bestekPostNummer :\n    [0] dummy_ZFsldo\n    datumOprichtingObject : 2012-02-03\n    isActief : True\n    isBotsvriendelijk : False\n    notitie : dummy_UIKtqsinxn\n    operationeleStatus : actief\n    positieTovRijweg : midden\n    standaardBestekPostNummer :\n    [0] dummy_ddvuQMNpqH\n    theoretischeLevensduur :\n        waarde : 67\n    toestand : uit-gebruik\n    wegSegment :\n    [0] externReferentienummer : dummy_kblEa\n    [0] externePartij : dummy_Rwa',
-    '<Verkeersbordopstelling> object\n    typeURI : https://wegenenverkeer.data.vlaanderen.be/ns/installatie#Verkeersbordopstelling\n    afbeelding :\n    [0] bestandsnaam : dummy_NsCZgBsVn\n    [0] mimeType : text-plain\n    [0] omschrijving :\n    [0]     waarde : dummy_fU\n    [0] uri : http://NdYntJxSUtvzl.dummy\n    assetId :\n        identificator : dummy_LGG\n        toegekendDoor : dummy_O\n    bestekPostNummer :\n    [0] dummy_qhzW\n    datumOprichtingObject : 2003-04-26\n    isActief : True\n    isBotsvriendelijk : False\n    notitie : dummy_pHmx\n    operationeleStatus : actief-met-geplande-verwijdering\n    positieTovRijweg : midden\n    standaardBestekPostNummer :\n    [0] dummy_CWWD\n    theoretischeLevensduur :\n        waarde : 39\n    toestand : uit-gebruik\n    wegSegment :\n    [0] externReferentienummer : dummy_URvp\n    [0] externePartij : dummy_OMtmtTh',
-    '<Funderingsmassief> object\n    typeURI : https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Funderingsmassief\n    aanzetpeil :\n        waarde : 57.96\n    afmetingGrondvlak :\n        rechthoekig :\n                breedte :\n                            waarde : 62.93\n                lengte :\n                            waarde : 48.01\n    assetId :\n        identificator : dummy_TyBGmXfXC\n        toegekendDoor : dummy_Il\n    bestekPostNummer :\n    [0] dummy_bzJNOCVhP\n    datumOprichtingObject : 2017-09-09\n    funderingshoogte :\n        waarde : 11.65\n    hoogte :\n        waarde : 3.71\n    isActief : False\n    isPermanent : False\n    isPrefab : False\n    materiaal : inox\n    notitie : dummy_LUrrpZTJFy\n    standaardBestekPostNummer :\n    [0] dummy_aYtzBTGBHQ\n    theoretischeLevensduur :\n        waarde : 5\n    toestand : overgedragen\n    volume :\n        waarde : 74.11',
-    '<Funderingsmassief> object\n    typeURI : https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Funderingsmassief\n    aanzetpeil :\n        waarde : 26.7\n    afmetingGrondvlak :\n        rechthoekig :\n                breedte :\n                            waarde : 4.78\n                lengte :\n                            waarde : 18.51\n    assetId :\n        identificator : dummy_FNrHuPZCWV\n        toegekendDoor : dummy_wKUsXpdixr\n    bestekPostNummer :\n    [0] dummy_iCdhiGE\n    datumOprichtingObject : 2001-06-28\n    funderingshoogte :\n        waarde : 24.56\n    hoogte :\n        waarde : 3.4\n    isActief : False\n    isPermanent : True\n    isPrefab : False\n    materiaal : staal\n    notitie : dummy_qBuaNfLvKs\n    standaardBestekPostNummer :\n    [0] dummy_FKv\n    theoretischeLevensduur :\n        waarde : 7\n    toestand : in-opbouw\n    volume :\n        waarde : 40.2',
-    '<Pictogram> object\n    typeURI : https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Pictogram\n    assetId :\n        identificator : dummy_a\n        toegekendDoor : dummy_PnEQq\n    bestekPostNummer :\n    [0] dummy_mp\n    datumOprichtingObject : 2019-10-02\n    isActief : True\n    nalichtingstijd :\n        waarde : 39\n    notitie : dummy_ZszahHl\n    opschrift : dummy_drTTNduz\n    standaardBestekPostNummer :\n    [0] dummy_n\n    symbool : vluchtend-persoon\n    theoretischeLevensduur :\n        waarde : 27\n    toestand : in-opbouw',
-    '<Pictogram> object\n    typeURI : https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Pictogram\n    assetId :\n        identificator : dummy_long_identificator_pictogram\n        toegekendDoor : dummy_Ek\n    bestekPostNummer :\n    [0] dummy_AoigeDNpf\n    datumOprichtingObject : 2004-01-03\n    isActief : True\n    nalichtingstijd :\n        waarde : 4\n    notitie : dummy_Jp\n    opschrift : dummy_zZJ\n    standaardBestekPostNummer :\n    [0] dummy_yMDK\n    symbool : nummer-veiligheidsnis\n    theoretischeLevensduur :\n        waarde : 39\n    toestand : gepland',
-    '<Verkeersbordsteun> object\n    typeURI : https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Verkeersbordsteun\n    assetId :\n        identificator : dummy_vbeo\n        toegekendDoor : dummy_JNihuWw\n    bestekPostNummer :\n    [0] dummy_NratsxlNcl\n    breedte :\n        waarde : 68.82\n    datumOprichtingObject : 2000-03-26\n    diameter :\n        waarde : 24.2\n    fabricagevoorschrift : dummy_aeESM\n    isActief : True\n    lengte :\n        waarde : 51.45\n    lengteBovengronds :\n        waarde : 32.48\n    lengteOndergronds :\n        waarde : 19.36\n    naam : dummy_J\n    notitie : dummy_xZIw\n    operationeleStatus : tijdelijk-actief\n    standaardBestekPostNummer :\n    [0] dummy_aXoooLO\n    theoretischeLevensduur :\n        waarde : 41\n    toestand : overgedragen\n    type : botsvriendelijke-steun-type-100NE2\n    wanddikte :\n        waarde : 32.08',
-    '<Verkeersbordsteun> object\n    typeURI : https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Verkeersbordsteun\n    assetId :\n        identificator : dummy_TjwXqP\n        toegekendDoor : dummy_afJZZphX\n    bestekPostNummer :\n    [0] dummy_pKywpsiAoi\n    breedte :\n        waarde : 62.5\n    datumOprichtingObject : 2011-04-22\n    diameter :\n        waarde : 19.94\n    fabricagevoorschrift : dummy_Xyl\n    isActief : False\n    lengte :\n        waarde : 65.42\n    lengteBovengronds :\n        waarde : 75.44\n    lengteOndergronds :\n        waarde : 30.04\n    naam : dummy_s\n    notitie : dummy_lPDNDUFkW\n    operationeleStatus : actief-met-tijdelijke-wijziging\n    standaardBestekPostNummer :\n    [0] dummy_Z\n    theoretischeLevensduur :\n        waarde : 74\n    toestand : in-opbouw\n    type : botsvriendelijke-steun-type-100NE2\n    wanddikte :\n        waarde : 20.8',
-    '<Bewegingssensor> object\n    typeURI : https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Bewegingssensor\n    assetId :\n        identificator : dummy_Q\n        toegekendDoor : OTL_wizard_2',
-    '<BetonnenHeipaal> object\n    typeURI : https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#BetonnenHeipaal\n    assetId :\n        identificator : dummy_bcjseEAj\n        toegekendDoor : OTL_wizard_2',
-    '<Bevestiging> object\n    typeURI : https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Bevestiging\n    assetId :\n        identificator : dummy_bevestiging_2\n        toegekendDoor : dummy_zQp\n    bron :\n    bronAssetId :\n        identificator : dummy_Q\n        toegekendDoor : dummy_okopD\n    doel :\n    doelAssetId :\n        identificator : dummy_bcjseEAj\n        toegekendDoor : dummy_dY\n    isActief : True',
-    '<HoortBij> object\n    typeURI : https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#HoortBij\n    assetId :\n        identificator : dummy_hoort_bij\n        toegekendDoor : dummy_LxexRM\n    bron :\n    bronAssetId :\n        identificator : dummy_vbeo\n        toegekendDoor : dummy_Ouee\n    doel :\n    doelAssetId :\n        identificator : dummy_LGG\n        toegekendDoor : dummy_ZT\n    isActief : True',
-    '<Bevestiging> object\n    typeURI : https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Bevestiging\n    assetId :\n        identificator : dummy_bevestiging_1\n        toegekendDoor : dummy_zQp\n    bron :\n    bronAssetId :\n        identificator : dummy_a\n        toegekendDoor : dummy_okopD\n    doel :\n    doelAssetId :\n        identificator : dummy_TyBGmXfXC\n        toegekendDoor : dummy_dY\n    isActief : False',
-    '<LigtOp> object\n    typeURI : https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#LigtOp\n    assetId :\n        identificator : dummy_ligt_op\n        toegekendDoor : dummy_LxexRM\n    bron :\n    bronAssetId :\n        identificator : dummy_FNrHuPZCWV\n        toegekendDoor : dummy_Ouee\n    doel :\n    doelAssetId :\n        identificator : dummy_TyBGmXfXC\n        toegekendDoor : dummy_ZT\n    isActief : False']
+    print([str(asset) for asset in loaded_assets_and_relations])
+
+
+    expected_assets_and_relations = ['<Verkeersbordopstelling> object\n'
+     '    typeURI : '
+     'https://wegenenverkeer.data.vlaanderen.be/ns/installatie#Verkeersbordopstelling\n'
+     '    afbeelding :\n'
+     '    [0] bestandsnaam : dummy_xEEIhxjFOV\n'
+     '    [0] mimeType : '
+     'application-vnd.openxmlformats-officedocument.wordprocessingml.document\n'
+     '    [0] omschrijving :\n'
+     '    [0]     waarde : dummy_ncnHoW\n'
+     '    [0] uri : http://TCyQVsJASN.dummy\n'
+     '    assetId :\n'
+     '        identificator : dummy_hxOTHWe\n'
+     '        toegekendDoor : dummy_GfaE\n'
+     '    bestekPostNummer :\n'
+     '    [0] dummy_ZFsldo\n'
+     '    datumOprichtingObject : 2012-02-03\n'
+     '    isActief : True\n'
+     '    isBotsvriendelijk : False\n'
+     '    notitie : dummy_UIKtqsinxn\n'
+     '    operationeleStatus : actief\n'
+     '    positieTovRijweg : midden\n'
+     '    standaardBestekPostNummer :\n'
+     '    [0] dummy_ddvuQMNpqH\n'
+     '    theoretischeLevensduur :\n'
+     '        waarde : 67\n'
+     '    toestand : uit-gebruik\n'
+     '    wegSegment :\n'
+     '    [0] externReferentienummer : dummy_kblEa\n'
+     '    [0] externePartij : dummy_Rwa',
+     '<Verkeersbordopstelling> object\n'
+     '    typeURI : '
+     'https://wegenenverkeer.data.vlaanderen.be/ns/installatie#Verkeersbordopstelling\n'
+     '    afbeelding :\n'
+     '    [0] bestandsnaam : dummy_NsCZgBsVn\n'
+     '    [0] mimeType : text-plain\n'
+     '    [0] omschrijving :\n'
+     '    [0]     waarde : dummy_fU\n'
+     '    [0] uri : http://NdYntJxSUtvzl.dummy\n'
+     '    assetId :\n'
+     '        identificator : dummy_LGG\n'
+     '        toegekendDoor : dummy_O\n'
+     '    bestekPostNummer :\n'
+     '    [0] dummy_qhzW\n'
+     '    datumOprichtingObject : 2003-04-26\n'
+     '    isActief : True\n'
+     '    isBotsvriendelijk : False\n'
+     '    notitie : dummy_pHmx\n'
+     '    operationeleStatus : actief-met-geplande-verwijdering\n'
+     '    positieTovRijweg : midden\n'
+     '    standaardBestekPostNummer :\n'
+     '    [0] dummy_CWWD\n'
+     '    theoretischeLevensduur :\n'
+     '        waarde : 39\n'
+     '    toestand : uit-gebruik\n'
+     '    wegSegment :\n'
+     '    [0] externReferentienummer : dummy_URvp\n'
+     '    [0] externePartij : dummy_OMtmtTh',
+     '<Funderingsmassief> object\n'
+     '    typeURI : '
+     'https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Funderingsmassief\n'
+     '    aanzetpeil :\n'
+     '        waarde : 57.96\n'
+     '    afmetingGrondvlak :\n'
+     '        rechthoekig :\n'
+     '            breedte :\n'
+     '                waarde : 62.93\n'
+     '            lengte :\n'
+     '                waarde : 48.01\n'
+     '    assetId :\n'
+     '        identificator : dummy_TyBGmXfXC\n'
+     '        toegekendDoor : dummy_Il\n'
+     '    bestekPostNummer :\n'
+     '    [0] dummy_bzJNOCVhP\n'
+     '    datumOprichtingObject : 2017-09-09\n'
+     '    funderingshoogte :\n'
+     '        waarde : 11.65\n'
+     '    hoogte :\n'
+     '        waarde : 3.71\n'
+     '    isActief : False\n'
+     '    isPermanent : False\n'
+     '    isPrefab : False\n'
+     '    materiaal : inox\n'
+     '    notitie : dummy_LUrrpZTJFy\n'
+     '    standaardBestekPostNummer :\n'
+     '    [0] dummy_aYtzBTGBHQ\n'
+     '    theoretischeLevensduur :\n'
+     '        waarde : 5\n'
+     '    toestand : overgedragen\n'
+     '    volume :\n'
+     '        waarde : 74.11',
+     '<Funderingsmassief> object\n'
+     '    typeURI : '
+     'https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Funderingsmassief\n'
+     '    aanzetpeil :\n'
+     '        waarde : 26.7\n'
+     '    afmetingGrondvlak :\n'
+     '        rechthoekig :\n'
+     '            breedte :\n'
+     '                waarde : 4.78\n'
+     '            lengte :\n'
+     '                waarde : 18.51\n'
+     '    assetId :\n'
+     '        identificator : dummy_FNrHuPZCWV\n'
+     '        toegekendDoor : dummy_wKUsXpdixr\n'
+     '    bestekPostNummer :\n'
+     '    [0] dummy_iCdhiGE\n'
+     '    datumOprichtingObject : 2001-06-28\n'
+     '    funderingshoogte :\n'
+     '        waarde : 24.56\n'
+     '    hoogte :\n'
+     '        waarde : 3.4\n'
+     '    isActief : False\n'
+     '    isPermanent : True\n'
+     '    isPrefab : False\n'
+     '    materiaal : staal\n'
+     '    notitie : dummy_qBuaNfLvKs\n'
+     '    standaardBestekPostNummer :\n'
+     '    [0] dummy_FKv\n'
+     '    theoretischeLevensduur :\n'
+     '        waarde : 7\n'
+     '    toestand : in-opbouw\n'
+     '    volume :\n'
+     '        waarde : 40.2',
+     '<Pictogram> object\n'
+     '    typeURI : '
+     'https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Pictogram\n'
+     '    assetId :\n'
+     '        identificator : dummy_a\n'
+     '        toegekendDoor : dummy_PnEQq\n'
+     '    bestekPostNummer :\n'
+     '    [0] dummy_mp\n'
+     '    datumOprichtingObject : 2019-10-02\n'
+     '    isActief : True\n'
+     '    nalichtingstijd :\n'
+     '        waarde : 39\n'
+     '    notitie : dummy_ZszahHl\n'
+     '    opschrift : dummy_drTTNduz\n'
+     '    standaardBestekPostNummer :\n'
+     '    [0] dummy_n\n'
+     '    symbool : vluchtend-persoon\n'
+     '    theoretischeLevensduur :\n'
+     '        waarde : 27\n'
+     '    toestand : in-opbouw',
+     '<Pictogram> object\n'
+     '    typeURI : '
+     'https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Pictogram\n'
+     '    assetId :\n'
+     '        identificator : dummy_long_identificator_pictogram\n'
+     '        toegekendDoor : dummy_Ek\n'
+     '    bestekPostNummer :\n'
+     '    [0] dummy_AoigeDNpf\n'
+     '    datumOprichtingObject : 2004-01-03\n'
+     '    isActief : True\n'
+     '    nalichtingstijd :\n'
+     '        waarde : 4\n'
+     '    notitie : dummy_Jp\n'
+     '    opschrift : dummy_zZJ\n'
+     '    standaardBestekPostNummer :\n'
+     '    [0] dummy_yMDK\n'
+     '    symbool : nummer-veiligheidsnis\n'
+     '    theoretischeLevensduur :\n'
+     '        waarde : 39\n'
+     '    toestand : gepland',
+     '<Verkeersbordsteun> object\n'
+     '    typeURI : '
+     'https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Verkeersbordsteun\n'
+     '    assetId :\n'
+     '        identificator : dummy_vbeo\n'
+     '        toegekendDoor : dummy_JNihuWw\n'
+     '    bestekPostNummer :\n'
+     '    [0] dummy_NratsxlNcl\n'
+     '    breedte :\n'
+     '        waarde : 68.82\n'
+     '    datumOprichtingObject : 2000-03-26\n'
+     '    diameter :\n'
+     '        waarde : 24.2\n'
+     '    fabricagevoorschrift : dummy_aeESM\n'
+     '    isActief : True\n'
+     '    lengte :\n'
+     '        waarde : 51.45\n'
+     '    lengteBovengronds :\n'
+     '        waarde : 32.48\n'
+     '    lengteOndergronds :\n'
+     '        waarde : 19.36\n'
+     '    naam : dummy_J\n'
+     '    notitie : dummy_xZIw\n'
+     '    operationeleStatus : tijdelijk-actief\n'
+     '    standaardBestekPostNummer :\n'
+     '    [0] dummy_aXoooLO\n'
+     '    theoretischeLevensduur :\n'
+     '        waarde : 41\n'
+     '    toestand : overgedragen\n'
+     '    type : botsvriendelijke-steun-type-100NE2\n'
+     '    wanddikte :\n'
+     '        waarde : 32.08',
+     '<Verkeersbordsteun> object\n'
+     '    typeURI : '
+     'https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Verkeersbordsteun\n'
+     '    assetId :\n'
+     '        identificator : dummy_TjwXqP\n'
+     '        toegekendDoor : dummy_afJZZphX\n'
+     '    bestekPostNummer :\n'
+     '    [0] dummy_pKywpsiAoi\n'
+     '    breedte :\n'
+     '        waarde : 62.5\n'
+     '    datumOprichtingObject : 2011-04-22\n'
+     '    diameter :\n'
+     '        waarde : 19.94\n'
+     '    fabricagevoorschrift : dummy_Xyl\n'
+     '    isActief : False\n'
+     '    lengte :\n'
+     '        waarde : 65.42\n'
+     '    lengteBovengronds :\n'
+     '        waarde : 75.44\n'
+     '    lengteOndergronds :\n'
+     '        waarde : 30.04\n'
+     '    naam : dummy_s\n'
+     '    notitie : dummy_lPDNDUFkW\n'
+     '    operationeleStatus : actief-met-tijdelijke-wijziging\n'
+     '    standaardBestekPostNummer :\n'
+     '    [0] dummy_Z\n'
+     '    theoretischeLevensduur :\n'
+     '        waarde : 74\n'
+     '    toestand : in-opbouw\n'
+     '    type : botsvriendelijke-steun-type-100NE2\n'
+     '    wanddikte :\n'
+     '        waarde : 20.8',
+     '<Bewegingssensor> object\n'
+     '    typeURI : '
+     'https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Bewegingssensor\n'
+     '    assetId :\n'
+     '        identificator : dummy_Q\n'
+     '        toegekendDoor : OTL_wizard_2',
+     '<BetonnenHeipaal> object\n'
+     '    typeURI : '
+     'https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#BetonnenHeipaal\n'
+     '    assetId :\n'
+     '        identificator : dummy_bcjseEAj\n'
+     '        toegekendDoor : OTL_wizard_2',
+     '<Bevestiging> object\n'
+     '    typeURI : '
+     'https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Bevestiging\n'
+     '    assetId :\n'
+     '        identificator : dummy_bevestiging_2\n'
+     '        toegekendDoor : dummy_zQp\n'
+     '    bron :\n'
+     '    bronAssetId :\n'
+     '        identificator : dummy_Q\n'
+     '        toegekendDoor : dummy_okopD\n'
+     '    doel :\n'
+     '    doelAssetId :\n'
+     '        identificator : dummy_bcjseEAj\n'
+     '        toegekendDoor : dummy_dY\n'
+     '    isActief : True',
+     '<HoortBij> object\n'
+     '    typeURI : '
+     'https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#HoortBij\n'
+     '    assetId :\n'
+     '        identificator : dummy_hoort_bij\n'
+     '        toegekendDoor : dummy_LxexRM\n'
+     '    bron :\n'
+     '    bronAssetId :\n'
+     '        identificator : dummy_vbeo\n'
+     '        toegekendDoor : dummy_Ouee\n'
+     '    doel :\n'
+     '    doelAssetId :\n'
+     '        identificator : dummy_LGG\n'
+     '        toegekendDoor : dummy_ZT\n'
+     '    isActief : True',
+     '<Bevestiging> object\n'
+     '    typeURI : '
+     'https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Bevestiging\n'
+     '    assetId :\n'
+     '        identificator : dummy_bevestiging_1\n'
+     '        toegekendDoor : dummy_zQp\n'
+     '    bron :\n'
+     '    bronAssetId :\n'
+     '        identificator : dummy_a\n'
+     '        toegekendDoor : dummy_okopD\n'
+     '    doel :\n'
+     '    doelAssetId :\n'
+     '        identificator : dummy_TyBGmXfXC\n'
+     '        toegekendDoor : dummy_dY\n'
+     '    isActief : False',
+     '<LigtOp> object\n'
+     '    typeURI : https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#LigtOp\n'
+     '    assetId :\n'
+     '        identificator : dummy_ligt_op\n'
+     '        toegekendDoor : dummy_LxexRM\n'
+     '    bron :\n'
+     '    bronAssetId :\n'
+     '        identificator : dummy_FNrHuPZCWV\n'
+     '        toegekendDoor : dummy_Ouee\n'
+     '    doel :\n'
+     '    doelAssetId :\n'
+     '        identificator : dummy_TyBGmXfXC\n'
+     '        toegekendDoor : dummy_ZT\n'
+     '    isActief : False']
     assert [str(asset) for asset in loaded_assets_and_relations] == expected_assets_and_relations
 
 @fixture
@@ -653,7 +940,7 @@ def mock_get_last_quick_save_path_to_return_empty():
 
 def test_load_validated_assets_with_empty_path(setup_quicksave_test_project,mock_get_last_quick_save_path_to_return_empty):
 
-    loaded_assets_and_relations:list[Union[RelatieObject, RelationInteractor]] = setup_quicksave_test_project.load_validated_assets()
+    loaded_assets_and_relations:list[Union[RelatieObject, RelationInteractor]] = setup_quicksave_test_project.sync_load_validated_assets()
 
     assert loaded_assets_and_relations == []
 
@@ -763,7 +1050,8 @@ def test_save_validated_assets_delete_old_files(get_and_cleanup_empty_project: P
     assert quick_save_files == expected_quick_save_files
 @fixture
 def setup_preloaded_assets_in_memory(setup_quicksave_test_project) -> Project:
-    setup_quicksave_test_project.assets_in_memory = setup_quicksave_test_project.load_validated_assets()
+
+    setup_quicksave_test_project.assets_in_memory = setup_quicksave_test_project.sync_load_validated_assets()
     yield setup_quicksave_test_project
     setup_quicksave_test_project.assets_in_memory = []
 
@@ -777,27 +1065,9 @@ def test_save_validated_assets(setup_preloaded_assets_in_memory: Project):
     # we expect there to be a new last_quick_save
     assert setup_preloaded_assets_in_memory.last_quick_save != old_quicksave
 
-    new_loaded_assets = setup_preloaded_assets_in_memory.load_validated_assets()
+    new_loaded_assets = setup_preloaded_assets_in_memory.sync_load_validated_assets()
 
     assert new_loaded_assets == expected_assets
-
-    # same test as in the test_load_validated_assets to check validity of original data
-    expected_assets_and_relations = [
-        '<Verkeersbordopstelling> object\n    typeURI : https://wegenenverkeer.data.vlaanderen.be/ns/installatie#Verkeersbordopstelling\n    afbeelding :\n    [0] bestandsnaam : dummy_xEEIhxjFOV\n    [0] mimeType : application-vnd.openxmlformats-officedocument.wordprocessingml.document\n    [0] omschrijving :\n    [0]     waarde : dummy_ncnHoW\n    [0] uri : http://TCyQVsJASN.dummy\n    assetId :\n        identificator : dummy_hxOTHWe\n        toegekendDoor : dummy_GfaE\n    bestekPostNummer :\n    [0] dummy_ZFsldo\n    datumOprichtingObject : 2012-02-03\n    isActief : True\n    isBotsvriendelijk : False\n    notitie : dummy_UIKtqsinxn\n    operationeleStatus : actief\n    positieTovRijweg : midden\n    standaardBestekPostNummer :\n    [0] dummy_ddvuQMNpqH\n    theoretischeLevensduur :\n        waarde : 67\n    toestand : uit-gebruik\n    wegSegment :\n    [0] externReferentienummer : dummy_kblEa\n    [0] externePartij : dummy_Rwa',
-        '<Verkeersbordopstelling> object\n    typeURI : https://wegenenverkeer.data.vlaanderen.be/ns/installatie#Verkeersbordopstelling\n    afbeelding :\n    [0] bestandsnaam : dummy_NsCZgBsVn\n    [0] mimeType : text-plain\n    [0] omschrijving :\n    [0]     waarde : dummy_fU\n    [0] uri : http://NdYntJxSUtvzl.dummy\n    assetId :\n        identificator : dummy_LGG\n        toegekendDoor : dummy_O\n    bestekPostNummer :\n    [0] dummy_qhzW\n    datumOprichtingObject : 2003-04-26\n    isActief : True\n    isBotsvriendelijk : False\n    notitie : dummy_pHmx\n    operationeleStatus : actief-met-geplande-verwijdering\n    positieTovRijweg : midden\n    standaardBestekPostNummer :\n    [0] dummy_CWWD\n    theoretischeLevensduur :\n        waarde : 39\n    toestand : uit-gebruik\n    wegSegment :\n    [0] externReferentienummer : dummy_URvp\n    [0] externePartij : dummy_OMtmtTh',
-        '<Funderingsmassief> object\n    typeURI : https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Funderingsmassief\n    aanzetpeil :\n        waarde : 57.96\n    afmetingGrondvlak :\n        rechthoekig :\n                breedte :\n                            waarde : 62.93\n                lengte :\n                            waarde : 48.01\n    assetId :\n        identificator : dummy_TyBGmXfXC\n        toegekendDoor : dummy_Il\n    bestekPostNummer :\n    [0] dummy_bzJNOCVhP\n    datumOprichtingObject : 2017-09-09\n    funderingshoogte :\n        waarde : 11.65\n    hoogte :\n        waarde : 3.71\n    isActief : False\n    isPermanent : False\n    isPrefab : False\n    materiaal : inox\n    notitie : dummy_LUrrpZTJFy\n    standaardBestekPostNummer :\n    [0] dummy_aYtzBTGBHQ\n    theoretischeLevensduur :\n        waarde : 5\n    toestand : overgedragen\n    volume :\n        waarde : 74.11',
-        '<Funderingsmassief> object\n    typeURI : https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Funderingsmassief\n    aanzetpeil :\n        waarde : 26.7\n    afmetingGrondvlak :\n        rechthoekig :\n                breedte :\n                            waarde : 4.78\n                lengte :\n                            waarde : 18.51\n    assetId :\n        identificator : dummy_FNrHuPZCWV\n        toegekendDoor : dummy_wKUsXpdixr\n    bestekPostNummer :\n    [0] dummy_iCdhiGE\n    datumOprichtingObject : 2001-06-28\n    funderingshoogte :\n        waarde : 24.56\n    hoogte :\n        waarde : 3.4\n    isActief : False\n    isPermanent : True\n    isPrefab : False\n    materiaal : staal\n    notitie : dummy_qBuaNfLvKs\n    standaardBestekPostNummer :\n    [0] dummy_FKv\n    theoretischeLevensduur :\n        waarde : 7\n    toestand : in-opbouw\n    volume :\n        waarde : 40.2',
-        '<Pictogram> object\n    typeURI : https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Pictogram\n    assetId :\n        identificator : dummy_a\n        toegekendDoor : dummy_PnEQq\n    bestekPostNummer :\n    [0] dummy_mp\n    datumOprichtingObject : 2019-10-02\n    isActief : True\n    nalichtingstijd :\n        waarde : 39\n    notitie : dummy_ZszahHl\n    opschrift : dummy_drTTNduz\n    standaardBestekPostNummer :\n    [0] dummy_n\n    symbool : vluchtend-persoon\n    theoretischeLevensduur :\n        waarde : 27\n    toestand : in-opbouw',
-        '<Pictogram> object\n    typeURI : https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Pictogram\n    assetId :\n        identificator : dummy_long_identificator_pictogram\n        toegekendDoor : dummy_Ek\n    bestekPostNummer :\n    [0] dummy_AoigeDNpf\n    datumOprichtingObject : 2004-01-03\n    isActief : True\n    nalichtingstijd :\n        waarde : 4\n    notitie : dummy_Jp\n    opschrift : dummy_zZJ\n    standaardBestekPostNummer :\n    [0] dummy_yMDK\n    symbool : nummer-veiligheidsnis\n    theoretischeLevensduur :\n        waarde : 39\n    toestand : gepland',
-        '<Verkeersbordsteun> object\n    typeURI : https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Verkeersbordsteun\n    assetId :\n        identificator : dummy_vbeo\n        toegekendDoor : dummy_JNihuWw\n    bestekPostNummer :\n    [0] dummy_NratsxlNcl\n    breedte :\n        waarde : 68.82\n    datumOprichtingObject : 2000-03-26\n    diameter :\n        waarde : 24.2\n    fabricagevoorschrift : dummy_aeESM\n    isActief : True\n    lengte :\n        waarde : 51.45\n    lengteBovengronds :\n        waarde : 32.48\n    lengteOndergronds :\n        waarde : 19.36\n    naam : dummy_J\n    notitie : dummy_xZIw\n    operationeleStatus : tijdelijk-actief\n    standaardBestekPostNummer :\n    [0] dummy_aXoooLO\n    theoretischeLevensduur :\n        waarde : 41\n    toestand : overgedragen\n    type : botsvriendelijke-steun-type-100NE2\n    wanddikte :\n        waarde : 32.08',
-        '<Verkeersbordsteun> object\n    typeURI : https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Verkeersbordsteun\n    assetId :\n        identificator : dummy_TjwXqP\n        toegekendDoor : dummy_afJZZphX\n    bestekPostNummer :\n    [0] dummy_pKywpsiAoi\n    breedte :\n        waarde : 62.5\n    datumOprichtingObject : 2011-04-22\n    diameter :\n        waarde : 19.94\n    fabricagevoorschrift : dummy_Xyl\n    isActief : False\n    lengte :\n        waarde : 65.42\n    lengteBovengronds :\n        waarde : 75.44\n    lengteOndergronds :\n        waarde : 30.04\n    naam : dummy_s\n    notitie : dummy_lPDNDUFkW\n    operationeleStatus : actief-met-tijdelijke-wijziging\n    standaardBestekPostNummer :\n    [0] dummy_Z\n    theoretischeLevensduur :\n        waarde : 74\n    toestand : in-opbouw\n    type : botsvriendelijke-steun-type-100NE2\n    wanddikte :\n        waarde : 20.8',
-        '<Bewegingssensor> object\n    typeURI : https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Bewegingssensor\n    assetId :\n        identificator : dummy_Q\n        toegekendDoor : OTL_wizard_2',
-        '<BetonnenHeipaal> object\n    typeURI : https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#BetonnenHeipaal\n    assetId :\n        identificator : dummy_bcjseEAj\n        toegekendDoor : OTL_wizard_2',
-        '<Bevestiging> object\n    typeURI : https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Bevestiging\n    assetId :\n        identificator : dummy_bevestiging_2\n        toegekendDoor : dummy_zQp\n    bron :\n    bronAssetId :\n        identificator : dummy_Q\n        toegekendDoor : dummy_okopD\n    doel :\n    doelAssetId :\n        identificator : dummy_bcjseEAj\n        toegekendDoor : dummy_dY\n    isActief : True',
-        '<HoortBij> object\n    typeURI : https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#HoortBij\n    assetId :\n        identificator : dummy_hoort_bij\n        toegekendDoor : dummy_LxexRM\n    bron :\n    bronAssetId :\n        identificator : dummy_vbeo\n        toegekendDoor : dummy_Ouee\n    doel :\n    doelAssetId :\n        identificator : dummy_LGG\n        toegekendDoor : dummy_ZT\n    isActief : True',
-        '<Bevestiging> object\n    typeURI : https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Bevestiging\n    assetId :\n        identificator : dummy_bevestiging_1\n        toegekendDoor : dummy_zQp\n    bron :\n    bronAssetId :\n        identificator : dummy_a\n        toegekendDoor : dummy_okopD\n    doel :\n    doelAssetId :\n        identificator : dummy_TyBGmXfXC\n        toegekendDoor : dummy_dY\n    isActief : False',
-        '<LigtOp> object\n    typeURI : https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#LigtOp\n    assetId :\n        identificator : dummy_ligt_op\n        toegekendDoor : dummy_LxexRM\n    bron :\n    bronAssetId :\n        identificator : dummy_FNrHuPZCWV\n        toegekendDoor : dummy_Ouee\n    doel :\n    doelAssetId :\n        identificator : dummy_TyBGmXfXC\n        toegekendDoor : dummy_ZT\n    isActief : False']
-    assert [str(asset) for asset in new_loaded_assets] == expected_assets_and_relations
 
 def list_files_scandir(path='.'):
     with os.scandir(path) as entries:

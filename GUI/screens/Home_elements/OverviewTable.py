@@ -105,9 +105,12 @@ class OverviewTable(QTableWidget):
            :return: None
            """
         if isinstance(item, datetime.date):
-            self.setItem(row, column, QTableWidgetItem(item.strftime("%d-%m-%Y")))
+            list_item = QTableWidgetItem(item.strftime("%d-%m-%Y"))
         else:
-            self.setItem(row, column, QTableWidgetItem(str(item)))
+            list_item = QTableWidgetItem(str(item))
+
+        list_item.setToolTip(self._("Double-click to open project"))
+        self.setItem(row, column,list_item)
 
     def add_action_buttons(self, row: int, project: Project) -> None:
         """

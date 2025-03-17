@@ -56,6 +56,8 @@ class ObjectListWidget(AbstractInstanceListWidget):
                         identificator=selected_object_id)
                     self.selected_item = item
 
+
+
                     # keep count of selected items in folder
                     parent_type_folder_item = item.parent()
                     parent_type_folder_type = parent_type_folder_item.data(self.data_1_index)
@@ -79,6 +81,8 @@ class ObjectListWidget(AbstractInstanceListWidget):
                                       otl_type=type_folder_type,
                                       item_count=item_count,
                                       selected_item_count=selected_item_count)
+
+
 
         event_loop = asyncio.get_event_loop()
         event_loop.create_task(RelationChangeDomain.set_possible_relations(selected_object=self.selected_object))
@@ -153,3 +157,8 @@ class ObjectListWidget(AbstractInstanceListWidget):
 
         self.list_gui.addItem(place_holder_item)
 
+    def asset_clicked_listener(self):
+        # automatically set the 3rd column (existing relations) to search for
+        # the selected asset
+        if self.selected_item:
+            self.parent.set_existing_relation_search_bar_text(self.selected_item.text())

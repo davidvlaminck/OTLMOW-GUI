@@ -112,6 +112,7 @@ class AbstractInstanceListWidget:
         self.list_gui = FolderTreeView()
         self.list_gui.setProperty('class', 'list')
         self.list_gui.selectionModel().selectionChanged.connect(self.on_item_selected_listener)
+        self.list_gui.selectionModel().selection
         self.list_gui.expanded.connect(self.record_expanse_listener)
         self.list_gui.collapsed.connect(self.record_collapse_listener)
         self.list_gui.clicked.connect(self.clicked_item_listener)
@@ -159,6 +160,8 @@ class AbstractInstanceListWidget:
         table_coord = table_coord.siblingAtColumn(0)
         if self.is_item_a_type_folder_at_row(table_coord):
            self.list_gui.toggle_expand_state_of_item_at_row(table_coord)
+        else:
+          self.asset_clicked_listener()
 
     def is_item_a_type_folder_at_row(self, model_index):
         return self.list_gui.model.itemFromIndex(model_index).hasChildren()
@@ -373,6 +376,9 @@ class AbstractInstanceListWidget:
         self.search_bar.setText("")
         RelationChangeDomain.update_frontend()
 
+    def set_search_text(self, text):
+        self.search_bar.setText(text)
+
     def filter_on_search_text(self, items:list[QListWidgetItem]) -> list[QListWidgetItem]:
 
         return   [item for item in items
@@ -535,3 +541,6 @@ class AbstractInstanceListWidget:
 
     def update_color_scheme(self):
         self.set_clear_icon(self.clear_search_bar_button)
+
+    def asset_clicked_listener(self):
+        pass

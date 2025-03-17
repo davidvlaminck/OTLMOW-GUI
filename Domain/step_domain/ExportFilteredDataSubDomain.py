@@ -119,6 +119,15 @@ class ExportFilteredDataSubDomain:
         cls.get_screen().fill_up_change_table(cls.generate_diff_report(original_assets, new_assets, model_dir))
 
     @classmethod
+    def sync_export_diff_report(cls,
+                           file_name: str,
+                           separate_per_class_csv_option:bool = False,
+                           separate_relations_option:bool = False,**kwargs) -> None:
+        cls.export_diff_report(file_name= file_name,
+                               separate_per_class_csv_option=separate_per_class_csv_option,
+                               separate_relations_option=separate_relations_option,**kwargs)
+
+    @classmethod
     @async_to_sync_wraps
     @add_loading_screen
     async def export_diff_report(cls,
@@ -148,7 +157,7 @@ class ExportFilteredDataSubDomain:
         assets = sorted(diff_1_assets,key=lambda relation1: relation1.typeURI)
         relations = sorted(diff_1_relations, key=lambda relation1: relation1.typeURI)
 
-        ExportDataDomain.export_to_files(assets, relations , file_name,
+        await ExportDataDomain.export_to_files(assets, relations , file_name,
                             separate_per_class_csv_option, separate_relations_option,**kwargs)
 
 

@@ -272,6 +272,45 @@ class Project:
             return saved_objects
         return []
 
+    def sync_load_validated_assets(self) -> list[Union[RelatieObject, RelationInteractor]]:
+        # sourcery skip: assign-if-exp, reintroduce-else, use-named-expression
+        """
+        Loads validated assets from the most recent quick save file.
+
+        If a valid quick save path is found, it converts the file contents into a list of AIMObject
+        instances; otherwise, it returns an empty list.
+
+        :param self: The instance of the class managing asset loading.
+
+        :return:    A list of validated AIMObject instances loaded from the quick save file, or an
+                    empty list if no valid path is found.
+        :rtype: list[AIMObject]
+
+        :example:
+            assets = project.load_validated_assets()
+        """
+
+        path = self.get_last_quick_save_path()
+
+        if path:
+            timing_ref = f"load_assets_{path.stem}"
+            OTLLogger.logger.debug(
+                f"Execute Project.load_validated_assets({path.name}) for project "
+                f"{self.eigen_referentie}",
+                extra={"timing_ref": timing_ref})
+
+            # noinspection PyTypeChecker
+            saved_objects, exceptions_group = Helpers.converter_from_file_to_object(path)
+
+            object_count = len(saved_objects)
+            OTLLogger.logger.debug(
+                f"Execute Project.load_validated_assets({path.name}) for project"
+                f" {self.eigen_referentie} ({object_count} objects)",
+                extra={"timing_ref": timing_ref})
+
+            return saved_objects
+        return []
+
     def save_validated_assets(self, asynchronous = True) -> None:
         """
         Saves validated assets to the project quick save directory.

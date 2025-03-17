@@ -39,6 +39,7 @@ class TabWidget(Screen):
             self.tab2 = widget2
             self.desc2 = kwargs.get('description2', None)
             self.tabs.addTab(self.tab2, self._(self.desc2))
+            self.tabs.currentChanged.connect(self.tab2.opened)
         if widget3 is not None:
             self.tab3 = widget3
             self.desc3 = kwargs.get('description3', None)
@@ -63,6 +64,7 @@ class TabWidget(Screen):
         returnToHomeScreenButton.clicked.connect(self.onClickReturnToHomeScreen)
 
     def reset_ui(self, _):
+        super().reset_ui(_)
         self._ = _
         # OTLLogger.logger.debug("resetting a tab widget")
         self.header.reset_ui(_)

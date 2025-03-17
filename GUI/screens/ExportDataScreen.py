@@ -155,7 +155,7 @@ class ExportDataScreen(Screen):
         :return: A QFrame containing the button box with the export button.
         :rtype: QFrame
         """
-
+        super().reset_ui(_)
         self._ = _
         self.title.setText(self._('export_to_davie'))
 

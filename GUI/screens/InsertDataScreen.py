@@ -524,6 +524,7 @@ class InsertDataScreen(Screen):
 
 
     def reset_ui(self, language) -> None:
+        super().reset_ui(_)
         self._ = language
         self.input_file_label.setText(self._('input_file'))
         self.control_button.setText(self._('control_button'))

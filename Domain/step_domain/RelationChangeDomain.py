@@ -192,6 +192,7 @@ class RelationChangeDomain:
     last_added_to_possible: Optional[list[RelatieObject]] = []  # relation last added to col 2
 
     external_object_added = False
+    visualisation_uptodate = True
 
 
     @classmethod
@@ -242,6 +243,7 @@ class RelationChangeDomain:
         cls.possible_object_to_object_relations_dict = {}
         cls.aim_id_relations = []
         cls.external_object_added = False
+        cls.visualisation_uptodate = False
 
     @classmethod
     @async_to_sync_wraps
@@ -324,6 +326,7 @@ class RelationChangeDomain:
         cls.get_screen().fill_object_list(cls.shown_objects)
         cls.get_screen().fill_possible_relations_list(None, {})
         cls.get_screen().fill_existing_relations_list(cls.existing_relations)
+        cls.visualisation_uptodate = False
 
     @classmethod
     def create_and_add_missing_external_assets_from_relations(cls) -> None:
@@ -980,7 +983,7 @@ class RelationChangeDomain:
 
         :return: None
         """
-
+        cls.visualisation_uptodate = False
         relation_object.isActief = True
         cls.existing_relations.append(relation_object)
         cls.get_screen().expand_existing_relations_folder_of(
@@ -1037,7 +1040,7 @@ class RelationChangeDomain:
         :return: The relation object that was removed from the existing relations.
         :rtype: RelatieObject
         """
-
+        cls.visualisation_uptodate = False
         removed_relation = cls.existing_relations.pop(index)
         # if the removed relation already had an AIM ID it is set to false and kept if not it is
         # removed and made again in the possible relations
@@ -1162,6 +1165,12 @@ class RelationChangeDomain:
         return cls.shown_objects + cls.get_persistent_relations()
 
     @classmethod
+    def get_visualisation_instances(cls)-> list[Union[RelatieObject, RelationInteractor]]:
+        cls.visualisation_uptodate = True
+        return [asset for asset in RelationChangeDomain.get_quicksave_instances() if
+         asset.isActief != False]
+
+    @classmethod
     def apply_active_aim_id_relations(cls) -> None:
         """
         Applies active AIM ID relations (already in DAVIE) to the list of existing relations.
@@ -1171,7 +1180,7 @@ class RelationChangeDomain:
 
         :return: None
         """
-
+        
         for relation_instance in cls.aim_id_relations:
             if relation_instance.isActief:
                 cls.existing_relations.append(relation_instance)
@@ -1246,3 +1255,7 @@ class RelationChangeDomain:
 
         cls.external_object_added = True
         cls.update_frontend()
+        
+    @classmethod
+    def is_visualisation_uptodate(cls):
+        return cls.visualisation_uptodate

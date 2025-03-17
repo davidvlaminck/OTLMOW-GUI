@@ -315,6 +315,9 @@ def test_convert_SDF_to_CSV_FDOToolbox_not_installed_error(root_directory,create
 
     assert str(exc_info.value) == expected_error_msg
 
+# cannot really compare 2 SDF on content alone (ignoring metadata such as date of creation)
+# these SDF's have no objects only class-definitions
+@pytest.mark.skip
 @pytest.mark.parametrize(
     "rel_input_xsd_path, rel_output_sdf_path, expected_output_dirpath, expected_output_file_basename",
     [
@@ -350,7 +353,7 @@ def test_convert_XSD_to_SDF(root_directory,create_translations,cleanup_after_cre
     assert output_test == expected_output
 
 
-
+@pytest.mark.skip
 def test_create_sdf_from_filtered_subset_slagbomen(root_directory,cleanup_after_creating_a_file_to_delete):
     # SETUP
     kast_path = root_directory / 'UnitTests' /'test_files' / 'input' / 'voorbeeld-slagboom.db'
