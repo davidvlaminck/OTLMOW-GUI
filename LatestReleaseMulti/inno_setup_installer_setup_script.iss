@@ -37,7 +37,8 @@ ChangesAssociations=yes
 DisableProgramGroupPage=yes
 ; Remove the following line to run in administrative install mode (install for all users.)
 PrivilegesRequired=lowest
-PrivilegesRequiredOverridesAllowed=dialog
+UsePreviousAppDir=no
+//PrivilegesRequiredOverridesAllowed=dialog
 InfoBeforeFile=C:\Users\chris\PycharmProjects\OTLMOW-GUI\LatestReleaseMulti\before_install_text_FDOtool_warning.txt
 InfoAfterFile=C:\Users\chris\PycharmProjects\OTLMOW-GUI\LatestReleaseMulti\long_startup_warning.txt
 OutputDir=C:\Users\chris\PycharmProjects\OTLMOW-GUI\LatestReleaseMulti
@@ -75,146 +76,62 @@ Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: de
 Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent
 
 [Code]
-// https://docs.lextudio.com/blog/inno-setup-script-sample-for-version-comparison-advanced-version-c398d0ef18ad
-// function IsModuleLoaded to call at install time
-// added also setuponly flag
-function IsModuleLoaded(modulename: String ):  Boolean;
-external 'IsModuleLoaded@files:psvince.dll stdcall setuponly';
- 
-// function IsModuleLoadedU to call at uninstall time
-// added also uninstallonly flag
-function IsModuleLoadedU(modulename: String ):  Boolean;
-external 'IsModuleLoaded@{app}\psvince.dll stdcall uninstallonly' ;
- 
-function GetNumber(var temp: String): Integer;
+// https://stackoverflow.com/questions/2000296/how-to-automatically-uninstall-previous-installed-version-in-inno-setup
+/////////////////////////////////////////////////////////////////////
+function GetUninstallString(): String;
 var
-  part: String;
-  pos1: Integer;
+  sUnInstPath: String;
+  sUnInstallString: String;
 begin
-  if Length(temp) = 0 then
-  begin
-    Result := -1;
-    Exit;
-  end;
-    pos1 := Pos('.', temp);
-    if (pos1 = 0) then
-    begin
-      Result := StrToInt(temp);
-    temp := '';
-    end
-    else
-    begin
-    part := Copy(temp, 1, pos1 - 1);
-      temp := Copy(temp, pos1 + 1, Length(temp));
-      Result := StrToInt(part);
-    end;
+  sUnInstPath := ExpandConstant('Software\Microsoft\Windows\CurrentVersion\Uninstall\{#emit SetupSetting("AppId")}_is1');
+  sUnInstallString := '';
+  if not RegQueryStringValue(HKLM, sUnInstPath, 'UninstallString', sUnInstallString) then
+    RegQueryStringValue(HKCU, sUnInstPath, 'UninstallString', sUnInstallString);
+  Result := sUnInstallString;
 end;
- 
-function CompareInner(var temp1, temp2: String): Integer;
-var
-  num1, num2: Integer;
-begin
-    num1 := GetNumber(temp1);
-  num2 := GetNumber(temp2);
-  if (num1 = -1) or (num2 = -1) then
-  begin
-    Result := 0;
-    Exit;
-  end;
-      if (num1 > num2) then
-      begin
-        Result := 1;
-      end
-      else if (num1 < num2) then
-      begin
-        Result := -1;
-      end
-      else
-      begin
-        Result := CompareInner(temp1, temp2);
-      end;
-end;
- 
-function CompareVersion(str1, str2: String): Integer;
-var
-  temp1, temp2: String;
-begin
-    temp1 := str1;
-    temp2 := str2;
-    Result := CompareInner(temp1, temp2);
-end;
- 
-function InitializeSetup(): Boolean;
-var
-  oldVersion: String;
-  uninstaller: String;
-  ErrorCode: Integer;
-begin
-  if IsModuleLoaded( 'bds.exe' ) then
-  begin
-    MsgBox( '{#MyAppBaseName} is running, please close it and run setup again.',
-             mbError, MB_OK );
-    Result := False;
-    Exit;
-  end;
- 
-  if RegKeyExists(HKEY_LOCAL_MACHINE,
-    'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{#MyAppID}_is1') then
-  begin
-    RegQueryStringValue(HKEY_LOCAL_MACHINE,
-      'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{#MyAppID}_is1',
-      'DisplayVersion', oldVersion);
-    if (CompareVersion(oldVersion, '{#MyAppBaseName}') < 0) then
-    begin
-      if MsgBox('Version ' + oldVersion + ' of {#MyAppBaseName} is already installed. Continue to use this old version?',
-        mbConfirmation, MB_YESNO) = IDYES then
-      begin
-        Result := False;
-      end
-      else
-      begin
-          RegQueryStringValue(HKEY_LOCAL_MACHINE,
-            'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{#MyAppID}_is1',
-            'UninstallString', uninstaller);
-          ShellExec('runas', uninstaller, '/SILENT', '', SW_HIDE, ewWaitUntilTerminated, ErrorCode);
-          if (ErrorCode <> 0) then
-          begin
-            MsgBox( 'Failed to uninstall {#MyAppBaseName} version ' + oldVersion + '. Please restart Windows and run setup again.',
-             mbError, MB_OK );
-            Result := False;
-          end
-          else
-          begin
-            Result := True;
-          end;
-      end;
-    end
-    else
-    begin
-      MsgBox('Version ' + oldVersion + ' of {#MyAppBaseName} is already installed. This installer will exit.',
-        mbInformation, MB_OK);
-      Result := False;
-    end;
-  end
-  else
-  begin
-    Result := True;
-  end;
-end;
- 
-function InitializeUninstall(): Boolean;
-begin
- 
-  // check if notepad is running
-  if IsModuleLoadedU( 'bds.exe' ) then
-  begin
-    MsgBox( '{#MyAppBaseName} is running, please close it and run again uninstall.',
-             mbError, MB_OK );
-    Result := false;
-  end
-  else Result := true;
 
-  // Unload the DLL, otherwise the dll psvince is not deleted
-  UnloadDLL(ExpandConstant('{app}\psvince.dll'));
- 
+
+/////////////////////////////////////////////////////////////////////
+function IsUpgrade(): Boolean;
+begin
+  Result := (GetUninstallString() <> '');
+end;
+
+
+/////////////////////////////////////////////////////////////////////
+function UnInstallOldVersion(): Integer;
+var
+  sUnInstallString: String;
+  iResultCode: Integer;
+begin
+// Return Values:
+// 1 - uninstall string is empty
+// 2 - error executing the UnInstallString
+// 3 - successfully executed the UnInstallString
+
+  // default return value
+  Result := 0;
+
+  // get the uninstall string of the old app
+  sUnInstallString := GetUninstallString();
+  if sUnInstallString <> '' then begin
+    sUnInstallString := RemoveQuotes(sUnInstallString);
+    if Exec(sUnInstallString, '/SILENT /NORESTART /SUPPRESSMSGBOXES','', SW_HIDE, ewWaitUntilTerminated, iResultCode) then
+      Result := 3
+    else
+      Result := 2;
+  end else
+    Result := 1;
+end;
+
+/////////////////////////////////////////////////////////////////////
+procedure CurStepChanged(CurStep: TSetupStep);
+begin
+  if (CurStep=ssInstall) then
+  begin
+    if (IsUpgrade()) then
+    begin
+      UnInstallOldVersion();
+    end;
+  end;
 end;
