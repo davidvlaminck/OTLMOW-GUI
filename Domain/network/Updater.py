@@ -95,41 +95,45 @@ class Updater:
         if not otlmow_model_lib_path.exists():
             OTLLogger.logger.info("No otlmow-model library directory found to update! are you in testing environment?")
             return
-
         try:
             local_model_version = cls.get_local_otl_model_library_version()
             online_model_version = cls.get_otlmow_model_version()
-            if Helpers.is_version_equal_or_higher(local_model_version,online_model_version):
+            if Helpers.is_version_equal_or_higher(local_model_version, online_model_version):
                 OTLLogger.logger.info("otlmow-model is uptodate")
                 return
 
-            OTLLogger.logger.info("Updating otlmow-model", extra={"timing_ref": "update_otlmow_model"})
-            unzip_dir_path = cls.download_fresh_otlmow_model()
+            try:
 
-            files_in_unzip_dir_path_list = os.listdir(unzip_dir_path)
-            if files_in_unzip_dir_path_list:
+                OTLLogger.logger.info("Updating otlmow-model", extra={"timing_ref": "update_otlmow_model"})
+                unzip_dir_path = cls.download_fresh_otlmow_model()
 
-                new_otlmow_model_dir_path = unzip_dir_path/ files_in_unzip_dir_path_list[0] / 'otlmow_model'
+                files_in_unzip_dir_path_list = os.listdir(unzip_dir_path)
+                if files_in_unzip_dir_path_list:
 
-                # replace old otlmow_model folder in application site_packages with new otlmow_model
-                OTLLogger.logger.info(
-                    f"Replacing old otlmow_model folder at: {otlmow_model_lib_path}", extra={"timing_ref": "replace_otl_model"})
-                if otlmow_model_lib_path.exists():
-                    shutil.rmtree(otlmow_model_lib_path)
+                    new_otlmow_model_dir_path = unzip_dir_path/ files_in_unzip_dir_path_list[0] / 'otlmow_model'
 
-                shutil.copytree(new_otlmow_model_dir_path,otlmow_model_lib_path)
-                OTLLogger.logger.info(
-                    "Replaced old otlmow_model folder", extra={"timing_ref": "replace_otl_model"})
-                OTLLogger.logger.info("Updated otlmow-model",
+                    # replace old otlmow_model folder in application site_packages with new otlmow_model
+                    OTLLogger.logger.info(
+                        f"Replacing old otlmow_model folder at: {otlmow_model_lib_path}", extra={"timing_ref": "replace_otl_model"})
+                    if otlmow_model_lib_path.exists():
+                        shutil.rmtree(otlmow_model_lib_path)
+
+                    shutil.copytree(new_otlmow_model_dir_path,otlmow_model_lib_path)
+                    OTLLogger.logger.info(
+                        "Replaced old otlmow_model folder", extra={"timing_ref": "replace_otl_model"})
+                    OTLLogger.logger.info("Updated otlmow-model",
+                                          extra={"timing_ref": "update_otlmow_model"})
+                    return
+
+                OTLLogger.logger.info("FAILED Updating otlmow-model", extra={"timing_ref": "update_otlmow_model"})
+            except Exception as e:
+                OTLLogger.logger.info("FAILED Updating otlmow-model",
                                       extra={"timing_ref": "update_otlmow_model"})
-                return
+                OTLLogger.logger.error("".join(traceback.format_exception(e)))
 
-            OTLLogger.logger.info("FAILED Updating otlmow-model", extra={"timing_ref": "update_otlmow_model"})
         except Exception as e:
-            OTLLogger.logger.info("FAILED Updating otlmow-model",
-                                  extra={"timing_ref": "update_otlmow_model"})
+            OTLLogger.logger.info("FAILED determining if local otlmow-model library is out of date (probably connection issue)")
             OTLLogger.logger.error("".join(traceback.format_exception(e)))
-
     @classmethod
     async def async_get_local_otl_model_library_version(cls):
 
