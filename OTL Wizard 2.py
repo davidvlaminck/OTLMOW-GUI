@@ -83,7 +83,10 @@ class OTLWizard(QApplication):
         self.main_window.resize(1250, 650)
         self.main_window.setWindowTitle('OTLWizard')
         self.main_window.setMinimumSize(800, 600)
+
         self.main_window.show()
+        self.main_window.raise_()
+        self.main_window.activateWindow()
 
 
         self.meipass = sys._MEIPASS if hasattr(sys, '_MEIPASS') else None
