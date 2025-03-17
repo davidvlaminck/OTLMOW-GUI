@@ -118,7 +118,7 @@ class TemplateDomain:
             modelbuilder = global_vars.current_project.get_model_builder()
             subset_otl_version = global_vars.current_project.get_otl_version()
 
-            otl_model_version = await Updater.get_local_otl_model_library_version()
+            otl_model_version = await Updater.async_get_local_otl_model_library_version()
             if not Helpers.is_version_equal_or_higher(otl_model_version, subset_otl_version):
                 OTLLogger.logger.info("otlmow-model version is outdated")
                 SuggestUpdateWindow(language_settings=GlobalTranslate._,

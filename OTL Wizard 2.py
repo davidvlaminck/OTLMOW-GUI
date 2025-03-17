@@ -3,6 +3,7 @@ import importlib
 import logging
 import os
 import sys
+import time
 import traceback
 import typing
 
@@ -38,10 +39,7 @@ project_dir = ROOT_DIR / 'demo_projects/'
 
 LANG_DIR = ROOT_DIR / 'locale/'
 
-if '_PYI_SPLASH_IPC' in os.environ and importlib.util.find_spec("pyi_splash"):
-    import pyi_splash
-    pyi_splash.update_text('UI Loaded ...')
-    pyi_splash.close()
+
     # OTLLogger.logger.info('Splash screen closed.')
 
 # Used to add demo data to the application for showcase purpose only
@@ -66,8 +64,15 @@ class OTLWizard(QApplication):
 
         sys.excepthook = excepthook
 
-        Updater.check_for_OTL_wizard_updates()
+
         Updater.update_oltmow_model()
+
+        if '_PYI_SPLASH_IPC' in os.environ and importlib.util.find_spec("pyi_splash"):
+            import pyi_splash
+            pyi_splash.update_text('UI Loaded ...')
+            pyi_splash.close()
+
+        Updater.check_for_OTL_wizard_updates()
 
         app_icon = QIcon(str(Path('img','wizard.ico')))
         self.setWindowIcon(app_icon)

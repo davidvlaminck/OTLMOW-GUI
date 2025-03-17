@@ -29,8 +29,6 @@ class ProgramFileStructure:
         if not model_dir_path.exists():
             model_dir_path.mkdir()
 
-            # cls.download_fresh_otlmow_model(model_dir_path)
-            # cls.get_otlmow_model_version(model_dir_path)
         return model_dir_path
 
     @classmethod
