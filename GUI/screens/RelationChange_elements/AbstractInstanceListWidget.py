@@ -62,6 +62,8 @@ class AbstractInstanceListWidget:
         self.second_paint = False
         self.multi_col_list = True
 
+        self.id_to_object_with_text_and_data_dict: dict = {}
+
 
     class LastAddedHighlightDelegate(QStyledItemDelegate):
 
@@ -544,3 +546,6 @@ class AbstractInstanceListWidget:
 
     def asset_clicked_listener(self):
         pass
+
+    def get_current_list_content_dict(self) -> dict:
+        return self.id_to_object_with_text_and_data_dict

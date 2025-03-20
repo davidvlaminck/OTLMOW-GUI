@@ -439,3 +439,5 @@ class RelationChangeScreen(RelationChangeScreenInterface):
         """
         self.existing_relation_list_gui.set_search_text(search_text)
 
+    def get_current_object_list_content_dict(self) -> dict[str,list]:
+        return self.objects_list_gui.get_current_list_content_dict()

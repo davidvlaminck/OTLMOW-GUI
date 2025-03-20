@@ -1258,3 +1258,7 @@ class RelationChangeDomain:
     @classmethod
     def is_visualisation_uptodate(cls):
         return cls.visualisation_uptodate
+
+    @classmethod
+    def get_current_relation_change_screen_object_list_content_dict(cls):
+        return cls.get_screen().get_current_object_list_content_dict()

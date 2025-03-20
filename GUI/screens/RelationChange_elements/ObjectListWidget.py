@@ -104,6 +104,7 @@ class ObjectListWidget(AbstractInstanceListWidget):
 
     def extract_text_and_data_per_item(self, source_object, objects, last_added):
         list_of_corresponding_values = []
+        self.id_to_object_with_text_and_data_dict.clear() # for usage in MapScreen
 
         for OTL_object in objects:
             screen_name = RelationChangeHelpers.get_screen_name(OTL_object)
@@ -115,10 +116,14 @@ class ObjectListWidget(AbstractInstanceListWidget):
                 add_namespace,
                 OTLObjectHelper.is_relation(OTL_object))
 
-            list_of_corresponding_values.append({
+            correct_id:str = RelationChangeHelpers.get_corrected_identificator(OTL_object)
+            text_and_data = {
                 "text": self.Text(abbr_typeURI,screen_name,OTL_object.typeURI),
-                "data": self.Data(RelationChangeHelpers.get_corrected_identificator(OTL_object), False)
-            })
+                "data": self.Data(correct_id, False)
+            }
+            list_of_corresponding_values.append(text_and_data)
+
+            self.id_to_object_with_text_and_data_dict[correct_id] = [OTL_object,text_and_data]
         return list_of_corresponding_values
     def create_instance_standard_item(self, text_and_data):
         text = f"{text_and_data['text'].screen_name}"
