@@ -62,3 +62,6 @@ class RelationChangeScreenInterface(Screen):
 
     def get_current_object_list_content_dict(self) -> dict[str, list]:
         pass
+
+    def set_selected_object(self, identificator: str):
+        pass

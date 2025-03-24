@@ -12,15 +12,15 @@ from pyproj import Proj, transform
 
 class MapHelper:
     @classmethod
-    def create_html_map(self,objects_in_memory,ROOT_DIR,HTML_DIR):
+    def create_html_map(self,id_to_object_with_text_and_data_dict:dict,ROOT_DIR,HTML_DIR):
         coordinate = (37.8199286, -122.4782551)
 
 
         # satelite image layer from google maps instead of open street road map
         tile = folium.TileLayer(
             tiles='http://mt0.google.com/vt/lyrs=s&hl=en&x={x}&y={y}&z={z}',
-            attr='Esri',
-            name='Esri Satellite',
+            attr='Google',
+            name='Google Satellite',
             maxZoom= 20,
             maxNativeZoom= 18,
             overlay=False,
@@ -30,9 +30,7 @@ class MapHelper:
         m = folium.Map(
             zoom_start=13,
             location=coordinate,
-            max_zoom=30,
             tiles=tile
-
         )
         img_qurl = QUrl(pathlib.Path.home().drive + str(
             (ROOT_DIR.parent.parent / "img" / "bol.png").absolute()).replace("\\", "/"))
@@ -53,7 +51,7 @@ class MapHelper:
                                 var lat = e.latlng.lat;
                                 var lng = e.latlng.lng;
                                 console.log("Map clicked at: " + lat + ", " + lng);
-                                drawPoint(lat,lng,map_id);
+                                drawPoint(lat,lng,map_id,"","");
                                 
 
                                 console.log(e);
@@ -75,11 +73,7 @@ class MapHelper:
                                 drawLines(latlngs, map_id);
 
                                 // Send coordinates to Python
-                                if (window.pywebchannel) {
-                                    window.pywebchannel.receive_coordinates(JSON.stringify({lat: lat, lng: lng}));
-                                } else {
-                                    console.log("QWebChannel is not initialized yet.");
-                                }
+                                
                             }
 
                         """
@@ -89,6 +83,9 @@ class MapHelper:
         js_webchannel_script =  (f"var mapEl = document.getElementById('{m.get_name()}');\n"
                                 f"var icon_path = '{data_url}';\n ")
         js_webchannel_script += """
+        
+        //global state vars
+        var previousSelectedTarget = null;
         
         //turn cursor/mousepointer into crosshair
         mapEl.style.cursor = "crosshair";
@@ -108,31 +105,7 @@ class MapHelper:
             L.polyline(latlngs, {color: "red"}).addTo(eval(map_id));
         }
         
-        
-         function drawPoint(lat,lng,map_id)
-         {
-            var bolIcon = L.icon({
-                    iconUrl: icon_path,
-                    iconSize:     [15, 15], // size of the icon
-                    iconAnchor:   [7.5, 7.5], // point of the icon which will correspond to marker's location
-                    popupAnchor:  [0.5, 3] // point from which the popup should open relative to the iconAnchor
-            });
-            // Add marker dynamically
-            var marker = L.marker([lat, lng], {icon: bolIcon}).addTo(eval(map_id))
-            .bindPopup("You clicked here: " + lat + ", " + lng)
-            .openPopup();
-    
-            marker.on('click', function (e){
-                   var layer = e.target;
-                   if(!L.DomUtil.hasClass(layer._icon, 'dash-border')){
-                        L.DomUtil.addClass(layer._icon,'dash-border');
-                   }else{
-                        L.DomUtil.removeClass(layer._icon,'dash-border');
-                   }
-                });
-        }
-        
-        function drawPoint(lat,lng,map_id,text)
+        function drawPoint(lat,lng,map_id,text,id)
         {
             var bolIcon = L.icon(
             {
@@ -143,19 +116,48 @@ class MapHelper:
             });
             // Add marker dynamically
             var marker = L.marker([lat, lng], {icon: bolIcon}).addTo(eval(map_id))
-            .bindPopup(text + "\\nYou clicked here: " + lat + ", " + lng)
+            .bindPopup(text)
             .openPopup();
-    
+            console.log("send coordinates to python");
+            sendCoordinatesToPython(lat,lng);
             marker.on('click', function (e)
             {
                 //highlight on click
-               var layer = e.target;
-               if(!L.DomUtil.hasClass(layer._icon, 'dash-border')){
+                var layer = e.target;
+                if(!L.DomUtil.hasClass(layer._icon, 'dash-border'))
+                {
+                    if(previousSelectedTarget)
+                    {
+                        L.DomUtil.removeClass(previousSelectedTarget._icon,'dash-border');
+                    }
                     L.DomUtil.addClass(layer._icon,'dash-border');
-               }else{
-                    L.DomUtil.removeClass(layer._icon,'dash-border');
-               }
+                    sendSelectedIdToPython(id);
+                }
             });
+        }
+        
+        function sendCoordinatesToPython(lat,lng)
+        {
+            if (window.pywebchannel) 
+            {
+                window.pywebchannel.receive_coordinates(JSON.stringify({lat: lat, lng: lng}));
+            } 
+            else 
+            {
+                console.log("QWebChannel is not initialized yet.");
+            }
+        }
+        
+        function sendSelectedIdToPython(id)
+        {
+            if (window.pywebchannel) 
+            {
+                window.pywebchannel.receive_selection_id(JSON.stringify({id: id}));
+            } 
+            else 
+            {
+                console.log("QWebChannel is not initialized yet.");
+            }
         }
         
         
@@ -166,19 +168,26 @@ class MapHelper:
 
 
         init_script = 'document.addEventListener("DOMContentLoaded", (event) => {'
-        for otl_object in objects_in_memory:
+        for id, otl_object_with_text_and_data in id_to_object_with_text_and_data_dict.items():
+            otl_object = otl_object_with_text_and_data[0]
+
+            #  {
+            #  "text": namedtuple('text', ['typeURI', 'screen_name', 'full_typeURI'])
+            #  "data": namedtuple('data', ['selected_object_id','last_added'])
+            #  }
+            text_and_data = otl_object_with_text_and_data[1]
 
             if hasattr(otl_object, "geometry") and otl_object.geometry:
                 if "POINT" in otl_object.geometry:
-                    #
+
                     transformed_geometry = MapHelper.convert_wkt_to_wgs84(otl_object.geometry)
-                    OTLLogger.logger.debug(otl_object.typeURI)
-                    OTLLogger.logger.debug(otl_object.assetId.identificator)
+                    OTLLogger.logger.debug(text_and_data["text"].typeURI)
+                    OTLLogger.logger.debug(text_and_data["text"].screen_name)
                     coord_list = MapHelper.extract_first_level(transformed_geometry)
                     # MapHelper.addProjectedMarker()
                     for coord in coord_list:
-                        popup_text =  otl_object.assetId.identificator +"\\n" + otl_object.typeURI +"\\n" + otl_object.geometry
-                        init_script += MapHelper.add_projected_marker(coord, m.get_name(),popup_text)
+                        popup_text =  text_and_data["text"].screen_name +"<br>" + text_and_data["text"].typeURI +"<br>" + otl_object.geometry
+                        init_script += MapHelper.add_projected_marker(coord, m.get_name(),popup_text, id)
 
         init_script += "});"
 
@@ -212,11 +221,11 @@ class MapHelper:
         """add a polygon sqaure to the map and go to it"""
         insert = '{color: "red"}'
         # js_code =f'var polyline = L.polygon([[{lat}, {lon}],[{lat+1}, {lon}],[{lat+1}, {lon+1}],[{lat}, {lon+1}]],{insert} ).addTo(eval({self.map_id}));\neval({self.map_id}).fitBounds(polyline.getBounds());'
-        js_code = f"drawPoint({lat},{lon},{map_id});"
+        js_code = f"drawPoint({lat},{lon},{map_id},"");"
         web_view.page().runJavaScript(js_code)
 
     @classmethod
-    def add_projected_marker(cls, coord, map_id, tooltip_text):
+    def add_projected_marker(cls, coord:str, map_id:str, tooltip_text:str,id:str):
         """Adds a marker dynamically without reloading the map."""
         OTLLogger.logger.debug("called add_projected_marker")
         # js_code = f'L.marker([{lat}, {lon}]).addTo({self.map_id}).bindPopup("Marker at {lat}, {lon}").openPopup();'
@@ -227,7 +236,7 @@ class MapHelper:
 
         js_code = (f"var split = '{coord}'.split(' ');\n"
             "var point = L.CRS.EPSG3857.unproject(L.point([parseFloat(split[0]), parseFloat(split[1])] ));\n"
-                   f"drawPoint(point.lat,point.lng,'{map_id}','{tooltip_text}');\n")
+                   f"drawPoint(point.lat,point.lng,'{map_id}','{tooltip_text}','{id}');\n")
 
         js_code += ("  if (window.pywebchannel) {\n"
                 "window.pywebchannel.receive_coordinates(JSON.stringify({lat: point.lat, lng: point.lng}));\n"
@@ -247,8 +256,9 @@ class MapHelper:
         insert = '{color: "red"}'
         js_code = (f"var split = '{coord}'.split(' ');\n"
                    "var point = L.CRS.EPSG3857.unproject(L.point([parseFloat(split[0]), parseFloat(split[1])] ));\n"
-                   f"drawPoint(point.lat,point.lng,'{map_id}');\n")
+                   f"drawPoint(point.lat,point.lng,'{map_id}','');\n")
 
+        js_code += "sendCoordinatesToPython(point.lat,point.lng)"
         # js_code += ("  if (window.pywebchannel) {\n"
         #         "window.pywebchannel.receive_coordinates(JSON.stringify({lat: point.lat, lng: point.lng}));\n"
         #     "} else {\n"

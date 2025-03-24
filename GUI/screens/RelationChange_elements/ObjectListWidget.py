@@ -2,7 +2,7 @@ import asyncio
 import logging
 from collections import namedtuple
 
-from PyQt6.QtCore import QItemSelectionModel
+from PyQt6.QtCore import QItemSelectionModel, QModelIndex
 from PyQt6.QtGui import QStandardItem, QFont
 from PyQt6.QtWidgets import QFrame
 from otlmow_model.OtlmowModel.Helpers import OTLObjectHelper
@@ -86,6 +86,19 @@ class ObjectListWidget(AbstractInstanceListWidget):
 
         event_loop = asyncio.get_event_loop()
         event_loop.create_task(RelationChangeDomain.set_possible_relations(selected_object=self.selected_object))
+
+    def select_item_via_identificator(self,identificator):
+        for i in range(self.list_gui.model.rowCount()):
+
+            folder_item = self.list_gui.model.item(i)
+            for j in range(folder_item.rowCount()):
+                item = folder_item.child(j)
+                if item.data(self.data_1_index) == identificator:
+                    self.select_object_id(item)
+                    # self.previously_selected_item = item
+                    # self.list_gui.selectionModel().setCurrentIndex(self.list_gui.model.indexFromItem(item),
+                    #     QItemSelectionModel.SelectionFlag.SelectCurrent)
+
 
     def create_button(self):
         self.list_button.setEnabled(True)

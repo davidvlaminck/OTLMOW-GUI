@@ -441,3 +441,6 @@ class RelationChangeScreen(RelationChangeScreenInterface):
 
     def get_current_object_list_content_dict(self) -> dict[str,list]:
         return self.objects_list_gui.get_current_list_content_dict()
+
+    def set_selected_object(self, identificator:str):
+        self.objects_list_gui.select_item_via_identificator(identificator)

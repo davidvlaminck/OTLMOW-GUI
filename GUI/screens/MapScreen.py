@@ -2,7 +2,7 @@ import json
 import os
 import pathlib
 
-from typing import List
+from typing import List, Optional
 
 import qtawesome as qta
 
@@ -55,6 +55,24 @@ class WebBridge(QObject):
         #               # popup='red',
         #               ).add_to(self.folium_map)
 
+    @pyqtSlot(str)
+    def  receive_selection_id(self, message):
+        """Receives click event data from JavaScript."""
+        data = json.loads(message)  # Convert string back to dict
+        id = str(data["id"])
+
+        print(f"received map marker selection in Python selected id: {id}")
+        RelationChangeDomain.set_selected_object(id)
+
+        RelationChangeDomain.update_frontend()
+
+        # bol_icon = folium.features.CustomIcon(str(ROOT_DIR.parent.parent / "img"/"bol.png"),
+        #                                      icon_size=(30, 30))
+        # folium.Marker([lat, lng],
+        #               # icon=bol_icon,
+        #               # popup='red',
+        #               ).add_to(self.folium_map)
+
 
 class MapScreen(Screen):
 
@@ -67,7 +85,6 @@ class MapScreen(Screen):
             os.makedirs(HTML_DIR,exist_ok=True)
         self.map = None
         self.frame_layout_legend = None
-        self.objects_in_memory: list[OTLObject] = []
         self.relation_change_screen_object_list_content_dict = {}
         self.refresh_needed_label = QLabel()
         self.container_insert_data_screen = QVBoxLayout()
@@ -81,7 +98,7 @@ class MapScreen(Screen):
         self.img_qurl = QUrl(pathlib.Path.home().drive + str(
             (ROOT_DIR.parent.parent / "img" / "bol.png").absolute()).replace("\\","/"))
 
-        map_path, self.map , self.map_id = MapHelper.create_html_map(self.objects_in_memory, ROOT_DIR,HTML_DIR)
+        map_path, self.map , self.map_id = MapHelper.create_html_map(self.relation_change_screen_object_list_content_dict, ROOT_DIR, HTML_DIR)
 
         self.web_bridge = WebBridge(self.map)
         self.channel.registerObject("webBridge", self.web_bridge)
@@ -171,11 +188,11 @@ class MapScreen(Screen):
             f"Executing MapScreen.reload_html() for project {global_vars.current_project.eigen_referentie}",
             extra={"timing_ref": f"reload_html_{global_vars.current_project.eigen_referentie}"})
 
-        self.objects_in_memory = self.load_assets()
+        # self.id_to_object_with_text_and_data_dict = self.load_assets()
 
-        self.relation_change_screen_object_list_content_dict:dict = RelationChangeDomain.get_current_relation_change_screen_object_list_content_dict()
+        self.relation_change_screen_object_list_content_dict = self.load_assets()
 
-        map_path, self.map , self.map_id = MapHelper.create_html_map(self.objects_in_memory,ROOT_DIR,HTML_DIR)
+        map_path, self.map , self.map_id = MapHelper.create_html_map(self.relation_change_screen_object_list_content_dict, ROOT_DIR, HTML_DIR)
         self.web_bridge.folium_map = self.map
         self.webView.setHtml(open(map_path).read())
         # self.webView.page().setWebChannel(self.channel)
@@ -185,14 +202,14 @@ class MapScreen(Screen):
 
 
 
-        object_count = len(self.objects_in_memory)
+        object_count = len(self.relation_change_screen_object_list_content_dict)
         OTLLogger.logger.debug(
             f"Executing MapScreen.reload_html() for project {global_vars.current_project.eigen_referentie} ({object_count} objects)",
             extra={"timing_ref": f"reload_html_{global_vars.current_project.eigen_referentie}"})
 
 
-    def load_assets(self) -> List[OTLObject]:
-        assets = RelationChangeDomain.get_visualisation_instances()
+    def load_assets(self) -> dict:
+        assets = RelationChangeDomain.get_current_relation_change_screen_object_list_content_dict()
         self.check_if_refresh_message_is_needed()
         return  assets
 

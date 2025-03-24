@@ -1007,6 +1007,12 @@ class RelationChangeDomain:
 
         OTLLogger.logger.debug("Execute RelationChangeDomain.update_frontend",
                                extra={"timing_ref": f"update_frontend"})
+
+    @classmethod
+    def set_selected_object(cls,identificator):
+        cls.selected_object = cls.get_object(identificator)
+        cls.get_screen().set_selected_object(identificator)
+
     @classmethod
     @async_to_sync_wraps
     @async_save_assets
