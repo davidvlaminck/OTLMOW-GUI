@@ -14,7 +14,7 @@ class MapHelper:
     added_layer_asset_id_list = []
     @classmethod
     def create_html_map(cls,id_to_object_with_text_and_data_dict:dict,ROOT_DIR,HTML_DIR,prev_selected_asset_id=None):
-        coordinate = (37.8199286, -122.4782551)
+        coordinate = (51.16872907594677, 4.41375968966803)
         cls.added_layer_asset_id_list.clear()
 
         # satelite image layer from google maps instead of open street road map
@@ -74,7 +74,7 @@ class MapHelper:
                                 //drawLines(latlngs, map_id);
 
                                 // Send coordinates to Python
-                                activateHighlightLayer( 'e64e7fcb-d429-4e3d-8651-706297f14ca4-b25kZXJkZWVsI1ZvZXJ0dWlnbGFudGFhcm4');
+                                //activateHighlightLayer( 'e64e7fcb-d429-4e3d-8651-706297f14ca4-b25kZXJkZWVsI1ZvZXJ0dWlnbGFudGFhcm4');
                             
                             }
 
@@ -105,9 +105,23 @@ class MapHelper:
         
         function drawLines(latlngs, map_id, text, id)
         {
-            var line = L.polyline(latlngs, {color: "grey"}).addTo(eval(map_id));
+            var line = L.polyline(latlngs, {color:"#555555", weight:8}).addTo(eval(map_id)).bindPopup(text,{autoPan:false});
             idToLayerDict[id] = line
-            marker.on('click', function (e)
+            line.on('click', function (e)
+            {
+                //highlight on click
+                var layer = e.target;
+                activateHighlightLayer(id);
+                sendSelectedIdToPython(id);
+                console.log(id + " in dict " + (previousSelectedId in idToLayerDict));
+            });
+        }
+        
+        function drawPolygons(latlngs, map_id, text, id)
+        {
+            var line = L.polygon(latlngs, {color:"#555555", weight:8}).addTo(eval(map_id)).bindPopup(text,{offset:L.point(0,0),autoPan:false});
+            idToLayerDict[id] = line
+            line.on('click', function (e)
             {
                 //highlight on click
                 var layer = e.target;
@@ -128,7 +142,7 @@ class MapHelper:
             });
             // Add marker dynamically
             var marker = L.marker([lat, lng], {icon: bolIcon}).addTo(eval(map_id))
-            .bindPopup(text)
+            .bindPopup(text,{autoPan:false})
             //.openPopup();
             idToLayerDict[id] = marker
             console.log("send coordinates to python");
@@ -148,23 +162,38 @@ class MapHelper:
             if(id in idToLayerDict)
             {
                 var layer = idToLayerDict[id];
-                if(!L.DomUtil.hasClass(layer._icon, 'dash-border'))
+                var htmlElement = undefined
+                if (layer._icon == undefined)
                 {
-                    if(previousSelectedId && (previousSelectedId in idToLayerDict))
+                    //if the visual is line
+                    htmlElement = layer._path
+                    if(layer.options.color == "#555555")
                     {
-                        L.DomUtil.removeClass(idToLayerDict[previousSelectedId]._icon,'dash-border');
+                        disablePreviousHighlightLayer();
+                        layer.setStyle({color: "#880000"})
+                        layer.options.color = "#880000";
+                        layer.redraw()
+                        previousSelectedId = id;
+                        layer.openPopup();
                     }
-                    L.DomUtil.addClass(layer._icon,'dash-border');
-                    previousSelectedId = id
-                    layer.openPopup();
+                }
+                else
+                {
+                    //if the visual is marker
+                    htmlElement = layer._icon
+                
+                    if(!L.DomUtil.hasClass(htmlElement, 'dash-border'))
+                    {
+                        disablePreviousHighlightLayer();
+                        L.DomUtil.addClass(htmlElement,'dash-border');
+                        previousSelectedId = id
+                        layer.openPopup();
+                    }
                 }
             }
             else
             {
-                if(previousSelectedId && previousSelectedId in idToLayerDict)
-                {
-                    L.DomUtil.removeClass(previousSelectedId._icon,'dash-border');
-                }
+                disablePreviousHighlightLayer();
                 previousSelectedId = id
             }    
         }
@@ -193,6 +222,29 @@ class MapHelper:
             }
         }
         
+        function disablePreviousHighlightLayer()
+        {
+            if(previousSelectedId && (previousSelectedId in idToLayerDict))
+            {
+                var prevLayer = idToLayerDict[previousSelectedId]
+                var prevLayerhtmlElement = undefined
+                if (prevLayer._icon == undefined)
+                {
+                    //if the previous visual is line
+                    prevLayer.setStyle({color: '#555555'})
+                    prevLayer.options.color = "#555555"
+                    prevLayer.redraw()
+                }
+                else
+                {
+                    //if the previous visual is marker
+                    prevLayerhtmlElement = prevLayer._icon
+                    L.DomUtil.removeClass(prevLayerhtmlElement,'dash-border');
+                }
+                    
+            }
+        }
+        
         
         
             """
@@ -200,7 +252,7 @@ class MapHelper:
         m.get_root().script.add_child(folium.Element(js_webchannel_script))
 
 
-        init_script = 'document.addEventListener("DOMContentLoaded", (event) => {'
+        init_script = 'document.addEventListener("DOMContentLoaded", (event) => {\n'
         for id, otl_object_with_text_and_data in id_to_object_with_text_and_data_dict.items():
             otl_object = otl_object_with_text_and_data[0]
 
@@ -228,14 +280,38 @@ class MapHelper:
                     transformed_geometry = MapHelper.convert_wkt_to_wgs84(otl_object.geometry)
                     OTLLogger.logger.debug(text_and_data["text"].typeURI)
                     OTLLogger.logger.debug(text_and_data["text"].screen_name)
-                    OTLLogger.logger.debug(transformed_geometry)
+                    coord_list = MapHelper.extract_first_level(transformed_geometry)
+                    OTLLogger.logger.debug(coord_list)
                     popup_text = text_and_data["text"].screen_name + "<br>" + text_and_data[
                         "text"].typeURI + "<br>" + otl_object.geometry
-                    # init_script += MapHelper.add_projected_line(transformed_geometry, m.get_name(),popup_text, id)
+                    for pair in coord_list:
+                        init_script += MapHelper.add_projected_line(pair.split(","), m.get_name(),popup_text, id)
+
+                if "POLYGON" in otl_object.geometry:
+                    transformed_geometry = MapHelper.convert_wkt_to_wgs84(otl_object.geometry)
+                    OTLLogger.logger.debug(text_and_data["text"].typeURI)
+                    OTLLogger.logger.debug(text_and_data["text"].screen_name)
+                    polygon_list = MapHelper.extract_first_level(transformed_geometry)
+                    coord_list = []
+                    for polygon in polygon_list:
+                        second_level_list = MapHelper.extract_first_level(polygon)
+                        for coordinates in second_level_list:
+                            coord_list.append(coordinates.split(","))
+
+
+
+                    OTLLogger.logger.debug(coord_list)
+                    # popup_text = text_and_data["text"].screen_name + "<br>" + text_and_data[
+                    #     "text"].typeURI + "<br>" + otl_object.geometry
+                    popup_text = text_and_data["text"].screen_name + "<br>" + text_and_data[
+                        "text"].typeURI
+                    init_script += MapHelper.add_projected_polygon(coord_list, m.get_name(),
+                                                                popup_text, id)
+
 
         init_script +=  f"var previousSelectedId = '{prev_selected_asset_id}'"
         init_script += ("""
-            "if(previousSelectedId && previousSelectedId in idToLayerDict)"
+            if(previousSelectedId && previousSelectedId in idToLayerDict)
             {
                 activateHighlightLayer(previousSelectedId)
             }
@@ -305,21 +381,21 @@ class MapHelper:
     @classmethod
     def add_projected_line(cls, coord_pair: str, map_id: str, tooltip_text: str, id: str):
         """Adds a marker dynamically without reloading the map."""
-        OTLLogger.logger.debug("called add_projected_marker")
+        OTLLogger.logger.debug("called add_projected_line")
         # js_code = f'L.marker([{lat}, {lon}]).addTo({self.map_id}).bindPopup("Marker at {lat}, {lon}").openPopup();'
         """add a polygon sqaure to the map and go to it"""
         insert = '{color: "red"}'
         # js_code =f'var polyline = L.polygon([[{lat}, {lon}],[{lat+1}, {lon}],[{lat+1}, {lon+1}],[{lat}, {lon+1}]],{insert} ).addTo(eval({self.map_id}));\neval({self.map_id}).fitBounds(polyline.getBounds());'
 
-        js_code = (f"var split_pair = '{coord_pair}'.split(',');\n"
+        js_code = (f"var split_pair = {coord_pair}\n"
                    "latlngs = [];\n"
                    "for (const  coord of split_pair) \n"
                    "{\n"
                    "    console.log(coord);\n"
-                   "    var split = coord.split(" ");\n"
-                   "    var point = L.CRS.EPSG3857.unproject(L.point([parseFloat(split[0]), parseFloat(split[1])] ));\n"
+                   "    var split = coord.trim().split(' ');\n"
+                   "    var point = L.CRS.EPSG3857.unproject(L.point([parseFloat(split[0].trim()), parseFloat(split[1].trim())] ));\n"
                    "    console.log(point);\n"
-                   "    latlngs.append([point.lat,point.lng]);\n"
+                   "    latlngs.push([point.lat,point.lng]);\n"
                    "}\n"
                     f"drawLines(latlngs,'{map_id}','{tooltip_text}','{id}');\n")
 
@@ -327,7 +403,32 @@ class MapHelper:
 
         return js_code
 
+    @classmethod
+    def add_projected_polygon(cls, coord_pair: list, map_id: str, tooltip_text: str, id: str):
+        """Adds a marker dynamically without reloading the map."""
+        OTLLogger.logger.debug("called add_projected_line")
+        # js_code = f'L.marker([{lat}, {lon}]).addTo({self.map_id}).bindPopup("Marker at {lat}, {lon}").openPopup();'
+        """add a polygon sqaure to the map and go to it"""
+        insert = '{color: "red"}'
+        # js_code =f'var polyline = L.polygon([[{lat}, {lon}],[{lat+1}, {lon}],[{lat+1}, {lon+1}],[{lat}, {lon+1}]],{insert} ).addTo(eval({self.map_id}));\neval({self.map_id}).fitBounds(polyline.getBounds());'
 
+        js_code = (f"var polygons = {coord_pair}\n"
+                   "for (const  split_pair of polygons) \n"
+                   "{\n"
+                       "    latlngs = [];\n"
+                       "    for (const  coord of split_pair) \n"
+                       "    {\n"
+                       "        console.log(coord);\n"
+                       "        var split = coord.trim().split(' ');\n"
+                       "        var point = L.CRS.EPSG3857.unproject(L.point([parseFloat(split[0].trim()), parseFloat(split[1].trim())] ));\n"
+                       "        console.log(point);\n"
+                       "        latlngs.push([point.lat,point.lng]);\n"
+                       "    }\n"
+                       f"   drawPolygons(latlngs,'{map_id}','{tooltip_text}','{id}');\n"
+                    "}\n")
+        cls.added_layer_asset_id_list.append(id)
+
+        return js_code
 
     @classmethod
     def activate_highlight_layer_by_id(cls, asset_id, web_view):
