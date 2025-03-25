@@ -84,6 +84,9 @@ class MapScreen(Screen):
         if not HTML_DIR.exists():
             os.makedirs(HTML_DIR,exist_ok=True)
         self.map = None
+        self.prev_selected_asset_id = None
+
+
         self.frame_layout_legend = None
         self.relation_change_screen_object_list_content_dict = {}
         self.refresh_needed_label = QLabel()
@@ -98,7 +101,7 @@ class MapScreen(Screen):
         self.img_qurl = QUrl(pathlib.Path.home().drive + str(
             (ROOT_DIR.parent.parent / "img" / "bol.png").absolute()).replace("\\","/"))
 
-        map_path, self.map , self.map_id = MapHelper.create_html_map(self.relation_change_screen_object_list_content_dict, ROOT_DIR, HTML_DIR)
+        map_path, self.map , self.map_id = MapHelper.create_html_map(self.relation_change_screen_object_list_content_dict, ROOT_DIR, HTML_DIR,self.prev_selected_asset_id)
 
         self.web_bridge = WebBridge(self.map)
         self.channel.registerObject("webBridge", self.web_bridge)
@@ -192,7 +195,8 @@ class MapScreen(Screen):
 
         self.relation_change_screen_object_list_content_dict = self.load_assets()
 
-        map_path, self.map , self.map_id = MapHelper.create_html_map(self.relation_change_screen_object_list_content_dict, ROOT_DIR, HTML_DIR)
+        map_path, self.map , self.map_id = MapHelper.create_html_map(self.relation_change_screen_object_list_content_dict,
+                                                                     ROOT_DIR, HTML_DIR,self.prev_selected_asset_id)
         self.web_bridge.folium_map = self.map
         self.webView.setHtml(open(map_path).read())
         # self.webView.page().setWebChannel(self.channel)
@@ -245,4 +249,6 @@ class MapScreen(Screen):
     def check_if_refresh_message_is_needed(self):
         self.refresh_needed_label.setHidden(RelationChangeDomain.is_visualisation_uptodate())
 
-
+    def activate_highlight_layer_by_id(self, asset_id:str):
+        self.prev_selected_asset_id = asset_id
+        MapHelper.activate_highlight_layer_by_id(asset_id,self.webView)
