@@ -10,6 +10,8 @@ import typing
 from datetime import datetime
 from pathlib import Path
 
+from PyQt6 import QtCore
+
 from Domain import global_vars
 from Domain.Settings import Settings
 from Domain.logger.OTLLogger import OTLLogger
@@ -83,10 +85,10 @@ class OTLWizard(QApplication):
         self.main_window.resize(1250, 650)
         self.main_window.setWindowTitle('OTLWizard')
         self.main_window.setMinimumSize(800, 600)
-
+        self.main_window.setWindowFlags(
+            self.main_window.windowFlags() | QtCore.Qt.WindowStaysOnTopHint)  # set always on top flag, makes window disappear
         self.main_window.show()
-        self.main_window.raise_()
-        self.main_window.activateWindow()
+
 
 
         self.meipass = sys._MEIPASS if hasattr(sys, '_MEIPASS') else None
@@ -140,8 +142,10 @@ if __name__ == '__main__':
         pyi_splash.close()
         OTLLogger.logger.info('Splash screen closed.')
 
-
-
+    app.main_window.raise_()
+    app.main_window.setWindowFlags(
+        app.main_window.windowFlags() & ~QtCore.Qt.WindowStaysOnTopHint)  # clear always on top flag, makes window disappear
+    app.main_window.show()
     event_loop = QEventLoop(app)
     asyncio.set_event_loop(event_loop)
 
