@@ -1,9 +1,12 @@
 import os
+import shutil
 from pathlib import Path
 from typing import List
 
 import requests
 from github import Github
+
+from Domain.logger.OTLLogger import OTLLogger
 
 
 class GitHubDownloader:
@@ -27,13 +30,13 @@ class GitHubDownloader:
             self.repo = Github().get_repo(self.repo_owner_and_name)
         return self.repo
 
-    def download_full_repo(self, destination_dir: Path):
+    def download_full_repo(self, dest: Path):
         """
         Downloads a zipped version of the entire GitHub repository to a specified destination directory.
         It ensures that the destination directory exists before saving the downloaded file.
 
         Args:
-            destination_dir (Path): The directory where the zipped repository will be saved.
+            dest (Path): The directory where the zipped repository will be saved.
 
         Returns:
             None
@@ -41,15 +44,27 @@ class GitHubDownloader:
         Raises:
             OSError: If the destination directory cannot be created or accessed.
         """
+        dest_filename = 'full_repo_download.zip'
+        dest_dir = dest.parent / dest.stem
+        #dest can be a directory or a zip file
+        if dest.suffix == ".zip":
+            dest_dir = dest.parent
+            dest_filename = dest.name
 
-        if not os.path.exists(destination_dir):
-            os.makedirs(destination_dir)
+        if  os.path.exists(dest_dir):
+            shutil.rmtree(dest_dir)
+        os.makedirs(dest_dir)
+
+        dest = dest_dir / dest_filename
+        OTLLogger.logger.info(f"Download otlmow-model to zip: {dest}",extra={"timing_ref":"download_otlmow_model"})
 
         download_zip_url = f'https://github.com/{self.repo_owner_and_name}/zipball/master'
         resp = requests.get(download_zip_url)
 
-        with open(destination_dir / 'full_repo_download.zip', 'wb') as f:
+        with open(dest, 'wb') as f:
             f.write(resp.content)
+        OTLLogger.logger.info("Download otlmow-model to zip",
+                              extra={"timing_ref": "download_otlmow_model"})
 
     def download_file_to_dir(self, file_path: str, destination_dir: Path, contents=None):
         """
@@ -145,7 +160,8 @@ class GitHubDownloader:
         """
 
         url = f'https://raw.githubusercontent.com/{self.repo_owner_and_name}/master/{file_path}'
-        resp = requests.get(url)
+        OTLLogger.logger.info(f"Downloading file from {url}")
+        resp = requests.get(url, timeout=5)
         if resp.status_code != 200:
             raise ConnectionRefusedError()
 

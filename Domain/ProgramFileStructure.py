@@ -1,4 +1,5 @@
 from pathlib import Path
+import sys
 
 
 class ProgramFileStructure:
@@ -28,6 +29,14 @@ class ProgramFileStructure:
         if not model_dir_path.exists():
             model_dir_path.mkdir()
 
-            # cls.download_fresh_otlmow_model(model_dir_path)
-            # cls.get_otlmow_model_version(model_dir_path)
         return model_dir_path
+
+    @classmethod
+    def get_dynamic_library_path(cls, library_name: str) -> Path:
+        dynamic_library_path = Path(library_name)
+        if hasattr(sys, '_MEIPASS'):  # when in .exe file
+            dynamic_library_path = Path(sys._MEIPASS, library_name)
+        elif not dynamic_library_path.exists():
+            dynamic_library_path = Path('data', library_name)
+
+        return dynamic_library_path

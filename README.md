@@ -63,8 +63,12 @@ tranlation for that text in like:
     
 ## exe and installer creation guide
 
-1. Make sure you have a python 3.13 environment with the requirements.txt installed set up
-2. Run the `pyinstaller_script.py` in that environment  
+1. Make sure you have a python 3.13 environment with the requirements.txt installed set up  
+    NOTE: Keep using PyInstaller 6.10.0, newer version can get [false positives](https://github.com/pyinstaller/pyinstaller/issues/5854) on Windows Defender. Lookout for detections of 
+    Wacatac.B!ml, Wacatac.H!ml, Wacapew.C!ml these are false positives. 
+    They get detected only when you compile with newer versions and not when you compile with older versions of PyInstaller.
+    If any user has a detection, it is most likely because of an outdated Windows Defender. Ask them to update Windows and/or Windows Defender.
+2. Run the `pyinstaller_script.py` in that environment
     This will make the `OTL Wizard 2.exe` in the LatestReleaseMulti folder 
 3. Download and install [Inno Setup Compiler](https://jrsoftware.org/isinfo.php)
 4. In the `LatestReleaseMulti/inno_setup_installer_setup_script.iss` script replace all occurrences of:  

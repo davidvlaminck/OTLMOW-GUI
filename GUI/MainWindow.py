@@ -118,8 +118,9 @@ class MainWindow(QStackedWidget):
     def setCurrentIndex(self, index):
         # if you go to the RelationChangeScreen or ExportDataScreen
         # the information is updated if the project has changed
-        if (index in [3, 4] and (not RelationChangeDomain.project or
-                                            RelationChangeDomain.project != global_vars.current_project)):
+        # if (index in [3, 4] and (not RelationChangeDomain.project or
+        #                          RelationChangeDomain.project != global_vars.current_project)):
+        if (index in [3, 4] ):
             RelationChangeDomain.init_static(project=global_vars.current_project)
 
         #everytime you go to a specific page update the frontend to always show the last Domain state

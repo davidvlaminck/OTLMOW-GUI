@@ -6,7 +6,7 @@ import platform
 from pathlib import Path
 
 from Domain.enums import Language
-from Domain.project.ProgramFileStructure import ProgramFileStructure
+from Domain.ProgramFileStructure import ProgramFileStructure
 
 
 class Settings:

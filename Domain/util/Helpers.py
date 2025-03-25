@@ -139,8 +139,12 @@ class Helpers:
         :rtype: Path
         """
 
-        tempdir = Path(tempfile.gettempdir()) / 'temp-otlmow'
+        tempdir = Helpers.get_base_temp_dir_path()
         if not tempdir.exists():
             os.makedirs(tempdir)
         doc_name = Path(path_to_template_file_and_extension).name
         return Path(tempdir) / doc_name
+
+    @classmethod
+    def get_base_temp_dir_path(cls):
+        return Path(tempfile.gettempdir()) / 'temp-otlmow'

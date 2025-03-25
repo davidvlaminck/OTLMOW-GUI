@@ -2,29 +2,21 @@ from __future__ import annotations
 
 import datetime
 import json
-import shutil
 import zipfile
 from asyncio import sleep
 from copy import deepcopy
 from datetime import timedelta
 from typing import Union
-from unittest.mock import mock_open, patch, MagicMock
+from unittest.mock import mock_open, patch
 
 import pytest
-from _pytest.fixtures import fixture
-from openpyxl.utils.datetime import days_to_time
 from otlmow_model.OtlmowModel.BaseClasses.RelationInteractor import RelationInteractor
 from otlmow_model.OtlmowModel.Classes.ImplementatieElement.RelatieObject import RelatieObject
 
-from Domain import global_vars
 from Domain.enums import FileState
-from Domain.global_vars import projects
-from Domain.project.ProgramFileStructure import ProgramFileStructure
-from Domain.project.Project import Project
 from Domain.project.ProjectFile import ProjectFile
 from Domain.step_domain.HomeDomain import HomeDomain
 
-from UnitTests.general_fixtures.GUIFixtures import *
 from UnitTests.general_fixtures.DomainFixtures import *
 
 PARENT_OF_THIS_FILE = Path(__file__).parent

@@ -3,10 +3,8 @@ from __future__ import annotations
 import asyncio
 import datetime
 import json
-import logging
 import os
 import shutil
-import time
 import zipfile
 from pathlib import Path
 from typing import Optional, Union, cast
@@ -19,16 +17,14 @@ from otlmow_model.OtlmowModel.Classes.ImplementatieElement.RelatieObject import 
 from universalasync import async_to_sync_wraps
 
 from Domain import global_vars
-from Domain.Helpers import Helpers
+from Domain.util.Helpers import Helpers
 from Domain.database.ModelBuilder import ModelBuilder
 from Domain.logger.OTLLogger import OTLLogger
 from Domain.project.ProjectFile import ProjectFile
 from Domain.enums import FileState
-from Domain.project.ProgramFileStructure import ProgramFileStructure
+from Domain.ProgramFileStructure import ProgramFileStructure
 from Exceptions.ExcelFileUnavailableError import ExcelFileUnavailableError
 from GUI.dialog_windows.LoadingImageWindow import add_loading_screen
-from GUI.dialog_windows.SuggestUpdateWindow import SuggestUpdateWindow
-from GUI.translation.GlobalTranslate import GlobalTranslate
 
 
 class Project:

@@ -1,18 +1,13 @@
-import logging
 from copy import deepcopy
 from pathlib import Path
 
-from PyQt6.QtWidgets import QFileDialog
-from otlmow_converter.OtlmowConverter import OtlmowConverter
 from otlmow_model.OtlmowModel.Classes.ImplementatieElement.RelatieObject import RelatieObject
 from universalasync import async_to_sync_wraps
 
 from Domain import global_vars
-from Domain.Helpers import Helpers
+from Domain.util.Helpers import Helpers
 from Domain.logger.OTLLogger import OTLLogger
 from Domain.step_domain.RelationChangeDomain import RelationChangeDomain
-from Domain.enums import FileState
-
 
 
 class ExportDataDomain:

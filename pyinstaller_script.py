@@ -3,15 +3,23 @@ import shutil
 
 import PyInstaller.__main__
 
+from Domain.logger.OTLLogger import OTLLogger
+
 home_path = pathlib.Path.home()
+
+OTLLogger.init()
+OTLLogger.logger.debug("PyInstaller.__main__.run", extra={"timing_ref":"PyInstaller.__main__.run"})
 
 PyInstaller.__main__.run([
     r'OTL Wizard 2.py',
     '--distpath', str(home_path / 'PycharmProjects'/ 'OTLMOW-GUI' /  'LatestReleaseMulti'),
     '--contents-directory', 'data',
+
     '--paths', str(home_path / 'PycharmProjects' / 'OTLMOW-GUI' / 'venv3-13' / 'Lib' / 'site-packages'),
+    '--exclude-module','otlmow_model',
     '--collect-all', 'otlmow_converter',
     '--collect-all', 'otlmow_model',
+    '--hidden-import', 'otlmow_model',
     '--collect-all', 'otlmow_template',
     '--collect-all', 'otlmow_modelbuilder',
     '--collect-all', 'otlmow_visuals',
@@ -28,5 +36,6 @@ PyInstaller.__main__.run([
     '--noconsole', # no cmd/powershell window with debug output
     '--clean'
 ])
+OTLLogger.logger.debug("PyInstaller.__main__.run", extra={"timing_ref":"PyInstaller.__main__.run"})
 
 # TODO: make sure custom.qss and demo projects are copied next to .exe > verify it is loaded same as locale

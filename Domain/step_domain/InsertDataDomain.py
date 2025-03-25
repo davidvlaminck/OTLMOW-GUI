@@ -13,8 +13,8 @@ from otlmow_model.OtlmowModel.Helpers import OTLObjectHelper, RelationValidator
 from universalasync import async_to_sync_wraps
 
 from Domain import global_vars
-from Domain.Helpers import Helpers
-from Domain.SDFHandler import SDFHandler
+from Domain.util.Helpers import Helpers
+from Domain.util.SDFHandler import SDFHandler
 from Domain.logger.OTLLogger import OTLLogger
 from Domain.project.Project import Project
 from Domain.step_domain.RelationChangeDomain import RelationChangeDomain, \
@@ -25,7 +25,7 @@ from Exceptions.RelationHasInvalidTypeUriForSourceAndTarget import \
     RelationHasInvalidTypeUriForSourceAndTarget
 from Exceptions.RelationHasNonExistingTypeUriForSourceOrTarget import \
     RelationHasNonExistingTypeUriForSourceOrTarget
-from GUI.dialog_windows.LoadingImageWindow import add_loading_screen, add_loading_screen_no_delay
+from GUI.dialog_windows.LoadingImageWindow import add_loading_screen_no_delay
 from GUI.screens.RelationChange_elements.RelationChangeHelpers import RelationChangeHelpers
 from GUI.translation.GlobalTranslate import GlobalTranslate
 from UnitTests.TestClasses.Classes.ImplementatieElement.AIMObject import AIMObject

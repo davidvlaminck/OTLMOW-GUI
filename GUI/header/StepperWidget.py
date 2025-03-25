@@ -1,13 +1,9 @@
-import logging
-
 import qtawesome as qta
 
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QWidget, QHBoxLayout, QFrame
 
 from Domain import global_vars
-from Domain.logger.OTLLogger import OTLLogger
-from Domain.project.ProgramFileManager import ProgramFileManager
 from GUI.screens.general_elements.ButtonWidget import ButtonWidget
 
 

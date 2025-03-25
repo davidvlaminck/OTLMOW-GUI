@@ -9,7 +9,7 @@ from typing import Optional
 from pytestqt.plugin import qtbot
 from pytestqt.qtbot import QtBot
 
-from Domain.Helpers import Helpers
+from Domain.util.Helpers import Helpers
 from GUI.screens.InsertDataScreen import InsertDataScreen
 from GUI.screens.RelationChangeScreen import RelationChangeScreen
 from UnitTests.TestClasses.Classes.ImplementatieElement.AIMObject import AIMObject

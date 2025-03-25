@@ -9,8 +9,8 @@ from typing import Optional
 from universalasync import async_to_sync_wraps
 
 from Domain import global_vars
-from Domain.Helpers import Helpers
-from Domain.XSDCreator import XSDCreator
+from Domain.util.Helpers import Helpers
+from Domain.util.XSDCreator import XSDCreator
 from Domain.logger.OTLLogger import OTLLogger
 from Exceptions.FDOToolboxNotInstalledError import FDOToolboxNotInstalledError
 

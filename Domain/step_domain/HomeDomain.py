@@ -1,15 +1,10 @@
-import asyncio
-import logging
-from datetime import datetime
 from pathlib import Path
 
 from Domain import global_vars
-from Domain.global_vars import projects
 from Domain.logger.OTLLogger import OTLLogger
 from Domain.project.Project import Project
-from Domain.project.ProgramFileStructure import ProgramFileStructure
+from Domain.ProgramFileStructure import ProgramFileStructure
 from Domain.database.SubsetDatabase import SubsetDatabase
-from Domain.step_domain.ExportDataDomain import ExportDataDomain
 from Domain.step_domain.ExportFilteredDataSubDomain import ExportFilteredDataSubDomain
 from Domain.step_domain.InsertDataDomain import InsertDataDomain
 from Domain.step_domain.RelationChangeDomain import RelationChangeDomain

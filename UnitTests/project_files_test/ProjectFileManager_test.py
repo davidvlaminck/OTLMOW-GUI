@@ -1,23 +1,10 @@
-import datetime
-import os
-import shutil
 import tempfile
-import zipfile
-from pathlib import Path
 
 import pytest
-from _pytest.fixtures import fixture
 
-from Domain import global_vars
-from Domain.project.ProgramFileStructure import ProgramFileStructure
-from Domain.project.Project import Project
-from Domain.project.ProgramFileManager import ProgramFileManager
-from Domain.enums import FileState
-from Domain.project.ProjectFile import ProjectFile
 from Domain.step_domain.HomeDomain import HomeDomain
 from Exceptions.ExcelFileUnavailableError import ExcelFileUnavailableError
 
-from UnitTests.general_fixtures.GUIFixtures import *
 from UnitTests.general_fixtures.DomainFixtures import *
 
 PARENT_OF_THIS_FILE = Path(__file__).parent
@@ -71,19 +58,6 @@ def test_get_otl_wizard_projects_dir():
     otl_wizard_projects_dir = ProgramFileStructure.get_otl_wizard_projects_dir()
 
     assert otl_wizard_projects_dir == otl_wizard_dir_using_os
-
-
-def test_create_empty_temporary_map_creates_map_in_correct_location():
-    temp_loc = Path(tempfile.gettempdir()) / 'temp-otlmow'
-    shutil.rmtree(temp_loc)
-    tempdir = ProgramFileManager.create_empty_temporary_map()
-    Path(tempfile.gettempdir()) / 'temp-otlmow'
-    assert tempdir == Path(tempfile.gettempdir()) / 'temp-otlmow'
-
-
-def test_create_empty_temporary_map_contains_no_files():
-    tempdir = ProgramFileManager.create_empty_temporary_map()
-    assert not os.listdir(tempdir)
 
 
 

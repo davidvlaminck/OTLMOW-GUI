@@ -3,11 +3,14 @@ import importlib
 import logging
 import os
 import sys
+import time
 import traceback
 import typing
 
 from datetime import datetime
 from pathlib import Path
+
+from PyQt6 import QtCore
 
 from Domain import global_vars
 from Domain.Settings import Settings
@@ -38,10 +41,7 @@ project_dir = ROOT_DIR / 'demo_projects/'
 
 LANG_DIR = ROOT_DIR / 'locale/'
 
-if '_PYI_SPLASH_IPC' in os.environ and importlib.util.find_spec("pyi_splash"):
-    import pyi_splash
-    pyi_splash.update_text('UI Loaded ...')
-    pyi_splash.close()
+
     # OTLLogger.logger.info('Splash screen closed.')
 
 # Used to add demo data to the application for showcase purpose only
@@ -66,27 +66,40 @@ class OTLWizard(QApplication):
 
         sys.excepthook = excepthook
 
-        Updater.check_for_updates()
+
+        Updater.update_oltmow_model()
+
+        if '_PYI_SPLASH_IPC' in os.environ and importlib.util.find_spec("pyi_splash"):
+            import pyi_splash
+            pyi_splash.update_text('UI Loaded ...')
+            pyi_splash.close()
+
+        Updater.check_for_OTL_wizard_updates()
 
         app_icon = QIcon(str(Path('img','wizard.ico')))
         self.setWindowIcon(app_icon)
 
+        language = GlobalTranslate(settings, LANG_DIR).get_all()
+        global_vars.otl_wizard = self
+        self.main_window = MainWindow(language)
+        self.main_window.resize(1250, 650)
+        self.main_window.setWindowTitle('OTLWizard')
+        self.main_window.setMinimumSize(800, 600)
+        self.main_window.setWindowFlags(
+            self.main_window.windowFlags() | QtCore.Qt.WindowStaysOnTopHint)  # set always on top flag, makes window disappear
+        self.main_window.show()
+
+
+
         self.meipass = sys._MEIPASS if hasattr(sys, '_MEIPASS') else None
         Styling.applyStyling(self,self.meipass)
-        # self.applicationStateChanged.connect(lambda state: OTLLogger.logger.debug(f"applicationStateChanged changed {state}"))
         self.paletteChanged.connect(lambda state: Styling.applyStyling(self,self.meipass))
 
 
         # self.demo_project = demo_data()
         self.demo_project = None
 
-        language = GlobalTranslate(settings,LANG_DIR).get_all()
-        global_vars.otl_wizard = self
-        self.main_window = MainWindow(language)
-        self.main_window.resize(1250, 650)
-        self.main_window.setWindowTitle('OTLWizard')
-        self.main_window.setMinimumSize(800, 600)
-        self.main_window.show()
+
 
 
         if "--test" in argv:
@@ -129,8 +142,10 @@ if __name__ == '__main__':
         pyi_splash.close()
         OTLLogger.logger.info('Splash screen closed.')
 
-
-
+    app.main_window.raise_()
+    app.main_window.setWindowFlags(
+        app.main_window.windowFlags() & ~QtCore.Qt.WindowStaysOnTopHint)  # clear always on top flag, makes window disappear
+    app.main_window.show()
     event_loop = QEventLoop(app)
     asyncio.set_event_loop(event_loop)
 
