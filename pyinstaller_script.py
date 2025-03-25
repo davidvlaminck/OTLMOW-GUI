@@ -33,7 +33,7 @@ PyInstaller.__main__.run([
     '--splash','img/wizard1.png',
     '--noconfirm',
     # '--onefile',  # All files packed together in one executable file
-    # '--noconsole', # no cmd/powershell window with debug output
+    '--noconsole', # no cmd/powershell window with debug output
     '--clean'
 ])
 OTLLogger.logger.debug("PyInstaller.__main__.run", extra={"timing_ref":"PyInstaller.__main__.run"})

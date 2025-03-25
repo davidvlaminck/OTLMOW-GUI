@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppID "{951D7784-A1E6-4A3D-97A8-6051FFF5DDB4}"
-#define MyAppVersion "0.6.1.2"
+#define MyAppVersion "0.7.0"
 #define MyAppBaseName "OTL wizard 2"
 #define MyAppName MyAppBaseName + " V" + MyAppVersion
 #define MyInstallerOutputName MyAppBaseName + " installer V" + MyAppVersion
