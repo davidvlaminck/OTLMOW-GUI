@@ -10,7 +10,6 @@ from otlmow_model.OtlmowModel.BaseClasses.RelationInteractor import RelationInte
 from otlmow_model.OtlmowModel.Classes.Agent import Agent
 from otlmow_model.OtlmowModel.Classes.ImplementatieElement.RelatieObject import RelatieObject
 from otlmow_model.OtlmowModel.Helpers import OTLObjectHelper, RelationValidator
-from universalasync import async_to_sync_wraps
 
 from Domain import global_vars
 from Domain.util.Helpers import Helpers
@@ -73,7 +72,6 @@ class InsertDataDomain:
         cls.update_frontend()
 
     @classmethod
-    @async_to_sync_wraps
     async def check_document(cls, doc_location: Union[str, Path], delimiter: str=";") -> Iterable[OTLObject]:
         """
         Checks a document and converts it into a list of OTL objects.
@@ -291,7 +289,6 @@ class InsertDataDomain:
         InsertDataDomain.update_frontend()
 
     @classmethod
-    @async_to_sync_wraps
     @add_loading_screen_no_delay
     @async_save_assets
     async def load_and_validate_documents(cls,**kwargs) -> tuple[list[dict], list]:

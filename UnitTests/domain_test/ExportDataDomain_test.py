@@ -1,6 +1,7 @@
 import os
 import shutil
 
+import pytest
 from openpyxl.reader.excel import load_workbook
 from pytestqt.qtbot import QtBot
 from pytestqt.plugin import qtbot
@@ -57,8 +58,8 @@ def get_export_path_with_cleanup(root_directory: Path) -> Path:
 
 
 
-
-def test_unedited_generate_files(root_directory: Path,
+@pytest.mark.asyncio
+async def test_unedited_generate_files(root_directory: Path,
                                  setup_simpel_vergelijking_template5,
                                  mock_screen: InsertDataScreen,
                                 mock_fill_possible_relations_list: RelationChangeScreen,
@@ -74,11 +75,11 @@ def test_unedited_generate_files(root_directory: Path,
 
     InsertDataDomain.add_files_to_backend_list(test_object_lists_file_path)
 
-    InsertDataDomain.load_and_validate_documents()
+    await InsertDataDomain.load_and_validate_documents()
 
     export_path = get_export_path_with_cleanup
 
-    ExportDataDomain.generate_files(export_path, False, False,synchronous=True)
+    await ExportDataDomain.generate_files(export_path, False, False)
 
     assert export_path.exists()
 
@@ -104,8 +105,8 @@ def test_unedited_generate_files(root_directory: Path,
 
     assert list_values == list_expected_values
 
-
-def test_add_remove_generate_files(root_directory: Path,setup_simpel_vergelijking_template5,
+@pytest.mark.asyncio
+async def test_add_remove_generate_files(root_directory: Path,setup_simpel_vergelijking_template5,
                                 mock_project_home_path,
                                  mock_screen: InsertDataScreen,
                                 mock_fill_possible_relations_list: RelationChangeScreen,
@@ -119,11 +120,11 @@ def test_add_remove_generate_files(root_directory: Path,setup_simpel_vergelijkin
 
     InsertDataDomain.add_files_to_backend_list(test_object_lists_file_path)
 
-    InsertDataDomain.load_and_validate_documents()
+    await InsertDataDomain.load_and_validate_documents()
 
 
 
-    RelationChangeDomain.set_possible_relations(RelationChangeDomain.shown_objects[0])
+    await RelationChangeDomain.set_possible_relations(RelationChangeDomain.shown_objects[0])
 
     bron_id = 'dummy_hxOTHWe'
     target_id = 'dummy_a'
@@ -182,7 +183,8 @@ def get_export_path_export_with_cleanup(root_directory: Path) -> Path:
     if export_path.exists():
         os.remove(export_path)
 
-def test_add_remove_inactive_relations_and_generate_files(root_directory: Path,
+@pytest.mark.asyncio
+async def test_add_remove_inactive_relations_and_generate_files(root_directory: Path,
                                                           setup_simpel_vergelijking_template5,
                                  mock_screen: InsertDataScreen,
                                 mock_fill_possible_relations_list: RelationChangeScreen,
@@ -196,13 +198,13 @@ def test_add_remove_inactive_relations_and_generate_files(root_directory: Path,
 
     InsertDataDomain.add_files_to_backend_list(test_object_lists_file_path)
 
-    InsertDataDomain.load_and_validate_documents()
+    await InsertDataDomain.load_and_validate_documents()
 
     source_id_1  = 'dummy_FNrHuPZCWV'
     target_id_1 = 'dummy_TyBGmXfXC'
     index_1 = 1
 
-    RelationChangeDomain.set_possible_relations( RelationChangeDomain.get_object(source_id_1))
+    await RelationChangeDomain.set_possible_relations( RelationChangeDomain.get_object(source_id_1))
     added_relation =  RelationChangeDomain.add_possible_relation_to_existing_relations(source_id_1,
                                                                      target_id_1,
                                                                      index_1)
@@ -212,7 +214,7 @@ def test_add_remove_inactive_relations_and_generate_files(root_directory: Path,
     target_id_2 = 'dummy_TyBGmXfXC'
     index_2 = 0
 
-    RelationChangeDomain.set_possible_relations(
+    await RelationChangeDomain.set_possible_relations(
         selected_object=RelationChangeDomain.get_object(identificator=source_id_2))
     added_relation =  RelationChangeDomain.add_possible_relation_to_existing_relations(
         bron_asset_id=source_id_2,

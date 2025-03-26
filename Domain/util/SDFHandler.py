@@ -6,8 +6,6 @@ import sys
 from pathlib import Path
 from typing import Optional
 
-from universalasync import async_to_sync_wraps
-
 from Domain import global_vars
 from Domain.util.Helpers import Helpers
 from Domain.util.XSDCreator import XSDCreator
@@ -189,7 +187,6 @@ class SDFHandler:
             cls._filter_out_coordinate_system_not_installed_error(command, error)
 
     @classmethod
-    @async_to_sync_wraps
     async def create_filtered_SDF_from_subset(cls, subset_path: Path, sdf_path: Path,
                                         selected_classes_typeURI_list: Optional[list[str]]=None,
                                         model_directory: Path = None) -> None:

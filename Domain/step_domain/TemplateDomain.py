@@ -8,8 +8,6 @@ from typing import List
 from otlmow_converter.Exceptions.ExceptionsGroup import ExceptionsGroup
 from otlmow_modelbuilder.SQLDataClasses.OSLOClass import OSLOClass
 from otlmow_template.SubsetTemplateCreator import SubsetTemplateCreator
-from universalasync import async_to_sync_wraps
-
 from Domain import global_vars
 from Domain.util.Helpers import Helpers
 from Domain.util.SDFHandler import SDFHandler
@@ -36,7 +34,6 @@ class TemplateDomain:
 
 
     @classmethod
-    @async_to_sync_wraps
     @add_loading_screen
     async def create_template(cls, subset_path: Path, document_path: Path, selected_classes_typeURI_list: List, generate_choice_list: bool,
                               add_geo_artefact: bool, add_attribute_info: bool, highlight_deprecated_attributes: bool,
@@ -53,7 +50,7 @@ class TemplateDomain:
                 # filter out agent
                 selected_classes_typeURI_list.remove('http://purl.org/dc/terms/Agent')
 
-            if ".sdf" == document_path.suffix:
+            if document_path.suffix == ".sdf":
                 await SDFHandler.create_filtered_SDF_from_subset(
                     subset_path=subset_path,
                     sdf_path=document_path,
@@ -61,13 +58,13 @@ class TemplateDomain:
                     model_directory=model_directory)
 
             else:
-                await template_creator.generate_template_from_subset(
-                    path_to_subset=subset_path, path_to_template_file_and_extension=document_path,
-                    list_of_otl_objectUri=selected_classes_typeURI_list,
+                await template_creator.generate_template_from_subset_async(
+                    subset_path=subset_path, template_file_path=document_path,
+                    class_uris_filter=selected_classes_typeURI_list,
                     generate_choice_list=generate_choice_list,
-                    add_geo_artefact=add_geo_artefact, add_attribute_info=add_attribute_info,
-                    highlight_deprecated_attributes=highlight_deprecated_attributes,
-                    amount_of_examples=amount_of_examples,
+                    add_geometry=add_geo_artefact, add_attribute_info=add_attribute_info,
+                    add_deprecated=highlight_deprecated_attributes,
+                    dummy_data_rows=amount_of_examples,
                     model_directory=model_directory,
                     abbreviate_excel_sheettitles=True)
         except PermissionError as e:
@@ -98,14 +95,11 @@ class TemplateDomain:
 
     @classmethod
     def init_static(cls):
-
-
         if global_vars.current_project:
             event_loop = asyncio.get_event_loop()
             event_loop.create_task(cls.fill_list())
 
     @classmethod
-    @async_to_sync_wraps
     async def fill_list(cls):
         cls.classes.clear()
         cls.has_a_class_with_deprecated_attributes = False
@@ -142,7 +136,6 @@ class TemplateDomain:
         cls.get_screen().reset_ui(GlobalTranslate._)
 
 
-
     @classmethod
     def update_frontend(cls):
         cls.get_screen().update_project_info(global_vars.current_project)
@@ -154,7 +147,6 @@ class TemplateDomain:
         return global_vars.otl_wizard.main_window.step1
 
     @classmethod
-    @async_to_sync_wraps
     @add_loading_screen
     async def async_export_template(cls, document_path:Path ,selected_classes: list[str],
                         generate_choice_list: bool, geometry_column_added: bool,

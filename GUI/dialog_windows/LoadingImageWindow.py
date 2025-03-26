@@ -7,7 +7,7 @@ from PyQt6.QtWidgets import QApplication, QDialog, QLabel, QVBoxLayout, QPushBut
 from PyQt6.QtGui import QPixmap, QFont, QMovie
 from PyQt6.QtCore import Qt, QSize
 from fontTools.merge.util import avg_int
-from universalasync import async_to_sync_wraps
+
 
 from Domain import global_vars
 from Domain.global_vars import test_mode
@@ -27,7 +27,6 @@ def add_loading_screen(func):
     :returns: The wrapper function that includes the saving logic.
     """
 
-    @async_to_sync_wraps
     async def wrapper_func(*args, **kwargs):
         if global_vars.test_mode:
             res = await func(*args, **kwargs)

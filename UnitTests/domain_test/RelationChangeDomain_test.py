@@ -64,7 +64,8 @@ def mock_step3_step3_relations() -> None:
 def id(aim_object: AIMObject):
     return aim_object.assetId.identificator
 
-def test_full_set_possible_relations(root_directory:Path,
+@pytest.mark.asyncio
+async def test_full_set_possible_relations(root_directory:Path,
                                 mock_screen: InsertDataScreen,
                                      setup_simpel_vergelijking_template5,
                                 # mock_fill_possible_relations_list: RelationChangeScreen,
@@ -78,14 +79,12 @@ def test_full_set_possible_relations(root_directory:Path,
 
     InsertDataDomain.add_files_to_backend_list(test_object_lists_file_path)
 
-    error_set, objects_lists = InsertDataDomain.load_and_validate_documents()
-
-
+    error_set, objects_lists = await InsertDataDomain.load_and_validate_documents()
 
     for objects_list in objects_lists:
         for object in objects_list:
             if not is_relation(object):
-                RelationChangeDomain.set_possible_relations(object)
+                await RelationChangeDomain.set_possible_relations(object)
 
     assert len(RelationChangeDomain.possible_relations_per_class_dict.keys()) == 4
     # search with regex for (#Verkeersbordopstelling'|#Pictogram'|#Funderingsmassief'|#verkeersbordsteun'|BevestigingGC'|#Draagconstructie'|#Fundering'|#ConstructieElement')
@@ -250,8 +249,8 @@ def test_full_set_possible_relations(root_directory:Path,
             assert RelationChangeDomain.possible_object_to_object_relations_dict[selected_object_id][rel_object_id] == poss_rel[selected_object_id][rel_object_id]
 
 
-
-def test_full_add_possible_relation_to_existing_relation(root_directory:Path,
+@pytest.mark.asyncio
+async def test_full_add_possible_relation_to_existing_relation(root_directory:Path,
                                                          setup_simpel_vergelijking_template2,
                                 mock_screen: InsertDataScreen,
                                 mock_fill_possible_relations_list: RelationChangeScreen,
@@ -262,11 +261,11 @@ def test_full_add_possible_relation_to_existing_relation(root_directory:Path,
 
     InsertDataDomain.add_files_to_backend_list(test_object_lists_file_path)
 
-    error_set, objects_lists = InsertDataDomain.load_and_validate_documents()
+    error_set, objects_lists = await InsertDataDomain.load_and_validate_documents()
 
     for objects_list in objects_lists:
         for object in objects_list:
-            RelationChangeDomain.set_possible_relations(object)
+            await RelationChangeDomain.set_possible_relations(object)
 
     bron_asset_id = list(RelationChangeDomain.possible_object_to_object_relations_dict.keys())[0]
     target_asset_id = list(RelationChangeDomain.possible_object_to_object_relations_dict[bron_asset_id].keys())[0]
@@ -288,7 +287,8 @@ def test_full_add_possible_relation_to_existing_relation(root_directory:Path,
     assert relation_object not in RelationChangeDomain.possible_object_to_object_relations_dict[bron_asset_id][target_asset_id]
 
 
-def test_full_set_possible_relations_unique_situations(root_directory: Path,
+@pytest.mark.asyncio
+async def test_full_set_possible_relations_unique_situations(root_directory: Path,
                                                        setup_simpel_vergelijking_template4,
                                      mock_screen: InsertDataScreen,
                                      mock_fill_possible_relations_list: RelationChangeScreen,
@@ -298,7 +298,7 @@ def test_full_set_possible_relations_unique_situations(root_directory: Path,
 
     InsertDataDomain.add_files_to_backend_list(test_object_lists_file_path)
 
-    error_set, objects_lists = InsertDataDomain.load_and_validate_documents()
+    error_set, objects_lists = await InsertDataDomain.load_and_validate_documents()
 
     for objects_list in objects_lists:
         for object in objects_list:
@@ -309,7 +309,7 @@ def test_full_set_possible_relations_unique_situations(root_directory: Path,
                     fund2 = object
                 elif (object.assetId.identificator == "dummy_AieZ"):
                     fund3 = object
-    RelationChangeDomain.set_possible_relations(fund1)
+    await RelationChangeDomain.set_possible_relations(fund1)
 
     fund1_id =fund1.assetId.identificator
     fund2_id = fund2.assetId.identificator
@@ -319,7 +319,8 @@ def test_full_set_possible_relations_unique_situations(root_directory: Path,
         RelationChangeDomain.possible_object_to_object_relations_dict[fund1_id][fund3_id]) == 3
 
 
-def test_full_add_possible_relation_to_existing_relation(root_directory: Path,
+@pytest.mark.asyncio
+async def test_full_add_possible_relation_to_existing_relation(root_directory: Path,
                                                          setup_simpel_vergelijking_template2,
                                                          mock_screen: InsertDataScreen,
                                                          mock_fill_possible_relations_list: RelationChangeScreen,
@@ -330,11 +331,11 @@ def test_full_add_possible_relation_to_existing_relation(root_directory: Path,
 
     InsertDataDomain.add_files_to_backend_list(test_object_lists_file_path)
 
-    error_set, objects_lists = InsertDataDomain.load_and_validate_documents()
+    error_set, objects_lists = await InsertDataDomain.load_and_validate_documents()
 
     for objects_list in objects_lists:
         for object in objects_list:
-            RelationChangeDomain.set_possible_relations(object)
+            await RelationChangeDomain.set_possible_relations(object)
 
     bron_asset_id = list(RelationChangeDomain.possible_object_to_object_relations_dict.keys())[0]
     target_asset_id = \
@@ -367,7 +368,8 @@ def test_full_add_possible_relation_to_existing_relation(root_directory: Path,
                target_asset_id]
 
 
-def test_full_add_possible_relation_to_existing_relation(root_directory:Path,
+@pytest.mark.asyncio
+async def test_full_add_possible_relation_to_existing_relation(root_directory:Path,
                                                          setup_simpel_vergelijking_template5,
                                 mock_screen: InsertDataScreen,
                                 mock_fill_possible_relations_list: RelationChangeScreen,
@@ -380,12 +382,12 @@ def test_full_add_possible_relation_to_existing_relation(root_directory:Path,
 
     InsertDataDomain.add_files_to_backend_list(test_object_lists_file_path)
 
-    error_set, objects_lists = InsertDataDomain.load_and_validate_documents()
+    error_set, objects_lists = await InsertDataDomain.load_and_validate_documents()
 
     for objects_list in objects_lists:
         for object in objects_list:
             if not is_relation(object):
-                RelationChangeDomain.set_possible_relations(object)
+                await RelationChangeDomain.set_possible_relations(object)
 
     bron_asset_id = list(RelationChangeDomain.possible_object_to_object_relations_dict.keys())[0]
     target_asset_id = list(RelationChangeDomain.possible_object_to_object_relations_dict[bron_asset_id].keys())[0]
@@ -406,7 +408,9 @@ def test_full_add_possible_relation_to_existing_relation(root_directory:Path,
     assert previous_possible_relations_list_length == len(RelationChangeDomain.possible_object_to_object_relations_dict[bron_asset_id][target_asset_id]) + 1
     assert relation_object not in RelationChangeDomain.possible_object_to_object_relations_dict[bron_asset_id][target_asset_id]
 
-def test_full_remove_existing_relation(root_directory:Path,
+
+@pytest.mark.asyncio
+async def test_full_remove_existing_relation(root_directory:Path,
                                        setup_simpel_vergelijking_template5,
                                 mock_screen: InsertDataScreen,
                                 mock_fill_possible_relations_list: RelationChangeScreen,
@@ -417,11 +421,10 @@ def test_full_remove_existing_relation(root_directory:Path,
 
     InsertDataDomain.add_files_to_backend_list(test_object_lists_file_path)
 
-    error_set, objects_lists = InsertDataDomain.load_and_validate_documents()
-
+    error_set, objects_lists = await InsertDataDomain.load_and_validate_documents()
 
     for object in RelationChangeDomain.shown_objects:
-            RelationChangeDomain.set_possible_relations(object)
+        await RelationChangeDomain.set_possible_relations(object)
 
     to_remove_index = 0
 
@@ -443,9 +446,9 @@ def test_full_remove_existing_relation(root_directory:Path,
     assert removed_relation not in RelationChangeDomain.existing_relations
 
     # force update of the backend possible relations lists
-    RelationChangeDomain.set_possible_relations(
+    await RelationChangeDomain.set_possible_relations(
         selected_object=RelationChangeDomain.get_object(identificator=bron_asset_id))
-    RelationChangeDomain.set_possible_relations(
+    await RelationChangeDomain.set_possible_relations(
         selected_object=RelationChangeDomain.get_object(identificator=target_asset_id))
 
     l1 = RelationChangeDomain.possible_object_to_object_relations_dict[bron_asset_id][target_asset_id]
