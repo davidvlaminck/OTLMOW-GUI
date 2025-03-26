@@ -268,7 +268,7 @@ class Project:
             return saved_objects
         return []
 
-    async def save_validated_assets(self, asynchronous = True) -> None:
+    async def save_validated_assets(self) -> None:
         """
         Saves validated assets to the project quick save directory.
 
@@ -300,16 +300,12 @@ class Project:
         current_date_str = datetime.datetime.now().strftime(Project.quicksave_date_format)
 
         save_path = self.quick_save_dir_path  / f"quick_save-{current_date_str}.json"
-
-        if asynchronous:
-            try:
-                event_loop = asyncio.get_event_loop()
-                event_loop.create_task(self.make_quick_save(save_path=save_path))
-            except DeprecationWarning:
-                # should only go here if you are testing
-                await self.make_quick_save(save_path=save_path)
-        else:
+        try:
             await self.make_quick_save(save_path=save_path)
+        except DeprecationWarning:
+            # should only go here if you are testing
+            await self.make_quick_save(save_path=save_path)
+
 
     async def make_quick_save(self, save_path: Path) -> None:
         object_count = len(self.assets_in_memory)

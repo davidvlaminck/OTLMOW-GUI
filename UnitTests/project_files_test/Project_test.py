@@ -608,9 +608,7 @@ def setup_quicksave_test_project(root_directory,mock_otl_wizard_dir) -> Project:
     shutil.copytree(backup_quicksave_test_project_path,
                     quicksave_test_project_path)
     sleep(0.5)  # sleep to give the system time to copy
-    setup_quicksave_test_project = Project.load_project(quicksave_test_project_path)
-
-    yield setup_quicksave_test_project
+    yield Project.load_project(quicksave_test_project_path)
 
     if quicksave_test_project_path.exists():
         shutil.rmtree(quicksave_test_project_path)
@@ -957,7 +955,8 @@ async def test_load_validated_assets_with_empty_path(setup_quicksave_test_projec
         "empty_project",
     ],indirect=True
 )
-def test_save_validated_assets_from_scratch(get_and_cleanup_empty_project: Project):
+@pytest.mark.asyncio
+async def test_save_validated_assets_from_scratch(get_and_cleanup_empty_project: Project):
     """
     testing to see if we can make the quicksave directory in an empty project
 
@@ -975,7 +974,7 @@ def test_save_validated_assets_from_scratch(get_and_cleanup_empty_project: Proje
 
     assert not project.quick_save_dir_path.exists()
 
-    project.save_validated_assets(asynchronous=False)
+    await project.save_validated_assets()
 
     # check that the quicksave directory exists now
     assert project.quick_save_dir_path.exists()
