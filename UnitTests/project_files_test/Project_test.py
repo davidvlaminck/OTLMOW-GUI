@@ -615,10 +615,11 @@ def setup_quicksave_test_project(root_directory,mock_otl_wizard_dir) -> Project:
     if quicksave_test_project_path.exists():
         shutil.rmtree(quicksave_test_project_path)
 
-def test_load_validated_assets(setup_quicksave_test_project):
 
-
-    loaded_assets_and_relations:list[Union[RelatieObject, RelationInteractor]] = setup_quicksave_test_project.sync_load_validated_assets()
+@pytest.mark.asyncio
+async def test_load_validated_assets(setup_quicksave_test_project):
+    loaded_assets_and_relations:list[Union[RelatieObject, RelationInteractor]] = (
+        await setup_quicksave_test_project.load_validated_assets())
 
     print([str(asset) for asset in loaded_assets_and_relations])
 
@@ -930,9 +931,13 @@ def mock_get_last_quick_save_path_to_return_empty():
     yield
     Project.get_last_quick_save_path = original_get_last_quick_save_path
 
-def test_load_validated_assets_with_empty_path(setup_quicksave_test_project,mock_get_last_quick_save_path_to_return_empty):
 
-    loaded_assets_and_relations:list[Union[RelatieObject, RelationInteractor]] = setup_quicksave_test_project.sync_load_validated_assets()
+@pytest.mark.asyncio
+async def test_load_validated_assets_with_empty_path(setup_quicksave_test_project,
+                                                mock_get_last_quick_save_path_to_return_empty):
+
+    loaded_assets_and_relations:list[Union[RelatieObject, RelationInteractor]] = (
+        await setup_quicksave_test_project.load_validated_assets())
 
     assert loaded_assets_and_relations == []
 
@@ -962,8 +967,7 @@ def test_save_validated_assets_from_scratch(get_and_cleanup_empty_project: Proje
     project, expected_res,param = get_and_cleanup_empty_project
     project.assets_in_memory = []
 
-    if project.quick_save_dir_path:
-        if project.quick_save_dir_path.exists():
+    if project.quick_save_dir_path and project.quick_save_dir_path.exists():
             shutil.rmtree(project.quick_save_dir_path)
 
     #to create the project folder we need to save it first
@@ -992,7 +996,8 @@ def test_save_validated_assets_from_scratch(get_and_cleanup_empty_project: Proje
         "empty_project",
     ],indirect=True
 )
-def test_save_validated_assets_delete_old_files(get_and_cleanup_empty_project: Project):
+@pytest.mark.asyncio
+async def test_save_validated_assets_delete_old_files(get_and_cleanup_empty_project: Project):
     """
     testing situations:
     1. when there is a file in the quicksave directory that doesn't follow the naming convention
@@ -1028,7 +1033,7 @@ def test_save_validated_assets_delete_old_files(get_and_cleanup_empty_project: P
     quick_save_files = os.listdir(project.get_quicksaves_dir_path())
     assert len(quick_save_files) == 3
 
-    project.save_validated_assets(asynchronous=False)
+    await project.save_validated_assets(asynchronous=False)
 
     # quicksave folder should contain
     # 1. strange_name_f
@@ -1041,23 +1046,25 @@ def test_save_validated_assets_delete_old_files(get_and_cleanup_empty_project: P
     expected_quick_save_files = sorted([f"quick_save-{young_date_str}.json", project.get_last_quick_save_path().name, 'strange_name.json'])
     assert quick_save_files == expected_quick_save_files
 @fixture
-def setup_preloaded_assets_in_memory(setup_quicksave_test_project) -> Project:
+async def setup_preloaded_assets_in_memory(setup_quicksave_test_project) -> Project:
 
-    setup_quicksave_test_project.assets_in_memory = setup_quicksave_test_project.sync_load_validated_assets()
+    setup_quicksave_test_project.assets_in_memory = await setup_quicksave_test_project.load_validated_assets()
     yield setup_quicksave_test_project
     setup_quicksave_test_project.assets_in_memory = []
 
-def test_save_validated_assets(setup_preloaded_assets_in_memory: Project):
+
+@pytest.mark.asyncio
+async def test_save_validated_assets(setup_preloaded_assets_in_memory: Project):
 
     expected_assets =  deepcopy(setup_preloaded_assets_in_memory.assets_in_memory)
     old_quicksave = deepcopy(setup_preloaded_assets_in_memory.last_quick_save)
 
-    setup_preloaded_assets_in_memory.save_validated_assets(asynchronous=False)
+    await setup_preloaded_assets_in_memory.save_validated_assets(asynchronous=False)
 
     # we expect there to be a new last_quick_save
     assert setup_preloaded_assets_in_memory.last_quick_save != old_quicksave
 
-    new_loaded_assets = setup_preloaded_assets_in_memory.sync_load_validated_assets()
+    new_loaded_assets = setup_preloaded_assets_in_memory.load_validated_assets()
 
     assert new_loaded_assets == expected_assets
 

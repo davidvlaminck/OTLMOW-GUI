@@ -151,7 +151,8 @@ class AbstractExportDataSubScreen(Screen):
             csv_option = self.extra_option_csv.isChecked()
             split_relations_and_objects = self.relations_split_optionality.isChecked()
             event_loop = asyncio.get_event_loop()
-            event_loop.create_task(ExportDataDomain.generate_files(end_file=document_loc[0],
+            event_loop.create_task(
+                ExportDataDomain.generate_files(end_file=document_loc[0],
                                             separate_per_class_csv_option=csv_option,
                                             separate_relations_option=split_relations_and_objects))
 

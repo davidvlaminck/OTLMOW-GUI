@@ -16,8 +16,6 @@ from otlmow_model.OtlmowModel.Helpers import RelationCreator, OTLObjectHelper
 from otlmow_model.OtlmowModel.Helpers.OTLObjectHelper import is_relation
 from otlmow_modelbuilder.OSLOCollector import OSLOCollector
 from otlmow_modelbuilder.SQLDataClasses.OSLORelatie import OSLORelatie
-from universalasync import async_to_sync_wraps
-
 from Domain import global_vars
 
 from Domain.util.Helpers import Helpers
@@ -29,28 +27,6 @@ from GUI.screens.screen_interface.RelationChangeScreenInterface import \
     RelationChangeScreenInterface
 
 ROOT_DIR = Path(__file__).parent.parent
-
-
-def save_assets(func):
-    """Decorator that saves assets after executing the decorated function.
-
-    This decorator wraps a function to ensure that after its execution, the current
-    project's assets in memory are updated and saved. It also starts the event loop
-    for the header in the main window to animate the OTL Wizard 2 logo during saving.
-
-    :param func: The function to be decorated.
-    :returns: The wrapper function that includes the saving logic.
-    """
-
-    def wrapper_func(*args, **kwargs):
-        res = func(*args, **kwargs)
-        global_vars.current_project.assets_in_memory = RelationChangeDomain.get_quicksave_instances()
-        global_vars.current_project.save_validated_assets()
-        global_vars.otl_wizard.main_window.step_3_tabwidget.header.start_event_loop()
-        return res
-
-    return wrapper_func
-
 
 def async_save_assets(func):
     """Decorator that saves assets after executing the decorated function.
@@ -66,7 +42,7 @@ def async_save_assets(func):
     async def wrapper_func(*args, **kwargs):
         res = await func(*args, **kwargs)
         global_vars.current_project.assets_in_memory = RelationChangeDomain.get_quicksave_instances()
-        global_vars.current_project.save_validated_assets()
+        await global_vars.current_project.save_validated_assets()
         global_vars.otl_wizard.main_window.step_3_tabwidget.header.start_event_loop()
         return res
 
@@ -248,7 +224,6 @@ class RelationChangeDomain:
         cls.map_uptodate = False
 
     @classmethod
-    @async_to_sync_wraps
     @add_loading_screen
     async def load_project_relation_data(cls) -> None:
         """
@@ -444,7 +419,6 @@ class RelationChangeDomain:
             otl_object) == id_to_check
 
     @classmethod
-    @async_to_sync_wraps
     async def set_possible_relations(cls, selected_object: RelationInteractor):
         """
         Sets the possible relations for the specified selected object and updates the user
@@ -498,7 +472,7 @@ class RelationChangeDomain:
         possible_relations_for_this_object = cls.get_possible_relations_for(selected_id=selected_id)
 
         # noinspection PyTypeChecker
-        object_attributes_dict = await DotnotationDictConverter.to_dict(otl_object=selected_object)
+        object_attributes_dict = await DotnotationDictConverter.to_dict_async(otl_object=selected_object)
 
         cls.get_screen().fill_possible_relations_list(source_object=selected_object,
                                                       relations=possible_relations_for_this_object,
@@ -935,7 +909,6 @@ class RelationChangeDomain:
         return relation_object
 
     @classmethod
-    @async_to_sync_wraps
     @async_save_assets
     async def add_multiple_possible_relations_to_existing_relations(cls, data_list):
         """
@@ -1043,7 +1016,6 @@ class RelationChangeDomain:
         cls.get_screen().set_selected_object(identificator)
 
     @classmethod
-    @async_to_sync_wraps
     @async_save_assets
     async def remove_multiple_existing_relations(cls, indices: list[int]) -> None:
         """
@@ -1085,7 +1057,6 @@ class RelationChangeDomain:
         return removed_relation
 
     @classmethod
-    @async_to_sync_wraps
     async def select_existing_relation_indices(cls, indices: list[int]) -> None:
         """
         Selects existing relations based on the provided indices and updates the user interface
@@ -1110,7 +1081,6 @@ class RelationChangeDomain:
                 last_selected_relation))
 
     @classmethod
-    @async_to_sync_wraps
     async def select_possible_relation_data(cls, selected_relations_data: list) -> None:
         """
         Selects and displays data for possible relations based on the provided selected relations

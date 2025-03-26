@@ -10,7 +10,6 @@ from otlmow_model.OtlmowModel.BaseClasses.RelationInteractor import RelationInte
 from otlmow_model.OtlmowModel.Classes.Agent import Agent
 from otlmow_model.OtlmowModel.Classes.ImplementatieElement.RelatieObject import RelatieObject
 from otlmow_model.OtlmowModel.Helpers import OTLObjectHelper, RelationValidator
-from universalasync import async_to_sync_wraps
 
 from Domain import global_vars
 from Domain.project.ProjectFile import ProjectFile
@@ -78,7 +77,6 @@ class InsertDataDomain:
         cls.update_frontend()
 
     @classmethod
-    @async_to_sync_wraps
     async def check_document(cls, doc_location: Union[str, Path], delimiter: str=";") -> Iterable[OTLObject]:
         """
         Checks a document and converts it into a list of OTL objects.
@@ -105,7 +103,6 @@ class InsertDataDomain:
                     file_path=temp_path,include_tab_info=True )
 
             elif doc_location_path.suffix == '.sdf':
-
                 # SDF files will make multiple CSV files, one for each class
                 temp_path_list = InsertDataDomain.create_temporary_SDF_conversion_to_CSV_files(
                     sdf_filepath=doc_location_path)
@@ -314,7 +311,6 @@ class InsertDataDomain:
 
         return missing_project_files
     @classmethod
-    @async_to_sync_wraps
     @add_loading_screen_no_delay
     @async_save_assets
     async def load_and_validate_documents(cls,**kwargs) -> tuple[list[dict], list]:
@@ -523,7 +519,7 @@ class InsertDataDomain:
     def does_typeURI_exist(cls, bron_type_uri):
         return bron_type_uri in Helpers.all_OTL_asset_types_dict.values()
 
-    
+
 
     @classmethod
     def raise_wrong_doel_or_target(cls, relation: RelatieObject, tab: str, bron_type_uri,

@@ -1,5 +1,7 @@
+import asyncio
 from unittest.mock import AsyncMock
 
+import pytest
 from openpyxl.descriptors.excel import Relation
 from otlmow_model.OtlmowModel.Classes.Onderdeel.LigtOp import LigtOp
 from otlmow_modelbuilder.OSLOCollector import OSLOCollector
@@ -62,7 +64,9 @@ def mock_load_validated_assets() -> None:
     yield
     Project.load_validated_assets = original_load_validated_assets
 
-def test_fill_class_list(root_directory:Path,
+
+@pytest.mark.asyncio
+async def test_fill_class_list(root_directory:Path,
                          setup_simpel_vergelijking_template5,
                                 mock_screen: InsertDataScreen,
                                 mock_rel_screen: RelationChangeScreen,
@@ -73,7 +77,8 @@ def test_fill_class_list(root_directory:Path,
 
     InsertDataDomain.add_files_to_backend_list(test_object_lists_file_path)
 
-    InsertDataDomain.load_and_validate_documents()
+    event_loop = asyncio.get_event_loop()
+    event_loop.create_task(await InsertDataDomain.load_and_validate_documents())
 
     object_list = RelationChangeDomain.get_screen().objects_list_gui
 
@@ -104,7 +109,8 @@ def test_fill_class_list(root_directory:Path,
 #######################################################
 # RelationChangeScreen.fill_possible_relations_list   #
 #######################################################
-def test_full_fill_possible_relations_list(qtbot,root_directory:Path,
+@pytest.mark.asyncio
+async def test_full_fill_possible_relations_list(qtbot,root_directory:Path,
                                            setup_simpel_vergelijking_template5,
                                 mock_screen: InsertDataScreen,
                                 mock_rel_screen: RelationChangeScreen,
@@ -114,7 +120,7 @@ def test_full_fill_possible_relations_list(qtbot,root_directory:Path,
 
     InsertDataDomain.add_files_to_backend_list(test_object_lists_file_path)
 
-    error_set, objects_lists = InsertDataDomain.load_and_validate_documents()
+    error_set, objects_lists = await InsertDataDomain.load_and_validate_documents()
 
     # VerkeersOpstelling1
     vopstel1 = objects_lists[0]
@@ -269,7 +275,8 @@ def test_full_fill_possible_relations_list(qtbot,root_directory:Path,
 #######################################################
 # RelationChangeScreen.fill_possible_relations_list   #
 #######################################################
-def test_full_fill_existing_relations_list(qtbot,root_directory:Path,
+@pytest.mark.asyncio
+async def test_full_fill_existing_relations_list(qtbot,root_directory:Path,
                                            setup_simpel_vergelijking_template5,
                                 mock_screen: InsertDataScreen,
                                 mock_rel_screen: RelationChangeScreen,
@@ -279,7 +286,7 @@ def test_full_fill_existing_relations_list(qtbot,root_directory:Path,
 
     InsertDataDomain.add_files_to_backend_list(test_object_lists_file_path)
 
-    InsertDataDomain.load_and_validate_documents()
+    await InsertDataDomain.load_and_validate_documents()
 
     # existing_relations_gui =    [ 'Bevestiging | dummy_a <-> dummy_TyBGmXfXC',
     #                               'Bevestiging | None <-> None',

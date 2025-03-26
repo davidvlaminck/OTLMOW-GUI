@@ -65,7 +65,8 @@ def mock_rel_screen(qtbot: QtBot, create_translations) -> RelationChangeScreen:
         "empty_project",
     ],indirect=True
 )
-def test_export_diff_report(root_directory: Path,
+@pytest.mark.asyncio
+async def test_export_diff_report(root_directory: Path,
                             get_and_cleanup_empty_project,
                             mock_screen: InsertDataScreen,
                             mock_rel_screen: RelationChangeScreen,
@@ -84,7 +85,7 @@ def test_export_diff_report(root_directory: Path,
     project.copy_and_add_project_file(edited_file_path,FileState.WARNING)
 
     InsertDataDomain.init_static()
-    InsertDataDomain.load_and_validate_documents()
+    await InsertDataDomain.load_and_validate_documents()
 
     ExportFilteredDataSubDomain.add_original_documents(paths_str=[str(original_file_path.absolute())])
 
