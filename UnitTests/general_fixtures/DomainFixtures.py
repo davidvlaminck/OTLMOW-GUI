@@ -94,7 +94,7 @@ def setup_test_project(root_directory: Path, mock_step3_visuals,mock_get_otl_wiz
 
     local_mock_RelationChangeDomain_get_screen = RelationChangeDomain.get_screen
     RelationChangeDomain.get_screen = Mock()
-    RelationChangeDomain.init_static(global_vars.current_project, asynchronous=False)
+    RelationChangeDomain.init_static(global_vars.current_project)
     RelationChangeDomain.get_screen = local_mock_RelationChangeDomain_get_screen
 
 

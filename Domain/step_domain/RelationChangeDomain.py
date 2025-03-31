@@ -173,7 +173,7 @@ class RelationChangeDomain:
     map_uptodate = True
 
     @classmethod
-    def init_static(cls, project: Project,asynchronous = True) -> None:
+    def init_static(cls, project: Project) -> None:
         """
         Initializes static resources for the RelationChangeDomain class.
         Call this when the project or project.subset_path changes or everytime you go to the window
@@ -198,15 +198,14 @@ class RelationChangeDomain:
             Helpers.create_external_typeURI_options()
 
         if global_vars.current_project:
-            if asynchronous:
-                try:
-                    event_loop = asyncio.get_event_loop()
-                    event_loop.create_task(cls.load_project_relation_data())
-                except DeprecationWarning:
-                    # should only go here if you are testing
-                    cls.load_project_relation_data()
-            else:
-                cls.load_project_relation_data()
+            try:
+                event_loop = asyncio.get_event_loop()
+                event_loop.create_task(cls.load_project_relation_data())
+            except DeprecationWarning:
+                # should only go here if you are testing
+                event_loop = asyncio.get_event_loop()
+                event_loop.create_task(cls.load_project_relation_data())
+
 
     @classmethod
     def clear_data(cls):
@@ -1005,7 +1004,8 @@ class RelationChangeDomain:
         cls.get_screen().fill_existing_relations_list(relations_objects=cls.existing_relations,
                                                       last_added=cls.last_added_to_existing)
 
-        cls.set_possible_relations(selected_object=cls.selected_object)
+        event_loop = asyncio.get_event_loop()
+        event_loop.create_task(cls.set_possible_relations(selected_object=cls.selected_object))
 
         OTLLogger.logger.debug("Execute RelationChangeDomain.update_frontend",
                                extra={"timing_ref": f"update_frontend"})
@@ -1077,7 +1077,7 @@ class RelationChangeDomain:
         last_index = indices[-1]
         last_selected_relation = cls.existing_relations[last_index]
         cls.get_screen().fill_existing_relation_attribute_field(
-            existing_relation_attribute_dict=await DotnotationDictConverter.to_dict(
+            existing_relation_attribute_dict=await DotnotationDictConverter.to_dict_async(
                 last_selected_relation))
 
     @classmethod
@@ -1110,7 +1110,7 @@ class RelationChangeDomain:
 
         # noinspection PyTypeChecker
         cls.get_screen().fill_possible_relation_attribute_field(
-            possible_relation_attribute_dict=await DotnotationDictConverter.to_dict(
+            possible_relation_attribute_dict=await DotnotationDictConverter.to_dict_async(
                                              otl_object=last_selected_relation_partner_asset))
 
     @classmethod
