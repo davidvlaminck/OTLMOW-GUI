@@ -314,6 +314,7 @@ class MapHelper:
             if(previousSelectedId && previousSelectedId in idToLayerDict)
             {
                 activateHighlightLayer(previousSelectedId)
+                map.fitBounds(idToLayerDict[previousSelectedId].getBounds());
             }
         """)
 
@@ -431,13 +432,17 @@ class MapHelper:
         return js_code
 
     @classmethod
-    def activate_highlight_layer_by_id(cls, asset_id, web_view):
+    def activate_highlight_layer_by_id(cls, asset_id, web_view,map_id):
         """Adds a marker dynamically without reloading the map."""
         OTLLogger.logger.debug("called add_projected_marker")
 
         """add a polygon sqaure to the map and go to it"""
 
-        js_code = ( f"activateHighlightLayer( '{asset_id}');\n")
+        js_code = ( f"activateHighlightLayer( '{asset_id}');\n"
+                    f"if('{asset_id}' && ('{asset_id}' in idToLayerDict))\n"
+                    "{\n"
+                    f"  {map_id}.fitBounds(idToLayerDict['{asset_id}'].getBounds());"
+                    "}\n")
         OTLLogger.logger.debug(js_code)
         web_view.page().runJavaScript(js_code)
 

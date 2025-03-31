@@ -251,4 +251,4 @@ class MapScreen(Screen):
 
     def activate_highlight_layer_by_id(self, asset_id:str):
         self.prev_selected_asset_id = asset_id
-        MapHelper.activate_highlight_layer_by_id(asset_id,self.webView)
+        MapHelper.activate_highlight_layer_by_id(asset_id,self.webView,self.map_id)
