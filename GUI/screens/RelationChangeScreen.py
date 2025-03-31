@@ -9,7 +9,6 @@ from otlmow_model.OtlmowModel.Classes.ImplementatieElement.RelatieObject import 
 from Domain.step_domain.RelationChangeDomain import RelationChangeDomain
 from GUI.dialog_windows.DefineHeeftBetrokkeneRelationWindow import \
     DefineHeeftBetrokkeneRelationWindow
-from GUI.dialog_windows.MapDialog import MapDialog
 from GUI.screens.MapScreen import MapScreen
 from GUI.screens.RelationChange_elements.ExistingRelationListWidget import \
     ExistingRelationListWidget

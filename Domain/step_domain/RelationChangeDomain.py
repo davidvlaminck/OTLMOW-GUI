@@ -192,7 +192,7 @@ class RelationChangeDomain:
 
     external_object_added = False
     visualisation_uptodate = True
-
+    map_uptodate = True
 
     @classmethod
     def init_static(cls, project: Project,asynchronous = True) -> None:
@@ -243,6 +243,7 @@ class RelationChangeDomain:
         cls.aim_id_relations = []
         cls.external_object_added = False
         cls.visualisation_uptodate = False
+        cls.map_uptodate = False
 
     @classmethod
     @async_to_sync_wraps
@@ -326,6 +327,7 @@ class RelationChangeDomain:
         cls.get_screen().fill_possible_relations_list(None, {})
         cls.get_screen().fill_existing_relations_list(cls.existing_relations)
         cls.visualisation_uptodate = False
+        cls.map_uptodate = False
 
     @classmethod
     def create_and_add_missing_external_assets_from_relations(cls) -> None:
@@ -1274,6 +1276,7 @@ class RelationChangeDomain:
 
     @classmethod
     def get_current_relation_change_screen_object_list_content_dict(cls):
+        cls.map_uptodate = True
         return cls.get_screen().get_current_object_list_content_dict()
 
     @classmethod
