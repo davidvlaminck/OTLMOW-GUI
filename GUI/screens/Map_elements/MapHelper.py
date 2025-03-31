@@ -3,6 +3,7 @@ import pathlib
 
 from PyQt6.QtCore import QUrl
 from folium import folium, JsCode
+from openpyxl.styles.builtins import percent
 
 from Domain.logger.OTLLogger import OTLLogger
 
@@ -47,11 +48,11 @@ class MapHelper:
         click_js = ("function onMapClick(e) {\n"
                     f"var icon_path = '{data_url}';\n ")
         click_js += """
-                                console.log(icon_path)
+                               
                                 var map_id = e.originalEvent.srcElement.id;
                                 var lat = e.latlng.lat;
                                 var lng = e.latlng.lng;
-                                console.log("Map clicked at: " + lat + ", " + lng);
+             
                                 //drawPoint(lat,lng,map_id,"","");
                                 
 
@@ -67,7 +68,7 @@ class MapHelper:
                                 ////var latlngs = [[lat, lng]];// dot
                                 //var map = e.originalEvent.srcElement;
                                 
-                                ////var polygon = L.polygon(latlngs, {color: "red"}).addTo(eval(e.originalEvent.srcElement.id));
+                                ////var polygon = L.polygon(latlngs, {color: "red"}).addTo(eval(map_id));
                                 //// zoom the map to the polygon
                                 ////eval(e.originalEvent.srcElement.id).fitBounds(polygon.getBounds());
                                 
@@ -76,9 +77,25 @@ class MapHelper:
                                 // Send coordinates to Python
                                 //activateHighlightLayer( 'e64e7fcb-d429-4e3d-8651-706297f14ca4-b25kZXJkZWVsI1ZvZXJ0dWlnbGFudGFhcm4');
                             
-                            }
+                            //}
 
                         """
+
+        # click_js += f"var previousSelectedId = '{prev_selected_asset_id}'"
+        # click_js += ("""
+        #                   if(previousSelectedId && previousSelectedId in idToLayerDict)
+        #                   {
+        #                       activateHighlightLayer(previousSelectedId)
+        #                       eval(map_id).fitBounds(idToLayerDict[previousSelectedId].getBounds());
+        #                   }
+        #                   else if(featureGroup)
+        #                   {
+        #
+        #                       eval(map_id).fitBounds(featureGroup.getBounds());
+        #                   }
+        #
+        #           """)
+        click_js += "}"
         m.add_js_link(name="QWebChannel_script", url="qrc:///qtwebchannel/qwebchannel.js")
         m.on(click=JsCode(click_js))
 
@@ -89,6 +106,7 @@ class MapHelper:
         //global state vars
         var previousSelectedId = null;
         var idToLayerDict = {}
+        var featureGroup = L.featureGroup()
         
         //turn cursor/mousepointer into crosshair
         mapEl.style.cursor = "crosshair";
@@ -113,22 +131,25 @@ class MapHelper:
                 var layer = e.target;
                 activateHighlightLayer(id);
                 sendSelectedIdToPython(id);
-                console.log(id + " in dict " + (previousSelectedId in idToLayerDict));
+            
             });
+            featureGroup.addLayer(line);
         }
         
         function drawPolygons(latlngs, map_id, text, id)
         {
-            var line = L.polygon(latlngs, {color:"#555555", weight:8}).addTo(eval(map_id)).bindPopup(text,{offset:L.point(0,0),autoPan:false});
-            idToLayerDict[id] = line
+            var line = L.polygon(latlngs, {color:"#555555", weight:8}).addTo(eval(map_id));
+            line.bindPopup(text,{offset:L.point(0,0),autoPan:false})
+            idToLayerDict[id] = line;
             line.on('click', function (e)
             {
                 //highlight on click
                 var layer = e.target;
                 activateHighlightLayer(id);
                 sendSelectedIdToPython(id);
-                console.log(id + " in dict " + (previousSelectedId in idToLayerDict));
+             
             });
+            featureGroup.addLayer(line);
         }
         
         function drawPoint(lat, lng, map_id, text, id)
@@ -145,7 +166,7 @@ class MapHelper:
             .bindPopup(text,{autoPan:false})
             //.openPopup();
             idToLayerDict[id] = marker
-            console.log("send coordinates to python");
+           
             sendCoordinatesToPython(lat,lng);
             marker.on('click', function (e)
             {
@@ -153,8 +174,9 @@ class MapHelper:
                 var layer = e.target;
                 activateHighlightLayer(id);
                 sendSelectedIdToPython(id);
-                console.log(id + " in dict " + (previousSelectedId in idToLayerDict));
+           
             });
+            featureGroup.addLayer(marker);
         }
         
         function activateHighlightLayer(id)
@@ -308,15 +330,8 @@ class MapHelper:
                     init_script += MapHelper.add_projected_polygon(coord_list, m.get_name(),
                                                                 popup_text, id)
 
-
-        init_script +=  f"var previousSelectedId = '{prev_selected_asset_id}'"
-        init_script += ("""
-            if(previousSelectedId && previousSelectedId in idToLayerDict)
-            {
-                activateHighlightLayer(previousSelectedId)
-                map.fitBounds(idToLayerDict[previousSelectedId].getBounds());
-            }
-        """)
+        init_script += cls.get_zoom_to_assets_js_code(map_id=m.get_name(), prev_selected_asset_id=prev_selected_asset_id)
+        # init_script += cls.zoom_to_assets_js_code(prev_selected_asset_id=prev_selected_asset_id)
 
         init_script += "});"
 
@@ -504,3 +519,28 @@ class MapHelper:
 
         else:
             raise ValueError(f"Unsupported geometry type: {geometry.geom_type}")
+
+    @classmethod
+    def zoom_to_assets(cls,web_view,map_id, prev_selected_asset_id=None):
+        js_code = cls.get_zoom_to_assets_js_code(map_id=map_id,prev_selected_asset_id=prev_selected_asset_id)
+        web_view.page().runJavaScript(js_code)
+
+    @classmethod
+    def get_zoom_to_assets_js_code(cls,map_id, prev_selected_asset_id):
+        js_code = f"var previousSelectedId = '{prev_selected_asset_id}'"
+        js_code += ("""
+                  if(previousSelectedId && previousSelectedId in idToLayerDict)
+                  {
+                      activateHighlightLayer(previousSelectedId)
+                  """)
+        js_code += f"eval('{map_id}').fitBounds(idToLayerDict[previousSelectedId].getBounds());"
+        js_code += ("""
+                  }
+                  else if(featureGroup)
+                  {
+                 """)
+        js_code += f"eval('{map_id}').fitBounds(featureGroup.getBounds());"
+        js_code +="}"
+
+        return js_code
+

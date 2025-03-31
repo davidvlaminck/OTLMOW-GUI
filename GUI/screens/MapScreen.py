@@ -115,6 +115,7 @@ class MapScreen(Screen):
             lambda event: MapHelper.add_marker(37.847205896010706, -122.50185012817384,self.map_id,self.webView))
         self.container_insert_data_screen.addWidget(button)
 
+        MapHelper.zoom_to_assets(web_view=self.webView,map_id= self.map_id,prev_selected_asset_id=self.prev_selected_asset_id)
 
         self.setLayout(self.container_insert_data_screen)
 
@@ -202,8 +203,6 @@ class MapScreen(Screen):
         # self.webView.page().setWebChannel(self.channel)
 
         first_coordinate = None
-
-
 
 
         object_count = len(self.relation_change_screen_object_list_content_dict)
