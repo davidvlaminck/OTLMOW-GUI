@@ -100,6 +100,7 @@ class InsertDataDomain:
                     file_path=temp_path,include_tab_info=True )
 
             elif doc_location_path.suffix == '.sdf':
+                
                 # SDF files will make multiple CSV files, one for each class
                 temp_path_list = InsertDataDomain.create_temporary_SDF_conversion_to_CSV_files(
                     sdf_filepath=doc_location_path)
