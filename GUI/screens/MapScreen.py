@@ -112,10 +112,10 @@ class MapScreen(Screen):
         self.webView.setHtml(open(map_path).read())
         self.webView.page().setWebChannel(self.channel)
 
-        button = QPushButton("add marker")
-        button.clicked.connect(
-            lambda event: MapHelper.add_marker(37.847205896010706, -122.50185012817384,self.map_id,self.webView))
-        self.container_insert_data_screen.addWidget(button)
+        # button = QPushButton("add marker")
+        # button.clicked.connect(
+        #     lambda event: MapHelper.add_marker(37.847205896010706, -122.50185012817384,self.map_id,self.webView))
+        # self.container_insert_data_screen.addWidget(button)
 
         MapHelper.zoom_to_assets(web_view=self.webView,map_id= self.map_id,prev_selected_asset_id=self.prev_selected_asset_id)
 
@@ -241,7 +241,7 @@ class MapScreen(Screen):
                                 html_path=Path(html_loc), launch_html=False)
             os.chdir(previous_cwd)
             resources =  QUrl().fromLocalFile((os.path.dirname(os.path.realpath(__file__))))
-            OTLLogger.logger.debug(f"resources: {resources.path()}")
+
             self.webView.setHtml(open(html_loc).read(),resources)
 
     def opened(self):
