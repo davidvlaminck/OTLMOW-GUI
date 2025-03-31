@@ -147,7 +147,7 @@ async def test_add_remove_generate_files(root_directory: Path,setup_simpel_verge
 
     export_path = get_export_path_with_cleanup
 
-    ExportDataDomain.generate_files(export_path, False, False,synchronous=True)
+    await ExportDataDomain.generate_files(export_path, False, False,synchronous=True)
 
     assert export_path.exists()
 
@@ -239,7 +239,7 @@ async def test_add_remove_inactive_relations_and_generate_files(root_directory: 
 
     export_path = get_export_path_export_with_cleanup
 
-    ExportDataDomain.generate_files(export_path, False, False,synchronous=True)
+    await ExportDataDomain.generate_files(export_path, False, False,synchronous=True)
 
     assert export_path.exists()
 

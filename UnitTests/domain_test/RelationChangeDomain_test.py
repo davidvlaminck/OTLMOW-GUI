@@ -512,9 +512,9 @@ def test_init_static(mock_project: Project,mock_collect_all: Mock, mock_oslo_col
     # Act
     if expected_exception:
         with pytest.raises(expected_exception):
-            RelationChangeDomain.init_static(mock_project, asynchronous=False)
+            RelationChangeDomain.init_static(mock_project)
     else:
-        RelationChangeDomain.init_static(mock_project, asynchronous=False)
+        RelationChangeDomain.init_static(mock_project)
 
     # Assert
     if not expected_exception:
@@ -536,7 +536,7 @@ def test_set_objects_empty_list(mock_project: Project,
                                  mock_load_validated_assets):
     local_mock = RelationChangeDomain.set_instances
     RelationChangeDomain.set_instances = Mock()
-    RelationChangeDomain.init_static(mock_project, asynchronous=False)
+    RelationChangeDomain.init_static(mock_project)
     RelationChangeDomain.set_instances = local_mock
 
     RelationChangeDomain.set_instances([])
@@ -546,7 +546,7 @@ def test_set_objects_empty_list(mock_project: Project,
 def test_set_objects_single_item_list(mock_screen: RelationChangeScreen,mock_collect_all,
                                       mock_rel_screen,mock_save_validated_assets_function,
                                       mock_load_validated_assets,mock_step3_visuals):
-    RelationChangeDomain.init_static(Project(eigen_referentie="test"),asynchronous=False)
+    RelationChangeDomain.init_static(Project(eigen_referentie="test"))
     test_object = AllCasesTestClass()
     test_object.assetId.identificator = "dummy_identificator"
     RelationChangeDomain.set_instances([test_object])
@@ -556,7 +556,7 @@ def test_set_objects_single_item_list(mock_screen: RelationChangeScreen,mock_col
 
 def test_set_objects_double_item_list(mock_screen,mock_collect_all,mock_rel_screen,mock_save_validated_assets_function,
                                  mock_load_validated_assets,mock_step3_visuals):
-    RelationChangeDomain.init_static(Project(eigen_referentie="test"), asynchronous=False)
+    RelationChangeDomain.init_static(Project(eigen_referentie="test"))
     test_object = AllCasesTestClass()
     test_object.assetId.identificator = "dummy_identificator"
 

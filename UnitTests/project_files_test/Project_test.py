@@ -109,14 +109,14 @@ def create_mock_project_project_4():
         shutil.rmtree(project_path)
 
 @fixture
-def create_mock_project_eigen_referentie():
+async def create_mock_project_eigen_referentie():
     project_path = Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'eigen referentie')
     project_backup_path = Path(
         PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects_backup' / project_path.name)
 
     if not project_path.exists():
         shutil.copytree(project_backup_path,project_path)
-        sleep(0.05) # sleep to give the system time to copy
+        await sleep(0.05) # sleep to give the system time to copy
     yield
 
     if project_path.exists():
@@ -598,7 +598,7 @@ def test_save_project_given_details(mock_project_home_path,create_mock_project_e
     shutil.rmtree(project_dir_path)
 
 @fixture
-def setup_quicksave_test_project(root_directory,mock_otl_wizard_dir) -> Project:
+async def setup_quicksave_test_project(root_directory,mock_otl_wizard_dir) -> Project:
     backup_quicksave_test_project_path  = Path(root_directory, "OTLWizardProjects", "Projects_backup", "quicksave_test")
     quicksave_test_project_path = Path(root_directory, "OTLWizardProjects", "Projects", "quicksave_test")
 
@@ -607,7 +607,7 @@ def setup_quicksave_test_project(root_directory,mock_otl_wizard_dir) -> Project:
 
     shutil.copytree(backup_quicksave_test_project_path,
                     quicksave_test_project_path)
-    sleep(0.5)  # sleep to give the system time to copy
+    await sleep(0.5)  # sleep to give the system time to copy
     yield Project.load_project(quicksave_test_project_path)
 
     if quicksave_test_project_path.exists():
@@ -1058,12 +1058,12 @@ async def test_save_validated_assets(setup_preloaded_assets_in_memory: Project):
     expected_assets =  deepcopy(setup_preloaded_assets_in_memory.assets_in_memory)
     old_quicksave = deepcopy(setup_preloaded_assets_in_memory.last_quick_save)
 
-    await setup_preloaded_assets_in_memory.save_validated_assets(asynchronous=False)
+    await setup_preloaded_assets_in_memory.save_validated_assets()
 
     # we expect there to be a new last_quick_save
     assert setup_preloaded_assets_in_memory.last_quick_save != old_quicksave
 
-    new_loaded_assets = setup_preloaded_assets_in_memory.load_validated_assets()
+    new_loaded_assets = await setup_preloaded_assets_in_memory.load_validated_assets()
 
     assert new_loaded_assets == expected_assets
 
