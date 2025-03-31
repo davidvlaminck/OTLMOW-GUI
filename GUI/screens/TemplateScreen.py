@@ -863,19 +863,19 @@ class TemplateScreen(TemplateScreenInterface):
         self._ = _
 
             
-        self.export_attribute_info.setText(self._("export_attribute_info"))
-        self.add_geometry_attributes.setText(self._("geometry_column_added"))
-        self.add_choice_list.setText(self._("no_choice_list"))
-        self.select_all_classes.setText(self._("select_all_classes"))
-        self.example_amount_checkbox.setText(self._("amount_of_examples"))
-        self.export_button.setText(self._("export"))
-        self.change_subset_btn.setText(self._("change_subset"))
-        self.operator_title.setText(self._("operator") + ":")
-        self.otl_title.setText(self._("otl_version") + ":")
-        self.general_settings_title.setText(self._("general_settings"))
-        self.example_settings_title.setText(self._("example_settings"))
-        self.non_otl_conform_settings_title.setText(self._("deprecated_settings"))
-        self.label_counter.setText(self._("{selected} classes selected").format(selected=self.selected))
+        # self.export_attribute_info.setText(self._("export_attribute_info"))
+        # self.add_geometry_attributes.setText(self._("geometry_column_added"))
+        # self.add_choice_list.setText(self._("choice_list"))
+        # self.select_all_classes.setText(self._("select_all_classes"))
+        # self.example_amount_checkbox.setText(self._("amount_of_examples"))
+        # self.export_button.setText(self._("export"))
+        # self.change_subset_btn.setText(self._("change_subset"))
+        # self.operator_title.setText(self._("operator") + ":")
+        # self.otl_title.setText(self._("otl_version") + ":")
+        # self.general_settings_title.setText(self._("general_settings"))
+        # self.example_settings_title.setText(self._("example_settings"))
+        # self.non_otl_conform_settings_title.setText(self._("deprecated_settings"))
+        # self.label_counter.setText(self._("{selected} classes selected").format(selected=self.selected))
 
 
     def set_gui_list_to_loading_state(self) -> None:

@@ -460,8 +460,10 @@ class RelationChangeDomain:
         selected_id = RelationChangeHelpers.get_corrected_identificator(otl_object=selected_object)
         relation_list = cls.possible_relations_per_class_dict[selected_object.typeURI]
 
-        if selected_id:
-            cls.get_map_screen().activate_highlight_layer_by_id(selected_id)
+        # if selected_id:
+        #     map_window = cls.get_map_screen()
+        #     if map_window:
+        #         map_window.activate_highlight_layer_by_id(selected_id)
 
         cls.possible_object_to_object_relations_dict[selected_id] = {}
         cls.add_inactive_relations_to_possible_relations(selected_id=selected_id)
@@ -1276,4 +1278,5 @@ class RelationChangeDomain:
 
     @classmethod
     def get_map_screen(cls):
-        return global_vars.otl_wizard.main_window.step3_map
+        return cls.get_screen().map_window
+        # return global_vars.otl_wizard.main_window.step3_map

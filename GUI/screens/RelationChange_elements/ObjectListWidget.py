@@ -82,8 +82,6 @@ class ObjectListWidget(AbstractInstanceListWidget):
                                       item_count=item_count,
                                       selected_item_count=selected_item_count)
 
-
-
         event_loop = asyncio.get_event_loop()
         event_loop.create_task(RelationChangeDomain.set_possible_relations(selected_object=self.selected_object))
 
@@ -180,3 +178,15 @@ class ObjectListWidget(AbstractInstanceListWidget):
         # the selected asset
         if self.selected_item:
             self.parent.set_existing_relation_search_bar_text(self.selected_item.text())
+
+            # highlight on map
+            if self.parent.map_window:
+
+                selected_object_id = self.selected_item.data(self.data_1_index)
+                self.selected_object = RelationChangeDomain.get_object(
+                    identificator=selected_object_id)
+                selected_id = RelationChangeHelpers.get_corrected_identificator(
+                    otl_object=self.selected_object)
+
+                if selected_id:
+                    self.parent.map_window.activate_highlight_layer_by_id(selected_id)

@@ -8,6 +8,17 @@
     font-family: Roboto;
 }
 
+.map-button{
+    background-color: #0E5A69;
+    color: #ffffff;
+    height: 25px;
+    border-radius: 5px;
+    padding-left: 15px;
+    padding-right: 10px;
+    font-family: Roboto;
+    margin-left:10px;
+}
+
 .add-external-button{
     background: transparent;
     color: #0E5A69;

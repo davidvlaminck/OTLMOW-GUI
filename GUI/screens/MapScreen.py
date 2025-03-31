@@ -64,6 +64,8 @@ class WebBridge(QObject):
         print(f"received map marker selection in Python selected id: {id}")
         RelationChangeDomain.set_selected_object(id)
 
+
+
         RelationChangeDomain.update_frontend()
 
         # bol_icon = folium.features.CustomIcon(str(ROOT_DIR.parent.parent / "img"/"bol.png"),
@@ -78,14 +80,14 @@ class MapScreen(Screen):
 
     object_count_limit = 300
 
-    def __init__(self, _):
+    def __init__(self, _, parent_screen):
         super().__init__()
 
         if not HTML_DIR.exists():
             os.makedirs(HTML_DIR,exist_ok=True)
         self.map = None
         self.prev_selected_asset_id = None
-
+        self.parent_screen = parent_screen
 
         self.frame_layout_legend = None
         self.relation_change_screen_object_list_content_dict = {}
@@ -251,3 +253,9 @@ class MapScreen(Screen):
     def activate_highlight_layer_by_id(self, asset_id:str):
         self.prev_selected_asset_id = asset_id
         MapHelper.activate_highlight_layer_by_id(asset_id,self.webView,self.map_id)
+
+    def closeEvent(self, a0):
+        if self.parent_screen:
+            self.parent_screen.map_window = None
+        super().closeEvent(a0)
+
