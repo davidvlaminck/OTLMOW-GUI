@@ -13,11 +13,14 @@ from pyproj import Transformer
 
 class MapHelper:
     added_layer_asset_id_list = []
+    normal_color = "#FF7F00"
+    highlight_color = "#004d5c"
+
     @classmethod
     async def create_html_map(cls,id_to_object_with_text_and_data_dict:dict,ROOT_DIR,HTML_DIR,prev_selected_asset_id=None):
         m = cls.create_folium_map()
         img_qurl = QUrl(pathlib.Path.home().drive + str(
-            (ROOT_DIR.parent.parent / "img" / "bol.png").absolute()).replace("\\", "/"))
+            (ROOT_DIR.parent.parent / "img" / "bol_orange.png").absolute()).replace("\\", "/"))
         img_path = img_qurl.path()
 
         with open(img_path, 'rb') as img_file:
@@ -71,7 +74,9 @@ class MapHelper:
         m.on(click=JsCode(click_js))
 
         js_webchannel_script =  (f"var mapEl = document.getElementById('{m.get_name()}');\n"
-                                f"var icon_path = '{data_url}';\n ")
+                                f"var icon_path = '{data_url}';\n "
+                                 f"var normal_color = '{cls.normal_color}';\n"
+                                 f"var highlight_color = '{cls.highlight_color}';\n")
         js_webchannel_script += """
         
         //global state vars
@@ -94,7 +99,7 @@ class MapHelper:
         
         function drawLines(latlngs, map_id, text, id)
         {
-            var line = L.polyline(latlngs, {color:"#555555", weight:8}).addTo(eval(map_id)).bindPopup(text,{autoPan:false});
+            var line = L.polyline(latlngs, {color:normal_color, weight:5}).addTo(eval(map_id)).bindPopup(text,{autoPan:false});
             idToLayerDict[id] = line
             line.on('click', function (e)
             {
@@ -109,7 +114,7 @@ class MapHelper:
         
         function drawPolygons(latlngs, map_id, text, id)
         {
-            var line = L.polygon(latlngs, {color:"#555555", weight:8}).addTo(eval(map_id));
+            var line = L.polygon(latlngs, {color:normal_color, weight:5}).addTo(eval(map_id));
             line.bindPopup(text,{offset:L.point(0,0),autoPan:false})
             idToLayerDict[id] = line;
             line.on('click', function (e)
@@ -160,11 +165,12 @@ class MapHelper:
                 {
                     //if the visual is line
                     htmlElement = layer._path
-                    if(layer.options.color == "#555555")
+                    if(layer.options.color == normal_color)
                     {
                         disablePreviousHighlightLayer();
-                        layer.setStyle({color: "#880000"})
-                        layer.options.color = "#880000";
+                        layer.setStyle({color: highlight_color, weight:8})
+                        layer.options.color = highlight_color;
+                        layer.options.weight = 8;
                         layer.redraw()
                         previousSelectedId = id;
                         layer.openPopup();
@@ -224,8 +230,9 @@ class MapHelper:
                 if (prevLayer._icon == undefined)
                 {
                     //if the previous visual is line
-                    prevLayer.setStyle({color: '#555555'})
-                    prevLayer.options.color = "#555555"
+                    prevLayer.setStyle({color: normal_color, weight:5})
+                    prevLayer.options.color = normal_color
+                    prevLayer.options.weight = 5
                     prevLayer.redraw()
                 }
                 else
@@ -245,7 +252,7 @@ class MapHelper:
                 var layer = idToLayerDict[id];
                 if (layer._icon == undefined)
                 {
-                    eval(map_id).fitBounds(layer.getBounds());
+                    eval(map_id).fitBounds(layer.getBounds(),{maxZoom:20.5});
                 }
                 else
                 {
@@ -311,16 +318,16 @@ class MapHelper:
 
         # make highlight style when clicked
         m.get_root().script.add_child(folium.Element(init_script))
-        dash_style = """
+        dash_style = ("""
         <style>
-        .dash-border {
-            border: 2px dashed #3388ff;
-            background-color: #3388ff4d;
-        }
+        .dash-border {"""
+            f"border: 2px dashed {cls.highlight_color};"
+            f"background-color: {cls.highlight_color};"
+        """}
         
         
         </style>
-        """
+        """)
         m.get_root().header.add_child(folium.Element(dash_style))
 
         map_path = cls.get_map_html_save_path(HTML_DIR, ROOT_DIR)
