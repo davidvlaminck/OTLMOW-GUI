@@ -322,7 +322,7 @@ class MapHelper:
         cls.added_layer_asset_id_list.clear()
         # satelite image layer from google maps instead of open street road map
         tile = folium.TileLayer(
-            tiles='http://mt0.google.com/vt/lyrs=s&hl=en&x={x}&y={y}&z={z}',
+            tiles='https://geo.api.vlaanderen.be/OMW/wmts?SERVICE=WMTS&VERSION=1.0.0&REQUEST=GetTile&LAYER=omwrgb24vl&STYLE=&FORMAT=image/png&TILEMATRIXSET=GoogleMapsVL&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}',
             attr='Google',
             name='Google Satellite',
             maxZoom=22,
