@@ -57,9 +57,13 @@ class MapHelper:
 
                                 // Send coordinates to Python
                                 //activateHighlightLayer( 'e64e7fcb-d429-4e3d-8651-706297f14ca4-b25kZXJkZWVsI1ZvZXJ0dWlnbGFudGFhcm4');
-                            
+                                
                             //}
-
+                             activateHighlightLayer( 'a303e80b-9863-4b47-b0c0-dadb8fc9b651-b25kZXJkZWVsI1ZvZXJ0dWlnbGFudGFhcm4');
+                            if('a303e80b-9863-4b47-b0c0-dadb8fc9b651-b25kZXJkZWVsI1ZvZXJ0dWlnbGFudGFhcm4' && ('a303e80b-9863-4b47-b0c0-dadb8fc9b651-b25kZXJkZWVsI1ZvZXJ0dWlnbGFudGFhcm4' in idToLayerDict))
+                            {
+                              eval(map_id).fitBounds(idToLayerDict['a303e80b-9863-4b47-b0c0-dadb8fc9b651-b25kZXJkZWVsI1ZvZXJ0dWlnbGFudGFhcm4'].getBounds());
+                              }
                         """
 
         click_js += "}"
@@ -234,6 +238,23 @@ class MapHelper:
             }
         }
         
+        function goToLayer(id, map_id)
+        {
+            if(id && (id in idToLayerDict))
+            {
+                var layer = idToLayerDict[id];
+                if (layer._icon == undefined)
+                {
+                    eval(map_id).fitBounds(layer.getBounds());
+                }
+                else
+                {
+                    //this means this is a marker (point geometry)
+                    eval(map_id).panTo(layer.getLatLng())
+                }
+            }
+        }
+        
         
         
             """
@@ -322,11 +343,11 @@ class MapHelper:
         cls.added_layer_asset_id_list.clear()
         # satelite image layer from google maps instead of open street road map
         tile = folium.TileLayer(
-            tiles='https://geo.api.vlaanderen.be/OMWRGBMRVL/wmts?SERVICE=WMTS&VERSION=1.0.0&REQUEST=GetTile&LAYER=omwrgbmrvl&STYLE=&FORMAT=image/png&TILEMATRIXSET=GoogleMapsVL&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}',
-            attr='Geopunt',
-            name='Geopunt Satellite',
+            tiles='https://geo.api.vlaanderen.be/OMW/wmts?SERVICE=WMTS&VERSION=1.0.0&REQUEST=GetTile&LAYER=omwrgb24vl&STYLE=&FORMAT=image/png&TILEMATRIXSET=GoogleMapsVL&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}',
+            attr='Google',
+            name='Google Satellite',
             maxZoom=22,
-            maxNativeZoom=21,
+            maxNativeZoom=18,
             overlay=False,
             control=True
         )
@@ -424,17 +445,11 @@ class MapHelper:
 
     @classmethod
     def activate_highlight_layer_by_id(cls, asset_id, web_view,map_id):
-        """Adds a marker dynamically without reloading the map."""
-
-
-        """add a polygon sqaure to the map and go to it"""
 
         js_code = ( f"activateHighlightLayer( '{asset_id}');\n"
-                    f"if('{asset_id}' && ('{asset_id}' in idToLayerDict))\n"
-                    "{\n"
-                    f"  {map_id}.fitBounds(idToLayerDict['{asset_id}'].getBounds());"
-                    "}\n")
+                    f"goToLayer('{asset_id}', '{map_id}');\n")
 
+        OTLLogger.logger.debug(f"activate_highlight_layer_by_id \n {js_code} ")
         web_view.page().runJavaScript(js_code)
 
 
