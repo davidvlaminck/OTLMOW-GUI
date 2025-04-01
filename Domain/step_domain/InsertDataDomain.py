@@ -20,12 +20,14 @@ from Domain.project.Project import Project
 from Domain.step_domain.RelationChangeDomain import RelationChangeDomain, \
     async_save_assets
 from Domain.enums import FileState
+from Exceptions.FDOToolboxNotInstalledError import FDOToolboxNotInstalledError
 from Exceptions.NoIdentificatorError import NoIdentificatorError
 from Exceptions.RelationHasInvalidTypeUriForSourceAndTarget import \
     RelationHasInvalidTypeUriForSourceAndTarget
 from Exceptions.RelationHasNonExistingTypeUriForSourceOrTarget import \
     RelationHasNonExistingTypeUriForSourceOrTarget
 from GUI.dialog_windows.LoadingImageWindow import add_loading_screen_no_delay
+from GUI.dialog_windows.NotificationWindow import NotificationWindow
 from GUI.screens.RelationChange_elements.RelationChangeHelpers import RelationChangeHelpers
 from GUI.translation.GlobalTranslate import GlobalTranslate
 from UnitTests.TestClasses.Classes.ImplementatieElement.AIMObject import AIMObject
@@ -100,7 +102,7 @@ class InsertDataDomain:
                     file_path=temp_path,include_tab_info=True )
 
             elif doc_location_path.suffix == '.sdf':
-                
+
                 # SDF files will make multiple CSV files, one for each class
                 temp_path_list = InsertDataDomain.create_temporary_SDF_conversion_to_CSV_files(
                     sdf_filepath=doc_location_path)
