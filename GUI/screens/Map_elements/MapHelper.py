@@ -276,7 +276,7 @@ class MapHelper:
                     coord_list = MapHelper.extract_first_level(transformed_geometry)
                     # MapHelper.addProjectedMarker()
                     popup_text = text_and_data["text"].screen_name + "<br>" + text_and_data[
-                        "text"].typeURI + "<br>" + otl_object.geometry
+                        "text"].typeURI #+ "<br>" + otl_object.geometry
                     for coord in coord_list:
                         init_script += MapHelper.add_projected_marker(coord, m.get_name(),popup_text, id)
 
@@ -285,7 +285,7 @@ class MapHelper:
                     coord_list = MapHelper.extract_first_level(transformed_geometry)
 
                     popup_text = text_and_data["text"].screen_name + "<br>" + text_and_data[
-                        "text"].typeURI + "<br>" + otl_object.geometry
+                        "text"].typeURI #+ "<br>" + otl_object.geometry
                     for pair in coord_list:
                         init_script += MapHelper.add_projected_line(pair.split(","), m.get_name(),popup_text, id)
 
@@ -449,7 +449,7 @@ class MapHelper:
         js_code = ( f"activateHighlightLayer( '{asset_id}');\n"
                     f"goToLayer('{asset_id}', '{map_id}');\n")
 
-        OTLLogger.logger.debug(f"activate_highlight_layer_by_id \n {js_code} ")
+        # OTLLogger.logger.debug(f"activate_highlight_layer_by_id \n {js_code} ")
         web_view.page().runJavaScript(js_code)
 
 
