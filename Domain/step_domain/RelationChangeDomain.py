@@ -1,4 +1,5 @@
 import asyncio
+import gc
 from copy import deepcopy
 from pathlib import Path
 from typing import Optional, Union, Callable
@@ -261,6 +262,11 @@ class RelationChangeDomain:
         """
 
         cls.get_screen().set_gui_lists_to_loading_state()
+
+        # throw away old data before loading the new
+        cls.clear_data()
+        gc.collect()
+
         cls.set_instances(objects_list=await cls.project.load_validated_assets())
         global_vars.otl_wizard.main_window.step3_visuals.reload_html()
 

@@ -482,3 +482,4 @@ class RelationChangeScreen(RelationChangeScreenInterface):
         else:
             self.map_window = MapScreen(self._,parent_screen=self)
             self.map_window.show()
+            self.map_window.start_async_reload()

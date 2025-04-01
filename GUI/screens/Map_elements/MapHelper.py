@@ -1,39 +1,21 @@
+import asyncio
 import base64
 import pathlib
 
 from PyQt6.QtCore import QUrl
 from folium import folium, JsCode
-from openpyxl.styles.builtins import percent
 
 from Domain.logger.OTLLogger import OTLLogger
 
 from shapely.wkt import loads
-from pyproj import Proj, transform
+from pyproj import Transformer
 
 
 class MapHelper:
     added_layer_asset_id_list = []
     @classmethod
-    def create_html_map(cls,id_to_object_with_text_and_data_dict:dict,ROOT_DIR,HTML_DIR,prev_selected_asset_id=None):
-        coordinate = (51.16872907594677, 4.41375968966803)
-        cls.added_layer_asset_id_list.clear()
-
-        # satelite image layer from google maps instead of open street road map
-        tile = folium.TileLayer(
-            tiles='http://mt0.google.com/vt/lyrs=s&hl=en&x={x}&y={y}&z={z}',
-            attr='Google',
-            name='Google Satellite',
-            maxZoom= 22,
-            maxNativeZoom= 18,
-            overlay=False,
-            control=True
-        )
-
-        m = folium.Map(
-            zoom_start=13,
-            location=coordinate,
-            tiles=tile
-        )
+    async def create_html_map(cls,id_to_object_with_text_and_data_dict:dict,ROOT_DIR,HTML_DIR,prev_selected_asset_id=None):
+        m = cls.create_folium_map()
         img_qurl = QUrl(pathlib.Path.home().drive + str(
             (ROOT_DIR.parent.parent / "img" / "bol.png").absolute()).replace("\\", "/"))
         img_path = img_qurl.path()
@@ -44,7 +26,6 @@ class MapHelper:
         # Create the data URL
         data_url = f"data:image/png;base64,{b64_data}"
 
-        OTLLogger.logger.debug({data_url})
         click_js = ("function onMapClick(e) {\n"
                     f"var icon_path = '{data_url}';\n ")
         click_js += """
@@ -56,7 +37,7 @@ class MapHelper:
                                 //drawPoint(lat,lng,map_id,"","");
                                 
 
-                                console.log(e);
+                                //console.log(e);
 
                                 //drawing polygons
                                 var lat1 = lat+1;
@@ -81,20 +62,6 @@ class MapHelper:
 
                         """
 
-        # click_js += f"var previousSelectedId = '{prev_selected_asset_id}'"
-        # click_js += ("""
-        #                   if(previousSelectedId && previousSelectedId in idToLayerDict)
-        #                   {
-        #                       activateHighlightLayer(previousSelectedId)
-        #                       eval(map_id).fitBounds(idToLayerDict[previousSelectedId].getBounds());
-        #                   }
-        #                   else if(featureGroup)
-        #                   {
-        #
-        #                       eval(map_id).fitBounds(featureGroup.getBounds());
-        #                   }
-        #
-        #           """)
         click_js += "}"
         m.add_js_link(name="QWebChannel_script", url="qrc:///qtwebchannel/qwebchannel.js")
         m.on(click=JsCode(click_js))
@@ -167,7 +134,7 @@ class MapHelper:
             //.openPopup();
             idToLayerDict[id] = marker
            
-            sendCoordinatesToPython(lat,lng);
+            // sendCoordinatesToPython(lat,lng);
             marker.on('click', function (e)
             {
                 //highlight on click
@@ -272,25 +239,19 @@ class MapHelper:
             """
 
         m.get_root().script.add_child(folium.Element(js_webchannel_script))
-
-
+        marker_count = len(id_to_object_with_text_and_data_dict)
+        OTLLogger.logger.debug(f"Adding markers to map ({marker_count} markers",extra={"timing_ref":"adding_marker_to_map"})
         init_script = 'document.addEventListener("DOMContentLoaded", (event) => {\n'
         for id, otl_object_with_text_and_data in id_to_object_with_text_and_data_dict.items():
+            await asyncio.sleep(0)
             otl_object = otl_object_with_text_and_data[0]
 
-            # structure of the text_and_data dict
-            #  {
-            #  "text": namedtuple('text', ['typeURI', 'screen_name', 'full_typeURI'])
-            #  "data": namedtuple('data', ['selected_object_id','last_added'])
-            #  }
             text_and_data = otl_object_with_text_and_data[1]
 
             if hasattr(otl_object, "geometry") and otl_object.geometry:
                 if "POINT" in otl_object.geometry:
 
                     transformed_geometry = MapHelper.convert_wkt_to_wgs84(otl_object.geometry)
-                    OTLLogger.logger.debug(text_and_data["text"].typeURI)
-                    OTLLogger.logger.debug(text_and_data["text"].screen_name)
                     coord_list = MapHelper.extract_first_level(transformed_geometry)
                     # MapHelper.addProjectedMarker()
                     popup_text = text_and_data["text"].screen_name + "<br>" + text_and_data[
@@ -300,10 +261,8 @@ class MapHelper:
 
                 if "LINESTRING" in otl_object.geometry:
                     transformed_geometry = MapHelper.convert_wkt_to_wgs84(otl_object.geometry)
-                    OTLLogger.logger.debug(text_and_data["text"].typeURI)
-                    OTLLogger.logger.debug(text_and_data["text"].screen_name)
                     coord_list = MapHelper.extract_first_level(transformed_geometry)
-                    OTLLogger.logger.debug(coord_list)
+
                     popup_text = text_and_data["text"].screen_name + "<br>" + text_and_data[
                         "text"].typeURI + "<br>" + otl_object.geometry
                     for pair in coord_list:
@@ -311,8 +270,6 @@ class MapHelper:
 
                 if "POLYGON" in otl_object.geometry:
                     transformed_geometry = MapHelper.convert_wkt_to_wgs84(otl_object.geometry)
-                    OTLLogger.logger.debug(text_and_data["text"].typeURI)
-                    OTLLogger.logger.debug(text_and_data["text"].screen_name)
                     polygon_list = MapHelper.extract_first_level(transformed_geometry)
                     coord_list = []
                     for polygon in polygon_list:
@@ -320,18 +277,14 @@ class MapHelper:
                         for coordinates in second_level_list:
                             coord_list.append(coordinates.split(","))
 
-
-
-                    OTLLogger.logger.debug(coord_list)
-                    # popup_text = text_and_data["text"].screen_name + "<br>" + text_and_data[
-                    #     "text"].typeURI + "<br>" + otl_object.geometry
                     popup_text = text_and_data["text"].screen_name + "<br>" + text_and_data[
                         "text"].typeURI
                     init_script += MapHelper.add_projected_polygon(coord_list, m.get_name(),
                                                                 popup_text, id)
 
+        OTLLogger.logger.debug(f"Added markers to map ({marker_count} markers",
+                               extra={"timing_ref": "adding_marker_to_map"})
         init_script += cls.get_zoom_to_assets_js_code(map_id=m.get_name(), prev_selected_asset_id=prev_selected_asset_id)
-        # init_script += cls.zoom_to_assets_js_code(prev_selected_asset_id=prev_selected_asset_id)
 
         init_script += "});"
 
@@ -349,14 +302,40 @@ class MapHelper:
         """
         m.get_root().header.add_child(folium.Element(dash_style))
 
-        html_dir = ROOT_DIR.parent.parent / 'img' / 'html'
-        if not html_dir.exists():
-            html_dir = HTML_DIR
-        map_path = str((html_dir / "folium_map.html").absolute())
+        map_path = cls.get_map_html_save_path(HTML_DIR, ROOT_DIR)
         m.save(map_path)
         map_id = m.get_name()
         map = m
         return map_path, map , map_id
+
+    @classmethod
+    def get_map_html_save_path(cls, HTML_DIR: pathlib.Path, ROOT_DIR: pathlib.Path) -> str:
+        html_dir = ROOT_DIR.parent.parent / 'img' / 'html'
+        if not html_dir.exists():
+            html_dir = HTML_DIR
+        map_path = str((html_dir / "folium_map.html").absolute())
+        return map_path
+
+    @classmethod
+    def create_folium_map(cls):
+        coordinate = (51.16872907594677, 4.41375968966803)
+        cls.added_layer_asset_id_list.clear()
+        # satelite image layer from google maps instead of open street road map
+        tile = folium.TileLayer(
+            tiles='http://mt0.google.com/vt/lyrs=s&hl=en&x={x}&y={y}&z={z}',
+            attr='Google',
+            name='Google Satellite',
+            maxZoom=22,
+            maxNativeZoom=18,
+            overlay=False,
+            control=True
+        )
+        m = folium.Map(
+            zoom_start=13,
+            location=coordinate,
+            tiles=tile
+        )
+        return m
 
     @classmethod
     def add_marker(cls, lat, lon, map_id, web_view):
@@ -371,7 +350,6 @@ class MapHelper:
     @classmethod
     def add_projected_marker(cls, coord:str, map_id:str, tooltip_text:str,id:str):
         """Adds a marker dynamically without reloading the map."""
-        OTLLogger.logger.debug("called add_projected_marker")
         # js_code = f'L.marker([{lat}, {lon}]).addTo({self.map_id}).bindPopup("Marker at {lat}, {lon}").openPopup();'
         """add a polygon sqaure to the map and go to it"""
         insert = '{color: "red"}'
@@ -384,11 +362,11 @@ class MapHelper:
 
 
 
-        js_code += ("  if (window.pywebchannel) {\n"
-                "window.pywebchannel.receive_coordinates(JSON.stringify({lat: point.lat, lng: point.lng}));\n"
-            "} else {\n"
-                    " console.log('QWebChannel is not initialized yet.');\n"
-            "}\n")
+        # js_code += ("  if (window.pywebchannel) {\n"
+        #         "window.pywebchannel.receive_coordinates(JSON.stringify({lat: point.lat, lng: point.lng}));\n"
+        #     "} else {\n"
+        #             " console.log('QWebChannel is not initialized yet.');\n"
+        #     "}\n")
 
         cls.added_layer_asset_id_list.append(id)
 
@@ -397,7 +375,6 @@ class MapHelper:
     @classmethod
     def add_projected_line(cls, coord_pair: str, map_id: str, tooltip_text: str, id: str):
         """Adds a marker dynamically without reloading the map."""
-        OTLLogger.logger.debug("called add_projected_line")
         # js_code = f'L.marker([{lat}, {lon}]).addTo({self.map_id}).bindPopup("Marker at {lat}, {lon}").openPopup();'
         """add a polygon sqaure to the map and go to it"""
         insert = '{color: "red"}'
@@ -407,10 +384,10 @@ class MapHelper:
                    "latlngs = [];\n"
                    "for (const  coord of split_pair) \n"
                    "{\n"
-                   "    console.log(coord);\n"
+                   "    //console.log(coord);\n"
                    "    var split = coord.trim().split(' ');\n"
                    "    var point = L.CRS.EPSG3857.unproject(L.point([parseFloat(split[0].trim()), parseFloat(split[1].trim())] ));\n"
-                   "    console.log(point);\n"
+                   "    //console.log(point);\n"
                    "    latlngs.push([point.lat,point.lng]);\n"
                    "}\n"
                     f"drawLines(latlngs,'{map_id}','{tooltip_text}','{id}');\n")
@@ -422,7 +399,6 @@ class MapHelper:
     @classmethod
     def add_projected_polygon(cls, coord_pair: list, map_id: str, tooltip_text: str, id: str):
         """Adds a marker dynamically without reloading the map."""
-        OTLLogger.logger.debug("called add_projected_line")
         # js_code = f'L.marker([{lat}, {lon}]).addTo({self.map_id}).bindPopup("Marker at {lat}, {lon}").openPopup();'
         """add a polygon sqaure to the map and go to it"""
         insert = '{color: "red"}'
@@ -434,10 +410,10 @@ class MapHelper:
                        "    latlngs = [];\n"
                        "    for (const  coord of split_pair) \n"
                        "    {\n"
-                       "        console.log(coord);\n"
+                       "        //console.log(coord);\n"
                        "        var split = coord.trim().split(' ');\n"
                        "        var point = L.CRS.EPSG3857.unproject(L.point([parseFloat(split[0].trim()), parseFloat(split[1].trim())] ));\n"
-                       "        console.log(point);\n"
+                       "        //console.log(point);\n"
                        "        latlngs.push([point.lat,point.lng]);\n"
                        "    }\n"
                        f"   drawPolygons(latlngs,'{map_id}','{tooltip_text}','{id}');\n"
@@ -449,7 +425,7 @@ class MapHelper:
     @classmethod
     def activate_highlight_layer_by_id(cls, asset_id, web_view,map_id):
         """Adds a marker dynamically without reloading the map."""
-        OTLLogger.logger.debug("called add_projected_marker")
+
 
         """add a polygon sqaure to the map and go to it"""
 
@@ -458,7 +434,7 @@ class MapHelper:
                     "{\n"
                     f"  {map_id}.fitBounds(idToLayerDict['{asset_id}'].getBounds());"
                     "}\n")
-        OTLLogger.logger.debug(js_code)
+
         web_view.page().runJavaScript(js_code)
 
 
@@ -484,26 +460,30 @@ class MapHelper:
         geometry = loads(wkt_string)
 
         # Define the source CRS (EPSG:31370)
-        source_crs = Proj('EPSG:31370')
+        source_crs = 'EPSG:31370'
 
         # Define the target CRS (WGS84)
-        target_crs = Proj('EPSG:3857')
+        target_crs = 'EPSG:3857'
 
+        transformer = Transformer.from_crs(crs_from=source_crs, crs_to=target_crs)
         # Transform the coordinates
         if geometry.geom_type == 'Point':
             x, y = geometry.x, geometry.y
-            lon, lat = transform(source_crs, target_crs, x, y)
+
+
+            transformer.transform(12, 12)
+            lon, lat = transformer.transform( x, y)
             return f'POINT ({lon} {lat})'
 
         elif geometry.geom_type in ['LineString', 'MultiPoint']:
             transformed_coords = [
-                transform(source_crs, target_crs, x, y) for x, y, z in geometry.coords
+                transformer.transform( x, y) for x, y, z in geometry.coords
             ]
             return f'LINESTRING ({", ".join(f"{lon} {lat}" for lon, lat in transformed_coords)})'
 
         elif geometry.geom_type in ['Polygon', 'MultiLineString']:
             transformed_coords = [
-                transform(source_crs, target_crs, x, y) for x, y,z in geometry.exterior.coords
+                transformer.transform( x, y) for x, y,z in geometry.exterior.coords
             ]
             return f'POLYGON (({" , ".join(f"{lon} {lat}" for lon, lat in transformed_coords)}))'
 
@@ -511,7 +491,7 @@ class MapHelper:
             transformed_polygons = []
             for polygon in geometry.geoms:
                 transformed_coords = [
-                    transform(source_crs, target_crs, x, y) for x, y in polygon.exterior.coords
+                    transformer.transform( x, y) for x, y in polygon.exterior.coords
                 ]
                 transformed_polygons.append(
                     f'POLYGON (({" , ".join(f"{lon} {lat}" for lon, lat in transformed_coords)}))')

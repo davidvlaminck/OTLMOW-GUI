@@ -1,3 +1,5 @@
+import asyncio
+import gc
 import json
 import os
 import pathlib
@@ -23,6 +25,7 @@ from otlmow_visuals.PyVisWrapper import PyVisWrapper
 from Domain import global_vars
 from Domain.logger.OTLLogger import OTLLogger
 from Domain.step_domain.RelationChangeDomain import RelationChangeDomain
+from GUI.dialog_windows.LoadingImageWindow import add_loading_screen
 from GUI.screens.Map_elements.MapHelper import MapHelper
 from GUI.screens.general_elements.ButtonWidget import ButtonWidget
 from GUI.screens.Screen import Screen
@@ -46,7 +49,7 @@ class WebBridge(QObject):
         data = json.loads(message)  # Convert string back to dict
         lat = float(data["lat"])
         lng =float(data["lng"])
-        print(f"Python received click at: Latitude: {lat}, Longitude: {lng}")
+
 
         # bol_icon = folium.features.CustomIcon(str(ROOT_DIR.parent.parent / "img"/"bol.png"),
         #                                      icon_size=(30, 30))
@@ -63,18 +66,7 @@ class WebBridge(QObject):
 
         print(f"received map marker selection in Python selected id: {id}")
         RelationChangeDomain.set_selected_object(id)
-
-
-
         RelationChangeDomain.update_frontend()
-
-        # bol_icon = folium.features.CustomIcon(str(ROOT_DIR.parent.parent / "img"/"bol.png"),
-        #                                      icon_size=(30, 30))
-        # folium.Marker([lat, lng],
-        #               # icon=bol_icon,
-        #               # popup='red',
-        #               ).add_to(self.folium_map)
-
 
 class MapScreen(Screen):
 
@@ -90,7 +82,6 @@ class MapScreen(Screen):
         self.parent_screen = parent_screen
 
         self.frame_layout_legend = None
-        self.relation_change_screen_object_list_content_dict = {}
         self.refresh_needed_label = QLabel()
         self.container_insert_data_screen = QVBoxLayout()
         self._ = _
@@ -103,21 +94,23 @@ class MapScreen(Screen):
         self.img_qurl = QUrl(pathlib.Path.home().drive + str(
             (ROOT_DIR.parent.parent / "img" / "bol.png").absolute()).replace("\\","/"))
 
-        map_path, self.map , self.map_id = MapHelper.create_html_map(self.relation_change_screen_object_list_content_dict, ROOT_DIR, HTML_DIR,self.prev_selected_asset_id)
+        # self.relation_change_screen_object_list_content_dict = self.load_assets()
+
+        # map_path, self.map , self.map_id = MapHelper.create_html_map(self.relation_change_screen_object_list_content_dict, ROOT_DIR, HTML_DIR,self.prev_selected_asset_id)
+
+        self.map = MapHelper.create_folium_map()
+        map_path = MapHelper.get_map_html_save_path(HTML_DIR,ROOT_DIR)
+        self.map.save(map_path)
+        self.map_id = self.map.get_name()
 
         self.web_bridge = WebBridge(self.map)
         self.channel.registerObject("webBridge", self.web_bridge)
-        # resources = QUrl().fromLocalFile((os.path.dirname(os.path.realpath(__file__))))
-        # OTLLogger.logger.debug(f"resources: {resources.path()}")
+
         self.webView.setHtml(open(map_path).read())
         self.webView.page().setWebChannel(self.channel)
 
-        # button = QPushButton("add marker")
-        # button.clicked.connect(
-        #     lambda event: MapHelper.add_marker(37.847205896010706, -122.50185012817384,self.map_id,self.webView))
-        # self.container_insert_data_screen.addWidget(button)
 
-        MapHelper.zoom_to_assets(web_view=self.webView,map_id= self.map_id,prev_selected_asset_id=self.prev_selected_asset_id)
+        # MapHelper.zoom_to_assets(web_view=self.webView,map_id= self.map_id,prev_selected_asset_id=self.prev_selected_asset_id)
 
         self.setLayout(self.container_insert_data_screen)
 
@@ -132,9 +125,7 @@ class MapScreen(Screen):
         
         window_layout = QVBoxLayout()
         window_layout.setContentsMargins(0,0,0,0)
-        
-        # html_loc = ROOT_DIR.parent.parent / 'img' / 'html' / "basic.html"
-        # self.view.setHtml(open(html_loc).read())
+
         self.webView.settings().setAttribute(QWebEngineSettings.WebAttribute.ShowScrollBars, False)
         self.webView.setContentsMargins(0, 0, 0, 0)
         self.webView.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
@@ -146,8 +137,6 @@ class MapScreen(Screen):
         window_layout.addWidget(self.create_button_container())
         window_layout.addWidget(self.webView, 2)
         window_layout.addWidget(self.too_many_objects_message,2)
-        # window_layout.addWidget(self.color_label_title)
-        # window_layout.addWidget(self.create_color_legend())
         
         window.setLayout(window_layout)
         return window
@@ -169,11 +158,10 @@ class MapScreen(Screen):
         refresh_btn = ButtonWidget()
         refresh_btn.setIcon(qta.icon('mdi.refresh', color='white'))
         refresh_btn.setProperty('class', 'primary-button')
-        refresh_btn.clicked.connect(lambda: self.reload_html())
+        refresh_btn.clicked.connect(lambda: self.start_async_reload())
 
         self.refresh_needed_label.setText(self._("The visualisation is outdated, refresh to see new changes"))
         self.refresh_needed_label.setStyleSheet('color:#DD1111;')
-        # self.refresh_needed_label.setHidden(True)
 
         frame_layout.addWidget(refresh_btn)
         frame_layout.addWidget(self.refresh_needed_label)
@@ -185,20 +173,27 @@ class MapScreen(Screen):
 
     def reset_ui(self, _):
         super().reset_ui(_)
-        # self.refresh_needed_label.setHidden(True)
+
         self._ = _
         self.color_label_title.setText(self._("relations legend") + ":")
 
-    def reload_html(self):
+    def start_async_reload(self):
+        event_loop = asyncio.get_event_loop()
+        event_loop.create_task(self.reload_html())
+
+    @add_loading_screen
+    async def reload_html(self):
         OTLLogger.logger.debug(
             f"Executing MapScreen.reload_html() for project {global_vars.current_project.eigen_referentie}",
             extra={"timing_ref": f"reload_html_{global_vars.current_project.eigen_referentie}"})
 
-        # self.id_to_object_with_text_and_data_dict = self.load_assets()
+        # throw away old data before loading the new
+        self.relation_change_screen_object_list_content_dict = {}
+        gc.collect()
 
         self.relation_change_screen_object_list_content_dict = self.load_assets()
 
-        map_path, self.map , self.map_id = MapHelper.create_html_map(self.relation_change_screen_object_list_content_dict,
+        map_path, self.map , self.map_id = await MapHelper.create_html_map(self.relation_change_screen_object_list_content_dict,
                                                                      ROOT_DIR, HTML_DIR,self.prev_selected_asset_id)
         self.web_bridge.folium_map = self.map
         self.webView.setHtml(open(map_path).read())
