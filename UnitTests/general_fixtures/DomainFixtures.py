@@ -42,7 +42,7 @@ def mock_get_otl_wizard_projects_dir(root_directory):
 @fixture
 def mock_save_validated_assets_function() -> None:
     original_save_validated_assets = Project.save_validated_assets
-    Project.save_validated_assets = Mock()
+    Project.save_validated_assets = AsyncMock()
     yield
     Project.save_validated_assets = original_save_validated_assets
 
