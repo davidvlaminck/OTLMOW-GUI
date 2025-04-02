@@ -650,7 +650,11 @@ class Project:
                 # if document was validated but there is no quicksave then set it to warning
                 state = FileState(document['state'])
                 quick_save_path = self.get_quicksaves_dir_path()
-                if (state == FileState.OK and
+                document_file_path = location_dir / Path(document['file_path']).name
+
+                if not document_file_path.exists():
+                    state = FileState.ERROR
+                elif (state == FileState.OK and
                     not (quick_save_path.exists() and
                      len(list(os.listdir(path=quick_save_path))))):
                     state = FileState.WARNING
