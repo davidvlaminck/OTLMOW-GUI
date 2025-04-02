@@ -351,10 +351,10 @@ class MapHelper:
         # satelite image layer from google maps instead of open street road map
         tile = folium.TileLayer(
             tiles='https://geo.api.vlaanderen.be/OMW/wmts?SERVICE=WMTS&VERSION=1.0.0&REQUEST=GetTile&LAYER=omwrgb24vl&STYLE=&FORMAT=image/png&TILEMATRIXSET=GoogleMapsVL&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}',
-            attr='Google',
-            name='Google Satellite',
-            maxZoom=22,
-            maxNativeZoom=18,
+            attr='GRB',
+            name='GRB Satellite',
+            maxZoom=23,
+            maxNativeZoom=21,
             overlay=False,
             control=True
         )
