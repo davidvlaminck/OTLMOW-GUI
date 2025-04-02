@@ -652,9 +652,7 @@ class Project:
                 quick_save_path = self.get_quicksaves_dir_path()
                 document_file_path = location_dir / Path(document['file_path']).name
 
-                if not document_file_path.exists():
-                    state = FileState.ERROR
-                elif (state == FileState.OK and
+                if (state == FileState.OK and
                     not (quick_save_path.exists() and
                      len(list(os.listdir(path=quick_save_path))))):
                     state = FileState.WARNING
@@ -664,10 +662,23 @@ class Project:
                     state=state)
                 self.saved_project_files.append(file)
 
+            self.check_if_project_files_exist()
+
             OTLLogger.logger.debug(
                 f"Loading saved documents: {self.project_path.name}/{Project.saved_documents_filename}",
                 extra={"timing_ref": f"load_quicksave_{self.project_path.name}"})
         return self
+
+    def check_if_project_files_exist(self) -> list[ProjectFile]:
+        missing_project_files = []
+        for project_file in self.get_saved_projectfiles():
+            if not project_file.file_path.exists():
+                OTLLogger.logger.info(f'project "{self.eigen_referentie}" is missing file: {project_file.file_path}')
+                missing_project_files.append(project_file)
+                project_file.state = FileState.ERROR
+
+
+        return missing_project_files
 
     def get_quicksaves_dir_path(self) -> Path:
         """

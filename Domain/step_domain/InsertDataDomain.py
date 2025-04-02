@@ -13,6 +13,7 @@ from otlmow_model.OtlmowModel.Helpers import OTLObjectHelper, RelationValidator
 from universalasync import async_to_sync_wraps
 
 from Domain import global_vars
+from Domain.project.ProjectFile import ProjectFile
 from Domain.util.Helpers import Helpers
 from Domain.util.SDFHandler import SDFHandler
 from Domain.logger.OTLLogger import OTLLogger
@@ -293,6 +294,15 @@ class InsertDataDomain:
 
         InsertDataDomain.update_frontend()
 
+    @classmethod
+    def check_current_project_project_files_existence(cls) -> list[ProjectFile]:
+        missing_project_files = global_vars.current_project.check_if_project_files_exist()
+
+        if len(missing_project_files):
+            global_vars.current_project.save_project_filepaths_to_file()
+            cls.update_frontend()
+
+        return missing_project_files
     @classmethod
     @async_to_sync_wraps
     @add_loading_screen_no_delay

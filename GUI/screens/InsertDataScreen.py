@@ -23,12 +23,14 @@ from Exceptions.RelationHasInvalidTypeUriForSourceAndTarget import \
     RelationHasInvalidTypeUriForSourceAndTarget
 from Exceptions.RelationHasNonExistingTypeUriForSourceOrTarget import \
     RelationHasNonExistingTypeUriForSourceOrTarget
+from GUI.dialog_windows.NotificationWindow import NotificationWindow
 from GUI.screens.general_elements.ButtonWidget import ButtonWidget
 from GUI.dialog_windows.RemoveProjectFilesWindow import RemoveProjectFilesWindow
 from GUI.dialog_windows.RevalidateDocumentsWindow import RevalidateDocumentsWindow
 from GUI.screens.Screen import Screen
 import qtawesome as qta
 
+from GUI.translation.GlobalTranslate import GlobalTranslate
 from GUI.translation.ValidationErrorReportTranslations import ValidationErrorReportTranslations
 
 
@@ -192,6 +194,11 @@ class InsertDataScreen(Screen):
         :returns: None
         """
 
+        missing_project_files = InsertDataDomain.check_current_project_project_files_existence()
+        if len(missing_project_files):
+            self.show_missing_project_files_notification_window(missing_project_files)
+            return
+
         # if there is a quick_save warns the user that they are overwriting the previous changes
         if global_vars.current_project.get_last_quick_save_path():
             RevalidateDocumentsWindow(self,self._)
@@ -199,7 +206,14 @@ class InsertDataScreen(Screen):
             event_loop = asyncio.get_event_loop()
             event_loop.create_task(self.validate_documents())
 
-
+    def show_missing_project_files_notification_window(self, missing_project_files):
+        message = self._(
+            "There are files missing.\nRemove these from the list and re-insert them:\n")
+        for project_file in missing_project_files:
+            filename = project_file.file_path.name
+            message += f"   -{filename}\n"
+        msgbox = NotificationWindow(message=message, title=self._("Missing project files"))
+        msgbox.exec()
 
     async def validate_documents(self) -> None:
         """
