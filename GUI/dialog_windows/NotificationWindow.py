@@ -1,7 +1,7 @@
 from PyQt6.QtWidgets import QWidget, QMessageBox
 
 
-class NotificationWindow(QWidget):
+class NotificationWindow(QMessageBox):
 
     def __init__(self, message:str, title:str = "notification"):
         self.message = message
@@ -10,7 +10,5 @@ class NotificationWindow(QWidget):
         self.init_ui()
 
     def init_ui(self):
-        dlg = QMessageBox(self)
-        dlg.setWindowTitle(self.title)
-        dlg.setText(self.message)
-        button = dlg.exec()
+        self.setWindowTitle(self.title)
+        self.setText(self.message)

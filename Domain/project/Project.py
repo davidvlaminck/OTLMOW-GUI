@@ -25,6 +25,8 @@ from Domain.enums import FileState
 from Domain.ProgramFileStructure import ProgramFileStructure
 from Exceptions.ExcelFileUnavailableError import ExcelFileUnavailableError
 from GUI.dialog_windows.LoadingImageWindow import add_loading_screen
+from GUI.dialog_windows.NotificationWindow import NotificationWindow
+from GUI.translation.GlobalTranslate import GlobalTranslate
 
 
 class Project:
@@ -838,6 +840,15 @@ class Project:
 
         if isinstance(file_path,str):
             file_path = Path(file_path)
+
+        file_names_in_project = [project_file.file_path.name for project_file in self.saved_project_files]
+        if file_path.name in file_names_in_project:
+            message = GlobalTranslate._("Can't insert duplicate filename {0}")
+
+            msgbox = NotificationWindow(message=message.format(file_path.name),
+                                        title=GlobalTranslate._("Duplicate filename"))
+            msgbox.exec()
+            return
 
         end_location = self.make_copy_of_added_file(filepath=file_path)
         self.saved_project_files.append(ProjectFile(file_path=end_location, state=state))
