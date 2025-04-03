@@ -78,14 +78,11 @@ def test_full_set_possible_relations(root_directory:Path,
 
     InsertDataDomain.add_files_to_backend_list(test_object_lists_file_path)
 
-    error_set, objects_lists = InsertDataDomain.load_and_validate_documents()
+    error_set, objects_list = InsertDataDomain.load_and_validate_documents()
 
-
-
-    for objects_list in objects_lists:
-        for object in objects_list:
-            if not is_relation(object):
-                RelationChangeDomain.set_possible_relations(object)
+    for object in objects_list:
+        if not is_relation(object):
+            RelationChangeDomain.set_possible_relations(object)
 
     assert len(RelationChangeDomain.possible_relations_per_class_dict.keys()) == 4
     # search with regex for (#Verkeersbordopstelling'|#Pictogram'|#Funderingsmassief'|#verkeersbordsteun'|BevestigingGC'|#Draagconstructie'|#Fundering'|#ConstructieElement')
@@ -103,24 +100,24 @@ def test_full_set_possible_relations(root_directory:Path,
     assert len(RelationChangeDomain.possible_relations_per_class_dict[class4]) == 33
 
     #define the objects of each class in the test set
-    for objects_list in objects_lists:
-        for object in objects_list:
-            if object.assetId.identificator == "dummy_vbeo":
-                verkeersbordsteun1: AIMObject = object
-            elif  object.assetId.identificator == "dummy_TjwXqP":
-                verkeersbordsteun2: AIMObject  = object
-            elif  object.assetId.identificator == "dummy_hxOTHWe":
-                verkeersbordopstelling1: AIMObject  = object
-            elif object.assetId.identificator == "dummy_LGG":
-                verkeersbordopstelling2: AIMObject  = object
-            elif object.assetId.identificator == "dummy_a":
-                pictogram1: AIMObject  = object
-            elif object.assetId.identificator == "dummy_long_identificator_pictogram":
-                pictogram2: AIMObject  = object
-            elif object.assetId.identificator == "dummy_TyBGmXfXC":
-                funderingsmassief1: AIMObject  = object
-            elif object.assetId.identificator == "dummy_FNrHuPZCWV":
-                funderingsmassief2: AIMObject  = object
+
+    for object in objects_list:
+        if object.assetId.identificator == "dummy_vbeo":
+            verkeersbordsteun1: AIMObject = object
+        elif  object.assetId.identificator == "dummy_TjwXqP":
+            verkeersbordsteun2: AIMObject  = object
+        elif  object.assetId.identificator == "dummy_hxOTHWe":
+            verkeersbordopstelling1: AIMObject  = object
+        elif object.assetId.identificator == "dummy_LGG":
+            verkeersbordopstelling2: AIMObject  = object
+        elif object.assetId.identificator == "dummy_a":
+            pictogram1: AIMObject  = object
+        elif object.assetId.identificator == "dummy_long_identificator_pictogram":
+            pictogram2: AIMObject  = object
+        elif object.assetId.identificator == "dummy_TyBGmXfXC":
+            funderingsmassief1: AIMObject  = object
+        elif object.assetId.identificator == "dummy_FNrHuPZCWV":
+            funderingsmassief2: AIMObject  = object
 
     # define the relations in the test subset
     all_relations:list[OSLORelatie] = RelationChangeDomain.collector.relations
@@ -262,11 +259,11 @@ def test_full_add_possible_relation_to_existing_relation(root_directory:Path,
 
     InsertDataDomain.add_files_to_backend_list(test_object_lists_file_path)
 
-    error_set, objects_lists = InsertDataDomain.load_and_validate_documents()
+    error_set, objects_list = InsertDataDomain.load_and_validate_documents()
 
-    for objects_list in objects_lists:
-        for object in objects_list:
-            RelationChangeDomain.set_possible_relations(object)
+
+    for object in objects_list:
+        RelationChangeDomain.set_possible_relations(object)
 
     bron_asset_id = list(RelationChangeDomain.possible_object_to_object_relations_dict.keys())[0]
     target_asset_id = list(RelationChangeDomain.possible_object_to_object_relations_dict[bron_asset_id].keys())[0]
@@ -298,17 +295,17 @@ def test_full_set_possible_relations_unique_situations(root_directory: Path,
 
     InsertDataDomain.add_files_to_backend_list(test_object_lists_file_path)
 
-    error_set, objects_lists = InsertDataDomain.load_and_validate_documents()
+    error_set, objects_list = InsertDataDomain.load_and_validate_documents()
 
-    for objects_list in objects_lists:
-        for object in objects_list:
-            if not is_relation(object):
-                if(object.assetId.identificator == "dummy_e"):
-                   fund1 = object
-                elif(object.assetId.identificator == "dummy_yq"):
-                    fund2 = object
-                elif (object.assetId.identificator == "dummy_AieZ"):
-                    fund3 = object
+
+    for object in objects_list:
+        if not is_relation(object):
+            if(object.assetId.identificator == "dummy_e"):
+               fund1 = object
+            elif(object.assetId.identificator == "dummy_yq"):
+                fund2 = object
+            elif (object.assetId.identificator == "dummy_AieZ"):
+                fund3 = object
     RelationChangeDomain.set_possible_relations(fund1)
 
     fund1_id =fund1.assetId.identificator
@@ -330,11 +327,10 @@ def test_full_add_possible_relation_to_existing_relation(root_directory: Path,
 
     InsertDataDomain.add_files_to_backend_list(test_object_lists_file_path)
 
-    error_set, objects_lists = InsertDataDomain.load_and_validate_documents()
+    error_set, objects_list = InsertDataDomain.load_and_validate_documents()
 
-    for objects_list in objects_lists:
-        for object in objects_list:
-            RelationChangeDomain.set_possible_relations(object)
+    for object in objects_list:
+        RelationChangeDomain.set_possible_relations(object)
 
     bron_asset_id = list(RelationChangeDomain.possible_object_to_object_relations_dict.keys())[0]
     target_asset_id = \
@@ -380,12 +376,11 @@ def test_full_add_possible_relation_to_existing_relation(root_directory:Path,
 
     InsertDataDomain.add_files_to_backend_list(test_object_lists_file_path)
 
-    error_set, objects_lists = InsertDataDomain.load_and_validate_documents()
+    error_set, objects_list = InsertDataDomain.load_and_validate_documents()
 
-    for objects_list in objects_lists:
-        for object in objects_list:
-            if not is_relation(object):
-                RelationChangeDomain.set_possible_relations(object)
+    for object in objects_list:
+        if not is_relation(object):
+            RelationChangeDomain.set_possible_relations(object)
 
     bron_asset_id = list(RelationChangeDomain.possible_object_to_object_relations_dict.keys())[0]
     target_asset_id = list(RelationChangeDomain.possible_object_to_object_relations_dict[bron_asset_id].keys())[0]
@@ -417,7 +412,7 @@ def test_full_remove_existing_relation(root_directory:Path,
 
     InsertDataDomain.add_files_to_backend_list(test_object_lists_file_path)
 
-    error_set, objects_lists = InsertDataDomain.load_and_validate_documents()
+    error_set, objects_list = InsertDataDomain.load_and_validate_documents()
 
 
     for object in RelationChangeDomain.shown_objects:

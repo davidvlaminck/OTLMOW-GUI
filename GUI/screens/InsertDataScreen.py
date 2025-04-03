@@ -229,7 +229,7 @@ class InsertDataScreen(Screen):
 
         self.clear_feedback()
 
-        error_set, objects_lists = await InsertDataDomain.load_and_validate_documents()
+        error_set, objects_list = await InsertDataDomain.load_and_validate_documents()
 
         if error_set:
             OTLLogger.logger.debug('negative feedback needed')
@@ -240,7 +240,7 @@ class InsertDataScreen(Screen):
             self.main_window.reset_ui(self._)
             self.positive_feedback_message()
 
-        self.fill_feedback_list(objects_lists)
+        self.fill_feedback_list(objects_list)
 
 
     def fill_error_feedback_list(self, error_set: list[dict]):
