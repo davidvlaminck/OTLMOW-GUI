@@ -856,19 +856,26 @@ class Project:
         if isinstance(file_path,str):
             file_path = Path(file_path)
 
-        file_names_in_project = [project_file.file_path.name for project_file in self.saved_project_files]
-        if file_path.name in file_names_in_project:
-            message = GlobalTranslate._("Can't insert duplicate filename {0}")
-
-            msgbox = NotificationWindow(message=message.format(file_path.name),
-                                        title=GlobalTranslate._("Duplicate filename"))
-            msgbox.exec()
+        if self.has_duplicate_filename(filename=file_path.name,
+                                       project_files_list=self.saved_project_files):
             return
 
         end_location = self.make_copy_of_added_file(filepath=file_path)
         self.saved_project_files.append(ProjectFile(file_path=end_location, state=state))
         self.save_project_filepaths_to_file()
 
+    def has_duplicate_filename(self, filename: str, project_files_list: list[ProjectFile]) -> bool:
+        file_names_in_project = [project_file.file_path.name for project_file in
+                                 project_files_list]
+        has_duplicate = False
+        if filename in file_names_in_project:
+            message = GlobalTranslate._("Can't insert duplicate filename {0}")
+
+            msgbox = NotificationWindow(message=message.format(filename),
+                                        title=GlobalTranslate._("Duplicate filename"))
+            msgbox.exec()
+            has_duplicate = True
+        return has_duplicate
 
     def make_copy_of_added_file(self, filepath: Path) -> Path:
         """
