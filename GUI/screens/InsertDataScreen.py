@@ -781,17 +781,17 @@ class InsertDataScreen(Screen):
         total_assets = 0
         if assets is None:
             return
-        for asset in assets:
-            asset_dict = count_assets_by_type(objects=asset)
-            for key, value in asset_dict.items():
-                key_split = key.split('#')
 
-                asset_widget = QListWidgetItem()
-                asset_widget.setText(f'{value} objecten van het type {key_split[-1]} ingeladen\n')
+        asset_dict = count_assets_by_type(objects=assets)
+        for key, value in asset_dict.items():
+            key_split = key.split('#')
 
-                total_assets += value
+            asset_widget = QListWidgetItem()
+            asset_widget.setText(f'{value} objecten van het type {key_split[-1]} ingeladen\n')
 
-                self.asset_info.addItem(asset_widget)
+            total_assets += value
+
+            self.asset_info.addItem(asset_widget)
 
         asset_widget = QListWidgetItem()
         asset_widget.setText(
