@@ -274,6 +274,7 @@ class InsertDataDomain:
             if item.state != FileState.OK:
                 all_valid = False
 
+        cls.get_screen().update_control_button_state()
         return all_valid
 
     @classmethod

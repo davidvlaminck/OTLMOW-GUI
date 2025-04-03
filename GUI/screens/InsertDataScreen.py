@@ -538,7 +538,7 @@ class InsertDataScreen(Screen):
 
 
     def reset_ui(self, language) -> None:
-        super().reset_ui(_)
+        super().reset_ui(self._)
         self._ = language
         self.input_file_label.setText(self._('input_file'))
         self.control_button.setText(self._('control_button'))
@@ -670,7 +670,9 @@ class InsertDataScreen(Screen):
         OTLLogger.logger.debug("[CLEAR] update_file_list")
 
         all_valid = InsertDataDomain.update_frontend()
-        self.control_button.setDisabled(all_valid)
+
+    def update_control_button_state(self):
+        self.control_button.setDisabled(self.project_files_overview_field.topLevelItemCount() == 0)
 
     def reset_button_functionality(self) -> None:
         """
