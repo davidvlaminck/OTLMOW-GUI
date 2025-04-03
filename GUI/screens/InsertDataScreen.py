@@ -194,15 +194,18 @@ class InsertDataScreen(Screen):
         :returns: None
         """
 
-        missing_project_files = InsertDataDomain.check_current_project_project_files_existence()
-        if len(missing_project_files):
-            self.show_missing_project_files_notification_window(missing_project_files)
-            return
+
+
 
         # if there is a quick_save warns the user that they are overwriting the previous changes
         if global_vars.current_project.get_last_quick_save_path():
             RevalidateDocumentsWindow(self,self._)
         else:
+            missing_project_files = InsertDataDomain.check_current_project_project_files_existence()
+            if len(missing_project_files):
+                self.show_missing_project_files_notification_window(missing_project_files)
+                return
+
             event_loop = asyncio.get_event_loop()
             event_loop.create_task(self.validate_documents())
 

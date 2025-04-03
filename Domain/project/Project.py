@@ -662,8 +662,6 @@ class Project:
                     state=state)
                 self.saved_project_files.append(file)
 
-            self.check_if_project_files_exist()
-
             OTLLogger.logger.debug(
                 f"Loading saved documents: {self.project_path.name}/{Project.saved_documents_filename}",
                 extra={"timing_ref": f"load_quicksave_{self.project_path.name}"})
