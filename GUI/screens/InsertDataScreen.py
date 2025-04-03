@@ -194,9 +194,6 @@ class InsertDataScreen(Screen):
         :returns: None
         """
 
-
-
-
         # if there is a quick_save warns the user that they are overwriting the previous changes
         if global_vars.current_project.get_last_quick_save_path():
             RevalidateDocumentsWindow(self,self._)

@@ -381,7 +381,8 @@ class InsertDataDomain:
         for asset in assets:
             if OTLObjectHelper.is_relation(otl_object=asset):
 
-                relation = cast(RelatieObject, asset)
+                # noinspection PyTypeChecker
+                relation:RelatieObject =  asset
                 if relation.bron.typeURI not in Helpers.all_OTL_asset_types_dict.values():
                     ex = RelationHasNonExistingTypeUriForSourceOrTarget(
                         relation_type_uri=relation.typeURI,
