@@ -1,7 +1,7 @@
 from PyQt6.QtWidgets import QWidget, QMessageBox
 
 
-class directToFolderNotificationWindow(QMessageBox):
+class YesOrNoNotificationWindow(QMessageBox):
 
     def __init__(self, message:str, title:str = "notification"):
         self.message = message

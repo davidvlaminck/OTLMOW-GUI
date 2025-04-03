@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-04-02 14:28+0200\n"
+"POT-Creation-Date: 2025-04-03 17:22+0200\n"
 "PO-Revision-Date: 2023-10-19 13:11+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en_US\n"
@@ -18,7 +18,19 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.16.0\n"
 
-#: Domain/project/Project.py:846
+#: Domain/project/Project.py:442
+msgid "There are files missing that belong to this project:\n"
+msgstr "There are files missing that belong to this project:\n"
+
+#: Domain/project/Project.py:448
+msgid "Do you still want to export?"
+msgstr "Do you still want to export?"
+
+#: Domain/project/Project.py:449 GUI/screens/InsertDataScreen.py:215
+msgid "Missing project files"
+msgstr "Missing project files"
+
+#: Domain/project/Project.py:888
 msgid "Can't insert duplicate filename {0}"
 msgstr ""
 "Filename \"{0}\" already exists in this project.\n"
@@ -28,7 +40,7 @@ msgstr ""
 "    2. Change the name of the new file before inserting.\n"
 "            "
 
-#: Domain/project/Project.py:849
+#: Domain/project/Project.py:891
 msgid "Duplicate filename"
 msgstr "Duplicate filename"
 
@@ -58,7 +70,7 @@ msgstr ""
 msgid "permission_denied"
 msgstr "No permission to open the file"
 
-#: Domain/util/SDFHandler.py:183
+#: Domain/util/SDFHandler.py:182
 msgid "FDOToolbox not installed"
 msgstr "FDOToolbox not installed"
 
@@ -121,7 +133,7 @@ msgstr "Submit"
 #: GUI/dialog_windows/ChangeSubsetWindow.py:110
 #: GUI/dialog_windows/DefineHeeftBetrokkeneRelationWindow.py:109
 #: GUI/dialog_windows/RemoveProjectFilesWindow.py:35
-#: GUI/dialog_windows/RevalidateDocumentsWindow.py:35
+#: GUI/dialog_windows/RevalidateDocumentsWindow.py:37
 #: GUI/dialog_windows/UpsertProjectWindow.py:148
 msgid "cancel"
 msgstr "Cancel"
@@ -177,15 +189,15 @@ msgstr ""
 "What role does Agent '{0}' have towards asset '{1}' in this "
 "HeeftBetrokkene relation?"
 
-#: GUI/dialog_windows/LanguageWindow.py:22
+#: GUI/dialog_windows/LanguageWindow.py:23
 msgid "change_language_title"
 msgstr "Change language"
 
-#: GUI/dialog_windows/LanguageWindow.py:26
+#: GUI/dialog_windows/LanguageWindow.py:27
 msgid "language_option_dutch"
 msgstr "Nederlands"
 
-#: GUI/dialog_windows/LanguageWindow.py:27
+#: GUI/dialog_windows/LanguageWindow.py:28
 msgid "language_option_english"
 msgstr "English"
 
@@ -236,11 +248,11 @@ msgstr "Delete project"
 msgid "project_deletion_question"
 msgstr "Are you sure you want to delete this project?"
 
-#: GUI/dialog_windows/RevalidateDocumentsWindow.py:16
+#: GUI/dialog_windows/RevalidateDocumentsWindow.py:18
 msgid "revalidate_documents_files_title"
 msgstr "Overwrite warning"
 
-#: GUI/dialog_windows/RevalidateDocumentsWindow.py:19
+#: GUI/dialog_windows/RevalidateDocumentsWindow.py:21
 msgid "revalidate_documents_files_question"
 msgstr ""
 "By validating the documents all changes in step '3. Change Asset Data' "
@@ -250,7 +262,7 @@ msgstr ""
 "If you wish to keep these you should export all the data via step '4. "
 "Export Asset Data'"
 
-#: GUI/dialog_windows/RevalidateDocumentsWindow.py:33
+#: GUI/dialog_windows/RevalidateDocumentsWindow.py:35
 msgid "continue"
 msgstr "Continue"
 
@@ -407,36 +419,44 @@ msgstr "Without unedited data"
 msgid "search_text"
 msgstr "Enter project or service order to search"
 
-#: GUI/screens/InsertDataScreen.py:154 GUI/screens/InsertDataScreen.py:530
+#: GUI/screens/InsertDataScreen.py:156 GUI/screens/InsertDataScreen.py:544
 msgid "control_button"
 msgstr "Control"
 
-#: GUI/screens/InsertDataScreen.py:160
+#: GUI/screens/InsertDataScreen.py:162
 msgid "reset_fields"
 msgstr "Reset fields"
 
 #: GUI/screens/ExportData_elements/ExportFilteredDataSubScreen.py:163
 #: GUI/screens/ExportData_elements/ExportFilteredDataSubScreen.py:217
-#: GUI/screens/InsertDataScreen.py:165
+#: GUI/screens/InsertDataScreen.py:167
 msgid "choose_file"
 msgstr "Pick your file..."
 
-#: GUI/screens/InsertDataScreen.py:313 GUI/screens/InsertDataScreen.py:529
+#: GUI/screens/InsertDataScreen.py:210
+msgid ""
+"There are files missing.\n"
+"Remove these from the list and re-insert them:\n"
+msgstr ""
+"There are files missing.\n"
+"Remove these from the list and re-insert them:\n"
+
+#: GUI/screens/InsertDataScreen.py:327 GUI/screens/InsertDataScreen.py:543
 msgid "input_file"
 msgstr "Load in file:"
 
 #: GUI/screens/ExportData_elements/ExportFilteredDataSubScreen.py:122
-#: GUI/screens/InsertDataScreen.py:457
+#: GUI/screens/InsertDataScreen.py:471
 msgid "all_info_correct"
 msgstr "All data is OTL-conform"
 
-#: GUI/screens/InsertDataScreen.py:479
+#: GUI/screens/InsertDataScreen.py:493
 msgid "warning"
 msgstr "Warning"
 
 #: GUI/screens/ExportData_elements/ExportFilteredDataSubScreen.py:133
 #: GUI/screens/ExportData_elements/TableErrorModel.py:11
-#: GUI/screens/InsertDataScreen.py:521
+#: GUI/screens/InsertDataScreen.py:535
 msgid "error"
 msgstr "Error"
 

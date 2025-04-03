@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-04-02 14:28+0200\n"
+"POT-Creation-Date: 2025-04-03 17:22+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,11 +17,23 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.16.0\n"
 
-#: Domain/project/Project.py:846
+#: Domain/project/Project.py:442
+msgid "There are files missing that belong to this project:\n"
+msgstr ""
+
+#: Domain/project/Project.py:448
+msgid "Do you still want to export?"
+msgstr ""
+
+#: Domain/project/Project.py:449 GUI/screens/InsertDataScreen.py:215
+msgid "Missing project files"
+msgstr ""
+
+#: Domain/project/Project.py:888
 msgid "Can't insert duplicate filename {0}"
 msgstr ""
 
-#: Domain/project/Project.py:849
+#: Domain/project/Project.py:891
 msgid "Duplicate filename"
 msgstr ""
 
@@ -49,7 +61,7 @@ msgstr ""
 msgid "permission_denied"
 msgstr ""
 
-#: Domain/util/SDFHandler.py:183
+#: Domain/util/SDFHandler.py:182
 msgid "FDOToolbox not installed"
 msgstr ""
 
@@ -112,7 +124,7 @@ msgstr ""
 #: GUI/dialog_windows/ChangeSubsetWindow.py:110
 #: GUI/dialog_windows/DefineHeeftBetrokkeneRelationWindow.py:109
 #: GUI/dialog_windows/RemoveProjectFilesWindow.py:35
-#: GUI/dialog_windows/RevalidateDocumentsWindow.py:35
+#: GUI/dialog_windows/RevalidateDocumentsWindow.py:37
 #: GUI/dialog_windows/UpsertProjectWindow.py:148
 msgid "cancel"
 msgstr ""
@@ -163,15 +175,15 @@ msgstr ""
 msgid "define_attribute_to_add_heeft_betrokkene_relations"
 msgstr ""
 
-#: GUI/dialog_windows/LanguageWindow.py:22
+#: GUI/dialog_windows/LanguageWindow.py:23
 msgid "change_language_title"
 msgstr ""
 
-#: GUI/dialog_windows/LanguageWindow.py:26
+#: GUI/dialog_windows/LanguageWindow.py:27
 msgid "language_option_dutch"
 msgstr ""
 
-#: GUI/dialog_windows/LanguageWindow.py:27
+#: GUI/dialog_windows/LanguageWindow.py:28
 msgid "language_option_english"
 msgstr ""
 
@@ -220,15 +232,15 @@ msgstr ""
 msgid "project_deletion_question"
 msgstr ""
 
-#: GUI/dialog_windows/RevalidateDocumentsWindow.py:16
+#: GUI/dialog_windows/RevalidateDocumentsWindow.py:18
 msgid "revalidate_documents_files_title"
 msgstr ""
 
-#: GUI/dialog_windows/RevalidateDocumentsWindow.py:19
+#: GUI/dialog_windows/RevalidateDocumentsWindow.py:21
 msgid "revalidate_documents_files_question"
 msgstr ""
 
-#: GUI/dialog_windows/RevalidateDocumentsWindow.py:33
+#: GUI/dialog_windows/RevalidateDocumentsWindow.py:35
 msgid "continue"
 msgstr ""
 
@@ -368,36 +380,42 @@ msgstr ""
 msgid "search_text"
 msgstr ""
 
-#: GUI/screens/InsertDataScreen.py:154 GUI/screens/InsertDataScreen.py:530
+#: GUI/screens/InsertDataScreen.py:156 GUI/screens/InsertDataScreen.py:544
 msgid "control_button"
 msgstr ""
 
-#: GUI/screens/InsertDataScreen.py:160
+#: GUI/screens/InsertDataScreen.py:162
 msgid "reset_fields"
 msgstr ""
 
 #: GUI/screens/ExportData_elements/ExportFilteredDataSubScreen.py:163
 #: GUI/screens/ExportData_elements/ExportFilteredDataSubScreen.py:217
-#: GUI/screens/InsertDataScreen.py:165
+#: GUI/screens/InsertDataScreen.py:167
 msgid "choose_file"
 msgstr ""
 
-#: GUI/screens/InsertDataScreen.py:313 GUI/screens/InsertDataScreen.py:529
+#: GUI/screens/InsertDataScreen.py:210
+msgid ""
+"There are files missing.\n"
+"Remove these from the list and re-insert them:\n"
+msgstr ""
+
+#: GUI/screens/InsertDataScreen.py:327 GUI/screens/InsertDataScreen.py:543
 msgid "input_file"
 msgstr ""
 
 #: GUI/screens/ExportData_elements/ExportFilteredDataSubScreen.py:122
-#: GUI/screens/InsertDataScreen.py:457
+#: GUI/screens/InsertDataScreen.py:471
 msgid "all_info_correct"
 msgstr ""
 
-#: GUI/screens/InsertDataScreen.py:479
+#: GUI/screens/InsertDataScreen.py:493
 msgid "warning"
 msgstr ""
 
 #: GUI/screens/ExportData_elements/ExportFilteredDataSubScreen.py:133
 #: GUI/screens/ExportData_elements/TableErrorModel.py:11
-#: GUI/screens/InsertDataScreen.py:521
+#: GUI/screens/InsertDataScreen.py:535
 msgid "error"
 msgstr ""
 

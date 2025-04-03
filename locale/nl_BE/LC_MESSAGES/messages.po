@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: jasper.berton@mow.vlaanderen.be\n"
-"POT-Creation-Date: 2025-04-02 14:28+0200\n"
+"POT-Creation-Date: 2025-04-03 17:22+0200\n"
 "PO-Revision-Date: 2023-10-19 13:13+0200\n"
 "Last-Translator: Jasper Berton <jasper.berton@mow.vlaanderen.be>\n"
 "Language: nl_BE\n"
@@ -18,16 +18,29 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.16.0\n"
 
-#: Domain/project/Project.py:846
+#: Domain/project/Project.py:442
+msgid "There are files missing that belong to this project:\n"
+msgstr "Er zijn bestanden die missen uit dit project:"
+
+#: Domain/project/Project.py:448
+msgid "Do you still want to export?"
+msgstr "Wilt u toch exporteren?"
+
+#: Domain/project/Project.py:449 GUI/screens/InsertDataScreen.py:215
+msgid "Missing project files"
+msgstr "Missende project bestanden"
+
+#: Domain/project/Project.py:888
 msgid "Can't insert duplicate filename {0}"
 msgstr ""
 "Bestandsnaam \"{0}\" bestaat al in dit project.\n"
 "Ofwel moet u: \n"
-"    1. Het origineel bestand verwijderen uit de lijst en het nieuwe bestand terug inladen om het origineel bestand te vervangen. \n"
+"    1. Het origineel bestand verwijderen uit de lijst en het nieuwe "
+"bestand terug inladen om het origineel bestand te vervangen. \n"
 "    2. De naam van het nieuwe bestand veranderen voor het inladen.\n"
 "            "
 
-#: Domain/project/Project.py:849
+#: Domain/project/Project.py:891
 msgid "Duplicate filename"
 msgstr "Bestandsnaam duplicaat"
 
@@ -57,7 +70,7 @@ msgstr ""
 msgid "permission_denied"
 msgstr "Geen toestemming om de file te openen"
 
-#: Domain/util/SDFHandler.py:183
+#: Domain/util/SDFHandler.py:182
 msgid "FDOToolbox not installed"
 msgstr "FDOToolbox niet geïnstalleerd"
 
@@ -120,7 +133,7 @@ msgstr "Bevestigen"
 #: GUI/dialog_windows/ChangeSubsetWindow.py:110
 #: GUI/dialog_windows/DefineHeeftBetrokkeneRelationWindow.py:109
 #: GUI/dialog_windows/RemoveProjectFilesWindow.py:35
-#: GUI/dialog_windows/RevalidateDocumentsWindow.py:35
+#: GUI/dialog_windows/RevalidateDocumentsWindow.py:37
 #: GUI/dialog_windows/UpsertProjectWindow.py:148
 msgid "cancel"
 msgstr "Annuleren"
@@ -175,15 +188,15 @@ msgstr ""
 "Welke rol heeft Agent '{0}' in de HeeftBetrokkene relaties tot de "
 "selecteerde assets?"
 
-#: GUI/dialog_windows/LanguageWindow.py:22
+#: GUI/dialog_windows/LanguageWindow.py:23
 msgid "change_language_title"
 msgstr "Taal veranderen"
 
-#: GUI/dialog_windows/LanguageWindow.py:26
+#: GUI/dialog_windows/LanguageWindow.py:27
 msgid "language_option_dutch"
 msgstr "Nederlands"
 
-#: GUI/dialog_windows/LanguageWindow.py:27
+#: GUI/dialog_windows/LanguageWindow.py:28
 msgid "language_option_english"
 msgstr "English"
 
@@ -234,11 +247,11 @@ msgstr "Verwijderen"
 msgid "project_deletion_question"
 msgstr "Bent u zeker dat u dit project wilt verwijderen?"
 
-#: GUI/dialog_windows/RevalidateDocumentsWindow.py:16
+#: GUI/dialog_windows/RevalidateDocumentsWindow.py:18
 msgid "revalidate_documents_files_title"
 msgstr "Overscrhijf waarschuwing"
 
-#: GUI/dialog_windows/RevalidateDocumentsWindow.py:19
+#: GUI/dialog_windows/RevalidateDocumentsWindow.py:21
 msgid "revalidate_documents_files_question"
 msgstr ""
 "Door de documenten te valideren worden alle wijzigingen uit stap '3. "
@@ -248,7 +261,7 @@ msgstr ""
 "Als u deze wilt behouden exporteer dan eerst alle data via stap '4. Asset"
 " Data exporteren'"
 
-#: GUI/dialog_windows/RevalidateDocumentsWindow.py:33
+#: GUI/dialog_windows/RevalidateDocumentsWindow.py:35
 msgid "continue"
 msgstr "Doorgaan"
 
@@ -409,36 +422,44 @@ msgstr "Zonder ongewijzigde data"
 msgid "search_text"
 msgstr "Geef een project of bestek in om te zoeken"
 
-#: GUI/screens/InsertDataScreen.py:154 GUI/screens/InsertDataScreen.py:530
+#: GUI/screens/InsertDataScreen.py:156 GUI/screens/InsertDataScreen.py:544
 msgid "control_button"
 msgstr "Valideren"
 
-#: GUI/screens/InsertDataScreen.py:160
+#: GUI/screens/InsertDataScreen.py:162
 msgid "reset_fields"
 msgstr "Reset velden"
 
 #: GUI/screens/ExportData_elements/ExportFilteredDataSubScreen.py:163
 #: GUI/screens/ExportData_elements/ExportFilteredDataSubScreen.py:217
-#: GUI/screens/InsertDataScreen.py:165
+#: GUI/screens/InsertDataScreen.py:167
 msgid "choose_file"
 msgstr "Kies uw bestand..."
 
-#: GUI/screens/InsertDataScreen.py:313 GUI/screens/InsertDataScreen.py:529
+#: GUI/screens/InsertDataScreen.py:210
+msgid ""
+"There are files missing.\n"
+"Remove these from the list and re-insert them:\n"
+msgstr ""
+"Er missen bestanden in dit project.\n"
+"Verwijder deze bestanden uit de lijst en laad ze terug in:\n"
+
+#: GUI/screens/InsertDataScreen.py:327 GUI/screens/InsertDataScreen.py:543
 msgid "input_file"
 msgstr "Bestanden inladen:"
 
 #: GUI/screens/ExportData_elements/ExportFilteredDataSubScreen.py:122
-#: GUI/screens/InsertDataScreen.py:457
+#: GUI/screens/InsertDataScreen.py:471
 msgid "all_info_correct"
 msgstr "Alle gegevens zijn OTL-conform"
 
-#: GUI/screens/InsertDataScreen.py:479
+#: GUI/screens/InsertDataScreen.py:493
 msgid "warning"
 msgstr "Waarschuwing"
 
 #: GUI/screens/ExportData_elements/ExportFilteredDataSubScreen.py:133
 #: GUI/screens/ExportData_elements/TableErrorModel.py:11
-#: GUI/screens/InsertDataScreen.py:521
+#: GUI/screens/InsertDataScreen.py:535
 msgid "error"
 msgstr "Error"
 

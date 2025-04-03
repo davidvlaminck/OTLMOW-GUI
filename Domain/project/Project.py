@@ -26,6 +26,7 @@ from Domain.ProgramFileStructure import ProgramFileStructure
 from Exceptions.ExcelFileUnavailableError import ExcelFileUnavailableError
 from GUI.dialog_windows.LoadingImageWindow import add_loading_screen
 from GUI.dialog_windows.NotificationWindow import NotificationWindow
+from GUI.dialog_windows.YesOrNoNotificationWindow import YesOrNoNotificationWindow
 from GUI.translation.GlobalTranslate import GlobalTranslate
 
 
@@ -435,9 +436,26 @@ class Project:
             if not self.get_saved_projectfiles():
                 self.load_saved_document_filenames()
 
+            # tell the user there are files missing
+            missing_project_files = self.check_if_project_files_exist()
+            if len(missing_project_files):
+                message = GlobalTranslate._(
+                    "There are files missing that belong to this project:\n")
+                for project_file in missing_project_files:
+                    filename = project_file.file_path.name
+                    message += f"   -{filename}\n"
+
+                message += GlobalTranslate._("Do you still want to export?")
+                msgbox = YesOrNoNotificationWindow(message=message, title=GlobalTranslate._("Missing project files"))
+                answer = msgbox.exec()
+
+                if answer == 65536:
+                    return
+
             for document in self.get_saved_projectfiles():
-                file_zip_path = Path(self.project_files_foldername) / document.file_path.name
-                project_zip.write(document.file_path, arcname=file_zip_path)
+                if document.file_path.exists():
+                    file_zip_path = Path(self.project_files_foldername) / document.file_path.name
+                    project_zip.write(document.file_path, arcname=file_zip_path)
 
             last_quick_save_path = self.get_last_quick_save_path()
             if last_quick_save_path and last_quick_save_path.exists():

@@ -15,8 +15,7 @@ from Domain.util.Helpers import Helpers
 from Domain.util.XSDCreator import XSDCreator
 from Domain.logger.OTLLogger import OTLLogger
 from Exceptions.FDOToolboxNotInstalledError import FDOToolboxNotInstalledError
-from GUI.dialog_windows.NotificationWindow import NotificationWindow
-from GUI.dialog_windows.directToFolderNotificationWindow import directToFolderNotificationWindow
+from GUI.dialog_windows.YesOrNoNotificationWindow import YesOrNoNotificationWindow
 
 ROOT_DIR =  Path(Path(__file__).absolute()).parent.parent
 sys.path.insert(0,str(ROOT_DIR.absolute()))# needed for python to import project files
@@ -179,8 +178,8 @@ class SDFHandler:
             if not os.path.exists(global_vars.FDO_toolbox_path_str):
                 raise FDOToolboxNotInstalledError(GlobalTranslate._)
         except FDOToolboxNotInstalledError as e:
-            msgbox = directToFolderNotificationWindow(str(e),
-                               title=GlobalTranslate._("FDOToolbox not installed"))
+            msgbox = YesOrNoNotificationWindow(str(e),
+                                               title=GlobalTranslate._("FDOToolbox not installed"))
             answer = msgbox.exec()
             if answer == 16384: # QMessageBox.ButtonRole.YesRole:
                 test_path = Path(os.getcwd()) / Path(
