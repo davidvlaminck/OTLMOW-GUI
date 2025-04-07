@@ -40,7 +40,7 @@ class RelationChangeHelpers:
     def get_screen_name(cls, otl_object: RelationInteractor) -> Optional[str]:
         if otl_object is None:
             return None
-        naam = cls.get_corrected_identificator(otl_object)
+        naam = cls.abbreviate_if_AIM_id(cls.get_corrected_identificator(otl_object))
         if otl_object.typeURI == 'http://purl.org/dc/terms/Agent':
             agent: Agent = cast(Agent, otl_object)
             # agent will always be external
@@ -54,15 +54,21 @@ class RelationChangeHelpers:
             aim_object: AIMObject = cast(AIMObject, otl_object)
             if hasattr(aim_object, 'naam') and aim_object.naam:
                 naam = aim_object.naam
-
             else:
-                naam = str(RelationChangeHelpers.get_corrected_identificator(aim_object))
+                naam = naam
 
             if aim_object.assetId.toegekendDoor == global_vars.external_toegekendDoor_label:
                 external_tranlation = GlobalTranslate._("external")
                 naam = " ".join([naam,f"({external_tranlation})"])
 
         return naam
+
+    @classmethod
+    def abbreviate_if_AIM_id(cls,id):
+        if OTLObjectHelper.is_aim_id(id):
+            return id.split("-")[0]
+        else:
+            return id
     @classmethod
     def is_unique_across_namespaces(cls, typeURI,objects):
         split_typeURI = typeURI.split("#")
