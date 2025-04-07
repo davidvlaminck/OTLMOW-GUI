@@ -73,6 +73,8 @@ class InsertDataDomain:
         """
         if not Helpers.all_OTL_asset_types_dict:
             Helpers.create_external_typeURI_options()
+
+        cls.get_screen().clear_feedback()
         cls.update_frontend()
 
     @classmethod
@@ -264,16 +266,24 @@ class InsertDataDomain:
         :returns: True if all files are valid; otherwise, False.
         :rtype: bool
         """
-
         cls.get_screen().project_files_overview_field.clear()
+        cls.get_screen().add_file_overview_placeholder_to_front_end_list()
+        files_in_project = global_vars.current_project.get_saved_projectfiles()
+        all_valid = False
+        if files_in_project:
+            cls.get_screen().project_files_overview_field.clear()
 
-        all_valid = True
-        for item in global_vars.current_project.get_saved_projectfiles():
-            cls.get_screen().add_file_to_frontend_list(file=item.file_path,asset_state=item.state)
-            if item.state != FileState.OK:
-                all_valid = False
+            all_valid = True
+            for item in global_vars.current_project.get_saved_projectfiles():
+                cls.get_screen().add_file_to_frontend_list(file=item.file_path,asset_state=item.state)
+                if item.state != FileState.OK:
+                    all_valid = False
 
         cls.get_screen().update_control_button_state()
+
+        if cls.get_screen().asset_info.count():
+            cls.get_screen().clear_feedback()
+
         return all_valid
 
     @classmethod

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: jasper.berton@mow.vlaanderen.be\n"
-"POT-Creation-Date: 2025-04-03 17:22+0200\n"
+"POT-Creation-Date: 2025-04-07 16:05+0200\n"
 "PO-Revision-Date: 2023-10-19 13:13+0200\n"
 "Last-Translator: Jasper Berton <jasper.berton@mow.vlaanderen.be>\n"
 "Language: nl_BE\n"
@@ -26,7 +26,7 @@ msgstr "Er zijn bestanden die missen uit dit project:"
 msgid "Do you still want to export?"
 msgstr "Wilt u toch exporteren?"
 
-#: Domain/project/Project.py:449 GUI/screens/InsertDataScreen.py:215
+#: Domain/project/Project.py:449 GUI/screens/InsertDataScreen.py:216
 msgid "Missing project files"
 msgstr "Missende project bestanden"
 
@@ -422,21 +422,21 @@ msgstr "Zonder ongewijzigde data"
 msgid "search_text"
 msgstr "Geef een project of bestek in om te zoeken"
 
-#: GUI/screens/InsertDataScreen.py:156 GUI/screens/InsertDataScreen.py:544
+#: GUI/screens/InsertDataScreen.py:157 GUI/screens/InsertDataScreen.py:548
 msgid "control_button"
 msgstr "Valideren"
 
-#: GUI/screens/InsertDataScreen.py:162
+#: GUI/screens/InsertDataScreen.py:163
 msgid "reset_fields"
 msgstr "Reset velden"
 
 #: GUI/screens/ExportData_elements/ExportFilteredDataSubScreen.py:163
 #: GUI/screens/ExportData_elements/ExportFilteredDataSubScreen.py:217
-#: GUI/screens/InsertDataScreen.py:167
+#: GUI/screens/InsertDataScreen.py:168
 msgid "choose_file"
 msgstr "Kies uw bestand..."
 
-#: GUI/screens/InsertDataScreen.py:210
+#: GUI/screens/InsertDataScreen.py:211
 msgid ""
 "There are files missing.\n"
 "Remove these from the list and re-insert them:\n"
@@ -444,24 +444,34 @@ msgstr ""
 "Er missen bestanden in dit project.\n"
 "Verwijder deze bestanden uit de lijst en laad ze terug in:\n"
 
-#: GUI/screens/InsertDataScreen.py:327 GUI/screens/InsertDataScreen.py:543
+#: GUI/screens/InsertDataScreen.py:330 GUI/screens/InsertDataScreen.py:547
 msgid "input_file"
 msgstr "Bestanden inladen:"
 
 #: GUI/screens/ExportData_elements/ExportFilteredDataSubScreen.py:122
-#: GUI/screens/InsertDataScreen.py:471
+#: GUI/screens/InsertDataScreen.py:474
 msgid "all_info_correct"
 msgstr "Alle gegevens zijn OTL-conform"
 
-#: GUI/screens/InsertDataScreen.py:493
+#: GUI/screens/InsertDataScreen.py:496
 msgid "warning"
 msgstr "Waarschuwing"
 
 #: GUI/screens/ExportData_elements/ExportFilteredDataSubScreen.py:133
 #: GUI/screens/ExportData_elements/TableErrorModel.py:11
-#: GUI/screens/InsertDataScreen.py:535
+#: GUI/screens/InsertDataScreen.py:539
 msgid "error"
 msgstr "Error"
+
+#: GUI/screens/InsertDataScreen.py:639
+msgid "There are no files added to this project"
+msgstr "Er zijn geen bestanden aan dit project toegevoegd"
+
+#: GUI/screens/InsertDataScreen.py:654
+msgid ""
+"Press validate to get feedback on the OTL-conformity of the files in this"
+" project"
+msgstr "Druk op valideren om een rapport over de OTL-conformiteit van de bestanden in dit project te krijgen"
 
 #: GUI/screens/TemplateScreen.py:108
 msgid "Adds choice lists to relevant attributes"

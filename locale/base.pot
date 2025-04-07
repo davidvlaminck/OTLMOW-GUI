@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-04-03 17:22+0200\n"
+"POT-Creation-Date: 2025-04-07 16:05+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -25,7 +25,7 @@ msgstr ""
 msgid "Do you still want to export?"
 msgstr ""
 
-#: Domain/project/Project.py:449 GUI/screens/InsertDataScreen.py:215
+#: Domain/project/Project.py:449 GUI/screens/InsertDataScreen.py:216
 msgid "Missing project files"
 msgstr ""
 
@@ -380,43 +380,53 @@ msgstr ""
 msgid "search_text"
 msgstr ""
 
-#: GUI/screens/InsertDataScreen.py:156 GUI/screens/InsertDataScreen.py:544
+#: GUI/screens/InsertDataScreen.py:157 GUI/screens/InsertDataScreen.py:548
 msgid "control_button"
 msgstr ""
 
-#: GUI/screens/InsertDataScreen.py:162
+#: GUI/screens/InsertDataScreen.py:163
 msgid "reset_fields"
 msgstr ""
 
 #: GUI/screens/ExportData_elements/ExportFilteredDataSubScreen.py:163
 #: GUI/screens/ExportData_elements/ExportFilteredDataSubScreen.py:217
-#: GUI/screens/InsertDataScreen.py:167
+#: GUI/screens/InsertDataScreen.py:168
 msgid "choose_file"
 msgstr ""
 
-#: GUI/screens/InsertDataScreen.py:210
+#: GUI/screens/InsertDataScreen.py:211
 msgid ""
 "There are files missing.\n"
 "Remove these from the list and re-insert them:\n"
 msgstr ""
 
-#: GUI/screens/InsertDataScreen.py:327 GUI/screens/InsertDataScreen.py:543
+#: GUI/screens/InsertDataScreen.py:330 GUI/screens/InsertDataScreen.py:547
 msgid "input_file"
 msgstr ""
 
 #: GUI/screens/ExportData_elements/ExportFilteredDataSubScreen.py:122
-#: GUI/screens/InsertDataScreen.py:471
+#: GUI/screens/InsertDataScreen.py:474
 msgid "all_info_correct"
 msgstr ""
 
-#: GUI/screens/InsertDataScreen.py:493
+#: GUI/screens/InsertDataScreen.py:496
 msgid "warning"
 msgstr ""
 
 #: GUI/screens/ExportData_elements/ExportFilteredDataSubScreen.py:133
 #: GUI/screens/ExportData_elements/TableErrorModel.py:11
-#: GUI/screens/InsertDataScreen.py:535
+#: GUI/screens/InsertDataScreen.py:539
 msgid "error"
+msgstr ""
+
+#: GUI/screens/InsertDataScreen.py:639
+msgid "There are no files added to this project"
+msgstr ""
+
+#: GUI/screens/InsertDataScreen.py:654
+msgid ""
+"Press validate to get feedback on the OTL-conformity of the files in this"
+" project"
 msgstr ""
 
 #: GUI/screens/TemplateScreen.py:108
