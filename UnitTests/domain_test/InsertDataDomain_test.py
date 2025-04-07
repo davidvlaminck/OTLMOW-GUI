@@ -73,8 +73,7 @@ def test_load_and_validate_document_good_path(mock_screen: InsertDataScreen,
     error_set, objects_lists = InsertDataDomain.load_and_validate_documents()
 
     assert(len(error_set) == 0)
-    assert(len(objects_lists) == 1)
-    assert(len(objects_lists[0]) == 12)
+    assert(len(objects_lists) == 12)
     assert (global_vars.current_project.saved_project_files[0].state == FileState.OK)
 
 @pytest.mark.skip

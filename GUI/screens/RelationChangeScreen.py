@@ -1,7 +1,7 @@
 
 from typing import List, Optional
 
-from PyQt6.QtWidgets import QVBoxLayout, QFrame, QHBoxLayout, QWidget
+from PyQt6.QtWidgets import QVBoxLayout, QFrame, QHBoxLayout, QWidget, QPushButton, QSizePolicy
 from otlmow_model.OtlmowModel.BaseClasses.RelationInteractor import RelationInteractor
 from otlmow_model.OtlmowModel.Classes.ImplementatieElement.AIMObject import AIMObject
 from otlmow_model.OtlmowModel.Classes.ImplementatieElement.RelatieObject import RelatieObject
@@ -9,15 +9,17 @@ from otlmow_model.OtlmowModel.Classes.ImplementatieElement.RelatieObject import 
 from Domain.step_domain.RelationChangeDomain import RelationChangeDomain
 from GUI.dialog_windows.DefineHeeftBetrokkeneRelationWindow import \
     DefineHeeftBetrokkeneRelationWindow
+from GUI.screens.MapScreen import MapScreen
 from GUI.screens.RelationChange_elements.ExistingRelationListWidget import \
     ExistingRelationListWidget
 from GUI.screens.RelationChange_elements.ObjectListWidget import ObjectListWidget
 from GUI.screens.RelationChange_elements.PossibleRelationListWidget import \
     PossibleRelationListWidget
 from GUI.screens.RelationChange_elements.RelationChangeHelpers import RelationChangeHelpers
+from GUI.screens.general_elements.ButtonWidget import ButtonWidget
 from GUI.screens.screen_interface.RelationChangeScreenInterface import \
     RelationChangeScreenInterface
-
+import qtawesome as qta
 
 class RelationChangeScreen(RelationChangeScreenInterface):
     """
@@ -64,7 +66,14 @@ class RelationChangeScreen(RelationChangeScreenInterface):
         self.possible_relation_list_gui = PossibleRelationListWidget(self._,self)
         self.existing_relation_list_gui = ExistingRelationListWidget(self._,self)
 
+        self.possible_relation_frame:QFrame = None
+        self.existing_relation_frame:QFrame = None
+
+        self.map_window:MapScreen = None
+
         self.init_ui()
+
+
 
 
     def set_gui_lists_to_loading_state(self) -> None:
@@ -110,11 +119,13 @@ class RelationChangeScreen(RelationChangeScreenInterface):
         frame_rect_height = self.possible_relation_list_gui.list_subtext_label.frameRect().height()
         frame_rect_object = self.objects_list_gui.list_subtext_label.frameRect()
         frame_rect_exist = self.existing_relation_list_gui.list_subtext_label.frameRect()
-        if frame_rect_height != frame_rect_object.height():
-            self.objects_list_gui.list_subtext_label.setMinimumHeight(frame_rect_height)
-        if frame_rect_height != frame_rect_exist.height():
-            self.existing_relation_list_gui.list_subtext_label.setMinimumHeight(frame_rect_height)
-
+        if self.existing_relation_frame.isVisible():
+            if frame_rect_height != frame_rect_object.height():
+                self.objects_list_gui.list_subtext_label.setMinimumHeight(frame_rect_height)
+            if frame_rect_height != frame_rect_exist.height():
+                self.existing_relation_list_gui.list_subtext_label.setMinimumHeight(frame_rect_height)
+        else:
+            self.objects_list_gui.list_subtext_label.setMinimumHeight(15)
 
     def init_ui(self) -> None:
         """
@@ -247,12 +258,32 @@ class RelationChangeScreen(RelationChangeScreenInterface):
         self.frame_layout.setSpacing(0)
 
         self.frame_layout.addWidget(self.objects_list_gui.create_object_list_gui())
-        self.frame_layout.addWidget(self.possible_relation_list_gui.create_object_list_gui(multi_select=True))
-        self.frame_layout.addWidget(self.existing_relation_list_gui.create_object_list_gui(multi_select=True))
 
-        self.frame_layout.setStretch(0, 1)
-        self.frame_layout.setStretch(1, 1)
-        self.frame_layout.setStretch(2, 1)
+        self.possible_relation_frame =self.possible_relation_list_gui.create_object_list_gui(multi_select=True)
+        self.frame_layout.addWidget(self.possible_relation_frame)
+
+        self.existing_relation_frame = self.existing_relation_list_gui.create_object_list_gui(multi_select=True)
+        self.frame_layout.addWidget( self.existing_relation_frame)
+
+        map_button = ButtonWidget()
+        map_button.setIcon(qta.icon("mdi.map",color='white',options=[{
+                'scale_factor': 1.5
+            }]))
+        map_button.setSizePolicy(QSizePolicy.Policy.Minimum,QSizePolicy.Policy.Expanding)
+        map_button.setProperty('class', 'map-button')
+        map_button.clicked.connect(lambda: self.toggle_map_window())
+        # map_button.setContentsMargins(22,0,0,0)
+
+        self.frame_layout.addWidget(map_button)
+        # self.step3_map: MapScreen = MapScreen(self._)
+
+        self.frame_layout.setStretch(0, 5)
+        self.frame_layout.setStretch(1, 5)
+        self.frame_layout.setStretch(2, 5)
+        # self.frame_layout.setStretch(3, 1)
+
+        # self.possible_relation_frame.setHidden(True)
+        # self.existing_relation_frame.setHidden(True)
 
         frame.setLayout(self.frame_layout)
         return frame
@@ -439,3 +470,16 @@ class RelationChangeScreen(RelationChangeScreenInterface):
         """
         self.existing_relation_list_gui.set_search_text(search_text)
 
+    def get_current_object_list_content_dict(self) -> dict[str,list]:
+        return self.objects_list_gui.get_current_list_content_dict()
+
+    def set_selected_object(self, identificator:str):
+        self.objects_list_gui.select_item_via_identificator(identificator)
+
+    def toggle_map_window(self):
+        if self.map_window:
+            self.map_window.close()
+        else:
+            self.map_window = MapScreen(self._,parent_screen=self)
+            self.map_window.show()
+            self.map_window.start_async_reload()

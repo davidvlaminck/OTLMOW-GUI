@@ -2,7 +2,7 @@ import asyncio
 import logging
 from collections import namedtuple
 
-from PyQt6.QtCore import QItemSelectionModel
+from PyQt6.QtCore import QItemSelectionModel, QModelIndex
 from PyQt6.QtGui import QStandardItem, QFont
 from PyQt6.QtWidgets import QFrame
 from otlmow_model.OtlmowModel.Helpers import OTLObjectHelper
@@ -82,10 +82,21 @@ class ObjectListWidget(AbstractInstanceListWidget):
                                       item_count=item_count,
                                       selected_item_count=selected_item_count)
 
-
-
         event_loop = asyncio.get_event_loop()
         event_loop.create_task(RelationChangeDomain.set_possible_relations(selected_object=self.selected_object))
+
+    def select_item_via_identificator(self,identificator):
+        for i in range(self.list_gui.model.rowCount()):
+
+            folder_item = self.list_gui.model.item(i)
+            for j in range(folder_item.rowCount()):
+                item = folder_item.child(j)
+                if item.data(self.data_1_index) == identificator:
+                    self.select_object_id(item)
+                    # self.previously_selected_item = item
+                    # self.list_gui.selectionModel().setCurrentIndex(self.list_gui.model.indexFromItem(item),
+                    #     QItemSelectionModel.SelectionFlag.SelectCurrent)
+
 
     def create_button(self):
         self.list_button.setEnabled(True)
@@ -104,6 +115,7 @@ class ObjectListWidget(AbstractInstanceListWidget):
 
     def extract_text_and_data_per_item(self, source_object, objects, last_added):
         list_of_corresponding_values = []
+        self.id_to_object_with_text_and_data_dict.clear() # for usage in MapScreen
 
         for OTL_object in objects:
             screen_name = RelationChangeHelpers.get_screen_name(OTL_object)
@@ -115,10 +127,14 @@ class ObjectListWidget(AbstractInstanceListWidget):
                 add_namespace,
                 OTLObjectHelper.is_relation(OTL_object))
 
-            list_of_corresponding_values.append({
+            correct_id:str = RelationChangeHelpers.get_corrected_identificator(OTL_object)
+            text_and_data = {
                 "text": self.Text(abbr_typeURI,screen_name,OTL_object.typeURI),
-                "data": self.Data(RelationChangeHelpers.get_corrected_identificator(OTL_object), False)
-            })
+                "data": self.Data(correct_id, False)
+            }
+            list_of_corresponding_values.append(text_and_data)
+
+            self.id_to_object_with_text_and_data_dict[correct_id] = [OTL_object,text_and_data]
         return list_of_corresponding_values
     def create_instance_standard_item(self, text_and_data):
         text = f"{text_and_data['text'].screen_name}"
@@ -162,3 +178,15 @@ class ObjectListWidget(AbstractInstanceListWidget):
         # the selected asset
         if self.selected_item:
             self.parent.set_existing_relation_search_bar_text(self.selected_item.text())
+
+            # highlight on map
+            if self.parent.map_window:
+
+                selected_object_id = self.selected_item.data(self.data_1_index)
+                self.selected_object = RelationChangeDomain.get_object(
+                    identificator=selected_object_id)
+                selected_id = RelationChangeHelpers.get_corrected_identificator(
+                    otl_object=self.selected_object)
+
+                if selected_id:
+                    self.parent.map_window.activate_highlight_layer_by_id(selected_id)

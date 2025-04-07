@@ -13,6 +13,7 @@ from otlmow_model.OtlmowModel.Helpers import OTLObjectHelper, RelationValidator
 from universalasync import async_to_sync_wraps
 
 from Domain import global_vars
+from Domain.project.ProjectFile import ProjectFile
 from Domain.util.Helpers import Helpers
 from Domain.util.SDFHandler import SDFHandler
 from Domain.logger.OTLLogger import OTLLogger
@@ -20,12 +21,14 @@ from Domain.project.Project import Project
 from Domain.step_domain.RelationChangeDomain import RelationChangeDomain, \
     async_save_assets
 from Domain.enums import FileState
+from Exceptions.FDOToolboxNotInstalledError import FDOToolboxNotInstalledError
 from Exceptions.NoIdentificatorError import NoIdentificatorError
 from Exceptions.RelationHasInvalidTypeUriForSourceAndTarget import \
     RelationHasInvalidTypeUriForSourceAndTarget
 from Exceptions.RelationHasNonExistingTypeUriForSourceOrTarget import \
     RelationHasNonExistingTypeUriForSourceOrTarget
 from GUI.dialog_windows.LoadingImageWindow import add_loading_screen_no_delay
+from GUI.dialog_windows.NotificationWindow import NotificationWindow
 from GUI.screens.RelationChange_elements.RelationChangeHelpers import RelationChangeHelpers
 from GUI.translation.GlobalTranslate import GlobalTranslate
 from UnitTests.TestClasses.Classes.ImplementatieElement.AIMObject import AIMObject
@@ -100,6 +103,7 @@ class InsertDataDomain:
                     file_path=temp_path,include_tab_info=True )
 
             elif doc_location_path.suffix == '.sdf':
+
                 # SDF files will make multiple CSV files, one for each class
                 temp_path_list = InsertDataDomain.create_temporary_SDF_conversion_to_CSV_files(
                     sdf_filepath=doc_location_path)
@@ -128,7 +132,6 @@ class InsertDataDomain:
                 exception_group = ExceptionsGroup(
                     message=f'Failed to create objects from Excel file {doc_location_path}')
 
-            cls.check_for_invalid_relations(assets=assets, exception_group=exception_group)
             cls.check_for_empty_identificators(assets=assets, exception_group=exception_group)
 
         except ExceptionsGroup as group:
@@ -270,6 +273,7 @@ class InsertDataDomain:
             if item.state != FileState.OK:
                 all_valid = False
 
+        cls.get_screen().update_control_button_state()
         return all_valid
 
     @classmethod
@@ -290,6 +294,15 @@ class InsertDataDomain:
 
         InsertDataDomain.update_frontend()
 
+    @classmethod
+    def check_current_project_project_files_existence(cls) -> list[ProjectFile]:
+        missing_project_files = global_vars.current_project.check_if_project_files_exist()
+
+        if len(missing_project_files):
+            global_vars.current_project.save_project_filepaths_to_file()
+            cls.update_frontend()
+
+        return missing_project_files
     @classmethod
     @async_to_sync_wraps
     @add_loading_screen_no_delay
@@ -312,18 +325,54 @@ class InsertDataDomain:
         """
         OTLLogger.logger.debug(f"Executing InsertDataDomain.load_and_validate_documents() for project {global_vars.current_project.eigen_referentie}", extra={"timing_ref":f"validate_{global_vars.current_project.eigen_referentie}"})
         error_set: list[dict] = []
-        objects_lists = []
+        relations_per_filepath_str_dict: dict[str,list[RelatieObject]] = {}
+        assets_per_filepath_str_dict: dict[str, list[AIMObject]] = {}
 
         for project_file in global_vars.current_project.get_saved_projectfiles():
             file_path = project_file.file_path
             try:
-                assets, exception_group = await cls.check_document(file_path)
+
+                objects, exception_group = await cls.check_document(file_path)
+
+                assets, relations = cls.divide_otl_objects(objects)
+
+                if len(relations):
+                    relations_per_filepath_str_dict[str(file_path)] = relations
+                if len(assets):
+                    # noinspection PyTypeChecker
+                    assets_per_filepath_str_dict[str(file_path)] = assets
 
                 if len(exception_group.exceptions) > 0:
                     raise exception_group
 
                 project_file.state = FileState.OK
-                objects_lists.append(assets)
+
+            except Exception as ex:
+                error_set.append({"exception": ex, "path_str": file_path})
+                project_file.state = FileState.ERROR
+
+        total_assets = cls.flatten_list(objects_lists=list(assets_per_filepath_str_dict.values()))
+
+        # check if there are relations without a bron/doel.TypeURI that cannot be tied to an asset
+        for project_file in global_vars.current_project.get_saved_projectfiles():
+            file_path = project_file.file_path
+            file_path_str = str(file_path)
+
+            if file_path_str not in relations_per_filepath_str_dict.keys():
+                continue
+
+            try:
+                exception_group = ExceptionsGroup(
+                    message=f'Failed to create objects from Excel file {file_path_str}')
+
+                cls.check_for_invalid_relations(relations=relations_per_filepath_str_dict[file_path_str],
+                                                ref_assets=total_assets, exception_group=exception_group)
+
+                if len(exception_group.exceptions) > 0:
+                    relations_per_filepath_str_dict.pop(file_path_str)
+                    raise exception_group
+
+                project_file.state = FileState.OK
             except Exception as ex:
                 error_set.append({"exception": ex, "path_str": file_path})
                 project_file.state = FileState.ERROR
@@ -332,7 +381,10 @@ class InsertDataDomain:
         global_vars.current_project.save_project_filepaths_to_file()
         cls.update_frontend()
 
-        objects_in_memory = cls.flatten_list(objects_lists=objects_lists)
+        objects_in_memory = cls.flatten_list(objects_lists=list(assets_per_filepath_str_dict.values()))
+        # noinspection PyTypeChecker
+        objects_in_memory.extend(cls.flatten_list(objects_lists=list(relations_per_filepath_str_dict.values())))
+
 
         global_vars.otl_wizard.main_window.step3_visuals.create_html(
             objects_in_memory=objects_in_memory)
@@ -343,10 +395,21 @@ class InsertDataDomain:
             f"Executing InsertDataDomain.load_and_validate_documents() for project {global_vars.current_project.eigen_referentie} ({object_count} objects)",
             extra={"timing_ref": f"validate_{global_vars.current_project.eigen_referentie}"})
 
-        return error_set, objects_lists
+        return error_set, objects_in_memory
 
     @classmethod
-    def check_for_invalid_relations(cls, assets: list[OTLObject],
+    def divide_otl_objects(cls, objects):
+        relations: list[RelatieObject] = []
+        assets: list[OTLObject] = []
+        for otl_object in objects:
+            if OTLObjectHelper.is_relation(otl_object=otl_object):
+                relations.append(otl_object)
+            else:
+                assets.append(otl_object)
+        return assets, relations
+
+    @classmethod
+    def check_for_invalid_relations(cls, ref_assets: list[AIMObject], relations: list[RelatieObject],
                                     exception_group: ExceptionsGroup) -> None:
         """
         Checks for invalid relations among the provided assets.
@@ -357,57 +420,109 @@ class InsertDataDomain:
         handling.
 
         :param cls: The class itself.
-        :param assets: A list of OTL objects to be checked for invalid relations.
-        :type assets: list[OTLObject]
+        :param ref_assets: A list of OTL objects to be checked for invalid relations.
+        :type ref_assets: list[OTLObject]
         :param exception_group: A group to collect exceptions related to invalid relations.
         :type exception_group: ExceptionsGroup
         :returns: None
         """
+        id_to_typeURI_dict: Optional[dict[str,str]] = None
+        for relation in relations:
 
-        for asset in assets:
-            if OTLObjectHelper.is_relation(otl_object=asset):
+            bron_type_uri = cls.extract_corrected_relation_partner_typeURI(
+                relation.bron.typeURI,
+                relation.bronAssetId.identificator,
+                id_to_typeURI_dict,
+                ref_assets)
 
-                relation = cast(RelatieObject, asset)
-                if relation.bron.typeURI not in Helpers.all_OTL_asset_types_dict.values():
-                    ex = RelationHasNonExistingTypeUriForSourceOrTarget(
-                        relation_type_uri=relation.typeURI,
-                        relation_identificator=relation.assetId.identificator,
-                        wrong_field="bron.typeURI",
-                        wrong_value=relation.bron.typeURI,
-                        tab=RelationChangeHelpers.get_abbreviated_typeURI(
-                            asset.typeURI,False))
-                    exception_group.add_exception(error=ex)
+            if not bron_type_uri:
+                ex = RelationHasNonExistingTypeUriForSourceOrTarget(
+                    relation_type_uri=relation.typeURI,
+                    relation_identificator=relation.assetId.identificator,
+                    wrong_field="bron.typeURI",
+                    wrong_value=None,
+                    tab=RelationChangeHelpers.get_abbreviated_typeURI(
+                        relation.typeURI, False))
+                exception_group.add_exception(error=ex)
 
-                if relation.doel.typeURI not in Helpers.all_OTL_asset_types_dict.values():
-                    ex = RelationHasNonExistingTypeUriForSourceOrTarget(
-                        relation_type_uri=relation.typeURI,
-                        relation_identificator=relation.assetId.identificator,
-                        wrong_field="doel.typeURI",
-                        wrong_value=relation.doel.typeURI,
-                        tab=RelationChangeHelpers.get_abbreviated_typeURI(
-                            asset.typeURI,False))
-                    exception_group.add_exception(error=ex)
+            doel_type_uri = cls.extract_corrected_relation_partner_typeURI(
+                relation.doel.typeURI,
+                relation.doelAssetId.identificator,
+                id_to_typeURI_dict,
+                ref_assets)
+
+            if not doel_type_uri:
+                ex = RelationHasNonExistingTypeUriForSourceOrTarget(
+                    relation_type_uri=relation.typeURI,
+                    relation_identificator=relation.assetId.identificator,
+                    wrong_field="bron.typeURI",
+                    wrong_value=None,
+                    tab=RelationChangeHelpers.get_abbreviated_typeURI(
+                        relation.typeURI, False))
+                exception_group.add_exception(error=ex)
+
+            if not bron_type_uri or not doel_type_uri:
+                # the rest of the check will fail anyway
+                continue
+
+            has_valid_bron_typeURI:bool = bron_type_uri not in Helpers.all_OTL_asset_types_dict.values()
+            if has_valid_bron_typeURI:
+                ex = RelationHasNonExistingTypeUriForSourceOrTarget(
+                    relation_type_uri=relation.typeURI,
+                    relation_identificator=relation.assetId.identificator,
+                    wrong_field="bron.typeURI",
+                    wrong_value=bron_type_uri,
+                    tab=RelationChangeHelpers.get_abbreviated_typeURI(
+                        relation.typeURI,False))
+                exception_group.add_exception(error=ex)
+
+            has_valid_doel_typeURI: bool = doel_type_uri not in Helpers.all_OTL_asset_types_dict.values()
+            if has_valid_doel_typeURI:
+                ex = RelationHasNonExistingTypeUriForSourceOrTarget(
+                    relation_type_uri=relation.typeURI,
+                    relation_identificator=relation.assetId.identificator,
+                    wrong_field="doel.typeURI",
+                    wrong_value=doel_type_uri,
+                    tab=RelationChangeHelpers.get_abbreviated_typeURI(
+                        relation.typeURI,False))
+                exception_group.add_exception(error=ex)
 
 
-                try:
-                    is_valid_relation = RelationValidator.is_valid_relation(
-                        relation_type=type(relation),
-                        source_typeURI=relation.bron.typeURI,
-                        target_typeURI=relation.doel.typeURI)
-                except Exception as e:
-                    OTLLogger.logger.warning(e)
-                    is_valid_relation = False
+            if not has_valid_bron_typeURI or not has_valid_doel_typeURI:
+                # the rest of the check will fail anyway
+                continue
 
-                if not is_valid_relation:
-                    ex = cls.raise_wrong_doel_or_target(
-                        relation=relation,
-                        tab=RelationChangeHelpers.get_abbreviated_typeURI(
-                            asset.typeURI,False))
-                    exception_group.add_exception(error=ex)
+            try:
+                is_valid_relation = RelationValidator.is_valid_relation(
+                    relation_type=type(relation),
+                    source_typeURI=bron_type_uri,
+                    target_typeURI=doel_type_uri)
+            except Exception as e:
+                OTLLogger.logger.warning(e)
+                is_valid_relation = False
+
+            if not is_valid_relation:
+                ex = cls.raise_wrong_doel_or_target(relation=relation,
+                                                    tab=RelationChangeHelpers.get_abbreviated_typeURI(
+                                                        relation.typeURI, False),
+                                                    bron_type_uri=bron_type_uri,
+                                                    doel_type_uri=doel_type_uri)
+                exception_group.add_exception(error=ex)
 
     @classmethod
-    def raise_wrong_doel_or_target(cls, relation: RelatieObject,
-                                   tab: str) -> RelationHasInvalidTypeUriForSourceAndTarget:
+    def extract_corrected_relation_partner_typeURI(cls, partner_type_uri, partner_id, id_to_typeURI_dict, ref_assets):
+        if partner_type_uri is None:
+            if not id_to_typeURI_dict:
+                id_to_typeURI_dict = {asset.assetId.identificator: asset.typeURI
+                                      for asset in ref_assets}
+
+            if partner_id in id_to_typeURI_dict.keys():
+                partner_type_uri = id_to_typeURI_dict[partner_id]
+        return partner_type_uri
+
+    @classmethod
+    def raise_wrong_doel_or_target(cls, relation: RelatieObject, tab: str, bron_type_uri,
+                                   doel_type_uri) -> RelationHasInvalidTypeUriForSourceAndTarget:
         """
         Creates an exception for an invalid relation with incorrect source or target type URIs.
 
@@ -415,6 +530,8 @@ class InsertDataDomain:
         RelationHasInvalidTypeUriForSourceAndTarget, populated with details about 
         the invalid relation, including the type URIs and the associated tab.
 
+        :param doel_type_uri:
+        :param bron_type_uri:
         :param cls: The class itself.
         :param relation: The relation object that contains the type URIs to be validated.
         :type relation: RelatieObject
@@ -428,9 +545,9 @@ class InsertDataDomain:
             relation_type_uri=relation.typeURI,
             relation_identificator=relation.assetId.identificator,
             wrong_field="bron.typeURI",
-            wrong_value=relation.bron.typeURI,
+            wrong_value=bron_type_uri,
             wrong_field2="doel.typeURI",
-            wrong_value2=relation.doel.typeURI,
+            wrong_value2=doel_type_uri,
             tab=tab)
 
     @classmethod
@@ -491,16 +608,20 @@ class InsertDataDomain:
                 OTLLogger.logger.debug("Error in logic")
             else:
                 # source asset doesn't have this relation to target
-                cls.raise_wrong_doel_or_target(
-                    relation=relation, 
-                    tab=RelationChangeHelpers.get_abbreviated_typeURI(typeURI=relation.typeURI,
-                                                                      add_namespace=False))
+                cls.raise_wrong_doel_or_target(relation=relation,
+                                               tab=RelationChangeHelpers.get_abbreviated_typeURI(
+                                                   typeURI=relation.typeURI,
+                                                   add_namespace=False),
+                                               bron_type_uri=relation.bron.typeURI,
+                                               doel_type_uri=relation.doel.typeURI)
         else:
             # target asset has relation but not to source
-            cls.raise_wrong_doel_or_target(
-                relation=relation, 
-                tab=RelationChangeHelpers.get_abbreviated_typeURI(typeURI=relation.typeURI,
-                                                                  add_namespace=False))
+            cls.raise_wrong_doel_or_target(relation=relation,
+                                           tab=RelationChangeHelpers.get_abbreviated_typeURI(
+                                               typeURI=relation.typeURI,
+                                               add_namespace=False),
+                                           bron_type_uri=relation.bron.typeURI,
+                                           doel_type_uri=relation.doel.typeURI)
 
     @classmethod
     def check_for_empty_identificators(cls, assets: Iterable[OTLObject],

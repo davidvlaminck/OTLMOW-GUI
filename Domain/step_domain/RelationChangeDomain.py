@@ -1,4 +1,5 @@
 import asyncio
+import gc
 from copy import deepcopy
 from pathlib import Path
 from typing import Optional, Union, Callable
@@ -192,7 +193,7 @@ class RelationChangeDomain:
 
     external_object_added = False
     visualisation_uptodate = True
-
+    map_uptodate = True
 
     @classmethod
     def init_static(cls, project: Project,asynchronous = True) -> None:
@@ -243,6 +244,7 @@ class RelationChangeDomain:
         cls.aim_id_relations = []
         cls.external_object_added = False
         cls.visualisation_uptodate = False
+        cls.map_uptodate = False
 
     @classmethod
     @async_to_sync_wraps
@@ -260,6 +262,11 @@ class RelationChangeDomain:
         """
 
         cls.get_screen().set_gui_lists_to_loading_state()
+
+        # throw away old data before loading the new
+        cls.clear_data()
+        gc.collect()
+
         cls.set_instances(objects_list=await cls.project.load_validated_assets())
         global_vars.otl_wizard.main_window.step3_visuals.reload_html()
 
@@ -326,6 +333,7 @@ class RelationChangeDomain:
         cls.get_screen().fill_possible_relations_list(None, {})
         cls.get_screen().fill_existing_relations_list(cls.existing_relations)
         cls.visualisation_uptodate = False
+        cls.map_uptodate = False
 
     @classmethod
     def create_and_add_missing_external_assets_from_relations(cls) -> None:
@@ -445,6 +453,8 @@ class RelationChangeDomain:
             cls.get_screen().clear_possible_relation_elements()
             return
 
+
+
         if (cls.external_object_added or not
                 RelationChangeDomain.are_possible_relations_to_other_class_types_collected_for(
                 selected_object.typeURI)):
@@ -457,6 +467,11 @@ class RelationChangeDomain:
 
         selected_id = RelationChangeHelpers.get_corrected_identificator(otl_object=selected_object)
         relation_list = cls.possible_relations_per_class_dict[selected_object.typeURI]
+
+        # if selected_id:
+        #     map_window = cls.get_map_screen()
+        #     if map_window:
+        #         map_window.activate_highlight_layer_by_id(selected_id)
 
         cls.possible_object_to_object_relations_dict[selected_id] = {}
         cls.add_inactive_relations_to_possible_relations(selected_id=selected_id)
@@ -1007,6 +1022,12 @@ class RelationChangeDomain:
 
         OTLLogger.logger.debug("Execute RelationChangeDomain.update_frontend",
                                extra={"timing_ref": f"update_frontend"})
+
+    @classmethod
+    def set_selected_object(cls,identificator):
+        cls.selected_object = cls.get_object(identificator)
+        cls.get_screen().set_selected_object(identificator)
+
     @classmethod
     @async_to_sync_wraps
     @async_save_assets
@@ -1258,3 +1279,13 @@ class RelationChangeDomain:
     @classmethod
     def is_visualisation_uptodate(cls):
         return cls.visualisation_uptodate
+
+    @classmethod
+    def get_current_relation_change_screen_object_list_content_dict(cls):
+        cls.map_uptodate = True
+        return cls.get_screen().get_current_object_list_content_dict()
+
+    @classmethod
+    def get_map_screen(cls):
+        return cls.get_screen().map_window
+        # return global_vars.otl_wizard.main_window.step3_map

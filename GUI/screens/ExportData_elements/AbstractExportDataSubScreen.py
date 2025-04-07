@@ -1,3 +1,4 @@
+import asyncio
 from abc import abstractmethod
 from copy import deepcopy
 from enum import IntEnum
@@ -149,9 +150,10 @@ class AbstractExportDataSubScreen(Screen):
         if document_loc != ('', ''):
             csv_option = self.extra_option_csv.isChecked()
             split_relations_and_objects = self.relations_split_optionality.isChecked()
-            ExportDataDomain.generate_files(end_file=document_loc[0],
+            event_loop = asyncio.get_event_loop()
+            event_loop.create_task(ExportDataDomain.generate_files(end_file=document_loc[0],
                                             separate_per_class_csv_option=csv_option,
-                                            separate_relations_option=split_relations_and_objects)
+                                            separate_relations_option=split_relations_and_objects))
 
     def show_additional_options(self, text):
         """

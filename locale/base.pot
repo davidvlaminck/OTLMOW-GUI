@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-03-06 16:26+0100\n"
+"POT-Creation-Date: 2025-04-03 17:22+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,19 +17,39 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.16.0\n"
 
-#: Domain/step_domain/HomeDomain.py:119
+#: Domain/project/Project.py:442
+msgid "There are files missing that belong to this project:\n"
+msgstr ""
+
+#: Domain/project/Project.py:448
+msgid "Do you still want to export?"
+msgstr ""
+
+#: Domain/project/Project.py:449 GUI/screens/InsertDataScreen.py:215
+msgid "Missing project files"
+msgstr ""
+
+#: Domain/project/Project.py:888
+msgid "Can't insert duplicate filename {0}"
+msgstr ""
+
+#: Domain/project/Project.py:891
+msgid "Duplicate filename"
+msgstr ""
+
+#: Domain/step_domain/HomeDomain.py:114
 msgid "own_reference_empty_error"
 msgstr ""
 
-#: Domain/step_domain/HomeDomain.py:121
+#: Domain/step_domain/HomeDomain.py:116
 msgid "bestek_empty_error"
 msgstr ""
 
-#: Domain/step_domain/HomeDomain.py:123
+#: Domain/step_domain/HomeDomain.py:118
 msgid "db_path_empty_error"
 msgstr ""
 
-#: Domain/step_domain/HomeDomain.py:125
+#: Domain/step_domain/HomeDomain.py:120
 msgid "wrong_database_error"
 msgstr ""
 
@@ -41,27 +61,31 @@ msgstr ""
 msgid "permission_denied"
 msgstr ""
 
-#: GUI/MainWindow.py:67
-msgid "template"
-msgstr ""
-
-#: GUI/MainWindow.py:68
-msgid "insert_data"
+#: Domain/util/SDFHandler.py:182
+msgid "FDOToolbox not installed"
 msgstr ""
 
 #: GUI/MainWindow.py:69
-msgid "data visuals"
+msgid "template"
 msgstr ""
 
 #: GUI/MainWindow.py:70
-msgid "data_change"
+msgid "insert_data"
 msgstr ""
 
 #: GUI/MainWindow.py:71
-msgid "relation_change"
+msgid "data visuals"
 msgstr ""
 
 #: GUI/MainWindow.py:72
+msgid "data_change"
+msgstr ""
+
+#: GUI/MainWindow.py:73
+msgid "relation_change"
+msgstr ""
+
+#: GUI/MainWindow.py:74
 msgid "export_data"
 msgstr ""
 
@@ -100,13 +124,13 @@ msgstr ""
 #: GUI/dialog_windows/ChangeSubsetWindow.py:110
 #: GUI/dialog_windows/DefineHeeftBetrokkeneRelationWindow.py:109
 #: GUI/dialog_windows/RemoveProjectFilesWindow.py:35
-#: GUI/dialog_windows/RevalidateDocumentsWindow.py:35
+#: GUI/dialog_windows/RevalidateDocumentsWindow.py:37
 #: GUI/dialog_windows/UpsertProjectWindow.py:148
 msgid "cancel"
 msgstr ""
 
 #: GUI/dialog_windows/ChangeSubsetWindow.py:24
-#: GUI/screens/TemplateScreen.py:501 GUI/screens/TemplateScreen.py:872
+#: GUI/screens/TemplateScreen.py:501
 msgid "change_subset"
 msgstr ""
 
@@ -151,15 +175,15 @@ msgstr ""
 msgid "define_attribute_to_add_heeft_betrokkene_relations"
 msgstr ""
 
-#: GUI/dialog_windows/LanguageWindow.py:22
+#: GUI/dialog_windows/LanguageWindow.py:23
 msgid "change_language_title"
 msgstr ""
 
-#: GUI/dialog_windows/LanguageWindow.py:26
+#: GUI/dialog_windows/LanguageWindow.py:27
 msgid "language_option_dutch"
 msgstr ""
 
-#: GUI/dialog_windows/LanguageWindow.py:27
+#: GUI/dialog_windows/LanguageWindow.py:28
 msgid "language_option_english"
 msgstr ""
 
@@ -188,7 +212,7 @@ msgstr ""
 msgid "version"
 msgstr ""
 
-#: GUI/dialog_windows/ProjectPickerWindow.py:17
+#: GUI/dialog_windows/ProjectPickerWindow.py:16
 msgid "select_OTL_project"
 msgstr ""
 
@@ -208,15 +232,15 @@ msgstr ""
 msgid "project_deletion_question"
 msgstr ""
 
-#: GUI/dialog_windows/RevalidateDocumentsWindow.py:16
+#: GUI/dialog_windows/RevalidateDocumentsWindow.py:18
 msgid "revalidate_documents_files_title"
 msgstr ""
 
-#: GUI/dialog_windows/RevalidateDocumentsWindow.py:19
+#: GUI/dialog_windows/RevalidateDocumentsWindow.py:21
 msgid "revalidate_documents_files_question"
 msgstr ""
 
-#: GUI/dialog_windows/RevalidateDocumentsWindow.py:33
+#: GUI/dialog_windows/RevalidateDocumentsWindow.py:35
 msgid "continue"
 msgstr ""
 
@@ -286,67 +310,20 @@ msgstr ""
 msgid "import"
 msgstr ""
 
-#: GUI/header/StepperWidget.py:73
+#: GUI/header/StepperWidget.py:69
 msgid "step1"
 msgstr ""
 
-#: GUI/header/StepperWidget.py:74
+#: GUI/header/StepperWidget.py:70
 msgid "step2"
 msgstr ""
 
-#: GUI/header/StepperWidget.py:75
+#: GUI/header/StepperWidget.py:71
 msgid "step3"
 msgstr ""
 
-#: GUI/header/StepperWidget.py:76
+#: GUI/header/StepperWidget.py:72
 msgid "step4"
-msgstr ""
-
-#: GUI/screens/AssetDataChangeScreen.py:77
-#: GUI/screens/AssetDataChangeScreen.py:128
-#: GUI/screens/ExportData_elements/ExportFilteredDataSubScreen.py:148
-msgid "original_file_load"
-msgstr ""
-
-#: GUI/screens/AssetDataChangeScreen.py:91
-#: GUI/screens/AssetDataChangeScreen.py:132
-#: GUI/screens/AssetDataChangeScreen.py:138
-#: GUI/screens/ExportData_elements/ExportFilteredDataSubScreen.py:163
-#: GUI/screens/ExportData_elements/ExportFilteredDataSubScreen.py:217
-#: GUI/screens/InsertDataScreen.py:165
-msgid "choose_file"
-msgstr ""
-
-#: GUI/screens/AssetDataChangeScreen.py:94
-#: GUI/screens/AssetDataChangeScreen.py:130
-#: GUI/screens/ExportData_elements/ExportFilteredDataSubScreen.py:166
-msgid "show differences"
-msgstr ""
-
-#: GUI/screens/AssetDataChangeScreen.py:99
-#: GUI/screens/AssetDataChangeScreen.py:131
-msgid "apply differences"
-msgstr ""
-
-#: GUI/screens/AssetDataChangeScreen.py:104
-#: GUI/screens/AssetDataChangeScreen.py:133
-#: GUI/screens/ExportData_elements/ExportFilteredDataSubScreen.py:176
-msgid "empty fields"
-msgstr ""
-
-#: GUI/screens/AssetDataChangeScreen.py:129
-msgid "new_file_load"
-msgstr ""
-
-#: GUI/screens/AssetDataChangeScreen.py:231
-msgid "the changes were correctly written to a new file"
-msgstr ""
-
-#: GUI/screens/AssetDataChangeScreen.py:240
-#: GUI/screens/ExportData_elements/ExportFilteredDataSubScreen.py:133
-#: GUI/screens/ExportData_elements/TableErrorModel.py:11
-#: GUI/screens/InsertDataScreen.py:521
-msgid "error"
 msgstr ""
 
 #: GUI/screens/ConversionScreen.py:29
@@ -361,12 +338,20 @@ msgstr ""
 msgid "file_for_conversion"
 msgstr ""
 
-#: GUI/screens/DataVisualisationScreen.py:67
-#: GUI/screens/DataVisualisationScreen.py:127
+#: GUI/screens/DataVisualisationScreen.py:70
+#: GUI/screens/DataVisualisationScreen.py:136 GUI/screens/MapScreen.py:135
+#: GUI/screens/MapScreen.py:178 GUI/screens/MapScreen_test.py:132
+#: GUI/screens/MapScreen_test.py:178
 msgid "relations legend"
 msgstr ""
 
-#: GUI/screens/DataVisualisationScreen.py:154
+#: GUI/screens/DataVisualisationScreen.py:120 GUI/screens/MapScreen.py:163
+#: GUI/screens/MapScreen_test.py:162
+msgid "The visualisation is outdated, refresh to see new changes"
+msgstr ""
+
+#: GUI/screens/DataVisualisationScreen.py:165 GUI/screens/MapScreen.py:223
+#: GUI/screens/MapScreen_test.py:210
 msgid ""
 "There are too many assets and relations to create a visualisation.\n"
 "maximum: {0}\n"
@@ -378,8 +363,8 @@ msgid "export_to_davie"
 msgstr ""
 
 #: GUI/screens/ExportDataScreen.py:78
-#: GUI/screens/ExportData_elements/AbstractExportDataSubScreen.py:117
-#: GUI/screens/ExportData_elements/AbstractExportDataSubScreen.py:122
+#: GUI/screens/ExportData_elements/AbstractExportDataSubScreen.py:118
+#: GUI/screens/ExportData_elements/AbstractExportDataSubScreen.py:123
 msgid "export assets in different files"
 msgstr ""
 
@@ -395,25 +380,43 @@ msgstr ""
 msgid "search_text"
 msgstr ""
 
-#: GUI/screens/InsertDataScreen.py:154 GUI/screens/InsertDataScreen.py:530
+#: GUI/screens/InsertDataScreen.py:156 GUI/screens/InsertDataScreen.py:544
 msgid "control_button"
 msgstr ""
 
-#: GUI/screens/InsertDataScreen.py:160
+#: GUI/screens/InsertDataScreen.py:162
 msgid "reset_fields"
 msgstr ""
 
-#: GUI/screens/InsertDataScreen.py:313 GUI/screens/InsertDataScreen.py:529
+#: GUI/screens/ExportData_elements/ExportFilteredDataSubScreen.py:163
+#: GUI/screens/ExportData_elements/ExportFilteredDataSubScreen.py:217
+#: GUI/screens/InsertDataScreen.py:167
+msgid "choose_file"
+msgstr ""
+
+#: GUI/screens/InsertDataScreen.py:210
+msgid ""
+"There are files missing.\n"
+"Remove these from the list and re-insert them:\n"
+msgstr ""
+
+#: GUI/screens/InsertDataScreen.py:327 GUI/screens/InsertDataScreen.py:543
 msgid "input_file"
 msgstr ""
 
 #: GUI/screens/ExportData_elements/ExportFilteredDataSubScreen.py:122
-#: GUI/screens/InsertDataScreen.py:457
+#: GUI/screens/InsertDataScreen.py:471
 msgid "all_info_correct"
 msgstr ""
 
-#: GUI/screens/InsertDataScreen.py:479
+#: GUI/screens/InsertDataScreen.py:493
 msgid "warning"
+msgstr ""
+
+#: GUI/screens/ExportData_elements/ExportFilteredDataSubScreen.py:133
+#: GUI/screens/ExportData_elements/TableErrorModel.py:11
+#: GUI/screens/InsertDataScreen.py:535
+msgid "error"
 msgstr ""
 
 #: GUI/screens/TemplateScreen.py:108
@@ -467,7 +470,7 @@ msgstr ""
 msgid "{filetype} cannot add expansive information"
 msgstr ""
 
-#: GUI/screens/TemplateScreen.py:338 GUI/screens/TemplateScreen.py:875
+#: GUI/screens/TemplateScreen.py:338
 msgid "general_settings"
 msgstr ""
 
@@ -487,17 +490,17 @@ msgstr ""
 msgid "show_deprecated_attributes"
 msgstr ""
 
-#: GUI/screens/TemplateScreen.py:354 GUI/screens/TemplateScreen.py:866
+#: GUI/screens/TemplateScreen.py:354
 msgid "export_attribute_info"
 msgstr ""
 
-#: GUI/screens/TemplateScreen.py:358 GUI/screens/TemplateScreen.py:876
+#: GUI/screens/TemplateScreen.py:358
 msgid "example_settings"
 msgstr ""
 
-#: GUI/screens/ExportData_elements/AbstractExportDataSubScreen.py:91
-#: GUI/screens/ExportData_elements/AbstractExportDataSubScreen.py:114
-#: GUI/screens/TemplateScreen.py:360 GUI/screens/TemplateScreen.py:871
+#: GUI/screens/ExportData_elements/AbstractExportDataSubScreen.py:92
+#: GUI/screens/ExportData_elements/AbstractExportDataSubScreen.py:115
+#: GUI/screens/TemplateScreen.py:360
 msgid "export"
 msgstr ""
 
@@ -517,7 +520,7 @@ msgstr ""
 msgid "Expanded info"
 msgstr ""
 
-#: GUI/screens/TemplateScreen.py:441 GUI/screens/TemplateScreen.py:870
+#: GUI/screens/TemplateScreen.py:441
 msgid "amount_of_examples"
 msgstr ""
 
@@ -525,19 +528,19 @@ msgstr ""
 msgid "The amount of example assets added to each OTL-class"
 msgstr ""
 
-#: GUI/screens/TemplateScreen.py:525 GUI/screens/TemplateScreen.py:873
+#: GUI/screens/TemplateScreen.py:525
 msgid "operator"
 msgstr ""
 
-#: GUI/screens/TemplateScreen.py:549 GUI/screens/TemplateScreen.py:874
+#: GUI/screens/TemplateScreen.py:549
 msgid "otl_version"
 msgstr ""
 
-#: GUI/screens/TemplateScreen.py:620 GUI/screens/TemplateScreen.py:869
+#: GUI/screens/TemplateScreen.py:620
 msgid "select_all_classes"
 msgstr ""
 
-#: GUI/screens/TemplateScreen.py:668 GUI/screens/TemplateScreen.py:878
+#: GUI/screens/TemplateScreen.py:668
 msgid "{selected} classes selected"
 msgstr ""
 
@@ -549,19 +552,7 @@ msgstr ""
 msgid "Select at least 1 class to export"
 msgstr ""
 
-#: GUI/screens/TemplateScreen.py:867
-msgid "geometry_column_added"
-msgstr ""
-
-#: GUI/screens/TemplateScreen.py:868
-msgid "no_choice_list"
-msgstr ""
-
-#: GUI/screens/TemplateScreen.py:877
-msgid "deprecated_settings"
-msgstr ""
-
-#: GUI/screens/RelationChange_elements/AbstractInstanceListWidget.py:523
+#: GUI/screens/RelationChange_elements/AbstractInstanceListWidget.py:525
 #: GUI/screens/TemplateScreen.py:891
 msgid "loading"
 msgstr ""
@@ -574,8 +565,8 @@ msgstr ""
 msgid "Agent class is not allowed in the template"
 msgstr ""
 
-#: GUI/screens/ExportData_elements/AbstractExportDataSubScreen.py:52
-#: GUI/screens/ExportData_elements/AbstractExportDataSubScreen.py:115
+#: GUI/screens/ExportData_elements/AbstractExportDataSubScreen.py:53
+#: GUI/screens/ExportData_elements/AbstractExportDataSubScreen.py:116
 #: GUI/screens/TemplateScreen.py:968
 msgid "select file type for export"
 msgstr ""
@@ -609,17 +600,29 @@ msgstr ""
 msgid "new_attribute"
 msgstr ""
 
-#: GUI/screens/ExportData_elements/AbstractExportDataSubScreen.py:69
-#: GUI/screens/ExportData_elements/AbstractExportDataSubScreen.py:116
+#: GUI/screens/ExportData_elements/AbstractExportDataSubScreen.py:70
+#: GUI/screens/ExportData_elements/AbstractExportDataSubScreen.py:117
 msgid "export relations and assets in different files"
 msgstr ""
 
-#: GUI/screens/ExportData_elements/AbstractExportDataSubScreen.py:118
+#: GUI/screens/ExportData_elements/AbstractExportDataSubScreen.py:119
 msgid "file_to_upload"
 msgstr ""
 
 #: GUI/screens/ExportData_elements/ExportFilteredDataSubScreen.py:100
 msgid "changes preview"
+msgstr ""
+
+#: GUI/screens/ExportData_elements/ExportFilteredDataSubScreen.py:148
+msgid "original_file_load"
+msgstr ""
+
+#: GUI/screens/ExportData_elements/ExportFilteredDataSubScreen.py:166
+msgid "show differences"
+msgstr ""
+
+#: GUI/screens/ExportData_elements/ExportFilteredDataSubScreen.py:176
+msgid "empty fields"
 msgstr ""
 
 #: GUI/screens/Home_elements/OverviewTable.py:50
@@ -635,16 +638,16 @@ msgstr ""
 msgid "no_results"
 msgstr ""
 
-#: GUI/screens/RelationChange_elements/AbstractInstanceListWidget.py:355
+#: GUI/screens/RelationChange_elements/AbstractInstanceListWidget.py:357
 msgid "search_button"
 msgstr ""
 
-#: GUI/screens/RelationChange_elements/AbstractInstanceListWidget.py:388
+#: GUI/screens/RelationChange_elements/AbstractInstanceListWidget.py:390
 msgid "no_instance_selected"
 msgstr ""
 
-#: GUI/screens/RelationChange_elements/AbstractInstanceListWidget.py:495
-#: GUI/screens/RelationChange_elements/ObjectListWidget.py:149
+#: GUI/screens/RelationChange_elements/AbstractInstanceListWidget.py:497
+#: GUI/screens/RelationChange_elements/ObjectListWidget.py:165
 msgid "no_options_available"
 msgstr ""
 
@@ -693,7 +696,7 @@ msgstr ""
 msgid "object_attributes"
 msgstr ""
 
-#: GUI/screens/RelationChange_elements/ObjectListWidget.py:92
+#: GUI/screens/RelationChange_elements/ObjectListWidget.py:103
 msgid "add_external_asset"
 msgstr ""
 

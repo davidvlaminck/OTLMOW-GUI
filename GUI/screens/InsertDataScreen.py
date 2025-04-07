@@ -23,12 +23,14 @@ from Exceptions.RelationHasInvalidTypeUriForSourceAndTarget import \
     RelationHasInvalidTypeUriForSourceAndTarget
 from Exceptions.RelationHasNonExistingTypeUriForSourceOrTarget import \
     RelationHasNonExistingTypeUriForSourceOrTarget
+from GUI.dialog_windows.NotificationWindow import NotificationWindow
 from GUI.screens.general_elements.ButtonWidget import ButtonWidget
 from GUI.dialog_windows.RemoveProjectFilesWindow import RemoveProjectFilesWindow
 from GUI.dialog_windows.RevalidateDocumentsWindow import RevalidateDocumentsWindow
 from GUI.screens.Screen import Screen
 import qtawesome as qta
 
+from GUI.translation.GlobalTranslate import GlobalTranslate
 from GUI.translation.ValidationErrorReportTranslations import ValidationErrorReportTranslations
 
 
@@ -196,10 +198,22 @@ class InsertDataScreen(Screen):
         if global_vars.current_project.get_last_quick_save_path():
             RevalidateDocumentsWindow(self,self._)
         else:
+            missing_project_files = InsertDataDomain.check_current_project_project_files_existence()
+            if len(missing_project_files):
+                self.show_missing_project_files_notification_window(missing_project_files)
+                return
+
             event_loop = asyncio.get_event_loop()
             event_loop.create_task(self.validate_documents())
 
-
+    def show_missing_project_files_notification_window(self, missing_project_files):
+        message = self._(
+            "There are files missing.\nRemove these from the list and re-insert them:\n")
+        for project_file in missing_project_files:
+            filename = project_file.file_path.name
+            message += f"   -{filename}\n"
+        msgbox = NotificationWindow(message=message, title=self._("Missing project files"))
+        msgbox.exec()
 
     async def validate_documents(self) -> None:
         """
@@ -215,7 +229,7 @@ class InsertDataScreen(Screen):
 
         self.clear_feedback()
 
-        error_set, objects_lists = await InsertDataDomain.load_and_validate_documents()
+        error_set, objects_list = await InsertDataDomain.load_and_validate_documents()
 
         if error_set:
             OTLLogger.logger.debug('negative feedback needed')
@@ -226,7 +240,7 @@ class InsertDataScreen(Screen):
             self.main_window.reset_ui(self._)
             self.positive_feedback_message()
 
-        self.fill_feedback_list(objects_lists)
+        self.fill_feedback_list(objects_list)
 
 
     def fill_error_feedback_list(self, error_set: list[dict]):
@@ -524,7 +538,7 @@ class InsertDataScreen(Screen):
 
 
     def reset_ui(self, language) -> None:
-        super().reset_ui(_)
+        super().reset_ui(self._)
         self._ = language
         self.input_file_label.setText(self._('input_file'))
         self.control_button.setText(self._('control_button'))
@@ -656,7 +670,9 @@ class InsertDataScreen(Screen):
         OTLLogger.logger.debug("[CLEAR] update_file_list")
 
         all_valid = InsertDataDomain.update_frontend()
-        self.control_button.setDisabled(all_valid)
+
+    def update_control_button_state(self):
+        self.control_button.setDisabled(self.project_files_overview_field.topLevelItemCount() == 0)
 
     def reset_button_functionality(self) -> None:
         """
@@ -765,17 +781,17 @@ class InsertDataScreen(Screen):
         total_assets = 0
         if assets is None:
             return
-        for asset in assets:
-            asset_dict = count_assets_by_type(objects=asset)
-            for key, value in asset_dict.items():
-                key_split = key.split('#')
 
-                asset_widget = QListWidgetItem()
-                asset_widget.setText(f'{value} objecten van het type {key_split[-1]} ingeladen\n')
+        asset_dict = count_assets_by_type(objects=assets)
+        for key, value in asset_dict.items():
+            key_split = key.split('#')
 
-                total_assets += value
+            asset_widget = QListWidgetItem()
+            asset_widget.setText(f'{value} objecten van het type {key_split[-1]} ingeladen\n')
 
-                self.asset_info.addItem(asset_widget)
+            total_assets += value
+
+            self.asset_info.addItem(asset_widget)
 
         asset_widget = QListWidgetItem()
         asset_widget.setText(

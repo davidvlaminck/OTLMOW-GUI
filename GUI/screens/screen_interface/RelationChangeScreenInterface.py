@@ -59,3 +59,9 @@ class RelationChangeScreenInterface(Screen):
 
     def clear_possible_relation_elements(self):
         pass
+
+    def get_current_object_list_content_dict(self) -> dict[str, list]:
+        pass
+
+    def set_selected_object(self, identificator: str):
+        pass

@@ -25,6 +25,9 @@ from Domain.enums import FileState
 from Domain.ProgramFileStructure import ProgramFileStructure
 from Exceptions.ExcelFileUnavailableError import ExcelFileUnavailableError
 from GUI.dialog_windows.LoadingImageWindow import add_loading_screen
+from GUI.dialog_windows.NotificationWindow import NotificationWindow
+from GUI.dialog_windows.YesOrNoNotificationWindow import YesOrNoNotificationWindow
+from GUI.translation.GlobalTranslate import GlobalTranslate
 
 
 class Project:
@@ -433,9 +436,26 @@ class Project:
             if not self.get_saved_projectfiles():
                 self.load_saved_document_filenames()
 
+            # tell the user there are files missing
+            missing_project_files = self.check_if_project_files_exist()
+            if len(missing_project_files):
+                message = GlobalTranslate._(
+                    "There are files missing that belong to this project:\n")
+                for project_file in missing_project_files:
+                    filename = project_file.file_path.name
+                    message += f"   -{filename}\n"
+
+                message += GlobalTranslate._("Do you still want to export?")
+                msgbox = YesOrNoNotificationWindow(message=message, title=GlobalTranslate._("Missing project files"))
+                answer = msgbox.exec()
+
+                if answer == 65536:
+                    return
+
             for document in self.get_saved_projectfiles():
-                file_zip_path = Path(self.project_files_foldername) / document.file_path.name
-                project_zip.write(document.file_path, arcname=file_zip_path)
+                if document.file_path.exists():
+                    file_zip_path = Path(self.project_files_foldername) / document.file_path.name
+                    project_zip.write(document.file_path, arcname=file_zip_path)
 
             last_quick_save_path = self.get_last_quick_save_path()
             if last_quick_save_path and last_quick_save_path.exists():
@@ -648,6 +668,8 @@ class Project:
                 # if document was validated but there is no quicksave then set it to warning
                 state = FileState(document['state'])
                 quick_save_path = self.get_quicksaves_dir_path()
+                document_file_path = location_dir / Path(document['file_path']).name
+
                 if (state == FileState.OK and
                     not (quick_save_path.exists() and
                      len(list(os.listdir(path=quick_save_path))))):
@@ -662,6 +684,17 @@ class Project:
                 f"Loading saved documents: {self.project_path.name}/{Project.saved_documents_filename}",
                 extra={"timing_ref": f"load_quicksave_{self.project_path.name}"})
         return self
+
+    def check_if_project_files_exist(self) -> list[ProjectFile]:
+        missing_project_files = []
+        for project_file in self.get_saved_projectfiles():
+            if not project_file.file_path.exists():
+                OTLLogger.logger.info(f'project "{self.eigen_referentie}" is missing file: {project_file.file_path}')
+                missing_project_files.append(project_file)
+                project_file.state = FileState.ERROR
+
+
+        return missing_project_files
 
     def get_quicksaves_dir_path(self) -> Path:
         """
@@ -839,10 +872,26 @@ class Project:
         if isinstance(file_path,str):
             file_path = Path(file_path)
 
+        if self.has_duplicate_filename(filename=file_path.name,
+                                       project_files_list=self.saved_project_files):
+            return
+
         end_location = self.make_copy_of_added_file(filepath=file_path)
         self.saved_project_files.append(ProjectFile(file_path=end_location, state=state))
         self.save_project_filepaths_to_file()
 
+    def has_duplicate_filename(self, filename: str, project_files_list: list[ProjectFile]) -> bool:
+        file_names_in_project = [project_file.file_path.name for project_file in
+                                 project_files_list]
+        has_duplicate = False
+        if filename in file_names_in_project:
+            message = GlobalTranslate._("Can't insert duplicate filename {0}")
+
+            msgbox = NotificationWindow(message=message.format(filename),
+                                        title=GlobalTranslate._("Duplicate filename"))
+            msgbox.exec()
+            has_duplicate = True
+        return has_duplicate
 
     def make_copy_of_added_file(self, filepath: Path) -> Path:
         """

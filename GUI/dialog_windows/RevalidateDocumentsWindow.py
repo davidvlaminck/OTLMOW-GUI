@@ -2,6 +2,8 @@ import asyncio
 
 from PyQt6.QtWidgets import QDialog, QVBoxLayout, QLabel, QDialogButtonBox
 
+from Domain.step_domain.InsertDataDomain import InsertDataDomain
+
 
 class RevalidateDocumentsWindow:
 
@@ -36,7 +38,11 @@ class RevalidateDocumentsWindow:
         return button_box
 
     def validate_documents_again(self, dialog):
-        event_loop = asyncio.get_event_loop()
-        event_loop.create_task(self.screen.validate_documents())
+        missing_project_files = InsertDataDomain.check_current_project_project_files_existence()
+        if len(missing_project_files):
+            self.screen.show_missing_project_files_notification_window(missing_project_files)
+        else:
+            event_loop = asyncio.get_event_loop()
+            event_loop.create_task(self.screen.validate_documents())
         dialog.close()
 

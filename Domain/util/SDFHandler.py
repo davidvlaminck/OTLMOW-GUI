@@ -6,6 +6,8 @@ import sys
 from pathlib import Path
 from typing import Optional
 
+from PyQt6.QtWidgets import QMessageBox
+from pandas.core.internals.managers import raise_construction_error
 from universalasync import async_to_sync_wraps
 
 from Domain import global_vars
@@ -13,6 +15,7 @@ from Domain.util.Helpers import Helpers
 from Domain.util.XSDCreator import XSDCreator
 from Domain.logger.OTLLogger import OTLLogger
 from Exceptions.FDOToolboxNotInstalledError import FDOToolboxNotInstalledError
+from GUI.dialog_windows.YesOrNoNotificationWindow import YesOrNoNotificationWindow
 
 ROOT_DIR =  Path(Path(__file__).absolute()).parent.parent
 sys.path.insert(0,str(ROOT_DIR.absolute()))# needed for python to import project files
@@ -121,7 +124,7 @@ class SDFHandler:
 
         output_csv_filepath_list = []
 
-        cls._check_if_FDOToolbox_is_installed()
+        cls.check_if_FDOToolbox_is_installed()
         cls._validate_SDF_file(sdf_filepath)
 
         # format the expected output csv files based on the classes in the sdf file
@@ -169,9 +172,29 @@ class SDFHandler:
         return result.stdout.strip(), result.stderr.strip()
 
     @classmethod
-    def _check_if_FDOToolbox_is_installed(cls):
-        if not os.path.exists(global_vars.FDO_toolbox_path_str):
-            raise FDOToolboxNotInstalledError(GlobalTranslate._)
+    def check_if_FDOToolbox_is_installed(cls):
+
+        try:
+            if not os.path.exists(global_vars.FDO_toolbox_path_str):
+                raise FDOToolboxNotInstalledError(GlobalTranslate._)
+        except FDOToolboxNotInstalledError as e:
+            msgbox = YesOrNoNotificationWindow(str(e),
+                                               title=GlobalTranslate._("FDOToolbox not installed"))
+            answer = msgbox.exec()
+            if answer == 16384: # QMessageBox.ButtonRole.YesRole:
+                test_path = Path(os.getcwd()) / Path(
+                    "LatestReleaseMulti\\additional_programs\\FDOToolbox-Release-v1.5.3-x64-Setup.exe")
+
+                if os.path.exists(global_vars.FDO_toolbox_installer_path_str):
+                    OTLLogger.logger.debug(f"go to {global_vars.FDO_toolbox_installer_path_str}")
+                    subprocess.Popen(f'explorer /select,"{global_vars.FDO_toolbox_installer_path_str}"')
+                else:
+                    OTLLogger.logger.debug(f"go to {test_path}")
+                    subprocess.Popen(
+                        f'explorer /select,"{test_path}"')
+
+                raise FDOToolboxNotInstalledError from e
+
 
     @classmethod
     def _convert_XSD_to_SDF(cls, input_xsd_path:Path, output_sdf_path:Path) -> None:
@@ -194,7 +217,7 @@ class SDFHandler:
                                         selected_classes_typeURI_list: Optional[list[str]]=None,
                                         model_directory: Path = None) -> None:
 
-        cls._check_if_FDOToolbox_is_installed()
+        cls.check_if_FDOToolbox_is_installed()
 
         temp_path: Path = Helpers.create_temp_path(path_to_template_file_and_extension=sdf_path)
         temp_path = temp_path.parent / f'{temp_path.name}.xsd'

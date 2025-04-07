@@ -27,7 +27,8 @@ class ExportDataDomain:
 
 
     @classmethod
-    def generate_files(cls, end_file: Path, separate_per_class_csv_option : bool =False,
+    @async_to_sync_wraps
+    async def generate_files(cls, end_file: Path, separate_per_class_csv_option : bool =False,
                        separate_relations_option:bool =False, **kwargs) -> None:
         """
         Generates output files based on the current assets and relations in memory.
@@ -47,7 +48,7 @@ class ExportDataDomain:
         """
         assets_in_memory = sorted(RelationChangeDomain.get_internal_objects(), key=lambda relation1: relation1.typeURI)
         relations_in_memory = sorted(RelationChangeDomain.get_persistent_relations(), key=lambda relation1: relation1.typeURI)
-        cls.export_to_files(assets_in_memory, relations_in_memory, end_file,
+        await cls.export_to_files(assets_in_memory, relations_in_memory, end_file,
                             separate_per_class_csv_option, separate_relations_option, **kwargs)
 
     @classmethod

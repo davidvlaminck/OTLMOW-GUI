@@ -68,15 +68,17 @@ class Settings:
         operating_sys = platform.system()
         language = Language.DUTCH
 
+
         settings_details = {}
-        with open(settings_filepath, 'w+') as json_file:
+        with open(settings_filepath, 'r') as json_file:
             try:
                 settings_details = json.load(json_file)
             except:
                 pass
 
+        with open(settings_filepath, 'w') as json_file:
             if settings_details.__contains__('language'):
-                settings_details['language'] = Language[settings_details['language']]
+                settings_details['language'] = Language[settings_details['language']].name
             else:
                 settings_details['language'] = str(language.name)
 
