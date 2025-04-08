@@ -106,7 +106,10 @@ class MapScreen(Screen):
         self.web_bridge = WebBridge(self.map)
         self.channel.registerObject("webBridge", self.web_bridge)
 
-        self.webView.setHtml(open(map_path).read())
+        with open(map_path, 'r', encoding='utf-8') as f:
+            html_content = f.read()
+        self.webView.setHtml(html_content)
+
         self.webView.page().setWebChannel(self.channel)
 
 
