@@ -15,7 +15,8 @@ from Domain.network.Updater import Updater
 from GUI.dialog_windows.SuggestUpdateWindow import SuggestUpdateWindow
 
 from GUI.header.HeaderBar import HeaderBar
-from GUI.screens.Home_elements.OverviewTable import OverviewTable
+from GUI.screens.Home_elements.OverviewTable import OverviewTable, \
+    LastAddedProjectHighlightDelegate
 
 from GUI.screens.screen_interface.HomeScreenInterface import HomeScreenInterface
 
@@ -56,8 +57,10 @@ class HomeScreen(HomeScreenInterface):
         self.search_input_field = QLineEdit()
         self.search_message = QLabel()
         self.table = OverviewTable(self._)
+        self.table.setItemDelegate(LastAddedProjectHighlightDelegate(self))
         self.header = HeaderBar(language=self._, table=self.table)
 
+        self.last_added_ref = None
 
         self.create_main_content_ui()
         self.setLayout(self.container_home_screen)
@@ -202,6 +205,7 @@ class HomeScreen(HomeScreenInterface):
         self.table.reset_ui(self._)
         self.search_input_field.setPlaceholderText(self._('search_text'))
         self.header.reset_ui(self._)
+        self.last_added_ref = None
         # self.sort_on_last_edit()
 
     def sort_on_last_edit(self):

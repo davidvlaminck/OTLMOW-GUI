@@ -4,12 +4,14 @@ import logging
 from typing import Union, Callable
 import datetime
 import qtawesome as qta
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt, QModelIndex
+from PyQt6.QtGui import QPainter, QBrush
 
-from PyQt6.QtWidgets import QTableWidget, QHeaderView
+from PyQt6.QtWidgets import QTableWidget, QHeaderView, QStyledItemDelegate
 
 from Domain.step_domain.HomeDomain import HomeDomain
 from Domain.project.Project import Project
+from GUI.Styling import Styling
 from GUI.screens.Home_elements.OverviewTableItem import OverviewTableItem
 
 from GUI.screens.general_elements.ButtonWidget import ButtonWidget
@@ -17,6 +19,23 @@ from GUI.dialog_windows.ExportProjectWindow import ExportProjectWindow
 from GUI.dialog_windows.UpsertProjectWindow import UpsertProjectWindow
 from GUI.dialog_windows.RemoveProjectWindow import RemoveProjectWindow
 
+
+class LastAddedProjectHighlightDelegate(QStyledItemDelegate):
+
+    def __init__(self, home_screen_widget):
+
+        super().__init__()
+        self.parent = home_screen_widget
+
+    def paint(self, painter: QPainter, option, index: QModelIndex):
+        painter.save()
+
+        # Apply custom background for specific rows or items
+        if self.parent.table.itemFromIndex(index.siblingAtColumn(0)).text() == self.parent.last_added_ref:
+            painter.fillRect(option.rect, QBrush(Styling.last_added_color))
+
+        painter.restore()
+        super().paint(painter, option, index)
 
 class OverviewTable(QTableWidget):
 

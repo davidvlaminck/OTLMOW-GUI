@@ -250,6 +250,8 @@ class HeaderBar(QFrame):
         if project is None:
             return
         HomeDomain.projects[project.eigen_referentie] = project
+        global_vars.otl_wizard.main_window.home_screen.last_added_ref = project.eigen_referentie
+
         OTLLogger.logger.debug("Projects global")
         for eigen_ref in HomeDomain.projects.keys():
             OTLLogger.logger.debug(eigen_ref)
