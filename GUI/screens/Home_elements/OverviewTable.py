@@ -6,10 +6,11 @@ import datetime
 import qtawesome as qta
 from PyQt6.QtCore import Qt
 
-from PyQt6.QtWidgets import QTableWidget, QHeaderView, QTableWidgetItem
+from PyQt6.QtWidgets import QTableWidget, QHeaderView
 
 from Domain.step_domain.HomeDomain import HomeDomain
 from Domain.project.Project import Project
+from GUI.screens.Home_elements.OverviewTableItem import OverviewTableItem
 
 from GUI.screens.general_elements.ButtonWidget import ButtonWidget
 from GUI.dialog_windows.ExportProjectWindow import ExportProjectWindow
@@ -24,7 +25,7 @@ class OverviewTable(QTableWidget):
         self._ = language_settings
         self.projects: list
         self.main_window = None
-        self.error_widget = QTableWidgetItem()
+        self.error_widget = OverviewTableItem()
         self.projects = None
         self.cellDoubleClicked.connect(self.open_project)
 
@@ -61,6 +62,7 @@ class OverviewTable(QTableWidget):
         # Zorgt ervoor dat de table niet editable is
         self.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
 
+
     def fill_table(self, projects: [Project], search_text: str) -> None:
         """
         Fills the table with project data and applies a filter if necessary.
@@ -77,6 +79,7 @@ class OverviewTable(QTableWidget):
         
         :return: None
         """
+        self.setSortingEnabled(False)
         self.setRowCount(len(projects))
         for row_index, project in enumerate(projects.values()):
             self.add_cell_to_table(row_index, 0, project.eigen_referentie)
@@ -88,7 +91,8 @@ class OverviewTable(QTableWidget):
 
         if search_text:
             self.filter(search_text=search_text)
-
+        self.setSortingEnabled(True)
+        self.activate_initial_sort_on_last_edit()
 
     def add_cell_to_table(self, row: int, column: int, item: Union[str, datetime.datetime]) -> None:
         """Adds a cell to the table at the specified row and column with the given item.
@@ -105,9 +109,9 @@ class OverviewTable(QTableWidget):
            :return: None
            """
         if isinstance(item, datetime.date):
-            list_item = QTableWidgetItem(item.strftime("%d-%m-%Y"))
+            list_item = OverviewTableItem(item.strftime(OverviewTableItem.date_format))
         else:
-            list_item = QTableWidgetItem(str(item))
+            list_item = OverviewTableItem(str(item))
 
         list_item.setToolTip(self._("Double-click to open project"))
         self.setItem(row, column,list_item)
@@ -268,3 +272,7 @@ class OverviewTable(QTableWidget):
 
         first_item_in_row = self.item(row, 0)
         first_item_in_row.setData(1,eigen_referentie)
+
+    def activate_initial_sort_on_last_edit(self):
+        self.sortItems(3,Qt.SortOrder.DescendingOrder)
+

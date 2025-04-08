@@ -57,7 +57,7 @@ class TabWidget(Screen):
     def onClickReturnToHomeScreen(self):
         self.main_window.setCurrentIndex(0)
         global_vars.current_project.clear_model_builder_from_memory()
-
+        self.main_window.home_screen.sort_on_last_edit()
 
     def init_ui(self):
         returnToHomeScreenButton = self.header.header_bar_detail_screen()

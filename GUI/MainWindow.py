@@ -149,3 +149,4 @@ class MainWindow(QStackedWidget):
         self.step_3_tabwidget.stepper_widget.enable_steps()
         self.step4_tabwidget.stepper_widget.enable_steps()
 
+

@@ -16,7 +16,7 @@ from GUI.dialog_windows.SuggestUpdateWindow import SuggestUpdateWindow
 
 from GUI.header.HeaderBar import HeaderBar
 from GUI.screens.Home_elements.OverviewTable import OverviewTable
-from GUI.screens.Screen import Screen
+
 from GUI.screens.screen_interface.HomeScreenInterface import HomeScreenInterface
 
 ROOT_DIR = Path(__file__).parent
@@ -202,3 +202,7 @@ class HomeScreen(HomeScreenInterface):
         self.table.reset_ui(self._)
         self.search_input_field.setPlaceholderText(self._('search_text'))
         self.header.reset_ui(self._)
+        # self.sort_on_last_edit()
+
+    def sort_on_last_edit(self):
+        self.table.activate_initial_sort_on_last_edit()
