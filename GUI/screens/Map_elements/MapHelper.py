@@ -313,7 +313,6 @@ class MapHelper:
         OTLLogger.logger.debug(f"Added markers to map ({marker_count} markers",
                                extra={"timing_ref": "adding_marker_to_map"})
         init_script += cls.get_zoom_to_assets_js_code(map_id=m.get_name(), prev_selected_asset_id=prev_selected_asset_id)
-
         init_script += "});"
 
         # make highlight style when clicked
@@ -341,8 +340,8 @@ class MapHelper:
         html_dir = ROOT_DIR.parent.parent / 'img' / 'html'
         if not html_dir.exists():
             html_dir = HTML_DIR
-        map_path = str((html_dir / "folium_map.html").absolute())
-        return map_path
+
+        return str((html_dir / "folium_map.html").absolute())
 
     @classmethod
     def create_folium_map(cls):
@@ -358,12 +357,11 @@ class MapHelper:
             overlay=False,
             control=True
         )
-        m = folium.Map(
+        return folium.Map(
             zoom_start=13,
             location=coordinate,
             tiles=tile
         )
-        return m
 
     @classmethod
     def add_marker(cls, lat, lon, map_id, web_view):
@@ -378,23 +376,10 @@ class MapHelper:
     @classmethod
     def add_projected_marker(cls, coord:str, map_id:str, tooltip_text:str,id:str):
         """Adds a marker dynamically without reloading the map."""
-        # js_code = f'L.marker([{lat}, {lon}]).addTo({self.map_id}).bindPopup("Marker at {lat}, {lon}").openPopup();'
-        """add a polygon sqaure to the map and go to it"""
-        insert = '{color: "red"}'
-        # js_code =f'var polyline = L.polygon([[{lat}, {lon}],[{lat+1}, {lon}],[{lat+1}, {lon+1}],[{lat}, {lon+1}]],{insert} ).addTo(eval({self.map_id}));\neval({self.map_id}).fitBounds(polyline.getBounds());'
-
 
         js_code = (f"var split = '{coord}'.split(' ');\n"
             "var point = L.CRS.EPSG3857.unproject(L.point([parseFloat(split[0]), parseFloat(split[1])] ));\n"
                    f"drawPoint(point.lat,point.lng,'{map_id}','{tooltip_text}','{id}');\n")
-
-
-
-        # js_code += ("  if (window.pywebchannel) {\n"
-        #         "window.pywebchannel.receive_coordinates(JSON.stringify({lat: point.lat, lng: point.lng}));\n"
-        #     "} else {\n"
-        #             " console.log('QWebChannel is not initialized yet.');\n"
-        #     "}\n")
 
         cls.added_layer_asset_id_list.append(id)
 
@@ -403,10 +388,6 @@ class MapHelper:
     @classmethod
     def add_projected_line(cls, coord_pair: str, map_id: str, tooltip_text: str, id: str):
         """Adds a marker dynamically without reloading the map."""
-        # js_code = f'L.marker([{lat}, {lon}]).addTo({self.map_id}).bindPopup("Marker at {lat}, {lon}").openPopup();'
-        """add a polygon sqaure to the map and go to it"""
-        insert = '{color: "red"}'
-        # js_code =f'var polyline = L.polygon([[{lat}, {lon}],[{lat+1}, {lon}],[{lat+1}, {lon+1}],[{lat}, {lon+1}]],{insert} ).addTo(eval({self.map_id}));\neval({self.map_id}).fitBounds(polyline.getBounds());'
 
         js_code = (f"var split_pair = {coord_pair}\n"
                    "latlngs = [];\n"
@@ -427,10 +408,6 @@ class MapHelper:
     @classmethod
     def add_projected_polygon(cls, coord_pair: list, map_id: str, tooltip_text: str, id: str):
         """Adds a marker dynamically without reloading the map."""
-        # js_code = f'L.marker([{lat}, {lon}]).addTo({self.map_id}).bindPopup("Marker at {lat}, {lon}").openPopup();'
-        """add a polygon sqaure to the map and go to it"""
-        insert = '{color: "red"}'
-        # js_code =f'var polyline = L.polygon([[{lat}, {lon}],[{lat+1}, {lon}],[{lat+1}, {lon+1}],[{lat}, {lon+1}]],{insert} ).addTo(eval({self.map_id}));\neval({self.map_id}).fitBounds(polyline.getBounds());'
 
         js_code = (f"var polygons = {coord_pair}\n"
                    "for (const  split_pair of polygons) \n"
@@ -456,9 +433,7 @@ class MapHelper:
         js_code = ( f"activateHighlightLayer( '{asset_id}');\n"
                     f"goToLayer('{asset_id}', '{map_id}');\n")
 
-        # OTLLogger.logger.debug(f"activate_highlight_layer_by_id \n {js_code} ")
         web_view.page().runJavaScript(js_code)
-
 
     @classmethod
     def extract_first_level(cls,s):
