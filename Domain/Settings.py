@@ -69,26 +69,23 @@ class Settings:
         language = Language.DUTCH
 
 
-        settings_details = {}
-        with open(settings_filepath, 'r') as json_file:
-            try:
-                settings_details = json.load(json_file)
-            except:
-                pass
+        settings_details = cls.load_settings(settings_filepath)
 
-        with open(settings_filepath, 'w') as json_file:
-            if settings_details.__contains__('language'):
-                settings_details['language'] = Language[settings_details['language']].name
-            else:
-                settings_details['language'] = str(language.name)
+        if not settings_details.__contains__('language'):
+            settings_details['language'] = str(language.name)
 
-            settings_details['OS'] = str(operating_sys)
-            settings_details['first_run'] = first_run
-            settings_details['last_run'] = timestamp
+        settings_details['OS'] = str(operating_sys)
+        settings_details['first_run'] = first_run
+        settings_details['last_run'] = timestamp
 
-            json.dump(settings_details, json_file)
+        cls.save_settings(settings_details, settings_filepath)
 
         return settings_details
+
+    @classmethod
+    def save_settings(cls, settings_details, settings_filepath):
+        with open(settings_filepath, 'w') as json_file:
+            json.dump(settings_details, json_file)
 
     @classmethod
     def change_language_on_settings_file(cls, lang) -> None:
@@ -145,3 +142,11 @@ class Settings:
         with open(settings_file) as json_file:
             settings_details = json.load(json_file)
         return Language[settings_details['language']]
+
+    @classmethod
+    def load_settings(cls,settings_filepath:Path):
+        try:
+            with open(settings_filepath, 'r') as json_file:
+                return json.load(json_file)
+        except (FileNotFoundError, json.JSONDecodeError):
+            return {}

@@ -15,6 +15,7 @@ from Domain.step_domain.InsertDataDomain import InsertDataDomain
 from Domain.step_domain.RelationChangeDomain import RelationChangeDomain
 from Domain.step_domain.TemplateDomain import TemplateDomain
 from GUI.dialog_windows.NotificationWindow import NotificationWindow
+from GUI.dialog_windows.YesOrNoNotificationWindow import YesOrNoNotificationWindow
 from GUI.screens.MapScreen import MapScreen
 from GUI.screens.DataVisualisationScreen import DataVisualisationScreen
 from GUI.screens.ExportDataScreen import ExportDataScreen
@@ -150,3 +151,6 @@ class MainWindow(QStackedWidget):
         self.step4_tabwidget.stepper_widget.enable_steps()
 
 
+    def show_blocking_yes_no_notification_window(self,text,title):
+        msgbox = YesOrNoNotificationWindow(message=text,title=title)
+        return msgbox.exec()

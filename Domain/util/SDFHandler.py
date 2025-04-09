@@ -178,10 +178,16 @@ class SDFHandler:
             if not os.path.exists(global_vars.FDO_toolbox_path_str):
                 raise FDOToolboxNotInstalledError(GlobalTranslate._)
         except FDOToolboxNotInstalledError as e:
-            msgbox = YesOrNoNotificationWindow(str(e),
-                                               title=GlobalTranslate._("FDOToolbox not installed"))
-            answer = msgbox.exec()
-            if answer == 16384: # QMessageBox.ButtonRole.YesRole:
+            #only show the notification window if the GUI MainWindow object exists²
+            if global_vars.otl_wizard and global_vars.otl_wizard.main_window:
+                answer = global_vars.otl_wizard.main_window.show_blocking_yes_no_notification_window(
+                    text=str(e),
+                    title=GlobalTranslate._("FDOToolbox not installed")
+                )
+
+                if answer != 16384: # QMessageBox.ButtonRole.YesRole:
+                    return
+
                 test_path = Path(os.getcwd()) / Path(
                     "LatestReleaseMulti\\additional_programs\\FDOToolbox-Release-v1.5.3-x64-Setup.exe")
 
@@ -193,7 +199,7 @@ class SDFHandler:
                     subprocess.Popen(
                         f'explorer /select,"{test_path}"')
 
-                raise FDOToolboxNotInstalledError from e
+                raise FDOToolboxNotInstalledError(GlobalTranslate._) from e
 
 
     @classmethod
