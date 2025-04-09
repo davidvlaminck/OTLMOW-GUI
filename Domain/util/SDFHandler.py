@@ -178,26 +178,28 @@ class SDFHandler:
             if not os.path.exists(global_vars.FDO_toolbox_path_str):
                 raise FDOToolboxNotInstalledError(GlobalTranslate._)
         except FDOToolboxNotInstalledError as e:
-            #only show the notification window if the GUI MainWindow object exists
+            #only show the notification window if the GUI MainWindow object exists²
             if global_vars.otl_wizard and global_vars.otl_wizard.main_window:
                 answer = global_vars.otl_wizard.main_window.show_blocking_yes_no_notification_window(
                     text=str(e),
                     title=GlobalTranslate._("FDOToolbox not installed")
                 )
 
-                if answer == 16384: # QMessageBox.ButtonRole.YesRole:
-                    test_path = Path(os.getcwd()) / Path(
-                        "LatestReleaseMulti\\additional_programs\\FDOToolbox-Release-v1.5.3-x64-Setup.exe")
+                if answer != 16384: # QMessageBox.ButtonRole.YesRole:
+                    return
 
-                    if os.path.exists(global_vars.FDO_toolbox_installer_path_str):
-                        OTLLogger.logger.debug(f"go to {global_vars.FDO_toolbox_installer_path_str}")
-                        subprocess.Popen(f'explorer /select,"{global_vars.FDO_toolbox_installer_path_str}"')
-                    else:
-                        OTLLogger.logger.debug(f"go to {test_path}")
-                        subprocess.Popen(
-                            f'explorer /select,"{test_path}"')
+                test_path = Path(os.getcwd()) / Path(
+                    "LatestReleaseMulti\\additional_programs\\FDOToolbox-Release-v1.5.3-x64-Setup.exe")
 
-                    raise FDOToolboxNotInstalledError(GlobalTranslate._) from e
+                if os.path.exists(global_vars.FDO_toolbox_installer_path_str):
+                    OTLLogger.logger.debug(f"go to {global_vars.FDO_toolbox_installer_path_str}")
+                    subprocess.Popen(f'explorer /select,"{global_vars.FDO_toolbox_installer_path_str}"')
+                else:
+                    OTLLogger.logger.debug(f"go to {test_path}")
+                    subprocess.Popen(
+                        f'explorer /select,"{test_path}"')
+
+                raise FDOToolboxNotInstalledError(GlobalTranslate._) from e
 
 
     @classmethod

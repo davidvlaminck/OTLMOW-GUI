@@ -40,7 +40,7 @@ class MapHelper:
                                 //drawPoint(lat,lng,map_id,"","");
                                 
 
-                                //console.log(e);
+                                //console.log(e);-
 
                                 //drawing polygons
                                 var lat1 = lat+1;
