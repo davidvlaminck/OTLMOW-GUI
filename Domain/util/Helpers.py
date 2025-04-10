@@ -1,13 +1,19 @@
 import asyncio
+import base64
 import logging
 import os
+import warnings
 from pathlib import Path
 from typing import Optional, Iterable
 import tempfile
 
 from otlmow_converter.Exceptions.ExceptionsGroup import ExceptionsGroup
 from otlmow_converter.OtlmowConverter import OtlmowConverter
-from otlmow_model.OtlmowModel.BaseClasses.OTLObject import OTLObject
+from otlmow_model.OtlmowModel.BaseClasses.OTLObject import OTLObject, \
+    dynamic_create_instance_from_ns_and_name, dynamic_create_instance_from_uri
+from otlmow_model.OtlmowModel.Classes.Agent import Agent
+from otlmow_model.OtlmowModel.Helpers import OTLObjectHelper
+from otlmow_model.OtlmowModel.Helpers.GenericHelper import validate_guid
 from otlmow_model.OtlmowModel.Helpers.generated_lists import get_hardcoded_class_dict
 from packaging.version import Version
 from universalasync import async_to_sync_wraps
@@ -148,3 +154,58 @@ class Helpers:
     @classmethod
     def get_base_temp_dir_path(cls):
         return Path(tempfile.gettempdir()) / 'temp-otlmow'
+
+    @classmethod
+    def extract_typeURI_from_aim_id(cls,aim_id:str,model_directory:Optional[Path]=None) -> Optional[str]:
+        uuid = aim_id[:36]
+        short_uri_encoded = aim_id[37:]
+
+        if not validate_guid(uuid):
+            return None
+        if not short_uri_encoded:
+            return None
+
+        if missing_padding := len(short_uri_encoded) % 4:
+            short_uri_encoded += '=' * (4 - missing_padding)
+
+        short_uri_bytes = base64.b64decode(short_uri_encoded)
+        try:
+            short_uri = short_uri_bytes.decode('ascii')
+        except UnicodeDecodeError:
+            return None
+        try:
+            if short_uri == 'purl:Agent':
+                pre, name = short_uri.split(':')
+                agent = dynamic_create_instance_from_uri(name, model_directory=model_directory)
+                return agent.typeURI
+
+            ns, name = short_uri.split('#')
+            instance:OTLObject = dynamic_create_instance_from_ns_and_name(ns, name,
+                                                                model_directory=model_directory)
+            return instance.typeURI
+        except ModuleNotFoundError:
+            warnings.warn(
+            'Could not import the module for the given aim_id, did you forget the model_directory?',
+            category=ImportWarning)
+            return None
+
+        except ValueError:
+            return None
+
+    @classmethod
+    def extract_corrected_relation_partner_typeURI(cls, partner_type_uri, partner_id,
+                                                   id_to_typeURI_dict, ref_assets) -> Optional[
+        str]:
+        if partner_type_uri is None:
+            if not id_to_typeURI_dict:
+                id_to_typeURI_dict = {RelationChangeHelpers.get_corrected_identificator(asset): asset.typeURI
+                                      for asset in ref_assets}
+
+            if partner_id in id_to_typeURI_dict.keys():
+                partner_type_uri = id_to_typeURI_dict[partner_id]
+
+        # incase there is no asset with the correct assetId in the application
+        if partner_type_uri is None and OTLObjectHelper.is_aim_id(partner_id):
+            partner_type_uri = Helpers.extract_typeURI_from_aim_id(partner_id)
+
+        return partner_type_uri
