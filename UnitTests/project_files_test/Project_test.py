@@ -1032,7 +1032,7 @@ async def test_save_validated_assets_delete_old_files(get_and_cleanup_empty_proj
     quick_save_files = os.listdir(project.get_quicksaves_dir_path())
     assert len(quick_save_files) == 3
 
-    await project.save_validated_assets()
+    await project.save_validated_assets(asynchronous=False)
 
     # quicksave folder should contain
     # 1. strange_name_f
