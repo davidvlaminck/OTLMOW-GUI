@@ -569,13 +569,13 @@ class InsertDataScreen(Screen):
         file_path = str(Path.home())
 
         file_picker = QFileDialog()
-        file_picker.setWindowTitle("Selecteer bestand") # TODO translation
+        file_picker.setWindowTitle(self._("Selecteer bestand"))
         file_picker.setDirectory(file_path)
         file_picker.setFileMode(QFileDialog.FileMode.ExistingFiles)
 
         supported_extensions = [f'*.{value}' for value in global_vars.supported_file_formats.values()]
         supported_extensions_string = ' '.join(supported_extensions)
-        filters = [f'Alle ondersteunde bestanden ({supported_extensions_string})']  # TODO translation
+        filters = [self._('Alle ondersteunde bestanden ({supported_extensions_string})').format(supported_extensions_string=supported_extensions_string)]
 
         filters.extend(f"{k} files (*.{v})" for k, v in global_vars.supported_file_formats.items())
         file_picker.setNameFilter(";;".join(filters))
