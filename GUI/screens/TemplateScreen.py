@@ -929,7 +929,10 @@ class TemplateScreen(TemplateScreenInterface):
         self.all_classes.clear()
         self.all_classes.setEnabled(True)
         self.has_agent = False
-        for value in classes:
+
+        sorted_classes = sorted(classes,key=lambda x : x.name)
+
+        for value in sorted_classes:
             item = QListWidgetItem()
             item.setText(value.name)
             item.setData(1, value.objectUri)
