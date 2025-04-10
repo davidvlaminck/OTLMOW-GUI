@@ -42,7 +42,7 @@ def mock_get_otl_wizard_projects_dir(root_directory):
 @fixture
 def mock_save_validated_assets_function() -> None:
     original_save_validated_assets = Project.save_validated_assets
-    Project.save_validated_assets = Mock()
+    Project.save_validated_assets = AsyncMock()
     yield
     Project.save_validated_assets = original_save_validated_assets
 
@@ -105,11 +105,11 @@ def setup_test_project(root_directory: Path, mock_step3_visuals,mock_get_otl_wiz
 
 @fixture
 def mock_load_validated_assets() -> None:
-    original_load_validated_assets = Project.load_validated_assets
+    original_load_validated_assets = Project.load_validated_assets_async
 
-    Project.load_validated_assets = AsyncMock(return_value=RelationChangeDomain.get_quicksave_instances())
+    Project.load_validated_assets_async = AsyncMock(return_value=RelationChangeDomain.get_quicksave_instances())
     yield
-    Project.load_validated_assets = original_load_validated_assets
+    Project.load_validated_assets_async = original_load_validated_assets
 
 @fixture
 def setup_simpel_vergelijking_template5(root_directory):

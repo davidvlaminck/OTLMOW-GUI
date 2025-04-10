@@ -74,7 +74,7 @@ class Helpers:
             return True
 
     @classmethod
-    async def converter_from_file_to_object(cls,file_path,**kwargs):
+    async def converter_from_file_to_object_async(cls, file_path, **kwargs):
 
         OTLLogger.logger.debug(f"Execute OtlmowConverter.from_file_to_objects({file_path.name})",
                                extra={"timing_ref": f"file_to_objects_{file_path.stem}"})
@@ -89,6 +89,25 @@ class Helpers:
         OTLLogger.logger.debug(f"Execute OtlmowConverter.from_file_to_objects({file_path.name}) ({object_count} objects)",
                                extra={"timing_ref": f"file_to_objects_{file_path.stem}"})
         return object_lists,exception_group
+
+    @classmethod
+    async def converter_from_file_to_object(cls, file_path, **kwargs):
+
+        OTLLogger.logger.debug(f"Execute OtlmowConverter.from_file_to_objects({file_path.name})",
+                               extra={"timing_ref": f"file_to_objects_{file_path.stem}"})
+        exception_group = None
+        try:
+            object_lists = list(
+                OtlmowConverter.from_file_to_objects(file_path, **kwargs))
+        except ExceptionsGroup as group:
+            exception_group = group
+            object_lists = group.objects
+
+        object_count = len(object_lists)
+        OTLLogger.logger.debug(
+            f"Execute OtlmowConverter.from_file_to_objects({file_path.name}) ({object_count} objects)",
+            extra={"timing_ref": f"file_to_objects_{file_path.stem}"})
+        return object_lists, exception_group
 
     @classmethod
     async def start_async_converter_from_object_to_file(cls, file_path: Path,

@@ -617,7 +617,7 @@ async def setup_quicksave_test_project(root_directory,mock_otl_wizard_dir) -> Pr
 @pytest.mark.asyncio
 async def test_load_validated_assets(setup_quicksave_test_project):
     loaded_assets_and_relations:list[Union[RelatieObject, RelationInteractor]] = (
-        await setup_quicksave_test_project.load_validated_assets())
+        await setup_quicksave_test_project.load_validated_assets_async())
 
     print([str(asset) for asset in loaded_assets_and_relations])
 
@@ -935,7 +935,7 @@ async def test_load_validated_assets_with_empty_path(setup_quicksave_test_projec
                                                 mock_get_last_quick_save_path_to_return_empty):
 
     loaded_assets_and_relations:list[Union[RelatieObject, RelationInteractor]] = (
-        await setup_quicksave_test_project.load_validated_assets())
+        await setup_quicksave_test_project.load_validated_assets_async())
 
     assert loaded_assets_and_relations == []
 
@@ -1047,7 +1047,7 @@ async def test_save_validated_assets_delete_old_files(get_and_cleanup_empty_proj
 @fixture
 async def setup_preloaded_assets_in_memory(setup_quicksave_test_project) -> Project:
 
-    setup_quicksave_test_project.assets_in_memory = await setup_quicksave_test_project.load_validated_assets()
+    setup_quicksave_test_project.assets_in_memory = await setup_quicksave_test_project.load_validated_assets_async()
     yield setup_quicksave_test_project
     setup_quicksave_test_project.assets_in_memory = []
 
@@ -1058,12 +1058,12 @@ async def test_save_validated_assets(setup_preloaded_assets_in_memory: Project):
     expected_assets =  deepcopy(setup_preloaded_assets_in_memory.assets_in_memory)
     old_quicksave = deepcopy(setup_preloaded_assets_in_memory.last_quick_save)
 
-    await setup_preloaded_assets_in_memory.save_validated_assets()
+    await setup_preloaded_assets_in_memory.save_validated_assets(asynchronous=False)
 
     # we expect there to be a new last_quick_save
     assert setup_preloaded_assets_in_memory.last_quick_save != old_quicksave
 
-    new_loaded_assets = await setup_preloaded_assets_in_memory.load_validated_assets()
+    new_loaded_assets = await setup_preloaded_assets_in_memory.load_validated_assets_async()
 
     assert new_loaded_assets == expected_assets
 

@@ -99,7 +99,7 @@ class InsertDataDomain:
         try:
             if doc_location_path.suffix in ['.xls', '.xlsx']:
                 temp_path = InsertDataDomain.remove_dropdown_values_from_excel(doc=doc_location_path)
-                assets, exception_group =  await Helpers.converter_from_file_to_object(
+                assets, exception_group =  await Helpers.converter_from_file_to_object_async(
                     file_path=temp_path,include_tab_info=True )
 
             elif doc_location_path.suffix == '.sdf':
@@ -110,7 +110,7 @@ class InsertDataDomain:
                 assets = []
                 sdf_exception_list = []
                 for temp_path in temp_path_list:
-                    assets_subset, exception_group_subset = await Helpers.converter_from_file_to_object(
+                    assets_subset, exception_group_subset = await Helpers.converter_from_file_to_object_async(
                         file_path=Path(temp_path),
                         delimiter=",",
                         include_tab_info=True )
@@ -123,7 +123,7 @@ class InsertDataDomain:
                 for exception in sdf_exception_list:
                     exception_group.add_exception(exception)
             else:
-                assets, exception_group = await Helpers.converter_from_file_to_object(
+                assets, exception_group = await Helpers.converter_from_file_to_object_async(
                     file_path=doc_location_path,include_tab_info=True )
 
             # second checks done by the GUI

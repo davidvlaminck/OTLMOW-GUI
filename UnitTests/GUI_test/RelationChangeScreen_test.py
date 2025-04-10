@@ -62,10 +62,10 @@ def mock_step3_visuals() -> None:
 
 @fixture
 def mock_load_validated_assets() -> None:
-    original_load_validated_assets = Project.load_validated_assets
-    Project.load_validated_assets = AsyncMock()
+    original_load_validated_assets = Project.load_validated_assets_async
+    Project.load_validated_assets_async = AsyncMock()
     yield
-    Project.load_validated_assets = original_load_validated_assets
+    Project.load_validated_assets_async = original_load_validated_assets
 
 
 @pytest.mark.asyncio
@@ -126,7 +126,7 @@ async def test_full_fill_possible_relations_list(qtbot, root_directory: Path,
     # VerkeersOpstelling1
     vopstel1 = objects_lists[0]
 
-    RelationChangeDomain.set_possible_relations(selected_object=vopstel1)
+    await RelationChangeDomain.set_possible_relations(selected_object=vopstel1)
     possible_relations_list = RelationChangeDomain.get_screen().possible_relation_list_gui
 
     child_items = {}
@@ -151,7 +151,7 @@ async def test_full_fill_possible_relations_list(qtbot, root_directory: Path,
 
     # pictogram 1
     pict1 = objects_lists[4]
-    RelationChangeDomain.set_possible_relations(selected_object=pict1)
+    await RelationChangeDomain.set_possible_relations(selected_object=pict1)
 
     child_items = {}
     # child_items['HoortBij'] = ['dummy_C', 'dummy_J', 'dummy_a', 'dummy_s']
@@ -186,7 +186,7 @@ async def test_full_fill_possible_relations_list(qtbot, root_directory: Path,
 
     # funderingsMassief 1
     fund1 = objects_lists[2]
-    RelationChangeDomain.set_possible_relations(selected_object=fund1)
+    await RelationChangeDomain.set_possible_relations(selected_object=fund1)
 
     child_items = {}
     child_items['Bevestiging'] = ['dummy_FNrHuPZCWV', 'dummy_J', 'dummy_Q (extern)', 'dummy_a',
@@ -432,7 +432,7 @@ def test_fill_class_list_double_item_list(qtbot,
 
     local_mock = RelationChangeDomain.set_instances
     RelationChangeDomain.set_instances = AsyncMock()
-    RelationChangeDomain.init_static(mock_project)
+    RelationChangeDomain.init_static(mock_project,asynchronous=False)
     RelationChangeDomain.set_instances = local_mock
 
     RelationChangeDomain.set_instances(test_objects_list)
@@ -521,7 +521,8 @@ async def test_fill_possible_relations_list_with_2_same_name_but_diff_namespace_
 
     local_mock = RelationChangeDomain.set_instances
     RelationChangeDomain.set_instances = AsyncMock()
-    RelationChangeDomain.init_static(mock_project)
+    RelationChangeDomain.init_static(mock_project,asynchronous=False)
+    global_vars.current_project = mock_project
     RelationChangeDomain.set_instances = local_mock
 
     RelationChangeDomain.set_instances(test_objects_list)
@@ -543,7 +544,7 @@ async def test_fill_possible_relations_list_with_2_same_name_but_diff_namespace_
     assert relation_change_screen.possible_relation_list_gui.list_gui.model.item(0).child(
         0, 1).text() == "AnotherTestClass"
 
-    RelationChangeDomain.set_possible_relations(test_object3)
+    await RelationChangeDomain.set_possible_relations(test_object3)
 
     assert relation_change_screen.possible_relation_list_gui.list_gui.model.rowCount() == 1
     assert relation_change_screen.possible_relation_list_gui.list_gui.model.item(

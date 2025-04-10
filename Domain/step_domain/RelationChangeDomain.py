@@ -173,7 +173,7 @@ class RelationChangeDomain:
     map_uptodate = True
 
     @classmethod
-    def init_static(cls, project: Project) -> None:
+    def init_static(cls, project: Project, asynchronous=True) -> None:
         """
         Initializes static resources for the RelationChangeDomain class.
         Call this when the project or project.subset_path changes or everytime you go to the window
@@ -198,13 +198,20 @@ class RelationChangeDomain:
             Helpers.create_external_typeURI_options()
 
         if global_vars.current_project:
-            try:
-                event_loop = asyncio.get_event_loop()
-                event_loop.create_task(cls.load_project_relation_data())
-            except DeprecationWarning:
-                # should only go here if you are testing
-                event_loop = asyncio.get_event_loop()
-                event_loop.create_task(cls.load_project_relation_data())
+            if asynchronous:
+                try:
+                    event_loop = asyncio.get_event_loop()
+                    event_loop.create_task(cls.load_project_relation_data_async())
+                except DeprecationWarning:
+                    # should only go here if you are testing
+                    event_loop = asyncio.get_event_loop()
+                    event_loop.create_task(cls.load_project_relation_data_async())
+            else:
+                try:
+                    cls.load_project_relation_data()
+                except DeprecationWarning:
+                    # should only go here if you are testing
+                    cls.load_project_relation_data()
 
 
     @classmethod
@@ -224,6 +231,29 @@ class RelationChangeDomain:
 
     @classmethod
     @add_loading_screen
+    async def load_project_relation_data_async(cls) -> None:
+        """
+        Loads project relation data asynchronously.
+
+        This method sets the GUI to a loading state while it retrieves and processes
+        project relation data. It populates a dictionary with asset type URIs and
+        updates the user interface accordingly once the data is loaded.
+
+        :param cls: The class itself.
+        :returns: None
+        """
+
+        cls.get_screen().set_gui_lists_to_loading_state()
+
+
+        # throw away old data before loading the new
+        cls.clear_data()
+        gc.collect()
+
+        cls.set_instances(objects_list=await cls.project.load_validated_assets_async())
+        global_vars.otl_wizard.main_window.step3_visuals.reload_html()
+
+    @classmethod
     async def load_project_relation_data(cls) -> None:
         """
         Loads project relation data asynchronously.
@@ -242,7 +272,7 @@ class RelationChangeDomain:
         cls.clear_data()
         gc.collect()
 
-        cls.set_instances(objects_list=await cls.project.load_validated_assets())
+        cls.set_instances(objects_list=cls.project.load_validated_assets())
         global_vars.otl_wizard.main_window.step3_visuals.reload_html()
 
     @classmethod
