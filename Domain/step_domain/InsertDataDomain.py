@@ -439,7 +439,7 @@ class InsertDataDomain:
         id_to_typeURI_dict: Optional[dict[str,str]] = None
         for relation in relations:
 
-            bron_type_uri = cls.extract_corrected_relation_partner_typeURI(
+            bron_type_uri = Helpers.extract_corrected_relation_partner_typeURI(
                 relation.bron.typeURI,
                 relation.bronAssetId.identificator,
                 id_to_typeURI_dict,
@@ -455,7 +455,7 @@ class InsertDataDomain:
                         relation.typeURI, False))
                 exception_group.add_exception(error=ex)
 
-            doel_type_uri = cls.extract_corrected_relation_partner_typeURI(
+            doel_type_uri = Helpers.extract_corrected_relation_partner_typeURI(
                 relation.doel.typeURI,
                 relation.doelAssetId.identificator,
                 id_to_typeURI_dict,
@@ -475,8 +475,8 @@ class InsertDataDomain:
                 # the rest of the check will fail anyway
                 continue
 
-            has_valid_bron_typeURI:bool = bron_type_uri not in Helpers.all_OTL_asset_types_dict.values()
-            if has_valid_bron_typeURI:
+            has_valid_bron_typeURI:bool = InsertDataDomain.does_typeURI_exist(bron_type_uri)
+            if not has_valid_bron_typeURI:
                 ex = RelationHasNonExistingTypeUriForSourceOrTarget(
                     relation_type_uri=relation.typeURI,
                     relation_identificator=relation.assetId.identificator,
@@ -486,8 +486,8 @@ class InsertDataDomain:
                         relation.typeURI,False))
                 exception_group.add_exception(error=ex)
 
-            has_valid_doel_typeURI: bool = doel_type_uri not in Helpers.all_OTL_asset_types_dict.values()
-            if has_valid_doel_typeURI:
+            has_valid_doel_typeURI: bool = InsertDataDomain.does_typeURI_exist(doel_type_uri)
+            if not has_valid_doel_typeURI:
                 ex = RelationHasNonExistingTypeUriForSourceOrTarget(
                     relation_type_uri=relation.typeURI,
                     relation_identificator=relation.assetId.identificator,
@@ -520,15 +520,10 @@ class InsertDataDomain:
                 exception_group.add_exception(error=ex)
 
     @classmethod
-    def extract_corrected_relation_partner_typeURI(cls, partner_type_uri, partner_id, id_to_typeURI_dict, ref_assets):
-        if partner_type_uri is None:
-            if not id_to_typeURI_dict:
-                id_to_typeURI_dict = {asset.assetId.identificator: asset.typeURI
-                                      for asset in ref_assets}
+    def does_typeURI_exist(cls, bron_type_uri):
+        return bron_type_uri in Helpers.all_OTL_asset_types_dict.values()
 
-            if partner_id in id_to_typeURI_dict.keys():
-                partner_type_uri = id_to_typeURI_dict[partner_id]
-        return partner_type_uri
+    
 
     @classmethod
     def raise_wrong_doel_or_target(cls, relation: RelatieObject, tab: str, bron_type_uri,

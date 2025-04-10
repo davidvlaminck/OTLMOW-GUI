@@ -19,6 +19,7 @@ from otlmow_modelbuilder.SQLDataClasses.OSLORelatie import OSLORelatie
 from universalasync import async_to_sync_wraps
 
 from Domain import global_vars
+
 from Domain.util.Helpers import Helpers
 from Domain.logger.OTLLogger import OTLLogger
 from Domain.project.Project import Project
@@ -349,14 +350,21 @@ class RelationChangeDomain:
         """
 
         for relation_object in RelationChangeDomain.get_all_relations():
-            source_id = relation_object.bronAssetId.identificator
+            source_id =  relation_object.bronAssetId.identificator
             target_id = relation_object.doelAssetId.identificator
 
             source_object = RelationChangeDomain.get_object(identificator=source_id)
+            id_to_typeURI_dict: Optional[dict[str, str]] = None
             if not source_object:
                 try:
+                    bron_type_uri = Helpers.extract_corrected_relation_partner_typeURI(
+                        relation_object.bron.typeURI,
+                        relation_object.bronAssetId.identificator,
+                        id_to_typeURI_dict,
+                        RelationChangeDomain.get_shown_objects())
+
                     cls.create_and_add_new_external_asset(id_or_name=source_id,
-                                                          type_uri=relation_object.bron.typeURI)
+                                                          type_uri=bron_type_uri)
                 except ValueError as e:
                     # should there be a wrong typeURI
                     OTLLogger.logger.debug(e)
@@ -364,8 +372,14 @@ class RelationChangeDomain:
             target_object = RelationChangeDomain.get_object(identificator=target_id)
             if not target_object:
                 try:
+                    doel_type_uri = Helpers.extract_corrected_relation_partner_typeURI(
+                        relation_object.doel.typeURI,
+                        relation_object.doelAssetId.identificator,
+                        id_to_typeURI_dict,
+                        RelationChangeDomain.get_shown_objects())
+
                     cls.create_and_add_new_external_asset(id_or_name=target_id,
-                                                          type_uri=relation_object.doel.typeURI)
+                                                          type_uri=doel_type_uri)
                 except ValueError as e:
                     # should there be a wrong typeURI
                     OTLLogger.logger.debug(e)
@@ -1289,3 +1303,7 @@ class RelationChangeDomain:
     def get_map_screen(cls):
         return cls.get_screen().map_window
         # return global_vars.otl_wizard.main_window.step3_map
+
+    @classmethod
+    def get_shown_objects(cls):
+        return cls.shown_objects
