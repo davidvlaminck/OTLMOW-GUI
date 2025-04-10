@@ -569,20 +569,16 @@ class InsertDataScreen(Screen):
         file_path = str(Path.home())
 
         file_picker = QFileDialog()
-        file_picker.setWindowTitle("Selecteer bestand")
+        file_picker.setWindowTitle(self._("Selecteer bestand"))
         file_picker.setDirectory(file_path)
         file_picker.setFileMode(QFileDialog.FileMode.ExistingFiles)
 
-        filters = ""
-        for i, item in enumerate(global_vars.supported_file_formats.items()):
-            keys = item[0]
-            value = item[1]
+        supported_extensions = [f'*.{value}' for value in global_vars.supported_file_formats.values()]
+        supported_extensions_string = ' '.join(supported_extensions)
+        filters = [self._('Alle ondersteunde bestanden ({supported_extensions_string})').format(supported_extensions_string=supported_extensions_string)]
 
-            filters += f"{keys} files (*.{value})"
-            if i < len(global_vars.supported_file_formats) -1:
-                filters += ";;" # the last value cannot have ;; behind it
-
-        file_picker.setNameFilter(filters)
+        filters.extend(f"{k} files (*.{v})" for k, v in global_vars.supported_file_formats.items())
+        file_picker.setNameFilter(";;".join(filters))
 
         if file_picker.exec():
             InsertDataDomain.add_files_to_backend_list(files=file_picker.selectedFiles())
