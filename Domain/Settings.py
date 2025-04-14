@@ -70,11 +70,12 @@ class Settings:
 
 
         settings_details = {}
-        with open(settings_filepath, 'r') as json_file:
-            try:
+
+        try:
+            with open(settings_filepath, 'r') as json_file:
                 settings_details = json.load(json_file)
-            except:
-                pass
+        except:
+            pass
 
         with open(settings_filepath, 'w') as json_file:
             if settings_details.__contains__('language'):
