@@ -1,0 +1,682 @@
+{
+    "type": "FeatureCollection",
+    "features": [
+        {
+            "id": "a7982b45-71af-4124-b659-964870cc4001-aW5zdGFsbGF0aWUjS29rZXJhZnNsdWl0aW5n",
+            "properties": {
+                "toestand": "in-gebruik",
+                "isActief": true,
+                "assetId.identificator": "a7982b45-71af-4124-b659-964870cc4001-aW5zdGFsbGF0aWUjS29rZXJhZnNsdWl0aW5n",
+                "assetId.toegekendDoor": "AWV",
+                "naam": "CRA_BA-TL.TA",
+                "typeURI": "https://wegenenverkeer.data.vlaanderen.be/ns/installatie#Kokerafsluiting"
+            },
+            "type": "Feature",
+            "geometry": {
+                "bbox": [
+                    153135.031,
+                    206524.073,
+                    0.0,
+                    153156.88,
+                    206531.443,
+                    0.0
+                ],
+                "type": "Polygon",
+                "coordinates": [
+                    [
+                        [
+                            153156.422,
+                            206524.073,
+                            0.0
+                        ],
+                        [
+                            153135.031,
+                            206525.804,
+                            0.0
+                        ],
+                        [
+                            153135.484,
+                            206531.443,
+                            0.0
+                        ],
+                        [
+                            153156.88,
+                            206529.508,
+                            0.0
+                        ],
+                        [
+                            153156.422,
+                            206524.073,
+                            0.0
+                        ]
+                    ]
+                ],
+                "crs": {
+                    "properties": {
+                        "name": "EPSG:31370"
+                    },
+                    "type": "name"
+                }
+            }
+        },
+        {
+            "id": "6477ff57-df59-4665-972d-368c5855f055-aW5zdGFsbGF0aWUjU2xhZ2Jvb20",
+            "properties": {
+                "toestand": "in-gebruik",
+                "isActief": true,
+                "assetId.identificator": "6477ff57-df59-4665-972d-368c5855f055-aW5zdGFsbGF0aWUjU2xhZ2Jvb20",
+                "assetId.toegekendDoor": "AWV",
+                "naam": "CRA_BA-EL2.SLAGB",
+                "naampad": "DA-2024-02230-9d9ecc30-0/CRA_BA-EL2.SLAGB",
+                "typeURI": "https://wegenenverkeer.data.vlaanderen.be/ns/installatie#Slagboom"
+            },
+            "type": "Feature",
+            "geometry": {
+                "bbox": [
+                    153145.065,
+                    206527.642,
+                    0.0,
+                    153156.379,
+                    206530.519,
+                    0.0
+                ],
+                "type": "Polygon",
+                "coordinates": [
+                    [
+                        [
+                            153146.158,
+                            206530.515,
+                            0.0
+                        ],
+                        [
+                            153155.473,
+                            206529.638,
+                            0.0
+                        ],
+                        [
+                            153155.559,
+                            206529.626,
+                            0.0
+                        ],
+                        [
+                            153155.644,
+                            206529.606,
+                            0.0
+                        ],
+                        [
+                            153155.727,
+                            206529.58,
+                            0.0
+                        ],
+                        [
+                            153155.807,
+                            206529.546,
+                            0.0
+                        ],
+                        [
+                            153155.885,
+                            206529.505,
+                            0.0
+                        ],
+                        [
+                            153155.958,
+                            206529.458,
+                            0.0
+                        ],
+                        [
+                            153156.027,
+                            206529.404,
+                            0.0
+                        ],
+                        [
+                            153156.091,
+                            206529.345,
+                            0.0
+                        ],
+                        [
+                            153156.149,
+                            206529.28,
+                            0.0
+                        ],
+                        [
+                            153156.202,
+                            206529.21,
+                            0.0
+                        ],
+                        [
+                            153156.248,
+                            206529.137,
+                            0.0
+                        ],
+                        [
+                            153156.288,
+                            206529.059,
+                            0.0
+                        ],
+                        [
+                            153156.321,
+                            206528.978,
+                            0.0
+                        ],
+                        [
+                            153156.346,
+                            206528.895,
+                            0.0
+                        ],
+                        [
+                            153156.365,
+                            206528.809,
+                            0.0
+                        ],
+                        [
+                            153156.376,
+                            206528.723,
+                            0.0
+                        ],
+                        [
+                            153156.379,
+                            206528.636,
+                            0.0
+                        ],
+                        [
+                            153156.374,
+                            206528.549,
+                            0.0
+                        ],
+                        [
+                            153156.362,
+                            206528.462,
+                            0.0
+                        ],
+                        [
+                            153156.343,
+                            206528.377,
+                            0.0
+                        ],
+                        [
+                            153156.316,
+                            206528.294,
+                            0.0
+                        ],
+                        [
+                            153156.282,
+                            206528.214,
+                            0.0
+                        ],
+                        [
+                            153156.242,
+                            206528.137,
+                            0.0
+                        ],
+                        [
+                            153156.194,
+                            206528.063,
+                            0.0
+                        ],
+                        [
+                            153156.141,
+                            206527.994,
+                            0.0
+                        ],
+                        [
+                            153156.081,
+                            206527.93,
+                            0.0
+                        ],
+                        [
+                            153156.017,
+                            206527.872,
+                            0.0
+                        ],
+                        [
+                            153155.947,
+                            206527.819,
+                            0.0
+                        ],
+                        [
+                            153155.873,
+                            206527.773,
+                            0.0
+                        ],
+                        [
+                            153155.795,
+                            206527.733,
+                            0.0
+                        ],
+                        [
+                            153155.715,
+                            206527.7,
+                            0.0
+                        ],
+                        [
+                            153155.631,
+                            206527.675,
+                            0.0
+                        ],
+                        [
+                            153155.546,
+                            206527.656,
+                            0.0
+                        ],
+                        [
+                            153155.459,
+                            206527.646,
+                            0.0
+                        ],
+                        [
+                            153155.372,
+                            206527.642,
+                            0.0
+                        ],
+                        [
+                            153155.285,
+                            206527.647,
+                            0.0
+                        ],
+                        [
+                            153145.971,
+                            206528.524,
+                            0.0
+                        ],
+                        [
+                            153145.884,
+                            206528.536,
+                            0.0
+                        ],
+                        [
+                            153145.799,
+                            206528.555,
+                            0.0
+                        ],
+                        [
+                            153145.716,
+                            206528.582,
+                            0.0
+                        ],
+                        [
+                            153145.636,
+                            206528.616,
+                            0.0
+                        ],
+                        [
+                            153145.559,
+                            206528.657,
+                            0.0
+                        ],
+                        [
+                            153145.486,
+                            206528.704,
+                            0.0
+                        ],
+                        [
+                            153145.417,
+                            206528.758,
+                            0.0
+                        ],
+                        [
+                            153145.353,
+                            206528.817,
+                            0.0
+                        ],
+                        [
+                            153145.294,
+                            206528.882,
+                            0.0
+                        ],
+                        [
+                            153145.242,
+                            206528.951,
+                            0.0
+                        ],
+                        [
+                            153145.195,
+                            206529.025,
+                            0.0
+                        ],
+                        [
+                            153145.156,
+                            206529.103,
+                            0.0
+                        ],
+                        [
+                            153145.123,
+                            206529.184,
+                            0.0
+                        ],
+                        [
+                            153145.097,
+                            206529.267,
+                            0.0
+                        ],
+                        [
+                            153145.079,
+                            206529.352,
+                            0.0
+                        ],
+                        [
+                            153145.068,
+                            206529.439,
+                            0.0
+                        ],
+                        [
+                            153145.065,
+                            206529.526,
+                            0.0
+                        ],
+                        [
+                            153145.069,
+                            206529.613,
+                            0.0
+                        ],
+                        [
+                            153145.081,
+                            206529.7,
+                            0.0
+                        ],
+                        [
+                            153145.1,
+                            206529.785,
+                            0.0
+                        ],
+                        [
+                            153145.127,
+                            206529.868,
+                            0.0
+                        ],
+                        [
+                            153145.161,
+                            206529.948,
+                            0.0
+                        ],
+                        [
+                            153145.202,
+                            206530.025,
+                            0.0
+                        ],
+                        [
+                            153145.249,
+                            206530.098,
+                            0.0
+                        ],
+                        [
+                            153145.303,
+                            206530.167,
+                            0.0
+                        ],
+                        [
+                            153145.362,
+                            206530.231,
+                            0.0
+                        ],
+                        [
+                            153145.427,
+                            206530.29,
+                            0.0
+                        ],
+                        [
+                            153145.497,
+                            206530.342,
+                            0.0
+                        ],
+                        [
+                            153145.57,
+                            206530.389,
+                            0.0
+                        ],
+                        [
+                            153145.648,
+                            206530.429,
+                            0.0
+                        ],
+                        [
+                            153145.729,
+                            206530.461,
+                            0.0
+                        ],
+                        [
+                            153145.812,
+                            206530.487,
+                            0.0
+                        ],
+                        [
+                            153145.898,
+                            206530.505,
+                            0.0
+                        ],
+                        [
+                            153145.984,
+                            206530.516,
+                            0.0
+                        ],
+                        [
+                            153146.071,
+                            206530.519,
+                            0.0
+                        ],
+                        [
+                            153146.158,
+                            206530.515,
+                            0.0
+                        ]
+                    ]
+                ],
+                "crs": {
+                    "properties": {
+                        "name": "EPSG:31370"
+                    },
+                    "type": "name"
+                }
+            }
+        },
+        {
+            "id": "c90adbb3-2c0d-4c74-9c8e-bccfd17d6164-b25kZXJkZWVsI1ZvZXJ0dWlnbGFudGFhcm4",
+            "properties": {
+                "toestand": "in-gebruik",
+                "isActief": true,
+                "assetId.identificator": "c90adbb3-2c0d-4c74-9c8e-bccfd17d6164-b25kZXJkZWVsI1ZvZXJ0dWlnbGFudGFhcm4",
+                "assetId.toegekendDoor": "AWV",
+                "naam": "CRA_TT-BA-TL4.LANTA",
+                "typeURI": "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Voertuiglantaarn"
+            },
+            "type": "Feature",
+            "geometry": {
+                "bbox": [
+                    153150.946,
+                    206524.794,
+                    0.0,
+                    153150.946,
+                    206524.794,
+                    0.0
+                ],
+                "type": "Point",
+                "coordinates": [
+                    153150.946,
+                    206524.794,
+                    0.0
+                ],
+                "crs": {
+                    "properties": {
+                        "name": "EPSG:31370"
+                    },
+                    "type": "name"
+                }
+            }
+        },
+        {
+            "id": "39a02ba7-ce32-4f6d-8873-bda38d2ec23e-b25kZXJkZWVsI0JldmVzdGlnaW5n",
+            "properties": {
+                "bron.typeURI": "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Voertuiglantaarn",
+                "doel.typeURI": "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Seinbrug",
+                "isActief": true,
+                "assetId.identificator": "39a02ba7-ce32-4f6d-8873-bda38d2ec23e-b25kZXJkZWVsI0JldmVzdGlnaW5n",
+                "assetId.toegekendDoor": "AWV",
+                "bronAssetId.identificator": "c90adbb3-2c0d-4c74-9c8e-bccfd17d6164-b25kZXJkZWVsI1ZvZXJ0dWlnbGFudGFhcm4",
+                "bronAssetId.toegekendDoor": "AWV",
+                "doelAssetId.identificator": "1d520967-e479-4778-beed-226a8ae2245f-b25kZXJkZWVsI1NlaW5icnVn",
+                "doelAssetId.toegekendDoor": "AWV",
+                "typeURI": "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Bevestiging"
+            },
+            "type": "Feature"
+        },
+        {
+            "id": "8be72851-92c8-458c-98f3-59e4003099d7-b25kZXJkZWVsI0JldmVzdGlnaW5n",
+            "properties": {
+                "bron.typeURI": "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Voertuiglantaarn",
+                "doel.typeURI": "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Seinbrug",
+                "isActief": false,
+                "assetId.identificator": "8be72851-92c8-458c-98f3-59e4003099d7-b25kZXJkZWVsI0JldmVzdGlnaW5n",
+                "assetId.toegekendDoor": "AWV",
+                "bronAssetId.identificator": "a303e80b-9863-4b47-b0c0-dadb8fc9b651-b25kZXJkZWVsI1ZvZXJ0dWlnbGFudGFhcm4",
+                "bronAssetId.toegekendDoor": "AWV",
+                "doelAssetId.identificator": "1d520967-e479-4778-beed-226a8ae2245f-b25kZXJkZWVsI1NlaW5icnVn",
+                "doelAssetId.toegekendDoor": "AWV",
+                "typeURI": "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Bevestiging"
+            },
+            "type": "Feature"
+        },
+        {
+            "id": "6e35a0be-7bfb-443c-b1da-6e946cc3bd2a-b25kZXJkZWVsI0JldmVzdGlnaW5n",
+            "properties": {
+                "bron.typeURI": "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Voertuiglantaarn",
+                "doel.typeURI": "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Seinbrug",
+                "isActief": false,
+                "assetId.identificator": "6e35a0be-7bfb-443c-b1da-6e946cc3bd2a-b25kZXJkZWVsI0JldmVzdGlnaW5n",
+                "assetId.toegekendDoor": "AWV",
+                "bronAssetId.identificator": "e64e7fcb-d429-4e3d-8651-706297f14ca4-b25kZXJkZWVsI1ZvZXJ0dWlnbGFudGFhcm4",
+                "bronAssetId.toegekendDoor": "AWV",
+                "doelAssetId.identificator": "1d520967-e479-4778-beed-226a8ae2245f-b25kZXJkZWVsI1NlaW5icnVn",
+                "doelAssetId.toegekendDoor": "AWV",
+                "typeURI": "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Bevestiging"
+            },
+            "type": "Feature"
+        },
+        {
+            "id": "ca0db4f6-c7cd-46b1-bfb4-51bb560de28e-b25kZXJkZWVsI0JldmVzdGlnaW5n",
+            "properties": {
+                "bron.typeURI": "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Voertuiglantaarn",
+                "doel.typeURI": "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Seinbrug",
+                "isActief": false,
+                "assetId.identificator": "ca0db4f6-c7cd-46b1-bfb4-51bb560de28e-b25kZXJkZWVsI0JldmVzdGlnaW5n",
+                "assetId.toegekendDoor": "AWV",
+                "bronAssetId.identificator": "f548e924-26b7-4062-99ca-53f4148de684-b25kZXJkZWVsI1ZvZXJ0dWlnbGFudGFhcm4",
+                "bronAssetId.toegekendDoor": "AWV",
+                "doelAssetId.identificator": "1d520967-e479-4778-beed-226a8ae2245f-b25kZXJkZWVsI1NlaW5icnVn",
+                "doelAssetId.toegekendDoor": "AWV",
+                "typeURI": "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Bevestiging"
+            },
+            "type": "Feature"
+        },
+        {
+            "id": "80d1c309-54d9-49ea-8baf-032a3a15d268-b25kZXJkZWVsI0hvb3J0Qmlq",
+            "properties": {
+                "bron.typeURI": "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Slagboomarm",
+                "doel.typeURI": "https://wegenenverkeer.data.vlaanderen.be/ns/installatie#Slagboom",
+                "isActief": true,
+                "assetId.identificator": "80d1c309-54d9-49ea-8baf-032a3a15d268-b25kZXJkZWVsI0hvb3J0Qmlq",
+                "assetId.toegekendDoor": "AWV",
+                "bronAssetId.identificator": "feae1d28-1c75-4a95-ac08-2fefcb777bcb-b25kZXJkZWVsI1NsYWdib29tYXJt",
+                "bronAssetId.toegekendDoor": "AWV",
+                "doelAssetId.identificator": "e0253070-11cc-43ae-b570-1469915e9491-aW5zdGFsbGF0aWUjU2xhZ2Jvb20",
+                "doelAssetId.toegekendDoor": "AWV",
+                "typeURI": "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#HoortBij"
+            },
+            "type": "Feature"
+        },
+        {
+            "id": "01650493-bab2-487a-93bf-2f2e8a84abfe-b25kZXJkZWVsI0hvb3J0Qmlq",
+            "properties": {
+                "bron.typeURI": "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Seinbrug",
+                "doel.typeURI": "https://wegenenverkeer.data.vlaanderen.be/ns/installatie#Kokerafsluiting",
+                "isActief": false,
+                "assetId.identificator": "01650493-bab2-487a-93bf-2f2e8a84abfe-b25kZXJkZWVsI0hvb3J0Qmlq",
+                "assetId.toegekendDoor": "AWV",
+                "bronAssetId.identificator": "1d520967-e479-4778-beed-226a8ae2245f-b25kZXJkZWVsI1NlaW5icnVn",
+                "bronAssetId.toegekendDoor": "AWV",
+                "doelAssetId.identificator": "a7982b45-71af-4124-b659-964870cc4001-aW5zdGFsbGF0aWUjS29rZXJhZnNsdWl0aW5n",
+                "doelAssetId.toegekendDoor": "AWV",
+                "typeURI": "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#HoortBij"
+            },
+            "type": "Feature"
+        },
+        {
+            "id": "2f023f87-77b3-42e2-9fbd-732d5e0bba60-b25kZXJkZWVsI0hvb3J0Qmlq",
+            "properties": {
+                "bron.typeURI": "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Slagboomkolom",
+                "doel.typeURI": "https://wegenenverkeer.data.vlaanderen.be/ns/installatie#Slagboom",
+                "isActief": false,
+                "assetId.identificator": "2f023f87-77b3-42e2-9fbd-732d5e0bba60-b25kZXJkZWVsI0hvb3J0Qmlq",
+                "assetId.toegekendDoor": "AWV",
+                "bronAssetId.identificator": "be0b7bc3-45f8-4db1-8303-ab85714c40c3-b25kZXJkZWVsI1NsYWdib29ta29sb20",
+                "bronAssetId.toegekendDoor": "AWV",
+                "doelAssetId.identificator": "e0253070-11cc-43ae-b570-1469915e9491-aW5zdGFsbGF0aWUjU2xhZ2Jvb20",
+                "doelAssetId.toegekendDoor": "AWV",
+                "typeURI": "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#HoortBij"
+            },
+            "type": "Feature"
+        },
+        {
+            "id": "722dbcfc-1daa-468e-b6dd-59e0b8e1c82a-b25kZXJkZWVsI0hvb3J0Qmlq",
+            "properties": {
+                "bron.typeURI": "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Slagboomarm",
+                "doel.typeURI": "https://wegenenverkeer.data.vlaanderen.be/ns/installatie#Slagboom",
+                "isActief": false,
+                "assetId.identificator": "722dbcfc-1daa-468e-b6dd-59e0b8e1c82a-b25kZXJkZWVsI0hvb3J0Qmlq",
+                "assetId.toegekendDoor": "AWV",
+                "bronAssetId.identificator": "14c0cd27-5aa7-4381-8297-c832cb81ce6a-b25kZXJkZWVsI1NsYWdib29tYXJt",
+                "bronAssetId.toegekendDoor": "AWV",
+                "doelAssetId.identificator": "6477ff57-df59-4665-972d-368c5855f055-aW5zdGFsbGF0aWUjU2xhZ2Jvb20",
+                "doelAssetId.toegekendDoor": "AWV",
+                "typeURI": "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#HoortBij"
+            },
+            "type": "Feature"
+        },
+        {
+            "id": "7bc4d4cc-d00e-493b-bfad-9fbd9851e177-b25kZXJkZWVsI0hvb3J0Qmlq",
+            "properties": {
+                "bron.typeURI": "https://wegenenverkeer.data.vlaanderen.be/ns/installatie#Slagboom",
+                "doel.typeURI": "https://wegenenverkeer.data.vlaanderen.be/ns/installatie#Kokerafsluiting",
+                "isActief": false,
+                "assetId.identificator": "7bc4d4cc-d00e-493b-bfad-9fbd9851e177-b25kZXJkZWVsI0hvb3J0Qmlq",
+                "assetId.toegekendDoor": "AWV",
+                "bronAssetId.identificator": "e0253070-11cc-43ae-b570-1469915e9491-aW5zdGFsbGF0aWUjU2xhZ2Jvb20",
+                "bronAssetId.toegekendDoor": "AWV",
+                "doelAssetId.identificator": "a7982b45-71af-4124-b659-964870cc4001-aW5zdGFsbGF0aWUjS29rZXJhZnNsdWl0aW5n",
+                "doelAssetId.toegekendDoor": "AWV",
+                "typeURI": "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#HoortBij"
+            },
+            "type": "Feature"
+        },
+        {
+            "id": "d74a7d43-59b3-4f56-a06a-1c9ff27da8a0-b25kZXJkZWVsI0hvb3J0Qmlq",
+            "properties": {
+                "bron.typeURI": "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Slagboomkolom",
+                "doel.typeURI": "https://wegenenverkeer.data.vlaanderen.be/ns/installatie#Slagboom",
+                "isActief": false,
+                "assetId.identificator": "d74a7d43-59b3-4f56-a06a-1c9ff27da8a0-b25kZXJkZWVsI0hvb3J0Qmlq",
+                "assetId.toegekendDoor": "AWV",
+                "bronAssetId.identificator": "a57fb703-7a6f-4109-b267-bbd0ee292160-b25kZXJkZWVsI1NsYWdib29ta29sb20",
+                "bronAssetId.toegekendDoor": "AWV",
+                "doelAssetId.identificator": "6477ff57-df59-4665-972d-368c5855f055-aW5zdGFsbGF0aWUjU2xhZ2Jvb20",
+                "doelAssetId.toegekendDoor": "AWV",
+                "typeURI": "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#HoortBij"
+            },
+            "type": "Feature"
+        },
+        {
+            "id": "ea55fa42-f1a5-4898-b2cb-6de0b7f40b86-b25kZXJkZWVsI0hvb3J0Qmlq",
+            "properties": {
+                "bron.typeURI": "https://wegenenverkeer.data.vlaanderen.be/ns/installatie#Slagboom",
+                "doel.typeURI": "https://wegenenverkeer.data.vlaanderen.be/ns/installatie#Kokerafsluiting",
+                "isActief": false,
+                "assetId.identificator": "ea55fa42-f1a5-4898-b2cb-6de0b7f40b86-b25kZXJkZWVsI0hvb3J0Qmlq",
+                "assetId.toegekendDoor": "AWV",
+                "bronAssetId.identificator": "6477ff57-df59-4665-972d-368c5855f055-aW5zdGFsbGF0aWUjU2xhZ2Jvb20",
+                "bronAssetId.toegekendDoor": "AWV",
+                "doelAssetId.identificator": "a7982b45-71af-4124-b659-964870cc4001-aW5zdGFsbGF0aWUjS29rZXJhZnNsdWl0aW5n",
+                "doelAssetId.toegekendDoor": "AWV",
+                "typeURI": "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#HoortBij"
+            },
+            "type": "Feature"
+        }
+    ]
+}
