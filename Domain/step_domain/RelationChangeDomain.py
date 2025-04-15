@@ -301,6 +301,9 @@ class RelationChangeDomain:
 
         for instance in objects_list:
 
+            if "HeeftBetrok" in instance.typeURI:
+                print("here")
+
             if is_relation(instance):
                 # noinspection PyTypeChecker
                 relation_instance: RelatieObject = instance
@@ -311,7 +314,7 @@ class RelationChangeDomain:
                 except Exception:
                     pass
 
-                if is_aim_id or not relation_instance.isActief:
+                if is_aim_id or relation_instance.isActief == False:
                     cls.aim_id_relations.append(relation_instance)
                 else:
                     cls.existing_relations.append(relation_instance)
@@ -1216,7 +1219,7 @@ class RelationChangeDomain:
         """
         
         for relation_instance in cls.aim_id_relations:
-            if relation_instance.isActief:
+            if relation_instance.isActief != False:
                 cls.existing_relations.append(relation_instance)
 
     @classmethod
@@ -1232,7 +1235,7 @@ class RelationChangeDomain:
         """
 
         return [relation_instance for relation_instance in cls.aim_id_relations if
-                not relation_instance.isActief]
+                relation_instance.isActief == False]
 
     @classmethod
     def add_external_objects_to_shown_objects(cls):
