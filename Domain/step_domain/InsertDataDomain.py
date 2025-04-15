@@ -278,9 +278,6 @@ class InsertDataDomain:
 
         cls.get_screen().update_control_button_state()
 
-        if cls.get_screen().asset_info.count():
-            cls.get_screen().clear_feedback()
-
         return all_valid
 
     @classmethod
@@ -298,6 +295,7 @@ class InsertDataDomain:
 
         """
         global_vars.current_project.remove_project_file(Path(item_file_path))
+        cls.get_screen().clear_feedback()
 
         InsertDataDomain.update_frontend()
 
