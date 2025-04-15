@@ -2,8 +2,6 @@ from copy import deepcopy
 from pathlib import Path
 
 from otlmow_model.OtlmowModel.Classes.ImplementatieElement.RelatieObject import RelatieObject
-from universalasync import async_to_sync_wraps
-
 from Domain import global_vars
 from Domain.util.Helpers import Helpers
 from Domain.logger.OTLLogger import OTLLogger
@@ -27,7 +25,6 @@ class ExportDataDomain:
 
 
     @classmethod
-    @async_to_sync_wraps
     async def generate_files(cls, end_file: Path, separate_per_class_csv_option : bool =False,
                        separate_relations_option:bool =False, **kwargs) -> None:
         """
@@ -52,7 +49,6 @@ class ExportDataDomain:
                             separate_per_class_csv_option, separate_relations_option, **kwargs)
 
     @classmethod
-    @async_to_sync_wraps
     async def export_to_files(cls, assets, relations, end_file, separate_per_class_csv_option,
                         separate_relations_option, **kwargs):
         if separate_relations_option:

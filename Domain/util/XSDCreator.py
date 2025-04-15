@@ -17,7 +17,6 @@ from otlmow_model.OtlmowModel.BaseClasses.TimeField import TimeField
 from otlmow_model.OtlmowModel.BaseClasses.URIField import URIField
 from otlmow_model.OtlmowModel.Helpers.OTLObjectHelper import is_relation
 from otlmow_modelbuilder.OSLOCollector import OSLOCollector
-from universalasync import async_to_sync_wraps
 
 
 class XSDCreator:
@@ -25,14 +24,14 @@ class XSDCreator:
     @classmethod
     def create_xsd_from_subset(cls, subset_path: Path, xsd_path: Path,
                                model_directory: Path = None) -> None:
-        cls.create_filtered_xsd_from_subset(subset_path=subset_path, xsd_path=xsd_path,
-                                            selected_classes_typeURI_list=[], model_directory=model_directory)
+        event_loop = asyncio.get_event_loop()
+        event_loop.create_task(cls.create_filtered_xsd_from_subset(subset_path=subset_path, xsd_path=xsd_path,
+                                            selected_classes_typeURI_list=[], model_directory=model_directory))
 
     @classmethod
-    @async_to_sync_wraps
-    async def create_filtered_xsd_from_subset(cls, subset_path: Path, xsd_path: Path,
-                                        selected_classes_typeURI_list: Optional[list[str]]=None,
-                                        model_directory: Path = None) -> None:
+    async def create_filtered_xsd_from_subset(
+            cls, subset_path: Path, xsd_path: Path, selected_classes_typeURI_list: Optional[list[str]]=None,
+            model_directory: Path = None) -> None:
 
         collector = OSLOCollector(subset_path)
         collector.collect_all(include_abstract=True)

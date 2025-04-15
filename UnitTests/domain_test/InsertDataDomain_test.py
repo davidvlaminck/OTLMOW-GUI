@@ -42,7 +42,8 @@ def mock_rel_screen(qtbot: QtBot, create_translations) -> RelationChangeScreen:
     RelationChangeScreen.fill_object_list = original_fill_class_list
     RelationChangeDomain.get_screen = original_get_screen
 
-def test_load_and_validate_document_good_path(mock_screen: InsertDataScreen,
+@pytest.mark.asyncio
+async def test_load_and_validate_document_good_path(mock_screen: InsertDataScreen,
                                               setup_simpel_vergelijking_template5,
                                               root_directory: Path,
                                               setup_test_project,
@@ -70,7 +71,7 @@ def test_load_and_validate_document_good_path(mock_screen: InsertDataScreen,
     assert(global_vars.current_project.saved_project_files[0].file_path == expected_saved_file_path)
     assert(global_vars.current_project.saved_project_files[0].state == FileState.WARNING)
 
-    error_set, objects_lists = InsertDataDomain.load_and_validate_documents()
+    error_set, objects_lists = await InsertDataDomain.load_and_validate_documents()
 
     assert(len(error_set) == 0)
     assert(len(objects_lists) == 12)
@@ -91,7 +92,8 @@ def test_load_and_validate_document_good_path(mock_screen: InsertDataScreen,
     "DA-2025-00023_export_sdf_example",
     # "DA-2024-03992_export_sdf_example"
         ])
-def test_load_and_validate_document_sdf(mock_screen: InsertDataScreen,
+@pytest.mark.asyncio
+async def test_load_and_validate_document_sdf(mock_screen: InsertDataScreen,
                                         get_and_cleanup_empty_project_no_param,
                                         root_directory: Path,
                                         setup_test_project,
@@ -124,7 +126,7 @@ def test_load_and_validate_document_sdf(mock_screen: InsertDataScreen,
     assert(global_vars.current_project.saved_project_files[0].state == FileState.WARNING)
 
     #ACT
-    error_set, objects_lists = InsertDataDomain.load_and_validate_documents()
+    error_set, objects_lists = await InsertDataDomain.load_and_validate_documents()
 
     #TEST
     assert(len(error_set) == 0)

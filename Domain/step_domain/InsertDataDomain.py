@@ -10,7 +10,6 @@ from otlmow_model.OtlmowModel.BaseClasses.RelationInteractor import RelationInte
 from otlmow_model.OtlmowModel.Classes.Agent import Agent
 from otlmow_model.OtlmowModel.Classes.ImplementatieElement.RelatieObject import RelatieObject
 from otlmow_model.OtlmowModel.Helpers import OTLObjectHelper, RelationValidator
-from universalasync import async_to_sync_wraps
 
 from Domain import global_vars
 from Domain.project.ProjectFile import ProjectFile
@@ -78,7 +77,6 @@ class InsertDataDomain:
         cls.update_frontend()
 
     @classmethod
-    @async_to_sync_wraps
     async def check_document(cls, doc_location: Union[str, Path], delimiter: str=";") -> Iterable[OTLObject]:
         """
         Checks a document and converts it into a list of OTL objects.
@@ -101,11 +99,10 @@ class InsertDataDomain:
         try:
             if doc_location_path.suffix in ['.xls', '.xlsx']:
                 temp_path = InsertDataDomain.remove_dropdown_values_from_excel(doc=doc_location_path)
-                assets, exception_group =  await Helpers.converter_from_file_to_object(
+                assets, exception_group =  await Helpers.converter_from_file_to_object_async(
                     file_path=temp_path,include_tab_info=True )
 
             elif doc_location_path.suffix == '.sdf':
-
                 # SDF files will make multiple CSV files, one for each class
                 temp_path_list = InsertDataDomain.create_temporary_SDF_conversion_to_CSV_files(
                     sdf_filepath=doc_location_path)
@@ -113,7 +110,7 @@ class InsertDataDomain:
                 assets = []
                 sdf_exception_list = []
                 for temp_path in temp_path_list:
-                    assets_subset, exception_group_subset = await Helpers.converter_from_file_to_object(
+                    assets_subset, exception_group_subset = await Helpers.converter_from_file_to_object_async(
                         file_path=Path(temp_path),
                         delimiter=",",
                         include_tab_info=True )
@@ -126,7 +123,7 @@ class InsertDataDomain:
                 for exception in sdf_exception_list:
                     exception_group.add_exception(exception)
             else:
-                assets, exception_group = await Helpers.converter_from_file_to_object(
+                assets, exception_group = await Helpers.converter_from_file_to_object_async(
                     file_path=doc_location_path,include_tab_info=True )
 
             # second checks done by the GUI
@@ -281,9 +278,6 @@ class InsertDataDomain:
 
         cls.get_screen().update_control_button_state()
 
-        if cls.get_screen().asset_info.count():
-            cls.get_screen().clear_feedback()
-
         return all_valid
 
     @classmethod
@@ -301,6 +295,7 @@ class InsertDataDomain:
 
         """
         global_vars.current_project.remove_project_file(Path(item_file_path))
+        cls.get_screen().clear_feedback()
 
         InsertDataDomain.update_frontend()
 
@@ -314,7 +309,6 @@ class InsertDataDomain:
 
         return missing_project_files
     @classmethod
-    @async_to_sync_wraps
     @add_loading_screen_no_delay
     @async_save_assets
     async def load_and_validate_documents(cls,**kwargs) -> tuple[list[dict], list]:
@@ -391,6 +385,12 @@ class InsertDataDomain:
         global_vars.current_project.save_project_filepaths_to_file()
         cls.update_frontend()
 
+        if len(error_set):
+            OTLLogger.logger.debug(
+                f"Executing InsertDataDomain.load_and_validate_documents() for project {global_vars.current_project.eigen_referentie} (INVALID)",
+                extra={"timing_ref": f"validate_{global_vars.current_project.eigen_referentie}"})
+            return error_set, []
+
         objects_in_memory = cls.flatten_list(objects_lists=list(assets_per_filepath_str_dict.values()))
         # noinspection PyTypeChecker
         objects_in_memory.extend(cls.flatten_list(objects_lists=list(relations_per_filepath_str_dict.values())))
@@ -400,6 +400,7 @@ class InsertDataDomain:
             objects_in_memory=objects_in_memory)
         RelationChangeDomain.set_instances(objects_list=objects_in_memory)
         global_vars.otl_wizard.main_window.step3_visuals.reload_html()
+
         object_count = len(objects_in_memory)
         OTLLogger.logger.debug(
             f"Executing InsertDataDomain.load_and_validate_documents() for project {global_vars.current_project.eigen_referentie} ({object_count} objects)",
@@ -523,7 +524,7 @@ class InsertDataDomain:
     def does_typeURI_exist(cls, bron_type_uri):
         return bron_type_uri in Helpers.all_OTL_asset_types_dict.values()
 
-    
+
 
     @classmethod
     def raise_wrong_doel_or_target(cls, relation: RelatieObject, tab: str, bron_type_uri,

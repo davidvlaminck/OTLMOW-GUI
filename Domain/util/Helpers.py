@@ -2,10 +2,10 @@ import asyncio
 import base64
 import logging
 import os
+import tempfile
 import warnings
 from pathlib import Path
 from typing import Optional, Iterable
-import tempfile
 
 from otlmow_converter.Exceptions.ExceptionsGroup import ExceptionsGroup
 from otlmow_converter.OtlmowConverter import OtlmowConverter
@@ -16,7 +16,6 @@ from otlmow_model.OtlmowModel.Helpers import OTLObjectHelper
 from otlmow_model.OtlmowModel.Helpers.GenericHelper import validate_guid
 from otlmow_model.OtlmowModel.Helpers.generated_lists import get_hardcoded_class_dict
 from packaging.version import Version
-from universalasync import async_to_sync_wraps
 
 from Domain.logger.OTLLogger import OTLLogger
 from GUI.dialog_windows.LoadingImageWindow import add_loading_screen
@@ -75,15 +74,13 @@ class Helpers:
             return True
 
     @classmethod
-    @async_to_sync_wraps
-    async def converter_from_file_to_object(cls,file_path,**kwargs):
+    async def converter_from_file_to_object_async(cls, file_path, **kwargs):
 
         OTLLogger.logger.debug(f"Execute OtlmowConverter.from_file_to_objects({file_path.name})",
                                extra={"timing_ref": f"file_to_objects_{file_path.stem}"})
         exception_group = None
-        object_count = 0
         try:
-            object_lists = list(await OtlmowConverter.from_file_to_objects(file_path,**kwargs))
+            object_lists = list(await OtlmowConverter.from_file_to_objects_async(file_path,**kwargs))
         except ExceptionsGroup as group:
             exception_group = group
             object_lists = group.objects
@@ -94,26 +91,37 @@ class Helpers:
         return object_lists,exception_group
 
     @classmethod
-    @async_to_sync_wraps
-    async def start_async_converter_from_object_to_file(cls, file_path: Path,
-                                            sequence_of_objects: Iterable[OTLObject],
-                                            synchronous: bool=False,**kwargs) -> None:
+    async def converter_from_file_to_object(cls, file_path, **kwargs):
 
-        if not synchronous:
-            event_loop = asyncio.get_event_loop()
-            event_loop.create_task(Helpers.converter_from_object_to_file(file_path=file_path,sequence_of_objects=sequence_of_objects,**kwargs))
-        else:
-            await Helpers.converter_from_object_to_file(file_path=file_path,
-                                                  sequence_of_objects=sequence_of_objects,
-                                                  **kwargs)
+        OTLLogger.logger.debug(f"Execute OtlmowConverter.from_file_to_objects({file_path.name})",
+                               extra={"timing_ref": f"file_to_objects_{file_path.stem}"})
+        exception_group = None
+        try:
+            object_lists = list(
+                OtlmowConverter.from_file_to_objects(file_path, **kwargs))
+        except ExceptionsGroup as group:
+            exception_group = group
+            object_lists = group.objects
+
+        object_count = len(object_lists)
+        OTLLogger.logger.debug(
+            f"Execute OtlmowConverter.from_file_to_objects({file_path.name}) ({object_count} objects)",
+            extra={"timing_ref": f"file_to_objects_{file_path.stem}"})
+        return object_lists, exception_group
 
     @classmethod
-    @async_to_sync_wraps
+    async def start_async_converter_from_object_to_file(cls, file_path: Path,
+                                            sequence_of_objects: Iterable[OTLObject], **kwargs) -> None:
+        await Helpers.converter_from_object_to_file(file_path=file_path,
+                                              sequence_of_objects=sequence_of_objects,
+                                              **kwargs)
+
+    @classmethod
     @add_loading_screen
     async def converter_from_object_to_file(cls, file_path: Path, sequence_of_objects: Iterable[OTLObject], **kwargs) -> None:
         OTLLogger.logger.debug(f"Execute OtlmowConverter.from_objects_to_file({file_path.name})",
                                extra={"timing_ref": f"sequence_of_objects_{file_path.stem}"})
-        await OtlmowConverter.from_objects_to_file(file_path=file_path,
+        await OtlmowConverter.from_objects_to_file_async(file_path=file_path,
                                              sequence_of_objects=sequence_of_objects,
                                              **kwargs)
         object_count = len(list(sequence_of_objects))

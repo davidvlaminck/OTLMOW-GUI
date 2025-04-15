@@ -15,7 +15,6 @@ from Domain.util.Helpers import Helpers
 from Domain.util.XSDCreator import XSDCreator
 from Domain.logger.OTLLogger import OTLLogger
 from Exceptions.FDOToolboxNotInstalledError import FDOToolboxNotInstalledError
-from GUI.dialog_windows.YesOrNoNotificationWindow import YesOrNoNotificationWindow
 
 ROOT_DIR =  Path(Path(__file__).absolute()).parent.parent
 sys.path.insert(0,str(ROOT_DIR.absolute()))# needed for python to import project files
@@ -218,7 +217,6 @@ class SDFHandler:
             cls._filter_out_coordinate_system_not_installed_error(command, error)
 
     @classmethod
-    @async_to_sync_wraps
     async def create_filtered_SDF_from_subset(cls, subset_path: Path, sdf_path: Path,
                                         selected_classes_typeURI_list: Optional[list[str]]=None,
                                         model_directory: Path = None) -> None:

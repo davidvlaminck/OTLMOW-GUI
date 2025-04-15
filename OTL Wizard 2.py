@@ -99,15 +99,13 @@ class OTLWizard(QApplication):
         # self.demo_project = demo_data()
         self.demo_project = None
 
-
-
-
         if "--test" in argv:
             self.test_setup()
 
     def test_setup(self):
         self.main_window.home_screen.table.open_project(2)
-        InsertDataDomain.load_and_validate_documents()
+        event_loop = asyncio.get_event_loop()
+        event_loop.create_task(InsertDataDomain.load_and_validate_documents())
         self.main_window.setCurrentIndex(3)
         self.main_window.reset_ui(self.main_window._)
         self.main_window.step_3_tabwidget.tabs.setCurrentWidget(self.main_window.step3_relations)

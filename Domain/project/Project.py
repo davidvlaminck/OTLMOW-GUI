@@ -14,8 +14,6 @@ from otlmow_model.OtlmowModel.BaseClasses.RelationInteractor import RelationInte
 from otlmow_model.OtlmowModel.Classes.ImplementatieElement.AIMObject import AIMObject
 from otlmow_model.OtlmowModel.Classes.ImplementatieElement.RelatieObject import RelatieObject
 
-from universalasync import async_to_sync_wraps
-
 from Domain import global_vars
 from Domain.util.Helpers import Helpers
 from Domain.database.ModelBuilder import ModelBuilder
@@ -230,9 +228,8 @@ class Project:
         with open(project_dir_path / self.project_details_filename, "w") as project_details_file:
             json.dump(project_details_dict, project_details_file)
 
-    @async_to_sync_wraps
     @add_loading_screen
-    async def load_validated_assets(self) -> list[Union[RelatieObject, RelationInteractor]]:
+    async def load_validated_assets_async(self) -> list[Union[RelatieObject, RelationInteractor]]:
         # sourcery skip: assign-if-exp, reintroduce-else, use-named-expression
         """
         Loads validated assets from the most recent quick save file.
@@ -260,7 +257,7 @@ class Project:
                 extra={"timing_ref": timing_ref})
 
             # noinspection PyTypeChecker
-            saved_objects, exceptions_group = await Helpers.converter_from_file_to_object(path)
+            saved_objects, exceptions_group = await Helpers.converter_from_file_to_object_async(path)
 
             object_count = len(saved_objects)
             OTLLogger.logger.debug(
@@ -271,7 +268,8 @@ class Project:
             return saved_objects
         return []
 
-    def sync_load_validated_assets(self) -> list[Union[RelatieObject, RelationInteractor]]:
+
+    def load_validated_assets(self) -> list[Union[RelatieObject, RelationInteractor]]:
         # sourcery skip: assign-if-exp, reintroduce-else, use-named-expression
         """
         Loads validated assets from the most recent quick save file.
@@ -299,7 +297,8 @@ class Project:
                 extra={"timing_ref": timing_ref})
 
             # noinspection PyTypeChecker
-            saved_objects, exceptions_group = Helpers.converter_from_file_to_object(path)
+            saved_objects, exceptions_group = Helpers.converter_from_file_to_object(
+                path)
 
             object_count = len(saved_objects)
             OTLLogger.logger.debug(
@@ -310,7 +309,7 @@ class Project:
             return saved_objects
         return []
 
-    def save_validated_assets(self, asynchronous = True) -> None:
+    async def save_validated_assets(self, asynchronous=True) -> None:
         """
         Saves validated assets to the project quick save directory.
 
@@ -342,24 +341,37 @@ class Project:
         current_date_str = datetime.datetime.now().strftime(Project.quicksave_date_format)
 
         save_path = self.quick_save_dir_path  / f"quick_save-{current_date_str}.json"
-
         if asynchronous:
             try:
                 event_loop = asyncio.get_event_loop()
-                event_loop.create_task(self.make_quick_save(save_path=save_path))
+                event_loop.create_task(self.make_quick_save_async(save_path=save_path))
             except DeprecationWarning:
                 # should only go here if you are testing
-                self.make_quick_save(save_path=save_path)
+                await self.make_quick_save(save_path=save_path)
         else:
-            self.make_quick_save(save_path=save_path)
+            await self.make_quick_save(save_path=save_path)
 
-    @async_to_sync_wraps
+
+    async def make_quick_save_async(self, save_path: Path) -> None:
+        object_count = len(self.assets_in_memory)
+        OTLLogger.logger.debug(f"Execute Project.make_quick_save({save_path.name}) for project {self.eigen_referentie} ({object_count} objects)", extra={
+            "timing_ref": f"make_quick_save_{save_path.stem}"})
+
+        await OtlmowConverter.from_objects_to_file_async(file_path=save_path,
+                                             sequence_of_objects=self.assets_in_memory)
+        self.last_quick_save = save_path
+        self.save_project_to_dir()
+        OTLLogger.logger.debug(
+            f"Execute Project.make_quick_save({save_path.name}) for project {self.eigen_referentie} ({object_count} objects)",
+            extra={
+                "timing_ref": f"make_quick_save_{save_path.stem}"})
+
     async def make_quick_save(self, save_path: Path) -> None:
         object_count = len(self.assets_in_memory)
         OTLLogger.logger.debug(f"Execute Project.make_quick_save({save_path.name}) for project {self.eigen_referentie} ({object_count} objects)", extra={
             "timing_ref": f"make_quick_save_{save_path.stem}"})
 
-        await OtlmowConverter.from_objects_to_file(file_path=save_path,
+        OtlmowConverter.from_objects_to_file(file_path=save_path,
                                              sequence_of_objects=self.assets_in_memory)
         self.last_quick_save = save_path
         self.save_project_to_dir()
