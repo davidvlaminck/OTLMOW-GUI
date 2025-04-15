@@ -301,9 +301,6 @@ class RelationChangeDomain:
 
         for instance in objects_list:
 
-            if "HeeftBetrok" in instance.typeURI:
-                print("here")
-
             if is_relation(instance):
                 # noinspection PyTypeChecker
                 relation_instance: RelatieObject = instance
