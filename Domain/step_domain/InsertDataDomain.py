@@ -385,6 +385,12 @@ class InsertDataDomain:
         global_vars.current_project.save_project_filepaths_to_file()
         cls.update_frontend()
 
+        if len(error_set):
+            OTLLogger.logger.debug(
+                f"Executing InsertDataDomain.load_and_validate_documents() for project {global_vars.current_project.eigen_referentie} (INVALID)",
+                extra={"timing_ref": f"validate_{global_vars.current_project.eigen_referentie}"})
+            return error_set, []
+
         objects_in_memory = cls.flatten_list(objects_lists=list(assets_per_filepath_str_dict.values()))
         # noinspection PyTypeChecker
         objects_in_memory.extend(cls.flatten_list(objects_lists=list(relations_per_filepath_str_dict.values())))
@@ -394,6 +400,7 @@ class InsertDataDomain:
             objects_in_memory=objects_in_memory)
         RelationChangeDomain.set_instances(objects_list=objects_in_memory)
         global_vars.otl_wizard.main_window.step3_visuals.reload_html()
+
         object_count = len(objects_in_memory)
         OTLLogger.logger.debug(
             f"Executing InsertDataDomain.load_and_validate_documents() for project {global_vars.current_project.eigen_referentie} ({object_count} objects)",
