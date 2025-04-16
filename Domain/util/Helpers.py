@@ -42,10 +42,12 @@ class Helpers:
                 continue
             if uri in get_hardcoded_relation_dict():
                 continue
+
             ns, name = get_ns_and_name_from_uri(uri)
-            screen_name = info['label']
+            screen_name = info['name'] if ns == 'legacy' else info['label']
             if ns is not None:
                 screen_name += f" ({get_titlecase_from_ns(ns)})"
+
             if ns == 'legacy':
                 screen_name = screen_name.replace("(Legacy) (Legacy)", "(Legacy)")
                 buckets_dict['legacy'][screen_name] = uri
