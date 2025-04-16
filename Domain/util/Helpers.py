@@ -80,7 +80,7 @@ class Helpers:
                                extra={"timing_ref": f"file_to_objects_{file_path.stem}"})
         exception_group = None
         try:
-            object_lists = list(await OtlmowConverter.from_file_to_objects_async(file_path,**kwargs))
+            object_lists = list(await OtlmowConverter.from_file_to_objects_async(file_path,allow_non_otl_conform_attributes=False,**kwargs))
         except ExceptionsGroup as group:
             exception_group = group
             object_lists = group.objects
