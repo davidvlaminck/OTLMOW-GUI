@@ -311,7 +311,7 @@ class RelationChangeDomain:
                 except Exception:
                     pass
 
-                if is_aim_id or relation_instance.isActief == False:
+                if is_aim_id or not relation_instance.isActief:
                     cls.aim_id_relations.append(relation_instance)
                 else:
                     cls.existing_relations.append(relation_instance)
