@@ -12,6 +12,7 @@ from Domain.ProgramFileStructure import ProgramFileStructure
 from Domain.step_domain.InsertDataDomain import InsertDataDomain
 from Domain.project.Project import Project
 from Domain.step_domain.RelationChangeDomain import RelationChangeDomain
+from Domain.util.Helpers import Helpers
 
 OTLLogger.logger = Mock()
 global_vars.test_mode=True
@@ -266,3 +267,41 @@ def get_and_cleanup_empty_project(mock_otl_wizard_dir,request):
         project_path2 = ProgramFileStructure.get_otl_wizard_projects_dir() / expected_project_path
         if project_path2.exists():
             shutil.rmtree(project_path2)
+
+@fixture
+def mock_get_hardcoded_class_dict() -> None:
+    original_get_hardcoded_class_dict = Helpers.get_hardcoded_class_dict
+    def mocked_get_hardcoded_class_dict():
+        return {
+            "https://wegenenverkeer.data.vlaanderen.be/ns/installatie#OTLB": {
+                "abstract": False,
+                "name": "OTLB",
+                "label": "OTL B",
+                "deprecated_version": "",
+                "direct_subclasses": []
+            },
+            "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#OTLA": {
+                "abstract": False,
+                "name": "OTLA",
+                "label": "OTL A",
+                "deprecated_version": "",
+                "direct_subclasses": []
+            },
+            "https://lgc:wegenenverkeer.data.vlaanderen.be/ns/installatie#lgcB": {
+                "abstract": False,
+                "name": "lgcB",
+                "label": "B (Legacy)",
+                "deprecated_version": "",
+                "direct_subclasses": []
+            },
+            "https://lgc:wegenenverkeer.data.vlaanderen.be/ns/installatie#lgcA": {
+                "abstract": False,
+                "name": "lgcA",
+                "label": "A (Legacy)",
+                "deprecated_version": "",
+                "direct_subclasses": []
+            }
+        }
+    Project.get_hardcoded_class_dict = mocked_get_hardcoded_class_dict
+    yield
+    Project.save_validated_assets = original_get_hardcoded_class_dict

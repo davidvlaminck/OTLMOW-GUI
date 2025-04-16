@@ -26,8 +26,12 @@ class Helpers:
     all_OTL_asset_types_dict = {}
 
     @classmethod
+    def get_hardcoded_class_dict(cls) -> dict:
+        return get_hardcoded_class_dict()
+
+    @classmethod
     def create_external_typeURI_options(cls):
-        all_type_uris = get_hardcoded_class_dict()
+        all_type_uris = cls.get_hardcoded_class_dict()
         for uri, info in all_type_uris.items():
             abbr_type_uri = RelationChangeHelpers.get_abbreviated_typeURI(uri, add_namespace=True)
             screen_name = info['label']
