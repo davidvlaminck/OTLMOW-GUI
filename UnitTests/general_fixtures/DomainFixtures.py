@@ -271,8 +271,8 @@ def get_and_cleanup_empty_project(mock_otl_wizard_dir,request):
 @fixture
 def mock_get_hardcoded_class_dict() -> None:
     original_get_hardcoded_class_dict = Helpers.get_hardcoded_class_dict
-    def mocked_get_hardcoded_class_dict():
-        return {
+
+    Helpers.get_hardcoded_class_dict = Mock(return_value={
             "https://wegenenverkeer.data.vlaanderen.be/ns/installatie#OTLB": {
                 "abstract": False,
                 "name": "OTLB",
@@ -287,21 +287,27 @@ def mock_get_hardcoded_class_dict() -> None:
                 "deprecated_version": "",
                 "direct_subclasses": []
             },
-            "https://lgc:wegenenverkeer.data.vlaanderen.be/ns/installatie#lgcB": {
+            "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#AbstractClass": {
+                "abstract": True,
+                "name": "AbstractClass",
+                "label": "Abstract Class",
+                "deprecated_version": "",
+                "direct_subclasses": []
+            },
+            "https://lgc.wegenenverkeer.data.vlaanderen.be/ns/installatie#lgcB": {
                 "abstract": False,
                 "name": "lgcB",
                 "label": "B (Legacy)",
                 "deprecated_version": "",
                 "direct_subclasses": []
             },
-            "https://lgc:wegenenverkeer.data.vlaanderen.be/ns/installatie#lgcA": {
+            "https://lgc.wegenenverkeer.data.vlaanderen.be/ns/installatie#lgcA": {
                 "abstract": False,
                 "name": "lgcA",
                 "label": "A (Legacy)",
                 "deprecated_version": "",
                 "direct_subclasses": []
             }
-        }
-    Project.get_hardcoded_class_dict = mocked_get_hardcoded_class_dict
+        })
     yield
-    Project.save_validated_assets = original_get_hardcoded_class_dict
+    Helpers.get_hardcoded_class_dict = original_get_hardcoded_class_dict
