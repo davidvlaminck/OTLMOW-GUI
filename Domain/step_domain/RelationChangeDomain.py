@@ -1,5 +1,6 @@
 import asyncio
 import gc
+from collections import defaultdict
 from copy import deepcopy
 from pathlib import Path
 from typing import Optional, Union, Callable
@@ -25,6 +26,8 @@ from GUI.dialog_windows.LoadingImageWindow import add_loading_screen
 from GUI.screens.RelationChange_elements.RelationChangeHelpers import RelationChangeHelpers
 from GUI.screens.screen_interface.RelationChangeScreenInterface import \
     RelationChangeScreenInterface
+
+from line_profiler_pycharm import profile
 
 ROOT_DIR = Path(__file__).parent.parent
 
@@ -525,6 +528,7 @@ class RelationChangeDomain:
         return {}
 
     @classmethod
+    @profile
     def add_all_possible_relations_between_selected_and_related_objects(
             cls, relation_list: list[OSLORelatie],selected_object: RelationInteractor,
             related_objects: list[RelationInteractor]) -> None:
@@ -547,31 +551,33 @@ class RelationChangeDomain:
         log_typeURI = RelationChangeHelpers.get_abbreviated_typeURI(selected_object.typeURI)
         selected_object_id: str = RelationChangeHelpers.get_corrected_identificator(
             selected_object)
+
+        related_objects_dict = defaultdict(list)
+        for related_object in related_objects:
+            related_objects_dict[related_object.typeURI].append(related_object)
+
         OTLLogger.logger.debug(
             f"Execute RelationChangeDomain.add_all_possible_relations_between_selected_and_related_objects({log_typeURI}) for project {global_vars.current_project.eigen_referentie}",
             extra={"timing_ref": f"add_possible_relations_real_objects"})
         for relation in relation_list:
             if relation.bron_uri == selected_object.typeURI:
-                for related_object in related_objects:
+                for related_object in related_objects_dict[relation.doel_uri]:
                     if cls.get_same_relations_in_list(
                             relation_list=cls.existing_relations, relation_def=relation,
                             selected_object=selected_object, related_object=related_object):
                         continue
-                    if relation.doel_uri == related_object.typeURI:
-                        cls.add_relation_between(relation=relation,selected_object=selected_object,
-                                                 related_object=related_object)
+                    cls.add_relation_between(relation=relation,selected_object=selected_object,
+                                             related_object=related_object)
 
             if relation.doel_uri == selected_object.typeURI:
-                for related_object in related_objects:
+                for related_object in related_objects_dict[relation.bron_uri]:
                     if cls.get_same_relations_in_list(
                             relation_list=cls.existing_relations, relation_def=relation,
                             selected_object=selected_object, related_object=related_object,
                             reverse=True):
                         continue
-
-                    if relation.bron_uri == related_object.typeURI:
-                        cls.add_relation_between(relation=relation,selected_object=selected_object,
-                                                 related_object=related_object, reverse=True)
+                    cls.add_relation_between(relation=relation,selected_object=selected_object,
+                                             related_object=related_object, reverse=True)
 
         relation_count = 0
         if (cls.possible_object_to_object_relations_dict[selected_object_id]):
@@ -581,6 +587,7 @@ class RelationChangeDomain:
         OTLLogger.logger.debug(
             f"Execute RelationChangeDomain.add_all_possible_relations_between_selected_and_related_objects({log_typeURI}) for project {global_vars.current_project.eigen_referentie} ({relation_count} relations)",
             extra={"timing_ref": f"add_possible_relations_real_objects"})
+
     @classmethod
     def add_inactive_relations_to_possible_relations(cls, selected_id: str) -> None:
         """
@@ -625,6 +632,7 @@ class RelationChangeDomain:
         return typeURI in cls.possible_relations_per_class_dict.keys()
 
     @classmethod
+    @profile
     def collect_possible_relations_to_class_types_from(cls, selected_object:RelationInteractor):
         """
         Collects possible relations for a specified selected object based on its type.
@@ -647,8 +655,7 @@ class RelationChangeDomain:
                         selected_object=selected_object))
             else:
                 cls.possible_relations_per_class_dict[selected_object.typeURI] = \
-                    cls.collector.find_all_concrete_relations(objectUri=selected_object.typeURI,
-                                                              allow_duplicates=False)
+                    cls.collector.find_all_concrete_relations(objectUri=selected_object.typeURI, allow_duplicates=False)
         except ValueError as e:
             OTLLogger.logger.debug(e)
             cls.possible_relations_per_class_dict[selected_object.typeURI] = (
@@ -661,6 +668,7 @@ class RelationChangeDomain:
             extra={"timing_ref": f"collect_possible_relations_classes"})
 
     @classmethod
+    @profile
     def get_all_concrete_relation_from_full_model(cls, selected_object:RelationInteractor):
         """
         Retrieves all concrete relations from the full model for a specified selected object.
@@ -689,6 +697,7 @@ class RelationChangeDomain:
 
 
     @classmethod
+    @profile
     def get_same_relations_in_list(cls, relation_list: list[RelatieObject],
                                    relation_def: OSLORelatie,
                                    selected_object: RelationInteractor,
@@ -760,14 +769,15 @@ class RelationChangeDomain:
         related_id:str = RelationChangeHelpers.get_corrected_identificator(related)
         selected_id:str = RelationChangeHelpers.get_corrected_identificator(selected)
 
-        if existing_relation.typeURI == relation_def.objectUri:
-            if relation_def.richting == "Unspecified":
-                return ((existing_source_id == related_id and existing_target_id == selected_id) or
-                        (existing_source_id == selected_id and existing_target_id == related_id))
-            else:
-                return ((existing_source_id == related_id  and existing_target_id == selected_id)
-                        if reverse else
-                        (existing_source_id == selected_id and existing_target_id == related_id))
+        if existing_relation.typeURI != relation_def.objectUri:
+            return False
+        if relation_def.richting == "Unspecified":
+            return ((existing_source_id == related_id and existing_target_id == selected_id) or
+                    (existing_source_id == selected_id and existing_target_id == related_id))
+        else:
+            return ((existing_source_id == related_id  and existing_target_id == selected_id)
+                    if reverse else
+                    (existing_source_id == selected_id and existing_target_id == related_id))
 
     @classmethod
     def add_relation_between(cls, relation: OSLORelatie, selected_object: RelationInteractor,
