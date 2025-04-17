@@ -9,6 +9,8 @@ import qtawesome as qta
 from Domain import global_vars
 from Domain.step_domain.HomeDomain import HomeDomain
 from Exceptions.WrongDatabaseError import WrongDatabaseError
+from GUI.dialog_windows.file_picker_dialog.SubsetLoadFilePickerDialog import \
+    SubsetLoadFilePickerDialog
 
 
 class ChangeSubsetWindow(QDialog):
@@ -131,20 +133,16 @@ class ChangeSubsetWindow(QDialog):
         file_path = global_vars.get_start_dir_subset_selection(
             input_subset_str= input_subset.text())
 
-        file_picker = QFileDialog()
-        file_picker.setWindowTitle("Selecteer subset")
-        file_picker.setDirectory(file_path)
-        file_picker.setNameFilter("Database files (*.db)")
-        file_picker.setOption(QFileDialog.Option.ShowDirsOnly, True)
+        selected_list = SubsetLoadFilePickerDialog.instance.summon(directory=file_path)
+        cls.set_input_line_to_new_subset_path(input_subset, selected_list)
 
-        if file_picker.exec():
-            selected = file_picker.selectedFiles()
+    @classmethod
+    def set_input_line_to_new_subset_path(cls, input_subset:QLineEdit, selected:list[Path]):
+        if not selected:
+            return
 
-
-    def load_subset(self, selected:list[str]):
-        if selected:
-            selected_file:str = selected[0]
-            self.input_subset.setText(selected_file)
-            if selected_file:
-                global_vars.last_subset_selected_dir = os.path.dirname(selected_file)
+        selected_file:Path= selected[0]
+        input_subset.setText(str(selected_file))
+        if selected_file:
+            global_vars.last_subset_selected_dir = selected_file
 
