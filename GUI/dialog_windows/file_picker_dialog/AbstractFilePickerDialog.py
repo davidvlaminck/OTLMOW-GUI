@@ -12,10 +12,10 @@ from Domain import global_vars
 class AbstractFilePickerDialog(QFileDialog):
 
 
-    def __init__(self, language_settings, action_function,title:Optional[str],name_filter:str=None, initial_file_path: Optional[str]=None):
+    def __init__(self, language_settings, title: Optional[str], name_filter: str = None,
+                 initial_file_path: Optional[str] = None):
         super().__init__()
         self._ = language_settings
-        self.action_function = action_function
         self.name_filter = name_filter
 
         self.supported_export_formats: dict = deepcopy(global_vars.supported_file_formats)
@@ -41,18 +41,19 @@ class AbstractFilePickerDialog(QFileDialog):
 
         return ";;".join(filters)
 
-    def summon(self, chosen_file_format: Optional[str]= "", directory: Optional[str]=None):
-        if directory and os.path.exists(directory):
-            self.setDirectory(directory)
+    def summon(self, chosen_file_format: Optional[str]= "", directory: Optional[str|Path]=None):
+        if directory:
+            if isinstance(directory,str):
+                directory = Path(directory)
+
+            if directory.exists():
+                self.setDirectory(str(directory))
 
         if chosen_file_format:
             self.setNameFilter(chosen_file_format)
 
-        self.execute()
+        return self.execute()
 
     @abstractmethod
-    def execute(self):
-       pass
-
-    def set_action_function(self,action_function):
-        self.action_function = action_function
+    def execute(self) -> list[Path]:
+       return []

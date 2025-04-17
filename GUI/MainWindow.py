@@ -16,6 +16,9 @@ from Domain.step_domain.RelationChangeDomain import RelationChangeDomain
 from Domain.step_domain.TemplateDomain import TemplateDomain
 from GUI.dialog_windows.NotificationWindow import NotificationWindow
 from GUI.dialog_windows.YesOrNoNotificationWindow import YesOrNoNotificationWindow
+from GUI.dialog_windows.file_picker_dialog.SubsetLoadFilePickerDialog import \
+    SubsetLoadFilePickerDialog
+
 from GUI.screens.MapScreen import MapScreen
 from GUI.screens.DataVisualisationScreen import DataVisualisationScreen
 from GUI.screens.ExportDataScreen import ExportDataScreen
@@ -65,6 +68,7 @@ class MainWindow(QStackedWidget):
         self.step1.main_window = self
 
         HomeDomain.init_static(self.home_screen)
+        self.subset_picker = SubsetLoadFilePickerDialog(self._)
 
         # dummy translation so the pybabel system doesn't remove them
         self._("template")

@@ -1,14 +1,17 @@
 from copy import deepcopy
+from pathlib import Path
 from typing import Optional
+
+from Domain.logger.OTLLogger import OTLLogger
 from GUI.dialog_windows.file_picker_dialog.AbstractFilePickerDialog import AbstractFilePickerDialog
 
 
 class SaveFilePickerDialog(AbstractFilePickerDialog):
-    def __init__(self, language_settings, action_function,title:Optional[str] = None,name_filter:str=None, initial_file_path: Optional[str]=None,
+    def __init__(self, language_settings,title:Optional[str] = None,name_filter:str=None, initial_file_path: Optional[str]=None,
                  exclude_file_types:list[str]=[]):
 
 
-        super().__init__(language_settings, action_function,title,name_filter, initial_file_path)
+        super().__init__(language_settings, title, name_filter, initial_file_path)
         if not title:
             self.setWindowTitle(self._("Exporteer bestand(en)"))  # standard title for save dialogs
 
@@ -22,7 +25,15 @@ class SaveFilePickerDialog(AbstractFilePickerDialog):
 
     def execute(self):
         save_location = self.getSaveFileName(filter=";;".join(self.nameFilters()))
+        if not save_location:
+            OTLLogger.logger.debug(f"save_file_dialog return: {[]}")
+            return []
+        if not save_location[0]:
+            OTLLogger.logger.debug(f"save_file_dialog return: {[]}")
+            return []
 
-        self.action_function(save_location)
+        OTLLogger.logger.debug(f"save_file_dialog return: {[Path(save_location[0])]}")
+        return [Path(save_location[0])]
+
 
 

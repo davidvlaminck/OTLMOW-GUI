@@ -52,8 +52,8 @@ class OverviewTable(QTableWidget):
         self.projects = None
         self.cellDoubleClicked.connect(self.open_project)
         self.export_project_dialog_window: SaveFilePickerDialog = (
-            ProjectExportFilePickerDialog(self._,action_function=None)#action function is set later
-        )
+            ProjectExportFilePickerDialog(self._))
+
 
 
     def draw_table(self) -> None:
@@ -186,21 +186,21 @@ class OverviewTable(QTableWidget):
 
     def open_export_project_dialog_window(self, project:Project):
 
-        def export_project(save_locations:str):
-            if save_locations:
-                project_path_str=save_locations[0]
-                if not project_path_str:
-                    return
-
-                if not project_path_str.endswith('.otlw'):
-                    project_path_str += '.otlw'
-
-                project_path = Path(project_path_str)
-                project.export_project_to_file(file_path=project_path)
-
         # set the action_function in the dialog with the new project
-        self.export_project_dialog_window.set_action_function(export_project)
-        self.export_project_dialog_window.summon()
+        save_locations = self.export_project_dialog_window.summon()
+        self.export_project(save_locations,project)
+
+    def export_project(self,save_locations: list[Path],project:Project):
+        if not save_locations or not save_locations[0]:
+            return
+        project_path:Path = save_locations[0]
+        if not project_path:
+            return
+
+        if not project_path.suffix == ('.otlw'):
+            project_path = project_path.with_suffix('.otlw')
+
+        project.export_project_to_file(file_path=project_path)
 
     def open_project(self, row) -> None:
         """

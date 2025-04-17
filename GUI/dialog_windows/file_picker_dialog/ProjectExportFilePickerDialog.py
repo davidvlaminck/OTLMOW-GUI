@@ -5,11 +5,11 @@ from GUI.dialog_windows.file_picker_dialog.SaveFilePickerDialog import SaveFileP
 
 class ProjectExportFilePickerDialog(SaveFilePickerDialog):
 
-    def __init__(self, language_settings, action_function, title: Optional[str]=None,
+    def __init__(self, language_settings, title: Optional[str]=None,
                  name_filter: str = None, initial_file_path: Optional[str] = None,
                  exclude_file_types: list[str] = []):
 
-        super().__init__(language_settings, action_function, title, name_filter, initial_file_path,
+        super().__init__(language_settings, title, name_filter, initial_file_path,
                          exclude_file_types)
         if not title:
             self.setWindowTitle(self._("export_OTL_project"))

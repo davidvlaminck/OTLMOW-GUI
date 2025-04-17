@@ -1,17 +1,19 @@
+from pathlib import Path
 from typing import Optional
 
 from PyQt6.QtWidgets import QFileDialog
 
 from Domain import global_vars
+from Domain.logger.OTLLogger import OTLLogger
 from GUI.dialog_windows.file_picker_dialog.AbstractFilePickerDialog import AbstractFilePickerDialog
 
 
 class LoadFilePickerDialog(AbstractFilePickerDialog):
-    def __init__(self, language_settings, action_function,title:Optional[str]= None,name_filter:str=None, initial_file_path: Optional[str]=None):
+    def __init__(self, language_settings,title:Optional[str]= None,name_filter:str=None, initial_file_path: Optional[str]=None):
 
 
 
-        super().__init__(language_settings, action_function,title,name_filter, initial_file_path)
+        super().__init__(language_settings, title, name_filter, initial_file_path)
         self.setFileMode(QFileDialog.FileMode.ExistingFiles)
 
         if not title:
@@ -28,7 +30,12 @@ class LoadFilePickerDialog(AbstractFilePickerDialog):
 
         return ";;".join(filters)
 
-    def execute(self):
+    def execute(self) -> list[Path]:
         if self.exec():
-            self.action_function(self.selectedFiles())
+            res = [Path(selected_path_str) for selected_path_str in self.selectedFiles() if
+             selected_path_str]
+            OTLLogger.logger.debug(f"save_file_dialog return: {res}")
+            return res
+        OTLLogger.logger.debug(f"save_file_dialog return: {[]}")
+        return []
 

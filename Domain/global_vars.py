@@ -19,11 +19,11 @@ last_subset_selected_dir: Optional[Path] = None
 FDO_toolbox_path_str =  'C:\\Program Files\\FDO Toolbox\\FdoCmd.exe'
 FDO_toolbox_installer_path_str =  str(Path(os.getcwd()) / "additional_programs" / "FDOToolbox-Release-v1.5.3-x64-Setup.exe")
 
-def get_start_dir_subset_selection(input_subset_str:str):
+def get_start_dir_subset_selection(input_subset_str:str) -> Optional[str]:
     if input_subset_str:
         file_path = os.path.dirname(input_subset_str)
     elif last_subset_selected_dir:
         file_path = last_subset_selected_dir
     else:
-        file_path = str(Path.home())
+        file_path = None
     return file_path

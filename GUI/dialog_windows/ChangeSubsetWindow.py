@@ -139,7 +139,6 @@ class ChangeSubsetWindow(QDialog):
 
         if file_picker.exec():
             selected = file_picker.selectedFiles()
-      
 
 
     def load_subset(self, selected:list[str]):

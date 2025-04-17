@@ -265,8 +265,7 @@ class TemplateScreen(TemplateScreenInterface):
                                     ),
                                     }
 
-        self.template_export_file_picker = TemplateSaveFilePickerDialog(self._,
-                                                                        action_function=self.save_template)
+        self.template_export_file_picker = TemplateSaveFilePickerDialog(self._)
 
         self.has_agent = False
         # settings checkboxes and counters
@@ -750,40 +749,39 @@ class TemplateScreen(TemplateScreenInterface):
             file_suffix = self.supported_export_formats[chosen_file_format]
             filter_filepicker = f"{chosen_file_format} files (*.{file_suffix})"
 
-            self.template_export_file_picker.summon(chosen_file_format=filter_filepicker)
+            selection_path_list = self.template_export_file_picker.summon(chosen_file_format=filter_filepicker)
+            self.save_template(selection_path_list)
 
-    def save_template(self, document_paths:list[str]):
+    def save_template(self, document_paths:list[Path]):
 
-        if document_paths:
-            document_path_str = document_paths[0]
-            if document_path_str:
+        if not document_paths or not document_paths[0]:
+            return
+        document_path = document_paths[0]
 
-                document_path = Path(document_path_str)
+        checked_radio_button_id = self.radio_button_group.checkedId()
+        if checked_radio_button_id == self.TemplateOptionId.DAVIE_CONFORM:
+            attribute_description = False
+            deprecated_attribute_marker = False
+        else:
+            attribute_description = True
+            deprecated_attribute_marker = True
 
-                checked_radio_button_id = self.radio_button_group.checkedId()
-                if checked_radio_button_id == self.TemplateOptionId.DAVIE_CONFORM:
-                    attribute_description = False
-                    deprecated_attribute_marker = False
-                else:
-                    attribute_description = True
-                    deprecated_attribute_marker = True
+        if self.example_amount_checkbox.isChecked():
+            amount_of_examples = self.amount_of_examples.value()
+        else:
+            amount_of_examples = 0
 
-                if self.example_amount_checkbox.isChecked():
-                    amount_of_examples = self.amount_of_examples.value()
-                else:
-                    amount_of_examples = 0
+        selected_classes = [item.data(1) for item in self.all_classes.selectedItems()]
 
-                selected_classes = [item.data(1) for item in self.all_classes.selectedItems()]
-
-                event_loop = asyncio.get_event_loop()
-                event_loop.create_task(TemplateDomain.async_export_template(
-                    document_path=document_path,
-                    selected_classes=selected_classes,
-                    generate_choice_list=self.add_choice_list.isChecked(),
-                    geometry_column_added=self.add_geometry_attributes.isChecked(),
-                    export_attribute_info=attribute_description,
-                    highlight_deprecated_attributes=deprecated_attribute_marker,
-                    amount_of_examples=amount_of_examples))
+        event_loop = asyncio.get_event_loop()
+        event_loop.create_task(TemplateDomain.async_export_template(
+            document_path=document_path,
+            selected_classes=selected_classes,
+            generate_choice_list=self.add_choice_list.isChecked(),
+            geometry_column_added=self.add_geometry_attributes.isChecked(),
+            export_attribute_info=attribute_description,
+            highlight_deprecated_attributes=deprecated_attribute_marker,
+            amount_of_examples=amount_of_examples))
 
     def update_settings_based_on_filetype(self,filetype:str):
         # if filetype == "Excel":
