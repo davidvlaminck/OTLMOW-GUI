@@ -1,5 +1,6 @@
 import asyncio
 import logging
+from pathlib import Path
 
 from typing import Union, Callable
 import datetime
@@ -12,6 +13,9 @@ from PyQt6.QtWidgets import QTableWidget, QHeaderView, QStyledItemDelegate
 from Domain.step_domain.HomeDomain import HomeDomain
 from Domain.project.Project import Project
 from GUI.Styling import Styling
+from GUI.dialog_windows.file_picker_dialog.ProjectExportFilePickerDialog import \
+    ProjectExportFilePickerDialog
+from GUI.dialog_windows.file_picker_dialog.SaveFilePickerDialog import SaveFilePickerDialog
 from GUI.screens.Home_elements.OverviewTableItem import OverviewTableItem
 
 from GUI.screens.general_elements.ButtonWidget import ButtonWidget
@@ -47,6 +51,9 @@ class OverviewTable(QTableWidget):
         self.error_widget = OverviewTableItem()
         self.projects = None
         self.cellDoubleClicked.connect(self.open_project)
+        self.export_project_dialog_window: SaveFilePickerDialog = (
+            ProjectExportFilePickerDialog(self._,action_function=None)#action function is set later
+        )
 
 
     def draw_table(self) -> None:
@@ -171,11 +178,29 @@ class OverviewTable(QTableWidget):
         share_btn.setIcon(qta.icon("mdi.share"))
         share_btn.setProperty('class', 'alter-button')
         share_btn.clicked.connect(lambda _, input_project=project:
-                                  ExportProjectWindow().export_project_window(project=input_project))
+                                  self.open_export_project_dialog_window(project=input_project))
         
         self.setCellWidget(row, 4, edit_btn)
         self.setCellWidget(row, 5, delete_btn)
         self.setCellWidget(row, 6, share_btn)
+
+    def open_export_project_dialog_window(self, project:Project):
+
+        def export_project(save_locations:str):
+            if save_locations:
+                project_path_str=save_locations[0]
+                if not project_path_str:
+                    return
+
+                if not project_path_str.endswith('.otlw'):
+                    project_path_str += '.otlw'
+
+                project_path = Path(project_path_str)
+                project.export_project_to_file(file_path=project_path)
+
+        # set the action_function in the dialog with the new project
+        self.export_project_dialog_window.set_action_function(export_project)
+        self.export_project_dialog_window.summon()
 
     def open_project(self, row) -> None:
         """

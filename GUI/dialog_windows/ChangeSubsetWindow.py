@@ -112,7 +112,7 @@ class ChangeSubsetWindow(QDialog):
         return button_box
 
     @classmethod
-    def open_file_picker(cls, input_subset) -> None:
+    def open_file_picker(cls, input_subset:QLineEdit) -> None:
         """
         Opens a file picker dialog to select a subset file.
 
@@ -138,8 +138,14 @@ class ChangeSubsetWindow(QDialog):
         file_picker.setOption(QFileDialog.Option.ShowDirsOnly, True)
 
         if file_picker.exec():
-            selected = file_picker.selectedFiles()[0]
-            input_subset.setText(selected)
-            if selected:
-                global_vars.last_subset_selected_dir = os.path.dirname(selected)
+            selected = file_picker.selectedFiles()
+      
+
+
+    def load_subset(self, selected:list[str]):
+        if selected:
+            selected_file:str = selected[0]
+            self.input_subset.setText(selected_file)
+            if selected_file:
+                global_vars.last_subset_selected_dir = os.path.dirname(selected_file)
 
