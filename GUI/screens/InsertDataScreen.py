@@ -25,6 +25,7 @@ from Exceptions.RelationHasInvalidTypeUriForSourceAndTarget import \
 from Exceptions.RelationHasNonExistingTypeUriForSourceOrTarget import \
     RelationHasNonExistingTypeUriForSourceOrTarget
 from GUI.dialog_windows.NotificationWindow import NotificationWindow
+from GUI.dialog_windows.file_picker_dialog.LoadFilePickerDialog import LoadFilePickerDialog
 from GUI.screens.general_elements.ButtonWidget import ButtonWidget
 from GUI.dialog_windows.RemoveProjectFilesWindow import RemoveProjectFilesWindow
 from GUI.dialog_windows.RevalidateDocumentsWindow import RevalidateDocumentsWindow
@@ -66,8 +67,10 @@ class InsertDataScreen(Screen):
     def __init__(self, language_settings=None):
         super().__init__()
         self._ = language_settings
-        self.container_insert_data_screen = QVBoxLayout()
 
+        self.load_file_dialog_window = LoadFilePickerDialog(self._)
+
+        self.container_insert_data_screen = QVBoxLayout()
 
         self.message_icon = QLabel()
         self.message = QLabel()
@@ -566,22 +569,10 @@ class InsertDataScreen(Screen):
             None
         """
 
-        file_path = str(Path.home())
+        selected_file_path_list = self.load_file_dialog_window.summon()
 
-        file_picker = QFileDialog()
-        file_picker.setWindowTitle(self._("Selecteer bestand"))
-        file_picker.setDirectory(file_path)
-        file_picker.setFileMode(QFileDialog.FileMode.ExistingFiles)
-
-        supported_extensions = [f'*.{value}' for value in global_vars.supported_file_formats.values()]
-        supported_extensions_string = ' '.join(supported_extensions)
-        filters = [self._('Alle ondersteunde bestanden ({supported_extensions_string})').format(supported_extensions_string=supported_extensions_string)]
-
-        filters.extend(f"{k} files (*.{v})" for k, v in global_vars.supported_file_formats.items())
-        file_picker.setNameFilter(";;".join(filters))
-
-        if file_picker.exec():
-            InsertDataDomain.add_files_to_backend_list(files=file_picker.selectedFiles())
+        if selected_file_path_list:
+            InsertDataDomain.add_files_to_backend_list(files=selected_file_path_list)
             self.clear_feedback()
 
 

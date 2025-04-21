@@ -37,9 +37,8 @@ class ExportFilteredDataSubDomain:
         cls.original_documents = {}
 
     @classmethod
-    def add_original_documents(cls,paths_str:list[str]):
-        for path_str in paths_str:
-            path = Path(path_str)
+    def add_original_documents(cls,paths:list[Path]):
+        for path in paths:
             filename = path.name
             cls.original_documents[filename] = path
         cls.update_frontend()

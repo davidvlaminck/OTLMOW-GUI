@@ -13,6 +13,8 @@ import qtawesome as qta
 
 from Exceptions.EmptyFieldError import EmptyFieldError
 from Exceptions.WrongDatabaseError import WrongDatabaseError
+from GUI.dialog_windows.file_picker_dialog.SubsetLoadFilePickerDialog import \
+    SubsetLoadFilePickerDialog
 
 
 class UpsertProjectWindow(QDialog):
@@ -201,14 +203,9 @@ class UpsertProjectWindow(QDialog):
 
         file_path = global_vars.get_start_dir_subset_selection(input_subset.text())
 
-        file_picker = QFileDialog()
-        file_picker.setWindowTitle("Selecteer subset")
-        file_picker.setDirectory(file_path)
-        file_picker.setNameFilter("Database files (*.db)")
-        file_picker.setOption(QFileDialog.Option.ShowDirsOnly, True)
-
-        if file_picker.exec():
-            selected = file_picker.selectedFiles()[0]
-            input_subset.setText(selected)
+        selected_path_list = SubsetLoadFilePickerDialog.instance.summon(directory=file_path)
+        if selected_path_list:
+            selected = selected_path_list[0]
+            input_subset.setText(str(selected))
             if selected:
-                global_vars.last_subset_selected_dir = os.path.dirname(selected)
+                global_vars.last_subset_selected_dir = selected
