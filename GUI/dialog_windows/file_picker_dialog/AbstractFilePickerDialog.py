@@ -73,17 +73,12 @@ class AbstractFilePickerDialog(QFileDialog):
         #make sure that loaded files actually have the format that is chosen
         if chosen_file_format and (chosen_file_format in supported_export_formats) and res:
             file_suffix = supported_export_formats[chosen_file_format]
-            for i in range(len(res)):
-                res[i]= res[i].with_suffix(f"")
-
-                OTLLogger.logger.debug(f"removing suffix to test {str( res[i])}")
 
             for i in range(len(res)):
                 res[i] = res[i].with_suffix("")
                 if res[i].suffix != f".{file_suffix}":
                     res[i]= res[i].with_suffix(f".{file_suffix}")
 
-                    OTLLogger.logger.debug(f"add suffix again {str(res[i])}")
         return res
 
     @abstractmethod

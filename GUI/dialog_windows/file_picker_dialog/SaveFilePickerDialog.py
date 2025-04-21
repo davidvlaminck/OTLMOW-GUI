@@ -26,31 +26,21 @@ class SaveFilePickerDialog(AbstractFilePickerDialog):
         self.setAcceptMode(QFileDialog.AcceptSave)
 
 
-    # def execute(self):
-    #     save_location = self.getSaveFileName(filter=";;".join(self.nameFilters()))
-    #     if not save_location:
-    #         OTLLogger.logger.debug(f"save_file_dialog return: {[]}")
-    #         return []
-    #     if not save_location[0]:
-    #         OTLLogger.logger.debug(f"save_file_dialog return: {[]}")
-    #         return []
-    #
-    #     OTLLogger.logger.debug(f"save_file_dialog return: {[Path(save_location[0])]}")
-    #     return [Path(save_location[0])]
-
     def execute(self):
-        if self.exec():
-            save_location = self.selectedFiles()
+        if not self.exec():
+            return[]
 
-            if not save_location:
-                OTLLogger.logger.debug(f"save_file_dialog return: {[]}")
-                return []
-            if not save_location[0]:
-                OTLLogger.logger.debug(f"save_file_dialog return: {[]}")
-                return []
+        save_location = self.selectedFiles()
 
-            OTLLogger.logger.debug(f"save_file_dialog return: {[Path(save_location[0])]}")
-            return [Path(save_location[0])]
-        return []
+        if not save_location:
+            OTLLogger.logger.debug(f"save_file_dialog return: {[]}")
+            return []
+        if not save_location[0]:
+            OTLLogger.logger.debug(f"save_file_dialog return: {[]}")
+            return []
+
+        OTLLogger.logger.debug(f"save_file_dialog return: {[Path(save_location[0])]}")
+        return [Path(save_location[0])]
+
 
 

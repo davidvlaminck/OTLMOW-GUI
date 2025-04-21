@@ -197,7 +197,7 @@ class OverviewTable(QTableWidget):
         if not project_path:
             return
 
-        if not project_path.suffix == ('.otlw'):
+        if project_path.suffix.lower().strip() != ('.otlw'):
             project_path = project_path.with_suffix('.otlw')
 
         project.export_project_to_file(file_path=project_path)
