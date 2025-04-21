@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: jasper.berton@mow.vlaanderen.be\n"
-"POT-Creation-Date: 2025-04-03 17:22+0200\n"
+"POT-Creation-Date: 2025-04-10 10:52+0200\n"
 "PO-Revision-Date: 2023-10-19 13:13+0200\n"
 "Last-Translator: Jasper Berton <jasper.berton@mow.vlaanderen.be>\n"
 "Language: nl_BE\n"
@@ -26,7 +26,7 @@ msgstr "Er zijn bestanden die missen uit dit project:"
 msgid "Do you still want to export?"
 msgstr "Wilt u toch exporteren?"
 
-#: Domain/project/Project.py:449 GUI/screens/InsertDataScreen.py:215
+#: Domain/project/Project.py:449 GUI/screens/InsertDataScreen.py:216
 msgid "Missing project files"
 msgstr "Missende project bestanden"
 
@@ -70,31 +70,31 @@ msgstr ""
 msgid "permission_denied"
 msgstr "Geen toestemming om de file te openen"
 
-#: Domain/util/SDFHandler.py:182
+#: Domain/util/SDFHandler.py:185
 msgid "FDOToolbox not installed"
 msgstr "FDOToolbox niet geïnstalleerd"
 
-#: GUI/MainWindow.py:69
+#: GUI/MainWindow.py:70
 msgid "template"
 msgstr "Aanmaken template"
 
-#: GUI/MainWindow.py:70
+#: GUI/MainWindow.py:71
 msgid "insert_data"
 msgstr "Data inladen"
 
-#: GUI/MainWindow.py:71
+#: GUI/MainWindow.py:72
 msgid "data visuals"
 msgstr "Data visualisatie"
 
-#: GUI/MainWindow.py:72
+#: GUI/MainWindow.py:73
 msgid "data_change"
 msgstr "Data veranderen"
 
-#: GUI/MainWindow.py:73
+#: GUI/MainWindow.py:74
 msgid "relation_change"
 msgstr "Relaties veranderen"
 
-#: GUI/MainWindow.py:74
+#: GUI/MainWindow.py:75
 msgid "export_data"
 msgstr "Data exporteren"
 
@@ -146,8 +146,8 @@ msgstr "Aanpassen subset"
 #: GUI/dialog_windows/ChangeSubsetWindow.py:31
 #: GUI/dialog_windows/UpsertProjectWindow.py:84
 #: GUI/dialog_windows/UpsertProjectWindow.py:87
-#: GUI/screens/Home_elements/OverviewTable.py:50
-#: GUI/screens/Home_elements/OverviewTable.py:249
+#: GUI/screens/Home_elements/OverviewTable.py:70
+#: GUI/screens/Home_elements/OverviewTable.py:272
 #: GUI/screens/TemplateScreen.py:574
 msgid "subset"
 msgstr "Subset"
@@ -201,7 +201,7 @@ msgid "language_option_english"
 msgstr "English"
 
 #: GUI/dialog_windows/MenuActionsWindow.py:13 GUI/header/HeaderBar.py:153
-#: GUI/header/HeaderBar.py:268
+#: GUI/header/HeaderBar.py:270
 msgid "about"
 msgstr "Over..."
 
@@ -306,27 +306,27 @@ msgstr "Nieuw Project"
 
 #: GUI/dialog_windows/UpsertProjectWindow.py:107
 #: GUI/dialog_windows/UpsertProjectWindow.py:109
-#: GUI/screens/Home_elements/OverviewTable.py:50
-#: GUI/screens/Home_elements/OverviewTable.py:249
+#: GUI/screens/Home_elements/OverviewTable.py:70
+#: GUI/screens/Home_elements/OverviewTable.py:272
 msgid "service_order"
 msgstr "Bestek - (dienstbevel)"
 
 #: GUI/dialog_windows/UpsertProjectWindow.py:125
 #: GUI/dialog_windows/UpsertProjectWindow.py:127
-#: GUI/screens/Home_elements/OverviewTable.py:50
-#: GUI/screens/Home_elements/OverviewTable.py:249
+#: GUI/screens/Home_elements/OverviewTable.py:70
+#: GUI/screens/Home_elements/OverviewTable.py:272
 msgid "own_reference"
 msgstr "Eigen referentie"
 
-#: GUI/header/HeaderBar.py:84 GUI/header/HeaderBar.py:263
+#: GUI/header/HeaderBar.py:84 GUI/header/HeaderBar.py:265
 msgid "new_project_button"
 msgstr "Nieuw Project"
 
-#: GUI/header/HeaderBar.py:151 GUI/header/HeaderBar.py:267
+#: GUI/header/HeaderBar.py:151 GUI/header/HeaderBar.py:269
 msgid "help"
 msgstr "Help"
 
-#: GUI/header/HeaderBar.py:155 GUI/header/HeaderBar.py:269
+#: GUI/header/HeaderBar.py:155 GUI/header/HeaderBar.py:271
 msgid "report error"
 msgstr "Rapporteer probleem"
 
@@ -334,15 +334,15 @@ msgstr "Rapporteer probleem"
 msgid "logs"
 msgstr "Logs"
 
-#: GUI/header/HeaderBar.py:199 GUI/header/HeaderBar.py:264
+#: GUI/header/HeaderBar.py:199 GUI/header/HeaderBar.py:266
 msgid "return_to_home_screen"
 msgstr "terug naar startscherm"
 
-#: GUI/header/HeaderBar.py:219 GUI/header/HeaderBar.py:265
+#: GUI/header/HeaderBar.py:219 GUI/header/HeaderBar.py:267
 msgid "save_button"
 msgstr "Bewaar"
 
-#: GUI/header/HeaderBar.py:243 GUI/header/HeaderBar.py:266
+#: GUI/header/HeaderBar.py:243 GUI/header/HeaderBar.py:268
 msgid "import"
 msgstr "Importeren"
 
@@ -375,20 +375,20 @@ msgid "file_for_conversion"
 msgstr "Bestand voor conversie"
 
 #: GUI/screens/DataVisualisationScreen.py:70
-#: GUI/screens/DataVisualisationScreen.py:136 GUI/screens/MapScreen.py:135
-#: GUI/screens/MapScreen.py:178 GUI/screens/MapScreen_test.py:132
+#: GUI/screens/DataVisualisationScreen.py:136 GUI/screens/MapScreen.py:138
+#: GUI/screens/MapScreen.py:181 GUI/screens/MapScreen_test.py:132
 #: GUI/screens/MapScreen_test.py:178
 msgid "relations legend"
 msgstr "Mogelijke relaties"
 
-#: GUI/screens/DataVisualisationScreen.py:120 GUI/screens/MapScreen.py:163
+#: GUI/screens/DataVisualisationScreen.py:120 GUI/screens/MapScreen.py:166
 #: GUI/screens/MapScreen_test.py:162
 msgid "The visualisation is outdated, refresh to see new changes"
 msgstr ""
 "The visualisatie is verouderd, druk refresh om de nieuwe veranderingen te"
 " zien"
 
-#: GUI/screens/DataVisualisationScreen.py:165 GUI/screens/MapScreen.py:223
+#: GUI/screens/DataVisualisationScreen.py:165 GUI/screens/MapScreen.py:226
 #: GUI/screens/MapScreen_test.py:210
 msgid ""
 "There are too many assets and relations to create a visualisation.\n"
@@ -418,25 +418,25 @@ msgstr "Alle data"
 msgid "Without unedited data"
 msgstr "Zonder ongewijzigde data"
 
-#: GUI/screens/HomeScreen.py:167 GUI/screens/HomeScreen.py:203
+#: GUI/screens/HomeScreen.py:170 GUI/screens/HomeScreen.py:206
 msgid "search_text"
 msgstr "Geef een project of bestek in om te zoeken"
 
-#: GUI/screens/InsertDataScreen.py:156 GUI/screens/InsertDataScreen.py:544
+#: GUI/screens/InsertDataScreen.py:157 GUI/screens/InsertDataScreen.py:548
 msgid "control_button"
 msgstr "Valideren"
 
-#: GUI/screens/InsertDataScreen.py:162
+#: GUI/screens/InsertDataScreen.py:163
 msgid "reset_fields"
 msgstr "Reset velden"
 
 #: GUI/screens/ExportData_elements/ExportFilteredDataSubScreen.py:163
 #: GUI/screens/ExportData_elements/ExportFilteredDataSubScreen.py:217
-#: GUI/screens/InsertDataScreen.py:167
+#: GUI/screens/InsertDataScreen.py:168
 msgid "choose_file"
 msgstr "Kies uw bestand..."
 
-#: GUI/screens/InsertDataScreen.py:210
+#: GUI/screens/InsertDataScreen.py:211
 msgid ""
 "There are files missing.\n"
 "Remove these from the list and re-insert them:\n"
@@ -444,24 +444,44 @@ msgstr ""
 "Er missen bestanden in dit project.\n"
 "Verwijder deze bestanden uit de lijst en laad ze terug in:\n"
 
-#: GUI/screens/InsertDataScreen.py:327 GUI/screens/InsertDataScreen.py:543
+#: GUI/screens/InsertDataScreen.py:330 GUI/screens/InsertDataScreen.py:547
 msgid "input_file"
 msgstr "Bestanden inladen:"
 
 #: GUI/screens/ExportData_elements/ExportFilteredDataSubScreen.py:122
-#: GUI/screens/InsertDataScreen.py:471
+#: GUI/screens/InsertDataScreen.py:474
 msgid "all_info_correct"
 msgstr "Alle gegevens zijn OTL-conform"
 
-#: GUI/screens/InsertDataScreen.py:493
+#: GUI/screens/InsertDataScreen.py:496
 msgid "warning"
 msgstr "Waarschuwing"
 
 #: GUI/screens/ExportData_elements/ExportFilteredDataSubScreen.py:133
 #: GUI/screens/ExportData_elements/TableErrorModel.py:11
-#: GUI/screens/InsertDataScreen.py:535
+#: GUI/screens/InsertDataScreen.py:539
 msgid "error"
 msgstr "Error"
+
+#: GUI/screens/InsertDataScreen.py:572
+msgid "Selecteer bestand"
+msgstr "Selecteer bestand"
+
+#: GUI/screens/InsertDataScreen.py:578
+msgid "Alle ondersteunde bestanden ({supported_extensions_string})"
+msgstr "Alle ondersteunde bestanden ({supported_extensions_string})"
+
+#: GUI/screens/InsertDataScreen.py:635
+msgid "There are no files added to this project"
+msgstr "Er zijn geen bestanden aan dit project toegevoegd"
+
+#: GUI/screens/InsertDataScreen.py:650
+msgid ""
+"Press validate to get feedback on the OTL-conformity of the files in this"
+" project"
+msgstr ""
+"Druk op valideren om een rapport over de OTL-conformiteit van de "
+"bestanden in dit project te krijgen"
 
 #: GUI/screens/TemplateScreen.py:108
 msgid "Adds choice lists to relevant attributes"
@@ -672,16 +692,16 @@ msgstr "Toon verschillen"
 msgid "empty fields"
 msgstr "Reset velden"
 
-#: GUI/screens/Home_elements/OverviewTable.py:50
-#: GUI/screens/Home_elements/OverviewTable.py:249
+#: GUI/screens/Home_elements/OverviewTable.py:70
+#: GUI/screens/Home_elements/OverviewTable.py:272
 msgid "last_edited"
 msgstr "Laatst bewerkt"
 
-#: GUI/screens/Home_elements/OverviewTable.py:112
+#: GUI/screens/Home_elements/OverviewTable.py:135
 msgid "Double-click to open project"
 msgstr "Dubbelklik om project te openen"
 
-#: GUI/screens/Home_elements/OverviewTable.py:250
+#: GUI/screens/Home_elements/OverviewTable.py:273
 msgid "no_results"
 msgstr "Geen resultaten gevonden voor dit zoekresultaat"
 
@@ -778,11 +798,11 @@ msgid "add_relation"
 msgstr "Voeg relaties toe"
 
 #: GUI/screens/RelationChange_elements/RelationChangeHelpers.py:47
-#: GUI/screens/RelationChange_elements/RelationChangeHelpers.py:62
+#: GUI/screens/RelationChange_elements/RelationChangeHelpers.py:61
 msgid "external"
 msgstr "extern"
 
-#: GUI/screens/RelationChange_elements/RelationChangeHelpers.py:138
+#: GUI/screens/RelationChange_elements/RelationChangeHelpers.py:144
 msgid "no_identificator"
 msgstr "geen identificator"
 

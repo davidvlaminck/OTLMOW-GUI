@@ -10,7 +10,6 @@ from otlmow_model.OtlmowModel.BaseClasses.RelationInteractor import RelationInte
 from otlmow_model.OtlmowModel.Classes.Agent import Agent
 from otlmow_model.OtlmowModel.Classes.ImplementatieElement.RelatieObject import RelatieObject
 from otlmow_model.OtlmowModel.Helpers import OTLObjectHelper, RelationValidator
-from universalasync import async_to_sync_wraps
 
 from Domain import global_vars
 from Domain.project.ProjectFile import ProjectFile
@@ -73,10 +72,11 @@ class InsertDataDomain:
         """
         if not Helpers.all_OTL_asset_types_dict:
             Helpers.create_external_typeURI_options()
+
+        cls.get_screen().clear_feedback()
         cls.update_frontend()
 
     @classmethod
-    @async_to_sync_wraps
     async def check_document(cls, doc_location: Union[str, Path], delimiter: str=";") -> Iterable[OTLObject]:
         """
         Checks a document and converts it into a list of OTL objects.
@@ -99,11 +99,10 @@ class InsertDataDomain:
         try:
             if doc_location_path.suffix in ['.xls', '.xlsx']:
                 temp_path = InsertDataDomain.remove_dropdown_values_from_excel(doc=doc_location_path)
-                assets, exception_group =  await Helpers.converter_from_file_to_object(
+                assets, exception_group =  await Helpers.converter_from_file_to_object_async(
                     file_path=temp_path,include_tab_info=True )
 
             elif doc_location_path.suffix == '.sdf':
-
                 # SDF files will make multiple CSV files, one for each class
                 temp_path_list = InsertDataDomain.create_temporary_SDF_conversion_to_CSV_files(
                     sdf_filepath=doc_location_path)
@@ -111,7 +110,7 @@ class InsertDataDomain:
                 assets = []
                 sdf_exception_list = []
                 for temp_path in temp_path_list:
-                    assets_subset, exception_group_subset = await Helpers.converter_from_file_to_object(
+                    assets_subset, exception_group_subset = await Helpers.converter_from_file_to_object_async(
                         file_path=Path(temp_path),
                         delimiter=",",
                         include_tab_info=True )
@@ -124,7 +123,7 @@ class InsertDataDomain:
                 for exception in sdf_exception_list:
                     exception_group.add_exception(exception)
             else:
-                assets, exception_group = await Helpers.converter_from_file_to_object(
+                assets, exception_group = await Helpers.converter_from_file_to_object_async(
                     file_path=doc_location_path,include_tab_info=True )
 
             # second checks done by the GUI
@@ -264,16 +263,21 @@ class InsertDataDomain:
         :returns: True if all files are valid; otherwise, False.
         :rtype: bool
         """
-
         cls.get_screen().project_files_overview_field.clear()
+        cls.get_screen().add_file_overview_placeholder_to_front_end_list()
+        files_in_project = global_vars.current_project.get_saved_projectfiles()
+        all_valid = False
+        if files_in_project:
+            cls.get_screen().project_files_overview_field.clear()
 
-        all_valid = True
-        for item in global_vars.current_project.get_saved_projectfiles():
-            cls.get_screen().add_file_to_frontend_list(file=item.file_path,asset_state=item.state)
-            if item.state != FileState.OK:
-                all_valid = False
+            all_valid = True
+            for item in global_vars.current_project.get_saved_projectfiles():
+                cls.get_screen().add_file_to_frontend_list(file=item.file_path,asset_state=item.state)
+                if item.state != FileState.OK:
+                    all_valid = False
 
         cls.get_screen().update_control_button_state()
+
         return all_valid
 
     @classmethod
@@ -291,6 +295,7 @@ class InsertDataDomain:
 
         """
         global_vars.current_project.remove_project_file(Path(item_file_path))
+        cls.get_screen().clear_feedback()
 
         InsertDataDomain.update_frontend()
 
@@ -304,7 +309,6 @@ class InsertDataDomain:
 
         return missing_project_files
     @classmethod
-    @async_to_sync_wraps
     @add_loading_screen_no_delay
     @async_save_assets
     async def load_and_validate_documents(cls,**kwargs) -> tuple[list[dict], list]:
@@ -381,6 +385,12 @@ class InsertDataDomain:
         global_vars.current_project.save_project_filepaths_to_file()
         cls.update_frontend()
 
+        if len(error_set):
+            OTLLogger.logger.debug(
+                f"Executing InsertDataDomain.load_and_validate_documents() for project {global_vars.current_project.eigen_referentie} (INVALID)",
+                extra={"timing_ref": f"validate_{global_vars.current_project.eigen_referentie}"})
+            return error_set, []
+
         objects_in_memory = cls.flatten_list(objects_lists=list(assets_per_filepath_str_dict.values()))
         # noinspection PyTypeChecker
         objects_in_memory.extend(cls.flatten_list(objects_lists=list(relations_per_filepath_str_dict.values())))
@@ -390,6 +400,7 @@ class InsertDataDomain:
             objects_in_memory=objects_in_memory)
         RelationChangeDomain.set_instances(objects_list=objects_in_memory)
         global_vars.otl_wizard.main_window.step3_visuals.reload_html()
+
         object_count = len(objects_in_memory)
         OTLLogger.logger.debug(
             f"Executing InsertDataDomain.load_and_validate_documents() for project {global_vars.current_project.eigen_referentie} ({object_count} objects)",
@@ -429,7 +440,7 @@ class InsertDataDomain:
         id_to_typeURI_dict: Optional[dict[str,str]] = None
         for relation in relations:
 
-            bron_type_uri = cls.extract_corrected_relation_partner_typeURI(
+            bron_type_uri = Helpers.extract_corrected_relation_partner_typeURI(
                 relation.bron.typeURI,
                 relation.bronAssetId.identificator,
                 id_to_typeURI_dict,
@@ -445,7 +456,7 @@ class InsertDataDomain:
                         relation.typeURI, False))
                 exception_group.add_exception(error=ex)
 
-            doel_type_uri = cls.extract_corrected_relation_partner_typeURI(
+            doel_type_uri = Helpers.extract_corrected_relation_partner_typeURI(
                 relation.doel.typeURI,
                 relation.doelAssetId.identificator,
                 id_to_typeURI_dict,
@@ -465,8 +476,8 @@ class InsertDataDomain:
                 # the rest of the check will fail anyway
                 continue
 
-            has_valid_bron_typeURI:bool = bron_type_uri not in Helpers.all_OTL_asset_types_dict.values()
-            if has_valid_bron_typeURI:
+            has_valid_bron_typeURI:bool = InsertDataDomain.does_typeURI_exist(bron_type_uri)
+            if not has_valid_bron_typeURI:
                 ex = RelationHasNonExistingTypeUriForSourceOrTarget(
                     relation_type_uri=relation.typeURI,
                     relation_identificator=relation.assetId.identificator,
@@ -476,8 +487,8 @@ class InsertDataDomain:
                         relation.typeURI,False))
                 exception_group.add_exception(error=ex)
 
-            has_valid_doel_typeURI: bool = doel_type_uri not in Helpers.all_OTL_asset_types_dict.values()
-            if has_valid_doel_typeURI:
+            has_valid_doel_typeURI: bool = InsertDataDomain.does_typeURI_exist(doel_type_uri)
+            if not has_valid_doel_typeURI:
                 ex = RelationHasNonExistingTypeUriForSourceOrTarget(
                     relation_type_uri=relation.typeURI,
                     relation_identificator=relation.assetId.identificator,
@@ -510,15 +521,10 @@ class InsertDataDomain:
                 exception_group.add_exception(error=ex)
 
     @classmethod
-    def extract_corrected_relation_partner_typeURI(cls, partner_type_uri, partner_id, id_to_typeURI_dict, ref_assets):
-        if partner_type_uri is None:
-            if not id_to_typeURI_dict:
-                id_to_typeURI_dict = {asset.assetId.identificator: asset.typeURI
-                                      for asset in ref_assets}
+    def does_typeURI_exist(cls, bron_type_uri):
+        return bron_type_uri in Helpers.all_OTL_asset_types_dict.values()
 
-            if partner_id in id_to_typeURI_dict.keys():
-                partner_type_uri = id_to_typeURI_dict[partner_id]
-        return partner_type_uri
+
 
     @classmethod
     def raise_wrong_doel_or_target(cls, relation: RelatieObject, tab: str, bron_type_uri,

@@ -3,6 +3,7 @@ import traceback
 from pathlib import Path
 
 from PyQt6.QtCore import Qt, QSize
+from PyQt6.QtGui import QFont, QStandardItem
 from PyQt6.QtWidgets import QVBoxLayout, QWidget, QLabel, QPushButton, QFrame, QHBoxLayout, \
     QListWidget, \
     QFileDialog, QListWidgetItem, QTreeWidget, QTreeWidgetItem, QHeaderView, QSizePolicy
@@ -24,6 +25,7 @@ from Exceptions.RelationHasInvalidTypeUriForSourceAndTarget import \
 from Exceptions.RelationHasNonExistingTypeUriForSourceOrTarget import \
     RelationHasNonExistingTypeUriForSourceOrTarget
 from GUI.dialog_windows.NotificationWindow import NotificationWindow
+from GUI.dialog_windows.file_picker_dialog.LoadFilePickerDialog import LoadFilePickerDialog
 from GUI.screens.general_elements.ButtonWidget import ButtonWidget
 from GUI.dialog_windows.RemoveProjectFilesWindow import RemoveProjectFilesWindow
 from GUI.dialog_windows.RevalidateDocumentsWindow import RevalidateDocumentsWindow
@@ -65,8 +67,10 @@ class InsertDataScreen(Screen):
     def __init__(self, language_settings=None):
         super().__init__()
         self._ = language_settings
-        self.container_insert_data_screen = QVBoxLayout()
 
+        self.load_file_dialog_window = LoadFilePickerDialog(self._)
+
+        self.container_insert_data_screen = QVBoxLayout()
 
         self.message_icon = QLabel()
         self.message = QLabel()
@@ -230,7 +234,7 @@ class InsertDataScreen(Screen):
         self.clear_feedback()
 
         error_set, objects_list = await InsertDataDomain.load_and_validate_documents()
-
+        self.asset_info.clear()
         if error_set:
             OTLLogger.logger.debug('negative feedback needed')
             self.negative_feedback_message()
@@ -258,6 +262,8 @@ class InsertDataScreen(Screen):
         Returns:
             None
         """
+
+
 
         for item in error_set:
             exception = item["exception"]
@@ -514,6 +520,7 @@ class InsertDataScreen(Screen):
         self.feedback_message_box.setStyleSheet('')
 
 
+
     def negative_feedback_message(self) -> None:
         """
         Displays a negative feedback message to the user.
@@ -562,26 +569,10 @@ class InsertDataScreen(Screen):
             None
         """
 
-        file_path = str(Path.home())
+        selected_file_path_list = self.load_file_dialog_window.summon()
 
-        file_picker = QFileDialog()
-        file_picker.setWindowTitle("Selecteer bestand")
-        file_picker.setDirectory(file_path)
-        file_picker.setFileMode(QFileDialog.FileMode.ExistingFiles)
-
-        filters = ""
-        for i, item in enumerate(global_vars.supported_file_formats.items()):
-            keys = item[0]
-            value = item[1]
-
-            filters += f"{keys} files (*.{value})"
-            if i < len(global_vars.supported_file_formats) -1:
-                filters += ";;" # the last value cannot have ;; behind it
-
-        file_picker.setNameFilter(filters)
-
-        if file_picker.exec():
-            InsertDataDomain.add_files_to_backend_list(files=file_picker.selectedFiles())
+        if selected_file_path_list:
+            InsertDataDomain.add_files_to_backend_list(files=selected_file_path_list)
             self.clear_feedback()
 
 
@@ -629,6 +620,34 @@ class InsertDataScreen(Screen):
 
         self.project_files_overview_field.addTopLevelItem(list_item)
         self.project_files_overview_field.setItemWidget(list_item, 2, button)
+
+    def add_file_overview_placeholder_to_front_end_list(self):
+        file_place_holder_item = QTreeWidgetItem()
+        file_place_holder_item.setText(1, self._("There are no files added to this project"))
+        file_place_holder_item.setDisabled(True)
+
+
+        placeholder_font = QFont()
+        placeholder_font.setItalic(True)
+        file_place_holder_item.setFont(1,placeholder_font)
+
+        self.project_files_overview_field.addTopLevelItem(file_place_holder_item)
+
+
+
+
+    def add_feedback_placeholder_to_front_end_list(self):
+        place_holder_item = QListWidgetItem(
+            self._(
+                "Press validate to get feedback on the OTL-conformity of the files in this project"))
+
+        placeholder_font = QFont()
+        placeholder_font.setItalic(True)
+
+        place_holder_item.setFont(placeholder_font)
+        place_holder_item.setForeground(Qt.GlobalColor.gray)
+
+        self.asset_info.addItem(place_holder_item)
 
     def delete_file_from_list(self) -> None:
         # sourcery skip: use-named-expression
@@ -710,6 +729,9 @@ class InsertDataScreen(Screen):
 
         self.clear_feedback()
         self.project_files_overview_field.clear()
+        self.add_file_overview_placeholder_to_front_end_list()
+
+
 
     def clear_feedback(self) -> None:
         """
@@ -728,6 +750,7 @@ class InsertDataScreen(Screen):
 
         OTLLogger.logger.debug("[CLEAR] clear_feedback")
         self.asset_info.clear()
+        self.add_feedback_placeholder_to_front_end_list()
         self.clear_feedback_message()
 
     def add_error_to_feedback_list(self, exception: Exception, doc: str) -> None:

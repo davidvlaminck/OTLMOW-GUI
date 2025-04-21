@@ -1,5 +1,6 @@
 import unittest
 
+import pytest
 import xmltodict
 
 from Domain.util.XSDCreator import XSDCreator
@@ -12,7 +13,8 @@ def root_directory() -> Path:
 
 #TODO fix test after discussion with David
 @unittest.skip('Difference between old OTL-wizard generated XSD and new python generate XSD')
-def test_create_xsd_from_filtered_subset_slagbomen(root_directory,cleanup_after_creating_a_file_to_delete):
+@pytest.mark.asyncio
+async def test_create_xsd_from_filtered_subset_slagbomen(root_directory,cleanup_after_creating_a_file_to_delete):
     # SETUP
     kast_path = root_directory / 'UnitTests' /'test_files' / 'input' / 'voorbeeld-slagboom.db'
     created_path = root_directory / 'UnitTests' / 'test_files' / 'output_test' / 'xsd_export_no_contactor_no_kokerafsluiting.xsd'
@@ -24,7 +26,7 @@ def test_create_xsd_from_filtered_subset_slagbomen(root_directory,cleanup_after_
 
 
     # ACT
-    XSDCreator.create_filtered_xsd_from_subset(subset_path=kast_path, xsd_path=created_path,
+    await XSDCreator.create_filtered_xsd_from_subset(subset_path=kast_path, xsd_path=created_path,
                                                selected_classes_typeURI_list=selected_classes_typeURI_list)
 
     # TEST

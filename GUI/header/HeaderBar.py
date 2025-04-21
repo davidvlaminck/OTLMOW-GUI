@@ -15,12 +15,15 @@ from PyQt6.QtWidgets import QFrame, QHBoxLayout, QLabel, QVBoxLayout, QWidget, Q
 
 from Domain import global_vars
 from Domain.logger.OTLLogger import OTLLogger
+from Domain.project.Project import Project
 from Domain.step_domain.HomeDomain import HomeDomain
 from GUI.Styling import Styling
+from GUI.dialog_windows.file_picker_dialog.ProjectImportFilePickerDialog import \
+    ProjectImportFilePickerDialog
 from GUI.screens.general_elements.ButtonWidget import ButtonWidget
 from GUI.dialog_windows.LanguageWindow import LanguageWindow
 from GUI.dialog_windows.MenuActionsWindow import MenuActionsWindow
-from GUI.dialog_windows.ProjectPickerWindow import ProjectPickerWindow
+
 from GUI.dialog_windows.UpsertProjectWindow import UpsertProjectWindow
 from GUI.screens.Home_elements.OverviewTable import OverviewTable
 
@@ -50,6 +53,8 @@ class HeaderBar(QFrame):
         self.initialised = False
         self.quick_save_animation_task = None
         self.header = None
+        self.import_project_dialog_window: ProjectImportFilePickerDialog = (
+            ProjectImportFilePickerDialog(self._))
 
     def construct_header_bar(self):
         self.setProperty('class', 'header')
@@ -246,10 +251,18 @@ class HeaderBar(QFrame):
             lambda: self.import_project_window())
 
     def import_project_window(self):
-        project = ProjectPickerWindow(self._).open_project_file_picker()
+        selected_file_path_list  = self.import_project_dialog_window.summon()
+
+        if not selected_file_path_list or not selected_file_path_list[0]:
+            return
+
+        project = Project.import_project(selected_file_path_list[0])
+
         if project is None:
             return
         HomeDomain.projects[project.eigen_referentie] = project
+        global_vars.otl_wizard.main_window.home_screen.last_added_ref = project.eigen_referentie
+
         OTLLogger.logger.debug("Projects global")
         for eigen_ref in HomeDomain.projects.keys():
             OTLLogger.logger.debug(eigen_ref)

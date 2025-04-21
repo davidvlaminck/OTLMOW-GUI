@@ -4,7 +4,7 @@ from pathlib import Path
 
 from PyQt6.QtCore import QSize
 from PyQt6.QtWidgets import QVBoxLayout, QFrame, QHBoxLayout, QLabel, QTreeWidget, QHeaderView, \
-    QPushButton, QTableView, QTableWidget, QFileDialog, QTreeWidgetItem
+    QPushButton, QTableView, QTableWidget, QTreeWidgetItem
 from otlmow_converter.Exceptions.ExceptionsGroup import ExceptionsGroup
 from otlmow_converter.Exceptions.FailedToImportFileError import FailedToImportFileError
 from otlmow_converter.Exceptions.InvalidColumnNamesInExcelTabError import \
@@ -21,6 +21,7 @@ from Exceptions.RelationHasInvalidTypeUriForSourceAndTarget import \
 from Exceptions.RelationHasNonExistingTypeUriForSourceOrTarget import \
     RelationHasNonExistingTypeUriForSourceOrTarget
 from GUI.dialog_windows.ChooseFileNameWindow import ChooseFileNameWindow
+from GUI.dialog_windows.file_picker_dialog.LoadFilePickerDialog import LoadFilePickerDialog
 from GUI.screens.ExportData_elements.ChangesTableView import ChangesTableView
 from GUI.screens.ExportData_elements.TableErrorModel import TableErrorModel
 from GUI.screens.ExportData_elements.TableModel import TableModel
@@ -46,8 +47,8 @@ class ExportFilteredDataSubScreen(AbstractExportDataSubScreen):
         self.message = QLabel()
         self.feedback_message_box = QFrame()
         self.model = None
-
         super().__init__(language_settings=language_settings)
+        self.load_file_dialog_window = LoadFilePickerDialog(self._)
 
     def init_ui(self) -> None:
         """
@@ -212,24 +213,11 @@ class ExportFilteredDataSubScreen(AbstractExportDataSubScreen):
         self.fill_up_change_table([])
 
     def open_original_file_picker(self):
-        file_path = str(Path.home())
-        file_picker = QFileDialog()
-        file_picker.setWindowTitle(self._('choose_file'))
-        file_picker.setDirectory(file_path)
-        file_picker.setFileMode(QFileDialog.FileMode.ExistingFiles)
-        filters = ""
-        for i, item in enumerate(global_vars.supported_file_formats.items()):
-            keys = item[0]
-            value = item[1]
+        selected_file_path_list = self.load_file_dialog_window.summon()
 
-            filters += f"{keys} files (*.{value})"
-            if i < len(global_vars.supported_file_formats) - 1:
-                filters += ";;"  # the last value cannot have ;; behind it
-        file_picker.setNameFilter(filters)
-
-        if file_picker.exec():
+        if selected_file_path_list:
             OTLLogger.logger.debug("file picker executed")
-            ExportFilteredDataSubDomain.add_original_documents(file_picker.selectedFiles())
+            ExportFilteredDataSubDomain.add_original_documents(selected_file_path_list)
             
 
     def update_original_files_list(self, files:dict[str,Path]):
@@ -264,39 +252,15 @@ class ExportFilteredDataSubScreen(AbstractExportDataSubScreen):
         items = self.original_file_field.selectedItems()
         doc_name = items[0].data(0,1)
         ExportFilteredDataSubDomain.delete_original_file(doc_name=doc_name)
-        
 
-    def open_file_picker(self):
-        """
-        Opens a file picker dialog for the user to select a location to save exported files.
-        This method configures the dialog based on the currently selected file format and options,
-        and triggers the file generation process if a valid file location is chosen.
 
-        :return: None
-        """
-
-        file_path = str(Path.home())
-
-        file_picker = QFileDialog()
-        file_picker.setModal(True)
-        file_picker.setDirectory(file_path)
-
-        chosen_file_format = self.file_extension_selection.currentText()
-        if chosen_file_format in self.supported_export_formats:
-            file_suffix = self.supported_export_formats[chosen_file_format]
-            filter_filepicker = f"{chosen_file_format} files (*.{file_suffix})"
-            document_loc = file_picker.getSaveFileName(filter=filter_filepicker)
-        else:
-            document_loc = file_picker.getSaveFileName()
-
-        if document_loc != ('', ''):
-            csv_option = self.extra_option_csv.isChecked()
-            split_relations_and_objects = self.relations_split_optionality.isChecked()
-
-            event_loop = asyncio.get_event_loop()
-            event_loop.create_task(ExportFilteredDataSubDomain.export_diff_report(file_name=document_loc[0],
-                                                                                  separate_per_class_csv_option=csv_option,
-                                                                                  separate_relations_option=split_relations_and_objects))
+    def process_export(self, document_path_list, csv_option, split_relations_and_objects):
+        event_loop = asyncio.get_event_loop()
+        OTLLogger.logger.debug(document_path_list)
+        event_loop.create_task(
+            ExportFilteredDataSubDomain.export_diff_report(file_name=document_path_list[0],
+                                                           separate_per_class_csv_option=csv_option,
+                                                           separate_relations_option=split_relations_and_objects))
 
     def add_error_to_feedback_list(self, exception: Exception, doc: str) -> None:
         """Adds an error message to the feedback list based on the exception type.

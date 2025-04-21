@@ -1,21 +1,45 @@
 import asyncio
 import logging
+from pathlib import Path
 
 from typing import Union, Callable
 import datetime
 import qtawesome as qta
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt, QModelIndex
+from PyQt6.QtGui import QPainter, QBrush
 
-from PyQt6.QtWidgets import QTableWidget, QHeaderView, QTableWidgetItem
+from PyQt6.QtWidgets import QTableWidget, QHeaderView, QStyledItemDelegate
 
 from Domain.step_domain.HomeDomain import HomeDomain
 from Domain.project.Project import Project
+from GUI.Styling import Styling
+from GUI.dialog_windows.file_picker_dialog.ProjectExportFilePickerDialog import \
+    ProjectExportFilePickerDialog
+from GUI.dialog_windows.file_picker_dialog.SaveFilePickerDialog import SaveFilePickerDialog
+from GUI.screens.Home_elements.OverviewTableItem import OverviewTableItem
 
 from GUI.screens.general_elements.ButtonWidget import ButtonWidget
-from GUI.dialog_windows.ExportProjectWindow import ExportProjectWindow
+
 from GUI.dialog_windows.UpsertProjectWindow import UpsertProjectWindow
 from GUI.dialog_windows.RemoveProjectWindow import RemoveProjectWindow
 
+
+class LastAddedProjectHighlightDelegate(QStyledItemDelegate):
+
+    def __init__(self, home_screen_widget):
+
+        super().__init__()
+        self.parent = home_screen_widget
+
+    def paint(self, painter: QPainter, option, index: QModelIndex):
+        painter.save()
+
+        # Apply custom background for specific rows or items
+        if self.parent.table.itemFromIndex(index.siblingAtColumn(0)).text() == self.parent.last_added_ref:
+            painter.fillRect(option.rect, QBrush(Styling.last_added_color))
+
+        painter.restore()
+        super().paint(painter, option, index)
 
 class OverviewTable(QTableWidget):
 
@@ -24,9 +48,12 @@ class OverviewTable(QTableWidget):
         self._ = language_settings
         self.projects: list
         self.main_window = None
-        self.error_widget = QTableWidgetItem()
+        self.error_widget = OverviewTableItem()
         self.projects = None
         self.cellDoubleClicked.connect(self.open_project)
+        self.export_project_dialog_window: SaveFilePickerDialog = (
+            ProjectExportFilePickerDialog(self._))
+
 
 
     def draw_table(self) -> None:
@@ -61,6 +88,7 @@ class OverviewTable(QTableWidget):
         # Zorgt ervoor dat de table niet editable is
         self.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
 
+
     def fill_table(self, projects: [Project], search_text: str) -> None:
         """
         Fills the table with project data and applies a filter if necessary.
@@ -77,6 +105,7 @@ class OverviewTable(QTableWidget):
         
         :return: None
         """
+        self.setSortingEnabled(False)
         self.setRowCount(len(projects))
         for row_index, project in enumerate(projects.values()):
             self.add_cell_to_table(row_index, 0, project.eigen_referentie)
@@ -88,7 +117,8 @@ class OverviewTable(QTableWidget):
 
         if search_text:
             self.filter(search_text=search_text)
-
+        self.setSortingEnabled(True)
+        self.activate_initial_sort_on_last_edit()
 
     def add_cell_to_table(self, row: int, column: int, item: Union[str, datetime.datetime]) -> None:
         """Adds a cell to the table at the specified row and column with the given item.
@@ -105,9 +135,9 @@ class OverviewTable(QTableWidget):
            :return: None
            """
         if isinstance(item, datetime.date):
-            list_item = QTableWidgetItem(item.strftime("%d-%m-%Y"))
+            list_item = OverviewTableItem(item.strftime(OverviewTableItem.date_format))
         else:
-            list_item = QTableWidgetItem(str(item))
+            list_item = OverviewTableItem(str(item))
 
         list_item.setToolTip(self._("Double-click to open project"))
         self.setItem(row, column,list_item)
@@ -148,11 +178,29 @@ class OverviewTable(QTableWidget):
         share_btn.setIcon(qta.icon("mdi.share"))
         share_btn.setProperty('class', 'alter-button')
         share_btn.clicked.connect(lambda _, input_project=project:
-                                  ExportProjectWindow().export_project_window(project=input_project))
+                                  self.open_export_project_dialog_window(project=input_project))
         
         self.setCellWidget(row, 4, edit_btn)
         self.setCellWidget(row, 5, delete_btn)
         self.setCellWidget(row, 6, share_btn)
+
+    def open_export_project_dialog_window(self, project:Project):
+
+        # set the action_function in the dialog with the new project
+        save_locations = self.export_project_dialog_window.summon()
+        self.export_project(save_locations,project)
+
+    def export_project(self,save_locations: list[Path],project:Project):
+        if not save_locations or not save_locations[0]:
+            return
+        project_path:Path = save_locations[0]
+        if not project_path:
+            return
+
+        if project_path.suffix.lower().strip() != ('.otlw'):
+            project_path = project_path.with_suffix('.otlw')
+
+        project.export_project_to_file(file_path=project_path)
 
     def open_project(self, row) -> None:
         """
@@ -268,3 +316,7 @@ class OverviewTable(QTableWidget):
 
         first_item_in_row = self.item(row, 0)
         first_item_in_row.setData(1,eigen_referentie)
+
+    def activate_initial_sort_on_last_edit(self):
+        self.sortItems(3,Qt.SortOrder.DescendingOrder)
+

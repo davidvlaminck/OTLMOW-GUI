@@ -62,10 +62,10 @@ class WebBridge(QObject):
     def  receive_selection_id(self, message):
         """Receives click event data from JavaScript."""
         data = json.loads(message)  # Convert string back to dict
-        id = str(data["id"])
+        asset_id = str(data["id"])
 
-        print(f"received map marker selection in Python selected id: {id}")
-        RelationChangeDomain.set_selected_object(id)
+        print(f"received map marker selection in Python selected id: {asset_id}")
+        RelationChangeDomain.set_selected_object(asset_id)
         RelationChangeDomain.update_frontend()
 
 class MapScreen(Screen):
@@ -106,7 +106,10 @@ class MapScreen(Screen):
         self.web_bridge = WebBridge(self.map)
         self.channel.registerObject("webBridge", self.web_bridge)
 
-        self.webView.setHtml(open(map_path).read())
+        with open(map_path, 'r', encoding='utf-8') as f:
+            html_content = f.read()
+        self.webView.setHtml(html_content)
+
         self.webView.page().setWebChannel(self.channel)
 
 

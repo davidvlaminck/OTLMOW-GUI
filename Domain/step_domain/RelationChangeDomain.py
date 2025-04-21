@@ -1,5 +1,6 @@
 import asyncio
 import gc
+from collections import defaultdict
 from copy import deepcopy
 from pathlib import Path
 from typing import Optional, Union, Callable
@@ -16,9 +17,8 @@ from otlmow_model.OtlmowModel.Helpers import RelationCreator, OTLObjectHelper
 from otlmow_model.OtlmowModel.Helpers.OTLObjectHelper import is_relation
 from otlmow_modelbuilder.OSLOCollector import OSLOCollector
 from otlmow_modelbuilder.SQLDataClasses.OSLORelatie import OSLORelatie
-from universalasync import async_to_sync_wraps
-
 from Domain import global_vars
+
 from Domain.util.Helpers import Helpers
 from Domain.logger.OTLLogger import OTLLogger
 from Domain.project.Project import Project
@@ -27,29 +27,9 @@ from GUI.screens.RelationChange_elements.RelationChangeHelpers import RelationCh
 from GUI.screens.screen_interface.RelationChangeScreenInterface import \
     RelationChangeScreenInterface
 
+from line_profiler_pycharm import profile
+
 ROOT_DIR = Path(__file__).parent.parent
-
-
-def save_assets(func):
-    """Decorator that saves assets after executing the decorated function.
-
-    This decorator wraps a function to ensure that after its execution, the current
-    project's assets in memory are updated and saved. It also starts the event loop
-    for the header in the main window to animate the OTL Wizard 2 logo during saving.
-
-    :param func: The function to be decorated.
-    :returns: The wrapper function that includes the saving logic.
-    """
-
-    def wrapper_func(*args, **kwargs):
-        res = func(*args, **kwargs)
-        global_vars.current_project.assets_in_memory = RelationChangeDomain.get_quicksave_instances()
-        global_vars.current_project.save_validated_assets()
-        global_vars.otl_wizard.main_window.step_3_tabwidget.header.start_event_loop()
-        return res
-
-    return wrapper_func
-
 
 def async_save_assets(func):
     """Decorator that saves assets after executing the decorated function.
@@ -65,7 +45,7 @@ def async_save_assets(func):
     async def wrapper_func(*args, **kwargs):
         res = await func(*args, **kwargs)
         global_vars.current_project.assets_in_memory = RelationChangeDomain.get_quicksave_instances()
-        global_vars.current_project.save_validated_assets()
+        await global_vars.current_project.save_validated_assets()
         global_vars.otl_wizard.main_window.step_3_tabwidget.header.start_event_loop()
         return res
 
@@ -196,7 +176,7 @@ class RelationChangeDomain:
     map_uptodate = True
 
     @classmethod
-    def init_static(cls, project: Project,asynchronous = True) -> None:
+    def init_static(cls, project: Project, asynchronous=True) -> None:
         """
         Initializes static resources for the RelationChangeDomain class.
         Call this when the project or project.subset_path changes or everytime you go to the window
@@ -224,12 +204,18 @@ class RelationChangeDomain:
             if asynchronous:
                 try:
                     event_loop = asyncio.get_event_loop()
-                    event_loop.create_task(cls.load_project_relation_data())
+                    event_loop.create_task(cls.load_project_relation_data_async())
+                except DeprecationWarning:
+                    # should only go here if you are testing
+                    event_loop = asyncio.get_event_loop()
+                    event_loop.create_task(cls.load_project_relation_data_async())
+            else:
+                try:
+                    cls.load_project_relation_data()
                 except DeprecationWarning:
                     # should only go here if you are testing
                     cls.load_project_relation_data()
-            else:
-                cls.load_project_relation_data()
+
 
     @classmethod
     def clear_data(cls):
@@ -247,8 +233,30 @@ class RelationChangeDomain:
         cls.map_uptodate = False
 
     @classmethod
-    @async_to_sync_wraps
     @add_loading_screen
+    async def load_project_relation_data_async(cls) -> None:
+        """
+        Loads project relation data asynchronously.
+
+        This method sets the GUI to a loading state while it retrieves and processes
+        project relation data. It populates a dictionary with asset type URIs and
+        updates the user interface accordingly once the data is loaded.
+
+        :param cls: The class itself.
+        :returns: None
+        """
+
+        cls.get_screen().set_gui_lists_to_loading_state()
+
+
+        # throw away old data before loading the new
+        cls.clear_data()
+        gc.collect()
+
+        cls.set_instances(objects_list=await cls.project.load_validated_assets_async())
+        global_vars.otl_wizard.main_window.step3_visuals.reload_html()
+
+    @classmethod
     async def load_project_relation_data(cls) -> None:
         """
         Loads project relation data asynchronously.
@@ -267,7 +275,7 @@ class RelationChangeDomain:
         cls.clear_data()
         gc.collect()
 
-        cls.set_instances(objects_list=await cls.project.load_validated_assets())
+        cls.set_instances(objects_list=cls.project.load_validated_assets())
         global_vars.otl_wizard.main_window.step3_visuals.reload_html()
 
     @classmethod
@@ -349,14 +357,21 @@ class RelationChangeDomain:
         """
 
         for relation_object in RelationChangeDomain.get_all_relations():
-            source_id = relation_object.bronAssetId.identificator
+            source_id =  relation_object.bronAssetId.identificator
             target_id = relation_object.doelAssetId.identificator
 
             source_object = RelationChangeDomain.get_object(identificator=source_id)
+            id_to_typeURI_dict: Optional[dict[str, str]] = None
             if not source_object:
                 try:
+                    bron_type_uri = Helpers.extract_corrected_relation_partner_typeURI(
+                        relation_object.bron.typeURI,
+                        relation_object.bronAssetId.identificator,
+                        id_to_typeURI_dict,
+                        RelationChangeDomain.get_shown_objects())
+
                     cls.create_and_add_new_external_asset(id_or_name=source_id,
-                                                          type_uri=relation_object.bron.typeURI)
+                                                          type_uri=bron_type_uri)
                 except ValueError as e:
                     # should there be a wrong typeURI
                     OTLLogger.logger.debug(e)
@@ -364,8 +379,14 @@ class RelationChangeDomain:
             target_object = RelationChangeDomain.get_object(identificator=target_id)
             if not target_object:
                 try:
+                    doel_type_uri = Helpers.extract_corrected_relation_partner_typeURI(
+                        relation_object.doel.typeURI,
+                        relation_object.doelAssetId.identificator,
+                        id_to_typeURI_dict,
+                        RelationChangeDomain.get_shown_objects())
+
                     cls.create_and_add_new_external_asset(id_or_name=target_id,
-                                                          type_uri=relation_object.doel.typeURI)
+                                                          type_uri=doel_type_uri)
                 except ValueError as e:
                     # should there be a wrong typeURI
                     OTLLogger.logger.debug(e)
@@ -430,7 +451,6 @@ class RelationChangeDomain:
             otl_object) == id_to_check
 
     @classmethod
-    @async_to_sync_wraps
     async def set_possible_relations(cls, selected_object: RelationInteractor):
         """
         Sets the possible relations for the specified selected object and updates the user
@@ -484,7 +504,7 @@ class RelationChangeDomain:
         possible_relations_for_this_object = cls.get_possible_relations_for(selected_id=selected_id)
 
         # noinspection PyTypeChecker
-        object_attributes_dict = await DotnotationDictConverter.to_dict(otl_object=selected_object)
+        object_attributes_dict = await DotnotationDictConverter.to_dict_async(otl_object=selected_object)
 
         cls.get_screen().fill_possible_relations_list(source_object=selected_object,
                                                       relations=possible_relations_for_this_object,
@@ -508,6 +528,7 @@ class RelationChangeDomain:
         return {}
 
     @classmethod
+    @profile
     def add_all_possible_relations_between_selected_and_related_objects(
             cls, relation_list: list[OSLORelatie],selected_object: RelationInteractor,
             related_objects: list[RelationInteractor]) -> None:
@@ -530,31 +551,33 @@ class RelationChangeDomain:
         log_typeURI = RelationChangeHelpers.get_abbreviated_typeURI(selected_object.typeURI)
         selected_object_id: str = RelationChangeHelpers.get_corrected_identificator(
             selected_object)
+
+        related_objects_dict = defaultdict(list)
+        for related_object in related_objects:
+            related_objects_dict[related_object.typeURI].append(related_object)
+
         OTLLogger.logger.debug(
             f"Execute RelationChangeDomain.add_all_possible_relations_between_selected_and_related_objects({log_typeURI}) for project {global_vars.current_project.eigen_referentie}",
             extra={"timing_ref": f"add_possible_relations_real_objects"})
         for relation in relation_list:
             if relation.bron_uri == selected_object.typeURI:
-                for related_object in related_objects:
+                for related_object in related_objects_dict[relation.doel_uri]:
                     if cls.get_same_relations_in_list(
                             relation_list=cls.existing_relations, relation_def=relation,
                             selected_object=selected_object, related_object=related_object):
                         continue
-                    if relation.doel_uri == related_object.typeURI:
-                        cls.add_relation_between(relation=relation,selected_object=selected_object,
-                                                 related_object=related_object)
+                    cls.add_relation_between(relation=relation,selected_object=selected_object,
+                                             related_object=related_object)
 
             if relation.doel_uri == selected_object.typeURI:
-                for related_object in related_objects:
+                for related_object in related_objects_dict[relation.bron_uri]:
                     if cls.get_same_relations_in_list(
                             relation_list=cls.existing_relations, relation_def=relation,
                             selected_object=selected_object, related_object=related_object,
                             reverse=True):
                         continue
-
-                    if relation.bron_uri == related_object.typeURI:
-                        cls.add_relation_between(relation=relation,selected_object=selected_object,
-                                                 related_object=related_object, reverse=True)
+                    cls.add_relation_between(relation=relation,selected_object=selected_object,
+                                             related_object=related_object, reverse=True)
 
         relation_count = 0
         if (cls.possible_object_to_object_relations_dict[selected_object_id]):
@@ -564,6 +587,7 @@ class RelationChangeDomain:
         OTLLogger.logger.debug(
             f"Execute RelationChangeDomain.add_all_possible_relations_between_selected_and_related_objects({log_typeURI}) for project {global_vars.current_project.eigen_referentie} ({relation_count} relations)",
             extra={"timing_ref": f"add_possible_relations_real_objects"})
+
     @classmethod
     def add_inactive_relations_to_possible_relations(cls, selected_id: str) -> None:
         """
@@ -608,6 +632,7 @@ class RelationChangeDomain:
         return typeURI in cls.possible_relations_per_class_dict.keys()
 
     @classmethod
+    @profile
     def collect_possible_relations_to_class_types_from(cls, selected_object:RelationInteractor):
         """
         Collects possible relations for a specified selected object based on its type.
@@ -630,8 +655,7 @@ class RelationChangeDomain:
                         selected_object=selected_object))
             else:
                 cls.possible_relations_per_class_dict[selected_object.typeURI] = \
-                    cls.collector.find_all_concrete_relations(objectUri=selected_object.typeURI,
-                                                              allow_duplicates=False)
+                    cls.collector.find_all_concrete_relations(objectUri=selected_object.typeURI, allow_duplicates=False)
         except ValueError as e:
             OTLLogger.logger.debug(e)
             cls.possible_relations_per_class_dict[selected_object.typeURI] = (
@@ -644,6 +668,7 @@ class RelationChangeDomain:
             extra={"timing_ref": f"collect_possible_relations_classes"})
 
     @classmethod
+    @profile
     def get_all_concrete_relation_from_full_model(cls, selected_object:RelationInteractor):
         """
         Retrieves all concrete relations from the full model for a specified selected object.
@@ -672,6 +697,7 @@ class RelationChangeDomain:
 
 
     @classmethod
+    @profile
     def get_same_relations_in_list(cls, relation_list: list[RelatieObject],
                                    relation_def: OSLORelatie,
                                    selected_object: RelationInteractor,
@@ -743,14 +769,15 @@ class RelationChangeDomain:
         related_id:str = RelationChangeHelpers.get_corrected_identificator(related)
         selected_id:str = RelationChangeHelpers.get_corrected_identificator(selected)
 
-        if existing_relation.typeURI == relation_def.objectUri:
-            if relation_def.richting == "Unspecified":
-                return ((existing_source_id == related_id and existing_target_id == selected_id) or
-                        (existing_source_id == selected_id and existing_target_id == related_id))
-            else:
-                return ((existing_source_id == related_id  and existing_target_id == selected_id)
-                        if reverse else
-                        (existing_source_id == selected_id and existing_target_id == related_id))
+        if existing_relation.typeURI != relation_def.objectUri:
+            return False
+        if relation_def.richting == "Unspecified":
+            return ((existing_source_id == related_id and existing_target_id == selected_id) or
+                    (existing_source_id == selected_id and existing_target_id == related_id))
+        else:
+            return ((existing_source_id == related_id  and existing_target_id == selected_id)
+                    if reverse else
+                    (existing_source_id == selected_id and existing_target_id == related_id))
 
     @classmethod
     def add_relation_between(cls, relation: OSLORelatie, selected_object: RelationInteractor,
@@ -921,7 +948,6 @@ class RelationChangeDomain:
         return relation_object
 
     @classmethod
-    @async_to_sync_wraps
     @async_save_assets
     async def add_multiple_possible_relations_to_existing_relations(cls, data_list):
         """
@@ -1018,7 +1044,8 @@ class RelationChangeDomain:
         cls.get_screen().fill_existing_relations_list(relations_objects=cls.existing_relations,
                                                       last_added=cls.last_added_to_existing)
 
-        cls.set_possible_relations(selected_object=cls.selected_object)
+        event_loop = asyncio.get_event_loop()
+        event_loop.create_task(cls.set_possible_relations(selected_object=cls.selected_object))
 
         OTLLogger.logger.debug("Execute RelationChangeDomain.update_frontend",
                                extra={"timing_ref": f"update_frontend"})
@@ -1029,7 +1056,6 @@ class RelationChangeDomain:
         cls.get_screen().set_selected_object(identificator)
 
     @classmethod
-    @async_to_sync_wraps
     @async_save_assets
     async def remove_multiple_existing_relations(cls, indices: list[int]) -> None:
         """
@@ -1071,7 +1097,6 @@ class RelationChangeDomain:
         return removed_relation
 
     @classmethod
-    @async_to_sync_wraps
     async def select_existing_relation_indices(cls, indices: list[int]) -> None:
         """
         Selects existing relations based on the provided indices and updates the user interface
@@ -1092,11 +1117,10 @@ class RelationChangeDomain:
         last_index = indices[-1]
         last_selected_relation = cls.existing_relations[last_index]
         cls.get_screen().fill_existing_relation_attribute_field(
-            existing_relation_attribute_dict=await DotnotationDictConverter.to_dict(
+            existing_relation_attribute_dict=await DotnotationDictConverter.to_dict_async(
                 last_selected_relation))
 
     @classmethod
-    @async_to_sync_wraps
     async def select_possible_relation_data(cls, selected_relations_data: list) -> None:
         """
         Selects and displays data for possible relations based on the provided selected relations
@@ -1126,7 +1150,7 @@ class RelationChangeDomain:
 
         # noinspection PyTypeChecker
         cls.get_screen().fill_possible_relation_attribute_field(
-            possible_relation_attribute_dict=await DotnotationDictConverter.to_dict(
+            possible_relation_attribute_dict=await DotnotationDictConverter.to_dict_async(
                                              otl_object=last_selected_relation_partner_asset))
 
     @classmethod
@@ -1202,7 +1226,7 @@ class RelationChangeDomain:
         """
         
         for relation_instance in cls.aim_id_relations:
-            if relation_instance.isActief:
+            if relation_instance.isActief != False:
                 cls.existing_relations.append(relation_instance)
 
     @classmethod
@@ -1218,7 +1242,7 @@ class RelationChangeDomain:
         """
 
         return [relation_instance for relation_instance in cls.aim_id_relations if
-                not relation_instance.isActief]
+                relation_instance.isActief == False]
 
     @classmethod
     def add_external_objects_to_shown_objects(cls):
@@ -1289,3 +1313,7 @@ class RelationChangeDomain:
     def get_map_screen(cls):
         return cls.get_screen().map_window
         # return global_vars.otl_wizard.main_window.step3_map
+
+    @classmethod
+    def get_shown_objects(cls):
+        return cls.shown_objects

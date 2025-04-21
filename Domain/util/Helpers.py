@@ -1,16 +1,21 @@
 import asyncio
+import base64
 import logging
 import os
+import tempfile
+import warnings
 from pathlib import Path
 from typing import Optional, Iterable
-import tempfile
 
 from otlmow_converter.Exceptions.ExceptionsGroup import ExceptionsGroup
 from otlmow_converter.OtlmowConverter import OtlmowConverter
-from otlmow_model.OtlmowModel.BaseClasses.OTLObject import OTLObject
+from otlmow_model.OtlmowModel.BaseClasses.OTLObject import OTLObject, \
+    dynamic_create_instance_from_ns_and_name, dynamic_create_instance_from_uri
+from otlmow_model.OtlmowModel.Classes.Agent import Agent
+from otlmow_model.OtlmowModel.Helpers import OTLObjectHelper
+from otlmow_model.OtlmowModel.Helpers.GenericHelper import validate_guid
 from otlmow_model.OtlmowModel.Helpers.generated_lists import get_hardcoded_class_dict
 from packaging.version import Version
-from universalasync import async_to_sync_wraps
 
 from Domain.logger.OTLLogger import OTLLogger
 from GUI.dialog_windows.LoadingImageWindow import add_loading_screen
@@ -69,15 +74,13 @@ class Helpers:
             return True
 
     @classmethod
-    @async_to_sync_wraps
-    async def converter_from_file_to_object(cls,file_path,**kwargs):
+    async def converter_from_file_to_object_async(cls, file_path, **kwargs):
 
         OTLLogger.logger.debug(f"Execute OtlmowConverter.from_file_to_objects({file_path.name})",
                                extra={"timing_ref": f"file_to_objects_{file_path.stem}"})
         exception_group = None
-        object_count = 0
         try:
-            object_lists = list(await OtlmowConverter.from_file_to_objects(file_path,**kwargs))
+            object_lists = list(await OtlmowConverter.from_file_to_objects_async(file_path,allow_non_otl_conform_attributes=False,**kwargs))
         except ExceptionsGroup as group:
             exception_group = group
             object_lists = group.objects
@@ -88,26 +91,37 @@ class Helpers:
         return object_lists,exception_group
 
     @classmethod
-    @async_to_sync_wraps
-    async def start_async_converter_from_object_to_file(cls, file_path: Path,
-                                            sequence_of_objects: Iterable[OTLObject],
-                                            synchronous: bool=False,**kwargs) -> None:
+    async def converter_from_file_to_object(cls, file_path, **kwargs):
 
-        if not synchronous:
-            event_loop = asyncio.get_event_loop()
-            event_loop.create_task(Helpers.converter_from_object_to_file(file_path=file_path,sequence_of_objects=sequence_of_objects,**kwargs))
-        else:
-            await Helpers.converter_from_object_to_file(file_path=file_path,
-                                                  sequence_of_objects=sequence_of_objects,
-                                                  **kwargs)
+        OTLLogger.logger.debug(f"Execute OtlmowConverter.from_file_to_objects({file_path.name})",
+                               extra={"timing_ref": f"file_to_objects_{file_path.stem}"})
+        exception_group = None
+        try:
+            object_lists = list(
+                OtlmowConverter.from_file_to_objects(file_path, **kwargs))
+        except ExceptionsGroup as group:
+            exception_group = group
+            object_lists = group.objects
+
+        object_count = len(object_lists)
+        OTLLogger.logger.debug(
+            f"Execute OtlmowConverter.from_file_to_objects({file_path.name}) ({object_count} objects)",
+            extra={"timing_ref": f"file_to_objects_{file_path.stem}"})
+        return object_lists, exception_group
 
     @classmethod
-    @async_to_sync_wraps
+    async def start_async_converter_from_object_to_file(cls, file_path: Path,
+                                            sequence_of_objects: Iterable[OTLObject], **kwargs) -> None:
+        await Helpers.converter_from_object_to_file(file_path=file_path,
+                                              sequence_of_objects=sequence_of_objects,
+                                              **kwargs)
+
+    @classmethod
     @add_loading_screen
     async def converter_from_object_to_file(cls, file_path: Path, sequence_of_objects: Iterable[OTLObject], **kwargs) -> None:
         OTLLogger.logger.debug(f"Execute OtlmowConverter.from_objects_to_file({file_path.name})",
                                extra={"timing_ref": f"sequence_of_objects_{file_path.stem}"})
-        await OtlmowConverter.from_objects_to_file(file_path=file_path,
+        await OtlmowConverter.from_objects_to_file_async(file_path=file_path,
                                              sequence_of_objects=sequence_of_objects,
                                              **kwargs)
         object_count = len(list(sequence_of_objects))
@@ -148,3 +162,58 @@ class Helpers:
     @classmethod
     def get_base_temp_dir_path(cls):
         return Path(tempfile.gettempdir()) / 'temp-otlmow'
+
+    @classmethod
+    def extract_typeURI_from_aim_id(cls,aim_id:str,model_directory:Optional[Path]=None) -> Optional[str]:
+        uuid = aim_id[:36]
+        short_uri_encoded = aim_id[37:]
+
+        if not validate_guid(uuid):
+            return None
+        if not short_uri_encoded:
+            return None
+
+        if missing_padding := len(short_uri_encoded) % 4:
+            short_uri_encoded += '=' * (4 - missing_padding)
+
+        short_uri_bytes = base64.b64decode(short_uri_encoded)
+        try:
+            short_uri = short_uri_bytes.decode('ascii')
+        except UnicodeDecodeError:
+            return None
+        try:
+            if short_uri == 'purl:Agent':
+                pre, name = short_uri.split(':')
+                agent = dynamic_create_instance_from_uri(name, model_directory=model_directory)
+                return agent.typeURI
+
+            ns, name = short_uri.split('#')
+            instance:OTLObject = dynamic_create_instance_from_ns_and_name(ns, name,
+                                                                model_directory=model_directory)
+            return instance.typeURI
+        except ModuleNotFoundError:
+            warnings.warn(
+            'Could not import the module for the given aim_id, did you forget the model_directory?',
+            category=ImportWarning)
+            return None
+
+        except ValueError:
+            return None
+
+    @classmethod
+    def extract_corrected_relation_partner_typeURI(cls, partner_type_uri, partner_id,
+                                                   id_to_typeURI_dict, ref_assets) -> Optional[
+        str]:
+        if partner_type_uri is None:
+            if not id_to_typeURI_dict:
+                id_to_typeURI_dict = {RelationChangeHelpers.get_corrected_identificator(asset): asset.typeURI
+                                      for asset in ref_assets}
+
+            if partner_id in id_to_typeURI_dict.keys():
+                partner_type_uri = id_to_typeURI_dict[partner_id]
+
+        # incase there is no asset with the correct assetId in the application
+        if partner_type_uri is None and OTLObjectHelper.is_aim_id(partner_id):
+            partner_type_uri = Helpers.extract_typeURI_from_aim_id(partner_id)
+
+        return partner_type_uri

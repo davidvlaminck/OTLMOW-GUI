@@ -236,18 +236,20 @@ class HomeDomain:
         """
 
         if project is None:
-            cls.create_and_add_project(eigen_ref=input_eigen_ref,
+            project = cls.create_and_add_project(eigen_ref=input_eigen_ref,
                                        bestek=input_bestek,
                                        subset_path=Path(input_subset))
         else:
             project.update_information(new_eigen_ref=input_eigen_ref,
                                        new_bestek=input_bestek,
                                        new_subset_path=Path(input_subset))
+
+        global_vars.otl_wizard.main_window.home_screen.last_added_ref = project.eigen_referentie
         cls.reload_projects()
         cls.update_frontend()
 
     @classmethod
-    def create_and_add_project(cls, eigen_ref: str, bestek: str, subset_path: Path) -> None:
+    def create_and_add_project(cls, eigen_ref: str, bestek: str, subset_path: Path) -> Project:
         """
         Creates a new project and adds it to the project list.
 
@@ -268,6 +270,7 @@ class HomeDomain:
         project = Project(eigen_referentie=eigen_ref, subset_path=subset_path, bestek=bestek)
         cls.projects[eigen_ref] = project
         project.save_project_to_dir()
+        return project
 
     @classmethod
     def reload_projects(cls) -> None:

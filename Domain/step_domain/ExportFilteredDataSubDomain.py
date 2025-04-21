@@ -5,8 +5,6 @@ from typing import List
 from otlmow_model.OtlmowModel.BaseClasses.OTLObject import create_dict_from_asset, OTLObject
 from otlmow_model.OtlmowModel.Helpers.OTLObjectHelper import \
     compare_two_lists_of_objects_attribute_level, is_relation
-from universalasync import async_to_sync_wraps
-
 from Domain import global_vars
 from Domain.logger.OTLLogger import OTLLogger
 from Domain.ProgramFileStructure import ProgramFileStructure
@@ -39,9 +37,8 @@ class ExportFilteredDataSubDomain:
         cls.original_documents = {}
 
     @classmethod
-    def add_original_documents(cls,paths_str:list[str]):
-        for path_str in paths_str:
-            path = Path(path_str)
+    def add_original_documents(cls,paths:list[Path]):
+        for path in paths:
             filename = path.name
             cls.original_documents[filename] = path
         cls.update_frontend()
@@ -123,7 +120,6 @@ class ExportFilteredDataSubDomain:
                                separate_relations_option=separate_relations_option,**kwargs)
 
     @classmethod
-    @async_to_sync_wraps
     @add_loading_screen
     async def export_diff_report(cls,
                            file_name: str,
@@ -157,7 +153,6 @@ class ExportFilteredDataSubDomain:
 
 
     @classmethod
-    @async_to_sync_wraps
     @add_loading_screen_no_delay
     async def generate_changed_assets_from_files(cls,project: Project) -> list:
         changed_assets = []
@@ -169,7 +164,6 @@ class ExportFilteredDataSubDomain:
         return changed_assets
 
     @classmethod
-    @async_to_sync_wraps
     async def generate_original_assets_from_files(cls,original_documents: List[str]) -> List[OTLObject]:
         original_assets = []
         for path in original_documents:
