@@ -746,10 +746,9 @@ class TemplateScreen(TemplateScreenInterface):
 
         chosen_file_format = self.file_extension_selection.currentText()
         if chosen_file_format in self.supported_export_formats:
-            file_suffix = self.supported_export_formats[chosen_file_format]
-            filter_filepicker = f"{chosen_file_format} files (*.{file_suffix})"
-
-            selection_path_list = self.template_export_file_picker.summon(chosen_file_format=filter_filepicker)
+            selection_path_list = self.template_export_file_picker.summon(
+                chosen_file_format=chosen_file_format,
+                supported_export_formats=self.supported_export_formats)
             self.save_template(selection_path_list)
 
     def save_template(self, document_paths:list[Path]):

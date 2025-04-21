@@ -1,4 +1,3 @@
-import os.path
 from abc import abstractmethod
 from copy import deepcopy
 from pathlib import Path
@@ -7,6 +6,8 @@ from typing import Optional
 from PyQt6.QtWidgets import QFileDialog
 
 from Domain import global_vars
+from Domain.logger.OTLLogger import OTLLogger
+from UnitTests.TestModel.OtlmowModel.BaseClasses.OTLObject import OTLObject
 
 
 class AbstractFilePickerDialog(QFileDialog):
@@ -17,6 +18,7 @@ class AbstractFilePickerDialog(QFileDialog):
         super().__init__()
         self._ = language_settings
         self.name_filter = name_filter
+        self.previous_file_dialog_state = None
 
         self.supported_export_formats: dict = deepcopy(global_vars.supported_file_formats)
 
@@ -41,18 +43,48 @@ class AbstractFilePickerDialog(QFileDialog):
 
         return ";;".join(filters)
 
-    def summon(self, chosen_file_format: Optional[str]= "", directory: Optional[str|Path]=None):
+    def summon(self, chosen_file_format: Optional[str]= "", directory: Optional[str|Path]=None,
+               supported_export_formats:dict[str,str]=None):
+
         if directory:
             if isinstance(directory,str):
                 directory = Path(directory)
-
             if directory.exists():
                 self.setDirectory(str(directory))
+            elif self.previous_file_dialog_state:
+                self.setDirectory(self.previous_file_dialog_state)
+
+        elif self.previous_file_dialog_state:
+            self.setDirectory(self.previous_file_dialog_state)
 
         if chosen_file_format:
-            self.setNameFilter(chosen_file_format)
+            if not supported_export_formats:
+                supported_export_formats = self.supported_export_formats
 
-        return self.execute()
+            if chosen_file_format in supported_export_formats:
+                file_suffix = supported_export_formats[chosen_file_format]
+                filter_filepicker = f"{chosen_file_format} files (*.{file_suffix})"
+                self.setNameFilter(filter_filepicker)
+
+        res = self.execute()
+
+        self.previous_file_dialog_state = self.directory().absolutePath()
+
+        #make sure that loaded files actually have the format that is chosen
+        if chosen_file_format and (chosen_file_format in supported_export_formats) and res:
+            file_suffix = supported_export_formats[chosen_file_format]
+            for i in range(len(res)):
+                res[i]= res[i].with_suffix(f"")
+
+                OTLLogger.logger.debug(f"removing suffix to test {str( res[i])}")
+
+            for i in range(len(res)):
+                res[i] = res[i].with_suffix("")
+                if res[i].suffix != f".{file_suffix}":
+                    res[i]= res[i].with_suffix(f".{file_suffix}")
+
+                    OTLLogger.logger.debug(f"add suffix again {str(res[i])}")
+        return res
 
     @abstractmethod
     def execute(self) -> list[Path]:

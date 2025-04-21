@@ -11,6 +11,7 @@ from PyQt6.QtWidgets import QVBoxLayout, QPushButton, QFrame, QLabel, QHBoxLayou
 
 from Domain import global_vars
 from Domain.step_domain.ExportDataDomain import ExportDataDomain
+from GUI.dialog_windows.file_picker_dialog.SaveFilePickerDialog import SaveFilePickerDialog
 from GUI.screens.Screen import Screen
 
 
@@ -31,7 +32,11 @@ class AbstractExportDataSubScreen(Screen):
         self.supported_export_formats:dict = deepcopy(global_vars.supported_file_formats)
         if "SDF" in self.supported_export_formats:
             self.supported_export_formats.pop("SDF") # not yet supported for export in V0.5.0
+
+        self.export_file_dialog_window = SaveFilePickerDialog(self._)
+
         self.init_ui()
+
 
     @abstractmethod
     def init_ui(self) -> None:
@@ -133,26 +138,23 @@ class AbstractExportDataSubScreen(Screen):
         :return: None
         """
 
-        file_path = str(Path.home())
 
-        file_picker = QFileDialog()
-        file_picker.setModal(True)
-        file_picker.setDirectory(file_path)
 
         chosen_file_format = self.file_extension_selection.currentText()
         if chosen_file_format in self.supported_export_formats:
-            file_suffix = self.supported_export_formats[chosen_file_format]
-            filter_filepicker = f"{chosen_file_format} files (*.{file_suffix})"
-            document_loc = file_picker.getSaveFileName(filter=filter_filepicker)
-        else:
-            document_loc = file_picker.getSaveFileName()
+            document_path_list = self.export_file_dialog_window.summon(
+                chosen_file_format=chosen_file_format,
+                supported_export_formats=self.supported_export_formats)
 
-        if document_loc != ('', ''):
-            csv_option = self.extra_option_csv.isChecked()
-            split_relations_and_objects = self.relations_split_optionality.isChecked()
-            event_loop = asyncio.get_event_loop()
-            event_loop.create_task(
-                ExportDataDomain.generate_files(end_file=document_loc[0],
+            if document_path_list and document_path_list[0]:
+                csv_option = self.extra_option_csv.isChecked()
+                split_relations_and_objects = self.relations_split_optionality.isChecked()
+                self.process_export(document_path_list, csv_option, split_relations_and_objects)
+
+    def process_export(self, document_path_list, csv_option, split_relations_and_objects):
+        event_loop = asyncio.get_event_loop()
+        event_loop.create_task(
+            ExportDataDomain.generate_files(end_file=document_path_list[0],
                                             separate_per_class_csv_option=csv_option,
                                             separate_relations_option=split_relations_and_objects))
 

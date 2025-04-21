@@ -19,7 +19,7 @@ from GUI.dialog_windows.file_picker_dialog.SaveFilePickerDialog import SaveFileP
 from GUI.screens.Home_elements.OverviewTableItem import OverviewTableItem
 
 from GUI.screens.general_elements.ButtonWidget import ButtonWidget
-from GUI.dialog_windows.ExportProjectWindow import ExportProjectWindow
+
 from GUI.dialog_windows.UpsertProjectWindow import UpsertProjectWindow
 from GUI.dialog_windows.RemoveProjectWindow import RemoveProjectWindow
 

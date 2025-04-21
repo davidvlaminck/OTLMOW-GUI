@@ -2,6 +2,8 @@ from copy import deepcopy
 from pathlib import Path
 from typing import Optional
 
+from PyQt6.QtWidgets import QFileDialog
+
 from Domain.logger.OTLLogger import OTLLogger
 from GUI.dialog_windows.file_picker_dialog.AbstractFilePickerDialog import AbstractFilePickerDialog
 
@@ -21,19 +23,34 @@ class SaveFilePickerDialog(AbstractFilePickerDialog):
                     self.supported_export_formats.pop(
                         excluded_type)  # SDF is not yet supported for export in V0.7.2
         self.setModal(True)
+        self.setAcceptMode(QFileDialog.AcceptSave)
 
+
+    # def execute(self):
+    #     save_location = self.getSaveFileName(filter=";;".join(self.nameFilters()))
+    #     if not save_location:
+    #         OTLLogger.logger.debug(f"save_file_dialog return: {[]}")
+    #         return []
+    #     if not save_location[0]:
+    #         OTLLogger.logger.debug(f"save_file_dialog return: {[]}")
+    #         return []
+    #
+    #     OTLLogger.logger.debug(f"save_file_dialog return: {[Path(save_location[0])]}")
+    #     return [Path(save_location[0])]
 
     def execute(self):
-        save_location = self.getSaveFileName(filter=";;".join(self.nameFilters()))
-        if not save_location:
-            OTLLogger.logger.debug(f"save_file_dialog return: {[]}")
-            return []
-        if not save_location[0]:
-            OTLLogger.logger.debug(f"save_file_dialog return: {[]}")
-            return []
+        if self.exec():
+            save_location = self.selectedFiles()
 
-        OTLLogger.logger.debug(f"save_file_dialog return: {[Path(save_location[0])]}")
-        return [Path(save_location[0])]
+            if not save_location:
+                OTLLogger.logger.debug(f"save_file_dialog return: {[]}")
+                return []
+            if not save_location[0]:
+                OTLLogger.logger.debug(f"save_file_dialog return: {[]}")
+                return []
 
+            OTLLogger.logger.debug(f"save_file_dialog return: {[Path(save_location[0])]}")
+            return [Path(save_location[0])]
+        return []
 
 

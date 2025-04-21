@@ -23,7 +23,7 @@ from GUI.dialog_windows.file_picker_dialog.ProjectImportFilePickerDialog import 
 from GUI.screens.general_elements.ButtonWidget import ButtonWidget
 from GUI.dialog_windows.LanguageWindow import LanguageWindow
 from GUI.dialog_windows.MenuActionsWindow import MenuActionsWindow
-from GUI.dialog_windows.ProjectPickerWindow import ProjectPickerWindow
+
 from GUI.dialog_windows.UpsertProjectWindow import UpsertProjectWindow
 from GUI.screens.Home_elements.OverviewTable import OverviewTable
 
