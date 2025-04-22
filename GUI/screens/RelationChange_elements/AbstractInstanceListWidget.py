@@ -319,7 +319,7 @@ class AbstractInstanceListWidget:
     def is_last_added(self, text_and_data: dict):
         raise NotImplementedError
 
-    def create_attribute_field(self):
+    def create_attribute_field(self) -> None:
 
         self.attribute_field.setColumnCount(2)
         self.attribute_field.setProperty('class', 'attribute_field')
@@ -335,7 +335,7 @@ class AbstractInstanceListWidget:
 
         return self.attribute_field
 
-    def fill_object_attribute_field(self, object_attribute_dict:dict):
+    def fill_object_attribute_field(self, object_attribute_dict:dict) -> None:
 
         self.attribute_field.clear()
 
@@ -367,18 +367,18 @@ class AbstractInstanceListWidget:
         frame.setLayout(frame_layout)
         return frame
 
-    def search_listener(self,text:str):
+    def search_listener(self,text:str) -> None:
         self.search_text = text.lower()
         if not self.search_text:
             self.set_all_folder_items_collapsed()
 
         RelationChangeDomain.update_frontend()
 
-    def clear_search_listener(self):
+    def clear_search_listener(self) -> None:
         self.search_bar.setText("")
         RelationChangeDomain.update_frontend()
 
-    def set_search_text(self, text):
+    def set_search_text(self, text) -> None:
         self.search_bar.setText(text)
 
     def filter_on_search_text(self, items:list[QListWidgetItem]) -> list[QListWidgetItem]:

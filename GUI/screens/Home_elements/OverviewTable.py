@@ -6,7 +6,7 @@ from typing import Union, Callable
 import datetime
 import qtawesome as qta
 from PyQt6.QtCore import Qt, QModelIndex
-from PyQt6.QtGui import QPainter, QBrush
+from PyQt6.QtGui import QPainter, QBrush, QColor
 
 from PyQt6.QtWidgets import QTableWidget, QHeaderView, QStyledItemDelegate
 
@@ -236,7 +236,7 @@ class OverviewTable(QTableWidget):
         Returns:
             None
         """
-
+        search_text = search_text.lower()
         rows_to_remove = []
 
         # search on all columns
@@ -246,13 +246,25 @@ class OverviewTable(QTableWidget):
             subset = self.item(i,2).text()
             laatst_bewerkt = self.item(i,3).text()
 
-            if (
-                search_text not in eigen_referentie.lower()
-                and search_text not in bestek.lower()
-                and search_text not in subset.lower()
-                and search_text not in laatst_bewerkt.lower()
-            ):
+            found = False
+            highlight_brush = QBrush(QColor(Qt.GlobalColor.darkGray))
+            if search_text in eigen_referentie.lower():
+                self.item(i, 0).setBackground(highlight_brush)
+                found = True
+            if search_text in bestek.lower():
+                self.item(i, 1).setBackground(highlight_brush)
+                found = True
+            if search_text in subset.lower():
+                self.item(i, 2).setBackground(highlight_brush)
+                found = True
+            if search_text in laatst_bewerkt.lower():
+                self.item(i, 3).setBackground(highlight_brush)
+                found = True
+
+            if not found:
                 rows_to_remove.append(i)
+
+        rows_to_remove.sort(reverse=True)
 
         for row_i in rows_to_remove:
             self.removeRow(row_i)
