@@ -164,10 +164,10 @@ class HomeScreen(HomeScreenInterface):
         return search_wrapper
 
     # noinspection PyMethodMayBeStatic
-    def set_clear_icon(self, button: QPushButton):
+    def set_clear_icon(self, button: QPushButton) -> None:
         button.setIcon(qta.icon('mdi.close', color=Styling.button_icon_color))
 
-    def clear_search_listener(self):
+    def clear_search_listener(self) -> None:
         self.search_input_field.setText("")
         HomeDomain.update_frontend()
 
