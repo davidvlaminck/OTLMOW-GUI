@@ -468,19 +468,21 @@ class RelationChangeDomain:
             RelationChangeDomain.set_possible_relations(selected_object)
         """
 
-        cls.selected_object = selected_object
-        if not selected_object:
+        cls.set_selected_object(selected_object)
+        if not cls.selected_object:
             cls.get_screen().clear_possible_relation_elements()
             return
 
-
-
+        # generate all relations that the selected asset can have (within subset or full OTL)
+        # only update this list when an external asset is added
+        # OR when the user switches to the full OTL
         if (cls.external_object_added or not
                 RelationChangeDomain.are_possible_relations_to_other_class_types_collected_for(
                 selected_object.typeURI)):
             cls.collect_possible_relations_to_class_types_from(selected_object)
             cls.external_object_added = False
 
+        # get all assets except the selected_object
         related_objects: list[RelationInteractor] = list(
             filter(RelationChangeDomain.filter_out(object_to_filter_for=selected_object), 
                    cls.shown_objects))
@@ -488,16 +490,16 @@ class RelationChangeDomain:
         selected_id = RelationChangeHelpers.get_corrected_identificator(otl_object=selected_object)
         relation_list = cls.possible_relations_per_class_dict[selected_object.typeURI]
 
-        # if selected_id:
-        #     map_window = cls.get_map_screen()
-        #     if map_window:
-        #         map_window.activate_highlight_layer_by_id(selected_id)
-
+        # remove all previously generated relations for the selected_id
         cls.possible_object_to_object_relations_dict[selected_id] = {}
+        # add all relations loaded that have isActief == False
         cls.add_inactive_relations_to_possible_relations(selected_id=selected_id)
+
         cls.add_all_possible_relations_between_selected_and_related_objects(
             relation_list=relation_list,selected_object=selected_object,
             related_objects=related_objects)
+
+        # sort generated relations
         cls.possible_object_to_object_relations_dict = (
             Helpers.sort_nested_dict(dictionary=cls.possible_object_to_object_relations_dict))
 
@@ -526,6 +528,10 @@ class RelationChangeDomain:
         if selected_id in cls.possible_object_to_object_relations_dict:
             return cls.possible_object_to_object_relations_dict[selected_id]
         return {}
+
+    @classmethod
+    def set_selected_object(cls,selected_object:RelationInteractor) -> None:
+        cls.selected_object = selected_object
 
     @classmethod
     @profile
@@ -655,7 +661,8 @@ class RelationChangeDomain:
                         selected_object=selected_object))
             else:
                 cls.possible_relations_per_class_dict[selected_object.typeURI] = \
-                    cls.collector.find_all_concrete_relations(objectUri=selected_object.typeURI, allow_duplicates=False)
+                    cls.collector.find_all_concrete_relations(objectUri=selected_object.typeURI,
+                                                              allow_duplicates=False)
         except ValueError as e:
             OTLLogger.logger.debug(e)
             cls.possible_relations_per_class_dict[selected_object.typeURI] = (
@@ -1051,8 +1058,8 @@ class RelationChangeDomain:
                                extra={"timing_ref": f"update_frontend"})
 
     @classmethod
-    def set_selected_object(cls,identificator):
-        cls.selected_object = cls.get_object(identificator)
+    def set_selected_object_from_map(cls, identificator):
+        cls.set_selected_object(cls.get_object(identificator))
         cls.get_screen().set_selected_object(identificator)
 
     @classmethod

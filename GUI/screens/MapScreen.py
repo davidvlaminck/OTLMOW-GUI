@@ -65,7 +65,7 @@ class WebBridge(QObject):
         asset_id = str(data["id"])
 
         print(f"received map marker selection in Python selected id: {asset_id}")
-        RelationChangeDomain.set_selected_object(asset_id)
+        RelationChangeDomain.set_selected_object_from_map(asset_id)
         RelationChangeDomain.update_frontend()
 
 class MapScreen(Screen):
