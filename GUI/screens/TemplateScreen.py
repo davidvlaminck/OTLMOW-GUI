@@ -748,7 +748,8 @@ class TemplateScreen(TemplateScreenInterface):
         if chosen_file_format in self.supported_export_formats:
             selection_path_list = self.template_export_file_picker.summon(
                 chosen_file_format=chosen_file_format,
-                supported_export_formats=self.supported_export_formats)
+                supported_export_formats=self.supported_export_formats,
+                project_name=global_vars.current_project.eigen_referentie)
             self.save_template(selection_path_list)
 
     def save_template(self, document_paths:list[Path]):

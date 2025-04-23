@@ -19,6 +19,7 @@ class AbstractFilePickerDialog(QFileDialog):
         self._ = language_settings
         self.name_filter = name_filter
         self.previous_file_dialog_state = None
+        self.previous_exported_file_name = None
 
         self.supported_export_formats: dict = deepcopy(global_vars.supported_file_formats)
 
@@ -44,7 +45,7 @@ class AbstractFilePickerDialog(QFileDialog):
         return ";;".join(filters)
 
     def summon(self, chosen_file_format: Optional[str]= "", directory: Optional[str|Path]=None,
-               supported_export_formats:dict[str,str]=None):
+               supported_export_formats:dict[str,str]=None,project_name:Optional[str] = None):
 
         if directory:
             if isinstance(directory,str):
@@ -66,9 +67,12 @@ class AbstractFilePickerDialog(QFileDialog):
                 filter_filepicker = f"{chosen_file_format} files (*.{file_suffix})"
                 self.setNameFilter(filter_filepicker)
 
+        self.set_filename_suggestions(project_name)
+
         res = self.execute()
 
         self.previous_file_dialog_state = self.directory().absolutePath()
+        self.store_save_filename(res)
 
         #make sure that loaded files actually have the format that is chosen
         if chosen_file_format and (chosen_file_format in supported_export_formats) and res:
@@ -81,6 +85,15 @@ class AbstractFilePickerDialog(QFileDialog):
 
         return res
 
+    def set_filename_suggestions(self, project_name):
+        pass
+
     @abstractmethod
     def execute(self) -> list[Path]:
        return []
+
+    def store_save_filename(self,res:list[str]):
+        pass
+
+    def get_filename_suggestion(self, project_name):
+        pass

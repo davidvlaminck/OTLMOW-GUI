@@ -187,7 +187,7 @@ class OverviewTable(QTableWidget):
     def open_export_project_dialog_window(self, project:Project):
 
         # set the action_function in the dialog with the new project
-        save_locations = self.export_project_dialog_window.summon()
+        save_locations = self.export_project_dialog_window.summon(project_name=project.eigen_referentie)
         self.export_project(save_locations,project)
 
     def export_project(self,save_locations: list[Path],project:Project):

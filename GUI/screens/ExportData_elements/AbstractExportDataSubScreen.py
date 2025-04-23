@@ -144,7 +144,8 @@ class AbstractExportDataSubScreen(Screen):
         if chosen_file_format in self.supported_export_formats:
             document_path_list = self.export_file_dialog_window.summon(
                 chosen_file_format=chosen_file_format,
-                supported_export_formats=self.supported_export_formats)
+                supported_export_formats=self.supported_export_formats,
+                project_name=global_vars.current_project.eigen_referentie)
 
             if document_path_list and document_path_list[0]:
                 csv_option = self.extra_option_csv.isChecked()

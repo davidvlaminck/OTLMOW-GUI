@@ -15,3 +15,7 @@ class ProjectExportFilePickerDialog(SaveFilePickerDialog):
             self.setWindowTitle(self._("export_OTL_project"))
         if not name_filter:
             self.setNameFilter(self._("OTLWizard project files (*.otlw)"))
+
+    def get_filename_suggestion(self, project_name):
+        return project_name + "_project"
+
