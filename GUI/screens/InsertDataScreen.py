@@ -572,7 +572,11 @@ class InsertDataScreen(Screen):
         selected_file_path_list = self.load_file_dialog_window.summon()
 
         if selected_file_path_list:
-            InsertDataDomain.add_files_to_backend_list(files=selected_file_path_list)
+            try:
+                InsertDataDomain.add_files_to_backend_list(files=selected_file_path_list)
+            except Exception as e:
+                # TODO: proper error message when file fails to be added to project
+                raise e
             self.clear_feedback()
 
 

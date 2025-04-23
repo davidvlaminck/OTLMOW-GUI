@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 from typing import Callable
 
 from PyQt6.QtCore import Qt
@@ -181,6 +182,9 @@ class UpsertProjectWindow(QDialog):
             return
         except WrongDatabaseError as e:
             self.error_label.setText(str(e))
+            return
+        except FileNotFoundError as e:
+            self.error_label.setText(f"Can't find subset: {str(Path(input_subset).name)}")
             return
         self.error_label.setText("")
 

@@ -256,7 +256,12 @@ class HeaderBar(QFrame):
         if not selected_file_path_list or not selected_file_path_list[0]:
             return
 
-        project = Project.import_project(selected_file_path_list[0])
+        try:
+            project = Project.import_project(selected_file_path_list[0])
+        except Exception as e:
+            # TODO: proper error messag when project fails to import
+            raise e
+
 
         if project is None:
             return

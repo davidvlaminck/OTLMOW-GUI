@@ -191,8 +191,12 @@ class ExportFilteredDataSubScreen(AbstractExportDataSubScreen):
 
 
     def navigate_to_diff_report(self, table):
-        event_loop = asyncio.get_event_loop()
-        event_loop.create_task(ExportFilteredDataSubDomain.get_diff_report())
+        try:
+            event_loop = asyncio.get_event_loop()
+            event_loop.create_task(ExportFilteredDataSubDomain.get_diff_report())
+        except Exception as e:
+            # TODO: proper error message when original file to be loaded for comparison cannot be loaded
+            raise e
 
 
     def fill_up_change_table(self, report):
@@ -218,6 +222,7 @@ class ExportFilteredDataSubScreen(AbstractExportDataSubScreen):
         if selected_file_path_list:
             OTLLogger.logger.debug("file picker executed")
             ExportFilteredDataSubDomain.add_original_documents(selected_file_path_list)
+
             
 
     def update_original_files_list(self, files:dict[str,Path]):

@@ -86,7 +86,10 @@ class ChangeSubsetWindow(QDialog):
             self.error_label.setText(str(e))
             self.input_subset.setText(str(old_project_path))
             return
-
+        except FileNotFoundError as e:
+            self.error_label.setText(f"Can't find subset: {str(Path(input_subset).name)}")
+            self.input_subset.setText(str(old_project_path))
+            return
         self.close()
 
     def create_button_box(self) -> QDialogButtonBox:

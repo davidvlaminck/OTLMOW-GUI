@@ -9,6 +9,7 @@ from PyQt6.QtCore import Qt, QModelIndex
 from PyQt6.QtGui import QPainter, QBrush, QColor
 
 from PyQt6.QtWidgets import QTableWidget, QHeaderView, QStyledItemDelegate
+from cryptography.hazmat.primitives.asymmetric.ec import ECDSA
 
 from Domain.step_domain.HomeDomain import HomeDomain
 from Domain.project.Project import Project
@@ -188,7 +189,11 @@ class OverviewTable(QTableWidget):
 
         # set the action_function in the dialog with the new project
         save_locations = self.export_project_dialog_window.summon(project_name=project.eigen_referentie)
-        self.export_project(save_locations,project)
+        try:
+            self.export_project(save_locations,project)
+        except Exception as e:
+            #TODO: proper error message when project fails to export
+            raise e
 
     def export_project(self,save_locations: list[Path],project:Project):
         if not save_locations or not save_locations[0]:

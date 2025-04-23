@@ -150,7 +150,11 @@ class AbstractExportDataSubScreen(Screen):
             if document_path_list and document_path_list[0]:
                 csv_option = self.extra_option_csv.isChecked()
                 split_relations_and_objects = self.relations_split_optionality.isChecked()
-                self.process_export(document_path_list, csv_option, split_relations_and_objects)
+                try:
+                    self.process_export(document_path_list, csv_option, split_relations_and_objects)
+                except Exception as e:
+                    # TODO: proper error message when file fails to be exported
+                    raise e
 
     def process_export(self, document_path_list, csv_option, split_relations_and_objects):
         event_loop = asyncio.get_event_loop()

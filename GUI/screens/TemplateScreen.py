@@ -750,7 +750,11 @@ class TemplateScreen(TemplateScreenInterface):
                 chosen_file_format=chosen_file_format,
                 supported_export_formats=self.supported_export_formats,
                 project_name=global_vars.current_project.eigen_referentie)
-            self.save_template(selection_path_list)
+            try:
+                self.save_template(selection_path_list)
+            except Exception as e:
+                # TODO: proper error message when template export fails
+                raise e
 
     def save_template(self, document_paths:list[Path]):
 
