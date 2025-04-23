@@ -33,6 +33,8 @@ class AbstractInstanceListWidget:
         self.list_button = ButtonWidget()
 
         self.list_label = None
+        self.list_subtext_frame = None
+        self.list_subtext_layout = None
         self.list_subtext_label = None
         self.attribute_field: QTreeWidget = QTreeWidget()
         self.attribute_field.setSelectionMode(QTreeWidget.SelectionMode.NoSelection)
@@ -102,14 +104,7 @@ class AbstractInstanceListWidget:
         self.list_label.setFont(list_label_font)
         # self.list_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-        self.list_subtext_label = QLabel()
-        self.list_subtext_label.setText(self.list_subtext_label_text)
-        # self.list_subtext_label.setAlignment(Qt.AlignmentFlag.AlignHCenter )
-
-        list_subtext_label_font = QFont()
-        list_subtext_label_font.setItalic(True)
-        self.list_subtext_label.setFont(list_subtext_label_font)
-        self.list_subtext_label.setWordWrap(True)
+        self.list_subtext_frame = self.create_list_subtext_frame()
 
         self.list_gui = FolderTreeView()
         self.list_gui.setProperty('class', 'list')
@@ -129,7 +124,8 @@ class AbstractInstanceListWidget:
 
 
         self.frame_layout.addWidget(self.list_label)
-        self.frame_layout.addWidget(self.list_subtext_label)
+        self.frame_layout.addWidget(self.list_subtext_frame)
+
         self.frame_layout.addWidget(self.create_search_bar())
         self.frame_layout.addWidget(self.list_gui,10)
 
@@ -144,6 +140,27 @@ class AbstractInstanceListWidget:
         frame.setLayout(self.frame_layout)
 
         return frame
+
+    def create_list_subtext_frame(self) -> QFrame:
+        list_subtext_frame = QFrame()
+        self.list_subtext_layout = QVBoxLayout()
+        self.list_subtext_layout.setContentsMargins(0, 0, 0, 0)
+
+        list_subtext_label_font = QFont()
+        list_subtext_label_font.setItalic(True)
+
+        self.list_subtext_label = QLabel()
+        self.list_subtext_label.setText(self.list_subtext_label_text)
+        self.list_subtext_label.setFont(list_subtext_label_font)
+        self.list_subtext_label.setWordWrap(True)
+        self.list_subtext_label.setAlignment(Qt.AlignmentFlag.AlignTop )
+
+        self.list_subtext_layout.addWidget(self.list_subtext_label)
+        self.add_extra_elements_to_list_subtext_layout()
+
+        list_subtext_frame.setLayout(self.list_subtext_layout)
+
+        return list_subtext_frame
 
     def clicked_item_listener(self, table_coord: QModelIndex) -> None:
         """
@@ -390,7 +407,7 @@ class AbstractInstanceListWidget:
         return self._("no_instance_selected")
 
 
-    def create_asset_type_standard_item(self, asset_type, text_and_data_list):
+    def create_asset_type_standard_item(self, asset_type:str, text_and_data_list) -> QStandardItem:
         item_count = len(text_and_data_list)
         selected_item_count = 0
 
@@ -549,3 +566,9 @@ class AbstractInstanceListWidget:
 
     def get_current_list_content_dict(self) -> dict:
         return self.id_to_object_with_text_and_data_dict
+
+    def add_extra_elements_to_list_subtext_layout(self) -> None:
+        pass
+
+    def get_adjustable_subtext_frame(self):
+        return self.list_subtext_frame
