@@ -116,16 +116,21 @@ class RelationChangeScreen(RelationChangeScreenInterface):
         :returns: None
         """
 
-        frame_rect_height = self.possible_relation_list_gui.list_subtext_label.frameRect().height()
-        frame_rect_object = self.objects_list_gui.list_subtext_label.frameRect()
-        frame_rect_exist = self.existing_relation_list_gui.list_subtext_label.frameRect()
+        possible_subtext_frame = self.possible_relation_list_gui.get_adjustable_subtext_frame()
+        object_subtext_frame = self.objects_list_gui.get_adjustable_subtext_frame()
+        exist_subtext_frame = self.existing_relation_list_gui.get_adjustable_subtext_frame()
+
+        frame_rect_height = possible_subtext_frame.frameRect().height()
+        frame_rect_object = object_subtext_frame.frameRect()
+        frame_rect_exist = exist_subtext_frame.frameRect()
+
         if self.existing_relation_frame.isVisible():
             if frame_rect_height != frame_rect_object.height():
-                self.objects_list_gui.list_subtext_label.setMinimumHeight(frame_rect_height)
+                object_subtext_frame.setMinimumHeight(frame_rect_height)
             if frame_rect_height != frame_rect_exist.height():
-                self.existing_relation_list_gui.list_subtext_label.setMinimumHeight(frame_rect_height)
+                exist_subtext_frame.setMinimumHeight(frame_rect_height)
         else:
-            self.objects_list_gui.list_subtext_label.setMinimumHeight(15)
+            object_subtext_frame.setMinimumHeight(15)
 
     def init_ui(self) -> None:
         """
@@ -483,3 +488,6 @@ class RelationChangeScreen(RelationChangeScreenInterface):
             self.map_window = MapScreen(self._,parent_screen=self)
             self.map_window.show()
             self.map_window.start_async_reload()
+
+    def is_show_all_OTL_relations_checked(self) -> bool:
+        return self.possible_relation_list_gui.is_show_all_OTL_relations_checked()

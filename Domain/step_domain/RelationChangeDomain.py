@@ -171,9 +171,11 @@ class RelationChangeDomain:
     last_added_to_existing: Optional[list[RelatieObject]] = []  # relation last added to col 3
     last_added_to_possible: Optional[list[RelatieObject]] = []  # relation last added to col 2
 
-    external_object_added = False
+    regenerate_relation_types = False
     visualisation_uptodate = True
     map_uptodate = True
+
+    search_full_OTL_mode = False
 
     @classmethod
     def init_static(cls, project: Project, asynchronous=True) -> None:
@@ -228,7 +230,7 @@ class RelationChangeDomain:
         cls.possible_relations_per_class_dict = {}
         cls.possible_object_to_object_relations_dict = {}
         cls.aim_id_relations = []
-        cls.external_object_added = False
+        cls.regenerate_relation_types = False
         cls.visualisation_uptodate = False
         cls.map_uptodate = False
 
@@ -473,22 +475,22 @@ class RelationChangeDomain:
             cls.get_screen().clear_possible_relation_elements()
             return
 
-        # generate all relations that the selected asset can have (within subset or full OTL)
+        # generate all relation types that the selected asset can have (within subset or full OTL)
         # only update this list when an external asset is added
         # OR when the user switches to the full OTL
-        if (cls.external_object_added or not
+        if (cls.regenerate_relation_types or not
                 RelationChangeDomain.are_possible_relations_to_other_class_types_collected_for(
                 selected_object.typeURI)):
             cls.collect_possible_relations_to_class_types_from(selected_object)
-            cls.external_object_added = False
+            cls.regenerate_relation_types = False
 
         # get all assets except the selected_object
-        related_objects: list[RelationInteractor] = list(
+        candidate_partner_assets: list[RelationInteractor] = list(
             filter(RelationChangeDomain.filter_out(object_to_filter_for=selected_object), 
                    cls.shown_objects))
 
         selected_id = RelationChangeHelpers.get_corrected_identificator(otl_object=selected_object)
-        relation_list = cls.possible_relations_per_class_dict[selected_object.typeURI]
+        relation_types_list = cls.possible_relations_per_class_dict[selected_object.typeURI]
 
         # remove all previously generated relations for the selected_id
         cls.possible_object_to_object_relations_dict[selected_id] = {}
@@ -496,8 +498,8 @@ class RelationChangeDomain:
         cls.add_inactive_relations_to_possible_relations(selected_id=selected_id)
 
         cls.add_all_possible_relations_between_selected_and_related_objects(
-            relation_list=relation_list,selected_object=selected_object,
-            related_objects=related_objects)
+            relation_list=relation_types_list,selected_object=selected_object,
+            related_objects=candidate_partner_assets)
 
         # sort generated relations
         cls.possible_object_to_object_relations_dict = (
@@ -654,7 +656,9 @@ class RelationChangeDomain:
         OTLLogger.logger.debug(f"Execute RelationChangeDomain.collect_possible_relations_to_class_types_from({log_typeURI}) for project {global_vars.current_project.eigen_referentie}",
                                extra={"timing_ref": f"collect_possible_relations_classes"})
         try:
-            if cls.external_objects or cls.agent_objects:
+            if (cls.external_objects or
+                cls.agent_objects or
+                cls.search_full_OTL_mode):
                 # this is the long search, but it includes relations with external assets
                 cls.possible_relations_per_class_dict[selected_object.typeURI] = (
                     RelationChangeDomain.get_all_concrete_relation_from_full_model(
@@ -1051,6 +1055,7 @@ class RelationChangeDomain:
         cls.get_screen().fill_existing_relations_list(relations_objects=cls.existing_relations,
                                                       last_added=cls.last_added_to_existing)
 
+
         event_loop = asyncio.get_event_loop()
         event_loop.create_task(cls.set_possible_relations(selected_object=cls.selected_object))
 
@@ -1262,7 +1267,7 @@ class RelationChangeDomain:
         """
 
         cls.shown_objects.extend(cls.external_objects)
-        cls.external_object_added = True
+        cls.regenerate_relation_types = True
 
     @classmethod
     def add_agent_objects_to_shown_objects(cls):
@@ -1274,7 +1279,7 @@ class RelationChangeDomain:
         :return: None
         """
         cls.shown_objects.extend(cls.agent_objects)
-        cls.external_object_added = True
+        cls.regenerate_relation_types = True
 
     # noinspection PyUnresolvedReferences,PyTypeChecker
     @classmethod
@@ -1304,7 +1309,7 @@ class RelationChangeDomain:
 
         cls.shown_objects.append(new_external_object)
 
-        cls.external_object_added = True
+        cls.regenerate_relation_types = True
         cls.update_frontend()
         
     @classmethod
@@ -1324,3 +1329,8 @@ class RelationChangeDomain:
     @classmethod
     def get_shown_objects(cls):
         return cls.shown_objects
+
+    @classmethod
+    def set_search_full_OTL_mode(cls,state:bool) -> None:
+        cls.search_full_OTL_mode = state
+        cls.regenerate_relation_types = True

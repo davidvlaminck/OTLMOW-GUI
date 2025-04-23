@@ -5,7 +5,7 @@ from typing import Union
 
 from PyQt6.QtCore import QItemSelectionModel
 from PyQt6.QtGui import QStandardItem, QPixmap, QIcon, QFont
-from PyQt6.QtWidgets import QFrame
+from PyQt6.QtWidgets import QFrame, QCheckBox
 from otlmow_model.OtlmowModel.Helpers import OTLObjectHelper
 from otlmow_model.OtlmowModel.BaseClasses.OTLObject import \
     OTLObject
@@ -30,6 +30,7 @@ class PossibleRelationListWidget(AbstractInstanceListWidget):
         self.list_label_text = self._('relations_list')
         self.list_subtext_label_text = self._("possible_relation_subscription")
         self.attribute_field_label_text = self._("possible_relation_partner_asset_attributes")
+        self.show_all_OTL_relations_checkbox = QCheckBox()
 
     def create_object_list_gui(self, multi_select: bool = False) -> QFrame:
         frame = super().create_object_list_gui(multi_select)
@@ -269,7 +270,7 @@ class PossibleRelationListWidget(AbstractInstanceListWidget):
     def is_last_added(self, text_and_data: dict):
         return text_and_data["data"].last_added
 
-    def create_asset_type_standard_item(self, asset_type, text_and_data_list):
+    def create_asset_type_standard_item(self, asset_type:str, text_and_data_list) -> QStandardItem:
         folder_item = super().create_asset_type_standard_item(asset_type,text_and_data_list)
 
         if text_and_data_list:
@@ -277,5 +278,24 @@ class PossibleRelationListWidget(AbstractInstanceListWidget):
             self.add_colored_relation_bol_icon_to_item(folder_item, full_typeURI)
         return folder_item
 
-    def get_no_instance_selected_message(self):
+    def get_no_instance_selected_message(self) -> str:
         return self._("no_relation_selected")
+
+    def add_extra_elements_to_list_subtext_layout(self) -> None:
+        self.show_all_OTL_relations_checkbox.setText(self._("Toon all OTL-relaties"))
+        self.show_all_OTL_relations_checkbox.setToolTip(self._("Toon alle mogelijke relaties met het geselecteerde asset in de volledige OTL (i.p.v. alleen subset)"))
+        self.show_all_OTL_relations_checkbox.stateChanged.connect(self.state_change_OTL_relations_checkbox)
+
+        self.list_subtext_layout.addWidget(self.show_all_OTL_relations_checkbox)
+
+
+    def is_show_all_OTL_relations_checked(self) -> bool:
+        return self.show_all_OTL_relations_checkbox.isChecked()
+
+    def state_change_OTL_relations_checkbox(self,state:int):
+        if state == 0:
+            RelationChangeDomain.set_search_full_OTL_mode(state=False)
+        else:
+            RelationChangeDomain.set_search_full_OTL_mode(state=True)
+        RelationChangeDomain.update_frontend()
+        OTLLogger.logger.debug(f"checkbox changed {state}")
