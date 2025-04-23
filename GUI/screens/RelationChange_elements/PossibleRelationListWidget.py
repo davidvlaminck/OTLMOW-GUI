@@ -283,7 +283,7 @@ class PossibleRelationListWidget(AbstractInstanceListWidget):
 
     def add_extra_elements_to_list_subtext_layout(self) -> None:
         self.show_all_OTL_relations_checkbox.setText(self._("Toon all OTL-relaties"))
-        self.show_all_OTL_relations_checkbox.setToolTip(self._("Toon alle mogelijke relaties met het geselecteerde asset in de volledige OTL (i.p.v. alleen subset)"))
+        self.show_all_OTL_relations_checkbox.setToolTip(self._("Toon alle mogelijke relaties met het geselecteerde asset in het volledige OTL (i.p.v. alleen subset)"))
         self.show_all_OTL_relations_checkbox.stateChanged.connect(self.state_change_OTL_relations_checkbox)
 
         self.list_subtext_layout.addWidget(self.show_all_OTL_relations_checkbox)
