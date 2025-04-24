@@ -3,7 +3,7 @@ import logging
 from collections import namedtuple
 from typing import Union
 
-from PyQt6.QtCore import QItemSelectionModel
+from PyQt6.QtCore import QItemSelectionModel, Qt
 from PyQt6.QtGui import QStandardItem, QPixmap, QIcon, QFont
 from PyQt6.QtWidgets import QFrame, QCheckBox
 from otlmow_model.OtlmowModel.Helpers import OTLObjectHelper
@@ -292,10 +292,15 @@ class PossibleRelationListWidget(AbstractInstanceListWidget):
     def is_show_all_OTL_relations_checked(self) -> bool:
         return self.show_all_OTL_relations_checkbox.isChecked()
 
-    def state_change_OTL_relations_checkbox(self,state:int):
-        if state == 0:
+    def state_change_OTL_relations_checkbox(self,state:int) -> None:
+
+        if state == Qt.CheckState.Unchecked:
             RelationChangeDomain.set_search_full_OTL_mode(state=False)
-        else:
+        elif state == Qt.CheckState.Checked:
             RelationChangeDomain.set_search_full_OTL_mode(state=True)
+        else:
+            # In case of an unexpected state, default to False.
+            RelationChangeDomain.set_search_full_OTL_mode(state=False)
+
         RelationChangeDomain.update_frontend()
         OTLLogger.logger.debug(f"checkbox changed {state}")

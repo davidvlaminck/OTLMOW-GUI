@@ -66,5 +66,5 @@ class RelationChangeScreenInterface(Screen):
     def set_selected_object(self, identificator: str):
         pass
 
-    def is_show_all_OTL_relations_checked(self) -> str:
+    def is_show_all_OTL_relations_checked(self) -> bool:
         pass
