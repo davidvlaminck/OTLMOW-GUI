@@ -303,4 +303,3 @@ class PossibleRelationListWidget(AbstractInstanceListWidget):
             RelationChangeDomain.set_search_full_OTL_mode(state=False)
 
         RelationChangeDomain.update_frontend()
-        OTLLogger.logger.debug(f"checkbox changed {state}")
