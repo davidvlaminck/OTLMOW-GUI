@@ -68,10 +68,6 @@ class TemplateScreenInterface(Screen):
         pass
 
 
-    @abstractmethod
-    def update_label_under_list(self) -> None:
-        pass
-
 
     @abstractmethod
     def select_all_classes_clicked(self) -> None:
@@ -90,4 +86,16 @@ class TemplateScreenInterface(Screen):
         pass
 
     def open_folder_of_created_template(self, document_path:Path):
+        pass
+
+    @abstractmethod
+    def update_label_under_list(self,total_amount_of_items:int,counter:int) -> None:
+        pass
+
+    @abstractmethod
+    def set_all_classes_selected(self) -> None:
+        pass
+
+    @abstractmethod
+    def deselect_all_classes(self) -> None:
         pass

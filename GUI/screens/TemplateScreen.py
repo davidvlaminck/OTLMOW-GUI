@@ -626,7 +626,11 @@ class TemplateScreen(TemplateScreenInterface):
         self.select_all_classes.setText(self._("select_all_classes"))
         self.select_all_classes.clicked.connect(lambda: self.select_all_classes_clicked())
         self.all_classes.setSelectionMode(QListWidget.SelectionMode.MultiSelection)
-        self.all_classes.itemSelectionChanged.connect(lambda: self.update_label_under_list())
+
+        # self.all_classes.itemSelectionChanged.connect(lambda: self.update_label_under_list()) # reacts to programmatical changes in the list selection
+        # self.all_classes.itemClicked.connect(lambda: self.update_label_under_list()) # reacts only to user changes in the list selection
+        self.all_classes.itemClicked.connect(self.class_items_clicked_listener)
+
         # self.all_classes.itemPressed.connect(lambda: self.list_item_pressed_listener())
         self.label_counter.setText(self._(f"{self.selected} classes selected"))
 
@@ -665,11 +669,16 @@ class TemplateScreen(TemplateScreenInterface):
             self.operator_name.setText("Loading")
             self.otl_version.setText("Loading")
 
-    def update_label_under_list(self):
-        total_amount_of_items = self.get_total_amount_of_items()
+    def class_items_clicked_listener(self, selected_item):
+        row_index = self.all_classes.indexFromItem(selected_item).row()
+        TemplateDomain.toggle_class_index(row_index)
 
 
-        counter = self.count_selected_items()
+    def update_label_under_list(self,total_amount_of_items:int,counter:int) -> None:
+        # total_amount_of_items = self.get_total_amount_of_items()
+
+
+        # counter = self.count_selected_items()
         self.selected = counter
         self.label_counter.setText(self._("{selected} classes selected").format(selected=self.selected))
         if counter:
@@ -698,16 +707,7 @@ class TemplateScreen(TemplateScreenInterface):
         if self.has_agent:
             count -= 1
         return count
-    def list_item_pressed_listener(self):
-        total_amount_of_items = self.get_total_amount_of_items()
-        counter = self.count_selected_items()
 
-        if total_amount_of_items == counter:
-            self.select_all_classes.setChecked(True)
-        else:
-            self.select_all_classes.setChecked(False)
-
-        # self.update_label_under_list()
 
     def select_all_classes_clicked(self):
         """
@@ -724,14 +724,21 @@ class TemplateScreen(TemplateScreenInterface):
         if not self.all_classes.isEnabled():
             return
         elif self.select_all_classes.isChecked():
-            self.all_classes.selectAll()
-            # self.update_label_under_list()
+            TemplateDomain.select_all_classes()
+
+            # self.all_classes.selectAll()
         else:
-            total_amount_of_items = self.get_total_amount_of_items()
-            counter = self.count_selected_items()
-            if total_amount_of_items == counter:
-                self.all_classes.clearSelection()
-                # self.update_label_under_list()
+            TemplateDomain.deselect_all_classes()
+
+    def deset_all_classes_selected(self) -> None:
+        total_amount_of_items = self.get_total_amount_of_items()
+        counter = self.count_selected_items()
+        if total_amount_of_items == counter:
+            self.all_classes.clearSelection()
+            # self.update_label_under_list()
+
+    def set_all_classes_selected(self) -> None:
+        self.all_classes.selectAll()
 
     def export_template_listener(self) -> None:  # sourcery skip: use-named-expression
         """
@@ -963,8 +970,9 @@ class TemplateScreen(TemplateScreenInterface):
             self.all_classes.addItem(item)
             if has_a_class_with_deprecated_attributes:
                 self.show_deprecated_attributes.setEnabled(False)
-        if self.select_all_classes.isChecked():
-            self.select_all_classes_clicked()
+
+        # if self.select_all_classes.isChecked():
+        #     self.select_all_classes_clicked()
 
 
 

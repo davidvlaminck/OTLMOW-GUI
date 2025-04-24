@@ -26,7 +26,9 @@ from GUI.translation.GlobalTranslate import GlobalTranslate
 class TemplateDomain:
 
     classes: list[OSLOClass] = []
-    has_a_class_with_deprecated_attributes = False
+    selected_classes_indexes: list[int] = []
+    all_classes_selected: bool = True
+    has_a_class_with_deprecated_attributes: bool = False
 
 
     @classmethod
@@ -124,6 +126,7 @@ class TemplateDomain:
                 OTLLogger.logger.info("otlmow-model version is high enough")
 
             cls.classes = modelbuilder.filter_relations_and_abstract()
+            cls.select_all_classes()
             cls.has_a_class_with_deprecated_attributes = TemplateDomain.check_for_no_deprecated_present()
 
 
@@ -136,6 +139,17 @@ class TemplateDomain:
         cls.update_frontend()
         cls.get_screen().reset_ui(GlobalTranslate._)
 
+    @classmethod
+    def select_all_classes(cls):
+        cls.selected_classes_indexes = list(range(len(cls.classes)))
+        TemplateDomain.all_classes_selected = True
+        cls.get_screen().set_all_classes_selected()
+
+    @classmethod
+    def deselect_all_classes(cls):
+        cls.selected_classes_indexes.clear()
+        TemplateDomain.all_classes_selected = False
+        cls.get_screen().deselect_all_classes()
 
     @classmethod
     def update_frontend(cls):
@@ -184,3 +198,12 @@ class TemplateDomain:
                 OTLLogger.logger.error("Opening a file on this OS is not implemented yet")
         else:
             cls.get_screen().open_folder_of_created_template(document_path)
+
+    @classmethod
+    def toggle_class_index(cls,index:int):
+        if index in cls.selected_classes_indexes:
+            cls.selected_classes_indexes.remove(index)
+        else:
+            cls.selected_classes_indexes.append(index)
+        cls.get_screen().update_label_under_list(len(cls.classes),len(cls.selected_classes_indexes))
+
