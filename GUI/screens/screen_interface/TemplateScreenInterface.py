@@ -82,7 +82,8 @@ class TemplateScreenInterface(Screen):
         pass
 
     @abstractmethod
-    def set_classes(self, classes, has_a_class_with_deprecated_attributes) -> None:
+    def set_classes(self, classes,selected_classes: list[int],
+                    all_classes_selected_checked:bool, has_a_class_with_deprecated_attributes) -> None:
         pass
 
     def open_folder_of_created_template(self, document_path:Path):
@@ -98,4 +99,8 @@ class TemplateScreenInterface(Screen):
 
     @abstractmethod
     def deselect_all_classes(self) -> None:
+        pass
+
+    @abstractmethod
+    def update_all_classes_selected(self, state: bool) -> None:
         pass

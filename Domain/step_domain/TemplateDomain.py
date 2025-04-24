@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import List
 
 from otlmow_converter.Exceptions.ExceptionsGroup import ExceptionsGroup
+from otlmow_model.OtlmowModel.Classes.Agent import Agent
 from otlmow_modelbuilder.SQLDataClasses.OSLOClass import OSLOClass
 from otlmow_template.SubsetTemplateCreator import SubsetTemplateCreator
 from Domain import global_vars
@@ -29,12 +30,15 @@ class TemplateDomain:
     selected_classes_indexes: list[int] = []
     all_classes_selected: bool = True
     has_a_class_with_deprecated_attributes: bool = False
-
+    has_agent:bool = False
 
     @classmethod
     def check_for_no_deprecated_present(cls) -> bool:
         return all(len(value.deprecated_version) == 0 for value in cls.classes)
 
+    @classmethod
+    def check_for_agent(cls) -> bool:
+        return any(Agent.typeURI == value.objectUri for value in cls.classes)
 
     @classmethod
     @add_loading_screen
@@ -126,9 +130,10 @@ class TemplateDomain:
                 OTLLogger.logger.info("otlmow-model version is high enough")
 
             cls.classes = modelbuilder.filter_relations_and_abstract()
-            cls.select_all_classes()
-            cls.has_a_class_with_deprecated_attributes = TemplateDomain.check_for_no_deprecated_present()
 
+            cls.has_a_class_with_deprecated_attributes = TemplateDomain.check_for_no_deprecated_present()
+            cls.has_agent = TemplateDomain.check_for_agent()
+            cls.select_all_classes()
 
 
         except FileNotFoundError as e:
@@ -141,20 +146,34 @@ class TemplateDomain:
 
     @classmethod
     def select_all_classes(cls):
-        cls.selected_classes_indexes = list(range(len(cls.classes)))
+        total_class_count = cls.get_total_amount_of_classes()
+        cls.selected_classes_indexes = list(range(total_class_count))
         TemplateDomain.all_classes_selected = True
+
         cls.get_screen().set_all_classes_selected()
+
+        cls.get_screen().update_all_classes_selected(cls.all_classes_selected)
+        cls.get_screen().update_label_under_list(
+            total_amount_of_items=cls.get_total_amount_of_classes(),
+            counter=total_class_count)
 
     @classmethod
     def deselect_all_classes(cls):
         cls.selected_classes_indexes.clear()
         TemplateDomain.all_classes_selected = False
+
         cls.get_screen().deselect_all_classes()
+
+        cls.get_screen().update_all_classes_selected(cls.all_classes_selected)
+        cls.get_screen().update_label_under_list(total_amount_of_items=cls.get_total_amount_of_classes(),
+                                                 counter=0)
 
     @classmethod
     def update_frontend(cls):
         cls.get_screen().update_project_info(global_vars.current_project)
         cls.get_screen().set_classes(classes=cls.classes,
+                                     selected_classes= cls.selected_classes_indexes,
+                                     all_classes_selected_checked=cls.all_classes_selected,
                                      has_a_class_with_deprecated_attributes=cls.has_a_class_with_deprecated_attributes)
 
     @classmethod
@@ -205,5 +224,35 @@ class TemplateDomain:
             cls.selected_classes_indexes.remove(index)
         else:
             cls.selected_classes_indexes.append(index)
-        cls.get_screen().update_label_under_list(len(cls.classes),len(cls.selected_classes_indexes))
 
+        cls.get_screen().update_label_under_list(total_amount_of_items=cls.get_total_amount_of_classes(),
+                                                 counter=len(cls.selected_classes_indexes))
+        cls.update_all_classes_selected_state()
+
+    @classmethod
+    def get_total_amount_of_classes(cls):
+
+        count = len(cls.classes)
+        if cls.has_agent:
+            count -= 1
+        return count
+
+    @classmethod
+    def update_all_classes_selected_state(cls):
+        cls.all_classes_selected = len(cls.selected_classes_indexes) == cls.get_total_amount_of_classes()
+        cls.get_screen().update_all_classes_selected(cls.all_classes_selected)
+
+    @classmethod
+    def set_select_all_classes(cls, new_state:bool):
+
+        if new_state:
+            cls.select_all_classes()
+            return
+
+        total_amount_of_items = cls.get_total_amount_of_classes()
+        counter = len(cls.selected_classes_indexes)
+        if total_amount_of_items == counter:
+            cls.deselect_all_classes()
+            return
+
+        cls.all_classes_selected = False

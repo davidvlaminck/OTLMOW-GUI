@@ -222,7 +222,7 @@ class OverviewTable(QTableWidget):
         :return: None
         """
 
-        self.main_window.setCurrentIndex(1)
+        # self.main_window.setCurrentIndex(1)
         project_ref = self.item(row, 0).data(1)
 
         HomeDomain.open_project(project_ref=project_ref)
