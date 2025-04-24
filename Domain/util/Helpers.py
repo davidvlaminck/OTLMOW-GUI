@@ -2,6 +2,7 @@ import asyncio
 import base64
 import logging
 import os
+import subprocess
 import tempfile
 import warnings
 from pathlib import Path
@@ -217,3 +218,12 @@ class Helpers:
             partner_type_uri = Helpers.extract_typeURI_from_aim_id(partner_id)
 
         return partner_type_uri
+
+    @classmethod
+    def open_folder_and_select_document(cls,document_path:Path):
+        if document_path.exists():
+            command = f'explorer /select,"{document_path}"'
+        else:
+            command = f'explorer "{document_path.parent}"'
+        OTLLogger.logger.debug(command)
+        subprocess.Popen(command)

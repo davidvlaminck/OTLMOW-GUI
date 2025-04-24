@@ -1,4 +1,5 @@
 from abc import abstractmethod
+from pathlib import Path
 
 from PyQt6.QtWidgets import QFrame, QWidget
 
@@ -86,4 +87,7 @@ class TemplateScreenInterface(Screen):
 
     @abstractmethod
     def set_classes(self, classes, has_a_class_with_deprecated_attributes) -> None:
+        pass
+
+    def open_folder_of_created_template(self, document_path:Path):
         pass

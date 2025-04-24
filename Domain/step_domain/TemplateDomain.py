@@ -1,6 +1,7 @@
 import asyncio
 import os
 import platform
+import subprocess
 import traceback
 from pathlib import Path
 from typing import List
@@ -181,3 +182,5 @@ class TemplateDomain:
                 os.startfile(document_path)
             else:
                 OTLLogger.logger.error("Opening a file on this OS is not implemented yet")
+        else:
+            cls.get_screen().open_folder_of_created_template(document_path)

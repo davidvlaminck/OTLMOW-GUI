@@ -47,6 +47,7 @@ class ExportDataDomain:
         relations_in_memory = sorted(RelationChangeDomain.get_persistent_relations(), key=lambda relation1: relation1.typeURI)
         await cls.export_to_files(assets_in_memory, relations_in_memory, end_file,
                             separate_per_class_csv_option, separate_relations_option, **kwargs)
+        cls.get_screen().open_folder_of_created_export_files(end_file)
 
     @classmethod
     async def export_to_files(cls, assets, relations, end_file, separate_per_class_csv_option,

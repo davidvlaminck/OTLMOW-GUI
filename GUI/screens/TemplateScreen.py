@@ -1,4 +1,5 @@
 import asyncio
+import subprocess
 from copy import deepcopy
 from enum import IntEnum
 from pathlib import Path
@@ -14,6 +15,7 @@ from Domain import global_vars
 from Domain.logger.OTLLogger import OTLLogger
 from Domain.project.Project import Project
 from Domain.step_domain.TemplateDomain import TemplateDomain
+from Domain.util.Helpers import Helpers
 from GUI.dialog_windows.ExportToTemplateWindow import ExportToTemplateWindow
 from GUI.dialog_windows.file_picker_dialog.TemplateSaveFilePickerDialog import \
     TemplateSaveFilePickerDialog
@@ -787,6 +789,7 @@ class TemplateScreen(TemplateScreenInterface):
             highlight_deprecated_attributes=deprecated_attribute_marker,
             amount_of_examples=amount_of_examples))
 
+
     def update_settings_based_on_filetype(self,filetype:str):
         # if filetype == "Excel":
 
@@ -992,3 +995,5 @@ class TemplateScreen(TemplateScreenInterface):
 
         return frame
 
+    def open_folder_of_created_template(self,document_path:Path):
+        Helpers.open_folder_and_select_document(document_path=document_path)

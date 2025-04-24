@@ -1,5 +1,4 @@
-import asyncio
-import logging
+import subprocess
 from pathlib import Path
 
 from typing import Union, Callable
@@ -13,6 +12,7 @@ from cryptography.hazmat.primitives.asymmetric.ec import ECDSA
 
 from Domain.step_domain.HomeDomain import HomeDomain
 from Domain.project.Project import Project
+from Domain.util.Helpers import Helpers
 from GUI.Styling import Styling
 from GUI.dialog_windows.file_picker_dialog.ProjectExportFilePickerDialog import \
     ProjectExportFilePickerDialog
@@ -206,6 +206,7 @@ class OverviewTable(QTableWidget):
             project_path = project_path.with_suffix('.otlw')
 
         project.export_project_to_file(file_path=project_path)
+        Helpers.open_folder_and_select_document(project_path)
 
     def open_project(self, row) -> None:
         """
