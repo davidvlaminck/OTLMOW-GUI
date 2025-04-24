@@ -48,12 +48,15 @@ class SaveFilePickerDialog(AbstractFilePickerDialog):
                 self.previous_exported_file_name = str(Path(res[0]).stem)
 
     def set_filename_suggestions(self, project_name):
+
         if self.previous_exported_file_name:
-            self.selectFile(self.previous_exported_file_name)
+            initial_filename = self.previous_exported_file_name
         elif project_name:
-            self.selectFile(self.get_filename_suggestion(project_name))
+            initial_filename = self.get_filename_suggestion(project_name)
         else:
-            self.selectFile("export")
+            initial_filename = "export"
+
+        self.selectFile(initial_filename)
 
     def get_filename_suggestion(self, project_name):
         return project_name + "_export"
