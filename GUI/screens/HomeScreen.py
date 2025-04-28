@@ -182,7 +182,7 @@ class HomeScreen(HomeScreenInterface):
         :return: None
         """
 
-        self.search_input_field.returnPressed.connect(lambda: HomeDomain.update_frontend())
+        self.search_input_field.textChanged.connect(lambda: HomeDomain.update_frontend())
         self.search_input_field.setPlaceholderText(self._('search_text'))
         self.search_input_field.setSizePolicy(QSizePolicy.Policy.Expanding,QSizePolicy.Policy.Fixed)
 
