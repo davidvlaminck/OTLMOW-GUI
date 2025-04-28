@@ -27,7 +27,7 @@ class AbstractFilePickerDialog(QFileDialog):
         if initial_file_path:
             self.setDirectory(initial_file_path)
         else:
-            self.setDirectory(str(Path.home()))
+            self.setDirectory(str(Path.home() / "Documents"))
         self.setNameFilter(self.getCustomFilters())
 
     def getCustomFilters(self) -> str:
