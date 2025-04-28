@@ -80,7 +80,7 @@ class Updater:
         contents = ghdl.download_file_to_memory("otlmow_model/version_info.json").decode("utf-8")
         version_info = json.loads(contents)
         print(f"version info {version_info}")
-        if not version_info:
+        if not isinstance(version_info,dict):
             return ""
         OTLLogger.logger.info(f"online otlmow-model version: {version_info["current"]['model_version']}")
         return version_info["current"]['model_version']
