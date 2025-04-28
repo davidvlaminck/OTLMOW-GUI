@@ -82,8 +82,14 @@ class Updater:
         print(f"version info {version_info}")
         if not isinstance(version_info,dict):
             return ""
-        OTLLogger.logger.info(f"online otlmow-model version: {version_info["current"]['model_version']}")
-        return version_info["current"]['model_version']
+
+        try:
+            model_version = version_info["current"]['model_version']
+        except:
+            model_version = ""
+
+        OTLLogger.logger.info(f"online otlmow-model version: {model_version}")
+        return model_version
 
     @classmethod
     def update_oltmow_model(cls, model_dir_path=None):
