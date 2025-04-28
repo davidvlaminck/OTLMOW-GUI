@@ -256,3 +256,12 @@ class TemplateDomain:
             return
 
         cls.all_classes_selected = False
+
+    @classmethod
+    def set_selected_indexes(cls,new_indexes: list[int]):
+
+        cls.selected_classes_indexes = new_indexes
+        cls.get_screen().update_label_under_list(
+            total_amount_of_items=cls.get_total_amount_of_classes(),
+            counter=len(cls.selected_classes_indexes))
+        cls.update_all_classes_selected_state()

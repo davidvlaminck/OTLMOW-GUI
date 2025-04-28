@@ -19,6 +19,7 @@ from Domain.util.Helpers import Helpers
 from GUI.dialog_windows.ExportToTemplateWindow import ExportToTemplateWindow
 from GUI.dialog_windows.file_picker_dialog.TemplateSaveFilePickerDialog import \
     TemplateSaveFilePickerDialog
+from GUI.screens.TemplateScreen_elements.ClassListWidget import ClassListWidget
 from GUI.screens.general_elements.ButtonWidget import ButtonWidget
 from GUI.dialog_windows.ChangeSubsetWindow import ChangeSubsetWindow
 from GUI.screens.screen_interface.TemplateScreenInterface import TemplateScreenInterface
@@ -285,7 +286,7 @@ class TemplateScreen(TemplateScreenInterface):
         # class GUI list elements
         self.select_all_classes = QCheckBox()
         self.add_resetable_field(self.select_all_classes,default_value=True)
-        self.all_classes = QListWidget()
+        self.all_classes = ClassListWidget()
         self.selected = 0
         self.label_counter = QLabel()
 
@@ -336,9 +337,6 @@ class TemplateScreen(TemplateScreenInterface):
         options_menu = QFrame()
         main_layout = QVBoxLayout()
 
-
-        # self.select_all_classes.setText(self._("select_all_classes"))
-        # self.select_all_classes.stateChanged.connect(lambda: self.select_all_classes_clicked())
 
         self.general_settings_title.setProperty('class', 'settings-title')
         self.general_settings_title.setText(self._("general_settings"))
@@ -405,10 +403,7 @@ class TemplateScreen(TemplateScreenInterface):
         #                         self.ExportOptionId.ALL_DATA)
 
         self.radio_button_group.addButton(self.radio_button_expanded_info, self.TemplateOptionId.EXTRA_INFO)
-        # self.button_group.setId(self.radio_button_export_only_unedited_data,
-        #                         self.ExportOptionId.ONLY_UNEDITED_DATA)
 
-        # self.button_group.idClicked.connect(self.on_radio_button_click)
         self.radio_button_davie_conform.setChecked(True)
 
         button_box_layout.addWidget(self.template_format_label)
@@ -627,11 +622,10 @@ class TemplateScreen(TemplateScreenInterface):
         self.select_all_classes.clicked.connect(lambda: self.select_all_classes_clicked())
         self.all_classes.setSelectionMode(QListWidget.SelectionMode.MultiSelection)
 
-        # self.all_classes.itemSelectionChanged.connect(lambda: self.update_label_under_list()) # reacts to programmatical changes in the list selection
-        # self.all_classes.itemClicked.connect(lambda: self.update_label_under_list()) # reacts only to user changes in the list selection
-        self.all_classes.itemClicked.connect(self.class_items_clicked_listener)
-
-        # self.all_classes.itemPressed.connect(lambda: self.list_item_pressed_listener())
+        self.all_classes.doubleClicked.connect(
+            lambda item:
+                 self.all_classes.itemFromIndex(item).setSelected(not self.all_classes.itemFromIndex(item).isSelected())
+        )
         self.label_counter.setText(self._(f"{self.selected} classes selected"))
 
         vertical_layout.addWidget(self.select_all_classes, alignment=Qt.AlignmentFlag.AlignTop)
@@ -672,6 +666,8 @@ class TemplateScreen(TemplateScreenInterface):
     def class_items_clicked_listener(self, selected_item):
         row_index = selected_item.data(1)[1]
         TemplateDomain.toggle_class_index(row_index)
+
+
 
 
     def update_label_under_list(self,total_amount_of_items:int,counter:int) -> None:
