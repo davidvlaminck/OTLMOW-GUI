@@ -100,7 +100,7 @@ class InsertDataDomain:
             if doc_location_path.suffix in ['.xls', '.xlsx']:
                 temp_path = InsertDataDomain.remove_dropdown_values_from_excel(doc=doc_location_path)
                 assets, exception_group =  await Helpers.converter_from_file_to_object_async(
-                    file_path=temp_path,include_tab_info=True )
+                    file_path=temp_path,include_tab_info=True)
 
             elif doc_location_path.suffix == '.sdf':
                 # SDF files will make multiple CSV files, one for each class
@@ -113,7 +113,8 @@ class InsertDataDomain:
                     assets_subset, exception_group_subset = await Helpers.converter_from_file_to_object_async(
                         file_path=Path(temp_path),
                         delimiter=",",
-                        include_tab_info=True )
+                        include_tab_info=True,
+                        allow_non_otl_conform_attributes=True)
                     assets.extend(assets_subset)
                     if exception_group is not None:
                         sdf_exception_list.extend(exception_group.exceptions)

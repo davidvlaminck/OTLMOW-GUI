@@ -257,7 +257,9 @@ class Project:
                 extra={"timing_ref": timing_ref})
 
             # noinspection PyTypeChecker
-            saved_objects, exceptions_group = await Helpers.converter_from_file_to_object_async(path)
+            saved_objects, exceptions_group = await Helpers.converter_from_file_to_object_async(
+                path,
+                allow_non_otl_conform_attributes=True)
 
             object_count = len(saved_objects)
             OTLLogger.logger.debug(

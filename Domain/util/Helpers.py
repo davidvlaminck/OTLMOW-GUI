@@ -75,13 +75,13 @@ class Helpers:
             return True
 
     @classmethod
-    async def converter_from_file_to_object_async(cls, file_path, **kwargs):
+    async def converter_from_file_to_object_async(cls, file_path:Path,allow_non_otl_conform_attributes:bool=False, **kwargs):
 
         OTLLogger.logger.debug(f"Execute OtlmowConverter.from_file_to_objects({file_path.name})",
                                extra={"timing_ref": f"file_to_objects_{file_path.stem}"})
         exception_group = None
         try:
-            object_lists = list(await OtlmowConverter.from_file_to_objects_async(file_path,allow_non_otl_conform_attributes=False,**kwargs))
+            object_lists = list(await OtlmowConverter.from_file_to_objects_async(file_path,allow_non_otl_conform_attributes=allow_non_otl_conform_attributes,**kwargs))
         except ExceptionsGroup as group:
             exception_group = group
             object_lists = group.objects
