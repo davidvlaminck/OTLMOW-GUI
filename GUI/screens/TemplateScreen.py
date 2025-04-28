@@ -768,12 +768,9 @@ class TemplateScreen(TemplateScreenInterface):
         else:
             amount_of_examples = 0
 
-        selected_classes = [item.data(1)[0] for item in self.all_classes.selectedItems()]
-
         event_loop = asyncio.get_event_loop()
         event_loop.create_task(TemplateDomain.async_export_template(
             document_path=document_path,
-            selected_classes=selected_classes,
             generate_choice_list=self.add_choice_list.isChecked(),
             geometry_column_added=self.add_geometry_attributes.isChecked(),
             export_attribute_info=attribute_description,

@@ -182,21 +182,23 @@ class TemplateDomain:
 
     @classmethod
     @add_loading_screen
-    async def async_export_template(cls, document_path:Path ,selected_classes: list[str],
+    async def async_export_template(cls, document_path:Path,
                         generate_choice_list: bool, geometry_column_added: bool,
                         export_attribute_info: bool, highlight_deprecated_attributes:bool,
                         amount_of_examples: int):
-        return await cls.export_template(document_path,selected_classes,generate_choice_list,
+        return await cls.export_template(document_path,generate_choice_list,
                                    geometry_column_added,export_attribute_info,
                                    highlight_deprecated_attributes,amount_of_examples)
 
     @classmethod
-    async def export_template(cls, document_path:Path ,selected_classes: list[str],
+    async def export_template(cls, document_path:Path ,
                         generate_choice_list: bool, geometry_column_added: bool,
                         export_attribute_info: bool, highlight_deprecated_attributes:bool,
                         amount_of_examples: int):
 
         project = global_vars.current_project
+
+        selected_classes = [cls.classes[i].objectUri for i in cls.selected_classes_indexes]
 
         if not document_path or not project:
             return
