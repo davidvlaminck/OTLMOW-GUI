@@ -933,17 +933,22 @@ class TemplateScreen(TemplateScreenInterface):
         self.all_classes.setEnabled(True)
         self.has_agent = False
 
-        sorted_classes = sorted(classes,key=lambda x : x.name)
+        # store indexes for class list in backend before sorting!
+        class_index_tuple_list = [(OTL_class,i) for i,OTL_class in enumerate(classes)]
+        sorted_classes = sorted(class_index_tuple_list,key=lambda x : x[0].name)
 
-        for value in sorted_classes:
-            backend_index = classes.index(value)
+        for value_tuple in sorted_classes:
+            class_name = value_tuple[0].name
+            class_typeURI = value_tuple[0].objectUri
+            backend_index = value_tuple[1]
+
             item = QListWidgetItem()
-            item.setText(value.name)
-            item.setData(1, (value.objectUri,backend_index))
+            item.setText(class_name)
+            item.setData(1, (class_typeURI,backend_index))
 
 
 
-            if value.name == "Agent":
+            if class_name == "Agent":
                 item.setBackground(QBrush(QColor("#AAAAAA")))
                 item.setFlags(item.flags() & ~Qt.ItemFlag.ItemIsEnabled)
                 placeholder_font = QFont()
