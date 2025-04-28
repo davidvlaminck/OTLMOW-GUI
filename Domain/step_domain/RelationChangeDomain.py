@@ -27,8 +27,6 @@ from GUI.screens.RelationChange_elements.RelationChangeHelpers import RelationCh
 from GUI.screens.screen_interface.RelationChangeScreenInterface import \
     RelationChangeScreenInterface
 
-from line_profiler_pycharm import profile
-
 ROOT_DIR = Path(__file__).parent.parent
 
 def async_save_assets(func):
@@ -536,7 +534,6 @@ class RelationChangeDomain:
         cls.selected_object = selected_object
 
     @classmethod
-    @profile
     def add_all_possible_relations_between_selected_and_related_objects(
             cls, relation_list: list[OSLORelatie],selected_object: RelationInteractor,
             related_objects: list[RelationInteractor]) -> None:
@@ -640,7 +637,6 @@ class RelationChangeDomain:
         return typeURI in cls.possible_relations_per_class_dict.keys()
 
     @classmethod
-    @profile
     def collect_possible_relations_to_class_types_from(cls, selected_object:RelationInteractor):
         """
         Collects possible relations for a specified selected object based on its type.
@@ -679,7 +675,6 @@ class RelationChangeDomain:
             extra={"timing_ref": f"collect_possible_relations_classes"})
 
     @classmethod
-    @profile
     def get_all_concrete_relation_from_full_model(cls, selected_object:RelationInteractor):
         """
         Retrieves all concrete relations from the full model for a specified selected object.
@@ -708,7 +703,6 @@ class RelationChangeDomain:
 
 
     @classmethod
-    @profile
     def get_same_relations_in_list(cls, relation_list: list[RelatieObject],
                                    relation_def: OSLORelatie,
                                    selected_object: RelationInteractor,
