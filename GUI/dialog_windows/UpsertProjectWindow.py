@@ -188,7 +188,7 @@ class UpsertProjectWindow(QDialog):
             return
         self.error_label.setText("")
 
-        HomeDomain.process_upsert_dialog_input(input_bestek, input_eigen_ref, input_subset, project)
+        HomeDomain.process_upsert_dialog_input(input_bestek, input_eigen_ref.strip(), input_subset, project)
         self.close()
 
 
