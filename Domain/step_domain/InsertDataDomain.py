@@ -403,7 +403,7 @@ class InsertDataDomain:
         try:
             objects_in_memory = await cls.combine_assets_wrapper(objects_in_memory)
         except ExceptionsGroup as ex:
-            error_set.append({"exception": ex, "path_str": "[FILE INFO NOT AVAILABLE]"})
+            error_set.append({"exception": ex, "path_str": GlobalTranslate._("[FILE INFO NOT AVAILABLE]")})
             # the be safe set all document to invalid
             for project_file in global_vars.current_project.get_saved_projectfiles():
                 project_file.state = FileState.ERROR

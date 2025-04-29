@@ -9,6 +9,8 @@ from otlmow_converter.Exceptions.ExceptionsGroup import ExceptionsGroup
 from otlmow_converter.Exceptions.NoIdentificatorError import NoIdentificatorError
 from otlmow_model.OtlmowModel.BaseClasses.OTLObject import OTLObject
 
+from GUI.translation.GlobalTranslate import GlobalTranslate
+
 
 class CombineAssetHelper:
     @classmethod
@@ -44,8 +46,8 @@ class CombineAssetHelper:
                     short_uri = ex.attribute_errors[0][1][0].split('/')[-1]
                     short_uri_2 = ex.attribute_errors[0][1][1].split('/')[-1]
 
-                ex.message = (f'Cannot combine the assets with id: "{object_id}"\n'
-                              f'due to conflicting types: {short_uri} != {short_uri_2}')
+                ex.message = (GlobalTranslate._('Cannot combine the assets with id: "{object_id}"\n'
+                              'due to conflicting types: {short_uri} != {short_uri_2}').format(object_id=object_id,short_uri=short_uri,short_uri_2=short_uri_2))
 
                 ex.args = ex.message,
                 list_of_errors.append(ex)
@@ -56,15 +58,15 @@ class CombineAssetHelper:
                     [f'{t[0]}: {t[1][0]} != {t[1][1]}' for t in ex.attribute_errors])
 
                 ex.message = (
-                        f'Cannot combine the assets with id: "{object_id}" with type "{short_uri}"\n'
-                        'due to conflicting values in attribute(s):\n' + error_str)
+                        GlobalTranslate._('Cannot combine the assets with id: "{object_id}" with type "{short_uri}"\n'
+                        'due to conflicting values in attribute(s):\n').format(object_id=object_id,short_uri=short_uri) + error_str)
 
                 ex.args = ex.message,
 
                 list_of_errors.append(ex)
         if list_of_errors:
             raise ExceptionsGroup(
-                message='There were errors while combining the assets',
+                message= GlobalTranslate._('There were errors while combining the assets'),
                 exceptions=list_of_errors
             )
 
