@@ -18,6 +18,7 @@ from otlmow_model.OtlmowModel.Helpers import OTLObjectHelper, RelationValidator
 
 from Domain import global_vars
 from Domain.project.ProjectFile import ProjectFile
+from Domain.util.CombineAssetHelper import CombineAssetHelper
 from Domain.util.Helpers import Helpers
 from Domain.util.SDFHandler import SDFHandler
 from Domain.logger.OTLLogger import OTLLogger
@@ -402,7 +403,7 @@ class InsertDataDomain:
         try:
             objects_in_memory = await cls.combine_assets_wrapper(objects_in_memory)
         except ExceptionsGroup as ex:
-            error_set.append({"exception": ex, "path_str": ""})
+            error_set.append({"exception": ex, "path_str": "[FILE INFO NOT AVAILABLE]"})
             # the be safe set all document to invalid
             for project_file in global_vars.current_project.get_saved_projectfiles():
                 project_file.state = FileState.ERROR
@@ -426,37 +427,9 @@ class InsertDataDomain:
 
     @classmethod
     async def combine_assets_wrapper(cls, objects_in_memory):
-        list_of_errors = []
-        try:
 
-            objects_in_memory = HelperFunctions.combine_assets(objects_in_memory)
+        objects_in_memory = CombineAssetHelper.combine_assets(objects_in_memory)
 
-        except CannotCombineAssetsError as ex:
-            object_id = ex.object_id
-            short_uri = ex.type_uri.split('/')[-1]
-            error_str = '\n'.join([f'{t[0]}: {t[1][0]} != {t[1][1]}' for t in ex.attribute_errors])
-
-            ex.message = (
-                    f'Cannot combine the assets with id: "{object_id}" with type "{short_uri}"\n'
-                    'due to conflicting values in attribute(s):\n' + error_str)
-            # ex.type_uri = asset_tuple_list[0][1].typeURI
-            list_of_errors.append(ex)
-        except CannotCombineAssetsWithDifferentTypeError as ex:
-            object_id = ex.object_id
-            short_uri = ""
-            short_uri_2 = ""
-            if ex.attribute_errors and ex.attribute_errors[0][0] == 'typeURI':
-                short_uri = ex.attribute_errors[0][0][0].split('/')[-1]
-                short_uri_2 = ex.attribute_errors[0][0][1].split('/')[-1]
-
-            ex.message = (f'Cannot combine the assets with id: "{object_id}"\n'
-                          f'due to conflicting types: {short_uri} != {short_uri_2}')
-            list_of_errors.append(ex)
-        if list_of_errors:
-            raise ExceptionsGroup(
-                message='There were errors while combining the assets',
-                exceptions=list_of_errors
-            )
         return objects_in_memory
 
     @classmethod
