@@ -282,6 +282,7 @@ class TemplateScreen(TemplateScreenInterface):
         self.non_otl_conform_settings_title = QLabel()
         self.amount_of_examples = QSpinBox()
         self.example_settings_title = QLabel()
+        self.add_relations = QCheckBox()
 
         # class GUI list elements
         self.select_all_classes = QCheckBox()
@@ -355,6 +356,9 @@ class TemplateScreen(TemplateScreenInterface):
         self.show_deprecated_attributes.setProperty('class', 'settings-checkbox')
         self.show_deprecated_attributes.setEnabled(False)
 
+        self.add_relations.setText(self._("add_relation_classes"))
+        self.add_relations.setProperty('class', 'settings-checkbox')
+
         self.export_attribute_info.setText(self._("export_attribute_info"))
         self.export_attribute_info.setProperty('class', 'settings-checkbox')
 
@@ -373,6 +377,7 @@ class TemplateScreen(TemplateScreenInterface):
         main_layout.addWidget(self.add_choice_list)
         main_layout.addWidget(self.add_geometry_attributes)
         main_layout.addWidget(self.create_example_generation_container())
+        main_layout.addWidget(self.add_relations)
         main_layout.addSpacing(10)
         main_layout.addWidget(self.export_button, alignment=Qt.AlignmentFlag.AlignLeft)
 
@@ -773,6 +778,7 @@ class TemplateScreen(TemplateScreenInterface):
             document_path=document_path,
             generate_choice_list=self.add_choice_list.isChecked(),
             geometry_column_added=self.add_geometry_attributes.isChecked(),
+            add_relations=self.add_relations.isChecked(),
             export_attribute_info=attribute_description,
             highlight_deprecated_attributes=deprecated_attribute_marker,
             amount_of_examples=amount_of_examples))

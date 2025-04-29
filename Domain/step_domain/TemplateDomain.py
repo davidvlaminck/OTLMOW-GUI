@@ -42,8 +42,10 @@ class TemplateDomain:
 
     @classmethod
     @add_loading_screen
-    async def create_template(cls, subset_path: Path, document_path: Path, selected_classes_typeURI_list: List, generate_choice_list: bool,
-                              add_geo_artefact: bool, add_attribute_info: bool, highlight_deprecated_attributes: bool,
+    async def create_template(cls, subset_path: Path, document_path: Path,
+                              selected_classes_typeURI_list: List, generate_choice_list: bool,
+                              add_geo_artefact: bool, add_attribute_info: bool,add_relations:bool,
+                              highlight_deprecated_attributes: bool,
                               amount_of_examples: int, model_directory: Path = None) -> None:
         OTLLogger.logger.debug("Creating template", extra={"timing_ref": f"create_template_{document_path.name}"})
         try:
@@ -68,7 +70,7 @@ class TemplateDomain:
                 await template_creator.generate_template_from_subset_async(
                     subset_path=subset_path, template_file_path=document_path,
                     class_uris_filter=selected_classes_typeURI_list,
-                    generate_choice_list=generate_choice_list,
+                    generate_choice_list=generate_choice_list,ignore_relations=not add_relations,
                     add_geometry=add_geo_artefact, add_attribute_info=add_attribute_info,
                     add_deprecated=highlight_deprecated_attributes,
                     dummy_data_rows=amount_of_examples,
@@ -184,15 +186,20 @@ class TemplateDomain:
     @add_loading_screen
     async def async_export_template(cls, document_path:Path,
                         generate_choice_list: bool, geometry_column_added: bool,
+                        add_relations:bool,
                         export_attribute_info: bool, highlight_deprecated_attributes:bool,
                         amount_of_examples: int):
-        return await cls.export_template(document_path,generate_choice_list,
-                                   geometry_column_added,export_attribute_info,
-                                   highlight_deprecated_attributes,amount_of_examples)
+        return await cls.export_template(document_path=document_path,
+                                         generate_choice_list=generate_choice_list,
+                                         geometry_column_added=geometry_column_added,
+                                         add_relations= add_relations,
+                                         export_attribute_info= export_attribute_info,
+                                         highlight_deprecated_attributes=highlight_deprecated_attributes,
+                                         amount_of_examples=amount_of_examples)
 
     @classmethod
     async def export_template(cls, document_path:Path ,
-                        generate_choice_list: bool, geometry_column_added: bool,
+                        generate_choice_list: bool, geometry_column_added: bool,add_relations:bool,
                         export_attribute_info: bool, highlight_deprecated_attributes:bool,
                         amount_of_examples: int):
 
@@ -208,6 +215,7 @@ class TemplateDomain:
                                              generate_choice_list=generate_choice_list,
                                              add_geo_artefact=geometry_column_added,
                                              add_attribute_info=export_attribute_info,
+                                             add_relations=add_relations,
                                              highlight_deprecated_attributes=highlight_deprecated_attributes,
                                              amount_of_examples=amount_of_examples)
         if ".xlsx" in str(document_path):
