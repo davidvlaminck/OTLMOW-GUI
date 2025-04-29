@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-04-23 15:24+0200\n"
+"POT-Creation-Date: 2025-04-29 15:41+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,23 +17,23 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.16.0\n"
 
-#: Domain/project/Project.py:454
+#: Domain/project/Project.py:456
 msgid "There are files missing that belong to this project:\n"
 msgstr ""
 
-#: Domain/project/Project.py:460
+#: Domain/project/Project.py:462
 msgid "Do you still want to export?"
 msgstr ""
 
-#: Domain/project/Project.py:461 GUI/screens/InsertDataScreen.py:219
+#: Domain/project/Project.py:463 GUI/screens/InsertDataScreen.py:219
 msgid "Missing project files"
 msgstr ""
 
-#: Domain/project/Project.py:900
+#: Domain/project/Project.py:902
 msgid "Can't insert duplicate filename {0}"
 msgstr ""
 
-#: Domain/project/Project.py:903
+#: Domain/project/Project.py:905
 msgid "Duplicate filename"
 msgstr ""
 
@@ -53,12 +53,33 @@ msgstr ""
 msgid "wrong_database_error"
 msgstr ""
 
-#: Domain/step_domain/TemplateDomain.py:73
+#: Domain/step_domain/InsertDataDomain.py:406
+msgid "[FILE INFO NOT AVAILABLE]"
+msgstr ""
+
+#: Domain/step_domain/TemplateDomain.py:80
 msgid "permission_to_file_was_denied_likely_due_to_the_file_being_open_in_excel"
 msgstr ""
 
-#: Domain/step_domain/TemplateDomain.py:73
+#: Domain/step_domain/TemplateDomain.py:80
 msgid "permission_denied"
+msgstr ""
+
+#: Domain/util/CombineAssetHelper.py:49
+msgid ""
+"Cannot combine the assets with id: \"{object_id}\"\n"
+"due to conflicting types: {short_uri} != {short_uri_2}"
+msgstr ""
+
+#: Domain/util/CombineAssetHelper.py:61
+msgid ""
+"Cannot combine the assets with id: \"{object_id}\" with type "
+"\"{short_uri}\"\n"
+"due to conflicting values in attribute(s):\n"
+msgstr ""
+
+#: Domain/util/CombineAssetHelper.py:69
+msgid "There were errors while combining the assets"
 msgstr ""
 
 #: Domain/util/SDFHandler.py:184
@@ -113,33 +134,33 @@ msgid "asset_type_dummy"
 msgstr ""
 
 #: GUI/dialog_windows/AddExternalAssetWindow.py:83
-#: GUI/dialog_windows/ChangeSubsetWindow.py:110
+#: GUI/dialog_windows/ChangeSubsetWindow.py:113
 #: GUI/dialog_windows/DefineHeeftBetrokkeneRelationWindow.py:107
 #: GUI/dialog_windows/RemoveProjectFilesWindow.py:33
-#: GUI/dialog_windows/UpsertProjectWindow.py:148
+#: GUI/dialog_windows/UpsertProjectWindow.py:149
 msgid "submit"
 msgstr ""
 
 #: GUI/dialog_windows/AddExternalAssetWindow.py:85
-#: GUI/dialog_windows/ChangeSubsetWindow.py:112
+#: GUI/dialog_windows/ChangeSubsetWindow.py:115
 #: GUI/dialog_windows/DefineHeeftBetrokkeneRelationWindow.py:109
 #: GUI/dialog_windows/RemoveProjectFilesWindow.py:35
 #: GUI/dialog_windows/RevalidateDocumentsWindow.py:37
-#: GUI/dialog_windows/UpsertProjectWindow.py:150
+#: GUI/dialog_windows/UpsertProjectWindow.py:151
 msgid "cancel"
 msgstr ""
 
 #: GUI/dialog_windows/ChangeSubsetWindow.py:26
-#: GUI/screens/TemplateScreen.py:505
+#: GUI/screens/TemplateScreen.py:502
 msgid "change_subset"
 msgstr ""
 
 #: GUI/dialog_windows/ChangeSubsetWindow.py:33
-#: GUI/dialog_windows/UpsertProjectWindow.py:86
-#: GUI/dialog_windows/UpsertProjectWindow.py:89
-#: GUI/screens/Home_elements/OverviewTable.py:77
-#: GUI/screens/Home_elements/OverviewTable.py:309
-#: GUI/screens/TemplateScreen.py:578
+#: GUI/dialog_windows/UpsertProjectWindow.py:87
+#: GUI/dialog_windows/UpsertProjectWindow.py:90
+#: GUI/screens/Home_elements/OverviewTable.py:78
+#: GUI/screens/Home_elements/OverviewTable.py:315
+#: GUI/screens/TemplateScreen.py:575
 msgid "subset"
 msgstr ""
 
@@ -188,7 +209,7 @@ msgid "language_option_english"
 msgstr ""
 
 #: GUI/dialog_windows/MenuActionsWindow.py:13 GUI/header/HeaderBar.py:158
-#: GUI/header/HeaderBar.py:281
+#: GUI/header/HeaderBar.py:290
 msgid "about"
 msgstr ""
 
@@ -256,29 +277,29 @@ msgstr ""
 msgid "update_available_text"
 msgstr ""
 
-#: GUI/dialog_windows/UpsertProjectWindow.py:48
+#: GUI/dialog_windows/UpsertProjectWindow.py:49
 msgid "alter_project_title"
 msgstr ""
 
-#: GUI/dialog_windows/UpsertProjectWindow.py:53
+#: GUI/dialog_windows/UpsertProjectWindow.py:54
 msgid "new_project_title"
 msgstr ""
 
-#: GUI/dialog_windows/UpsertProjectWindow.py:109
-#: GUI/dialog_windows/UpsertProjectWindow.py:111
-#: GUI/screens/Home_elements/OverviewTable.py:77
-#: GUI/screens/Home_elements/OverviewTable.py:309
+#: GUI/dialog_windows/UpsertProjectWindow.py:110
+#: GUI/dialog_windows/UpsertProjectWindow.py:112
+#: GUI/screens/Home_elements/OverviewTable.py:78
+#: GUI/screens/Home_elements/OverviewTable.py:315
 msgid "service_order"
 msgstr ""
 
-#: GUI/dialog_windows/UpsertProjectWindow.py:127
-#: GUI/dialog_windows/UpsertProjectWindow.py:129
-#: GUI/screens/Home_elements/OverviewTable.py:77
-#: GUI/screens/Home_elements/OverviewTable.py:309
+#: GUI/dialog_windows/UpsertProjectWindow.py:128
+#: GUI/dialog_windows/UpsertProjectWindow.py:130
+#: GUI/screens/Home_elements/OverviewTable.py:78
+#: GUI/screens/Home_elements/OverviewTable.py:315
 msgid "own_reference"
 msgstr ""
 
-#: GUI/dialog_windows/file_picker_dialog/AbstractFilePickerDialog.py:39
+#: GUI/dialog_windows/file_picker_dialog/AbstractFilePickerDialog.py:40
 #: GUI/dialog_windows/file_picker_dialog/LoadFilePickerDialog.py:26
 msgid "Alle ondersteunde bestanden ({supported_extensions_string})"
 msgstr ""
@@ -316,15 +337,15 @@ msgstr ""
 msgid "Sla template op"
 msgstr ""
 
-#: GUI/header/HeaderBar.py:89 GUI/header/HeaderBar.py:276
+#: GUI/header/HeaderBar.py:89 GUI/header/HeaderBar.py:285
 msgid "new_project_button"
 msgstr ""
 
-#: GUI/header/HeaderBar.py:156 GUI/header/HeaderBar.py:280
+#: GUI/header/HeaderBar.py:156 GUI/header/HeaderBar.py:289
 msgid "help"
 msgstr ""
 
-#: GUI/header/HeaderBar.py:160 GUI/header/HeaderBar.py:282
+#: GUI/header/HeaderBar.py:160 GUI/header/HeaderBar.py:291
 msgid "report error"
 msgstr ""
 
@@ -332,15 +353,15 @@ msgstr ""
 msgid "logs"
 msgstr ""
 
-#: GUI/header/HeaderBar.py:204 GUI/header/HeaderBar.py:277
+#: GUI/header/HeaderBar.py:208 GUI/header/HeaderBar.py:286
 msgid "return_to_home_screen"
 msgstr ""
 
-#: GUI/header/HeaderBar.py:224 GUI/header/HeaderBar.py:278
+#: GUI/header/HeaderBar.py:228 GUI/header/HeaderBar.py:287
 msgid "save_button"
 msgstr ""
 
-#: GUI/header/HeaderBar.py:248 GUI/header/HeaderBar.py:279
+#: GUI/header/HeaderBar.py:252 GUI/header/HeaderBar.py:288
 msgid "import"
 msgstr ""
 
@@ -392,21 +413,21 @@ msgid ""
 "current: {1}"
 msgstr ""
 
-#: GUI/screens/ExportDataScreen.py:74 GUI/screens/ExportDataScreen.py:160
+#: GUI/screens/ExportDataScreen.py:78 GUI/screens/ExportDataScreen.py:164
 msgid "export_to_davie"
 msgstr ""
 
-#: GUI/screens/ExportDataScreen.py:78
+#: GUI/screens/ExportDataScreen.py:82
 #: GUI/screens/ExportData_elements/AbstractExportDataSubScreen.py:123
 #: GUI/screens/ExportData_elements/AbstractExportDataSubScreen.py:128
 msgid "export assets in different files"
 msgstr ""
 
-#: GUI/screens/ExportDataScreen.py:126
+#: GUI/screens/ExportDataScreen.py:130
 msgid "All data"
 msgstr ""
 
-#: GUI/screens/ExportDataScreen.py:127
+#: GUI/screens/ExportDataScreen.py:131
 msgid "Without unedited data"
 msgstr ""
 
@@ -452,64 +473,64 @@ msgstr ""
 msgid "error"
 msgstr ""
 
-#: GUI/screens/InsertDataScreen.py:626
+#: GUI/screens/InsertDataScreen.py:630
 msgid "There are no files added to this project"
 msgstr ""
 
-#: GUI/screens/InsertDataScreen.py:641
+#: GUI/screens/InsertDataScreen.py:645
 msgid ""
 "Press validate to get feedback on the OTL-conformity of the files in this"
 " project"
 msgstr ""
 
-#: GUI/screens/TemplateScreen.py:110
+#: GUI/screens/TemplateScreen.py:113
 msgid "Adds choice lists to relevant attributes"
 msgstr ""
 
-#: GUI/screens/TemplateScreen.py:112
+#: GUI/screens/TemplateScreen.py:115
 msgid "For {filetype} choice lists cannot be disabled"
 msgstr ""
 
-#: GUI/screens/TemplateScreen.py:114
+#: GUI/screens/TemplateScreen.py:117
 msgid "{filetype} cannot contain choice lists"
 msgstr ""
 
-#: GUI/screens/TemplateScreen.py:116
+#: GUI/screens/TemplateScreen.py:119
 msgid "Adds geometry information for each asset"
 msgstr ""
 
-#: GUI/screens/TemplateScreen.py:117
+#: GUI/screens/TemplateScreen.py:120
 msgid "For {filetype} geometry attributes cannot be disabled"
 msgstr ""
 
-#: GUI/screens/TemplateScreen.py:119
+#: GUI/screens/TemplateScreen.py:122
 msgid "{filetype} cannot contain geometry attributes"
 msgstr ""
 
-#: GUI/screens/TemplateScreen.py:121
+#: GUI/screens/TemplateScreen.py:124
 msgid "Adds example assets to each OTL-class"
 msgstr ""
 
-#: GUI/screens/TemplateScreen.py:122
+#: GUI/screens/TemplateScreen.py:125
 msgid "For {filetype} generated examples cannot be disabled"
 msgstr ""
 
-#: GUI/screens/TemplateScreen.py:124
+#: GUI/screens/TemplateScreen.py:127
 msgid "{filetype} cannot add generated examples"
 msgstr ""
 
-#: GUI/screens/TemplateScreen.py:128
+#: GUI/screens/TemplateScreen.py:131
 msgid ""
 "Adds extra rows with a description of every attribute and, an indication "
 "if the attribute is deprecated \n"
 "(Delete extra rows before uploading to DAVIE)"
 msgstr ""
 
-#: GUI/screens/TemplateScreen.py:130
+#: GUI/screens/TemplateScreen.py:133
 msgid "For {filetype} expansive information cannot be disabled"
 msgstr ""
 
-#: GUI/screens/TemplateScreen.py:132
+#: GUI/screens/TemplateScreen.py:135
 msgid "{filetype} cannot add expansive information"
 msgstr ""
 
@@ -563,58 +584,58 @@ msgstr ""
 msgid "Expanded info"
 msgstr ""
 
-#: GUI/screens/TemplateScreen.py:445
+#: GUI/screens/TemplateScreen.py:442
 msgid "amount_of_examples"
 msgstr ""
 
-#: GUI/screens/TemplateScreen.py:450
+#: GUI/screens/TemplateScreen.py:447
 msgid "The amount of example assets added to each OTL-class"
 msgstr ""
 
-#: GUI/screens/TemplateScreen.py:529
+#: GUI/screens/TemplateScreen.py:526
 msgid "operator"
 msgstr ""
 
-#: GUI/screens/TemplateScreen.py:553
+#: GUI/screens/TemplateScreen.py:550
 msgid "otl_version"
 msgstr ""
 
-#: GUI/screens/TemplateScreen.py:624
+#: GUI/screens/TemplateScreen.py:621
 msgid "select_all_classes"
 msgstr ""
 
-#: GUI/screens/TemplateScreen.py:672
+#: GUI/screens/TemplateScreen.py:676
 msgid "{selected} classes selected"
 msgstr ""
 
-#: GUI/screens/TemplateScreen.py:675
+#: GUI/screens/TemplateScreen.py:679
 msgid "Export template"
 msgstr ""
 
-#: GUI/screens/TemplateScreen.py:678
+#: GUI/screens/TemplateScreen.py:682
 msgid "Select at least 1 class to export"
 msgstr ""
 
 #: GUI/screens/RelationChange_elements/AbstractInstanceListWidget.py:542
-#: GUI/screens/TemplateScreen.py:896
+#: GUI/screens/TemplateScreen.py:892
 msgid "loading"
 msgstr ""
 
-#: GUI/screens/TemplateScreen.py:914
+#: GUI/screens/TemplateScreen.py:910
 msgid "no classes found in specified path"
 msgstr ""
 
-#: GUI/screens/TemplateScreen.py:951
+#: GUI/screens/TemplateScreen.py:957
 msgid "Agent class is not allowed in the template"
 msgstr ""
 
 #: GUI/screens/ExportData_elements/AbstractExportDataSubScreen.py:58
 #: GUI/screens/ExportData_elements/AbstractExportDataSubScreen.py:121
-#: GUI/screens/TemplateScreen.py:976
+#: GUI/screens/TemplateScreen.py:996
 msgid "select file type for export"
 msgstr ""
 
-#: GUI/screens/TemplateScreen.py:986
+#: GUI/screens/TemplateScreen.py:1006
 msgid "The type of file the template will be created in"
 msgstr ""
 
@@ -668,16 +689,16 @@ msgstr ""
 msgid "empty fields"
 msgstr ""
 
-#: GUI/screens/Home_elements/OverviewTable.py:77
-#: GUI/screens/Home_elements/OverviewTable.py:309
+#: GUI/screens/Home_elements/OverviewTable.py:78
+#: GUI/screens/Home_elements/OverviewTable.py:315
 msgid "last_edited"
 msgstr ""
 
-#: GUI/screens/Home_elements/OverviewTable.py:142
+#: GUI/screens/Home_elements/OverviewTable.py:143
 msgid "Double-click to open project"
 msgstr ""
 
-#: GUI/screens/Home_elements/OverviewTable.py:310
+#: GUI/screens/Home_elements/OverviewTable.py:316
 msgid "no_results"
 msgstr ""
 
