@@ -2,7 +2,12 @@ from pathlib import Path
 from typing import List, Iterable, Optional, cast, Union
 
 from openpyxl.reader.excel import load_workbook
+from otlmow_converter import HelperFunctions
+from otlmow_converter.Exceptions.CannotCombineAssetsError import CannotCombineAssetsError
+from otlmow_converter.Exceptions.CannotCombineDifferentAssetsError import \
+    CannotCombineAssetsWithDifferentTypeError
 from otlmow_converter.Exceptions.ExceptionsGroup import ExceptionsGroup
+from otlmow_converter.OtlmowConverter import OtlmowConverter
 
 from otlmow_model.OtlmowModel.BaseClasses.OTLObject import OTLObject, \
     dynamic_create_instance_from_uri
@@ -382,9 +387,7 @@ class InsertDataDomain:
                 error_set.append({"exception": ex, "path_str": file_path})
                 project_file.state = FileState.ERROR
 
-        # state can be changed to either OK or ERROR
-        global_vars.current_project.save_project_filepaths_to_file()
-        cls.update_frontend()
+
 
         if len(error_set):
             OTLLogger.logger.debug(
@@ -396,7 +399,19 @@ class InsertDataDomain:
         # noinspection PyTypeChecker
         objects_in_memory.extend(cls.flatten_list(objects_lists=list(relations_per_filepath_str_dict.values())))
 
+        try:
+            objects_in_memory = await cls.combine_assets_wrapper(objects_in_memory)
+        except ExceptionsGroup as ex:
+            error_set.append({"exception": ex, "path_str": ""})
+            # the be safe set all document to invalid
+            for project_file in global_vars.current_project.get_saved_projectfiles():
+                project_file.state = FileState.ERROR
 
+        # state can be changed to either OK or ERROR
+        global_vars.current_project.save_project_filepaths_to_file()
+        cls.update_frontend()
+
+        # passing objects to other screens
         global_vars.otl_wizard.main_window.step3_visuals.create_html(
             objects_in_memory=objects_in_memory)
         RelationChangeDomain.set_instances(objects_list=objects_in_memory)
@@ -408,6 +423,41 @@ class InsertDataDomain:
             extra={"timing_ref": f"validate_{global_vars.current_project.eigen_referentie}"})
 
         return error_set, objects_in_memory
+
+    @classmethod
+    async def combine_assets_wrapper(cls, objects_in_memory):
+        list_of_errors = []
+        try:
+
+            objects_in_memory = HelperFunctions.combine_assets(objects_in_memory)
+
+        except CannotCombineAssetsError as ex:
+            object_id = ex.object_id
+            short_uri = ex.type_uri.split('/')[-1]
+            error_str = '\n'.join([f'{t[0]}: {t[1][0]} != {t[1][1]}' for t in ex.attribute_errors])
+
+            ex.message = (
+                    f'Cannot combine the assets with id: "{object_id}" with type "{short_uri}"\n'
+                    'due to conflicting values in attribute(s):\n' + error_str)
+            # ex.type_uri = asset_tuple_list[0][1].typeURI
+            list_of_errors.append(ex)
+        except CannotCombineAssetsWithDifferentTypeError as ex:
+            object_id = ex.object_id
+            short_uri = ""
+            short_uri_2 = ""
+            if ex.attribute_errors and ex.attribute_errors[0][0] == 'typeURI':
+                short_uri = ex.attribute_errors[0][0][0].split('/')[-1]
+                short_uri_2 = ex.attribute_errors[0][0][1].split('/')[-1]
+
+            ex.message = (f'Cannot combine the assets with id: "{object_id}"\n'
+                          f'due to conflicting types: {short_uri} != {short_uri_2}')
+            list_of_errors.append(ex)
+        if list_of_errors:
+            raise ExceptionsGroup(
+                message='There were errors while combining the assets',
+                exceptions=list_of_errors
+            )
+        return objects_in_memory
 
     @classmethod
     def divide_otl_objects(cls, objects):
