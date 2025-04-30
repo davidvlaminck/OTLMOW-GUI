@@ -15,6 +15,8 @@ from otlmow_model.OtlmowModel.Classes.ImplementatieElement.AIMObject import \
 from otlmow_model.OtlmowModel.Classes.ImplementatieElement.RelatieObject import RelatieObject
 from otlmow_model.OtlmowModel.Helpers import RelationCreator, OTLObjectHelper
 from otlmow_model.OtlmowModel.Helpers.OTLObjectHelper import is_relation
+from otlmow_model.OtlmowModel.Helpers.generated_lists import get_hardcoded_class_dict, \
+    get_concrete_subclasses_from_class_dict
 from otlmow_modelbuilder.OSLOCollector import OSLOCollector
 from otlmow_modelbuilder.SQLDataClasses.OSLORelatie import OSLORelatie
 from Domain import global_vars
@@ -558,8 +560,18 @@ class RelationChangeDomain:
             selected_object)
 
         related_objects_dict = defaultdict(list)
+        legacy_hoortbij_relations_dict = {}
         for related_object in related_objects:
             related_objects_dict[related_object.typeURI].append(related_object)
+            # if the related object is a legacy object create a new OSLO relation from legacy to otl_class
+            if related_object.typeURI.startswith("https://lgc"):
+                hoortbij_relation = RelationChangeDomain.create_hoortbij_OSLORelatie_with_legacy_class(
+                    legacy_class_typeURI=related_object.typeURI,
+                    OTL_class_typeURI= selected_object.typeURI)
+                legacy_hoortbij_relations_dict[related_object.typeURI] = hoortbij_relation
+
+        # add the hoortbij OSLORelations to legacy classes to the list of possible relations
+        relation_list.extend(list(legacy_hoortbij_relations_dict.values()))
 
         OTLLogger.logger.debug(
             f"Execute RelationChangeDomain.add_all_possible_relations_between_selected_and_related_objects({log_typeURI}) for project {global_vars.current_project.eigen_referentie}",
@@ -648,7 +660,8 @@ class RelationChangeDomain:
 
         :return: None
         """
-        log_typeURI = RelationChangeHelpers.get_abbreviated_typeURI(selected_object.typeURI)
+        selected_typeURI:str = selected_object.typeURI
+        log_typeURI = RelationChangeHelpers.get_abbreviated_typeURI(selected_typeURI)
         OTLLogger.logger.debug(f"Execute RelationChangeDomain.collect_possible_relations_to_class_types_from({log_typeURI}) for project {global_vars.current_project.eigen_referentie}",
                                extra={"timing_ref": f"collect_possible_relations_classes"})
         try:
@@ -656,23 +669,56 @@ class RelationChangeDomain:
                 cls.agent_objects or
                 cls.search_full_OTL_mode):
                 # this is the long search, but it includes relations with external assets
-                cls.possible_relations_per_class_dict[selected_object.typeURI] = (
+                cls.possible_relations_per_class_dict[selected_typeURI] = (
                     RelationChangeDomain.get_all_concrete_relation_from_full_model(
                         selected_object=selected_object))
             else:
-                cls.possible_relations_per_class_dict[selected_object.typeURI] = \
-                    cls.collector.find_all_concrete_relations(objectUri=selected_object.typeURI,
+                cls.possible_relations_per_class_dict[selected_typeURI] = \
+                    cls.collector.find_all_concrete_relations(objectUri=selected_typeURI,
                                                               allow_duplicates=False)
         except ValueError as e:
             OTLLogger.logger.debug(e)
-            cls.possible_relations_per_class_dict[selected_object.typeURI] = (
+            cls.possible_relations_per_class_dict[selected_typeURI] = (
                 RelationChangeDomain.get_all_concrete_relation_from_full_model(
                     selected_object=selected_object))
+
+        if selected_typeURI.startswith("https://lgc"): # selected_object is legacy
+            cls.possible_relations_per_class_dict[selected_typeURI] = (
+                cls.get_hoortbij_relaties_from_legacy_asset(selected_typeURI))
 
         relation_count = len(cls.possible_relations_per_class_dict[selected_object.typeURI])
         OTLLogger.logger.debug(
             f"Execute RelationChangeDomain.collect_possible_relations_to_class_types_from({log_typeURI}) for project {global_vars.current_project.eigen_referentie} ({relation_count} relations)",
             extra={"timing_ref": f"collect_possible_relations_classes"})
+
+    @classmethod
+    def get_hoortbij_relaties_from_legacy_asset(cls, selected_typeURI):
+        all_concrete_classes = []
+        all_classes_in_OTL = get_hardcoded_class_dict()
+        for otl_class in all_classes_in_OTL.keys():
+            if not otl_class.startswith("https://lgc"):
+                concrete_classes = [non_legacy_class for non_legacy_class in
+                                    get_concrete_subclasses_from_class_dict(otl_class) if
+                                    not non_legacy_class.startswith("https://lgc")]
+                all_concrete_classes.extend(concrete_classes)
+        all_concrete_classes = list(set(all_concrete_classes))
+        possible_relations = [
+            RelationChangeDomain.create_hoortbij_OSLORelatie_with_legacy_class(selected_typeURI,
+                                                                               concrete_class) for concrete_class in all_concrete_classes]
+        return possible_relations
+
+    @classmethod
+    def create_hoortbij_OSLORelatie_with_legacy_class(cls, legacy_class_typeURI,
+                                                      OTL_class_typeURI):
+        return OSLORelatie(
+            bron_overerving="",
+            doel_overerving="",
+            bron_uri=legacy_class_typeURI,
+            doel_uri=OTL_class_typeURI,
+            objectUri="https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#HoortBij",
+            richting="Source -> Destination",
+            deprecated_version="",
+            usagenote="")
 
     @classmethod
     def get_all_concrete_relation_from_full_model(cls, selected_object:RelationInteractor):
@@ -700,7 +746,6 @@ class RelationChangeDomain:
             deprecated_version=concrete_relation[4],
             usagenote="") for concrete_relation in all_relations]
         return concrete_OSLO_relations
-
 
     @classmethod
     def get_same_relations_in_list(cls, relation_list: list[RelatieObject],
