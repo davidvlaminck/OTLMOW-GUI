@@ -121,6 +121,11 @@ class InsertDataDomain:
                         delimiter=",",
                         include_tab_info=True,
                         allow_non_otl_conform_attributes=True)
+
+                    for asset in assets_subset:
+                        if hasattr(asset,"FeatId"):
+                            delattr(asset,"FeatId")
+
                     assets.extend(assets_subset)
                     if exception_group is not None:
                         sdf_exception_list.extend(exception_group.exceptions)
