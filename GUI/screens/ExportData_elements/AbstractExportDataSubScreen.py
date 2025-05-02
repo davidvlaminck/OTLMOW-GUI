@@ -13,6 +13,7 @@ from Domain import global_vars
 from Domain.step_domain.ExportDataDomain import ExportDataDomain
 from GUI.dialog_windows.file_picker_dialog.SaveFilePickerDialog import SaveFilePickerDialog
 from GUI.screens.Screen import Screen
+from exception_handler.ExceptionHandlers import create_task_reraise_exception
 
 
 class AbstractExportDataSubScreen(Screen):
@@ -157,8 +158,7 @@ class AbstractExportDataSubScreen(Screen):
                     raise e
 
     def process_export(self, document_path_list, csv_option, split_relations_and_objects):
-        event_loop = asyncio.get_event_loop()
-        event_loop.create_task(
+        create_task_reraise_exception(
             ExportDataDomain.generate_files(end_file=document_path_list[0],
                                             separate_per_class_csv_option=csv_option,
                                             separate_relations_option=split_relations_and_objects))

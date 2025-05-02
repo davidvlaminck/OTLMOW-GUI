@@ -18,14 +18,15 @@ from otlmow_model.OtlmowModel.BaseClasses.URIField import URIField
 from otlmow_model.OtlmowModel.Helpers.OTLObjectHelper import is_relation
 from otlmow_modelbuilder.OSLOCollector import OSLOCollector
 
+from exception_handler.ExceptionHandlers import create_task_reraise_exception
+
 
 class XSDCreator:
 
     @classmethod
     def create_xsd_from_subset(cls, subset_path: Path, xsd_path: Path,
                                model_directory: Path = None) -> None:
-        event_loop = asyncio.get_event_loop()
-        event_loop.create_task(cls.create_filtered_xsd_from_subset(subset_path=subset_path, xsd_path=xsd_path,
+        create_task_reraise_exception(cls.create_filtered_xsd_from_subset(subset_path=subset_path, xsd_path=xsd_path,
                                             selected_classes_typeURI_list=[], model_directory=model_directory))
 
     @classmethod

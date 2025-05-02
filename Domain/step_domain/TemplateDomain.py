@@ -20,8 +20,7 @@ from GUI.dialog_windows.NotificationWindow import NotificationWindow
 from GUI.dialog_windows.SuggestUpdateWindow import SuggestUpdateWindow
 from GUI.screens.screen_interface.TemplateScreenInterface import TemplateScreenInterface
 from GUI.translation.GlobalTranslate import GlobalTranslate
-
-
+from exception_handler.ExceptionHandlers import create_task_reraise_exception
 
 
 class TemplateDomain:
@@ -103,8 +102,7 @@ class TemplateDomain:
     @classmethod
     def init_static(cls):
         if global_vars.current_project:
-            event_loop = asyncio.get_event_loop()
-            event_loop.create_task(cls.fill_list())
+            create_task_reraise_exception(cls.fill_list())
 
     @classmethod
     async def fill_list(cls):

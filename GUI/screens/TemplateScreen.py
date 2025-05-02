@@ -23,7 +23,7 @@ from GUI.screens.TemplateScreen_elements.ClassListWidget import ClassListWidget
 from GUI.screens.general_elements.ButtonWidget import ButtonWidget
 from GUI.dialog_windows.ChangeSubsetWindow import ChangeSubsetWindow
 from GUI.screens.screen_interface.TemplateScreenInterface import TemplateScreenInterface
-
+from exception_handler.ExceptionHandlers import create_task_reraise_exception
 
 
 class TemplateScreen(TemplateScreenInterface):
@@ -768,8 +768,7 @@ class TemplateScreen(TemplateScreenInterface):
         else:
             amount_of_examples = 0
 
-        event_loop = asyncio.get_event_loop()
-        event_loop.create_task(TemplateDomain.async_export_template(
+        create_task_reraise_exception(TemplateDomain.async_export_template(
             document_path=document_path,
             generate_choice_list=self.add_choice_list.isChecked(),
             geometry_column_added=self.add_geometry_attributes.isChecked(),

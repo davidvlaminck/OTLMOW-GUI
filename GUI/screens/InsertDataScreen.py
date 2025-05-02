@@ -34,6 +34,7 @@ import qtawesome as qta
 
 from GUI.translation.GlobalTranslate import GlobalTranslate
 from GUI.translation.ValidationErrorReportTranslations import ValidationErrorReportTranslations
+from exception_handler.ExceptionHandlers import create_task_reraise_exception
 
 
 class InsertDataScreen(Screen):
@@ -207,8 +208,7 @@ class InsertDataScreen(Screen):
                 self.show_missing_project_files_notification_window(missing_project_files)
                 return
 
-            event_loop = asyncio.get_event_loop()
-            event_loop.create_task(self.validate_documents())
+            create_task_reraise_exception(self.validate_documents())
 
     def show_missing_project_files_notification_window(self, missing_project_files):
         message = self._(

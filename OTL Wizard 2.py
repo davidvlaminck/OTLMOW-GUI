@@ -19,6 +19,7 @@ from Domain.step_domain.InsertDataDomain import InsertDataDomain
 from Domain.network.Updater import Updater
 from GUI.Styling import Styling
 from GUI.translation.GlobalTranslate import GlobalTranslate
+from exception_handler.ExceptionHandlers import create_task_reraise_exception, excepthook
 
 ROOT_DIR =  Path(Path(__file__).absolute()).parent
 sys.path.insert(0,str(ROOT_DIR.absolute()))# needed for python to import project files
@@ -104,8 +105,7 @@ class OTLWizard(QApplication):
 
     def test_setup(self):
         self.main_window.home_screen.table.open_project(2)
-        event_loop = asyncio.get_event_loop()
-        event_loop.create_task(InsertDataDomain.load_and_validate_documents())
+        create_task_reraise_exception(InsertDataDomain.load_and_validate_documents())
         self.main_window.setCurrentIndex(3)
         self.main_window.reset_ui(self.main_window._)
         self.main_window.step_3_tabwidget.tabs.setCurrentWidget(self.main_window.step3_relations)
@@ -117,13 +117,7 @@ class OTLWizard(QApplication):
             self.demo_project.delete_project_dir_by_path()
         super().quit()
 
-def excepthook(exc_type, exc_value, exc_tb):
-    tb = "".join(traceback.format_exception(exc_type, exc_value, exc_tb))
-    OTLLogger.logger.error("error caught!")
-    OTLLogger.logger.error("error message: \n: " + tb)
-    error_screen = ErrorScreen(tb)
-    error_screen.show()
-    # QApplication.quit()
+
 
 
 if __name__ == '__main__':

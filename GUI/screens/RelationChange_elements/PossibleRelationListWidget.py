@@ -15,6 +15,7 @@ from Domain.step_domain.RelationChangeDomain import RelationChangeDomain
 from GUI.screens.RelationChange_elements.AbstractInstanceListWidget import \
     AbstractInstanceListWidget, IMG_DIR
 from GUI.screens.RelationChange_elements.RelationChangeHelpers import RelationChangeHelpers
+from exception_handler.ExceptionHandlers import create_task_reraise_exception
 
 
 class PossibleRelationListWidget(AbstractInstanceListWidget):
@@ -157,8 +158,7 @@ class PossibleRelationListWidget(AbstractInstanceListWidget):
         Data = self.Data
         data_list: list[Data] = sorted(self.get_selected_data(), reverse=True)
 
-        event_loop = asyncio.get_event_loop()
-        event_loop.create_task(RelationChangeDomain.add_multiple_possible_relations_to_existing_relations(data_list=data_list))
+        create_task_reraise_exception(RelationChangeDomain.add_multiple_possible_relations_to_existing_relations(data_list=data_list))
 
 
         # for data in data_list:
@@ -170,8 +170,7 @@ class PossibleRelationListWidget(AbstractInstanceListWidget):
         Data = self.Data # a named tuple type defined as variable of the class put into local var
         data_list: list[Data] = self.get_selected_data()
 
-        event_look = asyncio.get_event_loop()
-        event_look.create_task(RelationChangeDomain.select_possible_relation_data(data_list))
+        create_task_reraise_exception(RelationChangeDomain.select_possible_relation_data(data_list))
 
     def get_selected_data(self):
         return [

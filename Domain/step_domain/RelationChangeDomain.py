@@ -28,6 +28,7 @@ from GUI.dialog_windows.LoadingImageWindow import add_loading_screen
 from GUI.screens.RelationChange_elements.RelationChangeHelpers import RelationChangeHelpers
 from GUI.screens.screen_interface.RelationChangeScreenInterface import \
     RelationChangeScreenInterface
+from exception_handler.ExceptionHandlers import create_task_reraise_exception
 
 ROOT_DIR = Path(__file__).parent.parent
 
@@ -205,12 +206,10 @@ class RelationChangeDomain:
         if global_vars.current_project:
             if asynchronous:
                 try:
-                    event_loop = asyncio.get_event_loop()
-                    event_loop.create_task(cls.load_project_relation_data_async())
+                    create_task_reraise_exception(cls.load_project_relation_data_async())
                 except DeprecationWarning:
                     # should only go here if you are testing
-                    event_loop = asyncio.get_event_loop()
-                    event_loop.create_task(cls.load_project_relation_data_async())
+                    create_task_reraise_exception(cls.load_project_relation_data_async())
             else:
                 try:
                     cls.load_project_relation_data()
@@ -1095,8 +1094,7 @@ class RelationChangeDomain:
                                                       last_added=cls.last_added_to_existing)
 
 
-        event_loop = asyncio.get_event_loop()
-        event_loop.create_task(cls.set_possible_relations(selected_object=cls.selected_object))
+        create_task_reraise_exception(cls.set_possible_relations(selected_object=cls.selected_object))
 
         OTLLogger.logger.debug("Execute RelationChangeDomain.update_frontend",
                                extra={"timing_ref": f"update_frontend"})

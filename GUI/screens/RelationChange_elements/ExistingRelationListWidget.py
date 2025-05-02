@@ -13,6 +13,7 @@ from GUI.screens.RelationChange_elements.AbstractInstanceListWidget import \
     AbstractInstanceListWidget
 
 from GUI.screens.RelationChange_elements.RelationChangeHelpers import RelationChangeHelpers
+from exception_handler.ExceptionHandlers import create_task_reraise_exception
 
 
 class ExistingRelationListWidget(AbstractInstanceListWidget):
@@ -119,8 +120,7 @@ class ExistingRelationListWidget(AbstractInstanceListWidget):
 
     def existing_relations_selected(self):
         indices: list[int] = self.get_selected_data()
-        event_loop = asyncio.get_event_loop()
-        event_loop.create_task(
+        create_task_reraise_exception(
         RelationChangeDomain.select_existing_relation_indices(indices))
 
     def get_selected_data(self):
@@ -133,8 +133,7 @@ class ExistingRelationListWidget(AbstractInstanceListWidget):
 
         # for index in indices:
         #     RelationChangeDomain.remove_existing_relation(index)
-        event_loop = asyncio.get_event_loop()
-        event_loop.create_task(RelationChangeDomain.remove_multiple_existing_relations(indices))
+        create_task_reraise_exception(RelationChangeDomain.remove_multiple_existing_relations(indices))
 
 
     def extract_text_and_data_per_item(self, source_object, objects, last_added):

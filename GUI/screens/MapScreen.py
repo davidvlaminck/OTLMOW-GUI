@@ -29,6 +29,7 @@ from GUI.dialog_windows.LoadingImageWindow import add_loading_screen
 from GUI.screens.Map_elements.MapHelper import MapHelper
 from GUI.screens.general_elements.ButtonWidget import ButtonWidget
 from GUI.screens.Screen import Screen
+from exception_handler.ExceptionHandlers import create_task_reraise_exception
 
 ROOT_DIR = Path(__file__).parent
 
@@ -181,8 +182,7 @@ class MapScreen(Screen):
         self.color_label_title.setText(self._("relations legend") + ":")
 
     def start_async_reload(self):
-        event_loop = asyncio.get_event_loop()
-        event_loop.create_task(self.reload_html())
+        create_task_reraise_exception(self.reload_html())
 
     @add_loading_screen
     async def reload_html(self):

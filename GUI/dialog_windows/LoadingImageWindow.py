@@ -12,6 +12,7 @@ from fontTools.merge.util import avg_int
 from Domain import global_vars
 from Domain.global_vars import test_mode
 from Domain.logger.OTLLogger import OTLLogger
+from exception_handler.ExceptionHandlers import create_task_reraise_exception
 
 ROOT_DIR = Path(__file__).parent.parent.parent
 
@@ -126,8 +127,7 @@ class LoadingImageWindow(QDialog):
         self.opening = True
         self.last_time = datetime.datetime.now()
         if delayed_opening:
-            event_loop = asyncio.get_event_loop()
-            event_loop.create_task(self.delayed_open())
+            create_task_reraise_exception(self.delayed_open())
         else:
             self.open()
             self.movie.start()
