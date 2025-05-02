@@ -885,6 +885,7 @@ msgstr ""
 #: GUI/translation/ValidationErrorReportTranslations.py:34
 msgid "{doc_name}: type uri not in first row of {tab}\n"
 msgstr "{doc_name}: TypeUri staat niet in de eerste rij van werkblad {tab}\n"
+"Verwijder de rijen boven de hoofdingen rij, alsjeblieft\n"
 
 #: GUI/translation/ValidationErrorReportTranslations.py:41
 msgid ""

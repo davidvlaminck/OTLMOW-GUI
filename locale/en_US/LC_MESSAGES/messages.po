@@ -875,6 +875,7 @@ msgstr ""
 #: GUI/translation/ValidationErrorReportTranslations.py:34
 msgid "{doc_name}: type uri not in first row of {tab}\n"
 msgstr "{doc_name}: TypeUri not found in first row of worksheet {tab}\n"
+"Please remove the rows above the headers row\n"
 
 #: GUI/translation/ValidationErrorReportTranslations.py:41
 msgid ""
