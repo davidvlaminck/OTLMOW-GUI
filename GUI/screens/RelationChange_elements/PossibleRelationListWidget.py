@@ -293,9 +293,9 @@ class PossibleRelationListWidget(AbstractInstanceListWidget):
 
     def state_change_OTL_relations_checkbox(self,state:int) -> None:
 
-        if state == Qt.CheckState.Unchecked:
+        if state == Qt.CheckState.Unchecked.value:
             RelationChangeDomain.set_search_full_OTL_mode(state=False)
-        elif state == Qt.CheckState.Checked:
+        elif state == Qt.CheckState.Checked.value:
             RelationChangeDomain.set_search_full_OTL_mode(state=True)
         else:
             # In case of an unexpected state, default to False.
