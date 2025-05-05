@@ -43,11 +43,7 @@ dependencies = [
 
 
 [tool.setuptools.packages.find]
-where = "."
-include = ["Domain*", "Exceptions*", "exception_handler*", "GUI*"] # only packages, no data files
-
-[tool.setuptools.package-data]
-otlmow_gui = ['img/*', 'locale/*', 'style/*', 'Domain/custom_theme.xml', 'Domain/visuals.png', 'GUI/screens/Map_elements/bol.png', 'OTL Wizard 2.py']
+include = ["Domain*", "Exceptions*", "exception_handler*", "GUI*", "OTL Wizard 2.py",]
 
 [project.urls]
 "Homepage" = "https://github.com/davidvlaminck/OTLMOW-GUI"
