@@ -21,7 +21,7 @@ class SaveFilePickerDialog(AbstractFilePickerDialog):
             for excluded_type in exclude_file_types:
                 if excluded_type in self.supported_export_formats:
                     self.supported_export_formats.pop(
-                        excluded_type)  # SDF is not yet supported for export in V0.7.4
+                        excluded_type)  # SDF is not yet supported for export in V1.0
         self.setModal(True)
         self.setAcceptMode(QFileDialog.AcceptSave)
 
