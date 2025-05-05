@@ -542,7 +542,7 @@ class Project:
         if not self.saved_project_files:
             OTLLogger.logger.debug("No project files in memory")
             return False
-        return any(
+        return all(
             template.state == FileState.OK for template in self.saved_project_files
         )
 

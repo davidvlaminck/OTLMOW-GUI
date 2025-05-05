@@ -289,7 +289,7 @@ class InsertDataDomain:
                     all_valid = False
 
         cls.get_screen().update_control_button_state()
-
+        global_vars.otl_wizard.main_window.enable_steps()
         return all_valid
 
     @classmethod
