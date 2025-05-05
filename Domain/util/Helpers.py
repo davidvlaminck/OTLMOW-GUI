@@ -2,6 +2,7 @@ import asyncio
 import base64
 import logging
 import os
+import subprocess
 import tempfile
 import warnings
 from pathlib import Path
@@ -13,30 +14,53 @@ from otlmow_model.OtlmowModel.BaseClasses.OTLObject import OTLObject, \
     dynamic_create_instance_from_ns_and_name, dynamic_create_instance_from_uri
 from otlmow_model.OtlmowModel.Classes.Agent import Agent
 from otlmow_model.OtlmowModel.Helpers import OTLObjectHelper
-from otlmow_model.OtlmowModel.Helpers.GenericHelper import validate_guid
-from otlmow_model.OtlmowModel.Helpers.generated_lists import get_hardcoded_class_dict
+from otlmow_model.OtlmowModel.Helpers.GenericHelper import validate_guid, get_shortened_uri, get_ns_and_name_from_uri, \
+    get_titlecase_from_ns
+from otlmow_model.OtlmowModel.Helpers.generated_lists import get_hardcoded_class_dict, get_hardcoded_relation_dict
 from packaging.version import Version
 
 from Domain.logger.OTLLogger import OTLLogger
 from GUI.dialog_windows.LoadingImageWindow import add_loading_screen
+from GUI.dialog_windows.NotificationWindow import NotificationWindow
 from GUI.screens.RelationChange_elements.RelationChangeHelpers import RelationChangeHelpers
+
 
 
 class Helpers:
     all_OTL_asset_types_dict = {}
 
     @classmethod
+    def get_hardcoded_class_dict(cls) -> dict:
+        return get_hardcoded_class_dict()
+
+    @classmethod
     def create_external_typeURI_options(cls):
-        all_type_uris = get_hardcoded_class_dict()
+        cls.all_OTL_asset_types_dict = {}
+        all_type_uris = cls.get_hardcoded_class_dict()
+        buckets_dict = {'assets': {}, 'legacy':{}}
+
         for uri, info in all_type_uris.items():
-            abbr_type_uri = RelationChangeHelpers.get_abbreviated_typeURI(uri, add_namespace=True)
-            screen_name = info['label']
-            if "#" in abbr_type_uri:
-                abbr_type_uri_split = abbr_type_uri.split("#")
-                screen_name = "#".join([screen_name, abbr_type_uri_split[0]])
+            if info['abstract']:
+                continue
+            if uri in get_hardcoded_relation_dict():
+                continue
+
+            ns, name = get_ns_and_name_from_uri(uri)
+            screen_name = info['name'] if ns == 'legacy' else info['label']
+            if ns is not None:
+                screen_name += f" ({get_titlecase_from_ns(ns)})"
+
+            if ns == 'legacy':
+                screen_name = screen_name.replace("(Legacy) (Legacy)", "(Legacy)")
+                buckets_dict['legacy'][screen_name] = uri
+            else:
+                buckets_dict['assets'][screen_name] = uri
 
             cls.all_OTL_asset_types_dict[screen_name] = uri
-        cls.all_OTL_asset_types_dict = Helpers.sort_nested_dict(cls.all_OTL_asset_types_dict)
+
+        # combine and sort the dictionary by keys (screen name)
+        cls.all_OTL_asset_types_dict = dict(sorted(buckets_dict['assets'].items()))
+        cls.all_OTL_asset_types_dict.update(dict(sorted(buckets_dict['legacy'].items())))
 
     @classmethod
     def sort_nested_dict(cls, dictionary, by='keys'):
@@ -74,13 +98,13 @@ class Helpers:
             return True
 
     @classmethod
-    async def converter_from_file_to_object_async(cls, file_path, **kwargs):
+    async def converter_from_file_to_object_async(cls, file_path:Path,allow_non_otl_conform_attributes:bool=False, **kwargs):
 
         OTLLogger.logger.debug(f"Execute OtlmowConverter.from_file_to_objects({file_path.name})",
                                extra={"timing_ref": f"file_to_objects_{file_path.stem}"})
         exception_group = None
         try:
-            object_lists = list(await OtlmowConverter.from_file_to_objects_async(file_path,allow_non_otl_conform_attributes=False,**kwargs))
+            object_lists = list(await OtlmowConverter.from_file_to_objects_async(file_path,allow_non_otl_conform_attributes=allow_non_otl_conform_attributes,**kwargs))
         except ExceptionsGroup as group:
             exception_group = group
             object_lists = group.objects
@@ -112,9 +136,12 @@ class Helpers:
     @classmethod
     async def start_async_converter_from_object_to_file(cls, file_path: Path,
                                             sequence_of_objects: Iterable[OTLObject], **kwargs) -> None:
+
         await Helpers.converter_from_object_to_file(file_path=file_path,
                                               sequence_of_objects=sequence_of_objects,
                                               **kwargs)
+
+
 
     @classmethod
     @add_loading_screen
@@ -217,3 +244,12 @@ class Helpers:
             partner_type_uri = Helpers.extract_typeURI_from_aim_id(partner_id)
 
         return partner_type_uri
+
+    @classmethod
+    def open_folder_and_select_document(cls,document_path:Path):
+        if document_path.exists():
+            command = f'explorer /select,"{document_path}"'
+        else:
+            command = f'explorer "{document_path.parent}"'
+        OTLLogger.logger.debug(command)
+        subprocess.Popen(command)

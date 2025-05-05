@@ -3,15 +3,16 @@ from pathlib import Path
 from typing import Optional, Callable
 
 from PyQt6.QtGui import QPixmap
-
+import qtawesome as qta
 
 from PyQt6.QtWidgets import QWidget, QLabel, QHBoxLayout, QVBoxLayout, \
-    QLineEdit, QFrame
+    QLineEdit, QFrame, QPushButton, QSizePolicy
 from PyQt6.QtCore import Qt
 
 from Domain.project.Project import Project
 from Domain.step_domain.HomeDomain import HomeDomain
 from Domain.network.Updater import Updater
+from GUI.Styling import Styling
 from GUI.dialog_windows.SuggestUpdateWindow import SuggestUpdateWindow
 
 from GUI.header.HeaderBar import HeaderBar
@@ -55,6 +56,7 @@ class HomeScreen(HomeScreenInterface):
         # self.message_box = MessageBox(self._)
         self.head_wrapper = QFrame()
         self.search_input_field = QLineEdit()
+        self.clear_search_bar_button = None
         self.search_message = QLabel()
         self.table = OverviewTable(self._)
         self.table.setItemDelegate(LastAddedProjectHighlightDelegate(self))
@@ -148,12 +150,26 @@ class HomeScreen(HomeScreenInterface):
         self.create_input_field()
         self.search_message.setText("")
         self.search_message.setStyleSheet("color: red")
+
+        self.clear_search_bar_button = QPushButton()
+        self.set_clear_icon(self.clear_search_bar_button)
+        self.clear_search_bar_button.clicked.connect(self.clear_search_listener)
+        self.clear_search_bar_button.setProperty('class', 'secondary-button')
+
         search.addWidget(self.search_input_field)
+        search.addWidget(self.clear_search_bar_button)
         search.addWidget(self.search_message)
-        search.addStretch()
+
         search_wrapper.setLayout(search)
         return search_wrapper
 
+    # noinspection PyMethodMayBeStatic
+    def set_clear_icon(self, button: QPushButton) -> None:
+        button.setIcon(qta.icon('mdi.close', color=Styling.button_icon_color))
+
+    def clear_search_listener(self) -> None:
+        self.search_input_field.setText("")
+        HomeDomain.update_frontend()
 
     def create_input_field(self) -> None:
         """
@@ -166,8 +182,9 @@ class HomeScreen(HomeScreenInterface):
         :return: None
         """
 
-        self.search_input_field.returnPressed.connect(lambda: HomeDomain.update_frontend())
+        self.search_input_field.textChanged.connect(lambda: HomeDomain.update_frontend())
         self.search_input_field.setPlaceholderText(self._('search_text'))
+        self.search_input_field.setSizePolicy(QSizePolicy.Policy.Expanding,QSizePolicy.Policy.Fixed)
 
 
     def remove_table_row(self, row_index: int) -> None:

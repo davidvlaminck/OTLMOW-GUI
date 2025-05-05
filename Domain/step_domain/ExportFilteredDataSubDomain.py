@@ -14,6 +14,7 @@ from Domain.step_domain.ExportDataDomain import ExportDataDomain
 from Domain.step_domain.InsertDataDomain import InsertDataDomain
 from Domain.step_domain.RelationChangeDomain import async_save_assets, RelationChangeDomain
 from GUI.dialog_windows.LoadingImageWindow import add_loading_screen, add_loading_screen_no_delay
+from GUI.dialog_windows.NotificationWindow import NotificationWindow
 
 
 @dataclass
@@ -126,31 +127,36 @@ class ExportFilteredDataSubDomain:
                            separate_per_class_csv_option:bool = False,
                            separate_relations_option:bool = False,**kwargs) -> None:
         OTLLogger.logger.debug("started exporting diff report")
+        try:
+            original_documents = [str(original_doc) for original_doc in cls.original_documents.values()]
 
-        original_documents = [str(original_doc) for original_doc in cls.original_documents.values()]
+            changed_assets = sorted(RelationChangeDomain.get_internal_objects(),
+                                      key=lambda relation1: relation1.typeURI)
+            changed_relations = sorted(RelationChangeDomain.get_persistent_relations(),
+                                         key=lambda relation1: relation1.typeURI)
 
-        changed_assets = sorted(RelationChangeDomain.get_internal_objects(),
-                                  key=lambda relation1: relation1.typeURI)
-        changed_relations = sorted(RelationChangeDomain.get_persistent_relations(),
-                                     key=lambda relation1: relation1.typeURI)
+            original_objects = await cls.generate_original_assets_from_files(original_documents=original_documents)
+            original_assets = [original_object for original_object in original_objects if not is_relation(original_object)]
+            original_relations =[original_object for original_object in original_objects if is_relation(original_object)]
 
-        original_objects = await cls.generate_original_assets_from_files(original_documents=original_documents)
-        original_assets = [original_object for original_object in original_objects if not is_relation(original_object)]
-        original_relations =[original_object for original_object in original_objects if is_relation(original_object)]
+            diff_1_assets = compare_two_lists_of_objects_attribute_level(first_list=original_assets,
+                                                                  second_list=changed_assets,
+                                                                  model_directory=ProgramFileStructure.get_otl_wizard_model_dir())
+            diff_1_relations = compare_two_lists_of_objects_attribute_level(first_list=original_relations,
+                                                                         second_list=changed_relations,
+                                                                         model_directory=ProgramFileStructure.get_otl_wizard_model_dir())
 
-        diff_1_assets = compare_two_lists_of_objects_attribute_level(first_list=original_assets,
-                                                              second_list=changed_assets,
-                                                              model_directory=ProgramFileStructure.get_otl_wizard_model_dir())
-        diff_1_relations = compare_two_lists_of_objects_attribute_level(first_list=original_relations,
-                                                                     second_list=changed_relations,
-                                                                     model_directory=ProgramFileStructure.get_otl_wizard_model_dir())
+            assets = sorted(diff_1_assets,key=lambda relation1: relation1.typeURI)
+            relations = sorted(diff_1_relations, key=lambda relation1: relation1.typeURI)
 
-        assets = sorted(diff_1_assets,key=lambda relation1: relation1.typeURI)
-        relations = sorted(diff_1_relations, key=lambda relation1: relation1.typeURI)
-
-        await ExportDataDomain.export_to_files(assets, relations , file_name,
-                            separate_per_class_csv_option, separate_relations_option,**kwargs)
-
+            await ExportDataDomain.export_to_files(assets, relations , file_name,
+                                separate_per_class_csv_option, separate_relations_option,**kwargs)
+        except ValueError as e:
+            if e.args == ('There are no asset data to export to Excel',):
+                notification = NotificationWindow(title="Geen data", message="Er is geen data om te exporteren")
+                notification.exec()
+            else:
+                raise e
 
     @classmethod
     @add_loading_screen_no_delay

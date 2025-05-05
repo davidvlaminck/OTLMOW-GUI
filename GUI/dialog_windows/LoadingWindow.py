@@ -2,6 +2,7 @@ import asyncio
 
 from PyQt6.QtWidgets import QWidget, QMessageBox
 
+from exception_handler.ExceptionHandlers import create_task_reraise_exception
 
 
 class LoadingWindow(QMessageBox):
@@ -21,8 +22,7 @@ class LoadingWindow(QMessageBox):
         self.setText(self.message)
         self.setStandardButtons(QMessageBox.NoButton)
         if self.delayed_opening:
-            event_loop = asyncio.get_event_loop()
-            event_loop.create_task(self.delayed_open())
+            create_task_reraise_exception(self.delayed_open())
         else:
             self.open()
 

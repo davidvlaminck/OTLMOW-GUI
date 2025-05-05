@@ -6,6 +6,7 @@ from Domain import global_vars
 from Domain.util.Helpers import Helpers
 from Domain.logger.OTLLogger import OTLLogger
 from Domain.step_domain.RelationChangeDomain import RelationChangeDomain
+from GUI.dialog_windows.NotificationWindow import NotificationWindow
 
 
 class ExportDataDomain:
@@ -43,10 +44,19 @@ class ExportDataDomain:
         Raises:
             OSError: If there is an issue writing to the specified output file(s).
         """
-        assets_in_memory = sorted(RelationChangeDomain.get_internal_objects(), key=lambda relation1: relation1.typeURI)
-        relations_in_memory = sorted(RelationChangeDomain.get_persistent_relations(), key=lambda relation1: relation1.typeURI)
-        await cls.export_to_files(assets_in_memory, relations_in_memory, end_file,
-                            separate_per_class_csv_option, separate_relations_option, **kwargs)
+        try:
+            assets_in_memory = sorted(RelationChangeDomain.get_internal_objects(), key=lambda relation1: relation1.typeURI)
+            relations_in_memory = sorted(RelationChangeDomain.get_persistent_relations(), key=lambda relation1: relation1.typeURI)
+            await cls.export_to_files(assets_in_memory, relations_in_memory, end_file,
+                                separate_per_class_csv_option, separate_relations_option, **kwargs)
+            cls.get_screen().open_folder_of_created_export_files(end_file)
+        except ValueError as e:
+            if e.args == ('There are no asset data to export to Excel',):
+                notification = NotificationWindow(title="Geen data",
+                                                  message="Er is geen data om te exporteren")
+                notification.exec()
+            else:
+                raise e
 
     @classmethod
     async def export_to_files(cls, assets, relations, end_file, separate_per_class_csv_option,

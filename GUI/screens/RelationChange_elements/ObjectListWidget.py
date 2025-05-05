@@ -14,6 +14,7 @@ from GUI.screens.RelationChange_elements.AbstractInstanceListWidget import \
     AbstractInstanceListWidget
 
 from GUI.screens.RelationChange_elements.RelationChangeHelpers import RelationChangeHelpers
+from exception_handler.ExceptionHandlers import create_task_reraise_exception
 
 
 class ObjectListWidget(AbstractInstanceListWidget):
@@ -82,8 +83,7 @@ class ObjectListWidget(AbstractInstanceListWidget):
                                       item_count=item_count,
                                       selected_item_count=selected_item_count)
 
-        event_loop = asyncio.get_event_loop()
-        event_loop.create_task(RelationChangeDomain.set_possible_relations(selected_object=self.selected_object))
+        create_task_reraise_exception(RelationChangeDomain.set_possible_relations(selected_object=self.selected_object))
 
     def select_item_via_identificator(self,identificator):
         for i in range(self.list_gui.model.rowCount()):

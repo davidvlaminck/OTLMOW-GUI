@@ -3,9 +3,9 @@ import logging
 from collections import namedtuple
 from typing import Union
 
-from PyQt6.QtCore import QItemSelectionModel
+from PyQt6.QtCore import QItemSelectionModel, Qt
 from PyQt6.QtGui import QStandardItem, QPixmap, QIcon, QFont
-from PyQt6.QtWidgets import QFrame
+from PyQt6.QtWidgets import QFrame, QCheckBox
 from otlmow_model.OtlmowModel.Helpers import OTLObjectHelper
 from otlmow_model.OtlmowModel.BaseClasses.OTLObject import \
     OTLObject
@@ -15,6 +15,7 @@ from Domain.step_domain.RelationChangeDomain import RelationChangeDomain
 from GUI.screens.RelationChange_elements.AbstractInstanceListWidget import \
     AbstractInstanceListWidget, IMG_DIR
 from GUI.screens.RelationChange_elements.RelationChangeHelpers import RelationChangeHelpers
+from exception_handler.ExceptionHandlers import create_task_reraise_exception
 
 
 class PossibleRelationListWidget(AbstractInstanceListWidget):
@@ -30,6 +31,7 @@ class PossibleRelationListWidget(AbstractInstanceListWidget):
         self.list_label_text = self._('relations_list')
         self.list_subtext_label_text = self._("possible_relation_subscription")
         self.attribute_field_label_text = self._("possible_relation_partner_asset_attributes")
+        self.show_all_OTL_relations_checkbox = QCheckBox()
 
     def create_object_list_gui(self, multi_select: bool = False) -> QFrame:
         frame = super().create_object_list_gui(multi_select)
@@ -156,8 +158,7 @@ class PossibleRelationListWidget(AbstractInstanceListWidget):
         Data = self.Data
         data_list: list[Data] = sorted(self.get_selected_data(), reverse=True)
 
-        event_loop = asyncio.get_event_loop()
-        event_loop.create_task(RelationChangeDomain.add_multiple_possible_relations_to_existing_relations(data_list=data_list))
+        create_task_reraise_exception(RelationChangeDomain.add_multiple_possible_relations_to_existing_relations(data_list=data_list))
 
 
         # for data in data_list:
@@ -169,8 +170,7 @@ class PossibleRelationListWidget(AbstractInstanceListWidget):
         Data = self.Data # a named tuple type defined as variable of the class put into local var
         data_list: list[Data] = self.get_selected_data()
 
-        event_look = asyncio.get_event_loop()
-        event_look.create_task(RelationChangeDomain.select_possible_relation_data(data_list))
+        create_task_reraise_exception(RelationChangeDomain.select_possible_relation_data(data_list))
 
     def get_selected_data(self):
         return [
@@ -269,7 +269,7 @@ class PossibleRelationListWidget(AbstractInstanceListWidget):
     def is_last_added(self, text_and_data: dict):
         return text_and_data["data"].last_added
 
-    def create_asset_type_standard_item(self, asset_type, text_and_data_list):
+    def create_asset_type_standard_item(self, asset_type:str, text_and_data_list) -> QStandardItem:
         folder_item = super().create_asset_type_standard_item(asset_type,text_and_data_list)
 
         if text_and_data_list:
@@ -277,5 +277,28 @@ class PossibleRelationListWidget(AbstractInstanceListWidget):
             self.add_colored_relation_bol_icon_to_item(folder_item, full_typeURI)
         return folder_item
 
-    def get_no_instance_selected_message(self):
+    def get_no_instance_selected_message(self) -> str:
         return self._("no_relation_selected")
+
+    def add_extra_elements_to_list_subtext_layout(self) -> None:
+        self.show_all_OTL_relations_checkbox.setText(self._("Toon all OTL-relaties"))
+        self.show_all_OTL_relations_checkbox.setToolTip(self._("Toon alle mogelijke relaties met het geselecteerde asset in het volledige OTL (i.p.v. alleen subset)"))
+        self.show_all_OTL_relations_checkbox.stateChanged.connect(self.state_change_OTL_relations_checkbox)
+
+        self.list_subtext_layout.addWidget(self.show_all_OTL_relations_checkbox)
+
+
+    def is_show_all_OTL_relations_checked(self) -> bool:
+        return self.show_all_OTL_relations_checkbox.isChecked()
+
+    def state_change_OTL_relations_checkbox(self,state:int) -> None:
+
+        if state == Qt.CheckState.Unchecked.value:
+            RelationChangeDomain.set_search_full_OTL_mode(state=False)
+        elif state == Qt.CheckState.Checked.value:
+            RelationChangeDomain.set_search_full_OTL_mode(state=True)
+        else:
+            # In case of an unexpected state, default to False.
+            RelationChangeDomain.set_search_full_OTL_mode(state=False)
+
+        RelationChangeDomain.update_frontend()

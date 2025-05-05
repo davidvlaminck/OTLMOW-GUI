@@ -21,7 +21,7 @@ class SaveFilePickerDialog(AbstractFilePickerDialog):
             for excluded_type in exclude_file_types:
                 if excluded_type in self.supported_export_formats:
                     self.supported_export_formats.pop(
-                        excluded_type)  # SDF is not yet supported for export in V0.7.3
+                        excluded_type)  # SDF is not yet supported for export in V1.0
         self.setModal(True)
         self.setAcceptMode(QFileDialog.AcceptSave)
 
@@ -41,6 +41,27 @@ class SaveFilePickerDialog(AbstractFilePickerDialog):
 
         OTLLogger.logger.debug(f"save_file_dialog return: {[Path(save_location[0])]}")
         return [Path(save_location[0])]
+
+    def store_save_filename(self, res: list[str]):
+        if len(res):
+            if res[0]:
+                self.previous_exported_file_name = str(Path(res[0]).stem)
+
+    def set_filename_suggestions(self, project_name):
+
+        if self.previous_exported_file_name:
+            initial_filename = self.previous_exported_file_name
+        elif project_name:
+            initial_filename = self.get_filename_suggestion(project_name)
+        else:
+            initial_filename = "export"
+
+        self.selectFile(initial_filename)
+
+    def get_filename_suggestion(self, project_name):
+        return project_name + "_export"
+
+
 
 
 

@@ -540,7 +540,7 @@ async def test_fill_possible_relations_list_with_2_same_name_but_diff_namespace_
 
     RelationChangeDomain.possible_relations_per_class_dict = {test_object2.typeURI: [mock_OSLORelatie_test[0]],
                                                               test_object3.typeURI: [mock_OSLORelatie_test[1]]}
-    RelationChangeDomain.external_object_added = False
+    RelationChangeDomain.regenerate_relation_types = False
     await RelationChangeDomain.set_possible_relations(test_object2)
     relation_change_screen = mock_rel_screen
 

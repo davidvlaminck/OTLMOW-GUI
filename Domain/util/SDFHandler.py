@@ -184,7 +184,7 @@ class SDFHandler:
                     title=GlobalTranslate._("FDOToolbox not installed")
                 )
 
-                if answer != 16384: # QMessageBox.ButtonRole.YesRole:
+                if answer != 16384: # QMessageBox.ButtonRole.NoRole:
                     return
 
                 test_path = Path(os.getcwd()) / Path(
@@ -198,7 +198,7 @@ class SDFHandler:
                     subprocess.Popen(
                         f'explorer /select,"{test_path}"')
 
-                raise FDOToolboxNotInstalledError(GlobalTranslate._) from e
+                # raise FDOToolboxNotInstalledError(GlobalTranslate._) from e
 
 
     @classmethod

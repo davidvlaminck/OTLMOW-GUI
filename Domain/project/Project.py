@@ -26,6 +26,7 @@ from GUI.dialog_windows.LoadingImageWindow import add_loading_screen
 from GUI.dialog_windows.NotificationWindow import NotificationWindow
 from GUI.dialog_windows.YesOrNoNotificationWindow import YesOrNoNotificationWindow
 from GUI.translation.GlobalTranslate import GlobalTranslate
+from exception_handler.ExceptionHandlers import create_task_reraise_exception
 
 
 class Project:
@@ -257,7 +258,9 @@ class Project:
                 extra={"timing_ref": timing_ref})
 
             # noinspection PyTypeChecker
-            saved_objects, exceptions_group = await Helpers.converter_from_file_to_object_async(path)
+            saved_objects, exceptions_group = await Helpers.converter_from_file_to_object_async(
+                path,
+                allow_non_otl_conform_attributes=True)
 
             object_count = len(saved_objects)
             OTLLogger.logger.debug(
@@ -343,8 +346,7 @@ class Project:
         save_path = self.quick_save_dir_path  / f"quick_save-{current_date_str}.json"
         if asynchronous:
             try:
-                event_loop = asyncio.get_event_loop()
-                event_loop.create_task(self.make_quick_save_async(save_path=save_path))
+                create_task_reraise_exception(self.make_quick_save_async(save_path=save_path))
             except DeprecationWarning:
                 # should only go here if you are testing
                 await self.make_quick_save(save_path=save_path)
@@ -540,7 +542,7 @@ class Project:
         if not self.saved_project_files:
             OTLLogger.logger.debug("No project files in memory")
             return False
-        return any(
+        return all(
             template.state == FileState.OK for template in self.saved_project_files
         )
 

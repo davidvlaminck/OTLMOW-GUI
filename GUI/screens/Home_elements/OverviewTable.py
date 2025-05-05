@@ -1,17 +1,18 @@
-import asyncio
-import logging
+import subprocess
 from pathlib import Path
 
 from typing import Union, Callable
 import datetime
 import qtawesome as qta
 from PyQt6.QtCore import Qt, QModelIndex
-from PyQt6.QtGui import QPainter, QBrush
+from PyQt6.QtGui import QPainter, QBrush, QColor
 
 from PyQt6.QtWidgets import QTableWidget, QHeaderView, QStyledItemDelegate
+from cryptography.hazmat.primitives.asymmetric.ec import ECDSA
 
 from Domain.step_domain.HomeDomain import HomeDomain
 from Domain.project.Project import Project
+from Domain.util.Helpers import Helpers
 from GUI.Styling import Styling
 from GUI.dialog_windows.file_picker_dialog.ProjectExportFilePickerDialog import \
     ProjectExportFilePickerDialog
@@ -187,8 +188,12 @@ class OverviewTable(QTableWidget):
     def open_export_project_dialog_window(self, project:Project):
 
         # set the action_function in the dialog with the new project
-        save_locations = self.export_project_dialog_window.summon()
-        self.export_project(save_locations,project)
+        save_locations = self.export_project_dialog_window.summon(project_name=project.eigen_referentie)
+        try:
+            self.export_project(save_locations,project)
+        except Exception as e:
+            #TODO: proper error message when project fails to export
+            raise e
 
     def export_project(self,save_locations: list[Path],project:Project):
         if not save_locations or not save_locations[0]:
@@ -201,6 +206,7 @@ class OverviewTable(QTableWidget):
             project_path = project_path.with_suffix('.otlw')
 
         project.export_project_to_file(file_path=project_path)
+        Helpers.open_folder_and_select_document(project_path)
 
     def open_project(self, row) -> None:
         """
@@ -216,7 +222,7 @@ class OverviewTable(QTableWidget):
         :return: None
         """
 
-        self.main_window.setCurrentIndex(1)
+        # self.main_window.setCurrentIndex(1)
         project_ref = self.item(row, 0).data(1)
 
         HomeDomain.open_project(project_ref=project_ref)
@@ -236,7 +242,7 @@ class OverviewTable(QTableWidget):
         Returns:
             None
         """
-
+        search_text = search_text.lower()
         rows_to_remove = []
 
         # search on all columns
@@ -246,13 +252,25 @@ class OverviewTable(QTableWidget):
             subset = self.item(i,2).text()
             laatst_bewerkt = self.item(i,3).text()
 
-            if (
-                search_text not in eigen_referentie.lower()
-                and search_text not in bestek.lower()
-                and search_text not in subset.lower()
-                and search_text not in laatst_bewerkt.lower()
-            ):
+            found = False
+            highlight_brush = QBrush(QColor(Qt.GlobalColor.darkGray))
+            if search_text in eigen_referentie.lower():
+                self.item(i, 0).setBackground(highlight_brush)
+                found = True
+            if search_text in bestek.lower():
+                self.item(i, 1).setBackground(highlight_brush)
+                found = True
+            if search_text in subset.lower():
+                self.item(i, 2).setBackground(highlight_brush)
+                found = True
+            if search_text in laatst_bewerkt.lower():
+                self.item(i, 3).setBackground(highlight_brush)
+                found = True
+
+            if not found:
                 rows_to_remove.append(i)
+
+        rows_to_remove.sort(reverse=True)
 
         for row_i in rows_to_remove:
             self.removeRow(row_i)

@@ -1,10 +1,11 @@
 import asyncio
+import subprocess
 from copy import deepcopy
 from enum import IntEnum
 from pathlib import Path
 from typing import NamedTuple
 
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt, QItemSelection
 from PyQt6.QtGui import QBrush, QColor, QFont
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QFrame, QCheckBox, QSpinBox, \
     QLabel, QListWidget, QListWidgetItem, QButtonGroup, QRadioButton, QComboBox, QSizePolicy
@@ -14,13 +15,15 @@ from Domain import global_vars
 from Domain.logger.OTLLogger import OTLLogger
 from Domain.project.Project import Project
 from Domain.step_domain.TemplateDomain import TemplateDomain
+from Domain.util.Helpers import Helpers
 from GUI.dialog_windows.ExportToTemplateWindow import ExportToTemplateWindow
 from GUI.dialog_windows.file_picker_dialog.TemplateSaveFilePickerDialog import \
     TemplateSaveFilePickerDialog
+from GUI.screens.TemplateScreen_elements.ClassListWidget import ClassListWidget
 from GUI.screens.general_elements.ButtonWidget import ButtonWidget
 from GUI.dialog_windows.ChangeSubsetWindow import ChangeSubsetWindow
 from GUI.screens.screen_interface.TemplateScreenInterface import TemplateScreenInterface
-
+from exception_handler.ExceptionHandlers import create_task_reraise_exception
 
 
 class TemplateScreen(TemplateScreenInterface):
@@ -283,7 +286,7 @@ class TemplateScreen(TemplateScreenInterface):
         # class GUI list elements
         self.select_all_classes = QCheckBox()
         self.add_resetable_field(self.select_all_classes,default_value=True)
-        self.all_classes = QListWidget()
+        self.all_classes = ClassListWidget()
         self.selected = 0
         self.label_counter = QLabel()
 
@@ -334,9 +337,6 @@ class TemplateScreen(TemplateScreenInterface):
         options_menu = QFrame()
         main_layout = QVBoxLayout()
 
-
-        # self.select_all_classes.setText(self._("select_all_classes"))
-        # self.select_all_classes.stateChanged.connect(lambda: self.select_all_classes_clicked())
 
         self.general_settings_title.setProperty('class', 'settings-title')
         self.general_settings_title.setText(self._("general_settings"))
@@ -403,10 +403,7 @@ class TemplateScreen(TemplateScreenInterface):
         #                         self.ExportOptionId.ALL_DATA)
 
         self.radio_button_group.addButton(self.radio_button_expanded_info, self.TemplateOptionId.EXTRA_INFO)
-        # self.button_group.setId(self.radio_button_export_only_unedited_data,
-        #                         self.ExportOptionId.ONLY_UNEDITED_DATA)
 
-        # self.button_group.idClicked.connect(self.on_radio_button_click)
         self.radio_button_davie_conform.setChecked(True)
 
         button_box_layout.addWidget(self.template_format_label)
@@ -624,8 +621,11 @@ class TemplateScreen(TemplateScreenInterface):
         self.select_all_classes.setText(self._("select_all_classes"))
         self.select_all_classes.clicked.connect(lambda: self.select_all_classes_clicked())
         self.all_classes.setSelectionMode(QListWidget.SelectionMode.MultiSelection)
-        self.all_classes.itemSelectionChanged.connect(lambda: self.update_label_under_list())
-        # self.all_classes.itemPressed.connect(lambda: self.list_item_pressed_listener())
+
+        self.all_classes.doubleClicked.connect(
+            lambda item:
+                 self.all_classes.itemFromIndex(item).setSelected(not self.all_classes.itemFromIndex(item).isSelected())
+        )
         self.label_counter.setText(self._(f"{self.selected} classes selected"))
 
         vertical_layout.addWidget(self.select_all_classes, alignment=Qt.AlignmentFlag.AlignTop)
@@ -663,11 +663,15 @@ class TemplateScreen(TemplateScreenInterface):
             self.operator_name.setText("Loading")
             self.otl_version.setText("Loading")
 
-    def update_label_under_list(self):
-        total_amount_of_items = self.get_total_amount_of_items()
+    def class_items_clicked_listener(self, selected_item):
+        row_index = selected_item.data(1)[1]
+        TemplateDomain.toggle_class_index(row_index)
 
 
-        counter = self.count_selected_items()
+
+
+    def update_label_under_list(self,total_amount_of_items:int,counter:int) -> None:
+
         self.selected = counter
         self.label_counter.setText(self._("{selected} classes selected").format(selected=self.selected))
         if counter:
@@ -677,10 +681,8 @@ class TemplateScreen(TemplateScreenInterface):
             self.export_button.setEnabled(False)
             self.export_button.setToolTip(self._("Select at least 1 class to export"))
 
-        if total_amount_of_items == counter:
-            self.select_all_classes.setChecked(True)
-        else:
-            self.select_all_classes.setChecked(False)
+    def update_all_classes_selected(self,state:bool) -> None:
+        self.select_all_classes.setChecked(state)
 
     def count_selected_items(self):
         return sum(
@@ -689,23 +691,7 @@ class TemplateScreen(TemplateScreenInterface):
             if self.all_classes.item(i).isSelected()
         )
 
-    def get_total_amount_of_items(self):
 
-        count = self.all_classes.count()
-
-        if self.has_agent:
-            count -= 1
-        return count
-    def list_item_pressed_listener(self):
-        total_amount_of_items = self.get_total_amount_of_items()
-        counter = self.count_selected_items()
-
-        if total_amount_of_items == counter:
-            self.select_all_classes.setChecked(True)
-        else:
-            self.select_all_classes.setChecked(False)
-
-        # self.update_label_under_list()
 
     def select_all_classes_clicked(self):
         """
@@ -721,18 +707,25 @@ class TemplateScreen(TemplateScreenInterface):
 
         if not self.all_classes.isEnabled():
             return
-        elif self.select_all_classes.isChecked():
-            self.all_classes.selectAll()
-            # self.update_label_under_list()
-        else:
-            total_amount_of_items = self.get_total_amount_of_items()
-            counter = self.count_selected_items()
-            if total_amount_of_items == counter:
-                self.all_classes.clearSelection()
-                # self.update_label_under_list()
+        # elif self.select_all_classes.isChecked():
+        #     TemplateDomain.select_all_classes()
+        #
+        #     # self.all_classes.selectAll()
+        # else:
+        #     TemplateDomain.deselect_all_classes()
+
+        TemplateDomain.set_select_all_classes(self.select_all_classes.isChecked())
+
+    def deselect_all_classes(self) -> None:
+        self.all_classes.clearSelection()
+
+
+    def set_all_classes_selected(self) -> None:
+        self.all_classes.selectAll()
 
     def export_template_listener(self) -> None:  # sourcery skip: use-named-expression
         """
+        Handles the export of a template based on selected classes.
         Handles the export of a template based on selected classes.
 
         This function retrieves the selected classes from the user interface and prompts the user 
@@ -748,8 +741,13 @@ class TemplateScreen(TemplateScreenInterface):
         if chosen_file_format in self.supported_export_formats:
             selection_path_list = self.template_export_file_picker.summon(
                 chosen_file_format=chosen_file_format,
-                supported_export_formats=self.supported_export_formats)
-            self.save_template(selection_path_list)
+                supported_export_formats=self.supported_export_formats,
+                project_name=global_vars.current_project.eigen_referentie)
+            try:
+                self.save_template(selection_path_list)
+            except Exception as e:
+                # TODO: proper error message when template export fails
+                raise e
 
     def save_template(self, document_paths:list[Path]):
 
@@ -770,17 +768,14 @@ class TemplateScreen(TemplateScreenInterface):
         else:
             amount_of_examples = 0
 
-        selected_classes = [item.data(1) for item in self.all_classes.selectedItems()]
-
-        event_loop = asyncio.get_event_loop()
-        event_loop.create_task(TemplateDomain.async_export_template(
+        create_task_reraise_exception(TemplateDomain.async_export_template(
             document_path=document_path,
-            selected_classes=selected_classes,
             generate_choice_list=self.add_choice_list.isChecked(),
             geometry_column_added=self.add_geometry_attributes.isChecked(),
             export_attribute_info=attribute_description,
             highlight_deprecated_attributes=deprecated_attribute_marker,
             amount_of_examples=amount_of_examples))
+
 
     def update_settings_based_on_filetype(self,filetype:str):
         # if filetype == "Excel":
@@ -915,6 +910,8 @@ class TemplateScreen(TemplateScreenInterface):
 
 
     def set_classes(self, classes: list[OSLOClass],
+                    selected_classes: list[int],
+                    all_classes_selected_checked:bool,
                     has_a_class_with_deprecated_attributes: bool) -> None:
         """
         Sets the list of classes in the user interface.
@@ -935,14 +932,22 @@ class TemplateScreen(TemplateScreenInterface):
         self.all_classes.setEnabled(True)
         self.has_agent = False
 
-        sorted_classes = sorted(classes,key=lambda x : x.name)
+        # store indexes for class list in backend before sorting!
+        class_index_tuple_list = [(OTL_class,i) for i,OTL_class in enumerate(classes)]
+        sorted_classes = sorted(class_index_tuple_list,key=lambda x : x[0].name)
 
-        for value in sorted_classes:
+        for value_tuple in sorted_classes:
+            class_name = value_tuple[0].name
+            class_typeURI = value_tuple[0].objectUri
+            backend_index = value_tuple[1]
+
             item = QListWidgetItem()
-            item.setText(value.name)
-            item.setData(1, value.objectUri)
+            item.setText(class_name)
+            item.setData(1, (class_typeURI,backend_index))
 
-            if value.name == "Agent":
+
+
+            if class_name == "Agent":
                 item.setBackground(QBrush(QColor("#AAAAAA")))
                 item.setFlags(item.flags() & ~Qt.ItemFlag.ItemIsEnabled)
                 placeholder_font = QFont()
@@ -953,11 +958,25 @@ class TemplateScreen(TemplateScreenInterface):
 
 
             self.all_classes.addItem(item)
-            if has_a_class_with_deprecated_attributes:
-                self.show_deprecated_attributes.setEnabled(False)
-        if self.select_all_classes.isChecked():
-            self.select_all_classes_clicked()
 
+        if has_a_class_with_deprecated_attributes:
+            self.show_deprecated_attributes.setEnabled(False)
+
+        if all_classes_selected_checked:
+            self.set_all_classes_selected()
+        else:
+            self.update_all_classes_selected(False)
+            # the need to be added to cls.all_classes before you can select them
+            for class_display_index in range(self.all_classes.count()):
+                item = self.all_classes.item(class_display_index)
+                real_index = item.data(1)[1]
+
+                if real_index in selected_classes:
+                    item.setSelected(True)
+
+        self.update_label_under_list(
+            total_amount_of_items=TemplateDomain.get_total_amount_of_classes(),
+            counter=len(selected_classes))
 
 
     def create_filetype_combobox(self) -> QFrame:
@@ -987,3 +1006,5 @@ class TemplateScreen(TemplateScreenInterface):
 
         return frame
 
+    def open_folder_of_created_template(self,document_path:Path):
+        Helpers.open_folder_and_select_document(document_path=document_path)

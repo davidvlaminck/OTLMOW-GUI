@@ -171,9 +171,13 @@ class HeaderBar(QFrame):
         if log_filename_list:
             log_filename_list.sort(reverse=True)
             last_log_filepath = logs_folderpath / log_filename_list[0]
-            subprocess.Popen(f'explorer /select,"{last_log_filepath}"')
+            command = f'explorer /select,"{last_log_filepath}"'
+            OTLLogger.logger.debug(f"open logs : {command}")
+            subprocess.Popen(command)
         else:
-            subprocess.Popen(f'explorer /select,"{logs_folderpath}"')
+            command = f'explorer /select,"{logs_folderpath}"'
+            OTLLogger.logger.debug(f"open logs : {command}")
+            subprocess.Popen(command)
 
     @staticmethod
     def open_wiki():
@@ -256,7 +260,12 @@ class HeaderBar(QFrame):
         if not selected_file_path_list or not selected_file_path_list[0]:
             return
 
-        project = Project.import_project(selected_file_path_list[0])
+        try:
+            project = Project.import_project(selected_file_path_list[0])
+        except Exception as e:
+            # TODO: proper error messag when project fails to import
+            raise e
+
 
         if project is None:
             return

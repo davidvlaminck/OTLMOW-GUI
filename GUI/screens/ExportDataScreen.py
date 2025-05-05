@@ -1,10 +1,14 @@
+import subprocess
 from copy import deepcopy
 from enum import IntEnum
+from pathlib import Path
 
 from PyQt6.QtWidgets import QVBoxLayout, QPushButton, QFrame, QLabel, QHBoxLayout, QComboBox, \
     QCheckBox, QRadioButton, QButtonGroup
 
 from Domain import global_vars
+from Domain.logger.OTLLogger import OTLLogger
+from Domain.util.Helpers import Helpers
 from GUI.screens.ExportData_elements.ExportAllDataSubScreen import ExportAllDataSubScreen
 from GUI.screens.ExportData_elements.ExportFilteredDataSubScreen import ExportFilteredDataSubScreen
 from GUI.screens.Screen import Screen
@@ -173,4 +177,6 @@ class ExportDataScreen(Screen):
                 self.sub_screen_option_1_all_data.setHidden(True)
             self.sub_screen_option_2_only_unedited_data.setHidden(False)
 
+    def open_folder_of_created_export_files(self, document_path:Path):
+        Helpers.open_folder_and_select_document(document_path)
 

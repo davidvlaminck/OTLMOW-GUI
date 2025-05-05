@@ -18,4 +18,8 @@ class TemplateSaveFilePickerDialog(SaveFilePickerDialog):
         if not title:
             self.setWindowTitle(self._("Sla template op"))
 
+    def get_filename_suggestion(self, project_name):
+        return project_name + "_template"
+
+
 

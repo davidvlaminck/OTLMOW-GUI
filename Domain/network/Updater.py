@@ -79,9 +79,17 @@ class Updater:
         #     version_info = json.load(json_file)
         contents = ghdl.download_file_to_memory("otlmow_model/version_info.json").decode("utf-8")
         version_info = json.loads(contents)
+        print(f"version info {version_info}")
+        if not isinstance(version_info,dict):
+            return ""
 
-        OTLLogger.logger.info(f"online otlmow-model version: {version_info["current"]['model_version']}")
-        return version_info["current"]['model_version']
+        try:
+            model_version = version_info["current"]['model_version']
+        except:
+            model_version = ""
+
+        OTLLogger.logger.info(f"online otlmow-model version: {model_version}")
+        return model_version
 
     @classmethod
     def update_oltmow_model(cls, model_dir_path=None):
@@ -97,7 +105,9 @@ class Updater:
         try:
             local_model_version = cls.get_local_otl_model_library_version()
             online_model_version = cls.get_otlmow_model_version()
-            if Helpers.is_version_equal_or_higher(local_model_version, online_model_version):
+
+            if  (local_model_version and online_model_version and
+                    Helpers.is_version_equal_or_higher(local_model_version, online_model_version)):
                 OTLLogger.logger.info("otlmow-model is uptodate")
                 return
 

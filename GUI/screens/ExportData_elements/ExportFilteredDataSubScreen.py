@@ -30,6 +30,7 @@ from GUI.screens.general_elements.ButtonWidget import ButtonWidget
 import qtawesome as qta
 
 from GUI.translation.ValidationErrorReportTranslations import ValidationErrorReportTranslations
+from exception_handler.ExceptionHandlers import create_task_reraise_exception
 
 
 class ExportFilteredDataSubScreen(AbstractExportDataSubScreen):
@@ -191,8 +192,11 @@ class ExportFilteredDataSubScreen(AbstractExportDataSubScreen):
 
 
     def navigate_to_diff_report(self, table):
-        event_loop = asyncio.get_event_loop()
-        event_loop.create_task(ExportFilteredDataSubDomain.get_diff_report())
+        try:
+            create_task_reraise_exception(ExportFilteredDataSubDomain.get_diff_report())
+        except Exception as e:
+            # TODO: proper error message when original file to be loaded for comparison cannot be loaded
+            raise e
 
 
     def fill_up_change_table(self, report):
@@ -218,6 +222,7 @@ class ExportFilteredDataSubScreen(AbstractExportDataSubScreen):
         if selected_file_path_list:
             OTLLogger.logger.debug("file picker executed")
             ExportFilteredDataSubDomain.add_original_documents(selected_file_path_list)
+
             
 
     def update_original_files_list(self, files:dict[str,Path]):
@@ -255,9 +260,9 @@ class ExportFilteredDataSubScreen(AbstractExportDataSubScreen):
 
 
     def process_export(self, document_path_list, csv_option, split_relations_and_objects):
-        event_loop = asyncio.get_event_loop()
+
         OTLLogger.logger.debug(document_path_list)
-        event_loop.create_task(
+        create_task_reraise_exception(
             ExportFilteredDataSubDomain.export_diff_report(file_name=document_path_list[0],
                                                            separate_per_class_csv_option=csv_option,
                                                            separate_relations_option=split_relations_and_objects))

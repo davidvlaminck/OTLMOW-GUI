@@ -114,7 +114,7 @@ class MainWindow(QStackedWidget):
     def notify_user_of_excel_file_unavailable_error(self,e):
         message = self._(e.error_window_message_key)
         self.setWindowTitle(e.error_window_title_key)
-        NotificationWindow("{0}:\n{1}".format(message, e.file_path), title)
+        NotificationWindow("{0}:\n{1}".format(message, e.file_path))
 
     def go_to_project(self) -> None:
         self.setCurrentIndex(1)

@@ -90,4 +90,7 @@ class AddExternalAssetWindow:
         comboBox.addItems(list(options_to_data_dict.keys()))
         # comboBox.currentTextChanged.connect(self.)
 
+        comboBox.setEditable(True)
+        comboBox.view().setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
+
         return comboBox

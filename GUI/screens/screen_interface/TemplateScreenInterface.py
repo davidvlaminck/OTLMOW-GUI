@@ -1,4 +1,5 @@
 from abc import abstractmethod
+from pathlib import Path
 
 from PyQt6.QtWidgets import QFrame, QWidget
 
@@ -67,10 +68,6 @@ class TemplateScreenInterface(Screen):
         pass
 
 
-    @abstractmethod
-    def update_label_under_list(self) -> None:
-        pass
-
 
     @abstractmethod
     def select_all_classes_clicked(self) -> None:
@@ -85,5 +82,25 @@ class TemplateScreenInterface(Screen):
         pass
 
     @abstractmethod
-    def set_classes(self, classes, has_a_class_with_deprecated_attributes) -> None:
+    def set_classes(self, classes,selected_classes: list[int],
+                    all_classes_selected_checked:bool, has_a_class_with_deprecated_attributes) -> None:
+        pass
+
+    def open_folder_of_created_template(self, document_path:Path):
+        pass
+
+    @abstractmethod
+    def update_label_under_list(self,total_amount_of_items:int,counter:int) -> None:
+        pass
+
+    @abstractmethod
+    def set_all_classes_selected(self) -> None:
+        pass
+
+    @abstractmethod
+    def deselect_all_classes(self) -> None:
+        pass
+
+    @abstractmethod
+    def update_all_classes_selected(self, state: bool) -> None:
         pass

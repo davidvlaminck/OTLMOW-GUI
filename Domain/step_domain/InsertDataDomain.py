@@ -2,7 +2,12 @@ from pathlib import Path
 from typing import List, Iterable, Optional, cast, Union
 
 from openpyxl.reader.excel import load_workbook
+from otlmow_converter import HelperFunctions
+from otlmow_converter.Exceptions.CannotCombineAssetsError import CannotCombineAssetsError
+from otlmow_converter.Exceptions.CannotCombineDifferentAssetsError import \
+    CannotCombineAssetsWithDifferentTypeError
 from otlmow_converter.Exceptions.ExceptionsGroup import ExceptionsGroup
+from otlmow_converter.OtlmowConverter import OtlmowConverter
 
 from otlmow_model.OtlmowModel.BaseClasses.OTLObject import OTLObject, \
     dynamic_create_instance_from_uri
@@ -13,6 +18,7 @@ from otlmow_model.OtlmowModel.Helpers import OTLObjectHelper, RelationValidator
 
 from Domain import global_vars
 from Domain.project.ProjectFile import ProjectFile
+from Domain.util.CombineAssetHelper import CombineAssetHelper
 from Domain.util.Helpers import Helpers
 from Domain.util.SDFHandler import SDFHandler
 from Domain.logger.OTLLogger import OTLLogger
@@ -100,7 +106,7 @@ class InsertDataDomain:
             if doc_location_path.suffix in ['.xls', '.xlsx']:
                 temp_path = InsertDataDomain.remove_dropdown_values_from_excel(doc=doc_location_path)
                 assets, exception_group =  await Helpers.converter_from_file_to_object_async(
-                    file_path=temp_path,include_tab_info=True )
+                    file_path=temp_path,include_tab_info=True)
 
             elif doc_location_path.suffix == '.sdf':
                 # SDF files will make multiple CSV files, one for each class
@@ -113,7 +119,13 @@ class InsertDataDomain:
                     assets_subset, exception_group_subset = await Helpers.converter_from_file_to_object_async(
                         file_path=Path(temp_path),
                         delimiter=",",
-                        include_tab_info=True )
+                        include_tab_info=True,
+                        allow_non_otl_conform_attributes=True)
+
+                    for asset in assets_subset:
+                        if hasattr(asset,"FeatId"):
+                            delattr(asset,"FeatId")
+
                     assets.extend(assets_subset)
                     if exception_group is not None:
                         sdf_exception_list.extend(exception_group.exceptions)
@@ -277,7 +289,7 @@ class InsertDataDomain:
                     all_valid = False
 
         cls.get_screen().update_control_button_state()
-
+        global_vars.otl_wizard.main_window.enable_steps()
         return all_valid
 
     @classmethod
@@ -381,9 +393,7 @@ class InsertDataDomain:
                 error_set.append({"exception": ex, "path_str": file_path})
                 project_file.state = FileState.ERROR
 
-        # state can be changed to either OK or ERROR
-        global_vars.current_project.save_project_filepaths_to_file()
-        cls.update_frontend()
+
 
         if len(error_set):
             OTLLogger.logger.debug(
@@ -395,7 +405,19 @@ class InsertDataDomain:
         # noinspection PyTypeChecker
         objects_in_memory.extend(cls.flatten_list(objects_lists=list(relations_per_filepath_str_dict.values())))
 
+        try:
+            objects_in_memory = await cls.combine_assets_wrapper(objects_in_memory)
+        except ExceptionsGroup as ex:
+            error_set.append({"exception": ex, "path_str": GlobalTranslate._("[FILE INFO NOT AVAILABLE]")})
+            # the be safe set all document to invalid
+            for project_file in global_vars.current_project.get_saved_projectfiles():
+                project_file.state = FileState.ERROR
 
+        # state can be changed to either OK or ERROR
+        global_vars.current_project.save_project_filepaths_to_file()
+        cls.update_frontend()
+
+        # passing objects to other screens
         global_vars.otl_wizard.main_window.step3_visuals.create_html(
             objects_in_memory=objects_in_memory)
         RelationChangeDomain.set_instances(objects_list=objects_in_memory)
@@ -407,6 +429,13 @@ class InsertDataDomain:
             extra={"timing_ref": f"validate_{global_vars.current_project.eigen_referentie}"})
 
         return error_set, objects_in_memory
+
+    @classmethod
+    async def combine_assets_wrapper(cls, objects_in_memory):
+
+        objects_in_memory = CombineAssetHelper.combine_assets(objects_in_memory)
+
+        return objects_in_memory
 
     @classmethod
     def divide_otl_objects(cls, objects):

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-04-10 10:52+0200\n"
+"POT-Creation-Date: 2025-04-29 15:41+0200\n"
 "PO-Revision-Date: 2023-10-19 13:11+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en_US\n"
@@ -18,19 +18,19 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.16.0\n"
 
-#: Domain/project/Project.py:442
+#: Domain/project/Project.py:456
 msgid "There are files missing that belong to this project:\n"
 msgstr "There are files missing that belong to this project:\n"
 
-#: Domain/project/Project.py:448
+#: Domain/project/Project.py:462
 msgid "Do you still want to export?"
 msgstr "Do you still want to export?"
 
-#: Domain/project/Project.py:449 GUI/screens/InsertDataScreen.py:216
+#: Domain/project/Project.py:463 GUI/screens/InsertDataScreen.py:219
 msgid "Missing project files"
 msgstr "Missing project files"
 
-#: Domain/project/Project.py:888
+#: Domain/project/Project.py:902
 msgid "Can't insert duplicate filename {0}"
 msgstr ""
 "Filename \"{0}\" already exists in this project.\n"
@@ -40,7 +40,7 @@ msgstr ""
 "    2. Change the name of the new file before inserting.\n"
 "            "
 
-#: Domain/project/Project.py:891
+#: Domain/project/Project.py:905
 msgid "Duplicate filename"
 msgstr "Duplicate filename"
 
@@ -60,41 +60,62 @@ msgstr "Subset is empty"
 msgid "wrong_database_error"
 msgstr ""
 
-#: Domain/step_domain/TemplateDomain.py:76
+#: Domain/step_domain/InsertDataDomain.py:406
+msgid "[FILE INFO NOT AVAILABLE]"
+msgstr ""
+
+#: Domain/step_domain/TemplateDomain.py:80
 msgid "permission_to_file_was_denied_likely_due_to_the_file_being_open_in_excel"
 msgstr ""
 "You don't have permission to edit this file! \n"
 "This is likely because it is is still open in excel."
 
-#: Domain/step_domain/TemplateDomain.py:76
+#: Domain/step_domain/TemplateDomain.py:80
 msgid "permission_denied"
 msgstr "No permission to open the file"
 
-#: Domain/util/SDFHandler.py:185
+#: Domain/util/CombineAssetHelper.py:49
+msgid ""
+"Cannot combine the assets with id: \"{object_id}\"\n"
+"due to conflicting types: {short_uri} != {short_uri_2}"
+msgstr ""
+
+#: Domain/util/CombineAssetHelper.py:61
+msgid ""
+"Cannot combine the assets with id: \"{object_id}\" with type "
+"\"{short_uri}\"\n"
+"due to conflicting values in attribute(s):\n"
+msgstr ""
+
+#: Domain/util/CombineAssetHelper.py:69
+msgid "There were errors while combining the assets"
+msgstr ""
+
+#: Domain/util/SDFHandler.py:184
 msgid "FDOToolbox not installed"
 msgstr "FDOToolbox not installed"
 
-#: GUI/MainWindow.py:70
+#: GUI/MainWindow.py:74
 msgid "template"
 msgstr "Template"
 
-#: GUI/MainWindow.py:71
+#: GUI/MainWindow.py:75
 msgid "insert_data"
 msgstr "Insert data"
 
-#: GUI/MainWindow.py:72
+#: GUI/MainWindow.py:76
 msgid "data visuals"
 msgstr "Data visualisation"
 
-#: GUI/MainWindow.py:73
+#: GUI/MainWindow.py:77
 msgid "data_change"
 msgstr "Data changes"
 
-#: GUI/MainWindow.py:74
+#: GUI/MainWindow.py:78
 msgid "relation_change"
 msgstr "Relation changes"
 
-#: GUI/MainWindow.py:75
+#: GUI/MainWindow.py:79
 msgid "export_data"
 msgstr "Export data"
 
@@ -122,33 +143,33 @@ msgid "asset_type_dummy"
 msgstr "Onderdeel#Verkeersbord"
 
 #: GUI/dialog_windows/AddExternalAssetWindow.py:83
-#: GUI/dialog_windows/ChangeSubsetWindow.py:108
+#: GUI/dialog_windows/ChangeSubsetWindow.py:113
 #: GUI/dialog_windows/DefineHeeftBetrokkeneRelationWindow.py:107
 #: GUI/dialog_windows/RemoveProjectFilesWindow.py:33
-#: GUI/dialog_windows/UpsertProjectWindow.py:146
+#: GUI/dialog_windows/UpsertProjectWindow.py:149
 msgid "submit"
 msgstr "Submit"
 
 #: GUI/dialog_windows/AddExternalAssetWindow.py:85
-#: GUI/dialog_windows/ChangeSubsetWindow.py:110
+#: GUI/dialog_windows/ChangeSubsetWindow.py:115
 #: GUI/dialog_windows/DefineHeeftBetrokkeneRelationWindow.py:109
 #: GUI/dialog_windows/RemoveProjectFilesWindow.py:35
 #: GUI/dialog_windows/RevalidateDocumentsWindow.py:37
-#: GUI/dialog_windows/UpsertProjectWindow.py:148
+#: GUI/dialog_windows/UpsertProjectWindow.py:151
 msgid "cancel"
 msgstr "Cancel"
 
-#: GUI/dialog_windows/ChangeSubsetWindow.py:24
-#: GUI/screens/TemplateScreen.py:501
+#: GUI/dialog_windows/ChangeSubsetWindow.py:26
+#: GUI/screens/TemplateScreen.py:502
 msgid "change_subset"
 msgstr "Change subset"
 
-#: GUI/dialog_windows/ChangeSubsetWindow.py:31
-#: GUI/dialog_windows/UpsertProjectWindow.py:84
+#: GUI/dialog_windows/ChangeSubsetWindow.py:33
 #: GUI/dialog_windows/UpsertProjectWindow.py:87
-#: GUI/screens/Home_elements/OverviewTable.py:70
-#: GUI/screens/Home_elements/OverviewTable.py:272
-#: GUI/screens/TemplateScreen.py:574
+#: GUI/dialog_windows/UpsertProjectWindow.py:90
+#: GUI/screens/Home_elements/OverviewTable.py:78
+#: GUI/screens/Home_elements/OverviewTable.py:315
+#: GUI/screens/TemplateScreen.py:575
 msgid "subset"
 msgstr "Subset"
 
@@ -201,8 +222,8 @@ msgstr "Nederlands"
 msgid "language_option_english"
 msgstr "English"
 
-#: GUI/dialog_windows/MenuActionsWindow.py:13 GUI/header/HeaderBar.py:153
-#: GUI/header/HeaderBar.py:270
+#: GUI/dialog_windows/MenuActionsWindow.py:13 GUI/header/HeaderBar.py:158
+#: GUI/header/HeaderBar.py:290
 msgid "about"
 msgstr "About"
 
@@ -227,10 +248,6 @@ msgstr "Contact"
 #: GUI/dialog_windows/MenuActionsWindow.py:41
 msgid "version"
 msgstr "Version"
-
-#: GUI/dialog_windows/ProjectPickerWindow.py:16
-msgid "select_OTL_project"
-msgstr "Select OTL project"
 
 #: GUI/dialog_windows/RemoveProjectFilesWindow.py:16
 msgid "remove_project_files_title"
@@ -296,53 +313,91 @@ msgstr ""
 "\n"
 "Do you want to go the webpage where you can download the new version?"
 
-#: GUI/dialog_windows/UpsertProjectWindow.py:46
+#: GUI/dialog_windows/UpsertProjectWindow.py:49
 msgid "alter_project_title"
 msgstr "Alter Project"
 
-#: GUI/dialog_windows/UpsertProjectWindow.py:51
+#: GUI/dialog_windows/UpsertProjectWindow.py:54
 msgid "new_project_title"
 msgstr "New Project"
 
-#: GUI/dialog_windows/UpsertProjectWindow.py:107
-#: GUI/dialog_windows/UpsertProjectWindow.py:109
-#: GUI/screens/Home_elements/OverviewTable.py:70
-#: GUI/screens/Home_elements/OverviewTable.py:272
+#: GUI/dialog_windows/UpsertProjectWindow.py:110
+#: GUI/dialog_windows/UpsertProjectWindow.py:112
+#: GUI/screens/Home_elements/OverviewTable.py:78
+#: GUI/screens/Home_elements/OverviewTable.py:315
 msgid "service_order"
 msgstr "Service order"
 
-#: GUI/dialog_windows/UpsertProjectWindow.py:125
-#: GUI/dialog_windows/UpsertProjectWindow.py:127
-#: GUI/screens/Home_elements/OverviewTable.py:70
-#: GUI/screens/Home_elements/OverviewTable.py:272
+#: GUI/dialog_windows/UpsertProjectWindow.py:128
+#: GUI/dialog_windows/UpsertProjectWindow.py:130
+#: GUI/screens/Home_elements/OverviewTable.py:78
+#: GUI/screens/Home_elements/OverviewTable.py:315
 msgid "own_reference"
 msgstr "Own reference"
 
-#: GUI/header/HeaderBar.py:84 GUI/header/HeaderBar.py:265
+#: GUI/dialog_windows/file_picker_dialog/AbstractFilePickerDialog.py:40
+#: GUI/dialog_windows/file_picker_dialog/LoadFilePickerDialog.py:26
+msgid "Alle ondersteunde bestanden ({supported_extensions_string})"
+msgstr "All supported files ({supported_extensions_string})"
+
+#: GUI/dialog_windows/file_picker_dialog/LoadFilePickerDialog.py:20
+msgid "Selecteer bestand"
+msgstr "Select file"
+
+#: GUI/dialog_windows/file_picker_dialog/ProjectExportFilePickerDialog.py:15
+msgid "export_OTL_project"
+msgstr "Export OTL wizard 2 project"
+
+#: GUI/dialog_windows/file_picker_dialog/ProjectExportFilePickerDialog.py:17
+#: GUI/dialog_windows/file_picker_dialog/ProjectImportFilePickerDialog.py:16
+msgid "OTLWizard project files (*.otlw)"
+msgstr "OTLWizard project files (*.otlw)"
+
+#: GUI/dialog_windows/file_picker_dialog/ProjectImportFilePickerDialog.py:14
+msgid "select_OTL_project"
+msgstr "Select OTL project"
+
+#: GUI/dialog_windows/file_picker_dialog/SaveFilePickerDialog.py:18
+msgid "Exporteer bestand(en)"
+msgstr "Export file(s)"
+
+#: GUI/dialog_windows/file_picker_dialog/SubsetLoadFilePickerDialog.py:16
+msgid "Selecteer subset"
+msgstr "Select subset"
+
+#: GUI/dialog_windows/file_picker_dialog/SubsetLoadFilePickerDialog.py:18
+msgid "Database files (*.db)"
+msgstr "Database files (*.db)"
+
+#: GUI/dialog_windows/file_picker_dialog/TemplateSaveFilePickerDialog.py:19
+msgid "Sla template op"
+msgstr "Save template"
+
+#: GUI/header/HeaderBar.py:89 GUI/header/HeaderBar.py:285
 msgid "new_project_button"
 msgstr "New Project"
 
-#: GUI/header/HeaderBar.py:151 GUI/header/HeaderBar.py:269
+#: GUI/header/HeaderBar.py:156 GUI/header/HeaderBar.py:289
 msgid "help"
 msgstr "Help"
 
-#: GUI/header/HeaderBar.py:155 GUI/header/HeaderBar.py:271
+#: GUI/header/HeaderBar.py:160 GUI/header/HeaderBar.py:291
 msgid "report error"
 msgstr "Report issue"
 
-#: GUI/header/HeaderBar.py:157
+#: GUI/header/HeaderBar.py:162
 msgid "logs"
 msgstr "Logs"
 
-#: GUI/header/HeaderBar.py:199 GUI/header/HeaderBar.py:266
+#: GUI/header/HeaderBar.py:208 GUI/header/HeaderBar.py:286
 msgid "return_to_home_screen"
 msgstr "Back home"
 
-#: GUI/header/HeaderBar.py:219 GUI/header/HeaderBar.py:267
+#: GUI/header/HeaderBar.py:228 GUI/header/HeaderBar.py:287
 msgid "save_button"
 msgstr "Save"
 
-#: GUI/header/HeaderBar.py:243 GUI/header/HeaderBar.py:268
+#: GUI/header/HeaderBar.py:252 GUI/header/HeaderBar.py:288
 msgid "import"
 msgstr "Import"
 
@@ -397,43 +452,42 @@ msgstr ""
 "maximum: {0}\n"
 "current: {1}"
 
-#: GUI/screens/ExportDataScreen.py:74 GUI/screens/ExportDataScreen.py:160
+#: GUI/screens/ExportDataScreen.py:78 GUI/screens/ExportDataScreen.py:164
 msgid "export_to_davie"
 msgstr "Export data ready for DAVIE"
 
-#: GUI/screens/ExportDataScreen.py:78
-#: GUI/screens/ExportData_elements/AbstractExportDataSubScreen.py:118
+#: GUI/screens/ExportDataScreen.py:82
 #: GUI/screens/ExportData_elements/AbstractExportDataSubScreen.py:123
+#: GUI/screens/ExportData_elements/AbstractExportDataSubScreen.py:128
 msgid "export assets in different files"
 msgstr "Export asset types in different files"
 
-#: GUI/screens/ExportDataScreen.py:126
+#: GUI/screens/ExportDataScreen.py:130
 msgid "All data"
 msgstr "All data"
 
-#: GUI/screens/ExportDataScreen.py:127
+#: GUI/screens/ExportDataScreen.py:131
 msgid "Without unedited data"
 msgstr "Without unedited data"
 
-#: GUI/screens/HomeScreen.py:170 GUI/screens/HomeScreen.py:206
+#: GUI/screens/HomeScreen.py:186 GUI/screens/HomeScreen.py:223
 msgid "search_text"
 msgstr "Enter project or service order to search"
 
-#: GUI/screens/InsertDataScreen.py:157 GUI/screens/InsertDataScreen.py:548
+#: GUI/screens/InsertDataScreen.py:160 GUI/screens/InsertDataScreen.py:551
 msgid "control_button"
 msgstr "Control"
 
-#: GUI/screens/InsertDataScreen.py:163
+#: GUI/screens/InsertDataScreen.py:166
 msgid "reset_fields"
 msgstr "Reset fields"
 
-#: GUI/screens/ExportData_elements/ExportFilteredDataSubScreen.py:163
-#: GUI/screens/ExportData_elements/ExportFilteredDataSubScreen.py:217
-#: GUI/screens/InsertDataScreen.py:168
+#: GUI/screens/ExportData_elements/ExportFilteredDataSubScreen.py:164
+#: GUI/screens/InsertDataScreen.py:171
 msgid "choose_file"
 msgstr "Pick your file..."
 
-#: GUI/screens/InsertDataScreen.py:211
+#: GUI/screens/InsertDataScreen.py:214
 msgid ""
 "There are files missing.\n"
 "Remove these from the list and re-insert them:\n"
@@ -441,38 +495,30 @@ msgstr ""
 "There are files missing.\n"
 "Remove these from the list and re-insert them:\n"
 
-#: GUI/screens/InsertDataScreen.py:330 GUI/screens/InsertDataScreen.py:547
+#: GUI/screens/InsertDataScreen.py:333 GUI/screens/InsertDataScreen.py:550
 msgid "input_file"
 msgstr "Load in file:"
 
-#: GUI/screens/ExportData_elements/ExportFilteredDataSubScreen.py:122
-#: GUI/screens/InsertDataScreen.py:474
+#: GUI/screens/ExportData_elements/ExportFilteredDataSubScreen.py:123
+#: GUI/screens/InsertDataScreen.py:477
 msgid "all_info_correct"
 msgstr "All data is OTL-conform"
 
-#: GUI/screens/InsertDataScreen.py:496
+#: GUI/screens/InsertDataScreen.py:499
 msgid "warning"
 msgstr "Warning"
 
-#: GUI/screens/ExportData_elements/ExportFilteredDataSubScreen.py:133
+#: GUI/screens/ExportData_elements/ExportFilteredDataSubScreen.py:134
 #: GUI/screens/ExportData_elements/TableErrorModel.py:11
-#: GUI/screens/InsertDataScreen.py:539
+#: GUI/screens/InsertDataScreen.py:542
 msgid "error"
 msgstr "Error"
 
-#: GUI/screens/InsertDataScreen.py:572
-msgid "Selecteer bestand"
-msgstr "Select file"
-
-#: GUI/screens/InsertDataScreen.py:578
-msgid "Alle ondersteunde bestanden ({supported_extensions_string})"
-msgstr "All supported files ({supported_extensions_string})"
-
-#: GUI/screens/InsertDataScreen.py:635
+#: GUI/screens/InsertDataScreen.py:630
 msgid "There are no files added to this project"
 msgstr "There are no files added to this project"
 
-#: GUI/screens/InsertDataScreen.py:650
+#: GUI/screens/InsertDataScreen.py:645
 msgid ""
 "Press validate to get feedback on the OTL-conformity of the files in this"
 " project"
@@ -480,43 +526,43 @@ msgstr ""
 "Press validate to get feedback on the OTL-conformity of the files in this"
 " project"
 
-#: GUI/screens/TemplateScreen.py:108
+#: GUI/screens/TemplateScreen.py:113
 msgid "Adds choice lists to relevant attributes"
 msgstr "Adds choice lists to the relevant attributes"
 
-#: GUI/screens/TemplateScreen.py:110
+#: GUI/screens/TemplateScreen.py:115
 msgid "For {filetype} choice lists cannot be disabled"
 msgstr "For {filetype} choice lists cannot be disabled"
 
-#: GUI/screens/TemplateScreen.py:112
+#: GUI/screens/TemplateScreen.py:117
 msgid "{filetype} cannot contain choice lists"
 msgstr "{filetype} cannot contain choice lists"
 
-#: GUI/screens/TemplateScreen.py:114
+#: GUI/screens/TemplateScreen.py:119
 msgid "Adds geometry information for each asset"
 msgstr "Adds geometry information for each asset"
 
-#: GUI/screens/TemplateScreen.py:115
+#: GUI/screens/TemplateScreen.py:120
 msgid "For {filetype} geometry attributes cannot be disabled"
 msgstr "For {filetype} geometry attributes cannot be disabled"
 
-#: GUI/screens/TemplateScreen.py:117
+#: GUI/screens/TemplateScreen.py:122
 msgid "{filetype} cannot contain geometry attributes"
 msgstr "{filetype} cannot contain geometry attributes"
 
-#: GUI/screens/TemplateScreen.py:119
+#: GUI/screens/TemplateScreen.py:124
 msgid "Adds example assets to each OTL-class"
 msgstr "Adds example assets to each OTL type"
 
-#: GUI/screens/TemplateScreen.py:120
+#: GUI/screens/TemplateScreen.py:125
 msgid "For {filetype} generated examples cannot be disabled"
 msgstr "For {filetype} generated examples cannot be disabled"
 
-#: GUI/screens/TemplateScreen.py:122
+#: GUI/screens/TemplateScreen.py:127
 msgid "{filetype} cannot add generated examples"
 msgstr "{filetype} cannot add generated examples"
 
-#: GUI/screens/TemplateScreen.py:126
+#: GUI/screens/TemplateScreen.py:131
 msgid ""
 "Adds extra rows with a description of every attribute and, an indication "
 "if the attribute is deprecated \n"
@@ -526,116 +572,116 @@ msgstr ""
 "if the attribute is deprecated \n"
 "(Delete extra rows before uploading to DAVIE)"
 
-#: GUI/screens/TemplateScreen.py:128
+#: GUI/screens/TemplateScreen.py:133
 msgid "For {filetype} expansive information cannot be disabled"
 msgstr "For {filetype} expansive information cannot be disabled"
 
-#: GUI/screens/TemplateScreen.py:130
+#: GUI/screens/TemplateScreen.py:135
 msgid "{filetype} cannot add expansive information"
 msgstr "{filetype} cannot add expansive information"
 
-#: GUI/screens/TemplateScreen.py:338
+#: GUI/screens/TemplateScreen.py:342
 msgid "general_settings"
 msgstr "General settings"
 
-#: GUI/screens/TemplateScreen.py:340
+#: GUI/screens/TemplateScreen.py:344
 msgid "choice_list"
 msgstr "Choice list options"
 
-#: GUI/screens/TemplateScreen.py:343
+#: GUI/screens/TemplateScreen.py:347
 msgid "geometry_attributes"
 msgstr "Geometry attributes"
 
-#: GUI/screens/TemplateScreen.py:347
+#: GUI/screens/TemplateScreen.py:351
 msgid "add_non_otl_conform_information"
 msgstr "Settings to add non-OTL-conform info"
 
-#: GUI/screens/TemplateScreen.py:350
+#: GUI/screens/TemplateScreen.py:354
 msgid "show_deprecated_attributes"
 msgstr "Highlight deprecated attributes in template"
 
-#: GUI/screens/TemplateScreen.py:354
+#: GUI/screens/TemplateScreen.py:358
 msgid "export_attribute_info"
 msgstr "Export additional attribute information"
 
-#: GUI/screens/TemplateScreen.py:358
+#: GUI/screens/TemplateScreen.py:362
 msgid "example_settings"
 msgstr "Example settings"
 
-#: GUI/screens/ExportData_elements/AbstractExportDataSubScreen.py:92
-#: GUI/screens/ExportData_elements/AbstractExportDataSubScreen.py:115
-#: GUI/screens/TemplateScreen.py:360
+#: GUI/screens/ExportData_elements/AbstractExportDataSubScreen.py:97
+#: GUI/screens/ExportData_elements/AbstractExportDataSubScreen.py:120
+#: GUI/screens/TemplateScreen.py:364
 msgid "export"
 msgstr "Export"
 
-#: GUI/screens/TemplateScreen.py:388
+#: GUI/screens/TemplateScreen.py:392
 msgid "Template format"
 msgstr "Template format"
 
-#: GUI/screens/TemplateScreen.py:391
+#: GUI/screens/TemplateScreen.py:395
 msgid "DAVIE conform"
 msgstr "DAVIE conform"
 
-#: GUI/screens/TemplateScreen.py:392
+#: GUI/screens/TemplateScreen.py:396
 msgid "Generates a template that is ready for upload to DAVIE"
 msgstr "enerates a template that is ready for upload to DAVIE"
 
-#: GUI/screens/TemplateScreen.py:394
+#: GUI/screens/TemplateScreen.py:398
 msgid "Expanded info"
 msgstr "Expanded info"
 
-#: GUI/screens/TemplateScreen.py:441
+#: GUI/screens/TemplateScreen.py:442
 msgid "amount_of_examples"
 msgstr "Generate example assets"
 
-#: GUI/screens/TemplateScreen.py:446
+#: GUI/screens/TemplateScreen.py:447
 msgid "The amount of example assets added to each OTL-class"
 msgstr "The amount of example assets added to each OTL type"
 
-#: GUI/screens/TemplateScreen.py:525
+#: GUI/screens/TemplateScreen.py:526
 msgid "operator"
 msgstr "Operator"
 
-#: GUI/screens/TemplateScreen.py:549
+#: GUI/screens/TemplateScreen.py:550
 msgid "otl_version"
 msgstr "OTL version"
 
-#: GUI/screens/TemplateScreen.py:620
+#: GUI/screens/TemplateScreen.py:621
 msgid "select_all_classes"
 msgstr "Select all asset types"
 
-#: GUI/screens/TemplateScreen.py:668
+#: GUI/screens/TemplateScreen.py:676
 msgid "{selected} classes selected"
 msgstr "{selected} asset types selected"
 
-#: GUI/screens/TemplateScreen.py:671
+#: GUI/screens/TemplateScreen.py:679
 msgid "Export template"
 msgstr "Export template"
 
-#: GUI/screens/TemplateScreen.py:674
+#: GUI/screens/TemplateScreen.py:682
 msgid "Select at least 1 class to export"
 msgstr "Select at least 1 class to export"
 
-#: GUI/screens/RelationChange_elements/AbstractInstanceListWidget.py:525
-#: GUI/screens/TemplateScreen.py:891
+#: GUI/screens/RelationChange_elements/AbstractInstanceListWidget.py:542
+#: GUI/screens/TemplateScreen.py:892
 msgid "loading"
 msgstr "Loading"
 
-#: GUI/screens/TemplateScreen.py:909
+#: GUI/screens/TemplateScreen.py:910
 msgid "no classes found in specified path"
 msgstr "No asset types found in specified path"
 
-#: GUI/screens/TemplateScreen.py:943
+#: GUI/screens/TemplateScreen.py:957
 msgid "Agent class is not allowed in the template"
 msgstr "Agent class is not allowed in the template"
 
-#: GUI/screens/ExportData_elements/AbstractExportDataSubScreen.py:53
-#: GUI/screens/ExportData_elements/AbstractExportDataSubScreen.py:116
-#: GUI/screens/TemplateScreen.py:968
+#: GUI/screens/ExportData_elements/AbstractExportDataSubScreen.py:58
+#: GUI/screens/ExportData_elements/AbstractExportDataSubScreen.py:121
+#: GUI/screens/TemplateScreen.py:996
 msgid "select file type for export"
 msgstr "Select file type for export"
 
-#: GUI/screens/TemplateScreen.py:978
+#: GUI/screens/TemplateScreen.py:1006
 msgid "The type of file the template will be created in"
 msgstr "The type of file the template will be created in"
 
@@ -664,53 +710,53 @@ msgstr "Old attribute"
 msgid "new_attribute"
 msgstr "New attribute"
 
-#: GUI/screens/ExportData_elements/AbstractExportDataSubScreen.py:70
-#: GUI/screens/ExportData_elements/AbstractExportDataSubScreen.py:117
+#: GUI/screens/ExportData_elements/AbstractExportDataSubScreen.py:75
+#: GUI/screens/ExportData_elements/AbstractExportDataSubScreen.py:122
 msgid "export relations and assets in different files"
 msgstr "Export relations and assets in different files"
 
-#: GUI/screens/ExportData_elements/AbstractExportDataSubScreen.py:119
+#: GUI/screens/ExportData_elements/AbstractExportDataSubScreen.py:124
 msgid "file_to_upload"
 msgstr "file to upload:"
 
-#: GUI/screens/ExportData_elements/ExportFilteredDataSubScreen.py:100
+#: GUI/screens/ExportData_elements/ExportFilteredDataSubScreen.py:101
 msgid "changes preview"
 msgstr "Changes preview"
 
-#: GUI/screens/ExportData_elements/ExportFilteredDataSubScreen.py:148
+#: GUI/screens/ExportData_elements/ExportFilteredDataSubScreen.py:149
 msgid "original_file_load"
 msgstr "Original file to load:"
 
-#: GUI/screens/ExportData_elements/ExportFilteredDataSubScreen.py:166
+#: GUI/screens/ExportData_elements/ExportFilteredDataSubScreen.py:167
 msgid "show differences"
 msgstr "Show differences"
 
-#: GUI/screens/ExportData_elements/ExportFilteredDataSubScreen.py:176
+#: GUI/screens/ExportData_elements/ExportFilteredDataSubScreen.py:177
 msgid "empty fields"
 msgstr "Reset fields"
 
-#: GUI/screens/Home_elements/OverviewTable.py:70
-#: GUI/screens/Home_elements/OverviewTable.py:272
+#: GUI/screens/Home_elements/OverviewTable.py:78
+#: GUI/screens/Home_elements/OverviewTable.py:315
 msgid "last_edited"
 msgstr "Last edited"
 
-#: GUI/screens/Home_elements/OverviewTable.py:135
+#: GUI/screens/Home_elements/OverviewTable.py:143
 msgid "Double-click to open project"
 msgstr "Dubbelklik om project te openen"
 
-#: GUI/screens/Home_elements/OverviewTable.py:273
+#: GUI/screens/Home_elements/OverviewTable.py:316
 msgid "no_results"
 msgstr "No results found for this search value"
 
-#: GUI/screens/RelationChange_elements/AbstractInstanceListWidget.py:357
+#: GUI/screens/RelationChange_elements/AbstractInstanceListWidget.py:374
 msgid "search_button"
 msgstr "Search"
 
-#: GUI/screens/RelationChange_elements/AbstractInstanceListWidget.py:390
+#: GUI/screens/RelationChange_elements/AbstractInstanceListWidget.py:407
 msgid "no_instance_selected"
 msgstr "No object selected"
 
-#: GUI/screens/RelationChange_elements/AbstractInstanceListWidget.py:497
+#: GUI/screens/RelationChange_elements/AbstractInstanceListWidget.py:514
 #: GUI/screens/RelationChange_elements/ObjectListWidget.py:165
 msgid "no_options_available"
 msgstr "No options available"
@@ -740,7 +786,7 @@ msgid "remove_relation"
 msgstr "Remove relations"
 
 #: GUI/screens/RelationChange_elements/ExistingRelationListWidget.py:191
-#: GUI/screens/RelationChange_elements/PossibleRelationListWidget.py:281
+#: GUI/screens/RelationChange_elements/PossibleRelationListWidget.py:282
 msgid "no_relation_selected"
 msgstr "No relation selected"
 
@@ -782,21 +828,33 @@ msgstr ""
 msgid "possible_relation_partner_asset_attributes"
 msgstr "Related asset attributes (last selected)"
 
-#: GUI/screens/RelationChange_elements/PossibleRelationListWidget.py:45
+#: GUI/screens/RelationChange_elements/PossibleRelationListWidget.py:46
 msgid "Select_an_OTL-asset_to_see_possible_relations"
 msgstr "Select an OTL-asset to see it's possible relations"
 
-#: GUI/screens/RelationChange_elements/PossibleRelationListWidget.py:124
+#: GUI/screens/RelationChange_elements/PossibleRelationListWidget.py:125
 #, fuzzy
 msgid "add_relation"
 msgstr "Possible relations:"
+
+#: GUI/screens/RelationChange_elements/PossibleRelationListWidget.py:285
+msgid "Toon all OTL-relaties"
+msgstr "Show all OTL-relations"
+
+#: GUI/screens/RelationChange_elements/PossibleRelationListWidget.py:286
+msgid ""
+"Toon alle mogelijke relaties met het geselecteerde asset in het volledige"
+" OTL (i.p.v. alleen subset)"
+msgstr ""
+"Show all possible relations with the selected asset from the entire OTL "
+"(instead of alone from the subset)"
 
 #: GUI/screens/RelationChange_elements/RelationChangeHelpers.py:47
 #: GUI/screens/RelationChange_elements/RelationChangeHelpers.py:61
 msgid "external"
 msgstr "external"
 
-#: GUI/screens/RelationChange_elements/RelationChangeHelpers.py:144
+#: GUI/screens/RelationChange_elements/RelationChangeHelpers.py:142
 msgid "no_identificator"
 msgstr "no identificator"
 
@@ -817,6 +875,7 @@ msgstr ""
 #: GUI/translation/ValidationErrorReportTranslations.py:34
 msgid "{doc_name}: type uri not in first row of {tab}\n"
 msgstr "{doc_name}: TypeUri not found in first row of worksheet {tab}\n"
+"Please remove the rows above the headers row\n"
 
 #: GUI/translation/ValidationErrorReportTranslations.py:41
 msgid ""

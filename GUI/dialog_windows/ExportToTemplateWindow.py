@@ -12,7 +12,7 @@ class ExportToTemplateWindow(QFileDialog):
     def __init__(self):
         super().__init__()
 
-        start_dir = str(Path.home())
+        start_dir = str(Path.home() / "Documents")
         if ExportToTemplateWindow.previous_selected_directory:
             start_dir = str(ExportToTemplateWindow.previous_selected_directory)
 
