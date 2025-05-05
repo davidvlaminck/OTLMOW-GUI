@@ -712,8 +712,8 @@ class RelationChangeDomain:
         return OSLORelatie(
             bron_overerving="",
             doel_overerving="",
-            bron_uri=legacy_class_typeURI,
-            doel_uri=OTL_class_typeURI,
+            bron_uri=OTL_class_typeURI,
+            doel_uri=legacy_class_typeURI,
             objectUri="https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#HoortBij",
             richting="Source -> Destination",
             deprecated_version="",
