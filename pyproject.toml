@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "otlmow_gui"
-version = "1.0"
+version = "1.0rc1"
 authors = [{name = "David Vlaminck", email = "david.vlaminck@mow.vlaanderen.be"},
     {name = "Jasper Berton", email = "jasperberton1@telenet.be"},
     {name = "Christiaan Vanbergen", email = "christiaan.vanbergen.btf@gmail.com"}]
@@ -43,7 +43,7 @@ dependencies = [
 
 
 [tool.setuptools.packages.find]
-include = ["otlmow_gui*"]
+include = ["Domain", "Exceptions", "exception_handler", "GUI", "img", "locale", "style", "OTL Wizard 2.py"]
 
 [project.urls]
 "Homepage" = "https://github.com/davidvlaminck/OTLMOW-GUI"
