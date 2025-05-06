@@ -241,10 +241,9 @@ class HomeDomain:
                                        bestek=input_bestek,
                                        subset_path=Path(input_subset))
         else:
-            raise ProjectExistsError(eigen_referentie=input_eigen_ref)
-            # project.update_information(new_eigen_ref=input_eigen_ref,
-            #                            new_bestek=input_bestek,
-            #                            new_subset_path=Path(input_subset))
+            project.update_information(new_eigen_ref=input_eigen_ref,
+                                       new_bestek=input_bestek,
+                                       new_subset_path=Path(input_subset))
 
         global_vars.otl_wizard.main_window.home_screen.last_added_ref = project.eigen_referentie
         cls.reload_projects()
@@ -270,8 +269,15 @@ class HomeDomain:
         """
 
         project = Project(eigen_referentie=eigen_ref, subset_path=subset_path, bestek=bestek)
+
+        project_dir_path = project.get_project_local_path()
+        if  project_dir_path.exists():
+            OTLLogger.logger.error("Project dir %s already exists", project_dir_path)
+            raise ProjectExistsError(eigen_referentie=project.eigen_referentie)
+
         cls.projects[eigen_ref] = project
         project.save_project_to_dir()
+
         return project
 
     @classmethod

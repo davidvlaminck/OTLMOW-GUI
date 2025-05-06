@@ -175,24 +175,20 @@ class Project:
             project.save_project_to_dir()
         """
 
+        project_dir_path = self.get_project_local_path()
 
-        otl_wizard_project_dir = ProgramFileStructure.get_otl_wizard_projects_dir()
-        project_dir_path = otl_wizard_project_dir / self.project_path.name
         OTLLogger.logger.debug("Saving project to %s", project_dir_path)
-        try:
-            project_dir_path.mkdir(exist_ok=False, parents=True)
-        except FileExistsError as ex:
-
-            OTLLogger.logger.error("Project dir %s already exists", project_dir_path)
-            raise ProjectExistsError(eigen_referentie=self.eigen_referentie)
-
-
+        project_dir_path.mkdir(exist_ok=True, parents=True)
         self.save_project_details(project_dir_path=project_dir_path)
 
         if self.subset_path and self.subset_path.parent.absolute() != project_dir_path.absolute():
             # move subset to project dir
             new_subset_path = project_dir_path / self.subset_path.name
             shutil.copy(src=self.subset_path, dst=new_subset_path)
+
+    def get_project_local_path(self):
+        otl_wizard_project_dir = ProgramFileStructure.get_otl_wizard_projects_dir()
+        return otl_wizard_project_dir / self.project_path.name
 
     def save_project_details(self, project_dir_path: Path) -> None:
         """
