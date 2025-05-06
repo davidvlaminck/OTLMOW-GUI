@@ -12,6 +12,7 @@ from Domain.step_domain.TemplateDomain import TemplateDomain
 from Exceptions.EmptyFieldError import EmptyFieldError
 from Exceptions.NotASqlliteFileError import NotASqlliteFileError
 from Exceptions.WrongDatabaseError import WrongDatabaseError
+from GUI.dialog_windows.ProjectExistsError import ProjectExistsError
 from GUI.screens.Screen import Screen
 from GUI.screens.screen_interface.HomeScreenInterface import HomeScreenInterface
 
@@ -240,9 +241,10 @@ class HomeDomain:
                                        bestek=input_bestek,
                                        subset_path=Path(input_subset))
         else:
-            project.update_information(new_eigen_ref=input_eigen_ref,
-                                       new_bestek=input_bestek,
-                                       new_subset_path=Path(input_subset))
+            raise ProjectExistsError(eigen_referentie=input_eigen_ref)
+            # project.update_information(new_eigen_ref=input_eigen_ref,
+            #                            new_bestek=input_bestek,
+            #                            new_subset_path=Path(input_subset))
 
         global_vars.otl_wizard.main_window.home_screen.last_added_ref = project.eigen_referentie
         cls.reload_projects()

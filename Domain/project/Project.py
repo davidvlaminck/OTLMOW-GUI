@@ -179,7 +179,13 @@ class Project:
         otl_wizard_project_dir = ProgramFileStructure.get_otl_wizard_projects_dir()
         project_dir_path = otl_wizard_project_dir / self.project_path.name
         OTLLogger.logger.debug("Saving project to %s", project_dir_path)
-        project_dir_path.mkdir(exist_ok=True, parents=True)
+        try:
+            project_dir_path.mkdir(exist_ok=False, parents=True)
+        except FileExistsError as ex:
+
+            OTLLogger.logger.error("Project dir %s already exists", project_dir_path)
+            raise ProjectExistsError(eigen_referentie=self.eigen_referentie)
+
 
         self.save_project_details(project_dir_path=project_dir_path)
 
