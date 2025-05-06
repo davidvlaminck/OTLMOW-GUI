@@ -26,27 +26,34 @@ class Updater:
     master_version = None
 
     @classmethod
+    def get_project_version(cls):
+        if not cls.pyproject_config:
+            pyproject_path = ProgramFileStructure.get_dynamic_library_path(cls.pyproject_filename)
+            cls.pyproject_config = toml.load(pyproject_path)
+
+        return cls.pyproject_config['project']['version']
+
+    @classmethod
     def check_for_OTL_wizard_updates(cls):
 
-        pyproject_path = ProgramFileStructure.get_dynamic_library_path(cls.pyproject_filename)
-        cls.pyproject_config = toml.load(pyproject_path)
+
 
         # TODO: catch and process ratelimit exceeded error
         try:
             contents = cls.github_downloader.download_file_to_memory("pyproject.toml").decode("utf-8")
             master_pyproject_config = tomllib.loads(contents)
 
-            cls.local_version = cls.pyproject_config['project']['version']
+            cls.local_version = cls.get_project_version()
             cls.master_version = master_pyproject_config['project']['version']
 
             if Helpers.is_version_equal_or_higher(cls.local_version, cls.master_version):
-                logging.info(f"Local version {cls.local_version} is up to date with master version")
+                OTLLogger.logger.info(f"Local version {cls.local_version} is up to date with master version")
             else:
                 cls.needs_update = True
-                logging.info(f"Update needed: Local version {cls.local_version} != {cls.master_version} master version" )
+                OTLLogger.logger.info(f"Update needed: Local version {cls.local_version} != {cls.master_version} master version" )
         except Exception as e:
-            logging.info(f"Couldn't check if new version is available for update")
-            logging.debug(e)
+            OTLLogger.logger.info(f"Couldn't check if new version is available for update")
+            OTLLogger.logger.debug(e)
 
     @classmethod
     def download_fresh_otlmow_model(cls) -> Path:

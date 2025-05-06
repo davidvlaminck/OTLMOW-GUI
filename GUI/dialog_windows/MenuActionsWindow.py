@@ -1,5 +1,7 @@
 from PyQt6.QtWidgets import QDialog, QLabel, QVBoxLayout, QFrame, QHBoxLayout
 
+from Domain.network.Updater import Updater
+
 
 class MenuActionsWindow:
 
@@ -18,6 +20,8 @@ class MenuActionsWindow:
         window_layout.addWidget(self.creator_box('Jasper Berton', 'jasperberton1@telenet.be'))
         window_layout.addWidget(self.creator_box('David Vlaminck', 'david.vlaminck@mow.vlaanderen.be'))
         window_layout.addWidget(self.creator_box('Bert Van Overmeir','bert.vanovermeir@mow.vlaanderen.be'))
+        window_layout.addWidget(
+            self.creator_box('Christiaan Vanbergen', 'christiaan.vanbergen.btf@gmail.com'))
         window.setLayout(window_layout)
         window.exec()
 
@@ -30,16 +34,17 @@ class MenuActionsWindow:
         contact = QLabel(self._('contact') + ':')
         window_layout.addWidget(error_title)
         window_layout.addWidget(contact)
-        window_layout.addWidget(self.creator_box('David Vlaminck', 'david.vlaminck@mow.vlaanderen.be'))
-        window_layout.addWidget(self.creator_box('Bert Van Overmeir', 'bert.vanovermeir@mow.vlaanderen.be'))
+        window_layout.addWidget(self.creator_box('team BIM', 'TeamBim@verzendlijst.wegenenverkeer.be'))
         window.setLayout(window_layout)
         window.exec()
 
     def version_box(self):
         version_box = QFrame()
         version_box_layout = QHBoxLayout()
+        version = Updater.get_project_version()
+
         version_title = QLabel(self._('version') + ':')
-        version_number = QLabel('0.1.0')
+        version_number = QLabel(f'{version}')
         version_box_layout.addWidget(version_title)
         version_box_layout.addWidget(version_number)
         version_box.setLayout(version_box_layout)
