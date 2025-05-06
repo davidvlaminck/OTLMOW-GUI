@@ -389,7 +389,9 @@ class AbstractInstanceListWidget:
         if not self.search_text:
             self.set_all_folder_items_collapsed()
 
-        RelationChangeDomain.update_frontend()
+        RelationChangeDomain.update_frontend_existing_relations()
+
+        # RelationChangeDomain.update_frontend()
 
     def clear_search_listener(self) -> None:
         self.search_bar.setText("")

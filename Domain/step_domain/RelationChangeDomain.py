@@ -469,6 +469,8 @@ class RelationChangeDomain:
             RelationChangeDomain.set_possible_relations(selected_object)
         """
 
+
+
         cls.set_selected_object(selected_object)
         if not cls.selected_object:
             cls.get_screen().clear_possible_relation_elements()
@@ -513,6 +515,7 @@ class RelationChangeDomain:
                                                       relations=possible_relations_for_this_object,
                                                       last_added=cls.last_added_to_possible)
         cls.get_screen().fill_object_attribute_field(object_attribute_dict=object_attributes_dict)
+
 
     @classmethod
     def get_possible_relations_for(cls, selected_id=str):
@@ -663,7 +666,11 @@ class RelationChangeDomain:
         log_typeURI = RelationChangeHelpers.get_abbreviated_typeURI(selected_typeURI)
         OTLLogger.logger.debug(f"Execute RelationChangeDomain.collect_possible_relations_to_class_types_from({log_typeURI}) for project {global_vars.current_project.eigen_referentie}",
                                extra={"timing_ref": f"collect_possible_relations_classes"})
-        try:
+
+        if selected_typeURI.startswith("https://lgc"): # selected_object is legacy
+            cls.possible_relations_per_class_dict[selected_typeURI] = (
+                cls.get_hoortbij_relaties_from_legacy_asset(selected_typeURI))
+        else:
             if (cls.external_objects or
                 cls.agent_objects or
                 cls.search_full_OTL_mode):
@@ -672,18 +679,15 @@ class RelationChangeDomain:
                     RelationChangeDomain.get_all_concrete_relation_from_full_model(
                         selected_object=selected_object))
             else:
-                cls.possible_relations_per_class_dict[selected_typeURI] = \
-                    cls.collector.find_all_concrete_relations(objectUri=selected_typeURI,
+                try:
+                    cls.possible_relations_per_class_dict[selected_typeURI] = \
+                        cls.collector.find_all_concrete_relations(objectUri=selected_typeURI,
                                                               allow_duplicates=False)
-        except ValueError as e:
-            OTLLogger.logger.debug(e)
-            cls.possible_relations_per_class_dict[selected_typeURI] = (
-                RelationChangeDomain.get_all_concrete_relation_from_full_model(
-                    selected_object=selected_object))
-
-        if selected_typeURI.startswith("https://lgc"): # selected_object is legacy
-            cls.possible_relations_per_class_dict[selected_typeURI] = (
-                cls.get_hoortbij_relaties_from_legacy_asset(selected_typeURI))
+                except ValueError as e:
+                    OTLLogger.logger.debug(f"Didn't find relations in subset:\n {e}")
+                    cls.possible_relations_per_class_dict[selected_typeURI] = (
+                        RelationChangeDomain.get_all_concrete_relation_from_full_model(
+                            selected_object=selected_object))
 
         relation_count = len(cls.possible_relations_per_class_dict[selected_object.typeURI])
         OTLLogger.logger.debug(
@@ -1089,15 +1093,23 @@ class RelationChangeDomain:
         """
         OTLLogger.logger.debug("Execute RelationChangeDomain.update_frontend",
                                extra={"timing_ref": f"update_frontend"})
-        cls.get_screen().fill_object_list(objects=cls.shown_objects)
-        cls.get_screen().fill_existing_relations_list(relations_objects=cls.existing_relations,
-                                                      last_added=cls.last_added_to_existing)
+        cls.update_frontend_objects()
+        cls.update_frontend_existing_relations()
 
-
-        create_task_reraise_exception(cls.set_possible_relations(selected_object=cls.selected_object))
+        if cls.selected_object:
+            create_task_reraise_exception(cls.set_possible_relations(selected_object=cls.selected_object))
 
         OTLLogger.logger.debug("Execute RelationChangeDomain.update_frontend",
                                extra={"timing_ref": f"update_frontend"})
+
+    @classmethod
+    def update_frontend_objects(cls):
+        cls.get_screen().fill_object_list(objects=cls.shown_objects)
+
+    @classmethod
+    def update_frontend_existing_relations(cls):
+        cls.get_screen().fill_existing_relations_list(relations_objects=cls.existing_relations,
+                                                      last_added=cls.last_added_to_existing)
 
     @classmethod
     def set_selected_object_from_map(cls, identificator):
