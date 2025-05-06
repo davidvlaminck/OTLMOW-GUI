@@ -118,9 +118,7 @@ class OTLWizard(QApplication):
         super().quit()
 
 
-
-
-if __name__ == '__main__':
+def otl_wizard_2_main():
     program_settings = Settings.get_or_create_settings_file()
     OTLLogger.init()
     OTLLogger.logger.debug("Application started")
@@ -143,5 +141,6 @@ if __name__ == '__main__':
 
     event_loop.run_forever()
 
-
+if __name__ == '__main__':
+    otl_wizard_2_main()
 

@@ -1,0 +1,9 @@
+include img/*
+recursive-include img *
+include locale/*
+recursive-include locale *
+include style/*
+recursive-include style *
+include Domain/custom_theme.xml
+include Domain/visuals.png
+include GUI/screens/Map_elements/bol.png
