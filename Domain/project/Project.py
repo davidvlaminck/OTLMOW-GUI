@@ -510,7 +510,6 @@ class Project:
             try:
                 project_dir_path.mkdir(exist_ok=False, parents=True)
             except FileExistsError as ex:
-                # TODO: warning user with dialog window when the project already exists
                 OTLLogger.logger.error("Project dir %s already exists", project_dir_path)
                 raise ProjectExistsError(eigen_referentie=project_details['eigen_referentie'])
 
