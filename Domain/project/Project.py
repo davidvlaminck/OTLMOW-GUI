@@ -24,6 +24,7 @@ from Domain.ProgramFileStructure import ProgramFileStructure
 from Exceptions.ExcelFileUnavailableError import ExcelFileUnavailableError
 from GUI.dialog_windows.LoadingImageWindow import add_loading_screen
 from GUI.dialog_windows.NotificationWindow import NotificationWindow
+from GUI.dialog_windows.ProjectExistsError import ProjectExistsError
 from GUI.dialog_windows.YesOrNoNotificationWindow import YesOrNoNotificationWindow
 from GUI.translation.GlobalTranslate import GlobalTranslate
 from exception_handler.ExceptionHandlers import create_task_reraise_exception
@@ -505,7 +506,7 @@ class Project:
             except FileExistsError as ex:
                 # TODO: warning user with dialog window when the project already exists
                 OTLLogger.logger.error("Project dir %s already exists", project_dir_path)
-                raise ex
+                raise ProjectExistsError(eigen_referentie=project_details['eigen_referentie'])
 
             project_file.extractall(path=project_dir_path)
 

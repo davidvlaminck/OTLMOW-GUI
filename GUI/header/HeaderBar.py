@@ -18,6 +18,8 @@ from Domain.logger.OTLLogger import OTLLogger
 from Domain.project.Project import Project
 from Domain.step_domain.HomeDomain import HomeDomain
 from GUI.Styling import Styling
+from GUI.dialog_windows.NotificationWindow import NotificationWindow
+from GUI.dialog_windows.ProjectExistsError import ProjectExistsError
 from GUI.dialog_windows.file_picker_dialog.ProjectImportFilePickerDialog import \
     ProjectImportFilePickerDialog
 from GUI.screens.general_elements.ButtonWidget import ButtonWidget
@@ -260,8 +262,13 @@ class HeaderBar(QFrame):
         if not selected_file_path_list or not selected_file_path_list[0]:
             return
 
+        project = None
         try:
             project = Project.import_project(selected_file_path_list[0])
+        except ProjectExistsError as e:
+            notification = NotificationWindow(title=self._("Project bestaat al"),
+                                              message=self._("Project naam: \"{project_naam}\" bestaat al.\nVerwijder het bestaande project en importeer opnieuw".format(project_naam=e.eigen_referentie)))
+            notification.exec()
         except Exception as e:
             # TODO: proper error messag when project fails to import
             raise e
