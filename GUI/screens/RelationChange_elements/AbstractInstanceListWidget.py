@@ -178,7 +178,8 @@ class AbstractInstanceListWidget:
 
         table_coord = table_coord.siblingAtColumn(0)
         if self.is_item_a_type_folder_at_row(table_coord):
-           self.list_gui.toggle_expand_state_of_item_at_row(table_coord)
+           asset_type = self.list_gui.model.itemFromIndex(table_coord).data(self.data_1_index)
+           self.type_open_status[asset_type] = self.list_gui.toggle_expand_state_of_item_at_row(table_coord)
         else:
           self.asset_clicked_listener()
 
