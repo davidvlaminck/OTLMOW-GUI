@@ -9,13 +9,14 @@ from PyQt6.QtWidgets import QTreeWidget, QFrame, QVBoxLayout, QLabel, QListWidge
     QStyledItemDelegate
 
 import qtawesome as qta
+from otlmow_model.OtlmowModel.Classes.ImplementatieElement.AIMObject import AIMObject
 from otlmow_visuals.PyVisWrapper import PyVisWrapper
 
 from Domain.step_domain.RelationChangeDomain import RelationChangeDomain
 from GUI.Styling import Styling
 from GUI.screens.general_elements.ButtonWidget import ButtonWidget
 from GUI.screens.RelationChange_elements.FolderTreeView import FolderTreeView
-from UnitTests.TestClasses.Classes.ImplementatieElement.AIMObject import AIMObject
+
 ROOT_DIR = Path(__file__).parent.parent.parent.parent
 IMG_DIR = ROOT_DIR / 'img/'
 MULTI_SELECTION = QListWidget.SelectionMode.MultiSelection

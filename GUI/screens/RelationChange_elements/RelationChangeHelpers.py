@@ -5,12 +5,12 @@ from typing import Optional, List, cast
 
 from otlmow_model.OtlmowModel.BaseClasses.RelationInteractor import RelationInteractor
 from otlmow_model.OtlmowModel.Classes.Agent import Agent
+from otlmow_model.OtlmowModel.Classes.ImplementatieElement.AIMObject import AIMObject
 from otlmow_model.OtlmowModel.Helpers import OTLObjectHelper
 from otlmow_template.SubsetTemplateCreator import ROOT_DIR
 
 from Domain import global_vars
 from GUI.translation.GlobalTranslate import GlobalTranslate
-from UnitTests.TestClasses.Classes.ImplementatieElement.AIMObject import AIMObject
 
 ROOT_DIR_GUI = Path(__file__).parent.parent.parent.parent
 SITE_PACKAGES_ROOT = ROOT_DIR
