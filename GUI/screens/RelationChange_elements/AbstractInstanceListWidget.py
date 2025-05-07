@@ -178,13 +178,16 @@ class AbstractInstanceListWidget:
 
         table_coord = table_coord.siblingAtColumn(0)
         if self.is_item_a_type_folder_at_row(table_coord):
-           asset_type = self.list_gui.model.itemFromIndex(table_coord).data(self.data_1_index)
-           self.type_open_status[asset_type] = self.list_gui.toggle_expand_state_of_item_at_row(table_coord)
+           self.list_gui.toggle_expand_state_of_item_at_row(table_coord)
         else:
           self.asset_clicked_listener()
 
     def is_item_a_type_folder_at_row(self, model_index):
-        return self.list_gui.model.itemFromIndex(model_index).hasChildren()
+        folder_item = self.list_gui.model.itemFromIndex(model_index)
+        if folder_item.hasChildren():
+            return folder_item
+        else:
+            return None
 
     def fill_list(self, source_object: Optional[AIMObject], objects: Collection, last_added) -> None:
         # sourcery skip: remove-dict-keys
@@ -458,14 +461,17 @@ class AbstractInstanceListWidget:
         return False
 
     def record_expanse_listener(self, index):
-
-        expanded_folder_item = self.list_gui.model.itemFromIndex(index)
-        self.type_open_status[expanded_folder_item.text()] = True
+        folder_item: QStandardItem = self.is_item_a_type_folder_at_row(index)
+        if folder_item:
+            asset_type = folder_item.data(self.data_1_index)
+            self.type_open_status[asset_type] = True
 
     def record_collapse_listener(self, index):
 
-        collapsed_folder_item = self.list_gui.model.itemFromIndex(index)
-        self.type_open_status[collapsed_folder_item.text()] = False
+        folder_item: QStandardItem = self.is_item_a_type_folder_at_row(index)
+        if folder_item:
+            asset_type = folder_item.data(self.data_1_index)
+            self.type_open_status[asset_type] = False
 
 
     def expand_folder_of(self,typeURI: str):
