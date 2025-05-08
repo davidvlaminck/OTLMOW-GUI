@@ -202,13 +202,14 @@ class ExportFilteredDataSubScreen(AbstractExportDataSubScreen):
     def fill_up_change_table(self, report):
         data = [
             [
+                str(i+1),
                 str(rep.id),
                 str(rep.actie.value),
                 str(rep.attribute),
                 str(rep.original_value),
                 str(rep.new_value),
             ]
-            for rep in report
+            for i,rep in enumerate(report)
         ]
         self.model = TableModel(data, self._)
         self.feedback_diff_table.setModel(self.model)

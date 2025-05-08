@@ -8,7 +8,7 @@ class TableModel(QAbstractTableModel):
         super(TableModel, self).__init__()
         self._data = data
         self._ = language_settings
-        self.header_labels = [self._('id'), self._('action'), self._("name_attribute"), self._("old_attribute"),
+        self.header_labels = [self._('#'),self._('id'), self._('action'), self._("name_attribute"), self._("old_attribute"),
                               self._("new_attribute")]
 
     def data(self, index: QModelIndex, role: int = ...) -> Any:
