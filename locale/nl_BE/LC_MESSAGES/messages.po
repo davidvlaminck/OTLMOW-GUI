@@ -58,7 +58,7 @@ msgstr "Subset is leeg"
 
 #: Domain/step_domain/HomeDomain.py:120
 msgid "wrong_database_error"
-msgstr ""
+msgstr "Subset .db bestand kan niet gelezen worden"
 
 #: Domain/step_domain/InsertDataDomain.py:406
 msgid "[FILE INFO NOT AVAILABLE]"
