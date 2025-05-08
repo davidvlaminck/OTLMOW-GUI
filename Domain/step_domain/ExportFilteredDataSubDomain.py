@@ -139,6 +139,8 @@ class ExportFilteredDataSubDomain:
             original_assets = [original_object for original_object in original_objects if not is_relation(original_object)]
             original_relations =[original_object for original_object in original_objects if is_relation(original_object)]
 
+
+
             diff_1_assets = compare_two_lists_of_objects_attribute_level(first_list=original_assets,
                                                                   second_list=changed_assets,
                                                                   model_directory=ProgramFileStructure.get_otl_wizard_model_dir())
@@ -151,6 +153,7 @@ class ExportFilteredDataSubDomain:
 
             await ExportDataDomain.export_to_files(assets, relations , file_name,
                                 separate_per_class_csv_option, separate_relations_option,**kwargs)
+            cls.get_screen().open_folder_of_created_export_files(file_name)
         except ValueError as e:
             if e.args == ('There are no asset data to export to Excel',):
                 notification = NotificationWindow(title="Geen data", message="Er is geen data om te exporteren")
@@ -158,16 +161,6 @@ class ExportFilteredDataSubDomain:
             else:
                 raise e
 
-    @classmethod
-    @add_loading_screen_no_delay
-    async def generate_changed_assets_from_files(cls,project: Project) -> list:
-        changed_assets = []
-        for file in project.get_saved_projectfiles():
-            OTLLogger.logger.debug(f"file state {file.state}")
-            if file.state == FileState.OK:
-                assets, exceptions_group = await InsertDataDomain.check_document( doc_location=Path(file.file_path))
-                changed_assets.extend(assets)
-        return changed_assets
 
     @classmethod
     async def generate_original_assets_from_files(cls,original_documents: List[str]) -> List[OTLObject]:
