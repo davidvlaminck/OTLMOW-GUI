@@ -9,9 +9,9 @@ from typing import Optional
 from pytestqt.plugin import qtbot
 from pytestqt.qtbot import QtBot
 
-from Domain.util.Helpers import Helpers
-from GUI.screens.InsertDataScreen import InsertDataScreen
-from GUI.screens.RelationChangeScreen import RelationChangeScreen
+from otlmow_gui.Domain.util.Helpers import Helpers
+from otlmow_gui.GUI.screens.InsertDataScreen import InsertDataScreen
+from otlmow_gui.GUI import RelationChangeScreen
 from UnitTests.TestClasses.Classes.ImplementatieElement.AIMObject import AIMObject
 from UnitTests.TestClasses.Classes.Onderdeel.AllCasesTestClass import AllCasesTestClass
 from UnitTests.TestClasses.Classes.Onderdeel.AnotherTestClass import AnotherTestClass

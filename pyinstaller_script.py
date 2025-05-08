@@ -1,9 +1,8 @@
 import pathlib
-import shutil
 
 import PyInstaller.__main__
 
-from Domain.logger.OTLLogger import OTLLogger
+from otlmow_gui.Domain.logger.OTLLogger import OTLLogger
 
 home_path = pathlib.Path.home()
 

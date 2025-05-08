@@ -13,9 +13,9 @@ import pytest
 from otlmow_model.OtlmowModel.BaseClasses.RelationInteractor import RelationInteractor
 from otlmow_model.OtlmowModel.Classes.ImplementatieElement.RelatieObject import RelatieObject
 
-from Domain.enums import FileState
-from Domain.project.ProjectFile import ProjectFile
-from Domain.step_domain.HomeDomain import HomeDomain
+from otlmow_gui.Domain.enums import FileState
+from otlmow_gui.Domain.project.ProjectFile import ProjectFile
+from otlmow_gui.Domain.step_domain.HomeDomain import HomeDomain
 
 from UnitTests.general_fixtures.DomainFixtures import *
 

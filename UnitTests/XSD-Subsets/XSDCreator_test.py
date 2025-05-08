@@ -3,7 +3,7 @@ import unittest
 import pytest
 import xmltodict
 
-from Domain.util.XSDCreator import XSDCreator
+from otlmow_gui.Domain.util.XSDCreator import XSDCreator
 
 from UnitTests.general_fixtures.DomainFixtures import *
 
