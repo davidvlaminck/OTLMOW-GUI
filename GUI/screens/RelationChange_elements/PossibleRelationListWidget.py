@@ -68,7 +68,7 @@ class PossibleRelationListWidget(AbstractInstanceListWidget):
     def object_selected_listener(self, item) -> None:
         pass
 
-    def on_item_selected_listener(self, selected: QItemSelectionModel, deselected:QItemSelectionModel):
+    def on_item_selectionChange_listener(self, selected: QItemSelectionModel, deselected:QItemSelectionModel):
         no_item_selected = True
 
         for index in deselected.indexes():

@@ -36,7 +36,7 @@ class ObjectListWidget(AbstractInstanceListWidget):
         self.list_gui.setProperty('class', 'object-list')
         return frame
 
-    def on_item_selected_listener(self,  selected: QItemSelectionModel, deselected:QItemSelectionModel):
+    def on_item_selectionChange_listener(self, selected: QItemSelectionModel, deselected:QItemSelectionModel):
         # sourcery skip: remove-dict-keys
 
         if self.selected_item:
@@ -93,10 +93,7 @@ class ObjectListWidget(AbstractInstanceListWidget):
                 item = folder_item.child(j)
                 if item.data(self.data_1_index) == identificator:
                     self.select_object_id(item)
-                    # self.previously_selected_item = item
-                    # self.list_gui.selectionModel().setCurrentIndex(self.list_gui.model.indexFromItem(item),
-                    #     QItemSelectionModel.SelectionFlag.SelectCurrent)
-
+                    self.parent.set_existing_relation_search_bar_text(item.text())
 
     def create_button(self):
         self.list_button.setEnabled(True)

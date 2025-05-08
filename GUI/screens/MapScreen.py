@@ -65,7 +65,6 @@ class WebBridge(QObject):
         data = json.loads(message)  # Convert string back to dict
         asset_id = str(data["id"])
 
-        print(f"received map marker selection in Python selected id: {asset_id}")
         RelationChangeDomain.set_selected_object_from_map(asset_id)
         RelationChangeDomain.update_frontend()
 

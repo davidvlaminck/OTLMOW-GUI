@@ -109,8 +109,7 @@ class AbstractInstanceListWidget:
 
         self.list_gui = FolderTreeView()
         self.list_gui.setProperty('class', 'list')
-        self.list_gui.selectionModel().selectionChanged.connect(self.on_item_selected_listener)
-        self.list_gui.selectionModel().selection
+        self.list_gui.selectionModel().selectionChanged.connect(self.on_item_selectionChange_listener)
         self.list_gui.expanded.connect(self.record_expanse_listener)
         self.list_gui.collapsed.connect(self.record_collapse_listener)
         self.list_gui.clicked.connect(self.clicked_item_listener)
@@ -334,7 +333,7 @@ class AbstractInstanceListWidget:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def on_item_selected_listener(self,  selected: QItemSelectionModel, deselected:QItemSelectionModel):
+    def on_item_selectionChange_listener(self, selected: QItemSelectionModel, deselected:QItemSelectionModel):
         raise NotImplementedError
 
     @abc.abstractmethod

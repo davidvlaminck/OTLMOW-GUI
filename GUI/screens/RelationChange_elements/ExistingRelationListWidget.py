@@ -35,7 +35,7 @@ class ExistingRelationListWidget(AbstractInstanceListWidget):
         self.frame_layout.setContentsMargins(11, 0, 0, 0)
         return frame
 
-    def on_item_selected_listener(self,  selected: QItemSelectionModel, deselected:QItemSelectionModel):
+    def on_item_selectionChange_listener(self, selected: QItemSelectionModel, deselected:QItemSelectionModel):
         no_item_selected = True
 
         for index in deselected.indexes():
