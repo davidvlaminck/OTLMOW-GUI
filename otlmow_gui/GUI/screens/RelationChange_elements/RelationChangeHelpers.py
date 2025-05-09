@@ -10,7 +10,7 @@ from otlmow_template.SubsetTemplateCreator import ROOT_DIR
 
 from otlmow_gui.Domain import global_vars
 from otlmow_gui.GUI.translation.GlobalTranslate import GlobalTranslate
-from UnitTests.TestClasses.Classes.ImplementatieElement.AIMObject import AIMObject
+from otlmow_model.OtlmowModel.Classes.ImplementatieElement.AIMObject import AIMObject
 
 ROOT_DIR_GUI = Path(__file__).parent.parent.parent.parent
 SITE_PACKAGES_ROOT = ROOT_DIR
