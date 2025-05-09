@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "otlmow_gui"
-version = "1.0rc4"
+version = "1.0rc5"
 authors = [{name = "David Vlaminck", email = "david.vlaminck@mow.vlaanderen.be"},
     {name = "Jasper Berton", email = "jasperberton1@telenet.be"},
     {name = "Christiaan Vanbergen", email = "christiaan.vanbergen.btf@gmail.com"}]
@@ -38,15 +38,20 @@ dependencies = [
     'qtawesome >= 1.2.3',
     'PyGithub >= 2.1.1',
     'requests >= 2.31.0',
-    'PyQt6-WebEngine==6.6.0'
+    'PyQt6-WebEngine==6.6.0',
+    'qasync>=0.27.1',
+    'toml>=0.10.2',
+    'folium==0.19.5',
+    'shapely>=2.0.7',
+    'pyproj>=3.7.1'
 ]
 
 
 [tool.setuptools.packages.find]
-include = ["otlmow-gui*",]
+include = ["otlmow_gui*",]
 
 [tool.setuptools.package-data]
-'*' = ['img/*', 'locale/*', 'style/*', 'Domain/custom_theme.xml',
+'*' = ['img/**/*', 'locale/**/*', 'style/*', 'Domain/custom_theme.xml',
     'Domain/visuals.png', 'GUI/screens/Map_elements/bol.png']
 
 [project.urls]
