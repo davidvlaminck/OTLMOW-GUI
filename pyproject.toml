@@ -40,7 +40,10 @@ dependencies = [
     'requests >= 2.31.0',
     'PyQt6-WebEngine==6.6.0',
     'qasync>=0.27.1',
-    'toml>=0.10.2'
+    'toml>=0.10.2',
+    'folium==0.19.5',
+    'shapely>=2.0.7',
+    'pyproj>=3.7.1'
 ]
 
 
@@ -48,7 +51,7 @@ dependencies = [
 include = ["otlmow_gui*",]
 
 [tool.setuptools.package-data]
-'*' = ['img/*', 'locale/*', 'style/*', 'Domain/custom_theme.xml',
+'*' = ['img/**/*', 'locale/**/*', 'style/*', 'Domain/custom_theme.xml',
     'Domain/visuals.png', 'GUI/screens/Map_elements/bol.png']
 
 [project.urls]
