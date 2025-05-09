@@ -33,10 +33,18 @@ class ProgramFileStructure:
 
     @classmethod
     def get_dynamic_library_path(cls, library_name: str) -> Path:
-        dynamic_library_path = Path('otlmow_gui') / library_name
         if hasattr(sys, '_MEIPASS'):  # when in .exe file
             dynamic_library_path = Path(sys._MEIPASS, library_name)
-        elif not dynamic_library_path.exists():
+            return dynamic_library_path
+
+        dynamic_library_path = Path('otlmow_gui') / library_name
+        if not dynamic_library_path.exists():
+            dynamic_library_path = Path(__file__).parent.parent / library_name
+        if not dynamic_library_path.exists():
+            dynamic_library_path = Path(__file__).parent.parent.parent / library_name
+        if not dynamic_library_path.exists():
             dynamic_library_path = Path('data', library_name)
+        if not dynamic_library_path.exists():
+            raise NotImplementedError(f"Dynamic library path {dynamic_library_path} does not exist")
 
         return dynamic_library_path
