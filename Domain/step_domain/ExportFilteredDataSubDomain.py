@@ -156,10 +156,17 @@ class ExportFilteredDataSubDomain:
             cls.get_screen().open_folder_of_created_export_files(file_name)
         except ValueError as e:
             if e.args == ('There are no asset data to export to Excel',):
-                notification = NotificationWindow(title="Geen data", message="Er is geen data om te exporteren")
+                notification = NotificationWindow(title=GlobalTranslate._("Geen data"),
+                                                  message=GlobalTranslate._("Er is geen data om te exporteren"))
                 notification.exec()
             else:
                 raise e
+        except Exception as e:
+            notification = NotificationWindow(title=GlobalTranslate._("Fout in originele bestanden"),
+                                              message=GlobalTranslate._("Er is een fout in de originele bestanden\nKlik op \"Toon verschillen\" om een overzicht van de fouten te zien"))
+            notification.exec()
+            return
+
 
 
     @classmethod

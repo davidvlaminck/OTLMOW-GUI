@@ -1,12 +1,14 @@
 from copy import deepcopy
 from pathlib import Path
 
+from otlmow_converter.Exceptions.ExceptionsGroup import ExceptionsGroup
 from otlmow_model.OtlmowModel.Classes.ImplementatieElement.RelatieObject import RelatieObject
 from Domain import global_vars
 from Domain.util.Helpers import Helpers
 from Domain.logger.OTLLogger import OTLLogger
 from Domain.step_domain.RelationChangeDomain import RelationChangeDomain
 from GUI.dialog_windows.NotificationWindow import NotificationWindow
+from GUI.translation.GlobalTranslate import GlobalTranslate
 
 
 class ExportDataDomain:
@@ -61,33 +63,38 @@ class ExportDataDomain:
     @classmethod
     async def export_to_files(cls, assets, relations, end_file, separate_per_class_csv_option,
                         separate_relations_option, **kwargs):
-        if separate_relations_option:
-            relations_path, assets_path = cls.create_relation_and_asset_path(end_file)
-            if relations:
-                await Helpers.start_async_converter_from_object_to_file(file_path=relations_path,
-                                                                  sequence_of_objects=relations,
+        try:
+            if separate_relations_option:
+                relations_path, assets_path = cls.create_relation_and_asset_path(end_file)
+                if relations:
+                    await Helpers.start_async_converter_from_object_to_file(file_path=relations_path,
+                                                                      sequence_of_objects=relations,
+                                                                      split_per_type=separate_per_class_csv_option,
+                                                                      abbreviate_excel_sheettitles=True, **kwargs)
+                else:
+                    OTLLogger.logger.info(
+                        f"No Relations in memory for project {global_vars.current_project.eigen_referentie}")
+                if assets:
+                    await Helpers.start_async_converter_from_object_to_file(file_path=assets_path,
+                                                                      sequence_of_objects=assets,
+                                                                      split_per_type=separate_per_class_csv_option,
+                                                                      abbreviate_excel_sheettitles=True, **kwargs)
+                else:
+                    OTLLogger.logger.info(
+                        f"No Assets in memory for project {global_vars.current_project.eigen_referentie}")
+
+            else:
+                objects_in_memory = deepcopy(assets)
+                objects_in_memory.extend(relations)
+                await Helpers.start_async_converter_from_object_to_file(file_path=Path(end_file),
+                                                                  sequence_of_objects=objects_in_memory,
                                                                   split_per_type=separate_per_class_csv_option,
                                                                   abbreviate_excel_sheettitles=True, **kwargs)
-            else:
-                OTLLogger.logger.info(
-                    f"No Relations in memory for project {global_vars.current_project.eigen_referentie}")
-            if assets:
-                await Helpers.start_async_converter_from_object_to_file(file_path=assets_path,
-                                                                  sequence_of_objects=assets,
-                                                                  split_per_type=separate_per_class_csv_option,
-                                                                  abbreviate_excel_sheettitles=True, **kwargs)
-            else:
-                OTLLogger.logger.info(
-                    f"No Assets in memory for project {global_vars.current_project.eigen_referentie}")
-
-        else:
-            objects_in_memory = deepcopy(assets)
-            objects_in_memory.extend(relations)
-            await Helpers.start_async_converter_from_object_to_file(file_path=Path(end_file),
-                                                              sequence_of_objects=objects_in_memory,
-                                                              split_per_type=separate_per_class_csv_option,
-                                                              abbreviate_excel_sheettitles=True, **kwargs)
-
+        except PermissionError as e:
+            notification = NotificationWindow(title= GlobalTranslate._("Toestemming geweigerd"),
+                                              message= GlobalTranslate._("Geen toestemming om te exporteren naar \n{filename}\nIs het bestand nog open?").format(filename=e.filename))
+            notification.exec()
+            return
     @classmethod
     def split_relations_and_objects(cls,objects_in_memory):
         """
