@@ -65,7 +65,7 @@ class RelationChangeHelpers:
 
     @classmethod
     def abbreviate_if_AIM_id(cls,id):
-        return id.split("-")[0] if OTLObjectHelper.is_aim_id(id) else id
+        return id.split("-")[0] + "-..." if OTLObjectHelper.is_aim_id(id) else id
 
     @classmethod
     def is_unique_across_namespaces(cls, typeURI,objects):
