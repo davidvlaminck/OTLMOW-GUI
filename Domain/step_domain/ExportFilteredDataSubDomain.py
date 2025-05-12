@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import List
 
+from otlmow_converter.Exceptions.ExceptionsGroup import ExceptionsGroup
 from otlmow_model.OtlmowModel.BaseClasses.OTLObject import create_dict_from_asset, OTLObject
 from otlmow_model.OtlmowModel.Helpers.OTLObjectHelper import \
     compare_two_lists_of_objects_attribute_level, is_relation
@@ -15,6 +16,7 @@ from Domain.step_domain.InsertDataDomain import InsertDataDomain
 from Domain.step_domain.RelationChangeDomain import async_save_assets, RelationChangeDomain
 from GUI.dialog_windows.LoadingImageWindow import add_loading_screen, add_loading_screen_no_delay
 from GUI.dialog_windows.NotificationWindow import NotificationWindow
+from GUI.translation.GlobalTranslate import GlobalTranslate
 
 
 @dataclass
@@ -101,6 +103,15 @@ class ExportFilteredDataSubDomain:
             if exception_group and exception_group.exceptions:
                 for ex in exception_group.exceptions:
                     error_set.append({"exception": ex, "path_str": Path(x).name})
+
+        try:
+            original_assets = await InsertDataDomain.combine_assets_wrapper(original_assets)
+        except ExceptionsGroup as group:
+            if group.exceptions:
+                for ex in group.exceptions:
+                    error_set.append({"exception": ex, "path_str": ""})
+
+
         if error_set:
             cls.get_screen().negative_feedback_message()
             cls.get_screen().fill_up_change_table_with_error_feedback(error_set)
@@ -175,6 +186,9 @@ class ExportFilteredDataSubDomain:
         for path in original_documents:
             assets, exceptions_group = await InsertDataDomain.check_document( doc_location=Path(path))
             original_assets.extend(assets)
+
+        original_assets = await InsertDataDomain.combine_assets_wrapper(original_assets)
+
         return original_assets
 
     @classmethod
