@@ -67,7 +67,7 @@ class InsertDataDomain:
     """
 
     @classmethod
-    def init_static(cls):
+    def init_static(cls,force_refresh = False):
         """
         Initializes static resources for the InsertDataDomain class.
 
@@ -77,7 +77,7 @@ class InsertDataDomain:
         :param cls: The class itself.
         :returns: None
         """
-        if not Helpers.all_OTL_asset_types_dict:
+        if not Helpers.all_OTL_asset_types_dict or force_refresh:
             Helpers.create_external_typeURI_options()
 
         cls.get_screen().clear_feedback()
