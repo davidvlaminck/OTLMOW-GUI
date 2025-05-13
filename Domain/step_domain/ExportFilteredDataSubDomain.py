@@ -94,23 +94,7 @@ class ExportFilteredDataSubDomain:
     @async_save_assets
     async def get_diff_report(cls) -> None:
         model_dir = ProgramFileStructure.get_otl_wizard_model_dir()
-        original_assets = []
-        exception_group = None
-        error_set = []
-        for x in cls.original_documents.values():
-            assets, exception_group = await InsertDataDomain.check_document( doc_location=Path(x))
-            original_assets.extend(assets)
-            if exception_group and exception_group.exceptions:
-                for ex in exception_group.exceptions:
-                    error_set.append({"exception": ex, "path_str": Path(x).name})
-
-        try:
-            original_assets = await InsertDataDomain.combine_assets_wrapper(original_assets)
-        except ExceptionsGroup as group:
-            if group.exceptions:
-                for ex in group.exceptions:
-                    error_set.append({"exception": ex, "path_str": ""})
-
+        original_assets, error_set = await cls.generate_original_assets_from_files(original_documents=list(cls.original_documents.values()))
 
         if error_set:
             cls.get_screen().negative_feedback_message()
@@ -139,14 +123,13 @@ class ExportFilteredDataSubDomain:
                            separate_relations_option:bool = False,**kwargs) -> None:
         OTLLogger.logger.debug("started exporting diff report")
         try:
-            original_documents = [str(original_doc) for original_doc in cls.original_documents.values()]
 
             changed_assets = sorted(RelationChangeDomain.get_internal_objects(),
                                       key=lambda relation1: relation1.typeURI)
             changed_relations = sorted(RelationChangeDomain.get_persistent_relations(),
                                          key=lambda relation1: relation1.typeURI)
 
-            original_objects = await cls.generate_original_assets_from_files(original_documents=original_documents)
+            original_objects, error_set = await cls.generate_original_assets_from_files(original_documents=list(cls.original_documents.values()))
             original_assets = [original_object for original_object in original_objects if not is_relation(original_object)]
             original_relations =[original_object for original_object in original_objects if is_relation(original_object)]
 
@@ -181,15 +164,44 @@ class ExportFilteredDataSubDomain:
 
 
     @classmethod
-    async def generate_original_assets_from_files(cls,original_documents: List[str]) -> List[OTLObject]:
+    async def generate_original_assets_from_files(cls,original_documents: List[Path]) -> tuple[List[OTLObject],list]:
         original_assets = []
+        error_set = []
         for path in original_documents:
-            assets, exceptions_group = await InsertDataDomain.check_document( doc_location=Path(path))
-            original_assets.extend(assets)
+            assets, exceptions_group = await InsertDataDomain.check_document( doc_location=path)
 
-        original_assets = await InsertDataDomain.combine_assets_wrapper(original_assets)
+            if exceptions_group and exceptions_group.exceptions:
+                for ex in exceptions_group.exceptions:
+                    error_set.append({"exception": ex, "path_str": path.name})
 
-        return original_assets
+            rounded_attribute_assets = []
+            for asset in assets:
+                waarde_shortcut = True
+                allow_non_otl_conform_attributes = True
+                warn_for_non_otl_conform_attributes = True
+
+                d = create_dict_from_asset(asset, cast_datetime=True,
+                                           waarde_shortcut=waarde_shortcut,
+                                           allow_non_otl_conform_attributes=allow_non_otl_conform_attributes,
+                                           warn_for_non_otl_conform_attributes=warn_for_non_otl_conform_attributes)
+
+                rounded_asset = OTLObject.from_dict(d,
+                                    waarde_shortcut=waarde_shortcut,
+                                    cast_datetime=True,
+                                    allow_non_otl_conform_attributes=allow_non_otl_conform_attributes,
+                                    warn_for_non_otl_conform_attributes=warn_for_non_otl_conform_attributes)
+
+                rounded_attribute_assets.append(rounded_asset)
+
+            original_assets.extend(rounded_attribute_assets)
+        try:
+            original_assets = await InsertDataDomain.combine_assets_wrapper(original_assets)
+        except ExceptionsGroup as group:
+            if group.exceptions:
+                for ex in group.exceptions:
+                    error_set.append({"exception": ex, "path_str": ""})
+
+        return original_assets, error_set
 
     @classmethod
     def generate_new_asset_report(cls,item) -> ReportItem:
