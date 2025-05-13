@@ -1112,6 +1112,17 @@ class RelationChangeDomain:
                                                       last_added=cls.last_added_to_existing)
 
     @classmethod
+    def update_frontend_possible_relations(cls):
+        if cls.selected_object:
+            selected_id = RelationChangeHelpers.get_corrected_identificator(otl_object=cls.selected_object)
+            possible_relations_for_this_object = cls.get_possible_relations_for(
+                selected_id=selected_id)
+
+            cls.get_screen().fill_possible_relations_list(source_object=cls.selected_object,
+                                                      relations=possible_relations_for_this_object,
+                                                      last_added=cls.last_added_to_possible)
+
+    @classmethod
     def set_selected_object_from_map(cls, identificator):
         cls.set_selected_object(cls.get_object(identificator))
         cls.get_screen().set_selected_object(identificator)
@@ -1383,3 +1394,4 @@ class RelationChangeDomain:
     def set_search_full_OTL_mode(cls,state:bool) -> None:
         cls.search_full_OTL_mode = state
         cls.regenerate_relation_types = True
+

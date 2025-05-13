@@ -393,7 +393,8 @@ class AbstractInstanceListWidget:
         if not self.search_text:
             self.set_all_folder_items_collapsed()
 
-        RelationChangeDomain.update_frontend_existing_relations()
+        self.update_this_gui_list_content()
+
 
         # RelationChangeDomain.update_frontend()
 
@@ -581,3 +582,7 @@ class AbstractInstanceListWidget:
 
     def get_adjustable_subtext_frame(self):
         return self.list_subtext_frame
+
+    @abc.abstractmethod
+    def update_this_gui_list_content(self):
+        pass

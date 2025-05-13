@@ -189,3 +189,6 @@ class ExistingRelationListWidget(AbstractInstanceListWidget):
     def get_no_instance_selected_message(self):
         return self._("no_relation_selected")
 
+    def update_this_gui_list_content(self):
+        RelationChangeDomain.update_frontend_existing_relations()
+

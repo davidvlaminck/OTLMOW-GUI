@@ -187,3 +187,7 @@ class ObjectListWidget(AbstractInstanceListWidget):
 
                 if selected_id:
                     self.parent.map_window.activate_highlight_layer_by_id(selected_id)
+
+    def update_this_gui_list_content(self):
+        RelationChangeDomain.update_frontend_objects()
+

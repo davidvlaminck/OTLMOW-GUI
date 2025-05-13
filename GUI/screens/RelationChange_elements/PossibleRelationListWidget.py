@@ -302,3 +302,8 @@ class PossibleRelationListWidget(AbstractInstanceListWidget):
             RelationChangeDomain.set_search_full_OTL_mode(state=False)
 
         RelationChangeDomain.update_frontend()
+
+    def update_this_gui_list_content(self):
+        RelationChangeDomain.update_frontend_possible_relations()
+
+
