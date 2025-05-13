@@ -9,9 +9,12 @@ from pathlib import Path
 from PyQt6.QtGui import QFont
 from PyQt6.QtWebEngineCore import QWebEngineSettings
 from PyQt6.QtWebEngineWidgets import QWebEngineView
-from PyQt6.QtWidgets import QVBoxLayout, QLabel, QWidget, QFrame, QHBoxLayout, QSizePolicy
+from PyQt6.QtWidgets import QVBoxLayout, QLabel, QWidget, QFrame, QHBoxLayout, QSizePolicy, \
+    QComboBox
 from otlmow_model.OtlmowModel.BaseClasses.OTLObject import OTLObject
 from otlmow_visuals.PyVisWrapper import PyVisWrapper
+from otlmow_visuals.PyVisWrapper1 import PyVisWrapper1
+from otlmow_visuals.PyVisWrapper2 import PyVisWrapper2
 
 from Domain import global_vars
 from Domain.logger.OTLLogger import OTLLogger
@@ -36,7 +39,9 @@ class DataVisualisationScreen(Screen):
 
         self.frame_layout_legend = None
         self.objects_in_memory = []
+
         self.refresh_needed_label = QLabel()
+        self.visualisation_mode = QComboBox()
         self.container_insert_data_screen = QVBoxLayout()
         self._ = _
         self.view = QWebEngineView()
@@ -121,7 +126,10 @@ class DataVisualisationScreen(Screen):
         self.refresh_needed_label.setStyleSheet('color:#DD1111;')
         # self.refresh_needed_label.setHidden(True)
 
+        self.visualisation_mode.addItems(["box2","box1","vorige"])
+
         frame_layout.addWidget(refresh_btn)
+        frame_layout.addWidget(self.visualisation_mode)
         frame_layout.addWidget(self.refresh_needed_label)
         frame_layout.addStretch()
         frame_layout.setContentsMargins(0,0,0,0)
@@ -142,7 +150,7 @@ class DataVisualisationScreen(Screen):
 
         self.objects_in_memory = self.load_assets()
         self.fill_frame_layout_legend()
-        self.create_html(objects_in_memory=self.objects_in_memory)
+        self.create_html(objects_in_memory=self.objects_in_memory,vis_mode= self.visualisation_mode.currentText())
         object_count = len(self.objects_in_memory)
         OTLLogger.logger.debug(
             f"Executing DataVisualisationScreen.reload_html() for project {global_vars.current_project.eigen_referentie} ({object_count} objects)",
@@ -155,7 +163,7 @@ class DataVisualisationScreen(Screen):
         self.check_if_refresh_message_is_needed()
         return  assets
 
-    def create_html(self, objects_in_memory:List[OTLObject]):
+    def create_html(self, objects_in_memory:List[OTLObject],vis_mode="box2"):
         object_count = len(objects_in_memory)
         if object_count > DataVisualisationScreen.object_count_limit:
             self.view.setVisible(False)
@@ -174,8 +182,16 @@ class DataVisualisationScreen(Screen):
             html_loc = HTML_DIR / "visuals.html"
             previous_cwd = os.getcwd()
             os.chdir(Path.home() / 'OTLWizardProjects')
-            PyVisWrapper().show(list_of_objects=objects_in_memory,
-                                html_path=Path(html_loc), launch_html=False)
+
+            if vis_mode == "box1":
+                PyVisWrapper1().show(list_of_objects=objects_in_memory,
+                                    html_path=Path(html_loc), launch_html=False)
+            elif vis_mode == "box2":
+                PyVisWrapper2().show(list_of_objects=objects_in_memory,
+                                    html_path=Path(html_loc), launch_html=False)
+            else:
+                PyVisWrapper().show(list_of_objects=objects_in_memory,
+                                    html_path=Path(html_loc), launch_html=False)
             os.chdir(previous_cwd)
 
             self.modify_html(html_loc)
