@@ -20,6 +20,7 @@ from otlmow_visuals.PyVisWrapper3 import PyVisWrapper3
 from otlmow_visuals.PyVisWrapper4 import PyVisWrapper4
 from otlmow_visuals.PyVisWrapper5 import PyVisWrapper5
 from otlmow_visuals.PyVisWrapper6 import PyVisWrapper6
+from otlmow_visuals.PyVisWrapper7 import PyVisWrapper7
 
 from Domain import global_vars
 from Domain.logger.OTLLogger import OTLLogger
@@ -131,7 +132,13 @@ class DataVisualisationScreen(Screen):
         self.refresh_needed_label.setStyleSheet('color:#DD1111;')
         # self.refresh_needed_label.setHidden(True)
 
-        self.visualisation_mode.addItems(["heirarch","box2","box1","box3","box3_big","barnes","vorige"])
+        self.visualisation_mode.addItems(["standaard visualisatie",
+                                          "alternatief 1 visualisatie",
+                                          "alternatief 2 visualisatie",
+                                          "alternatief 3 visualisatie",
+                                          "alternatief 4 visualisatie",
+                                          "alternatief 5 visualisatie",
+                                          "vorige"])
 
         frame_layout.addWidget(refresh_btn)
         frame_layout.addWidget(self.visualisation_mode)
@@ -168,7 +175,7 @@ class DataVisualisationScreen(Screen):
         self.check_if_refresh_message_is_needed()
         return  assets
 
-    def create_html(self, objects_in_memory:List[OTLObject],vis_mode="heirarch"):
+    def create_html(self, objects_in_memory:List[OTLObject],vis_mode="standaard visualisatie"):
         object_count = len(objects_in_memory)
         if object_count > DataVisualisationScreen.object_count_limit:
             self.view.setVisible(False)
@@ -189,23 +196,26 @@ class DataVisualisationScreen(Screen):
             os.chdir(Path.home() / 'OTLWizardProjects')
             objects_in_memory = deepcopy(objects_in_memory)
 
-            if vis_mode == "box1":
+            if vis_mode == "alternatief 6 visualisatie":
                 PyVisWrapper1().show(list_of_objects=objects_in_memory,
                                     html_path=Path(html_loc), launch_html=False)
-            elif vis_mode == "box2":
+            elif vis_mode == "alternatief 5 visualisatie":
                 PyVisWrapper2().show(list_of_objects=objects_in_memory,
                                     html_path=Path(html_loc), launch_html=False)
-            elif vis_mode == "barnes":
+            elif vis_mode == "alternatief 4 visualisatie":
                 PyVisWrapper3().show(list_of_objects=objects_in_memory,
                                      html_path=Path(html_loc), launch_html=False)
-            elif vis_mode == "box3":
+            elif vis_mode == "alternatief 3 visualisatie":
                 PyVisWrapper4().show(list_of_objects=objects_in_memory,
                                      html_path=Path(html_loc), launch_html=False)
-            elif vis_mode == "box3_big":
+            elif vis_mode == "alternatief 2 visualisatie":
                 PyVisWrapper5().show(list_of_objects=objects_in_memory,
                                      html_path=Path(html_loc), launch_html=False)
-            elif vis_mode == "heirarch":
+            elif vis_mode == "standaard visualisatie":
                 PyVisWrapper6().show(list_of_objects=objects_in_memory,
+                                     html_path=Path(html_loc), launch_html=False)
+            elif vis_mode == "alternatief 1 visualisatie":
+                PyVisWrapper7().show(list_of_objects=objects_in_memory,
                                      html_path=Path(html_loc), launch_html=False)
             else:
                 PyVisWrapper().show(list_of_objects=objects_in_memory,
