@@ -1,4 +1,5 @@
 import os
+from copy import deepcopy
 from dataclasses import replace
 from typing import List
 
@@ -15,6 +16,10 @@ from otlmow_model.OtlmowModel.BaseClasses.OTLObject import OTLObject
 from otlmow_visuals.PyVisWrapper import PyVisWrapper
 from otlmow_visuals.PyVisWrapper1 import PyVisWrapper1
 from otlmow_visuals.PyVisWrapper2 import PyVisWrapper2
+from otlmow_visuals.PyVisWrapper3 import PyVisWrapper3
+from otlmow_visuals.PyVisWrapper4 import PyVisWrapper4
+from otlmow_visuals.PyVisWrapper5 import PyVisWrapper5
+from otlmow_visuals.PyVisWrapper6 import PyVisWrapper6
 
 from Domain import global_vars
 from Domain.logger.OTLLogger import OTLLogger
@@ -126,7 +131,7 @@ class DataVisualisationScreen(Screen):
         self.refresh_needed_label.setStyleSheet('color:#DD1111;')
         # self.refresh_needed_label.setHidden(True)
 
-        self.visualisation_mode.addItems(["box2","box1","vorige"])
+        self.visualisation_mode.addItems(["heirarch","box2","box1","box3","box3_big","barnes","vorige"])
 
         frame_layout.addWidget(refresh_btn)
         frame_layout.addWidget(self.visualisation_mode)
@@ -163,7 +168,7 @@ class DataVisualisationScreen(Screen):
         self.check_if_refresh_message_is_needed()
         return  assets
 
-    def create_html(self, objects_in_memory:List[OTLObject],vis_mode="box2"):
+    def create_html(self, objects_in_memory:List[OTLObject],vis_mode="heirarch"):
         object_count = len(objects_in_memory)
         if object_count > DataVisualisationScreen.object_count_limit:
             self.view.setVisible(False)
@@ -182,6 +187,7 @@ class DataVisualisationScreen(Screen):
             html_loc = HTML_DIR / "visuals.html"
             previous_cwd = os.getcwd()
             os.chdir(Path.home() / 'OTLWizardProjects')
+            objects_in_memory = deepcopy(objects_in_memory)
 
             if vis_mode == "box1":
                 PyVisWrapper1().show(list_of_objects=objects_in_memory,
@@ -189,6 +195,18 @@ class DataVisualisationScreen(Screen):
             elif vis_mode == "box2":
                 PyVisWrapper2().show(list_of_objects=objects_in_memory,
                                     html_path=Path(html_loc), launch_html=False)
+            elif vis_mode == "barnes":
+                PyVisWrapper3().show(list_of_objects=objects_in_memory,
+                                     html_path=Path(html_loc), launch_html=False)
+            elif vis_mode == "box3":
+                PyVisWrapper4().show(list_of_objects=objects_in_memory,
+                                     html_path=Path(html_loc), launch_html=False)
+            elif vis_mode == "box3_big":
+                PyVisWrapper5().show(list_of_objects=objects_in_memory,
+                                     html_path=Path(html_loc), launch_html=False)
+            elif vis_mode == "heirarch":
+                PyVisWrapper6().show(list_of_objects=objects_in_memory,
+                                     html_path=Path(html_loc), launch_html=False)
             else:
                 PyVisWrapper().show(list_of_objects=objects_in_memory,
                                     html_path=Path(html_loc), launch_html=False)
@@ -215,10 +233,13 @@ class DataVisualisationScreen(Screen):
             file_data.insert(replace_index+2,
                              "function disablePhysics(){\n")
             file_data.insert(replace_index+3,"if(isPhysicsOn){")
-            file_data.insert(replace_index+4,'newOptions={"physics":{"enabled":false}};\n')
-            file_data.insert(replace_index+5,"network.setOptions(newOptions)};\n;")
-            file_data.insert(replace_index + 6, "isPhysicsOn = false;\n};\n")
-            file_data.insert(replace_index+7,"container.addEventListener('mouseover', disablePhysics);\n")
+            file_data.insert(replace_index+4,'newOptions={"layout":{"hierarchical":{"enabled":false}}};\n')
+            file_data.insert(replace_index + 5, "network.setOptions(newOptions);\n")
+            file_data.insert(replace_index + 6,
+                             'newOptions={"physics":{"enabled":false}};\n')
+            file_data.insert(replace_index+7,"network.setOptions(newOptions);\n")
+            file_data.insert(replace_index + 8, "isPhysicsOn = false;\n}};\n")
+            file_data.insert(replace_index+9,"container.addEventListener('mouseover', disablePhysics);\n")
         with open(file_path, 'w') as file:
             for line in file_data:
                 file.write(line)
