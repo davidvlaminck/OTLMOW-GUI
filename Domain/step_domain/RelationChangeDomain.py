@@ -24,6 +24,7 @@ from Domain import global_vars
 from Domain.util.Helpers import Helpers
 from Domain.logger.OTLLogger import OTLLogger
 from Domain.project.Project import Project
+from Domain.util.VisualisationStateTracker import VisualisationStateTracker
 from GUI.dialog_windows.LoadingImageWindow import add_loading_screen
 from GUI.screens.RelationChange_elements.RelationChangeHelpers import RelationChangeHelpers
 from GUI.screens.screen_interface.RelationChangeScreenInterface import \
@@ -173,7 +174,7 @@ class RelationChangeDomain:
     last_added_to_possible: Optional[list[RelatieObject]] = []  # relation last added to col 2
 
     regenerate_relation_types = False
-    visualisation_uptodate = True
+    visualisation_uptodate:VisualisationStateTracker = VisualisationStateTracker()
     map_uptodate = True
 
     search_full_OTL_mode = False
@@ -217,6 +218,10 @@ class RelationChangeDomain:
                     # should only go here if you are testing
                     cls.load_project_relation_data()
 
+    @classmethod
+    def get_empty_visualisation_uptodate(cls):
+        return {"remove":[],"add":[],"clear_all": False}
+
 
     @classmethod
     def clear_data(cls):
@@ -230,7 +235,7 @@ class RelationChangeDomain:
         cls.possible_object_to_object_relations_dict = {}
         cls.aim_id_relations = []
         cls.regenerate_relation_types = False
-        cls.visualisation_uptodate = False
+        cls.visualisation_uptodate.reset_full_state()
         cls.map_uptodate = False
 
     @classmethod
@@ -341,7 +346,7 @@ class RelationChangeDomain:
         cls.get_screen().fill_object_list(cls.shown_objects)
         cls.get_screen().fill_possible_relations_list(None, {})
         cls.get_screen().fill_existing_relations_list(cls.existing_relations)
-        cls.visualisation_uptodate = False
+        cls.visualisation_uptodate.set_clear_all(True)
         cls.map_uptodate = False
 
     @classmethod
@@ -1076,7 +1081,7 @@ class RelationChangeDomain:
 
         :return: None
         """
-        cls.visualisation_uptodate = False
+        cls.visualisation_uptodate.insert_relation(relation_object)
         relation_object.isActief = True
         cls.existing_relations.append(relation_object)
         cls.get_screen().expand_existing_relations_folder_of(
@@ -1158,8 +1163,9 @@ class RelationChangeDomain:
         :return: The relation object that was removed from the existing relations.
         :rtype: RelatieObject
         """
-        cls.visualisation_uptodate = False
+
         removed_relation = cls.existing_relations.pop(index)
+        cls.visualisation_uptodate.remove_relation(removed_relation)
         # if the removed relation already had an AIM ID it is set to false and kept if not it is
         # removed and made again in the possible relations
         removed_relation.isActief = False
@@ -1282,7 +1288,7 @@ class RelationChangeDomain:
 
     @classmethod
     def get_visualisation_instances(cls)-> list[Union[RelatieObject, RelationInteractor]]:
-        cls.visualisation_uptodate = True
+        # cls.visualisation_uptodate = True
         return [asset for asset in RelationChangeDomain.get_quicksave_instances() if
          asset.isActief != False]
 
@@ -1374,7 +1380,7 @@ class RelationChangeDomain:
         
     @classmethod
     def is_visualisation_uptodate(cls):
-        return cls.visualisation_uptodate
+        return cls.visualisation_uptodate.is_uptodate()
 
     @classmethod
     def get_current_relation_change_screen_object_list_content_dict(cls):

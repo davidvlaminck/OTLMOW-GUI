@@ -21,6 +21,7 @@ from otlmow_visuals.PyVisWrapper4 import PyVisWrapper4
 from otlmow_visuals.PyVisWrapper5 import PyVisWrapper5
 from otlmow_visuals.PyVisWrapper6 import PyVisWrapper6
 from otlmow_visuals.PyVisWrapper7 import PyVisWrapper7
+from otlmow_visuals.PyVisWrapper8 import PyVisWrapper8
 
 from Domain import global_vars
 from Domain.logger.OTLLogger import OTLLogger
@@ -45,6 +46,7 @@ class DataVisualisationScreen(Screen):
 
         self.frame_layout_legend = None
         self.objects_in_memory = []
+        self.stdVis = None
 
         self.refresh_needed_label = QLabel()
         self.visualisation_mode = QComboBox()
@@ -138,6 +140,8 @@ class DataVisualisationScreen(Screen):
                                           "alternatief 3 visualisatie",
                                           "alternatief 4 visualisatie",
                                           "alternatief 5 visualisatie",
+                                          "alternatief 6 visualisatie",
+                                          "alternatief 7 visualisatie",
                                           "vorige"])
 
         frame_layout.addWidget(refresh_btn)
@@ -161,6 +165,8 @@ class DataVisualisationScreen(Screen):
             extra={"timing_ref": f"reload_html_{global_vars.current_project.eigen_referentie}"})
 
         self.objects_in_memory = self.load_assets()
+        RelationChangeDomain.visualisation_uptodate.reset_full_state()
+        self.refresh_needed_label.setHidden(True)
         self.fill_frame_layout_legend()
         self.create_html(objects_in_memory=self.objects_in_memory,vis_mode= self.visualisation_mode.currentText())
         object_count = len(self.objects_in_memory)
@@ -172,7 +178,6 @@ class DataVisualisationScreen(Screen):
 
     def load_assets(self) -> List[OTLObject]:
         assets = RelationChangeDomain.get_visualisation_instances()
-        self.check_if_refresh_message_is_needed()
         return  assets
 
     def create_html(self, objects_in_memory:List[OTLObject],vis_mode="standaard visualisatie"):
@@ -196,26 +201,30 @@ class DataVisualisationScreen(Screen):
             os.chdir(Path.home() / 'OTLWizardProjects')
             objects_in_memory = deepcopy(objects_in_memory)
 
-            if vis_mode == "alternatief 6 visualisatie":
+            if vis_mode == "alternatief 7 visualisatie":
                 PyVisWrapper1().show(list_of_objects=objects_in_memory,
                                     html_path=Path(html_loc), launch_html=False)
-            elif vis_mode == "alternatief 5 visualisatie":
+            elif vis_mode == "alternatief 6 visualisatie":
                 PyVisWrapper2().show(list_of_objects=objects_in_memory,
                                     html_path=Path(html_loc), launch_html=False)
-            elif vis_mode == "alternatief 4 visualisatie":
+            elif vis_mode == "alternatief 5 visualisatie":
                 PyVisWrapper3().show(list_of_objects=objects_in_memory,
                                      html_path=Path(html_loc), launch_html=False)
-            elif vis_mode == "alternatief 3 visualisatie":
+            elif vis_mode == "alternatief 4 visualisatie":
                 PyVisWrapper4().show(list_of_objects=objects_in_memory,
                                      html_path=Path(html_loc), launch_html=False)
-            elif vis_mode == "alternatief 2 visualisatie":
+            elif vis_mode == "alternatief 3 visualisatie":
                 PyVisWrapper5().show(list_of_objects=objects_in_memory,
                                      html_path=Path(html_loc), launch_html=False)
-            elif vis_mode == "standaard visualisatie":
+            elif vis_mode == "alternatief 2 visualisatie":
                 PyVisWrapper6().show(list_of_objects=objects_in_memory,
                                      html_path=Path(html_loc), launch_html=False)
             elif vis_mode == "alternatief 1 visualisatie":
                 PyVisWrapper7().show(list_of_objects=objects_in_memory,
+                                     html_path=Path(html_loc), launch_html=False)
+            elif vis_mode == "standaard visualisatie":
+                self.stdVis = PyVisWrapper8()
+                self.stdVis.show(list_of_objects=objects_in_memory,
                                      html_path=Path(html_loc), launch_html=False)
             else:
                 PyVisWrapper().show(list_of_objects=objects_in_memory,
@@ -247,17 +256,100 @@ class DataVisualisationScreen(Screen):
             file_data.insert(replace_index + 5, "network.setOptions(newOptions);\n")
             file_data.insert(replace_index + 6,
                              'newOptions={"physics":{"enabled":false}};\n')
-            file_data.insert(replace_index+7,"network.setOptions(newOptions);\n")
+            file_data.insert(replace_index+7,'network.setOptions(newOptions);\n')
             file_data.insert(replace_index + 8, "isPhysicsOn = false;\n}};\n")
             file_data.insert(replace_index+9,"container.addEventListener('mouseover', disablePhysics);\n")
+        file_data.insert(replace_index + 10, "function AddEdge(id,from_id, to_id,color,arrow)")
+        file_data.insert(replace_index + 11, "{")
+        file_data.insert(replace_index + 12, 'network.body.data.edges.add([{'
+                                             '"id": id,'
+                                             '"arrowStrikethrough": false,'
+                                             '"arrows": arrow,'
+                                             '"color": color,'
+                                             '"from": from_id,'
+                                             '"smooth": {'
+                                             '"enabled": false'
+                                             '},'
+                                             '  "to": to_id,'
+                                             '  "width": 2'
+                                             '}]);')
+        file_data.insert(replace_index + 13, "}")
+
+        file_data.insert(replace_index + 14,
+                         "function AddEdgeWithLabel(id,from_id, to_id,color,arrow,label)")
+        file_data.insert(replace_index + 15, "{")
+        file_data.insert(replace_index + 16, 'network.body.data.edges.add([{'
+                                             '"id": id,'
+                                             '"arrowStrikethrough": false,'
+                                             '"arrows": arrow,'
+                                             '"color": color,'
+                                             '"from": from_id,'
+                                             '"label": label,'
+                                             '"smooth": {'
+                                             '"enabled": false'
+                                             '    },'
+                                             '        "to": to_id,'
+                                             '       "width": 2'
+                                             '}]);')
+        file_data.insert(replace_index + 17, "}")
+        file_data.insert(replace_index + 18, 'function removeEdge(id)')
+        file_data.insert(replace_index + 19, '{')
+        file_data.insert(replace_index + 20, 'if (network.body.data.edges._data.has(id))')
+        file_data.insert(replace_index + 21, '   { network.body.data.edges.remove([id]);}')
+        file_data.insert(replace_index + 22, 'else')
+        file_data.insert(replace_index + 23, '   {console.log("attempted to remove: " + id)}')
+        file_data.insert(replace_index + 24, '}')
+
         with open(file_path, 'w') as file:
             for line in file_data:
                 file.write(line)
 
     def opened(self):
-        self.check_if_refresh_message_is_needed()
+        if not RelationChangeDomain.is_visualisation_uptodate():
+            if (self.visualisation_mode.currentText() != "standaard visualisatie"):
+                self.refresh_needed_label.setHidden(False)
+                return
 
-    def check_if_refresh_message_is_needed(self):
-        self.refresh_needed_label.setHidden(RelationChangeDomain.is_visualisation_uptodate())
+
+            # if there are new relations add them to the visualisation
+            for relation_object in RelationChangeDomain.visualisation_uptodate.get_to_be_inserted_relations():
+
+                add_edge_arguments = PyVisWrapper8().create_edge_inject_arguments(relation_object)
+                if "label" in add_edge_arguments: #a heeftBetrokkene relation with their rol as label
+                    js_code = f'AddEdgeWithLabel("{add_edge_arguments["id"]}","{add_edge_arguments["from_id"]}", "{add_edge_arguments["to_id"]}","#{add_edge_arguments["color"]}","{add_edge_arguments["arrow"]}","{add_edge_arguments["label"]}")'
+                elif "arrow" in add_edge_arguments: #a bidirectional relation
+                    js_code = f'AddEdge("{add_edge_arguments["id"]}","{add_edge_arguments["from_id"]}", "{add_edge_arguments["to_id"]}","#{add_edge_arguments["color"]}","{add_edge_arguments["arrow"]}");'
+                else:  #een directional relation
+                    js_code = f'AddEdge("{add_edge_arguments["id"]}","{add_edge_arguments["from_id"]}", "{add_edge_arguments["to_id"]}","#{add_edge_arguments["color"]}",null);'
+                OTLLogger.logger.debug(js_code)
+                self.view.page().runJavaScript(js_code)
+
+            # if there are removed relations remove them from the visualisation
+            for relation_object in RelationChangeDomain.visualisation_uptodate.get_to_be_removed_relations():
+                rel_id = relation_object.assetId.identificator
+
+                if rel_id in self.stdVis.relation_id_to_collection_id:
+                    collection_id = self.stdVis.relation_id_to_collection_id.pop(rel_id)
+                    self.stdVis.collection_id_to_list_of_relation_ids[collection_id] = [rel_set for rel_set in self.stdVis.collection_id_to_list_of_relation_ids[collection_id] if rel_set[0] != rel_id]
+                    new_collection_content = "\n".join([rel_set[1] for rel_set in self.stdVis.collection_id_to_list_of_relation_ids[collection_id]])
+                    new_collection_size = len(self.stdVis.collection_id_to_list_of_relation_ids[collection_id])
+                    new_label = f"<i><b>Collectie ({new_collection_size})</b></i>"
+                    new_title = f"Collectie ({new_collection_size}):\n{new_collection_content}"
+                    # https://stackoverflow.com/questions/32765015/vis-js-modify-node-properties-on-click
+                    js_code = f'network.body.data.nodes.updateOnly({{id: "{collection_id}", label: "{new_label}", title:`{new_title}`}});'
+                else:
+                    js_code = f'removeEdge("{relation_object.assetId.identificator}");'
+
+                OTLLogger.logger.debug(js_code)
+                self.view.page().runJavaScript(js_code)
+            RelationChangeDomain.visualisation_uptodate.reset_relations_uptodate()
+
+            if RelationChangeDomain.visualisation_uptodate.get_clear_all():
+                self.refresh_needed_label.setHidden(False)
+                return
+
+        self.refresh_needed_label.setHidden(True)
+
+
 
 
