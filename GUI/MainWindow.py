@@ -137,6 +137,7 @@ class MainWindow(QStackedWidget):
             InsertDataDomain.update_frontend()
         elif index == 3:
             RelationChangeDomain.update_frontend()
+            self.step3_visuals.opened()
         elif index == 4:
             ExportDataDomain.update_frontend()
             ExportFilteredDataSubDomain.update_frontend()

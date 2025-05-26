@@ -32,12 +32,12 @@ class VisualisationStateTracker:
 
     def reset_full_state(self) -> None:
         self.reset_relations_uptodate()
-        self.clear_all = False
+        self.clear_all = True
 
     def is_uptodate(self) -> bool:
         return (len(self.relations_to_be_inserted) == 0 and
                 len(self.relations_to_be_removed) == 0 and
-                self.clear_all)
+                not self.clear_all)
 
     def get_clear_all(self) -> bool:
         return self.clear_all

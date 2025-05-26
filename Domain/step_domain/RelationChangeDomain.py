@@ -260,7 +260,7 @@ class RelationChangeDomain:
         gc.collect()
 
         cls.set_instances(objects_list=await cls.project.load_validated_assets_async())
-        global_vars.otl_wizard.main_window.step3_visuals.reload_html()
+        # global_vars.otl_wizard.main_window.step3_visuals.reload_html()
 
     @classmethod
     async def load_project_relation_data(cls) -> None:
@@ -282,7 +282,7 @@ class RelationChangeDomain:
         gc.collect()
 
         cls.set_instances(objects_list=cls.project.load_validated_assets())
-        global_vars.otl_wizard.main_window.step3_visuals.reload_html()
+        # global_vars.otl_wizard.main_window.step3_visuals.reload_html()
 
     @classmethod
     def set_instances(cls, objects_list: list[Union[RelatieObject, RelationInteractor]]) -> None:
