@@ -15,6 +15,7 @@ from PyQt6.QtWidgets import QVBoxLayout, QLabel, QWidget, QFrame, QHBoxLayout, Q
 from otlmow_model.OtlmowModel.BaseClasses.OTLObject import OTLObject
 from otlmow_visuals.PyVisWrapper import PyVisWrapper
 from otlmow_visuals.PyVisWrapper1 import PyVisWrapper1
+from otlmow_visuals.PyVisWrapper10 import PyVisWrapper10
 from otlmow_visuals.PyVisWrapper2 import PyVisWrapper2
 from otlmow_visuals.PyVisWrapper3 import PyVisWrapper3
 from otlmow_visuals.PyVisWrapper4 import PyVisWrapper4
@@ -135,6 +136,7 @@ class DataVisualisationScreen(Screen):
         # self.refresh_needed_label.setHidden(True)
 
         self.visualisation_mode.addItems(["standaard visualisatie",
+                                          "alternatief 0 visualisatie",
                                           "alternatief 1 visualisatie",
                                           "alternatief 2 visualisatie",
                                           "alternatief 3 visualisatie",
@@ -223,8 +225,11 @@ class DataVisualisationScreen(Screen):
                 PyVisWrapper7().show(list_of_objects=objects_in_memory,
                                      html_path=Path(html_loc), launch_html=False)
             elif vis_mode == "standaard visualisatie":
-                self.stdVis = PyVisWrapper8()
+                self.stdVis = PyVisWrapper10()
                 self.stdVis.show(list_of_objects=objects_in_memory,
+                                 html_path=Path(html_loc), launch_html=False)
+            elif vis_mode == "alternatief 0 visualisatie":
+                PyVisWrapper8().show(list_of_objects=objects_in_memory,
                                      html_path=Path(html_loc), launch_html=False)
             else:
                 PyVisWrapper().show(list_of_objects=objects_in_memory,
@@ -245,64 +250,97 @@ class DataVisualisationScreen(Screen):
                 replace_index = index
 
         if replace_index > 0:
-            file_data[replace_index] = file_data[replace_index].replace("drawGraph();","var network = drawGraph();")
-            file_data.insert(replace_index,"var container = document.getElementById('mynetwork');\n")
-            file_data.insert(replace_index+1,
-                             "var isPhysicsOn = true;\n")
-            file_data.insert(replace_index+2,
-                             "function disablePhysics(){\n")
-            file_data.insert(replace_index+3,"if(isPhysicsOn){")
-            file_data.insert(replace_index+4,'newOptions={"layout":{"hierarchical":{"enabled":false}}};\n')
-            file_data.insert(replace_index + 5, "network.setOptions(newOptions);\n")
-            file_data.insert(replace_index + 6,
-                             'newOptions={"physics":{"enabled":false}};\n')
-            file_data.insert(replace_index+7,'network.setOptions(newOptions);\n')
-            file_data.insert(replace_index + 8, "isPhysicsOn = false;\n}};\n")
-            file_data.insert(replace_index+9,"container.addEventListener('mouseover', disablePhysics);\n")
-        file_data.insert(replace_index + 10, "function AddEdge(id,from_id, to_id,color,arrow)")
-        file_data.insert(replace_index + 11, "{")
-        file_data.insert(replace_index + 12, 'network.body.data.edges.add([{'
-                                             '"id": id,'
-                                             '"arrowStrikethrough": false,'
-                                             '"arrows": arrow,'
-                                             '"color": color,'
-                                             '"from": from_id,'
-                                             '"smooth": {'
-                                             '"enabled": false'
-                                             '},'
-                                             '  "to": to_id,'
-                                             '  "width": 2'
-                                             '}]);')
-        file_data.insert(replace_index + 13, "}")
+            add_data = ["var container = document.getElementById('mynetwork');",
+                        "var isPhysicsOn = true;",
+                        "function disablePhysics(){",
+                        "   if(isPhysicsOn){",
 
-        file_data.insert(replace_index + 14,
-                         "function AddEdgeWithLabel(id,from_id, to_id,color,arrow,label)")
-        file_data.insert(replace_index + 15, "{")
-        file_data.insert(replace_index + 16, 'network.body.data.edges.add([{'
-                                             '"id": id,'
-                                             '"arrowStrikethrough": false,'
-                                             '"arrows": arrow,'
-                                             '"color": color,'
-                                             '"from": from_id,'
-                                             '"label": label,'
-                                             '"smooth": {'
-                                             '"enabled": false'
-                                             '    },'
-                                             '        "to": to_id,'
-                                             '       "width": 2'
-                                             '}]);')
-        file_data.insert(replace_index + 17, "}")
-        file_data.insert(replace_index + 18, 'function removeEdge(id)')
-        file_data.insert(replace_index + 19, '{')
-        file_data.insert(replace_index + 20, 'if (network.body.data.edges._data.has(id))')
-        file_data.insert(replace_index + 21, '   { network.body.data.edges.remove([id]);}')
-        file_data.insert(replace_index + 22, 'else')
-        file_data.insert(replace_index + 23, '   {console.log("attempted to remove: " + id)}')
-        file_data.insert(replace_index + 24, '}')
+                        '   newOptions={"layout":{"hierarchical":{"enabled":false}}};\n',
+                        "   network.setOptions(newOptions);",
+
+                        '   newOptions={\"physics\":{\"enabled\":false}};\n',
+                        "   network.setOptions(newOptions);",
+                        '   ',
+                        "   isPhysicsOn = false;\n}};",
+
+                        "container.addEventListener('mouseover', disablePhysics);",
+
+                        "function AddEdge(id,from_id, to_id,color,arrow)",
+                        "{",
+                        'network.body.data.edges.add([{'
+                        '"id": id,'
+                        ' "arrowStrikethrough": false,'
+                        '"arrows": arrow,'
+                        ' "color": color,'
+                        '"from": from_id,'
+                        '"label": "beheerder",'
+                        '  "smooth": {'
+                        ' "enabled": false'
+                        '    },'
+                        '        "to": to_id,'
+                        '       "width": 2'
+                        '}]);',
+                        "}",
+
+                        "function AddEdgeWithLabel(id,from_id, to_id,color,arrow,label)",
+                        "{",
+                        'network.body.data.edges.add([{'
+                        '   "id": id,'
+                        '   "arrowStrikethrough": false,'
+                        '   "arrows": arrow,'
+                        '   "color": color,'
+                        '   "from": from_id,'
+                        '   "label": label,'
+                        '   "smooth": {'
+                        '   "enabled": false'
+                        '    },'
+                        '        "to": to_id,'
+                        '       "width": 2'
+                        '    }]);',
+                        "}",
+                         'function removeEdge(id)',
+                         '{',
+                         '  if (network.body.data.edges._data.has(id))',
+                         '      { network.body.data.edges.remove([id]);}',
+                         '  else if (!relationIdToSubEdges)',
+                         '      {console.log("attempted to remove: " + id)}',
+                         '  else if (relationIdToSubEdges.has(id))',
+                         '  {',
+                         '      //remove all selfmade subEdges and jointNodes that the original relations was replaced with',
+                         '      subEdges = relationIdToSubEdges.get(id)',
+                         '      jointNodes = relationIdToJointNodes.get(id)',
+                         '      ',
+                         '      network.body.data.edges.remove(subEdges);',
+                         '      network.body.data.nodes.remove(jointNodes);',
+                         '      ',
+                         '      //remove stored data on subedges and jointnodes',
+                         '      subEdges.forEach((subEdgeId) =>',
+                         '      {',
+                         '          SubEdgesToOriginalRelationId.delete(subEdgeId);',
+                         '      })',
+                         '      relationIdToTotalSubEdgeCount.delete(id);',
+                         '      relationIdToSubEdges.delete(id);',
+                         '      relationIdToJointNodes.delete(id);',
+                         '  }',
+                         '  else',
+                         '      {console.log("attempted to remove: " + id)}',
+                        '}']
+            cls.replace_and_add_lines(file_data, replace_index,
+                                  "drawGraph();",
+                                  "var network = drawGraph();",
+                                  add_data)
 
         with open(file_path, 'w') as file:
             for line in file_data:
                 file.write(line)
+
+    @classmethod
+    def replace_and_add_lines(cls, file_data, replace_index, start_line_to_replace: str,
+                              start_replacement: str, list_of_followup_lines: list[str]):
+        file_data[replace_index] = file_data[replace_index].replace(start_line_to_replace,
+                                                                    start_replacement)
+        for i, followup_line in enumerate(list_of_followup_lines):
+            file_data.insert(replace_index + i, followup_line + "\n")
 
     def opened(self):
         if not RelationChangeDomain.is_visualisation_uptodate():
@@ -313,14 +351,104 @@ class DataVisualisationScreen(Screen):
 
             # if there are new relations add them to the visualisation
             for relation_object in RelationChangeDomain.visualisation_uptodate.get_to_be_inserted_relations():
-
-                add_edge_arguments = PyVisWrapper8().create_edge_inject_arguments(relation_object)
+                rel_id = relation_object.assetId.identificator
+                add_edge_arguments = self.stdVis.create_edge_inject_arguments(relation_object)
                 if "label" in add_edge_arguments: #a heeftBetrokkene relation with their rol as label
-                    js_code = f'AddEdgeWithLabel("{add_edge_arguments["id"]}","{add_edge_arguments["from_id"]}", "{add_edge_arguments["to_id"]}","#{add_edge_arguments["color"]}","{add_edge_arguments["arrow"]}","{add_edge_arguments["label"]}")'
-                elif "arrow" in add_edge_arguments: #a bidirectional relation
-                    js_code = f'AddEdge("{add_edge_arguments["id"]}","{add_edge_arguments["from_id"]}", "{add_edge_arguments["to_id"]}","#{add_edge_arguments["color"]}","{add_edge_arguments["arrow"]}");'
-                else:  #een directional relation
-                    js_code = f'AddEdge("{add_edge_arguments["id"]}","{add_edge_arguments["from_id"]}", "{add_edge_arguments["to_id"]}","#{add_edge_arguments["color"]}",null);'
+                    # first check if the new relation needs to be added to a current collection
+                    added_to_collection = False
+                    for special_edge in self.stdVis.special_edges:
+                        # first check if the new relation is the same type as the special edge
+                        if (special_edge["label"] == add_edge_arguments["label"] and
+                            special_edge["arrows"] == add_edge_arguments["arrow"] and
+                            special_edge["color"] == add_edge_arguments["color"]):
+                            if special_edge["from"] == add_edge_arguments["from_id"]:
+                                # is this case:
+                                # special_edge["from"] is the id of the asset that has relations to many assets
+                                collection_id = special_edge["to"]  # special_edge["to"] is the id of the collection_node
+                                screen_name_of_new_asset = self.stdVis.asset_id_to_display_name_dict[add_edge_arguments["to_id"]]
+                                added_to_collection = True
+                                js_code = self.create_js_code_to_add_to_collection(collection_id,
+                                                                                   rel_id,
+                                                                                   screen_name_of_new_asset)
+                            elif special_edge["to"] == add_edge_arguments["to_id"]:
+                                # is this case:
+                                # special_edge["to"] is the id of the asset that has relations to many assets
+                                collection_id = special_edge["from"]  # special_edge["from"] is the id of the collection_node
+                                screen_name_of_new_asset = self.stdVis.asset_id_to_display_name_dict[add_edge_arguments["from_id"]]
+                                added_to_collection = True
+                                js_code = self.create_js_code_to_add_to_collection(collection_id,
+                                                                                   rel_id,
+                                                                                   screen_name_of_new_asset)
+
+                    if not added_to_collection:
+                        js_code = f'AddEdgeWithLabel("{add_edge_arguments["id"]}","{add_edge_arguments["from_id"]}", "{add_edge_arguments["to_id"]}","#{add_edge_arguments["color"]}","{add_edge_arguments["arrow"]}","{add_edge_arguments["label"]}")'
+                elif "arrow" in add_edge_arguments: #a directional relation
+                    # first check if the new relation needs to be added to a current collection
+                    added_to_collection = False
+                    for special_edge in self.stdVis.special_edges:
+                        # first check if the new relation is the same type as the special edge
+                        if (special_edge["arrows"] == add_edge_arguments["arrow"] and
+                            special_edge["color"] == add_edge_arguments["color"]):
+                            if special_edge["from"] == add_edge_arguments["from_id"]:
+                                # is this case:
+                                # special_edge["from"] is the id of the asset that has relations to many assets
+                                collection_id = special_edge[
+                                    "to"]  # special_edge["to"] is the id of the collection_node
+                                screen_name_of_new_asset = \
+                                self.stdVis.asset_id_to_display_name_dict[
+                                    add_edge_arguments["to_id"]]
+                                added_to_collection = True
+                                js_code = self.create_js_code_to_add_to_collection(collection_id,
+                                                                                   rel_id,
+                                                                                   screen_name_of_new_asset)
+                            elif special_edge["to"] == add_edge_arguments["to_id"]:
+                                # is this case:
+                                # special_edge["to"] is the id of the asset that has relations to many assets
+                                collection_id = special_edge[
+                                    "from"]  # special_edge["from"] is the id of the collection_node
+                                screen_name_of_new_asset = \
+                                self.stdVis.asset_id_to_display_name_dict[
+                                    add_edge_arguments["from_id"]]
+                                added_to_collection = True
+                                js_code = self.create_js_code_to_add_to_collection(collection_id,
+                                                                                   rel_id,
+                                                                                   screen_name_of_new_asset)
+
+                    if not added_to_collection:
+                        js_code = f'AddEdge("{add_edge_arguments["id"]}","{add_edge_arguments["from_id"]}", "{add_edge_arguments["to_id"]}","#{add_edge_arguments["color"]}","{add_edge_arguments["arrow"]}");'
+                else:   #a bidirectional relation
+                    # first check if the new relation needs to be added to a current collection
+                    added_to_collection = False
+                    for special_edge in self.stdVis.special_edges:
+                        # first check if the new relation is the same type as the special edge
+                        if (special_edge["color"] == add_edge_arguments["color"]):
+                            if special_edge["from"] == add_edge_arguments["from_id"]:
+                                # is this case:
+                                # special_edge["from"] is the id of the asset that has relations to many assets
+                                collection_id = special_edge[
+                                    "to"]  # special_edge["to"] is the id of the collection_node
+                                screen_name_of_new_asset = \
+                                    self.stdVis.asset_id_to_display_name_dict[
+                                        add_edge_arguments["to_id"]]
+                                added_to_collection = True
+                                js_code = self.create_js_code_to_add_to_collection(collection_id,
+                                                                                   rel_id,
+                                                                                   screen_name_of_new_asset)
+                            elif special_edge["to"] == add_edge_arguments["to_id"]:
+                                # is this case:
+                                # special_edge["to"] is the id of the asset that has relations to many assets
+                                collection_id = special_edge[
+                                    "from"]  # special_edge["from"] is the id of the collection_node
+                                screen_name_of_new_asset = \
+                                    self.stdVis.asset_id_to_display_name_dict[
+                                        add_edge_arguments["from_id"]]
+                                added_to_collection = True
+                                js_code = self.create_js_code_to_add_to_collection(collection_id,
+                                                                                   rel_id,
+                                                                                   screen_name_of_new_asset)
+
+                    if not added_to_collection:
+                        js_code = f'AddEdge("{add_edge_arguments["id"]}","{add_edge_arguments["from_id"]}", "{add_edge_arguments["to_id"]}","#{add_edge_arguments["color"]}",null);'
                 OTLLogger.logger.debug(js_code)
                 self.view.page().runJavaScript(js_code)
 
@@ -331,10 +459,7 @@ class DataVisualisationScreen(Screen):
                 if rel_id in self.stdVis.relation_id_to_collection_id:
                     collection_id = self.stdVis.relation_id_to_collection_id.pop(rel_id)
                     self.stdVis.collection_id_to_list_of_relation_ids[collection_id] = [rel_set for rel_set in self.stdVis.collection_id_to_list_of_relation_ids[collection_id] if rel_set[0] != rel_id]
-                    new_collection_content = "\n".join([rel_set[1] for rel_set in self.stdVis.collection_id_to_list_of_relation_ids[collection_id]])
-                    new_collection_size = len(self.stdVis.collection_id_to_list_of_relation_ids[collection_id])
-                    new_label = f"<i><b>Collectie ({new_collection_size})</b></i>"
-                    new_title = f"Collectie ({new_collection_size}):\n{new_collection_content}"
+                    new_label, new_title = self.create_new_special_node_text(collection_id)
                     # https://stackoverflow.com/questions/32765015/vis-js-modify-node-properties-on-click
                     js_code = f'network.body.data.nodes.updateOnly({{id: "{collection_id}", label: "{new_label}", title:`{new_title}`}});'
                 else:
@@ -349,6 +474,29 @@ class DataVisualisationScreen(Screen):
                 return
 
         self.refresh_needed_label.setHidden(True)
+
+    def create_js_code_to_add_to_collection(self, collection_id,
+                                            rel_id, screen_name_of_new_asset):
+        new_rel_id_and_asset_screen_name_set = (rel_id, screen_name_of_new_asset)
+        self.stdVis.relation_id_to_collection_id[rel_id] = collection_id
+        self.stdVis.collection_id_to_list_of_relation_ids[
+            collection_id].append(new_rel_id_and_asset_screen_name_set)
+        new_label, new_title = self.create_new_special_node_text(
+            collection_id)
+
+        js_code = f'network.body.data.nodes.updateOnly({{id: "{collection_id}", label: "{new_label}", title:`{new_title}`}});'
+        return js_code
+
+    def create_new_special_node_text(self, collection_id):
+        new_collection_content = "\n".join([rel_set[1] for rel_set in
+                                            self.stdVis.collection_id_to_list_of_relation_ids[
+                                                collection_id]])
+        new_collection_size = len(
+            self.stdVis.collection_id_to_list_of_relation_ids[
+                collection_id])
+        new_label = f"<i><b>Collectie ({new_collection_size})</b></i>"
+        new_title = f"Collectie ({new_collection_size}):\n{new_collection_content}"
+        return new_label, new_title
 
 
 
