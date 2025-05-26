@@ -273,7 +273,6 @@ class DataVisualisationScreen(Screen):
                         '"arrows": arrow,'
                         ' "color": color,'
                         '"from": from_id,'
-                        '"label": "beheerder",'
                         '  "smooth": {'
                         ' "enabled": false'
                         '    },'
