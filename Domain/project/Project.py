@@ -186,9 +186,28 @@ class Project:
             new_subset_path = project_dir_path / self.subset_path.name
             shutil.copy(src=self.subset_path, dst=new_subset_path)
 
-    def get_project_local_path(self):
+    def get_project_local_path(self) -> Path:
         otl_wizard_project_dir = ProgramFileStructure.get_otl_wizard_projects_dir()
         return otl_wizard_project_dir / self.project_path.name
+
+    def get_current_visuals_folder_path(self) -> Path:
+        visuals_folder = global_vars.current_project.get_project_local_path() / "visuals"
+
+        if not visuals_folder.exists():
+            os.makedirs(visuals_folder, exist_ok=True)
+
+        return visuals_folder
+    def get_current_visuals_html_path(self) -> Path:
+        return self.get_current_visuals_folder_path() / "graph_visualisation.html"
+
+    def get_current_visuals_uptodate_state_path(self) -> Path:
+        visuals_uptodate_state_path = self.get_current_visuals_folder_path() / "visuals_uptodate_state.json"
+
+        if not visuals_uptodate_state_path.exists():
+            with open(visuals_uptodate_state_path,"r") as file:
+                json.dump({"visuals_uptodate":False},file)
+
+        return visuals_uptodate_state_path
 
     def save_project_details(self, project_dir_path: Path) -> None:
         """

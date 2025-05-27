@@ -33,7 +33,7 @@ from GUI.screens.Screen import Screen
 ROOT_DIR = Path(__file__).parent
 
 # HTML_DIR = ROOT_DIR.parent.parent / 'img' / 'html'
-HTML_DIR = Path.home() / 'OTLWizardProjects' / 'img' / 'html'
+# HTML_DIR = Path.home() / 'OTLWizardProjects' / 'img' / 'html'
 
 class DataVisualisationScreen(Screen):
 
@@ -42,8 +42,8 @@ class DataVisualisationScreen(Screen):
     def __init__(self, _):
         super().__init__()
 
-        if not HTML_DIR.exists():
-            os.makedirs(HTML_DIR,exist_ok=True)
+        # if not HTML_DIR.exists():
+        #     os.makedirs(HTML_DIR,exist_ok=True)
 
         self.frame_layout_legend = None
         self.objects_in_memory = []
@@ -129,7 +129,7 @@ class DataVisualisationScreen(Screen):
         refresh_btn = ButtonWidget()
         refresh_btn.setIcon(qta.icon('mdi.refresh', color='white'))
         refresh_btn.setProperty('class', 'primary-button')
-        refresh_btn.clicked.connect(lambda: self.reload_html())
+        refresh_btn.clicked.connect(lambda: self.recreate_html())
 
         self.refresh_needed_label.setText(self._("The visualisation is outdated, refresh to see new changes"))
         self.refresh_needed_label.setStyleSheet('color:#DD1111;')
@@ -161,7 +161,7 @@ class DataVisualisationScreen(Screen):
         self._ = _
         self.color_label_title.setText(self._("relations legend") + ":")
 
-    def reload_html(self):
+    def recreate_html(self):
         OTLLogger.logger.debug(
             f"Executing DataVisualisationScreen.reload_html() for project {global_vars.current_project.eigen_referentie}",
             extra={"timing_ref": f"reload_html_{global_vars.current_project.eigen_referentie}"})
@@ -198,7 +198,7 @@ class DataVisualisationScreen(Screen):
             self.too_many_objects_message.setVisible(False)
             if not self.view.isVisible():
                 self.view.setVisible(True)
-            html_loc = HTML_DIR / "visuals.html"
+            html_loc = self.get_current_html_path()
             previous_cwd = os.getcwd()
             os.chdir(Path.home() / 'OTLWizardProjects')
             objects_in_memory = deepcopy(objects_in_memory)
@@ -238,7 +238,15 @@ class DataVisualisationScreen(Screen):
 
             self.modify_html(html_loc)
 
-            self.view.setHtml(open(html_loc).read())
+            self.load_html(html_loc)
+
+
+
+
+
+    def load_html(self,html_loc):
+        self.view.setHtml(open(html_loc).read())
+
 
     def modify_html(cls, file_path: Path) -> None:
         with open(file_path) as file:
@@ -340,6 +348,14 @@ class DataVisualisationScreen(Screen):
                                                                     start_replacement)
         for i, followup_line in enumerate(list_of_followup_lines):
             file_data.insert(replace_index + i, followup_line + "\n")
+
+    def changed_project(self):
+        html_path: Path = self.get_current_html_path()
+        if html_path.exists():
+            self.load_html(html_path)
+            RelationChangeDomain.visualisation_uptodate.reset_full_state()
+        else:
+            self.recreate_html()
 
     def opened(self):
         if not RelationChangeDomain.is_visualisation_uptodate():
