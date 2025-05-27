@@ -12,6 +12,7 @@ from PyQt6.QtWebEngineCore import QWebEngineSettings
 from PyQt6.QtWebEngineWidgets import QWebEngineView
 from PyQt6.QtWidgets import QVBoxLayout, QLabel, QWidget, QFrame, QHBoxLayout, QSizePolicy, \
     QComboBox
+from html2image import Html2Image
 from otlmow_model.OtlmowModel.BaseClasses.OTLObject import OTLObject
 from otlmow_visuals.PyVisWrapper import PyVisWrapper
 from otlmow_visuals.PyVisWrapper1 import PyVisWrapper1
@@ -33,7 +34,7 @@ from GUI.screens.Screen import Screen
 ROOT_DIR = Path(__file__).parent
 
 # HTML_DIR = ROOT_DIR.parent.parent / 'img' / 'html'
-# HTML_DIR = Path.home() / 'OTLWizardProjects' / 'img' / 'html'
+HTML_DIR = Path.home() / 'OTLWizardProjects' / 'img' / 'html'
 
 class DataVisualisationScreen(Screen):
 
@@ -122,15 +123,29 @@ class DataVisualisationScreen(Screen):
             self.frame_layout_legend.addWidget(color_label)
             self.frame_layout_legend.addWidget(label)
 
+    def save_as_png(self):
+
+        hti = Html2Image(output_path=global_vars.current_project.get_project_local_path())
+        hti.screenshot(
+            html_file=str(HTML_DIR / "visuals.html") ,
+            save_as= "screenshot.png",
+            size=(1920, 1080)
+        )
+
     def create_button_container(self):
         frame = QFrame()
         frame_layout = QHBoxLayout()
-        
+
         refresh_btn = ButtonWidget()
         refresh_btn.setIcon(qta.icon('mdi.refresh', color='white'))
         refresh_btn.setProperty('class', 'primary-button')
         refresh_btn.clicked.connect(lambda: self.recreate_html())
 
+        save_btn = ButtonWidget()
+        # see all qta mdi icon options in: https://cdn.jsdelivr.net/npm/@mdi/font@5.9.55/preview.html
+        save_btn.setIcon(qta.icon('mdi.content-save', color='white'))
+        save_btn.setProperty('class', 'primary-button')
+        save_btn.clicked.connect(lambda: self.save_as_png())
         self.refresh_needed_label.setText(self._("The visualisation is outdated, refresh to see new changes"))
         self.refresh_needed_label.setStyleSheet('color:#DD1111;')
         # self.refresh_needed_label.setHidden(True)
@@ -147,6 +162,7 @@ class DataVisualisationScreen(Screen):
                                           "vorige"])
 
         frame_layout.addWidget(refresh_btn)
+        frame_layout.addWidget(save_btn)
         frame_layout.addWidget(self.visualisation_mode)
         frame_layout.addWidget(self.refresh_needed_label)
         frame_layout.addStretch()
@@ -198,7 +214,7 @@ class DataVisualisationScreen(Screen):
             self.too_many_objects_message.setVisible(False)
             if not self.view.isVisible():
                 self.view.setVisible(True)
-            html_loc = self.get_current_html_path()
+            html_loc = HTML_DIR / "visuals.html"
             previous_cwd = os.getcwd()
             os.chdir(Path.home() / 'OTLWizardProjects')
             objects_in_memory = deepcopy(objects_in_memory)
@@ -245,7 +261,7 @@ class DataVisualisationScreen(Screen):
 
 
     def load_html(self,html_loc):
-        self.view.setHtml(open(html_loc).read())
+        self.view.setHtml(open(html_loc ).read())
 
 
     def modify_html(cls, file_path: Path) -> None:
@@ -350,7 +366,7 @@ class DataVisualisationScreen(Screen):
             file_data.insert(replace_index + i, followup_line + "\n")
 
     def changed_project(self):
-        html_path: Path = self.get_current_html_path()
+        html_path: Path = HTML_DIR / "visuals.html"
         if html_path.exists():
             self.load_html(html_path)
             RelationChangeDomain.visualisation_uptodate.reset_full_state()
