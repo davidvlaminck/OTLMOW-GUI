@@ -32,7 +32,7 @@ class VisualisationStateTracker:
 
     def reset_full_state(self) -> None:
         self.reset_relations_uptodate()
-        self.clear_all = True
+        self.set_clear_all(False)
 
     def is_uptodate(self) -> bool:
         return (len(self.relations_to_be_inserted) == 0 and

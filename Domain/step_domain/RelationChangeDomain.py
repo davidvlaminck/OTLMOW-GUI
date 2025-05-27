@@ -235,7 +235,8 @@ class RelationChangeDomain:
         cls.possible_object_to_object_relations_dict = {}
         cls.aim_id_relations = []
         cls.regenerate_relation_types = False
-        cls.visualisation_uptodate.reset_full_state()
+        cls.visualisation_uptodate.reset_relations_uptodate()
+        cls.visualisation_uptodate.set_clear_all(True)
         cls.map_uptodate = False
 
     @classmethod
