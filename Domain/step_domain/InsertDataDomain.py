@@ -423,7 +423,8 @@ class InsertDataDomain:
             objects_in_memory=objects_in_memory)
         RelationChangeDomain.set_instances(objects_list=objects_in_memory)
         # global_vars.otl_wizard.main_window.step3_visuals.reload_html()
-
+        global_vars.current_project.visualisation_uptodate.set_clear_all(True)
+        global_vars.current_project.save_visualisation_uptodate_state()
 
         object_count = len(objects_in_memory)
         OTLLogger.logger.debug(

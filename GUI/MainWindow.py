@@ -7,7 +7,6 @@ from PyQt6.QtWidgets import QStackedWidget, QWidget
 
 from Domain import global_vars
 from Domain.logger.OTLLogger import OTLLogger
-from Domain.project.Project import Project
 from Domain.step_domain.ExportDataDomain import ExportDataDomain
 from Domain.step_domain.ExportFilteredDataSubDomain import ExportFilteredDataSubDomain
 from Domain.step_domain.HomeDomain import HomeDomain
@@ -19,7 +18,6 @@ from GUI.dialog_windows.YesOrNoNotificationWindow import YesOrNoNotificationWind
 from GUI.dialog_windows.file_picker_dialog.SubsetLoadFilePickerDialog import \
     SubsetLoadFilePickerDialog
 
-from GUI.screens.MapScreen import MapScreen
 from GUI.screens.DataVisualisationScreen import DataVisualisationScreen
 from GUI.screens.ExportDataScreen import ExportDataScreen
 from GUI.screens.HomeScreen import HomeScreen

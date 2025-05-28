@@ -34,7 +34,7 @@ from GUI.screens.Screen import Screen
 ROOT_DIR = Path(__file__).parent
 
 # HTML_DIR = ROOT_DIR.parent.parent / 'img' / 'html'
-HTML_DIR = Path.home() / 'OTLWizardProjects' / 'img' / 'html'
+# HTML_DIR = Path.home() / 'OTLWizardProjects' / 'img' / 'html'
 
 class DataVisualisationScreen(Screen):
 
@@ -125,11 +125,11 @@ class DataVisualisationScreen(Screen):
 
     def save_as_png(self):
 
-        hti = Html2Image(output_path=global_vars.current_project.get_project_local_path())
+        hti = Html2Image(output_path=global_vars.current_project.get_project_local_path(),size=(1920*2, 1080*2),)
         hti.screenshot(
-            html_file=str(HTML_DIR / "visuals.html") ,
+            html_file=str(self.get_current_html_path()) ,
             save_as= "screenshot.png",
-            size=(1920, 1080)
+            size=(1920*2, 1080*2)
         )
 
     def create_button_container(self):
@@ -183,7 +183,8 @@ class DataVisualisationScreen(Screen):
             extra={"timing_ref": f"reload_html_{global_vars.current_project.eigen_referentie}"})
 
         self.objects_in_memory = self.load_assets()
-        RelationChangeDomain.visualisation_uptodate.reset_full_state()
+        global_vars.current_project.visualisation_uptodate.reset_full_state()
+        global_vars.current_project.save_visualisation_uptodate_state()
         self.refresh_needed_label.setHidden(True)
         self.fill_frame_layout_legend()
         self.create_html(objects_in_memory=self.objects_in_memory,vis_mode= self.visualisation_mode.currentText())
@@ -214,7 +215,7 @@ class DataVisualisationScreen(Screen):
             self.too_many_objects_message.setVisible(False)
             if not self.view.isVisible():
                 self.view.setVisible(True)
-            html_loc = HTML_DIR / "visuals.html"
+            html_loc = self.get_current_html_path()
             previous_cwd = os.getcwd()
             os.chdir(Path.home() / 'OTLWizardProjects')
             objects_in_memory = deepcopy(objects_in_memory)
@@ -254,6 +255,7 @@ class DataVisualisationScreen(Screen):
 
             self.modify_html(html_loc)
 
+
             self.load_html(html_loc)
 
 
@@ -262,7 +264,7 @@ class DataVisualisationScreen(Screen):
 
     def load_html(self,html_loc):
         self.view.setHtml(open(html_loc ).read())
-
+        global_vars.current_project.load_visualisation_uptodate_state()
 
     def modify_html(cls, file_path: Path) -> None:
         with open(file_path) as file:
@@ -366,12 +368,15 @@ class DataVisualisationScreen(Screen):
             file_data.insert(replace_index + i, followup_line + "\n")
 
     def changed_project(self):
-        html_path: Path = HTML_DIR / "visuals.html"
+        html_path: Path = self.get_current_html_path()
         if html_path.exists():
             self.load_html(html_path)
-            RelationChangeDomain.visualisation_uptodate.reset_full_state()
+            global_vars.current_project.visualisation_uptodate.reset_relations_uptodate()
         else:
             self.recreate_html()
+
+    def get_current_html_path(self):
+        return global_vars.current_project.get_current_visuals_html_path()
 
     def opened(self):
         if not RelationChangeDomain.is_visualisation_uptodate():
@@ -381,7 +386,7 @@ class DataVisualisationScreen(Screen):
 
 
             # if there are new relations add them to the visualisation
-            for relation_object in RelationChangeDomain.visualisation_uptodate.get_to_be_inserted_relations():
+            for relation_object in global_vars.current_project.visualisation_uptodate.get_to_be_inserted_relations():
                 rel_id = relation_object.assetId.identificator
                 add_edge_arguments = self.stdVis.create_edge_inject_arguments(relation_object)
                 if "label" in add_edge_arguments: #a heeftBetrokkene relation with their rol as label
@@ -484,7 +489,7 @@ class DataVisualisationScreen(Screen):
                 self.view.page().runJavaScript(js_code)
 
             # if there are removed relations remove them from the visualisation
-            for relation_object in RelationChangeDomain.visualisation_uptodate.get_to_be_removed_relations():
+            for relation_object in global_vars.current_project.visualisation_uptodate.get_to_be_removed_relations():
                 rel_id = relation_object.assetId.identificator
 
                 if rel_id in self.stdVis.relation_id_to_collection_id:
@@ -498,9 +503,9 @@ class DataVisualisationScreen(Screen):
 
                 OTLLogger.logger.debug(js_code)
                 self.view.page().runJavaScript(js_code)
-            RelationChangeDomain.visualisation_uptodate.reset_relations_uptodate()
+            global_vars.current_project.visualisation_uptodate.reset_relations_uptodate()
 
-            if RelationChangeDomain.visualisation_uptodate.get_clear_all():
+            if global_vars.current_project.visualisation_uptodate.get_clear_all():
                 self.refresh_needed_label.setHidden(False)
                 return
 
