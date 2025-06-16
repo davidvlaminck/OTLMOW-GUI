@@ -94,6 +94,7 @@ class MapHelper:
             });
         } catch (error) {
           console.error(error);
+          alert("MapScreen: QWebChannel creation error");
         }
         
         
@@ -206,6 +207,7 @@ class MapHelper:
             else 
             {
                 console.log("QWebChannel is not initialized yet.");
+                alert("MapScreen: QWebChannel is not initialized");
             }
         }
         

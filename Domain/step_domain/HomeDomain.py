@@ -208,7 +208,7 @@ class HomeDomain:
         InsertDataDomain.init_static()
         RelationChangeDomain.clear_data()
         ExportFilteredDataSubDomain.clear_data()
-        global_vars.otl_wizard.main_window.step3_visuals.changed_project()
+        global_vars.otl_wizard.main_window.step3_visuals.changed_project_bool = True
 
         global_vars.otl_wizard.main_window.enable_steps()
 

@@ -1,4 +1,7 @@
+import json
 import os
+import re
+import time
 from copy import deepcopy
 from dataclasses import replace
 from typing import List
@@ -7,7 +10,9 @@ import qtawesome as qta
 
 from pathlib import Path
 
+from PyQt6.QtCore import pyqtSlot, QObject, QFile, QIODevice
 from PyQt6.QtGui import QFont
+from PyQt6.QtWebChannel import QWebChannel
 from PyQt6.QtWebEngineCore import QWebEngineSettings
 from PyQt6.QtWebEngineWidgets import QWebEngineView
 from PyQt6.QtWidgets import QVBoxLayout, QLabel, QWidget, QFrame, QHBoxLayout, QSizePolicy, \
@@ -35,6 +40,29 @@ ROOT_DIR = Path(__file__).parent
 
 # HTML_DIR = ROOT_DIR.parent.parent / 'img' / 'html'
 # HTML_DIR = Path.home() / 'OTLWizardProjects' / 'img' / 'html'
+class WebBridge(QObject):
+    """Bridge between JavaScript and Python using QWebChannel."""
+
+    def __init__(self):
+        super().__init__()
+
+    @pyqtSlot(str)
+    def receive_new_node_data(self, message):
+        """Receives receive_new_node_data from JavaScript."""
+        data = json.loads(message)  # Convert string back to dict
+        OTLLogger.logger.debug(data)
+        test_json_path = global_vars.current_project.get_current_visuals_folder_path() / "new_nodes.json"
+        with open(test_json_path, 'w') as json_file:
+            json.dump(data, json_file)
+
+    @pyqtSlot(str)
+    def receive_coordinates(self, message):
+        """Receives click event data from JavaScript."""
+        data = json.loads(message)  # Convert string back to dict
+        lat = float(data["lat"])
+        lng = float(data["lng"])
+
+        OTLLogger.logger.debug(f"Received coordinates from javascript! ({lat},{lng})")
 
 class DataVisualisationScreen(Screen):
 
@@ -59,7 +87,10 @@ class DataVisualisationScreen(Screen):
         self.color_label_title = QLabel()
         self.init_ui()
 
+        self.channel = None
+        self.web_bridge = None
 
+        self.changed_project_bool=True
 
 
     def init_ui(self):
@@ -73,12 +104,22 @@ class DataVisualisationScreen(Screen):
         
         window_layout = QVBoxLayout()
         window_layout.setContentsMargins(0,0,0,0)
-        
+
+        # from mapscreen
+        self.channel = QWebChannel()
+        self.web_bridge = WebBridge()
+        self.channel.registerObject("webBridge", self.web_bridge)
+        self.view.page().setWebChannel(self.channel)
+        # end from mapscreen
+
         html_loc = ROOT_DIR.parent.parent / 'img' / 'html' / "basic.html"
         self.view.setHtml(open(html_loc).read())
         self.view.settings().setAttribute(QWebEngineSettings.WebAttribute.ShowScrollBars, False)
         self.view.setContentsMargins(0, 0, 0, 0)
         self.view.setSizePolicy(QSizePolicy.Policy.Expanding,QSizePolicy.Policy.Expanding )
+
+
+
 
         self.too_many_objects_message.setVisible(False)
 
@@ -131,6 +172,11 @@ class DataVisualisationScreen(Screen):
             save_as= "screenshot.png",
             size=(1920*2, 1080*2)
         )
+
+        js_code = 'sendCurrentNodesDataToPython();\n'
+        self.view.page().runJavaScript(js_code)
+
+        # self.save_html(self.get_current_html_path())
 
     def create_button_container(self):
         frame = QFrame()
@@ -255,42 +301,83 @@ class DataVisualisationScreen(Screen):
 
             self.modify_html(html_loc)
 
-
             self.load_html(html_loc)
 
 
 
+    def inject_QWebchannel_js_script(self,page):
+        file = QFile(":/qtwebchannel/qwebchannel.js")
+        if not file.open(QIODevice.ReadOnly):
+            OTLLogger.logger.debug("Failed to open qwebchannel.js:", file.errorString())
+        else:
+            data = file.readAll()
+            file.close()
+            js = bytes(data).decode("utf-8")
+            page.runJavaScript(js)
 
 
     def load_html(self,html_loc):
         self.view.setHtml(open(html_loc ).read())
+        # self.inject_QWebchannel_js_script(self.view.page())
+        time.sleep(0.1)
+        # self.view.page().setWebChannel(self.channel)
+
         global_vars.current_project.load_visualisation_uptodate_state()
 
     def modify_html(cls, file_path: Path) -> None:
         with open(file_path) as file:
             file_data = file.readlines()
 
+        # add the qtwebchannel javascript to the list of script resources in the html
+        replace_index_lib = -1
+        for index, line in enumerate(file_data):
+            if '<script src="lib/bindings/utils.js"></script>' in line:
+                replace_index_lib = index
+                break
+        if replace_index_lib > 0:
+            cls.replace_and_add_lines(file_data, replace_index_lib,
+                                      '<script src="lib/bindings/utils.js"></script>',
+                                      '<script src="lib/bindings/utils.js"></script>',
+                                      ['<script src="qwebchannel.js"></script>'])
+
         replace_index = -1
         for index, line in enumerate(file_data):
             if "drawGraph();" in line:
                 replace_index = index
+                break
 
         if replace_index > 0:
             add_data = ["var container = document.getElementById('mynetwork');",
+                        "",
+                        "// add webchannel to javascript to communicate with python",
+                        "try",
+                        "{",
+                        "   var channel = new QWebChannel(qt.webChannelTransport, function(channel) ",
+                        "   {",
+                        "       window.pywebchannel = channel.objects.webBridge;",
+                        '        alert("DataVisualisationScreen:created pywebchannel");',
+                        "   });",
+                        "} ",
+                        "catch (error) ",
+                        "{",
+                        "   console.error(error);",
+                        '   alert("DataVisualisationScreen:Error in webchannel creation: " + error);',
+                        "}",
+                        "",
                         "var isPhysicsOn = true;",
-                        "function disablePhysics(){",
-                        "   if(isPhysicsOn){",
-
-                        '   newOptions={"layout":{"hierarchical":{"enabled":false}}};\n',
-                        "   network.setOptions(newOptions);",
-
-                        '   newOptions={\"physics\":{\"enabled\":false}};\n',
-                        "   network.setOptions(newOptions);",
-                        '   ',
-                        "   isPhysicsOn = false;\n}};",
-
+                        "function disablePhysics()",
+                        "{",
+                        "   if(isPhysicsOn)",
+                        "   {",
+                        '       newOptions={"layout":{"hierarchical":{"enabled":false}}};\n',
+                        "       network.setOptions(newOptions);",
+                        '       newOptions={\"physics\":{\"enabled\":false}};\n',
+                        "       network.setOptions(newOptions);",
+                        # '       sendCurrentNodesDataToPython()',
+                        "       isPhysicsOn = false;\n",
+                        "   }",
+                        "};",
                         "container.addEventListener('mouseover', disablePhysics);",
-
                         "function AddEdge(id,from_id, to_id,color,arrow)",
                         "{",
                         'network.body.data.edges.add([{'
@@ -306,7 +393,22 @@ class DataVisualisationScreen(Screen):
                         '       "width": 2'
                         '}]);',
                         "}",
+                        "function sendCurrentNodesDataToPython()",
+                        "{",
+                        '   var new_node_data_str = JSON.stringify(Object.fromEntries(network.body.data.nodes._data))',
+                        '   console.log(new_node_data_str)',
+                        "   if (window.pywebchannel)",
+                        "   {",
+                        # "       window.pywebchannel.receive_new_node_data(new_node_data_str);",
+                        "       window.pywebchannel.receive_coordinates(JSON.stringify({lat: 56, lng: 30}));",
+                        "   }"
+                        "   else",
+                        "   {"
+                        '       console.log("QWebChannel is not initialized yet.");',
+                        '       alert("DataVisualisationScreen: QWebChannel is not initialized");',
+                        "   }",
 
+                        "}",
                         "function AddEdgeWithLabel(id,from_id, to_id,color,arrow,label)",
                         "{",
                         'network.body.data.edges.add([{'
@@ -323,41 +425,61 @@ class DataVisualisationScreen(Screen):
                         '       "width": 2'
                         '    }]);',
                         "}",
-                         'function removeEdge(id)',
-                         '{',
-                         '  if (network.body.data.edges._data.has(id))',
-                         '      { network.body.data.edges.remove([id]);}',
-                         '  else if (!relationIdToSubEdges)',
-                         '      {console.log("attempted to remove: " + id)}',
-                         '  else if (relationIdToSubEdges.has(id))',
-                         '  {',
-                         '      //remove all selfmade subEdges and jointNodes that the original relations was replaced with',
-                         '      subEdges = relationIdToSubEdges.get(id)',
-                         '      jointNodes = relationIdToJointNodes.get(id)',
-                         '      ',
-                         '      network.body.data.edges.remove(subEdges);',
-                         '      network.body.data.nodes.remove(jointNodes);',
-                         '      ',
-                         '      //remove stored data on subedges and jointnodes',
-                         '      subEdges.forEach((subEdgeId) =>',
-                         '      {',
-                         '          SubEdgesToOriginalRelationId.delete(subEdgeId);',
-                         '      })',
-                         '      relationIdToTotalSubEdgeCount.delete(id);',
-                         '      relationIdToSubEdges.delete(id);',
-                         '      relationIdToJointNodes.delete(id);',
-                         '  }',
-                         '  else',
-                         '      {console.log("attempted to remove: " + id)}',
+                        'function removeEdge(id)',
+                        '{',
+                        '  if (network.body.data.edges._data.has(id))',
+                        '      { network.body.data.edges.remove([id]);}',
+                        '  else if (!relationIdToSubEdges)',
+                        '      {console.log("attempted to remove: " + id)}',
+                        '  else if (relationIdToSubEdges.has(id))',
+                        '  {',
+                        '      //remove all selfmade subEdges and jointNodes that the original relations was replaced with',
+                        '      subEdges = relationIdToSubEdges.get(id)',
+                        '      jointNodes = relationIdToJointNodes.get(id)',
+                        '      ',
+                        '      network.body.data.edges.remove(subEdges);',
+                        '      network.body.data.nodes.remove(jointNodes);',
+                        '      ',
+                        '      //remove stored data on subedges and jointnodes',
+                        '      subEdges.forEach((subEdgeId) =>',
+                        '      {',
+                        '          SubEdgesToOriginalRelationId.delete(subEdgeId);',
+                        '      })',
+                        '      relationIdToTotalSubEdgeCount.delete(id);',
+                        '      relationIdToSubEdges.delete(id);',
+                        '      relationIdToJointNodes.delete(id);',
+                        '  }',
+                        '  else',
+                        '      {console.log("attempted to remove: " + id)}',
                         '}']
             cls.replace_and_add_lines(file_data, replace_index,
-                                  "drawGraph();",
-                                  "var network = drawGraph();",
-                                  add_data)
+                                      "drawGraph();",
+                                      "var network = drawGraph();",
+                                      add_data)
+
+
 
         with open(file_path, 'w') as file:
             for line in file_data:
                 file.write(line)
+
+    def save_html(cls, file_path: Path) -> None:
+        with open(file_path) as file:
+            file_data = file.read()
+
+        pattern = re.compile(
+            r'nodes\s*=\s*new\s+vis\.DataSet\(\[\{([\s\S]*?)\}\]\);',
+            re.DOTALL
+        )
+
+
+        m = pattern.search(file_data)
+        if m:
+            inner_blob = m.group(1)
+            # print(inner_blob)
+
+        with open(file_path.parent / "match_results.txt", 'w') as file:
+            file.write(inner_blob)
 
     @classmethod
     def replace_and_add_lines(cls, file_data, replace_index, start_line_to_replace: str,
@@ -375,11 +497,16 @@ class DataVisualisationScreen(Screen):
         else:
             self.recreate_html()
 
+        self.changed_project_bool = False
+
     def get_current_html_path(self):
         return global_vars.current_project.get_current_visuals_html_path()
 
     def opened(self):
-        if not RelationChangeDomain.is_visualisation_uptodate():
+        if self.changed_project_bool:
+            self.changed_project()
+
+        elif not RelationChangeDomain.is_visualisation_uptodate():
             if (self.visualisation_mode.currentText() != "standaard visualisatie"):
                 self.refresh_needed_label.setHidden(False)
                 return
