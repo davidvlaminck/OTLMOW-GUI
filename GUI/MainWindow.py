@@ -26,6 +26,7 @@ from GUI.screens.RelationChangeScreen import RelationChangeScreen
 from GUI.screens.Screen import Screen
 from GUI.screens.TemplateScreen import TemplateScreen
 from GUI.header.TabWidget import TabWidget
+from GUI.screens.TestDataVisualisationScreen import TestDataVisualisationScreen
 
 
 class MainWindow(QStackedWidget):
@@ -42,7 +43,8 @@ class MainWindow(QStackedWidget):
         self.step2_tabwidget:TabWidget = TabWidget(self._, page_nr=2, widget1=self.step2,
                                          description1="insert_data",
                                          has_save_btn=False)
-        self.step3_visuals:DataVisualisationScreen = DataVisualisationScreen(self._)
+        # self.step3_visuals:DataVisualisationScreen = DataVisualisationScreen(self._)
+        self.step3_visuals: TestDataVisualisationScreen = TestDataVisualisationScreen()
         # self.step3_map:MapScreen = MapScreen(self._)
         # self.step3_data:AssetDataChangeScreen = AssetDataChangeScreen(self._)
         self.step3_relations:RelationChangeScreen = RelationChangeScreen(self._)

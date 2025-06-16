@@ -43,9 +43,6 @@ ROOT_DIR = Path(__file__).parent
 class WebBridge(QObject):
     """Bridge between JavaScript and Python using QWebChannel."""
 
-    def __init__(self):
-        super().__init__()
-
     @pyqtSlot(str)
     def receive_new_node_data(self, message):
         """Receives receive_new_node_data from JavaScript."""
@@ -63,6 +60,10 @@ class WebBridge(QObject):
         lng = float(data["lng"])
 
         OTLLogger.logger.debug(f"Received coordinates from javascript! ({lat},{lng})")
+
+    @pyqtSlot(str)
+    def receiveMessage(self, msg):
+        print(f"Message from JS: {msg}")
 
 class DataVisualisationScreen(Screen):
 
@@ -108,7 +109,7 @@ class DataVisualisationScreen(Screen):
         # from mapscreen
         self.channel = QWebChannel()
         self.web_bridge = WebBridge()
-        self.channel.registerObject("webBridge", self.web_bridge)
+        self.channel.registerObject("backend", self.web_bridge)
         self.view.page().setWebChannel(self.channel)
         # end from mapscreen
 
@@ -337,9 +338,10 @@ class DataVisualisationScreen(Screen):
         if replace_index_lib > 0:
             cls.replace_and_add_lines(file_data, replace_index_lib,
                                       '<script src="lib/bindings/utils.js"></script>',
-                                      '<script src="lib/bindings/utils.js"></script>',
-                                      ['<script src="qwebchannel.js"></script>'])
-
+                                      # '<script src="lib/bindings/utils.js"></script>',
+                                      '',
+                                      # ['<script src="qwebchannel.js"></script>'])
+                                      ['<script src="qrc:///qtwebchannel/qwebchannel.js"></script>'])
         replace_index = -1
         for index, line in enumerate(file_data):
             if "drawGraph();" in line:
@@ -350,20 +352,26 @@ class DataVisualisationScreen(Screen):
             add_data = ["var container = document.getElementById('mynetwork');",
                         "",
                         "// add webchannel to javascript to communicate with python",
-                        "try",
-                        "{",
-                        "   var channel = new QWebChannel(qt.webChannelTransport, function(channel) ",
+                        'document.addEventListener("DOMContentLoaded", function() {',
+                        '   alert("DataVisualisationScreen:trying to create pywebchannel");',
+                        "   try",
                         "   {",
-                        "       window.pywebchannel = channel.objects.webBridge;",
-                        '        alert("DataVisualisationScreen:created pywebchannel");',
-                        "   });",
-                        "} ",
-                        "catch (error) ",
-                        "{",
-                        "   console.error(error);",
-                        '   alert("DataVisualisationScreen:Error in webchannel creation: " + error);',
-                        "}",
-                        "",
+                        '       alert("DataVisualisationScreen:trying 2 to create pywebchannel");'
+                                """     
+                                new QWebChannel(qt.webChannelTransport, function(channel) 
+                                {
+                                    alert("DataVisualisationScreen:trying 3 to create pywebchannel channel" + channel);
+                                    window.backend = channel.objects.backend;
+                                   
+                                });"""
+                        '       alert("DataVisualisationScreen:should have created pywebchannel window.backend: " + window.backend);'
+                        "   } ",
+                        "   catch (error) ",
+                        "   {",
+                        "       console.error(error);",
+                        '       alert("DataVisualisationScreen:Error in webchannel creation: " + error);',
+                        "   }",
+                        "})",
                         "var isPhysicsOn = true;",
                         "function disablePhysics()",
                         "{",
@@ -373,7 +381,7 @@ class DataVisualisationScreen(Screen):
                         "       network.setOptions(newOptions);",
                         '       newOptions={\"physics\":{\"enabled\":false}};\n',
                         "       network.setOptions(newOptions);",
-                        # '       sendCurrentNodesDataToPython()',
+                        '       sendCurrentNodesDataToPython()',
                         "       isPhysicsOn = false;\n",
                         "   }",
                         "};",
@@ -397,10 +405,11 @@ class DataVisualisationScreen(Screen):
                         "{",
                         '   var new_node_data_str = JSON.stringify(Object.fromEntries(network.body.data.nodes._data))',
                         '   console.log(new_node_data_str)',
-                        "   if (window.pywebchannel)",
+                        '   alert("DataVisualisationScreen: " + new_node_data_str);'
+                        "   if (backend)",
                         "   {",
-                        # "       window.pywebchannel.receive_new_node_data(new_node_data_str);",
-                        "       window.pywebchannel.receive_coordinates(JSON.stringify({lat: 56, lng: 30}));",
+                        # "       window.backend.receive_new_node_data(new_node_data_str);",
+                        "       backend.receive_coordinates(JSON.stringify({lat: 56, lng: 30}));",
                         "   }"
                         "   else",
                         "   {"
