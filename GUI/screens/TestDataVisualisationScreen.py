@@ -1,4 +1,5 @@
 import json
+import re
 import sys
 import time
 from pathlib import Path
@@ -293,3 +294,21 @@ class TestDataVisualisationScreen(Screen):
         self.view.page().runJavaScript(js_code)
 
         # self.save_html(self.get_current_html_path())
+
+    def save_html(cls, file_path: Path) -> None:
+        with open(file_path) as file:
+            file_data = file.read()
+
+        pattern = re.compile(
+            r'nodes\s*=\s*new\s+vis\.DataSet\(\[\{([\s\S]*?)\}\]\);',
+            re.DOTALL
+        )
+
+
+        m = pattern.search(file_data)
+        if m:
+            inner_blob = m.group(1)
+            # print(inner_blob)
+
+            with open(file_path.parent / "match_results.txt", 'w') as file:
+                file.write(inner_blob)

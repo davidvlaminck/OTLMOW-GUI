@@ -109,7 +109,7 @@ class VisualisationHelper:
                         "   catch (error) ",
                         "   {",
                         "       console.error(error);",
-                        '       alert("DataVisualisationScreen:Error in webchannel creation: " + error);',
+                        # '       alert("DataVisualisationScreen:Error in webchannel creation: " + error);',
                         "   }",
                         "})"]
 
@@ -147,7 +147,7 @@ class VisualisationHelper:
                 "       network.setOptions(newOptions);",
                 '       newOptions={\"physics\":{\"enabled\":false}};\n',
                 "       network.setOptions(newOptions);",
-                '       sendCurrentNodesDataToPython()',
+                # '       sendCurrentNodesDataToPython()',
                 "       isPhysicsOn = false;\n",
                 "   }",
                 "};",
@@ -176,18 +176,30 @@ class VisualisationHelper:
     def create_sendCurrentNodesDataToPython_js_function(cls):
         return ["function sendCurrentNodesDataToPython()",
                 "{",
-                '   var new_node_data_str = JSON.stringify(Object.fromEntries(network.body.data.nodes._data))',
-                '   console.log(new_node_data_str)',
+                '   network.storePositions() // alters the data in network.body.data.nodes with the current coordinates so i can be read and stored',
+                '   console.log("called storePositions()")',
+                "",
+                "   var node_attributes = Object.fromEntries(network.body.data.nodes._data);",
+                "   var nodeList = []",
+                "   for (const nodeId of network.body.data.nodes._data.keys()) ",
+                "   {",
+                "       var strTitle = network.body.data.nodes._data.get(nodeId).title.innerHTML; // use the innerhtml so it can be converted to json",
+                "       if (strTitle)",
+                "           node_attributes[nodeId].title = 'htmlTitle(\"' + strTitle.replace('\"','\\\"') +  '\")'; //add htmlTitle so is looks exactly like how the nodes are normally created",
+                "       nodeList.push(node_attributes[nodeId]);",
+                "   }",
+                '   var new_node_data_str = JSON.stringify(nodeList)',
+                # '   console.log(new_node_data_str)',
                 # '   alert("DataVisualisationScreen: " + new_node_data_str);'
                 "   if (window.backend)",
                 "   {",
-                # "       window.backend.receive_new_node_data(new_node_data_str);",
-                "       window.backend.receive_coordinates(JSON.stringify({lat: 56, lng: 30}));",
+                "       window.backend.receive_new_node_data(new_node_data_str);",
+                # "       window.backend.receive_coordinates(JSON.stringify({lat: 56, lng: 30}));",
                 "   }"
                 "   else",
                 "   {"
                 '       console.log("QWebChannel is not initialized yet.");',
-                '       alert("DataVisualisationScreen: QWebChannel is not initialized");',
+                # '       alert("DataVisualisationScreen: QWebChannel is not initialized");',
                 "   }",
 
                 "}"]
