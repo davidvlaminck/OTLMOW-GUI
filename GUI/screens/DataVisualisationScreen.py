@@ -77,7 +77,7 @@ class DataVisualisationScreen(Screen):
 
         self.frame_layout_legend = None
         self.objects_in_memory = []
-        self.stdVis = None
+        self.std_vis_wrap = None
 
         self.refresh_needed_label = QLabel()
         self.visualisation_mode = QComboBox()
@@ -214,7 +214,7 @@ class DataVisualisationScreen(Screen):
         frame_layout.addWidget(self.refresh_needed_label)
         frame_layout.addStretch()
         frame_layout.setContentsMargins(0,0,0,0)
-        
+
         frame.setLayout(frame_layout)
         return frame
 
@@ -246,63 +246,6 @@ class DataVisualisationScreen(Screen):
         assets = RelationChangeDomain.get_visualisation_instances()
         return  assets
 
-    def create_html(self, objects_in_memory:List[OTLObject],vis_mode="standaard visualisatie"):
-        object_count = len(objects_in_memory)
-        if object_count > DataVisualisationScreen.object_count_limit:
-            self.view.setVisible(False)
-            if not self.too_many_objects_message.isVisible():
-                self.too_many_objects_message.setVisible(True)
-
-            translation = self._("There are too many assets and relations to create a visualisation.\nmaximum: {0}\ncurrent: {1}")
-            self.too_many_objects_message.setText(translation.format(
-                DataVisualisationScreen.object_count_limit,
-                object_count))
-
-        else:
-            self.too_many_objects_message.setVisible(False)
-            if not self.view.isVisible():
-                self.view.setVisible(True)
-            html_loc = self.get_current_html_path()
-            previous_cwd = os.getcwd()
-            os.chdir(Path.home() / 'OTLWizardProjects')
-            objects_in_memory = deepcopy(objects_in_memory)
-
-            if vis_mode == "alternatief 7 visualisatie":
-                PyVisWrapper1().show(list_of_objects=objects_in_memory,
-                                    html_path=Path(html_loc), launch_html=False)
-            elif vis_mode == "alternatief 6 visualisatie":
-                PyVisWrapper2().show(list_of_objects=objects_in_memory,
-                                    html_path=Path(html_loc), launch_html=False)
-            elif vis_mode == "alternatief 5 visualisatie":
-                PyVisWrapper3().show(list_of_objects=objects_in_memory,
-                                     html_path=Path(html_loc), launch_html=False)
-            elif vis_mode == "alternatief 4 visualisatie":
-                PyVisWrapper4().show(list_of_objects=objects_in_memory,
-                                     html_path=Path(html_loc), launch_html=False)
-            elif vis_mode == "alternatief 3 visualisatie":
-                PyVisWrapper5().show(list_of_objects=objects_in_memory,
-                                     html_path=Path(html_loc), launch_html=False)
-            elif vis_mode == "alternatief 2 visualisatie":
-                PyVisWrapper6().show(list_of_objects=objects_in_memory,
-                                     html_path=Path(html_loc), launch_html=False)
-            elif vis_mode == "alternatief 1 visualisatie":
-                PyVisWrapper7().show(list_of_objects=objects_in_memory,
-                                     html_path=Path(html_loc), launch_html=False)
-            elif vis_mode == "standaard visualisatie":
-                self.stdVis = PyVisWrapper10()
-                self.stdVis.show(list_of_objects=objects_in_memory,
-                                 html_path=Path(html_loc), launch_html=False)
-            elif vis_mode == "alternatief 0 visualisatie":
-                PyVisWrapper8().show(list_of_objects=objects_in_memory,
-                                     html_path=Path(html_loc), launch_html=False)
-            else:
-                PyVisWrapper().show(list_of_objects=objects_in_memory,
-                                    html_path=Path(html_loc), launch_html=False)
-            os.chdir(previous_cwd)
-
-            self.modify_html(html_loc)
-
-            self.load_html(html_loc)
 
 
 
@@ -353,10 +296,10 @@ class DataVisualisationScreen(Screen):
                         "",
                         "// add webchannel to javascript to communicate with python",
                         'document.addEventListener("DOMContentLoaded", function() {',
-                        '   alert("DataVisualisationScreen:trying to create pywebchannel");',
+                        # '   alert("DataVisualisationScreen:trying to create pywebchannel");',
                         "   try",
                         "   {",
-                        '       alert("DataVisualisationScreen:trying 2 to create pywebchannel");'
+                        # '       alert("DataVisualisationScreen:trying 2 to create pywebchannel");'
                                 """     
                                 new QWebChannel(qt.webChannelTransport, function(channel) 
                                 {
@@ -405,11 +348,11 @@ class DataVisualisationScreen(Screen):
                         "{",
                         '   var new_node_data_str = JSON.stringify(Object.fromEntries(network.body.data.nodes._data))',
                         '   console.log(new_node_data_str)',
-                        '   alert("DataVisualisationScreen: " + new_node_data_str);'
-                        "   if (backend)",
+                        # '   alert("DataVisualisationScreen: " + new_node_data_str);'
+                        "   if (window.backend)",
                         "   {",
                         # "       window.backend.receive_new_node_data(new_node_data_str);",
-                        "       backend.receive_coordinates(JSON.stringify({lat: 56, lng: 30}));",
+                        "       window.backend.receive_coordinates(JSON.stringify({lat: 56, lng: 30}));",
                         "   }"
                         "   else",
                         "   {"
@@ -520,125 +463,14 @@ class DataVisualisationScreen(Screen):
                 self.refresh_needed_label.setHidden(False)
                 return
 
+            to_add_list = global_vars.current_project.visualisation_uptodate.get_to_be_inserted_relations()
+            to_remove_list =global_vars.current_project.visualisation_uptodate.get_to_be_removed_relations()
 
-            # if there are new relations add them to the visualisation
-            for relation_object in global_vars.current_project.visualisation_uptodate.get_to_be_inserted_relations():
-                rel_id = relation_object.assetId.identificator
-                add_edge_arguments = self.stdVis.create_edge_inject_arguments(relation_object)
-                if "label" in add_edge_arguments: #a heeftBetrokkene relation with their rol as label
-                    # first check if the new relation needs to be added to a current collection
-                    added_to_collection = False
-                    for special_edge in self.stdVis.special_edges:
-                        # first check if the new relation is the same type as the special edge
-                        if (special_edge["label"] == add_edge_arguments["label"] and
-                            special_edge["arrows"] == add_edge_arguments["arrow"] and
-                            special_edge["color"] == add_edge_arguments["color"]):
-                            if special_edge["from"] == add_edge_arguments["from_id"]:
-                                # is this case:
-                                # special_edge["from"] is the id of the asset that has relations to many assets
-                                collection_id = special_edge["to"]  # special_edge["to"] is the id of the collection_node
-                                screen_name_of_new_asset = self.stdVis.asset_id_to_display_name_dict[add_edge_arguments["to_id"]]
-                                added_to_collection = True
-                                js_code = self.create_js_code_to_add_to_collection(collection_id,
-                                                                                   rel_id,
-                                                                                   screen_name_of_new_asset)
-                            elif special_edge["to"] == add_edge_arguments["to_id"]:
-                                # is this case:
-                                # special_edge["to"] is the id of the asset that has relations to many assets
-                                collection_id = special_edge["from"]  # special_edge["from"] is the id of the collection_node
-                                screen_name_of_new_asset = self.stdVis.asset_id_to_display_name_dict[add_edge_arguments["from_id"]]
-                                added_to_collection = True
-                                js_code = self.create_js_code_to_add_to_collection(collection_id,
-                                                                                   rel_id,
-                                                                                   screen_name_of_new_asset)
+            self.add_new_relations(to_add_list= to_add_list,
+                                   vis_wrap=self.std_vis_wrap, webview=self.view)
+            self.remove_relations(to_remove_list= to_remove_list,
+                                  vis_wrap=self.std_vis_wrap, webview=self.view)
 
-                    if not added_to_collection:
-                        js_code = f'AddEdgeWithLabel("{add_edge_arguments["id"]}","{add_edge_arguments["from_id"]}", "{add_edge_arguments["to_id"]}","#{add_edge_arguments["color"]}","{add_edge_arguments["arrow"]}","{add_edge_arguments["label"]}")'
-                elif "arrow" in add_edge_arguments: #a directional relation
-                    # first check if the new relation needs to be added to a current collection
-                    added_to_collection = False
-                    for special_edge in self.stdVis.special_edges:
-                        # first check if the new relation is the same type as the special edge
-                        if (special_edge["arrows"] == add_edge_arguments["arrow"] and
-                            special_edge["color"] == add_edge_arguments["color"]):
-                            if special_edge["from"] == add_edge_arguments["from_id"]:
-                                # is this case:
-                                # special_edge["from"] is the id of the asset that has relations to many assets
-                                collection_id = special_edge[
-                                    "to"]  # special_edge["to"] is the id of the collection_node
-                                screen_name_of_new_asset = \
-                                self.stdVis.asset_id_to_display_name_dict[
-                                    add_edge_arguments["to_id"]]
-                                added_to_collection = True
-                                js_code = self.create_js_code_to_add_to_collection(collection_id,
-                                                                                   rel_id,
-                                                                                   screen_name_of_new_asset)
-                            elif special_edge["to"] == add_edge_arguments["to_id"]:
-                                # is this case:
-                                # special_edge["to"] is the id of the asset that has relations to many assets
-                                collection_id = special_edge[
-                                    "from"]  # special_edge["from"] is the id of the collection_node
-                                screen_name_of_new_asset = \
-                                self.stdVis.asset_id_to_display_name_dict[
-                                    add_edge_arguments["from_id"]]
-                                added_to_collection = True
-                                js_code = self.create_js_code_to_add_to_collection(collection_id,
-                                                                                   rel_id,
-                                                                                   screen_name_of_new_asset)
-
-                    if not added_to_collection:
-                        js_code = f'AddEdge("{add_edge_arguments["id"]}","{add_edge_arguments["from_id"]}", "{add_edge_arguments["to_id"]}","#{add_edge_arguments["color"]}","{add_edge_arguments["arrow"]}");'
-                else:   #a bidirectional relation
-                    # first check if the new relation needs to be added to a current collection
-                    added_to_collection = False
-                    for special_edge in self.stdVis.special_edges:
-                        # first check if the new relation is the same type as the special edge
-                        if (special_edge["color"] == add_edge_arguments["color"]):
-                            if special_edge["from"] == add_edge_arguments["from_id"]:
-                                # is this case:
-                                # special_edge["from"] is the id of the asset that has relations to many assets
-                                collection_id = special_edge[
-                                    "to"]  # special_edge["to"] is the id of the collection_node
-                                screen_name_of_new_asset = \
-                                    self.stdVis.asset_id_to_display_name_dict[
-                                        add_edge_arguments["to_id"]]
-                                added_to_collection = True
-                                js_code = self.create_js_code_to_add_to_collection(collection_id,
-                                                                                   rel_id,
-                                                                                   screen_name_of_new_asset)
-                            elif special_edge["to"] == add_edge_arguments["to_id"]:
-                                # is this case:
-                                # special_edge["to"] is the id of the asset that has relations to many assets
-                                collection_id = special_edge[
-                                    "from"]  # special_edge["from"] is the id of the collection_node
-                                screen_name_of_new_asset = \
-                                    self.stdVis.asset_id_to_display_name_dict[
-                                        add_edge_arguments["from_id"]]
-                                added_to_collection = True
-                                js_code = self.create_js_code_to_add_to_collection(collection_id,
-                                                                                   rel_id,
-                                                                                   screen_name_of_new_asset)
-
-                    if not added_to_collection:
-                        js_code = f'AddEdge("{add_edge_arguments["id"]}","{add_edge_arguments["from_id"]}", "{add_edge_arguments["to_id"]}","#{add_edge_arguments["color"]}",null);'
-                OTLLogger.logger.debug(js_code)
-                self.view.page().runJavaScript(js_code)
-
-            # if there are removed relations remove them from the visualisation
-            for relation_object in global_vars.current_project.visualisation_uptodate.get_to_be_removed_relations():
-                rel_id = relation_object.assetId.identificator
-
-                if rel_id in self.stdVis.relation_id_to_collection_id:
-                    collection_id = self.stdVis.relation_id_to_collection_id.pop(rel_id)
-                    self.stdVis.collection_id_to_list_of_relation_ids[collection_id] = [rel_set for rel_set in self.stdVis.collection_id_to_list_of_relation_ids[collection_id] if rel_set[0] != rel_id]
-                    new_label, new_title = self.create_new_special_node_text(collection_id)
-                    # https://stackoverflow.com/questions/32765015/vis-js-modify-node-properties-on-click
-                    js_code = f'network.body.data.nodes.updateOnly({{id: "{collection_id}", label: "{new_label}", title:`{new_title}`}});'
-                else:
-                    js_code = f'removeEdge("{relation_object.assetId.identificator}");'
-
-                OTLLogger.logger.debug(js_code)
-                self.view.page().runJavaScript(js_code)
             global_vars.current_project.visualisation_uptodate.reset_relations_uptodate()
 
             if global_vars.current_project.visualisation_uptodate.get_clear_all():
@@ -647,24 +479,166 @@ class DataVisualisationScreen(Screen):
 
         self.refresh_needed_label.setHidden(True)
 
-    def create_js_code_to_add_to_collection(self, collection_id,
-                                            rel_id, screen_name_of_new_asset):
+    def remove_relations(self,to_remove_list, vis_wrap, webview):
+        # if there are removed relations remove them from the visualisation
+        for relation_object in to_remove_list:
+            rel_id = relation_object.assetId.identificator
+
+            if rel_id in vis_wrap.relation_id_to_collection_id:
+                collection_id = vis_wrap.relation_id_to_collection_id.pop(rel_id)
+                vis_wrap.collection_id_to_list_of_relation_ids[collection_id] = [rel_set
+                                                                                          for
+                                                                                          rel_set
+                                                                                          in
+                                                                                          vis_wrap.collection_id_to_list_of_relation_ids[
+                                                                                              collection_id]
+                                                                                          if
+                                                                                          rel_set[
+                                                                                              0] != rel_id]
+                new_label, new_title = self.create_new_special_node_text(collection_id,
+                                                                         self.std_vis_wrap)
+                # https://stackoverflow.com/questions/32765015/vis-js-modify-node-properties-on-click
+                js_code = f'network.body.data.nodes.updateOnly({{id: "{collection_id}", label: "{new_label}", title:`{new_title}`}});'
+            else:
+                js_code = f'removeEdge("{relation_object.assetId.identificator}");'
+
+            OTLLogger.logger.debug(js_code)
+            webview.page().runJavaScript(js_code)
+
+    @classmethod
+    def add_new_relations(cls, to_add_list, vis_wrap,webview):
+        # if there are new relations add them to the visualisation
+        for relation_object in global_vars.current_project.visualisation_uptodate.get_to_be_inserted_relations():
+            rel_id = relation_object.assetId.identificator
+            add_edge_arguments = vis_wrap.create_edge_inject_arguments(relation_object)
+            if "label" in add_edge_arguments:  # a heeftBetrokkene relation with their rol as label
+                # first check if the new relation needs to be added to a current collection
+                added_to_collection = False
+                for special_edge in vis_wrap.special_edges:
+                    # first check if the new relation is the same type as the special edge
+                    if (special_edge["label"] == add_edge_arguments["label"] and
+                            special_edge["arrows"] == add_edge_arguments["arrow"] and
+                            special_edge["color"] == add_edge_arguments["color"]):
+                        if special_edge["from"] == add_edge_arguments["from_id"]:
+                            # is this case:
+                            # special_edge["from"] is the id of the asset that has relations to many assets
+                            collection_id = special_edge[
+                                "to"]  # special_edge["to"] is the id of the collection_node
+                            screen_name_of_new_asset = vis_wrap.asset_id_to_display_name_dict[
+                                add_edge_arguments["to_id"]]
+                            added_to_collection = True
+                            js_code = cls.create_js_code_to_add_to_collection(vis_wrap,
+                                                                               collection_id,
+                                                                               rel_id,
+                                                                               screen_name_of_new_asset)
+                        elif special_edge["to"] == add_edge_arguments["to_id"]:
+                            # is this case:
+                            # special_edge["to"] is the id of the asset that has relations to many assets
+                            collection_id = special_edge[
+                                "from"]  # special_edge["from"] is the id of the collection_node
+                            screen_name_of_new_asset = vis_wrap.asset_id_to_display_name_dict[
+                                add_edge_arguments["from_id"]]
+                            added_to_collection = True
+                            js_code = cls.create_js_code_to_add_to_collection(vis_wrap,
+                                                                               collection_id,
+                                                                               rel_id,
+                                                                               screen_name_of_new_asset)
+
+                if not added_to_collection:
+                    js_code = f'AddEdgeWithLabel("{add_edge_arguments["id"]}","{add_edge_arguments["from_id"]}", "{add_edge_arguments["to_id"]}","#{add_edge_arguments["color"]}","{add_edge_arguments["arrow"]}","{add_edge_arguments["label"]}")'
+            elif "arrow" in add_edge_arguments:  # a directional relation
+                # first check if the new relation needs to be added to a current collection
+                added_to_collection = False
+                for special_edge in vis_wrap.special_edges:
+                    # first check if the new relation is the same type as the special edge
+                    if (special_edge["arrows"] == add_edge_arguments["arrow"] and
+                            special_edge["color"] == add_edge_arguments["color"]):
+                        if special_edge["from"] == add_edge_arguments["from_id"]:
+                            # is this case:
+                            # special_edge["from"] is the id of the asset that has relations to many assets
+                            collection_id = special_edge[
+                                "to"]  # special_edge["to"] is the id of the collection_node
+                            screen_name_of_new_asset = \
+                                vis_wrap.asset_id_to_display_name_dict[
+                                    add_edge_arguments["to_id"]]
+                            added_to_collection = True
+                            js_code = cls.create_js_code_to_add_to_collection(vis_wrap,
+                                                                               collection_id,
+                                                                               rel_id,
+                                                                               screen_name_of_new_asset)
+                        elif special_edge["to"] == add_edge_arguments["to_id"]:
+                            # is this case:
+                            # special_edge["to"] is the id of the asset that has relations to many assets
+                            collection_id = special_edge[
+                                "from"]  # special_edge["from"] is the id of the collection_node
+                            screen_name_of_new_asset = \
+                                vis_wrap.asset_id_to_display_name_dict[
+                                    add_edge_arguments["from_id"]]
+                            added_to_collection = True
+                            js_code = cls.create_js_code_to_add_to_collection(vis_wrap,
+                                                                               collection_id,
+                                                                               rel_id,
+                                                                               screen_name_of_new_asset)
+
+                if not added_to_collection:
+                    js_code = f'AddEdge("{add_edge_arguments["id"]}","{add_edge_arguments["from_id"]}", "{add_edge_arguments["to_id"]}","#{add_edge_arguments["color"]}","{add_edge_arguments["arrow"]}");'
+            else:  # a bidirectional relation
+                # first check if the new relation needs to be added to a current collection
+                added_to_collection = False
+                for special_edge in vis_wrap.special_edges:
+                    # first check if the new relation is the same type as the special edge
+                    if (special_edge["color"] == add_edge_arguments["color"]):
+                        if special_edge["from"] == add_edge_arguments["from_id"]:
+                            # is this case:
+                            # special_edge["from"] is the id of the asset that has relations to many assets
+                            collection_id = special_edge[
+                                "to"]  # special_edge["to"] is the id of the collection_node
+                            screen_name_of_new_asset = \
+                                vis_wrap.asset_id_to_display_name_dict[
+                                    add_edge_arguments["to_id"]]
+                            added_to_collection = True
+                            js_code = cls.create_js_code_to_add_to_collection(vis_wrap,
+                                                                               collection_id,
+                                                                               rel_id,
+                                                                               screen_name_of_new_asset)
+                        elif special_edge["to"] == add_edge_arguments["to_id"]:
+                            # is this case:
+                            # special_edge["to"] is the id of the asset that has relations to many assets
+                            collection_id = special_edge[
+                                "from"]  # special_edge["from"] is the id of the collection_node
+                            screen_name_of_new_asset = \
+                                vis_wrap.asset_id_to_display_name_dict[
+                                    add_edge_arguments["from_id"]]
+                            added_to_collection = True
+                            js_code = cls.create_js_code_to_add_to_collection(vis_wrap,
+                                                                               collection_id,
+                                                                               rel_id,
+                                                                               screen_name_of_new_asset)
+
+                if not added_to_collection:
+                    js_code = f'AddEdge("{add_edge_arguments["id"]}","{add_edge_arguments["from_id"]}", "{add_edge_arguments["to_id"]}","#{add_edge_arguments["color"]}",null);'
+            OTLLogger.logger.debug(js_code)
+            webview.page().runJavaScript(js_code)
+
+    @classmethod
+    def create_js_code_to_add_to_collection(cls, vis_wrap, collection_id, rel_id,
+                                            screen_name_of_new_asset):
         new_rel_id_and_asset_screen_name_set = (rel_id, screen_name_of_new_asset)
-        self.stdVis.relation_id_to_collection_id[rel_id] = collection_id
-        self.stdVis.collection_id_to_list_of_relation_ids[
+        vis_wrap.relation_id_to_collection_id[rel_id] = collection_id
+        vis_wrap.collection_id_to_list_of_relation_ids[
             collection_id].append(new_rel_id_and_asset_screen_name_set)
-        new_label, new_title = self.create_new_special_node_text(
-            collection_id)
+        new_label, new_title = cls.create_new_special_node_text(collection_id, vis_wrap)
 
         js_code = f'network.body.data.nodes.updateOnly({{id: "{collection_id}", label: "{new_label}", title:`{new_title}`}});'
         return js_code
 
-    def create_new_special_node_text(self, collection_id):
+    @classmethod
+    def create_new_special_node_text(cls, collection_id, vis_wrap):
         new_collection_content = "\n".join([rel_set[1] for rel_set in
-                                            self.stdVis.collection_id_to_list_of_relation_ids[
+                                            vis_wrap.collection_id_to_list_of_relation_ids[
                                                 collection_id]])
         new_collection_size = len(
-            self.stdVis.collection_id_to_list_of_relation_ids[
+            vis_wrap.collection_id_to_list_of_relation_ids[
                 collection_id])
         new_label = f"<i><b>Collectie ({new_collection_size})</b></i>"
         new_title = f"Collectie ({new_collection_size}):\n{new_collection_content}"

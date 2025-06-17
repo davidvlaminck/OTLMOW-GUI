@@ -44,7 +44,7 @@ class MainWindow(QStackedWidget):
                                          description1="insert_data",
                                          has_save_btn=False)
         # self.step3_visuals:DataVisualisationScreen = DataVisualisationScreen(self._)
-        self.step3_visuals: TestDataVisualisationScreen = TestDataVisualisationScreen()
+        self.step3_visuals: TestDataVisualisationScreen = TestDataVisualisationScreen(self._)
         # self.step3_map:MapScreen = MapScreen(self._)
         # self.step3_data:AssetDataChangeScreen = AssetDataChangeScreen(self._)
         self.step3_relations:RelationChangeScreen = RelationChangeScreen(self._)
