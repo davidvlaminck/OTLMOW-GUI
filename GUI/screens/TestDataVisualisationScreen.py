@@ -27,15 +27,26 @@ from GUI.screens.general_elements.ButtonWidget import ButtonWidget
 
 class Backend(QObject):
 
+    def __init__(self, parent_screen):
+        super().__init__()
+        self.parent_screen = parent_screen
 
     @pyqtSlot(str)
     def receive_new_node_data(self, message):
         """Receives receive_new_node_data from JavaScript."""
         data = json.loads(message)  # Convert string back to dict
-        OTLLogger.logger.debug(data)
+
         test_json_path = global_vars.current_project.get_current_visuals_folder_path() / "new_nodes.json"
         with open(test_json_path, 'w') as json_file:
             json.dump(data, json_file)
+
+        new_node_data_str = json.dumps(data)
+
+        # correcting the formatting of the title attribute of the node
+        new_node_data_str = new_node_data_str.replace('"htmlTitle(\\', 'htmlTitle(')
+        new_node_data_str = new_node_data_str.replace('</div>\\")"','</div>")')
+
+        self.parent_screen.save_html(self.parent_screen.get_current_html_path(),new_node_data=new_node_data_str)
 
     @pyqtSlot(str)
     def receive_coordinates(self, message):
@@ -87,7 +98,7 @@ class TestDataVisualisationScreen(Screen):
 
         # Set up the channel and backend for communication from js to python backend
         self.channel = QWebChannel()
-        self.backend = Backend()
+        self.backend = Backend(parent_screen=self)
         self.channel.registerObject("backend", self.backend)
 
         # main QWebEngineView widget
@@ -293,22 +304,38 @@ class TestDataVisualisationScreen(Screen):
         js_code = 'sendCurrentNodesDataToPython();\n'
         self.view.page().runJavaScript(js_code)
 
-        # self.save_html(self.get_current_html_path())
 
-    def save_html(cls, file_path: Path) -> None:
+
+    def save_html(cls, file_path: Path, new_node_data:str) -> None:
         with open(file_path) as file:
             file_data = file.read()
 
+        # pattern = re.compile(
+        #     r'nodes\s*=\s*new\s+vis\.DataSet\(\[\{([\s\S]*?)\}\]\);',
+        #     re.DOTALL
+        # )
+
         pattern = re.compile(
-            r'nodes\s*=\s*new\s+vis\.DataSet\(\[\{([\s\S]*?)\}\]\);',
+            r'nodes\s*=\s*new\s+vis\.DataSet\(([\s\S]*?)\);',
             re.DOTALL
         )
 
-
         m = pattern.search(file_data)
         if m:
-            inner_blob = m.group(1)
+            old_node_data = m.group(1)
             # print(inner_blob)
 
             with open(file_path.parent / "match_results.txt", 'w') as file:
-                file.write(inner_blob)
+                file.write(old_node_data)
+
+
+            file_data = file_data.replace(old_node_data, new_node_data)
+            file_data = file_data.replace("\"hierarchical\": {\"enabled\": true",
+                                          "\"hierarchical\": {\"enabled\": false")
+            new_physics_setting = ", \"physics\": {\"enabled\": false, "
+            if new_physics_setting not in file_data:
+                file_data = file_data.replace(", \"physics\": {",new_physics_setting)
+
+
+            with open(file_path,mode="w") as file:
+                file.write(file_data)
