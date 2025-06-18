@@ -115,7 +115,9 @@ class VisualisationHelper:
 
             add_data.extend(cls.create_disablePhysics_js_function_and_add_to_event())
             add_data.extend(cls.create_AddEdge_js_function())
-            add_data.extend(cls.create_sendCurrentNodesDataToPython_js_function())
+            add_data.extend(cls.create_ExtractNodeList_js_function())
+            add_data.extend(cls.create_ExtractEdgeList_js_function())
+            add_data.extend(cls.create_sendCurrentCombinedDataToPython_js_function())
             add_data.extend(cls.create_AddEdgeWithLabel_js_function())
             add_data.extend(cls.create_removeEdge_js_function())
 
@@ -147,7 +149,7 @@ class VisualisationHelper:
                 "       network.setOptions(newOptions);",
                 '       newOptions={\"physics\":{\"enabled\":false}};\n',
                 "       network.setOptions(newOptions);",
-                # '       sendCurrentNodesDataToPython()',
+                # "       sendCurrentCombinedDataToPython()",
                 "       isPhysicsOn = false;\n",
                 "   }",
                 "};",
@@ -173,27 +175,21 @@ class VisualisationHelper:
                 "}"]
 
     @classmethod
-    def create_sendCurrentNodesDataToPython_js_function(cls):
-        return ["function sendCurrentNodesDataToPython()",
+    def create_sendCurrentCombinedDataToPython_js_function(cls):
+        return ["function sendCurrentCombinedDataToPython()",
                 "{",
                 '   network.storePositions() // alters the data in network.body.data.nodes with the current coordinates so i can be read and stored',
                 '   console.log("called storePositions()")',
-                "",
-                "   var node_attributes = Object.fromEntries(network.body.data.nodes._data);",
-                "   var nodeList = []",
-                "   for (const nodeId of network.body.data.nodes._data.keys()) ",
-                "   {",
-                "       var strTitle = network.body.data.nodes._data.get(nodeId).title.innerHTML; // use the innerhtml so it can be converted to json",
-                "       if (strTitle)",
-                "           node_attributes[nodeId].title = 'htmlTitle(\"' + strTitle.replace('\"','\\\"') +  '\")'; //add htmlTitle so is looks exactly like how the nodes are normally created",
-                "       nodeList.push(node_attributes[nodeId]);",
-                "   }",
-                '   var new_node_data_str = JSON.stringify(nodeList)',
-                # '   console.log(new_node_data_str)',
-                # '   alert("DataVisualisationScreen: " + new_node_data_str);'
+                "   var nodeList = ExtractNodeList();    ",
+                "   var edgeList = ExtractEdgeList();    ",
+                "   var combinedData = [nodeList, edgeList]",
+                '   var combinedDataStr = JSON.stringify(combinedData)',
+                '   console.log(combinedDataStr)',
+                # '   alert("DataVisualisationScreen: " + combinedDataStr);'
                 "   if (window.backend)",
                 "   {",
-                "       window.backend.receive_new_node_data(new_node_data_str);",
+                "       window.backend.receive_new_combined_data(combinedDataStr);",
+                # "       alert('sent new node'); ",
                 # "       window.backend.receive_coordinates(JSON.stringify({lat: 56, lng: 30}));",
                 "   }"
                 "   else",
@@ -204,6 +200,37 @@ class VisualisationHelper:
 
                 "}"]
 
+    @classmethod
+    def create_ExtractNodeList_js_function(cls):
+        return ["function ExtractNodeList()   "
+                "{"
+                "   var node_attributes = Object.fromEntries(network.body.data.nodes._data);",
+                "   var nodeList = [];",
+                "   for (const nodeId of network.body.data.nodes._data.keys()) ",
+                "   {",
+                "       if (network.body.data.nodes._data.get(nodeId).title)",
+                "       {",
+                "           var strTitle = network.body.data.nodes._data.get(nodeId).title.innerHTML; // use the innerhtml so it can be converted to json",
+                "           if (strTitle)",
+                "           node_attributes[nodeId].title = 'htmlTitle(\"' + strTitle.replace('\"','\\\"') +  '\")'; //add htmlTitle so is looks exactly like how the nodes are normally created",
+                "       }",
+                "       nodeList.push(node_attributes[nodeId]);",
+                "   }",
+                "   return nodeList",
+                "}"]
+
+    @classmethod
+    def create_ExtractEdgeList_js_function(cls):
+        return ["function ExtractEdgeList()   "
+                "{"
+                "   var edge_attributes = Object.fromEntries(network.body.data.edges._data);",
+                "   var edgeList = [];",
+                "   for (const edgeId of network.body.data.edges._data.keys()) ",
+                "   {",
+                "       edgeList.push(edge_attributes[edgeId]);",
+                "   }",
+                "   return edgeList",
+                "}"]
     @classmethod
     def create_AddEdgeWithLabel_js_function(cls):
         return ["function AddEdgeWithLabel(id,from_id, to_id,color,arrow,label)",

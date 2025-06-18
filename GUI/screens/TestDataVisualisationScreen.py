@@ -32,35 +32,33 @@ class Backend(QObject):
         self.parent_screen = parent_screen
 
     @pyqtSlot(str)
-    def receive_new_node_data(self, message):
-        """Receives receive_new_node_data from JavaScript."""
+    def receive_new_combined_data(self, message):
+        """Receives receive_new_combined_data from JavaScript."""
         data = json.loads(message)  # Convert string back to dict
 
-        test_json_path = global_vars.current_project.get_current_visuals_folder_path() / "new_nodes.json"
-        with open(test_json_path, 'w') as json_file:
-            json.dump(data, json_file)
+        OTLLogger.logger.debug(f"Received new combined data: {message}")
 
-        new_node_data_str = json.dumps(data)
+        # test_json_path = global_vars.current_project.get_current_visuals_folder_path() / "new_nodes.json"
+        # with open(test_json_path, 'w') as json_file:
+        #     json.dump(data, json_file)
 
+
+        new_node_data_str = json.dumps(data[0])
+        new_edge_data_str = json.dumps(data[1])
+
+        new_node_data_str = self.correct_node_title_attributes(new_node_data_str)
+
+        self.parent_screen.save_html(file_path=self.parent_screen.get_current_html_path(),
+                                     new_node_data=new_node_data_str,
+                                     new_edge_data=new_edge_data_str)
+
+    @classmethod
+    def correct_node_title_attributes(cls, new_node_data_str):
         # correcting the formatting of the title attribute of the node
         new_node_data_str = new_node_data_str.replace('"htmlTitle(\\', 'htmlTitle(')
-        new_node_data_str = new_node_data_str.replace('</div>\\")"','</div>")')
+        new_node_data_str = new_node_data_str.replace('</div>\\")"', '</div>")')
+        return new_node_data_str
 
-        self.parent_screen.save_html(self.parent_screen.get_current_html_path(),new_node_data=new_node_data_str)
-
-    @pyqtSlot(str)
-    def receive_coordinates(self, message):
-        """Receives click event data from JavaScript."""
-        data = json.loads(message)  # Convert string back to dict
-        lat = float(data["lat"])
-        lng = float(data["lng"])
-
-        OTLLogger.logger.debug(f"Received coordinates from javascript! ({lat},{lng})")
-
-
-    @pyqtSlot(str)
-    def receiveMessage(self, msg):
-        print(f"Message from JS: {msg}")
 
 class TestDataVisualisationScreen(Screen):
 
@@ -301,41 +299,63 @@ class TestDataVisualisationScreen(Screen):
         #     size=(1920, 1080 )
         # )
 
-        js_code = 'sendCurrentNodesDataToPython();\n'
+        js_code = 'sendCurrentCombinedDataToPython();\n'
         self.view.page().runJavaScript(js_code)
 
 
 
-    def save_html(cls, file_path: Path, new_node_data:str) -> None:
+    def save_html(cls, file_path: Path, new_node_data:str,new_edge_data:str) -> None:
         with open(file_path) as file:
             file_data = file.read()
 
-        # pattern = re.compile(
-        #     r'nodes\s*=\s*new\s+vis\.DataSet\(\[\{([\s\S]*?)\}\]\);',
-        #     re.DOTALL
-        # )
+        old_node_data = cls.extract_node_dataset(file_data)
+        old_edge_data = cls.extract_edges_dataset(file_data)
 
+        if old_node_data and old_edge_data:
+
+            file_data = file_data.replace(old_node_data, new_node_data)
+            file_data = file_data.replace(old_edge_data, new_edge_data)
+            file_data = cls.disable_hierarchical_options(file_data)
+            file_data = cls.disable_physics_option(file_data)
+
+            with open(file_path,mode="w") as file:
+                file.write(file_data)
+
+            OTLLogger.logger.info(f"Saved html to: {file_path}")
+        else:
+            OTLLogger.logger.error(f"FAILED to save html: old node and edge data not found")
+
+    def disable_physics_option(self, file_data):
+        new_physics_setting = ", \"physics\": {\"enabled\": false, "
+        if new_physics_setting not in file_data:
+            file_data = file_data.replace(", \"physics\": {", new_physics_setting)
+        return file_data
+
+    def disable_hierarchical_options(self, file_data):
+        file_data = file_data.replace("\"hierarchical\": {\"enabled\": true",
+                                      "\"hierarchical\": {\"enabled\": false")
+        return file_data
+
+    def extract_node_dataset(self, file_data):
         pattern = re.compile(
             r'nodes\s*=\s*new\s+vis\.DataSet\(([\s\S]*?)\);',
             re.DOTALL
         )
-
         m = pattern.search(file_data)
         if m:
             old_node_data = m.group(1)
-            # print(inner_blob)
+        else:
+            old_node_data = None
+        return old_node_data
 
-            with open(file_path.parent / "match_results.txt", 'w') as file:
-                file.write(old_node_data)
-
-
-            file_data = file_data.replace(old_node_data, new_node_data)
-            file_data = file_data.replace("\"hierarchical\": {\"enabled\": true",
-                                          "\"hierarchical\": {\"enabled\": false")
-            new_physics_setting = ", \"physics\": {\"enabled\": false, "
-            if new_physics_setting not in file_data:
-                file_data = file_data.replace(", \"physics\": {",new_physics_setting)
-
-
-            with open(file_path,mode="w") as file:
-                file.write(file_data)
+    def extract_edges_dataset(self, file_data):
+        pattern = re.compile(
+            r'edges\s*=\s*new\s+vis\.DataSet\(([\s\S]*?)\);',
+            re.DOTALL
+        )
+        m = pattern.search(file_data)
+        if m:
+            old_edges_data = m.group(1)
+        else:
+            old_edges_data = None
+        return old_edges_data
