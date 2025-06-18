@@ -342,9 +342,9 @@ class TestDataVisualisationScreen(Screen):
         if old_node_data and old_edge_data:
 
             if old_node_data:
-                file_data = file_data.replace(old_node_data, new_node_data)
+                file_data = cls.replace_node_data(old_node_data, new_node_data,file_data)
             if old_edge_data:
-                file_data = file_data.replace(old_edge_data, new_edge_data)
+                file_data = cls.replace_edge_data(old_edge_data, new_edge_data,file_data)
 
             file_data = cls.replace_support_data(variable_name="relationIdToSubEdges",
                                                  old_data=old_relationIdToSubEdges_data,
@@ -373,24 +373,28 @@ class TestDataVisualisationScreen(Screen):
         else:
             OTLLogger.logger.error(f"FAILED to save html: old node and edge data not found")
 
-    def replace_support_data(self, variable_name, old_data, new_data, file_data):
+    @classmethod
+    def replace_support_data(cls, variable_name, old_data, new_data, file_data):
         file_data = file_data.replace(
             f"var {variable_name} = new Map({old_data});",
             f"var {variable_name} = new Map({new_data});")
         return file_data
 
-    def disable_physics_option(self, file_data):
+    @classmethod
+    def disable_physics_option(cls, file_data):
         new_physics_setting = ", \"physics\": {\"enabled\": false, "
         if new_physics_setting not in file_data:
             file_data = file_data.replace(", \"physics\": {", new_physics_setting)
         return file_data
 
-    def disable_hierarchical_options(self, file_data):
+    @classmethod
+    def disable_hierarchical_options(cls, file_data):
         file_data = file_data.replace("\"hierarchical\": {\"enabled\": true",
                                       "\"hierarchical\": {\"enabled\": false")
         return file_data
 
-    def extract_node_dataset(self, file_data):
+    @classmethod
+    def extract_node_dataset(cls, file_data):
         pattern = re.compile(
             r'nodes\s*=\s*new\s+vis\.DataSet\(([\s\S]*?)\);',
             re.DOTALL
@@ -402,7 +406,20 @@ class TestDataVisualisationScreen(Screen):
             old_node_data = None
         return old_node_data
 
-    def extract_edges_dataset(self, file_data):
+    @classmethod
+    def replace_node_data(cls, old_data, new_data, file_data):
+        # replace the whole node dataset statement to prevent wrong replacement
+        return file_data.replace(f"nodes = new vis.DataSet({old_data})",
+                                 f"nodes = new vis.DataSet({new_data})")
+
+    @classmethod
+    def replace_edge_data(cls, old_data, new_data, file_data):
+        # replace the whole node dataset statement to prevent wrong replacement
+        return file_data.replace(f"edges = new vis.DataSet({old_data})",
+                                 f"edges = new vis.DataSet({new_data})")
+
+    @classmethod
+    def extract_edges_dataset(cls, file_data):
         pattern = re.compile(
             r'edges\s*=\s*new\s+vis\.DataSet\(([\s\S]*?)\);',
             re.DOTALL
@@ -414,7 +431,8 @@ class TestDataVisualisationScreen(Screen):
             old_edges_data = None
         return old_edges_data
 
-    def extract_support_data(self, variable_name ,file_data):
+    @classmethod
+    def extract_support_data(cls, variable_name ,file_data):
         pattern = re.compile(
             fr'var\s*{variable_name}\s*=\s*new\s+Map\(([\s\S]*?)\);',
             re.DOTALL
