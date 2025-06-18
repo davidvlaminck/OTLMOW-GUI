@@ -357,7 +357,7 @@ class VisualisationHelper:
                                                                                screen_name_of_new_asset)
 
                 if not added_to_collection:
-                    js_code = f'AddEdgeWithLabel("{add_edge_arguments["id"]}","{add_edge_arguments["from_id"]}", "{add_edge_arguments["to_id"]}","#{add_edge_arguments["color"]}","{add_edge_arguments["arrow"]}","{add_edge_arguments["label"]}")'
+                    js_code = f'AddEdgeWithLabel("{add_edge_arguments["id"]}","{add_edge_arguments["from_id"]}", "{add_edge_arguments["to_id"]}","{add_edge_arguments["color"]}","{add_edge_arguments["arrow"]}","{add_edge_arguments["label"]}")'
             elif "arrow" in add_edge_arguments:  # a directional relation
                 # first check if the new relation needs to be added to a current collection
                 added_to_collection = False
@@ -393,7 +393,7 @@ class VisualisationHelper:
                                                                                screen_name_of_new_asset)
 
                 if not added_to_collection:
-                    js_code = f'AddEdge("{add_edge_arguments["id"]}","{add_edge_arguments["from_id"]}", "{add_edge_arguments["to_id"]}","#{add_edge_arguments["color"]}","{add_edge_arguments["arrow"]}");'
+                    js_code = f'AddEdge("{add_edge_arguments["id"]}","{add_edge_arguments["from_id"]}", "{add_edge_arguments["to_id"]}","{add_edge_arguments["color"]}","{add_edge_arguments["arrow"]}");'
             else:  # a bidirectional relation
                 # first check if the new relation needs to be added to a current collection
                 added_to_collection = False
@@ -424,7 +424,7 @@ class VisualisationHelper:
                                                                                screen_name_of_new_asset)
 
                 if not added_to_collection:
-                    js_code = f'AddEdge("{add_edge_arguments["id"]}","{add_edge_arguments["from_id"]}", "{add_edge_arguments["to_id"]}","#{add_edge_arguments["color"]}",null);'
+                    js_code = f'AddEdge("{add_edge_arguments["id"]}","{add_edge_arguments["from_id"]}", "{add_edge_arguments["to_id"]}","{add_edge_arguments["color"]}",null);'
             OTLLogger.logger.debug(js_code)
             webview.page().runJavaScript(js_code)
 
