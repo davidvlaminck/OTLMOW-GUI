@@ -43,14 +43,22 @@ class Backend(QObject):
         #     json.dump(data, json_file)
 
 
-        new_node_data_str = json.dumps(data[0])
-        new_edge_data_str = json.dumps(data[1])
+        new_node_data_str = json.dumps(data['nodeList']) #nodes and their position (including edgeJointNodes)
+        new_edge_data_str = json.dumps(data['edgeList']) #edges (including subEdges)
+        new_relationIdToSubEdges_data_str = json.dumps(data['relationIdToSubEdgesList']) #data supporting dynamic removal functionality
+        new_relationIdToTotalSubEdgeCountList_data_str = json.dumps(data['relationIdToTotalSubEdgeCountList']) #data supporting dynamic removal functionality
+        new_relationIdToJointNodesList_data_str = json.dumps(data['relationIdToJointNodesList']) #data supporting dynamic removal functionality
+        new_SubEdgesToOriginalRelationIdList_data_str = json.dumps(data['SubEdgesToOriginalRelationIdList']) #data supporting dynamic removal functionality
 
         new_node_data_str = self.correct_node_title_attributes(new_node_data_str)
 
         self.parent_screen.save_html(file_path=self.parent_screen.get_current_html_path(),
                                      new_node_data=new_node_data_str,
-                                     new_edge_data=new_edge_data_str)
+                                     new_edge_data=new_edge_data_str,
+                                     new_relationIdToSubEdges_data=new_relationIdToSubEdges_data_str,
+                                     new_relationIdToTotalSubEdgeCount_data=new_relationIdToTotalSubEdgeCountList_data_str,
+                                     new_relationIdToJointNodes_data=new_relationIdToJointNodesList_data_str,
+                                     new_SubEdgesToOriginalRelationId_data=new_SubEdgesToOriginalRelationIdList_data_str)
 
     @classmethod
     def correct_node_title_attributes(cls, new_node_data_str):
@@ -304,17 +312,57 @@ class TestDataVisualisationScreen(Screen):
 
 
 
-    def save_html(cls, file_path: Path, new_node_data:str,new_edge_data:str) -> None:
+    def save_html(cls, file_path: Path,
+                  new_node_data:str,
+                  new_edge_data:str,
+                  new_relationIdToSubEdges_data:str="",
+                  new_relationIdToTotalSubEdgeCount_data:str="",
+                  new_relationIdToJointNodes_data:str="",
+                  new_SubEdgesToOriginalRelationId_data:str=""
+                  ) -> None:
         with open(file_path) as file:
             file_data = file.read()
 
         old_node_data = cls.extract_node_dataset(file_data)
         old_edge_data = cls.extract_edges_dataset(file_data)
 
+        old_relationIdToSubEdges_data = cls.extract_support_data(
+            variable_name="relationIdToSubEdges",
+            file_data=file_data)
+        old_relationIdToTotalSubEdgeCount_data = cls.extract_support_data(
+            variable_name="relationIdToTotalSubEdgeCount",
+            file_data=file_data)
+        old_relationIdToJointNodes_data = cls.extract_support_data(
+            variable_name="relationIdToJointNodes",
+            file_data=file_data)
+        old_SubEdgesToOriginalRelationId_data = cls.extract_support_data(
+            variable_name="SubEdgesToOriginalRelationId",
+            file_data=file_data)
+
         if old_node_data and old_edge_data:
 
-            file_data = file_data.replace(old_node_data, new_node_data)
-            file_data = file_data.replace(old_edge_data, new_edge_data)
+            if old_node_data:
+                file_data = file_data.replace(old_node_data, new_node_data)
+            if old_edge_data:
+                file_data = file_data.replace(old_edge_data, new_edge_data)
+
+            file_data = cls.replace_support_data(variable_name="relationIdToSubEdges",
+                                                 old_data=old_relationIdToSubEdges_data,
+                                                 new_data=new_relationIdToSubEdges_data,
+                                                 file_data=file_data)
+            file_data = cls.replace_support_data(variable_name="relationIdToTotalSubEdgeCount",
+                                                 old_data=old_relationIdToTotalSubEdgeCount_data,
+                                                 new_data=new_relationIdToTotalSubEdgeCount_data,
+                                                 file_data=file_data)
+            file_data = cls.replace_support_data(variable_name="relationIdToJointNodes",
+                                                 old_data=old_relationIdToJointNodes_data,
+                                                 new_data=new_relationIdToJointNodes_data,
+                                                 file_data=file_data)
+            file_data = cls.replace_support_data(variable_name="SubEdgesToOriginalRelationId",
+                                                 old_data=old_SubEdgesToOriginalRelationId_data,
+                                                 new_data=new_SubEdgesToOriginalRelationId_data,
+                                                 file_data=file_data)
+
             file_data = cls.disable_hierarchical_options(file_data)
             file_data = cls.disable_physics_option(file_data)
 
@@ -324,6 +372,12 @@ class TestDataVisualisationScreen(Screen):
             OTLLogger.logger.info(f"Saved html to: {file_path}")
         else:
             OTLLogger.logger.error(f"FAILED to save html: old node and edge data not found")
+
+    def replace_support_data(self, variable_name, old_data, new_data, file_data):
+        file_data = file_data.replace(
+            f"var {variable_name} = new Map({old_data});",
+            f"var {variable_name} = new Map({new_data});")
+        return file_data
 
     def disable_physics_option(self, file_data):
         new_physics_setting = ", \"physics\": {\"enabled\": false, "
@@ -351,6 +405,18 @@ class TestDataVisualisationScreen(Screen):
     def extract_edges_dataset(self, file_data):
         pattern = re.compile(
             r'edges\s*=\s*new\s+vis\.DataSet\(([\s\S]*?)\);',
+            re.DOTALL
+        )
+        m = pattern.search(file_data)
+        if m:
+            old_edges_data = m.group(1)
+        else:
+            old_edges_data = None
+        return old_edges_data
+
+    def extract_support_data(self, variable_name ,file_data):
+        pattern = re.compile(
+            fr'var\s*{variable_name}\s*=\s*new\s+Map\(([\s\S]*?)\);',
             re.DOTALL
         )
         m = pattern.search(file_data)

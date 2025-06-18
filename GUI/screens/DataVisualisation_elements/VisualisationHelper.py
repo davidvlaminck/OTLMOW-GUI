@@ -180,9 +180,21 @@ class VisualisationHelper:
                 "{",
                 '   network.storePositions() // alters the data in network.body.data.nodes with the current coordinates so i can be read and stored',
                 '   console.log("called storePositions()")',
-                "   var nodeList = ExtractNodeList();    ",
-                "   var edgeList = ExtractEdgeList();    ",
-                "   var combinedData = [nodeList, edgeList]",
+                "   var nodeList = ExtractNodeList();    //nodes and their position (including edgeJointNodes)",
+                "   var edgeList = ExtractEdgeList();    //edges (including subEdges)",
+                "   ",
+                "   var relationIdToSubEdgesList = Array.from(relationIdToSubEdges.entries());   //data supporting dynamic removal functionality",
+                "   var relationIdToTotalSubEdgeCountList = Array.from(relationIdToTotalSubEdgeCount.entries());   //data supporting dynamic removal functionality",
+                "   var relationIdToJointNodesList = Array.from(relationIdToJointNodes.entries());   //data supporting dynamic removal functionality",
+                "   var SubEdgesToOriginalRelationIdList = Array.from(SubEdgesToOriginalRelationId.entries());   //data supporting dynamic removal functionality",
+                "   ",
+                "   var combinedData = {'nodeList':nodeList,"
+                "                       'edgeList': edgeList,"
+                "                       'relationIdToSubEdgesList':relationIdToSubEdgesList,"
+                "                       'relationIdToTotalSubEdgeCountList': relationIdToTotalSubEdgeCountList,"
+                "                       'relationIdToJointNodesList': relationIdToJointNodesList,"
+                "                       'SubEdgesToOriginalRelationIdList': SubEdgesToOriginalRelationIdList"
+                "                       }",
                 '   var combinedDataStr = JSON.stringify(combinedData)',
                 '   console.log(combinedDataStr)',
                 # '   alert("DataVisualisationScreen: " + combinedDataStr);'
