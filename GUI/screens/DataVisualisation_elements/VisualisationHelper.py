@@ -99,6 +99,7 @@ class VisualisationHelper:
                         "// add webchannel to javascript to communicate with python",
                         'document.addEventListener("DOMContentLoaded", function() '
                         '{',
+                        "   makeMeMultiSelect(container, network, nodes);",
                         "   try",
                         "   {",
                         """     new QWebChannel(qt.webChannelTransport, function(channel) 
@@ -120,6 +121,9 @@ class VisualisationHelper:
             add_data.extend(cls.create_AddEdge_js_function())
             add_data.extend(cls.create_AddEdgeWithLabel_js_function())
             add_data.extend(cls.create_removeEdge_js_function())
+            with open("GUI/screens/DataVisualisation_elements/javascripts/dragMultiSelect.js") as dragMultiSelect_js_script_file:
+                js_script_lines = dragMultiSelect_js_script_file.readlines()
+                add_data.extend(js_script_lines)
 
             cls.replace_and_add_lines(file_data, replace_index,
                                       "drawGraph();",
