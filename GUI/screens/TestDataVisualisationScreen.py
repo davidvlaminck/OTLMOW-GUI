@@ -84,6 +84,7 @@ class TestDataVisualisationScreen(Screen):
 
         #smaller support widgets
         self.refresh_needed_label = QLabel()
+        self.graph_saved_status_label = QLabel()
         self.visualisation_mode = QComboBox()
         self.too_many_objects_message = QLabel()
         self.relation_color_legend_title = QLabel()
@@ -129,7 +130,9 @@ class TestDataVisualisationScreen(Screen):
 
     def create_button_container(self):
         frame = QFrame()
+        frame.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
         frame_layout = QHBoxLayout()
+
 
         refresh_btn = ButtonWidget()
         refresh_btn.setIcon(qta.icon('mdi.refresh', color='white'))
@@ -140,7 +143,7 @@ class TestDataVisualisationScreen(Screen):
         # see all qta mdi icon options in: https://cdn.jsdelivr.net/npm/@mdi/font@5.9.55/preview.html
         save_btn.setIcon(qta.icon('mdi.content-save', color='white'))
         save_btn.setProperty('class', 'primary-button')
-        save_btn.clicked.connect(lambda: self.save_as_png())
+        save_btn.clicked.connect(lambda: self.save_in_memory_changes_to_html())
         self.refresh_needed_label.setText(
             self._("The visualisation is outdated, refresh to see new changes"))
         self.refresh_needed_label.setStyleSheet('color:#DD1111;')
@@ -157,11 +160,14 @@ class TestDataVisualisationScreen(Screen):
                                           "alternatief 7 visualisatie",
                                           "vorige"])
 
+        self.set_graph_saved_status(False)
+
         frame_layout.addWidget(refresh_btn)
-        frame_layout.addWidget(save_btn)
         frame_layout.addWidget(self.visualisation_mode)
         frame_layout.addWidget(self.refresh_needed_label)
         frame_layout.addStretch()
+        frame_layout.addWidget(self.graph_saved_status_label)
+        frame_layout.addWidget(save_btn)
         frame_layout.setContentsMargins(0, 0, 0, 0)
 
         frame.setLayout(frame_layout)
@@ -247,6 +253,8 @@ class TestDataVisualisationScreen(Screen):
                                                                 vis_mode=self.visualisation_mode.currentText())
             self.load_html(html_path)
 
+        self.set_graph_saved_status(False)
+
         object_count = len(self.objects_in_memory)
         OTLLogger.logger.debug(
             f"Executing DataVisualisationScreen.reload_html() for project {global_vars.current_project.eigen_referentie} ({object_count} objects)",
@@ -296,7 +304,7 @@ class TestDataVisualisationScreen(Screen):
         assets = RelationChangeDomain.get_visualisation_instances()
         return  assets
 
-    def save_as_png(self):
+    def save_in_memory_changes_to_html(self):
 
         # TODO: fix the code to create the png form html (currently hangs the program)
         # hti = Html2Image(output_path=global_vars.current_project.get_project_local_path(),
@@ -309,8 +317,15 @@ class TestDataVisualisationScreen(Screen):
 
         js_code = 'sendCurrentCombinedDataToPython();\n'
         self.view.page().runJavaScript(js_code)
+        self.set_graph_saved_status(True)
 
-
+    def set_graph_saved_status(self,saved:bool) -> None:
+        if saved:
+            self.graph_saved_status_label.setText(self._("Changes saved"))
+            self.graph_saved_status_label.setStyleSheet('color:#11DD11;justify-content:right;')
+        else:
+            self.graph_saved_status_label.setText(self._("Changes are not saved"))
+            self.graph_saved_status_label.setStyleSheet('color:#DD1111;justify-content:right;')
 
     def save_html(cls, file_path: Path,
                   new_node_data:str,

@@ -114,10 +114,10 @@ class VisualisationHelper:
                         "})"]
 
             add_data.extend(cls.create_disablePhysics_js_function_and_add_to_event())
-            add_data.extend(cls.create_AddEdge_js_function())
             add_data.extend(cls.create_ExtractNodeList_js_function())
             add_data.extend(cls.create_ExtractEdgeList_js_function())
             add_data.extend(cls.create_sendCurrentCombinedDataToPython_js_function())
+            add_data.extend(cls.create_AddEdge_js_function())
             add_data.extend(cls.create_AddEdgeWithLabel_js_function())
             add_data.extend(cls.create_removeEdge_js_function())
 
