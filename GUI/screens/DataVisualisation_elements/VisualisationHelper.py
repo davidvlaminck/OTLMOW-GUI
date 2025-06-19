@@ -159,7 +159,7 @@ class VisualisationHelper:
     def create_AddEdge_js_function(cls):
         return ["function AddEdge(id,from_id, to_id,color,arrow)",
                 "{",
-                '   network.body.data.edges.add([{'
+                '   applyAddEdgesToNetwork([{'
                 '       "id": id,'
                 '       "arrowStrikethrough": false,'
                 '       "arrows": arrow,'
@@ -247,7 +247,7 @@ class VisualisationHelper:
     def create_AddEdgeWithLabel_js_function(cls):
         return ["function AddEdgeWithLabel(id,from_id, to_id,color,arrow,label)",
                 "{",
-                'network.body.data.edges.add([{'
+                '   applyAddEdgesToNetwork([{'
                 '   "id": id,'
                 '   "arrowStrikethrough": false,'
                 '   "arrows": arrow,'
@@ -269,17 +269,17 @@ class VisualisationHelper:
         return ['function removeEdge(id)',
                 '{',
                 '  if (network.body.data.edges._data.has(id))',
-                '      { network.body.data.edges.remove([id]);}',
+                '       applyRemoveEdgesFromNetwork([id]);//defined in PyViswrapper',
                 '  else if (!relationIdToSubEdges)',
-                '      {console.log("attempted to remove: " + id)}',
+                '      console.log("attempted to remove: " + id)',
                 '  else if (relationIdToSubEdges.has(id))',
                 '  {',
                 '      //remove all selfmade subEdges and jointNodes that the original relations was replaced with',
                 '      subEdges = relationIdToSubEdges.get(id)',
                 '      jointNodes = relationIdToJointNodes.get(id)',
                 '      ',
-                '      network.body.data.edges.remove(subEdges);',
-                '      network.body.data.nodes.remove(jointNodes);',
+                '      applyRemoveEdgesFromNetwork(subEdges); //defined in PyViswrapper',
+                '      applyRemoveNodesFromNetwork(jointNodes); //defined in PyViswrapper',
                 '      ',
                 '      //remove stored data on subedges and jointnodes',
                 '      subEdges.forEach((subEdgeId) =>',
@@ -293,6 +293,7 @@ class VisualisationHelper:
                 '  else',
                 '      {console.log("attempted to remove: " + id)}',
                 '}']
+
 
     @classmethod
     def remove_relations(cls,to_remove_list, vis_wrap, webview):
@@ -437,7 +438,7 @@ class VisualisationHelper:
             collection_id].append(new_rel_id_and_asset_screen_name_set)
         new_label, new_title = cls.create_new_special_node_text(collection_id, vis_wrap)
 
-        js_code = f'network.body.data.nodes.updateOnly({{id: "{collection_id}", label: "{new_label}", title:`{new_title}`}});'
+        js_code = f'applyUpdateNodeInNetwork({{id: "{collection_id}", label: "{new_label}", title:`{new_title}`}});'
         return js_code
 
     @classmethod

@@ -59,6 +59,10 @@ class Backend(QObject):
                                      new_relationIdToTotalSubEdgeCount_data=new_relationIdToTotalSubEdgeCountList_data_str,
                                      new_relationIdToJointNodes_data=new_relationIdToJointNodesList_data_str,
                                      new_SubEdgesToOriginalRelationId_data=new_SubEdgesToOriginalRelationIdList_data_str)
+    @pyqtSlot()
+    def receive_network_changed_notification(self):
+        self.parent_screen.set_graph_saved_status(False)
+
 
     @classmethod
     def correct_node_title_attributes(cls, new_node_data_str):
@@ -66,6 +70,8 @@ class Backend(QObject):
         new_node_data_str = new_node_data_str.replace('"htmlTitle(\\', 'htmlTitle(')
         new_node_data_str = new_node_data_str.replace('</div>\\")"', '</div>")')
         return new_node_data_str
+
+
 
 
 class TestDataVisualisationScreen(Screen):
@@ -160,7 +166,7 @@ class TestDataVisualisationScreen(Screen):
                                           "alternatief 7 visualisatie",
                                           "vorige"])
 
-        self.set_graph_saved_status(False)
+        self.set_graph_saved_status(True)
 
         frame_layout.addWidget(refresh_btn)
         frame_layout.addWidget(self.visualisation_mode)
@@ -210,6 +216,7 @@ class TestDataVisualisationScreen(Screen):
             self.view.setHtml( html_file.read(), QUrl("qrc:///"))
 
         global_vars.current_project.load_visualisation_uptodate_state()
+        self.set_graph_saved_status(True)
 
         if not self.std_vis_wrap:
             self.std_vis_wrap = VisualisationHelper.get_std_vis_wrap_instance()
@@ -253,7 +260,7 @@ class TestDataVisualisationScreen(Screen):
                                                                 vis_mode=self.visualisation_mode.currentText())
             self.load_html(html_path)
 
-        self.set_graph_saved_status(False)
+        self.set_graph_saved_status(True)
 
         object_count = len(self.objects_in_memory)
         OTLLogger.logger.debug(
