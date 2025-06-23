@@ -14,7 +14,6 @@ PyInstaller.__main__.run([
     r'OTL Wizard 2.py',
     '--distpath', str(home_path / 'PycharmProjects'/ 'OTLMOW-GUI' /  'LatestReleaseMulti'),
     '--contents-directory', 'data',
-
     '--paths', str(home_path / 'PycharmProjects' / 'OTLMOW-GUI' / 'venv3-13' / 'Lib' / 'site-packages'),
     '--exclude-module','otlmow_model',
     '--collect-all', 'otlmow_converter',
