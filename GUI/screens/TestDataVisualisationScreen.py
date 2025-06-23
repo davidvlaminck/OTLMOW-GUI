@@ -20,6 +20,7 @@ from otlmow_visuals.PyVisWrapper import PyVisWrapper
 from Domain import global_vars
 from Domain.logger.OTLLogger import OTLLogger
 from Domain.step_domain.RelationChangeDomain import RelationChangeDomain
+from GUI.dialog_windows.OverwriteGraphWarningWindow import OverwriteGraphWarningWindow
 from GUI.screens.DataVisualisation_elements.VisualisationHelper import VisualisationHelper
 from GUI.screens.Screen import Screen
 from GUI.screens.general_elements.ButtonWidget import ButtonWidget
@@ -143,7 +144,7 @@ class TestDataVisualisationScreen(Screen):
         refresh_btn = ButtonWidget()
         refresh_btn.setIcon(qta.icon('mdi.refresh', color='white'))
         refresh_btn.setProperty('class', 'primary-button')
-        refresh_btn.clicked.connect(lambda: self.recreate_html(self.get_current_html_path()))
+        refresh_btn.clicked.connect(lambda: OverwriteGraphWarningWindow(self,self._))
 
         save_btn = ButtonWidget()
         # see all qta mdi icon options in: https://cdn.jsdelivr.net/npm/@mdi/font@5.9.55/preview.html
