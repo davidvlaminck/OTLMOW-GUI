@@ -28,6 +28,7 @@ PyInstaller.__main__.run([
     '--add-data', 'demo_projects:demo_projects',
     '--add-data', 'img:img',
     '--add-data', 'pyproject.toml:.',
+    '--add-data', 'javascripts_visualisation:javascripts_visualisation',
     '--icon','img/wizard.png',
     '--splash','img/wizard1.png',
     '--noconfirm',

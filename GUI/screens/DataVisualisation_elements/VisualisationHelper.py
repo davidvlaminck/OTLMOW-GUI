@@ -14,6 +14,7 @@ from otlmow_visuals.PyVisWrapper6 import PyVisWrapper6
 from otlmow_visuals.PyVisWrapper7 import PyVisWrapper7
 from otlmow_visuals.PyVisWrapper8 import PyVisWrapper8
 
+from Domain.ProgramFileStructure import ProgramFileStructure
 from Domain.logger.OTLLogger import OTLLogger
 from UnitTests.TestModel.OtlmowModel.BaseClasses.OTLObject import OTLObject
 
@@ -124,9 +125,8 @@ class VisualisationHelper:
             add_data.extend(cls.create_AddEdge_js_function())
             add_data.extend(cls.create_AddEdgeWithLabel_js_function())
             add_data.extend(cls.create_removeEdge_js_function())
-            with open("GUI/screens/DataVisualisation_elements/javascripts/dragMultiSelect.js") as dragMultiSelect_js_script_file:
-                js_script_lines = dragMultiSelect_js_script_file.readlines()
-                add_data.extend(js_script_lines)
+
+            add_data.extend(cls.load_js_script_file("dragMultiSelect.js"))
 
             cls.replace_and_add_lines(file_data, replace_index,
                                       "drawGraph();",
@@ -136,6 +136,15 @@ class VisualisationHelper:
         with open(file_path, 'w') as file:
             for line in file_data:
                 file.write(line)
+
+    @classmethod
+    def load_js_script_file(cls, script_filename):
+        library_path = ProgramFileStructure.get_dynamic_library_path("javascripts_visualisation")
+        script_path = library_path / script_filename
+        with open(script_path) as js_script_file:
+            js_script_lines = js_script_file.readlines()
+            return js_script_lines
+        return []
 
     @classmethod
     def replace_and_add_lines(cls, file_data, replace_index, start_line_to_replace: str,
