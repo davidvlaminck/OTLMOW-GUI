@@ -15,6 +15,7 @@ from Domain.step_domain.RelationChangeDomain import RelationChangeDomain
 from Domain.step_domain.TemplateDomain import TemplateDomain
 from GUI.dialog_windows.NotificationWindow import NotificationWindow
 from GUI.dialog_windows.YesOrNoNotificationWindow import YesOrNoNotificationWindow
+from GUI.dialog_windows.YesOrNoOrAbortNotificationWindow import YesOrNoOrAbortNotificationWindow
 from GUI.dialog_windows.file_picker_dialog.SubsetLoadFilePickerDialog import \
     SubsetLoadFilePickerDialog
 
@@ -98,8 +99,28 @@ class MainWindow(QStackedWidget):
 
     def closeEvent(self, event):
         # Handle window close event
-        OTLLogger.logger.debug("Window is closing...")
+        OTLLogger.logger.debug("Checking if data visualisation is saved")
+        if (global_vars.current_project and
+            not global_vars.current_project.get_saved_graph_status()):
 
+            title = self._("unsaved_graph_changes_warning_title")
+            text = self._("unsaved_graph_changes_warning_text")
+            warning_dialog = YesOrNoOrAbortNotificationWindow(message=text, title=title)
+            answer = warning_dialog.exec()
+
+            if answer == 16384:  # QMessageBox.ButtonRole.YesRole:
+                # save graph before closing application
+                global_vars.otl_wizard.main_window.step3_visuals.save_in_memory_changes_to_html()
+                asyncio.sleep(1)
+            elif answer == 65536: # QMessageBox.ButtonRole.NoRole:
+                # close without doing anything else
+                pass
+            elif answer == 262144: # QMessageBox.ButtonRole.AbortRole also X-button
+                # don't close return to application
+                event.ignore()
+                return
+
+        OTLLogger.logger.debug("Window is closing...")
         # Stop the asyncio event loop
         loop = asyncio.get_event_loop()
         if loop.is_running():

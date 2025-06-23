@@ -97,7 +97,9 @@ class Project:
 
         self.saved_project_files: list[ProjectFile] = []
         self.model_builder = None
+        #status tracking if the visualisation is uptodate with changes in relations and OTL-assets
         self.visualisation_uptodate: VisualisationStateTracker = VisualisationStateTracker()
+        self.graph_saved_status: bool = True # status tracking if graph changes are written to html
 
 
     @classmethod
@@ -1134,3 +1136,8 @@ class Project:
                 self.laatst_bewerkt == __value.laatst_bewerkt and
                 self.saved_project_files == __value.saved_project_files)
 
+    def set_saved_graph_status(self,new_status:bool) -> None:
+        self.graph_saved_status = new_status
+
+    def get_saved_graph_status(self) -> bool:
+        return self.graph_saved_status

@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import List
 
 import qtawesome as qta
+from PIL.ImageStat import Global
 
 from PyQt6.QtWebEngineCore import QWebEngineSettings
 from PyQt6.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QLabel, QComboBox, QSizePolicy, \
@@ -20,10 +21,12 @@ from otlmow_visuals.PyVisWrapper import PyVisWrapper
 from Domain import global_vars
 from Domain.logger.OTLLogger import OTLLogger
 from Domain.step_domain.RelationChangeDomain import RelationChangeDomain
+from GUI.dialog_windows.NotificationWindow import NotificationWindow
 from GUI.dialog_windows.OverwriteGraphWarningWindow import OverwriteGraphWarningWindow
 from GUI.screens.DataVisualisation_elements.VisualisationHelper import VisualisationHelper
 from GUI.screens.Screen import Screen
 from GUI.screens.general_elements.ButtonWidget import ButtonWidget
+from GUI.translation.GlobalTranslate import GlobalTranslate
 
 
 class Backend(QObject):
@@ -53,7 +56,19 @@ class Backend(QObject):
 
         new_node_data_str = self.correct_node_title_attributes(new_node_data_str)
 
-        self.parent_screen.save_html(file_path=self.parent_screen.get_current_html_path(),
+        if "html_path" in data:
+            html_path = Path(data["html_path"])# the html_path added to the html incase tha project is already set to None
+        else:
+            try:
+                html_path = self.parent_screen.get_current_html_path()
+            except:
+                OTLLogger.logger.error("Couldn't save the html because the html is outdated and the project is already closed")
+                notification = NotificationWindow(title=GlobalTranslate._("Couldn't save visualisation"),
+                                                  message=GlobalTranslate._("Couldn't save the html because the html is outdated and the project is already closed\nTo fix this refresh the visualisation."))
+                notification.exec()
+                return
+
+        self.parent_screen.save_html(file_path=html_path,
                                      new_node_data=new_node_data_str,
                                      new_edge_data=new_edge_data_str,
                                      new_relationIdToSubEdges_data=new_relationIdToSubEdges_data_str,
@@ -95,8 +110,6 @@ class TestDataVisualisationScreen(Screen):
         self.visualisation_mode = QComboBox()
         self.too_many_objects_message = QLabel()
         self.relation_color_legend_title = QLabel()
-
-
 
         self.main_layout = QVBoxLayout()
         self.main_widget = self.create_main_widget()
@@ -328,6 +341,9 @@ class TestDataVisualisationScreen(Screen):
         self.set_graph_saved_status(True)
 
     def set_graph_saved_status(self,saved:bool) -> None:
+        if global_vars.current_project:
+            global_vars.current_project.set_saved_graph_status(saved)
+
         if saved:
             self.graph_saved_status_label.setText(self._("Changes saved"))
             self.graph_saved_status_label.setStyleSheet('color:#11DD11;justify-content:right;')

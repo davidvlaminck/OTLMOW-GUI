@@ -93,8 +93,11 @@ class VisualisationHelper:
                 replace_index = index
                 break
 
+        path_for_in_js = str(file_path.absolute()).replace("\\","\\\\")
+
         if replace_index > 0:
             add_data = ["var container = document.getElementById('mynetwork');",
+                        f'var html_path = "{path_for_in_js}";',
                         "",
                         "// add webchannel to javascript to communicate with python",
                         'document.addEventListener("DOMContentLoaded", function() '
@@ -153,7 +156,7 @@ class VisualisationHelper:
                 "       network.setOptions(newOptions);",
                 '       newOptions={\"physics\":{\"enabled\":false}};\n',
                 "       network.setOptions(newOptions);",
-                # "       sendCurrentCombinedDataToPython()",
+                "       sendCurrentCombinedDataToPython()",
                 "       isPhysicsOn = false;\n",
                 "   }",
                 "};",
@@ -192,7 +195,8 @@ class VisualisationHelper:
                 "   var relationIdToJointNodesList = Array.from(relationIdToJointNodes.entries());   //data supporting dynamic removal functionality",
                 "   var SubEdgesToOriginalRelationIdList = Array.from(SubEdgesToOriginalRelationId.entries());   //data supporting dynamic removal functionality",
                 "   ",
-                "   var combinedData = {'nodeList':nodeList,"
+                "   var combinedData = {'html_path': html_path,"
+                "                       'nodeList': nodeList,"
                 "                       'edgeList': edgeList,"
                 "                       'relationIdToSubEdgesList':relationIdToSubEdgesList,"
                 "                       'relationIdToTotalSubEdgeCountList': relationIdToTotalSubEdgeCountList,"

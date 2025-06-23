@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-06-23 11:54+0200\n"
+"POT-Creation-Date: 2025-06-23 16:42+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,23 +17,23 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.16.0\n"
 
-#: Domain/project/Project.py:497
+#: Domain/project/Project.py:499
 msgid "There are files missing that belong to this project:\n"
 msgstr ""
 
-#: Domain/project/Project.py:503
+#: Domain/project/Project.py:505
 msgid "Do you still want to export?"
 msgstr ""
 
-#: Domain/project/Project.py:504 GUI/screens/InsertDataScreen.py:219
+#: Domain/project/Project.py:506 GUI/screens/InsertDataScreen.py:219
 msgid "Missing project files"
 msgstr ""
 
-#: Domain/project/Project.py:942
+#: Domain/project/Project.py:944
 msgid "Can't insert duplicate filename {0}"
 msgstr ""
 
-#: Domain/project/Project.py:945
+#: Domain/project/Project.py:947
 msgid "Duplicate filename"
 msgstr ""
 
@@ -115,28 +115,36 @@ msgstr ""
 msgid "FDOToolbox not installed"
 msgstr ""
 
-#: GUI/MainWindow.py:74
+#: GUI/MainWindow.py:75
 msgid "template"
 msgstr ""
 
-#: GUI/MainWindow.py:75
+#: GUI/MainWindow.py:76
 msgid "insert_data"
 msgstr ""
 
-#: GUI/MainWindow.py:76
+#: GUI/MainWindow.py:77
 msgid "data visuals"
 msgstr ""
 
-#: GUI/MainWindow.py:77
+#: GUI/MainWindow.py:78
 msgid "data_change"
 msgstr ""
 
-#: GUI/MainWindow.py:78
+#: GUI/MainWindow.py:79
 msgid "relation_change"
 msgstr ""
 
-#: GUI/MainWindow.py:79
+#: GUI/MainWindow.py:80
 msgid "export_data"
+msgstr ""
+
+#: GUI/MainWindow.py:106 GUI/header/TabWidget.py:64
+msgid "unsaved_graph_changes_warning_title"
+msgstr ""
+
+#: GUI/MainWindow.py:107 GUI/header/TabWidget.py:65
+msgid "unsaved_graph_changes_warning_text"
 msgstr ""
 
 #: GUI/dialog_windows/AddExternalAssetWindow.py:29
@@ -448,17 +456,17 @@ msgstr ""
 msgid "file_for_conversion"
 msgstr ""
 
-#: GUI/screens/DataVisualisationScreen.py:128
-#: GUI/screens/DataVisualisationScreen.py:226 GUI/screens/MapScreen.py:138
+#: GUI/screens/DataVisualisationScreen.py:127
+#: GUI/screens/DataVisualisationScreen.py:225 GUI/screens/MapScreen.py:138
 #: GUI/screens/MapScreen.py:181 GUI/screens/MapScreen_test.py:132
 #: GUI/screens/MapScreen_test.py:178
-#: GUI/screens/TestDataVisualisationScreen.py:127
+#: GUI/screens/TestDataVisualisationScreen.py:140
 msgid "relations legend"
 msgstr ""
 
-#: GUI/screens/DataVisualisationScreen.py:197 GUI/screens/MapScreen.py:166
+#: GUI/screens/DataVisualisationScreen.py:196 GUI/screens/MapScreen.py:166
 #: GUI/screens/MapScreen_test.py:162
-#: GUI/screens/TestDataVisualisationScreen.py:155
+#: GUI/screens/TestDataVisualisationScreen.py:168
 msgid "The visualisation is outdated, refresh to see new changes"
 msgstr ""
 
@@ -533,7 +541,7 @@ msgid ""
 msgstr ""
 
 #: GUI/screens/MapScreen.py:225 GUI/screens/MapScreen_test.py:210
-#: GUI/screens/TestDataVisualisationScreen.py:247
+#: GUI/screens/TestDataVisualisationScreen.py:260
 msgid ""
 "There are too many assets and relations to create a visualisation.\n"
 "maximum: {0}\n"
@@ -696,11 +704,22 @@ msgstr ""
 msgid "The type of file the template will be created in"
 msgstr ""
 
-#: GUI/screens/TestDataVisualisationScreen.py:332
+#: GUI/screens/TestDataVisualisationScreen.py:66
+msgid "Couldn't save visualisation"
+msgstr ""
+
+#: GUI/screens/TestDataVisualisationScreen.py:67
+msgid ""
+"Couldn't save the html because the html is outdated and the project is "
+"already closed\n"
+"To fix this refresh the visualisation."
+msgstr ""
+
+#: GUI/screens/TestDataVisualisationScreen.py:348
 msgid "Changes saved"
 msgstr ""
 
-#: GUI/screens/TestDataVisualisationScreen.py:335
+#: GUI/screens/TestDataVisualisationScreen.py:351
 msgid "Changes are not saved"
 msgstr ""
 

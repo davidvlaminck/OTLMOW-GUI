@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-06-23 11:54+0200\n"
+"POT-Creation-Date: 2025-06-23 16:42+0200\n"
 "PO-Revision-Date: 2023-10-19 13:11+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en_US\n"
@@ -18,19 +18,19 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.16.0\n"
 
-#: Domain/project/Project.py:497
+#: Domain/project/Project.py:499
 msgid "There are files missing that belong to this project:\n"
 msgstr "There are files missing that belong to this project:\n"
 
-#: Domain/project/Project.py:503
+#: Domain/project/Project.py:505
 msgid "Do you still want to export?"
 msgstr "Do you still want to export?"
 
-#: Domain/project/Project.py:504 GUI/screens/InsertDataScreen.py:219
+#: Domain/project/Project.py:506 GUI/screens/InsertDataScreen.py:219
 msgid "Missing project files"
 msgstr "Missing project files"
 
-#: Domain/project/Project.py:942
+#: Domain/project/Project.py:944
 msgid "Can't insert duplicate filename {0}"
 msgstr ""
 "Filename \"{0}\" already exists in this project.\n"
@@ -40,7 +40,7 @@ msgstr ""
 "    2. Change the name of the new file before inserting.\n"
 "            "
 
-#: Domain/project/Project.py:945
+#: Domain/project/Project.py:947
 msgid "Duplicate filename"
 msgstr "Duplicate filename"
 
@@ -76,7 +76,7 @@ msgid ""
 "Klik op \"Toon verschillen\" om een overzicht van de fouten te zien"
 msgstr ""
 "There is an error in the original files\n"
-"Click on "Show difference" to get an overview of the errors"
+"Click on \"Show difference\" to get an overview of the errors"
 
 #: Domain/step_domain/HomeDomain.py:115
 msgid "own_reference_empty_error"
@@ -134,29 +134,37 @@ msgstr "There were errors while combining the assets"
 msgid "FDOToolbox not installed"
 msgstr "FDOToolbox not installed"
 
-#: GUI/MainWindow.py:74
+#: GUI/MainWindow.py:75
 msgid "template"
 msgstr "Template"
 
-#: GUI/MainWindow.py:75
+#: GUI/MainWindow.py:76
 msgid "insert_data"
 msgstr "Insert data"
 
-#: GUI/MainWindow.py:76
+#: GUI/MainWindow.py:77
 msgid "data visuals"
 msgstr "Data visualisation"
 
-#: GUI/MainWindow.py:77
+#: GUI/MainWindow.py:78
 msgid "data_change"
 msgstr "Data changes"
 
-#: GUI/MainWindow.py:78
+#: GUI/MainWindow.py:79
 msgid "relation_change"
 msgstr "Relation changes"
 
-#: GUI/MainWindow.py:79
+#: GUI/MainWindow.py:80
 msgid "export_data"
 msgstr "Export data"
+
+#: GUI/MainWindow.py:106 GUI/header/TabWidget.py:64
+msgid "unsaved_graph_changes_warning_title"
+msgstr "There are still unsaved changes in the visualisation"
+
+#: GUI/MainWindow.py:107 GUI/header/TabWidget.py:65
+msgid "unsaved_graph_changes_warning_text"
+msgstr "The change you made in the data visualisation are not save yet.\n\nDo you wan tot save the changes before you leave the project?"
 
 #: GUI/dialog_windows/AddExternalAssetWindow.py:29
 msgid "add_external_asset_title"
@@ -295,8 +303,11 @@ msgstr "You are going to overwrite the current visualisation"
 
 #: GUI/dialog_windows/OverwriteGraphWarningWindow.py:23
 msgid "overwrite_graph_warning_text"
-msgstr "Warning, This action will permanently overwrite the current data visualisation (including the saved changes).\n\n Are you sure you went to continue?"
-
+msgstr ""
+"Warning, This action will permanently overwrite the current data "
+"visualisation (including the saved changes).\n"
+"\n"
+" Are you sure you went to continue?"
 
 #: GUI/dialog_windows/OverwriteGraphWarningWindow.py:43
 #: GUI/dialog_windows/RevalidateDocumentsWindow.py:36
@@ -499,17 +510,17 @@ msgstr "Convert"
 msgid "file_for_conversion"
 msgstr "File conversion"
 
-#: GUI/screens/DataVisualisationScreen.py:128
-#: GUI/screens/DataVisualisationScreen.py:226 GUI/screens/MapScreen.py:138
+#: GUI/screens/DataVisualisationScreen.py:127
+#: GUI/screens/DataVisualisationScreen.py:225 GUI/screens/MapScreen.py:138
 #: GUI/screens/MapScreen.py:181 GUI/screens/MapScreen_test.py:132
 #: GUI/screens/MapScreen_test.py:178
-#: GUI/screens/TestDataVisualisationScreen.py:127
+#: GUI/screens/TestDataVisualisationScreen.py:140
 msgid "relations legend"
 msgstr "Color legend relations:"
 
-#: GUI/screens/DataVisualisationScreen.py:197 GUI/screens/MapScreen.py:166
+#: GUI/screens/DataVisualisationScreen.py:196 GUI/screens/MapScreen.py:166
 #: GUI/screens/MapScreen_test.py:162
-#: GUI/screens/TestDataVisualisationScreen.py:155
+#: GUI/screens/TestDataVisualisationScreen.py:168
 msgid "The visualisation is outdated, refresh to see new changes"
 msgstr "The visualisation is outdated, refresh to see new changes"
 
@@ -588,7 +599,7 @@ msgstr ""
 " project"
 
 #: GUI/screens/MapScreen.py:225 GUI/screens/MapScreen_test.py:210
-#: GUI/screens/TestDataVisualisationScreen.py:247
+#: GUI/screens/TestDataVisualisationScreen.py:260
 msgid ""
 "There are too many assets and relations to create a visualisation.\n"
 "maximum: {0}\n"
@@ -757,11 +768,25 @@ msgstr "Select file type for export"
 msgid "The type of file the template will be created in"
 msgstr "The type of file the template will be created in"
 
-#: GUI/screens/TestDataVisualisationScreen.py:332
+#: GUI/screens/TestDataVisualisationScreen.py:66
+msgid "Couldn't save visualisation"
+msgstr "Couldn't save visualisation"
+
+#: GUI/screens/TestDataVisualisationScreen.py:67
+msgid ""
+"Couldn't save the html because the html is outdated and the project is "
+"already closed\n"
+"To fix this refresh the visualisation."
+msgstr ""
+"Couldn't save the html because the html is outdated and the project is "
+"already closed\n"
+"To fix this refresh the visualisation."
+
+#: GUI/screens/TestDataVisualisationScreen.py:348
 msgid "Changes saved"
 msgstr "Changes saved"
 
-#: GUI/screens/TestDataVisualisationScreen.py:335
+#: GUI/screens/TestDataVisualisationScreen.py:351
 msgid "Changes are not saved"
 msgstr "Changes are not saved"
 
@@ -1178,4 +1203,3 @@ msgstr "The path to the provided file is not a {0} file with extension ({1})\n"
 #~ "        to replace the original. \n"
 #~ "    2. Change the name of the new file before inserting.\n"
 #~ "            "
-

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: jasper.berton@mow.vlaanderen.be\n"
-"POT-Creation-Date: 2025-06-23 11:54+0200\n"
+"POT-Creation-Date: 2025-06-23 16:42+0200\n"
 "PO-Revision-Date: 2023-10-19 13:13+0200\n"
 "Last-Translator: Jasper Berton <jasper.berton@mow.vlaanderen.be>\n"
 "Language: nl_BE\n"
@@ -18,19 +18,19 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.16.0\n"
 
-#: Domain/project/Project.py:497
+#: Domain/project/Project.py:499
 msgid "There are files missing that belong to this project:\n"
 msgstr "Er zijn bestanden die missen uit dit project:"
 
-#: Domain/project/Project.py:503
+#: Domain/project/Project.py:505
 msgid "Do you still want to export?"
 msgstr "Wilt u toch exporteren?"
 
-#: Domain/project/Project.py:504 GUI/screens/InsertDataScreen.py:219
+#: Domain/project/Project.py:506 GUI/screens/InsertDataScreen.py:219
 msgid "Missing project files"
 msgstr "Missende project bestanden"
 
-#: Domain/project/Project.py:942
+#: Domain/project/Project.py:944
 msgid "Can't insert duplicate filename {0}"
 msgstr ""
 "Bestandsnaam \"{0}\" bestaat al in dit project.\n"
@@ -40,7 +40,7 @@ msgstr ""
 "    2. De naam van het nieuwe bestand veranderen voor het inladen.\n"
 "            "
 
-#: Domain/project/Project.py:945
+#: Domain/project/Project.py:947
 msgid "Duplicate filename"
 msgstr "Bestandsnaam duplicaat"
 
@@ -136,29 +136,38 @@ msgstr "Er traden fout op tijdens het combineren van assets"
 msgid "FDOToolbox not installed"
 msgstr "FDOToolbox niet geïnstalleerd"
 
-#: GUI/MainWindow.py:74
+#: GUI/MainWindow.py:75
 msgid "template"
 msgstr "Aanmaken template"
 
-#: GUI/MainWindow.py:75
+#: GUI/MainWindow.py:76
 msgid "insert_data"
 msgstr "Data inladen"
 
-#: GUI/MainWindow.py:76
+#: GUI/MainWindow.py:77
 msgid "data visuals"
 msgstr "Data visualisatie"
 
-#: GUI/MainWindow.py:77
+#: GUI/MainWindow.py:78
 msgid "data_change"
 msgstr "Data veranderen"
 
-#: GUI/MainWindow.py:78
+#: GUI/MainWindow.py:79
 msgid "relation_change"
 msgstr "Relaties veranderen"
 
-#: GUI/MainWindow.py:79
+#: GUI/MainWindow.py:80
 msgid "export_data"
 msgstr "Data exporteren"
+
+: GUI/MainWindow.py:106 GUI/header/TabWidget.py:64
+msgid "unsaved_graph_changes_warning_title"
+msgstr "Er zijn nog onopgeslagen veranderingen"
+
+#: GUI/MainWindow.py:107 GUI/header/TabWidget.py:65
+msgid "unsaved_graph_changes_warning_text"
+msgstr "De veranderingen die u in de data visualisatie hebt aangebracht zijn nog niet opgeslagen.\n\n Wilt u de veranderingen opslaan voor u het project verlaat?"
+
 
 #: GUI/dialog_windows/AddExternalAssetWindow.py:29
 msgid "add_external_asset_title"
@@ -296,7 +305,11 @@ msgstr "U gaat de huidige data visualisatie overschrijven"
 
 #: GUI/dialog_windows/OverwriteGraphWarningWindow.py:23
 msgid "overwrite_graph_warning_text"
-msgstr "Opgepast, deze actie gaat de huidige data visualisatie (ook de opgeslagen veranderingen) permanent overschrijven.\n\n Bent u zeker dat u wil doorgaan?"
+msgstr ""
+"Opgepast, deze actie gaat de huidige data visualisatie (ook de opgeslagen"
+" veranderingen) permanent overschrijven.\n"
+"\n"
+" Bent u zeker dat u wil doorgaan?"
 
 #: GUI/dialog_windows/OverwriteGraphWarningWindow.py:43
 #: GUI/dialog_windows/RevalidateDocumentsWindow.py:36
@@ -498,17 +511,17 @@ msgstr "Converteren"
 msgid "file_for_conversion"
 msgstr "Bestand voor conversie"
 
-#: GUI/screens/DataVisualisationScreen.py:128
-#: GUI/screens/DataVisualisationScreen.py:226 GUI/screens/MapScreen.py:138
+#: GUI/screens/DataVisualisationScreen.py:127
+#: GUI/screens/DataVisualisationScreen.py:225 GUI/screens/MapScreen.py:138
 #: GUI/screens/MapScreen.py:181 GUI/screens/MapScreen_test.py:132
 #: GUI/screens/MapScreen_test.py:178
-#: GUI/screens/TestDataVisualisationScreen.py:127
+#: GUI/screens/TestDataVisualisationScreen.py:140
 msgid "relations legend"
 msgstr "Mogelijke relaties"
 
-#: GUI/screens/DataVisualisationScreen.py:197 GUI/screens/MapScreen.py:166
+#: GUI/screens/DataVisualisationScreen.py:196 GUI/screens/MapScreen.py:166
 #: GUI/screens/MapScreen_test.py:162
-#: GUI/screens/TestDataVisualisationScreen.py:155
+#: GUI/screens/TestDataVisualisationScreen.py:168
 msgid "The visualisation is outdated, refresh to see new changes"
 msgstr ""
 "The visualisatie is verouderd, druk refresh om de nieuwe veranderingen te"
@@ -589,7 +602,7 @@ msgstr ""
 "bestanden in dit project te krijgen"
 
 #: GUI/screens/MapScreen.py:225 GUI/screens/MapScreen_test.py:210
-#: GUI/screens/TestDataVisualisationScreen.py:247
+#: GUI/screens/TestDataVisualisationScreen.py:260
 msgid ""
 "There are too many assets and relations to create a visualisation.\n"
 "maximum: {0}\n"
@@ -759,11 +772,24 @@ msgstr "Selecteer bestandstype voor export"
 msgid "The type of file the template will be created in"
 msgstr "Het bestandtype dat de template zal hebben"
 
-#: GUI/screens/TestDataVisualisationScreen.py:332
+#: GUI/screens/TestDataVisualisationScreen.py:66
+msgid "Couldn't save visualisation"
+msgstr "de visualisatie kon niet opslaan geworden"
+
+#: GUI/screens/TestDataVisualisationScreen.py:67
+msgid ""
+"Couldn't save the html because the html is outdated and the project is "
+"already closed\n"
+"To fix this refresh the visualisation."
+msgstr ""
+"De html kon niet opgeslagen worden om de hij verouderd is en het project al gesloten is.\n"
+"Vernieuw de visualisatie om dit op te lossen."
+
+#: GUI/screens/TestDataVisualisationScreen.py:348
 msgid "Changes saved"
 msgstr "Veranderingen opgeslagen"
 
-#: GUI/screens/TestDataVisualisationScreen.py:335
+#: GUI/screens/TestDataVisualisationScreen.py:351
 msgid "Changes are not saved"
 msgstr "Veranderingen zijn niet opgeslagen"
 
@@ -1203,4 +1229,13 @@ msgstr ""
 #~ "        to replace the original. \n"
 #~ "    2. Change the name of the new file before inserting.\n"
 #~ "            "
+
+#~ msgid "Yes"
+#~ msgstr ""
+
+#~ msgid "No"
+#~ msgstr ""
+
+#~ msgid "Back"
+#~ msgstr ""
 
