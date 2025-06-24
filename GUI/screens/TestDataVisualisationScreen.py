@@ -152,10 +152,11 @@ class TestDataVisualisationScreen(Screen):
         frame_layout = QHBoxLayout()
 
 
-        refresh_btn = ButtonWidget()
-        refresh_btn.setIcon(qta.icon('mdi.refresh', color='white'))
-        refresh_btn.setProperty('class', 'primary-button')
-        refresh_btn.clicked.connect(lambda: OverwriteGraphWarningWindow(self,self._))
+        regenerate_btn = ButtonWidget()
+        regenerate_btn.setIcon(qta.icon('mdi.refresh', color='white'))
+        regenerate_btn.setProperty('class', 'primary-button')
+        regenerate_btn.clicked.connect(lambda: OverwriteGraphWarningWindow(self,self._))
+        regenerate_btn.setToolTip(self._("Regenerate the visualisation"))
 
         self.visualisation_mode.addItems(["standaard visualisatie",
                                           "alternatief 0 visualisatie",
@@ -167,6 +168,8 @@ class TestDataVisualisationScreen(Screen):
                                           "alternatief 6 visualisatie",
                                           "alternatief 7 visualisatie",
                                           "vorige"])
+        self.visualisation_mode.setToolTip(self._("Options to generate the visualisation differently"))
+
         self.refresh_needed_label.setText(
             self._("The visualisation is outdated, refresh to see new changes"))
         self.refresh_needed_label.setStyleSheet('color:#DD1111;')
@@ -179,18 +182,19 @@ class TestDataVisualisationScreen(Screen):
         save_btn.setIcon(qta.icon('mdi.content-save', color='white'))
         save_btn.setProperty('class', 'primary-button')
         save_btn.clicked.connect(lambda: self.save_in_memory_changes_to_html())
+        save_btn.setToolTip(self._("Save changes"))
 
         help_btn = ButtonWidget()
         # see all qta mdi icon options in: https://cdn.jsdelivr.net/npm/@mdi/font@5.9.55/preview.html
         help_btn.setIcon(qta.icon('mdi.help', color='white'))
         help_btn.setProperty('class', 'primary-button')
         help_btn.clicked.connect(lambda: self.show_help_dialog_window())
+        help_btn.setToolTip(self._("Help for data visualisation screen"))
 
 
 
 
-
-        frame_layout.addWidget(refresh_btn)
+        frame_layout.addWidget(regenerate_btn)
         frame_layout.addWidget(self.visualisation_mode)
         frame_layout.addWidget(self.refresh_needed_label)
         frame_layout.addStretch()
@@ -203,7 +207,7 @@ class TestDataVisualisationScreen(Screen):
         return frame
 
     def show_help_dialog_window(self):
-        title = self._("help for data visualisation screen")
+        title = self._("Help for data visualisation screen")
         message = self._("""
 Help voor het gebruik van het datavisualisatie scherm:
         
