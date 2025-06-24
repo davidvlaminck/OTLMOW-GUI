@@ -6,7 +6,6 @@ from pathlib import Path
 from typing import List
 
 import qtawesome as qta
-from PIL.ImageStat import Global
 
 from PyQt6.QtWebEngineCore import QWebEngineSettings
 from PyQt6.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QLabel, QComboBox, QSizePolicy, \
@@ -14,7 +13,6 @@ from PyQt6.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QLabel, QCom
 from PyQt6.QtWebEngineWidgets import QWebEngineView
 from PyQt6.QtWebChannel import QWebChannel
 from PyQt6.QtCore import QObject, pyqtSlot, QUrl
-from html2image import Html2Image
 from otlmow_model.OtlmowModel.BaseClasses.OTLObject import OTLObject
 from otlmow_visuals.PyVisWrapper import PyVisWrapper
 
@@ -159,16 +157,6 @@ class TestDataVisualisationScreen(Screen):
         refresh_btn.setProperty('class', 'primary-button')
         refresh_btn.clicked.connect(lambda: OverwriteGraphWarningWindow(self,self._))
 
-        save_btn = ButtonWidget()
-        # see all qta mdi icon options in: https://cdn.jsdelivr.net/npm/@mdi/font@5.9.55/preview.html
-        save_btn.setIcon(qta.icon('mdi.content-save', color='white'))
-        save_btn.setProperty('class', 'primary-button')
-        save_btn.clicked.connect(lambda: self.save_in_memory_changes_to_html())
-        self.refresh_needed_label.setText(
-            self._("The visualisation is outdated, refresh to see new changes"))
-        self.refresh_needed_label.setStyleSheet('color:#DD1111;')
-        # self.refresh_needed_label.setHidden(True)
-
         self.visualisation_mode.addItems(["standaard visualisatie",
                                           "alternatief 0 visualisatie",
                                           "alternatief 1 visualisatie",
@@ -179,8 +167,28 @@ class TestDataVisualisationScreen(Screen):
                                           "alternatief 6 visualisatie",
                                           "alternatief 7 visualisatie",
                                           "vorige"])
+        self.refresh_needed_label.setText(
+            self._("The visualisation is outdated, refresh to see new changes"))
+        self.refresh_needed_label.setStyleSheet('color:#DD1111;')
+        # self.refresh_needed_label.setHidden(True)
 
         self.set_graph_saved_status(True)
+
+        save_btn = ButtonWidget()
+        # see all qta mdi icon options in: https://cdn.jsdelivr.net/npm/@mdi/font@5.9.55/preview.html
+        save_btn.setIcon(qta.icon('mdi.content-save', color='white'))
+        save_btn.setProperty('class', 'primary-button')
+        save_btn.clicked.connect(lambda: self.save_in_memory_changes_to_html())
+
+        help_btn = ButtonWidget()
+        # see all qta mdi icon options in: https://cdn.jsdelivr.net/npm/@mdi/font@5.9.55/preview.html
+        help_btn.setIcon(qta.icon('mdi.help', color='white'))
+        help_btn.setProperty('class', 'primary-button')
+        help_btn.clicked.connect(lambda: self.show_help_dialog_window())
+
+
+
+
 
         frame_layout.addWidget(refresh_btn)
         frame_layout.addWidget(self.visualisation_mode)
@@ -188,10 +196,25 @@ class TestDataVisualisationScreen(Screen):
         frame_layout.addStretch()
         frame_layout.addWidget(self.graph_saved_status_label)
         frame_layout.addWidget(save_btn)
+        frame_layout.addWidget(help_btn)
         frame_layout.setContentsMargins(0, 0, 0, 0)
 
         frame.setLayout(frame_layout)
         return frame
+
+    def show_help_dialog_window(self):
+        title = self._("help for data visualisation screen")
+        message = self._("""
+Help voor het gebruik van het datavisualisatie scherm:
+        
+- Linker-muisknop inhouden op OTL-asset => slepen
+- Linker-muisknop op relatie pijl => een versleepbaar gewricht toevoegen
+- Rechter-muisknop inhouden en slepen in lege ruimte => selectie box om meerder OTL-assets (+ gewrichten) te selecteren
+- Ctrl-knop + Linker-muisknop op OTL-asset => toevoegen/verwijderen van OTL-asset aan selectie
+        """)
+
+        dialog = NotificationWindow(message = message,title=title)
+        dialog.exec()
 
     def create_color_legend(self):
 
