@@ -5,6 +5,7 @@ from PyQt6.QtWidgets import QTabWidget, QVBoxLayout
 
 from Domain import global_vars
 from Domain.logger.OTLLogger import OTLLogger
+from GUI.dialog_windows.YesOrNoNotificationWindow import YesOrNoNotificationWindow
 from GUI.dialog_windows.YesOrNoOrAbortNotificationWindow import YesOrNoOrAbortNotificationWindow
 from GUI.screens.Screen import Screen
 from GUI.header.HeaderBar import HeaderBar
@@ -63,19 +64,25 @@ class TabWidget(Screen):
 
             title = self._("unsaved_graph_changes_warning_title")
             text = self._("unsaved_graph_changes_warning_text")
-            warning_dialog = YesOrNoOrAbortNotificationWindow(message=text, title=title)
+            alt_yes_text = self._("Continue")
+            alt_no_text = self._("Back")
+
+            warning_dialog = YesOrNoNotificationWindow(message=text,
+                                                       title=title,
+                                                       alt_yes_text=alt_yes_text,
+                                                       alt_no_text=alt_no_text)
             answer = warning_dialog.exec()
 
             if answer == 16384:  # QMessageBox.ButtonRole.YesRole:
-                # save graph before closing project
-                global_vars.otl_wizard.main_window.step3_visuals.save_in_memory_changes_to_html()
-            elif answer == 65536: # QMessageBox.ButtonRole.NoRole:
                 # close project without doing anything else
                 pass
+            elif answer == 65536: # QMessageBox.ButtonRole.NoRole:
+                # don't close project return to project
+                return
             elif answer == 262144: # QMessageBox.ButtonRole.AbortRole also X-button
                 # don't close project return to project
-
                 return
+
 
         self.main_window.setCurrentIndex(0)
         global_vars.current_project.clear_model_builder_from_memory()

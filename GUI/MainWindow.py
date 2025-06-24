@@ -104,16 +104,29 @@ class MainWindow(QStackedWidget):
 
             title = self._("unsaved_graph_changes_warning_title")
             text = self._("unsaved_graph_changes_warning_text")
-            warning_dialog = YesOrNoOrAbortNotificationWindow(message=text, title=title)
+            alt_yes_text = self._("Continue")
+            alt_no_text = self._("Back")
+
+            warning_dialog = YesOrNoNotificationWindow(message=text,
+                                                       title=title,
+                                                       alt_yes_text=alt_yes_text,
+                                                       alt_no_text=alt_no_text)
             answer = warning_dialog.exec()
 
             if answer == 16384:  # QMessageBox.ButtonRole.YesRole:
-                # save graph before closing application
-                global_vars.otl_wizard.main_window.step3_visuals.save_in_memory_changes_to_html()
-                asyncio.sleep(1)
-            elif answer == 65536: # QMessageBox.ButtonRole.NoRole:
+                # # save graph before closing application
+                # global_vars.otl_wizard.main_window.step3_visuals.save_in_memory_changes_to_html()
+                # asyncio.sleep(1)
+
                 # close without doing anything else
                 pass
+            elif answer == 65536: # QMessageBox.ButtonRole.NoRole:
+                # # close without doing anything else
+                # pass
+
+                # don't close return to application
+                event.ignore()
+                return
             elif answer == 262144: # QMessageBox.ButtonRole.AbortRole also X-button
                 # don't close return to application
                 event.ignore()

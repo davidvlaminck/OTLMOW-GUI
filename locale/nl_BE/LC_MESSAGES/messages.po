@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: jasper.berton@mow.vlaanderen.be\n"
-"POT-Creation-Date: 2025-06-24 11:58+0200\n"
+"POT-Creation-Date: 2025-06-24 17:12+0200\n"
 "PO-Revision-Date: 2023-10-19 13:13+0200\n"
 "Last-Translator: Jasper Berton <jasper.berton@mow.vlaanderen.be>\n"
 "Language: nl_BE\n"
@@ -136,41 +136,49 @@ msgstr "Er traden fout op tijdens het combineren van assets"
 msgid "FDOToolbox not installed"
 msgstr "FDOToolbox niet geïnstalleerd"
 
-#: GUI/MainWindow.py:75
+#: GUI/MainWindow.py:74
 msgid "template"
 msgstr "Aanmaken template"
 
-#: GUI/MainWindow.py:76
+#: GUI/MainWindow.py:75
 msgid "insert_data"
 msgstr "Data inladen"
 
-#: GUI/MainWindow.py:77
+#: GUI/MainWindow.py:76
 msgid "data visuals"
 msgstr "Data visualisatie"
 
-#: GUI/MainWindow.py:78
+#: GUI/MainWindow.py:77
 msgid "data_change"
 msgstr "Data veranderen"
 
-#: GUI/MainWindow.py:79
+#: GUI/MainWindow.py:78
 msgid "relation_change"
 msgstr "Relaties veranderen"
 
-#: GUI/MainWindow.py:80
+#: GUI/MainWindow.py:79
 msgid "export_data"
 msgstr "Data exporteren"
 
-#: GUI/MainWindow.py:106 GUI/header/TabWidget.py:64
+#: GUI/MainWindow.py:105 GUI/header/TabWidget.py:65
 msgid "unsaved_graph_changes_warning_title"
 msgstr "Er zijn nog onopgeslagen veranderingen"
 
-#: GUI/MainWindow.py:107 GUI/header/TabWidget.py:65
+#: GUI/MainWindow.py:106 GUI/header/TabWidget.py:66
 msgid "unsaved_graph_changes_warning_text"
 msgstr ""
 "De veranderingen die u in de data visualisatie hebt aangebracht zijn nog "
 "niet opgeslagen.\n"
 "\n"
-" Wilt u de veranderingen opslaan voor u het project verlaat?"
+"Wilt u doorgaan zonder de veranderingen op te slaan?"
+
+#: GUI/MainWindow.py:107 GUI/header/TabWidget.py:67
+msgid "Continue"
+msgstr "Doorgaan"
+
+#: GUI/MainWindow.py:108 GUI/header/TabWidget.py:68
+msgid "Back"
+msgstr "Terug"
 
 #: GUI/dialog_windows/AddExternalAssetWindow.py:29
 msgid "add_external_asset_title"
@@ -514,21 +522,93 @@ msgstr "Converteren"
 msgid "file_for_conversion"
 msgstr "Bestand voor conversie"
 
-#: GUI/screens/DataVisualisationScreen.py:127
-#: GUI/screens/DataVisualisationScreen.py:225 GUI/screens/MapScreen.py:138
-#: GUI/screens/MapScreen.py:181 GUI/screens/MapScreen_test.py:132
-#: GUI/screens/MapScreen_test.py:178
-#: GUI/screens/TestDataVisualisationScreen.py:138
+#: GUI/screens/DynamicDataVisualisationScreen.py:64
+msgid "Couldn't save visualisation"
+msgstr "de visualisatie kon niet opslaan geworden"
+
+#: GUI/screens/DynamicDataVisualisationScreen.py:65
+msgid ""
+"Couldn't save the html because the html is outdated and the project is "
+"already closed\n"
+"To fix this refresh the visualisation."
+msgstr ""
+"De html kon niet opgeslagen worden om de hij verouderd is en het project "
+"al gesloten is.\n"
+"Vernieuw de visualisatie om dit op te lossen."
+
+#: GUI/screens/DynamicDataVisualisationScreen.py:138
+#: GUI/screens/MapScreen.py:138 GUI/screens/MapScreen.py:181
+#: GUI/screens/MapScreen_test.py:132 GUI/screens/MapScreen_test.py:178
 msgid "relations legend"
 msgstr "Mogelijke relaties"
 
-#: GUI/screens/DataVisualisationScreen.py:196 GUI/screens/MapScreen.py:166
-#: GUI/screens/MapScreen_test.py:162
-#: GUI/screens/TestDataVisualisationScreen.py:174
+#: GUI/screens/DynamicDataVisualisationScreen.py:159
+msgid "Regenerate the visualisation"
+msgstr "Hergenereer de visualisatie"
+
+#: GUI/screens/DynamicDataVisualisationScreen.py:164
+msgid "Options to generate the visualisation differently"
+msgstr "Opties om de visualisatie anders te genereren"
+
+#: GUI/screens/DynamicDataVisualisationScreen.py:167
+#: GUI/screens/MapScreen.py:166 GUI/screens/MapScreen_test.py:162
 msgid "The visualisation is outdated, refresh to see new changes"
 msgstr ""
 "The visualisatie is verouderd, druk refresh om de nieuwe veranderingen te"
 " zien"
+
+#: GUI/screens/DynamicDataVisualisationScreen.py:178
+msgid "Save changes"
+msgstr "Sla veranderingen op"
+
+#: GUI/screens/DynamicDataVisualisationScreen.py:185
+#: GUI/screens/DynamicDataVisualisationScreen.py:203
+msgid "Help for data visualisation screen"
+msgstr "Help met het data visualisatie scherm"
+
+#: GUI/screens/DynamicDataVisualisationScreen.py:204
+msgid ""
+"\n"
+"Help voor het gebruik van het datavisualisatie scherm:\n"
+"        \n"
+"- Linker-muisknop inhouden op OTL-asset => slepen\n"
+"- Linker-muisknop op relatie pijl => een versleepbaar gewricht toevoegen\n"
+"- Rechter-muisknop inhouden en slepen in lege ruimte => selectie box om "
+"meerder OTL-assets (+ gewrichten) te selecteren\n"
+"- Ctrl-knop + Linker-muisknop op OTL-asset => toevoegen/verwijderen van "
+"OTL-asset aan selectie\n"
+"        "
+msgstr ""
+"Help voor het gebruik van het datavisualisatie scherm\n"
+"        \n"
+"- Linker-muisknop inhouden op OTL-asset/gewricht => Sleep OTL-"
+"asset/gewricht\n"
+"- Linker-muisknop op relatie pijl => Een versleepbaar gewricht toevoegen\n"
+"- Rechter-muisknop inhouden en slepen in lege ruimte =>  Maakt een "
+"selectie box om meerder OTL-assets (+ gewrichten) te selecteren\n"
+"- Ctrl-knop + Linker-muisknop op OTL-asset => toevoegen/verwijderen van "
+"OTL-asset aan selectie\n"
+"        "
+
+#: GUI/screens/DynamicDataVisualisationScreen.py:281
+#: GUI/screens/MapScreen.py:225 GUI/screens/MapScreen_test.py:210
+msgid ""
+"There are too many assets and relations to create a visualisation.\n"
+"maximum: {0}\n"
+"current: {1}"
+msgstr ""
+"Er zijn te veel assets en relaties in dit het project om een visualisatie"
+" te maken.\n"
+"Maximum: {0}\n"
+"Huidig: {1}"
+
+#: GUI/screens/DynamicDataVisualisationScreen.py:374
+msgid "Changes saved"
+msgstr "Veranderingen opgeslagen"
+
+#: GUI/screens/DynamicDataVisualisationScreen.py:377
+msgid "Changes are not saved"
+msgstr "Veranderingen zijn niet opgeslagen"
 
 #: GUI/screens/ExportDataScreen.py:78 GUI/screens/ExportDataScreen.py:164
 msgid "export_to_davie"
@@ -603,18 +683,6 @@ msgid ""
 msgstr ""
 "Druk op valideren om een rapport over de OTL-conformiteit van de "
 "bestanden in dit project te krijgen"
-
-#: GUI/screens/MapScreen.py:225 GUI/screens/MapScreen_test.py:210
-#: GUI/screens/TestDataVisualisationScreen.py:287
-msgid ""
-"There are too many assets and relations to create a visualisation.\n"
-"maximum: {0}\n"
-"current: {1}"
-msgstr ""
-"Er zijn te veel assets en relaties in dit het project om een visualisatie"
-" te maken.\n"
-"Maximum: {0}\n"
-"Huidig: {1}"
 
 #: GUI/screens/TemplateScreen.py:113
 msgid "Adds choice lists to relevant attributes"
@@ -774,68 +842,6 @@ msgstr "Selecteer bestandstype voor export"
 #: GUI/screens/TemplateScreen.py:1005
 msgid "The type of file the template will be created in"
 msgstr "Het bestandtype dat de template zal hebben"
-
-#: GUI/screens/TestDataVisualisationScreen.py:64
-msgid "Couldn't save visualisation"
-msgstr "de visualisatie kon niet opslaan geworden"
-
-#: GUI/screens/TestDataVisualisationScreen.py:65
-msgid ""
-"Couldn't save the html because the html is outdated and the project is "
-"already closed\n"
-"To fix this refresh the visualisation."
-msgstr ""
-"De html kon niet opgeslagen worden om de hij verouderd is en het project "
-"al gesloten is.\n"
-"Vernieuw de visualisatie om dit op te lossen."
-
-#: GUI/screens/TestDataVisualisationScreen.py:159
-msgid "Regenerate the visualisation"
-msgstr "Hergenereer de visualisatie"
-
-#: GUI/screens/TestDataVisualisationScreen.py:171
-msgid "Options to generate the visualisation differently"
-msgstr "Opties om de visualisatie anders te genereren"
-
-#: GUI/screens/TestDataVisualisationScreen.py:185
-msgid "Save changes"
-msgstr "Sla veranderingen op"
-
-#: GUI/screens/TestDataVisualisationScreen.py:192
-#: GUI/screens/TestDataVisualisationScreen.py:210
-msgid "Help for data visualisation screen"
-msgstr "Help met het data visualisatie scherm"
-
-#: GUI/screens/TestDataVisualisationScreen.py:211
-msgid ""
-"\n"
-"Help voor het gebruik van het datavisualisatie scherm:\n"
-"        \n"
-"- Linker-muisknop inhouden op OTL-asset => slepen\n"
-"- Linker-muisknop op relatie pijl => een versleepbaar gewricht toevoegen\n"
-"- Rechter-muisknop inhouden en slepen in lege ruimte => selectie box om "
-"meerder OTL-assets (+ gewrichten) te selecteren\n"
-"- Ctrl-knop + Linker-muisknop op OTL-asset => toevoegen/verwijderen van "
-"OTL-asset aan selectie\n"
-"        "
-msgstr ""
-"Help voor het gebruik van het datavisualisatie scherm\n"
-"        \n"
-"- Linker-muisknop inhouden op OTL-asset/gewricht => Sleep OTL-asset/gewricht\n"
-"- Linker-muisknop op relatie pijl => Een versleepbaar gewricht toevoegen\n"
-"- Rechter-muisknop inhouden en slepen in lege ruimte =>  Maakt een selectie box om "
-"meerder OTL-assets (+ gewrichten) te selecteren\n"
-"- Ctrl-knop + Linker-muisknop op OTL-asset => toevoegen/verwijderen van "
-"OTL-asset aan selectie\n"
-"        "
-
-#: GUI/screens/TestDataVisualisationScreen.py:375
-msgid "Changes saved"
-msgstr "Veranderingen opgeslagen"
-
-#: GUI/screens/TestDataVisualisationScreen.py:378
-msgid "Changes are not saved"
-msgstr "Veranderingen zijn niet opgeslagen"
 
 #: GUI/screens/AssetDataChange_elements/TableModel.py:11
 #: GUI/screens/ExportData_elements/TableModel.py:11
