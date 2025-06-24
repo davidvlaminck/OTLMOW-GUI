@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-06-23 16:42+0200\n"
+"POT-Creation-Date: 2025-06-24 11:58+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -460,13 +460,13 @@ msgstr ""
 #: GUI/screens/DataVisualisationScreen.py:225 GUI/screens/MapScreen.py:138
 #: GUI/screens/MapScreen.py:181 GUI/screens/MapScreen_test.py:132
 #: GUI/screens/MapScreen_test.py:178
-#: GUI/screens/TestDataVisualisationScreen.py:140
+#: GUI/screens/TestDataVisualisationScreen.py:138
 msgid "relations legend"
 msgstr ""
 
 #: GUI/screens/DataVisualisationScreen.py:196 GUI/screens/MapScreen.py:166
 #: GUI/screens/MapScreen_test.py:162
-#: GUI/screens/TestDataVisualisationScreen.py:168
+#: GUI/screens/TestDataVisualisationScreen.py:174
 msgid "The visualisation is outdated, refresh to see new changes"
 msgstr ""
 
@@ -541,7 +541,7 @@ msgid ""
 msgstr ""
 
 #: GUI/screens/MapScreen.py:225 GUI/screens/MapScreen_test.py:210
-#: GUI/screens/TestDataVisualisationScreen.py:260
+#: GUI/screens/TestDataVisualisationScreen.py:287
 msgid ""
 "There are too many assets and relations to create a visualisation.\n"
 "maximum: {0}\n"
@@ -704,22 +704,53 @@ msgstr ""
 msgid "The type of file the template will be created in"
 msgstr ""
 
-#: GUI/screens/TestDataVisualisationScreen.py:66
+#: GUI/screens/TestDataVisualisationScreen.py:64
 msgid "Couldn't save visualisation"
 msgstr ""
 
-#: GUI/screens/TestDataVisualisationScreen.py:67
+#: GUI/screens/TestDataVisualisationScreen.py:65
 msgid ""
 "Couldn't save the html because the html is outdated and the project is "
 "already closed\n"
 "To fix this refresh the visualisation."
 msgstr ""
 
-#: GUI/screens/TestDataVisualisationScreen.py:348
+#: GUI/screens/TestDataVisualisationScreen.py:159
+msgid "Regenerate the visualisation"
+msgstr ""
+
+#: GUI/screens/TestDataVisualisationScreen.py:171
+msgid "Options to generate the visualisation differently"
+msgstr ""
+
+#: GUI/screens/TestDataVisualisationScreen.py:185
+msgid "Save changes"
+msgstr ""
+
+#: GUI/screens/TestDataVisualisationScreen.py:192
+#: GUI/screens/TestDataVisualisationScreen.py:210
+msgid "Help for data visualisation screen"
+msgstr ""
+
+#: GUI/screens/TestDataVisualisationScreen.py:211
+msgid ""
+"\n"
+"Help voor het gebruik van het datavisualisatie scherm:\n"
+"        \n"
+"- Linker-muisknop inhouden op OTL-asset => slepen\n"
+"- Linker-muisknop op relatie pijl => een versleepbaar gewricht toevoegen\n"
+"- Rechter-muisknop inhouden en slepen in lege ruimte => selectie box om "
+"meerder OTL-assets (+ gewrichten) te selecteren\n"
+"- Ctrl-knop + Linker-muisknop op OTL-asset => toevoegen/verwijderen van "
+"OTL-asset aan selectie\n"
+"        "
+msgstr ""
+
+#: GUI/screens/TestDataVisualisationScreen.py:375
 msgid "Changes saved"
 msgstr ""
 
-#: GUI/screens/TestDataVisualisationScreen.py:351
+#: GUI/screens/TestDataVisualisationScreen.py:378
 msgid "Changes are not saved"
 msgstr ""
 

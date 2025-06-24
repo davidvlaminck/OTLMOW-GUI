@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-06-23 16:42+0200\n"
+"POT-Creation-Date: 2025-06-24 11:58+0200\n"
 "PO-Revision-Date: 2023-10-19 13:11+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en_US\n"
@@ -164,7 +164,10 @@ msgstr "There are still unsaved changes in the visualisation"
 
 #: GUI/MainWindow.py:107 GUI/header/TabWidget.py:65
 msgid "unsaved_graph_changes_warning_text"
-msgstr "The change you made in the data visualisation are not save yet.\n\nDo you wan tot save the changes before you leave the project?"
+msgstr ""
+"The change you made in the data visualisation are not save yet.\n"
+"\n"
+"Do you wan tot save the changes before you leave the project?"
 
 #: GUI/dialog_windows/AddExternalAssetWindow.py:29
 msgid "add_external_asset_title"
@@ -514,13 +517,13 @@ msgstr "File conversion"
 #: GUI/screens/DataVisualisationScreen.py:225 GUI/screens/MapScreen.py:138
 #: GUI/screens/MapScreen.py:181 GUI/screens/MapScreen_test.py:132
 #: GUI/screens/MapScreen_test.py:178
-#: GUI/screens/TestDataVisualisationScreen.py:140
+#: GUI/screens/TestDataVisualisationScreen.py:138
 msgid "relations legend"
 msgstr "Color legend relations:"
 
 #: GUI/screens/DataVisualisationScreen.py:196 GUI/screens/MapScreen.py:166
 #: GUI/screens/MapScreen_test.py:162
-#: GUI/screens/TestDataVisualisationScreen.py:168
+#: GUI/screens/TestDataVisualisationScreen.py:174
 msgid "The visualisation is outdated, refresh to see new changes"
 msgstr "The visualisation is outdated, refresh to see new changes"
 
@@ -599,7 +602,7 @@ msgstr ""
 " project"
 
 #: GUI/screens/MapScreen.py:225 GUI/screens/MapScreen_test.py:210
-#: GUI/screens/TestDataVisualisationScreen.py:260
+#: GUI/screens/TestDataVisualisationScreen.py:287
 msgid ""
 "There are too many assets and relations to create a visualisation.\n"
 "maximum: {0}\n"
@@ -768,11 +771,11 @@ msgstr "Select file type for export"
 msgid "The type of file the template will be created in"
 msgstr "The type of file the template will be created in"
 
-#: GUI/screens/TestDataVisualisationScreen.py:66
+#: GUI/screens/TestDataVisualisationScreen.py:64
 msgid "Couldn't save visualisation"
 msgstr "Couldn't save visualisation"
 
-#: GUI/screens/TestDataVisualisationScreen.py:67
+#: GUI/screens/TestDataVisualisationScreen.py:65
 msgid ""
 "Couldn't save the html because the html is outdated and the project is "
 "already closed\n"
@@ -782,11 +785,49 @@ msgstr ""
 "already closed\n"
 "To fix this refresh the visualisation."
 
-#: GUI/screens/TestDataVisualisationScreen.py:348
+#: GUI/screens/TestDataVisualisationScreen.py:159
+msgid "Regenerate the visualisation"
+msgstr "Regenerate the visualisation"
+
+#: GUI/screens/TestDataVisualisationScreen.py:171
+msgid "Options to generate the visualisation differently"
+msgstr "Opties om de visualisatie anders te genereren"
+
+#: GUI/screens/TestDataVisualisationScreen.py:185
+msgid "Save changes"
+msgstr "Save changes"
+
+#: GUI/screens/TestDataVisualisationScreen.py:192
+#: GUI/screens/TestDataVisualisationScreen.py:210
+msgid "Help for data visualisation screen"
+msgstr "Help for data visualisation screen"
+
+#: GUI/screens/TestDataVisualisationScreen.py:211
+msgid ""
+"\n"
+"Help voor het gebruik van het datavisualisatie scherm:\n"
+"        \n"
+"- Linker-muisknop inhouden op OTL-asset => slepen\n"
+"- Linker-muisknop op relatie pijl => een versleepbaar gewricht toevoegen\n"
+"- Rechter-muisknop inhouden en slepen in lege ruimte => selectie box om "
+"meerder OTL-assets (+ gewrichten) te selecteren\n"
+"- Ctrl-knop + Linker-muisknop op OTL-asset => toevoegen/verwijderen van "
+"OTL-asset aan selectie\n"
+"        "
+msgstr ""
+"Help for the usage of the data visualisation screen\n"
+"        \n"
+"- Holding left-mouse button on OTL-asset/joint => Drag OTL-asset/joint\n"
+"- Left-mouse click on relation arrow => Adds a dragable joint\n"
+"- Holder right-mouse button and dragging in empty space => Creates a selection box to "
+"select multiple OTL-assets (+ joints)\n"
+"- Ctrl-key + left-mouse button on OTL-asset => Add/remove from OTL-asset selection\n"
+
+#: GUI/screens/TestDataVisualisationScreen.py:375
 msgid "Changes saved"
 msgstr "Changes saved"
 
-#: GUI/screens/TestDataVisualisationScreen.py:351
+#: GUI/screens/TestDataVisualisationScreen.py:378
 msgid "Changes are not saved"
 msgstr "Changes are not saved"
 
@@ -1203,3 +1244,4 @@ msgstr "The path to the provided file is not a {0} file with extension ({1})\n"
 #~ "        to replace the original. \n"
 #~ "    2. Change the name of the new file before inserting.\n"
 #~ "            "
+
