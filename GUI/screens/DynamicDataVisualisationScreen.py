@@ -246,6 +246,7 @@ Help voor het gebruik van het datavisualisatie scherm:
         pass
 
     def load_html(self, html_loc):
+
         with open(html_loc) as html_file:
             self.view.setHtml( html_file.read(), QUrl("qrc:///"))
 
@@ -262,12 +263,12 @@ Help voor het gebruik van het datavisualisatie scherm:
 
         self.objects_in_memory = self.load_assets()
 
+        self.fill_frame_layout_legend()
+
         global_vars.current_project.visualisation_uptodate.reset_full_state()
         global_vars.current_project.save_visualisation_uptodate_state()
 
         self.refresh_needed_label.setHidden(True)
-
-        self.fill_frame_layout_legend()
 
         object_count = len(self.objects_in_memory)
 
@@ -331,9 +332,14 @@ Help voor het gebruik van het datavisualisatie scherm:
 
         self.refresh_needed_label.setHidden(True)
 
+    def update_only_legend(self):
+        self.objects_in_memory = self.load_assets()
+        self.fill_frame_layout_legend()
+
     def changed_project(self):
         html_path: Path = self.get_current_html_path()
         if html_path.exists():
+
             self.load_html(html_path)
             global_vars.current_project.visualisation_uptodate.reset_relations_uptodate()
         else:

@@ -346,6 +346,7 @@ class RelationChangeDomain:
         cls.get_screen().fill_object_list(cls.shown_objects)
         cls.get_screen().fill_possible_relations_list(None, {})
         cls.get_screen().fill_existing_relations_list(cls.existing_relations)
+        global_vars.otl_wizard.main_window.step3_visuals.update_only_legend()
 
         cls.map_uptodate = False
 
@@ -1103,6 +1104,8 @@ class RelationChangeDomain:
 
         if cls.selected_object:
             create_task_reraise_exception(cls.set_possible_relations(selected_object=cls.selected_object))
+
+        global_vars.otl_wizard.main_window.step3_visuals.update_only_legend()
 
         OTLLogger.logger.debug("Execute RelationChangeDomain.update_frontend",
                                extra={"timing_ref": f"update_frontend"})
