@@ -29,9 +29,8 @@ class VisualisationHelper:
     @classmethod
     def create_html(cls,html_loc:Path, objects_in_memory: List[OTLObject], vis_mode="standaard visualisatie"):
 
-
         objects_in_memory = deepcopy(objects_in_memory)
-
+        stdVis = None
         if vis_mode == "alternatief 7 visualisatie":
             PyVisWrapper1().show(list_of_objects=objects_in_memory,
                                  html_path=Path(html_loc), launch_html=False)
@@ -63,7 +62,6 @@ class VisualisationHelper:
         else:
             PyVisWrapper().show(list_of_objects=objects_in_memory,
                                 html_path=Path(html_loc), launch_html=False)
-        # os.chdir(previous_cwd)
 
         cls.modify_html(html_loc)
 
@@ -320,15 +318,9 @@ class VisualisationHelper:
 
             if rel_id in vis_wrap.relation_id_to_collection_id:
                 collection_id = vis_wrap.relation_id_to_collection_id.pop(rel_id)
-                vis_wrap.collection_id_to_list_of_relation_ids[collection_id] = [rel_set
-                                                                                          for
-                                                                                          rel_set
-                                                                                          in
-                                                                                          vis_wrap.collection_id_to_list_of_relation_ids[
-                                                                                              collection_id]
-                                                                                          if
-                                                                                          rel_set[
-                                                                                              0] != rel_id]
+                vis_wrap.collection_id_to_list_of_relation_ids[collection_id] = \
+                    [rel_set for rel_set in vis_wrap.collection_id_to_list_of_relation_ids[
+                        collection_id] if rel_set[0] != rel_id]
                 new_label, new_title = cls.create_new_special_node_text(collection_id,vis_wrap)
                 # https://stackoverflow.com/questions/32765015/vis-js-modify-node-properties-on-click
                 js_code = f'network.body.data.nodes.updateOnly({{id: "{collection_id}", label: "{new_label}", title:`{new_title}`}});'
