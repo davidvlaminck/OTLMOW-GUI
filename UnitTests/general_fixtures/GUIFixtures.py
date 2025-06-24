@@ -4,7 +4,7 @@ from unittest.mock import Mock
 from _pytest.fixtures import fixture
 
 from Domain import global_vars
-from GUI.screens.DataVisualisationScreen import DataVisualisationScreen
+from GUI.screens.DynamicDataVisualisationScreen import DynamicDataVisualisationScreen
 from GUI.translation.GlobalTranslate import GlobalTranslate
 
 
@@ -16,6 +16,6 @@ def create_translations() -> None:
 
 @fixture
 def mock_step3_visuals() -> None:
-    step3_visuals = Mock(step3_visuals=DataVisualisationScreen)
+    step3_visuals = Mock(step3_visuals=DynamicDataVisualisationScreen)
     main_window = Mock(step3_visuals=step3_visuals)
     global_vars.otl_wizard = Mock(main_window=main_window)

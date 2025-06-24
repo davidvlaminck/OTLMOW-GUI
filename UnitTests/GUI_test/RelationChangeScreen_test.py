@@ -9,7 +9,7 @@ from otlmow_modelbuilder.SQLDataClasses.OSLORelatie import OSLORelatie
 from pytestqt.plugin import qtbot
 from pytestqt.qtbot import QtBot
 
-from GUI.screens.DataVisualisationScreen import DataVisualisationScreen
+from GUI.screens.DynamicDataVisualisationScreen import DynamicDataVisualisationScreen
 from GUI.screens.InsertDataScreen import InsertDataScreen
 from GUI.screens.RelationChangeScreen import RelationChangeScreen
 from GUI.screens.RelationChange_elements.AbstractInstanceListWidget import \
@@ -55,7 +55,7 @@ def mock_rel_screen(qtbot: QtBot, create_translations) -> RelationChangeScreen:
 
 @fixture
 def mock_step3_visuals() -> None:
-    step3_visuals = Mock(step3_visuals=DataVisualisationScreen)
+    step3_visuals = Mock(step3_visuals=DynamicDataVisualisationScreen)
     main_window = Mock(step3_visuals=step3_visuals)
     global_vars.otl_wizard = Mock(main_window=main_window)
 

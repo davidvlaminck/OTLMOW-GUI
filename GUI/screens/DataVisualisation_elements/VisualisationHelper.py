@@ -4,64 +4,39 @@ from pathlib import Path
 from typing import List
 
 from otlmow_visuals.PyVisWrapper import PyVisWrapper
-from otlmow_visuals.PyVisWrapper1 import PyVisWrapper1
-from otlmow_visuals.PyVisWrapper10 import PyVisWrapper10
-from otlmow_visuals.PyVisWrapper2 import PyVisWrapper2
-from otlmow_visuals.PyVisWrapper3 import PyVisWrapper3
-from otlmow_visuals.PyVisWrapper4 import PyVisWrapper4
-from otlmow_visuals.PyVisWrapper5 import PyVisWrapper5
-from otlmow_visuals.PyVisWrapper6 import PyVisWrapper6
-from otlmow_visuals.PyVisWrapper7 import PyVisWrapper7
-from otlmow_visuals.PyVisWrapper8 import PyVisWrapper8
 
 from Domain.ProgramFileStructure import ProgramFileStructure
 from Domain.logger.OTLLogger import OTLLogger
 from UnitTests.TestModel.OtlmowModel.BaseClasses.OTLObject import OTLObject
-
+import networkx as nx
 
 class VisualisationHelper:
     object_count_limit = 300
 
     @classmethod
     def get_std_vis_wrap_instance(cls):
-        return PyVisWrapper10()
+        return PyVisWrapper()
 
     @classmethod
-    def create_html(cls,html_loc:Path, objects_in_memory: List[OTLObject], vis_mode="standaard visualisatie"):
+    def create_html(cls,html_loc:Path, objects_in_memory: List[OTLObject], vis_mode="1 Hiërarchische visualisatie"):
 
         objects_in_memory = deepcopy(objects_in_memory)
-        stdVis = None
-        if vis_mode == "alternatief 7 visualisatie":
-            PyVisWrapper1().show(list_of_objects=objects_in_memory,
-                                 html_path=Path(html_loc), launch_html=False)
-        elif vis_mode == "alternatief 6 visualisatie":
-            PyVisWrapper2().show(list_of_objects=objects_in_memory,
-                                 html_path=Path(html_loc), launch_html=False)
-        elif vis_mode == "alternatief 5 visualisatie":
-            PyVisWrapper3().show(list_of_objects=objects_in_memory,
-                                 html_path=Path(html_loc), launch_html=False)
-        elif vis_mode == "alternatief 4 visualisatie":
-            PyVisWrapper4().show(list_of_objects=objects_in_memory,
-                                 html_path=Path(html_loc), launch_html=False)
-        elif vis_mode == "alternatief 3 visualisatie":
-            PyVisWrapper5().show(list_of_objects=objects_in_memory,
-                                 html_path=Path(html_loc), launch_html=False)
-        elif vis_mode == "alternatief 2 visualisatie":
-            PyVisWrapper6().show(list_of_objects=objects_in_memory,
-                                 html_path=Path(html_loc), launch_html=False)
-        elif vis_mode == "alternatief 1 visualisatie":
-            PyVisWrapper7().show(list_of_objects=objects_in_memory,
-                                 html_path=Path(html_loc), launch_html=False)
-        elif vis_mode == "standaard visualisatie":
-            stdVis = cls.get_std_vis_wrap_instance()
-            stdVis.show(list_of_objects=objects_in_memory,
-                             html_path=Path(html_loc), launch_html=False)
-        elif vis_mode == "alternatief 0 visualisatie":
-            PyVisWrapper8().show(list_of_objects=objects_in_memory,
-                                 html_path=Path(html_loc), launch_html=False)
-        else:
-            PyVisWrapper().show(list_of_objects=objects_in_memory,
-                                html_path=Path(html_loc), launch_html=False)
+
+        visualisation_option = 1
+        if vis_mode == "1 Hiërarchische visualisatie":
+            visualisation_option = 1
+        elif vis_mode == "2 Spinnenweb visualisatie":
+            visualisation_option= 2
+        elif vis_mode == "3 Shell visualisatie":
+            visualisation_option = 3
+
+
+
+
+
+        stdVis = cls.get_std_vis_wrap_instance()
+        stdVis.show(list_of_objects=objects_in_memory, visualisation_option = visualisation_option,
+                    html_path=Path(html_loc), launch_html=False)
 
         cls.modify_html(html_loc)
 
@@ -163,7 +138,7 @@ class VisualisationHelper:
                 "       network.setOptions(newOptions);",
                 '       newOptions={\"physics\":{\"enabled\":false}};\n',
                 "       network.setOptions(newOptions);",
-                "       sendCurrentCombinedDataToPython()",
+                # "       sendCurrentCombinedDataToPython()",
                 "       isPhysicsOn = false;\n",
                 "   }",
                 "};",

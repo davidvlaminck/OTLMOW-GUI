@@ -88,7 +88,7 @@ class Backend(QObject):
 
 
 
-class TestDataVisualisationScreen(Screen):
+class DynamicDataVisualisationScreen(Screen):
 
     def __init__(self, _):
         super().__init__()
@@ -158,16 +158,9 @@ class TestDataVisualisationScreen(Screen):
         regenerate_btn.clicked.connect(lambda: OverwriteGraphWarningWindow(self,self._))
         regenerate_btn.setToolTip(self._("Regenerate the visualisation"))
 
-        self.visualisation_mode.addItems(["standaard visualisatie",
-                                          "alternatief 0 visualisatie",
-                                          "alternatief 1 visualisatie",
-                                          "alternatief 2 visualisatie",
-                                          "alternatief 3 visualisatie",
-                                          "alternatief 4 visualisatie",
-                                          "alternatief 5 visualisatie",
-                                          "alternatief 6 visualisatie",
-                                          "alternatief 7 visualisatie",
-                                          "vorige"])
+        self.visualisation_mode.addItems(["1 Hiërarchische visualisatie",
+                                          "2 Spinnenweb visualisatie",
+                                          "3 Shell visualisatie"])
         self.visualisation_mode.setToolTip(self._("Options to generate the visualisation differently"))
 
         self.refresh_needed_label.setText(
@@ -318,9 +311,9 @@ Help voor het gebruik van het datavisualisatie scherm:
             self.changed_project()
 
         elif not RelationChangeDomain.is_visualisation_uptodate():
-            if self.visualisation_mode.currentText() != "standaard visualisatie":
-                self.refresh_needed_label.setHidden(False)
-                return
+            # if self.visualisation_mode.currentText() != "standaard visualisatie":
+            #     self.refresh_needed_label.setHidden(False)
+            #     return
 
             to_add_list = global_vars.current_project.visualisation_uptodate.get_to_be_inserted_relations()
             to_remove_list = global_vars.current_project.visualisation_uptodate.get_to_be_removed_relations()
