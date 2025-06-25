@@ -1,3 +1,4 @@
+import asyncio
 import json
 import re
 import sys
@@ -19,12 +20,14 @@ from otlmow_visuals.PyVisWrapper import PyVisWrapper
 from Domain import global_vars
 from Domain.logger.OTLLogger import OTLLogger
 from Domain.step_domain.RelationChangeDomain import RelationChangeDomain
+from GUI.dialog_windows.LoadingImageWindow import add_loading_screen
 from GUI.dialog_windows.NotificationWindow import NotificationWindow
 from GUI.dialog_windows.OverwriteGraphWarningWindow import OverwriteGraphWarningWindow
 from GUI.screens.DataVisualisation_elements.VisualisationHelper import VisualisationHelper
 from GUI.screens.Screen import Screen
 from GUI.screens.general_elements.ButtonWidget import ButtonWidget
 from GUI.translation.GlobalTranslate import GlobalTranslate
+from exception_handler.ExceptionHandlers import create_task_reraise_exception
 
 
 class Backend(QObject):
@@ -77,6 +80,11 @@ class Backend(QObject):
     def receive_network_changed_notification(self):
         self.parent_screen.set_graph_saved_status(False)
 
+    @pyqtSlot()
+    def receive_network_loaded_notification(self):
+        OTLLogger.logger.info("js says network is loaded")
+        self.parent_screen.js_is_loading = False
+        self.parent_screen.loading_graph_status_label.setText("")
 
     @classmethod
     def correct_node_title_attributes(cls, new_node_data_str):
@@ -98,6 +106,7 @@ class DynamicDataVisualisationScreen(Screen):
         # data variables
         self.objects_in_memory = []
         self.std_vis_wrap = None
+        self.js_is_loading = False
 
         # translation model
         self._ = _
@@ -105,6 +114,7 @@ class DynamicDataVisualisationScreen(Screen):
         #smaller support widgets
         self.refresh_needed_label = QLabel()
         self.graph_saved_status_label = QLabel()
+        self.loading_graph_status_label = QLabel()
         self.visualisation_mode = QComboBox()
         self.too_many_objects_message = QLabel()
         self.relation_color_legend_title = QLabel()
@@ -132,6 +142,11 @@ class DynamicDataVisualisationScreen(Screen):
         self.view.settings().setAttribute(QWebEngineSettings.WebAttribute.ShowScrollBars, False)
         self.view.setContentsMargins(0, 0, 0, 0)
         self.view.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+
+
+        self.view.settings().setAttribute( QWebEngineSettings.WebAttribute.LocalContentCanAccessFileUrls, True)
+        self.view.settings().setAttribute(
+            QWebEngineSettings.WebAttribute.LocalContentCanAccessRemoteUrls, True)
 
         self.too_many_objects_message.setVisible(False)
 
@@ -191,6 +206,8 @@ class DynamicDataVisualisationScreen(Screen):
         frame_layout.addWidget(self.visualisation_mode)
         frame_layout.addWidget(self.refresh_needed_label)
         frame_layout.addStretch()
+        frame_layout.addWidget(self.loading_graph_status_label)
+        frame_layout.addStretch()
         frame_layout.addWidget(self.graph_saved_status_label)
         frame_layout.addWidget(save_btn)
         frame_layout.addWidget(help_btn)
@@ -247,9 +264,9 @@ Help voor het gebruik van het datavisualisatie scherm:
 
     def load_html(self, html_loc):
 
-        with open(html_loc) as html_file:
-            self.view.setHtml( html_file.read(), QUrl("qrc:///"))
+        self.loading_graph_status_label.setText(self._("Loading graph"))
 
+        self.view.setUrl(QUrl.fromLocalFile(str(html_loc).replace("\\","/")))
         global_vars.current_project.load_visualisation_uptodate_state()
         self.set_graph_saved_status(True)
 
@@ -385,6 +402,11 @@ Help voor het gebruik van het datavisualisatie scherm:
                   new_relationIdToJointNodes_data:str="",
                   new_SubEdgesToOriginalRelationId_data:str=""
                   ) -> None:
+
+        OTLLogger.logger.debug(
+            f"Executing DataVisualisationScreen.save_html() for project {global_vars.current_project.eigen_referentie}",
+            extra={"timing_ref": f"save_html_{global_vars.current_project.eigen_referentie}"})
+
         with open(file_path) as file:
             file_data = file.read()
 
@@ -430,11 +452,16 @@ Help voor het gebruik van het datavisualisatie scherm:
 
             file_data = cls.disable_hierarchical_options(file_data)
             file_data = cls.disable_physics_option(file_data)
+            file_data = cls.disable_stabilisation_loading_screen(file_data)
 
             with open(file_path,mode="w") as file:
                 file.write(file_data)
 
             OTLLogger.logger.info(f"Saved html to: {file_path}")
+            OTLLogger.logger.debug(
+                f"Executing DataVisualisationScreen.save_html() for project {global_vars.current_project.eigen_referentie}",
+                extra={"timing_ref": f"save_html_{global_vars.current_project.eigen_referentie}"})
+
         else:
             OTLLogger.logger.error(f"FAILED to save html: old node and edge data not found")
 
@@ -447,7 +474,7 @@ Help voor het gebruik van het datavisualisatie scherm:
 
     @classmethod
     def disable_physics_option(cls, file_data):
-        new_physics_setting = ", \"physics\": {\"enabled\": false, "
+        new_physics_setting = ", \"physics\": {\"enabled\": false,\"stabilization\":{\"enabled\": false}, "
         if new_physics_setting not in file_data:
             file_data = file_data.replace(", \"physics\": {", new_physics_setting)
         return file_data
@@ -456,6 +483,15 @@ Help voor het gebruik van het datavisualisatie scherm:
     def disable_hierarchical_options(cls, file_data):
         file_data = file_data.replace("\"hierarchical\": {\"enabled\": true",
                                       "\"hierarchical\": {\"enabled\": false")
+        return file_data
+
+    @classmethod
+    def disable_stabilisation_loading_screen(cls,file_data):
+        new_code = "var network = drawGraph();\ndocument.getElementById('loadingBar').style.display = 'none'"
+        if new_code in file_data:
+            file_data = file_data.replace(
+                "var network = drawGraph();" ,
+                 new_code)
         return file_data
 
     @classmethod

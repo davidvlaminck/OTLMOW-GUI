@@ -11,7 +11,7 @@ from UnitTests.TestModel.OtlmowModel.BaseClasses.OTLObject import OTLObject
 import networkx as nx
 
 class VisualisationHelper:
-    object_count_limit = 300
+    object_count_limit = 100000
 
     @classmethod
     def get_std_vis_wrap_instance(cls):
@@ -82,6 +82,15 @@ class VisualisationHelper:
                         """     new QWebChannel(qt.webChannelTransport, function(channel) 
                                 {
                                     window.backend = channel.objects.backend;
+                                    
+                                    if (window.backend)   
+                                    {window.backend.receive_network_loaded_notification();}
+                                    else
+                                    { 
+                                       alert('window.backend.receive_network_loaded_notification() doesnt exist yet');
+                                       console.log('QWebChannel is not initialized yet.');
+                                    }
+                                    
                                 });""",
                         "   } ",
                         "   catch (error) ",
@@ -89,6 +98,7 @@ class VisualisationHelper:
                         "       console.error(error);",
                         # '       alert("DataVisualisationScreen:Error in webchannel creation: " + error);',
                         "   }",
+
                         "})"]
 
             add_data.extend(cls.create_disablePhysics_js_function_and_add_to_event())
@@ -102,9 +112,8 @@ class VisualisationHelper:
             add_data.extend(cls.load_js_script_file("dragMultiSelect.js"))
 
             cls.replace_and_add_lines(file_data, replace_index,
-                                      "drawGraph();",
-                                      "var network = drawGraph();",
-                                      add_data)
+              "drawGraph();",
+              "var network = drawGraph();\n  document.getElementById('loadingBar').style.display = 'none';\n",add_data)
 
         with open(file_path, 'w') as file:
             for line in file_data:

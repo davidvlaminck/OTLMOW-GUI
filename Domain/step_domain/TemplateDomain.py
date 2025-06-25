@@ -207,7 +207,8 @@ class TemplateDomain:
                                              add_geo_artefact=geometry_column_added,
                                              add_attribute_info=export_attribute_info,
                                              highlight_deprecated_attributes=highlight_deprecated_attributes,
-                                             amount_of_examples=amount_of_examples)
+                                             amount_of_examples=amount_of_examples,
+                                             )
         if ".xlsx" in str(document_path):
             if platform.system() == 'Linux':
                 os.open(document_path, os.O_WRONLY)

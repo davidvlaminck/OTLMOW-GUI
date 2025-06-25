@@ -106,9 +106,12 @@ class MapScreen(Screen):
         self.web_bridge = WebBridge(self.map)
         self.channel.registerObject("webBridge", self.web_bridge)
 
-        with open(map_path, 'r', encoding='utf-8') as f:
-            html_content = f.read()
-        self.webView.setHtml(html_content)
+        # with open(map_path, 'r', encoding='utf-8') as f:
+        #     html_content = f.read()
+        # self.webView.setHtml(html_content)
+        map_QUrl = QUrl.fromLocalFile(map_path.replace("\\", "/"))
+        self.webView.setUrl(map_QUrl)
+        OTLLogger.logger.debug(map_QUrl.toString())
 
         self.webView.page().setWebChannel(self.channel)
 
@@ -132,7 +135,10 @@ class MapScreen(Screen):
         self.webView.settings().setAttribute(QWebEngineSettings.WebAttribute.ShowScrollBars, False)
         self.webView.setContentsMargins(0, 0, 0, 0)
         self.webView.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
-
+        self.webView.settings().setAttribute(
+            QWebEngineSettings.WebAttribute.LocalContentCanAccessFileUrls, True)
+        self.webView.settings().setAttribute(
+            QWebEngineSettings.WebAttribute.LocalContentCanAccessRemoteUrls, True)
         self.too_many_objects_message.setVisible(False)
 
         self.color_label_title.setText(self._("relations legend") + ":")
@@ -198,7 +204,11 @@ class MapScreen(Screen):
         map_path, self.map , self.map_id = await MapHelper.create_html_map(self.relation_change_screen_object_list_content_dict,
                                                                      ROOT_DIR, HTML_DIR,self.prev_selected_asset_id)
         self.web_bridge.folium_map = self.map
-        self.webView.setHtml(open(map_path).read())
+        # self.webView.setHtml(open(map_path).read())
+        map_QUrl = QUrl.fromLocalFile(map_path.replace("\\", "/"))
+        self.webView.setUrl(map_QUrl)
+        OTLLogger.logger.debug(map_QUrl.toString())
+
         # self.webView.page().setWebChannel(self.channel)
 
         first_coordinate = None
@@ -238,8 +248,10 @@ class MapScreen(Screen):
                                 html_path=Path(html_loc), launch_html=False)
             os.chdir(previous_cwd)
             resources =  QUrl().fromLocalFile((os.path.dirname(os.path.realpath(__file__))))
-
-            self.webView.setHtml(open(html_loc).read(),resources)
+            map_QUrl = QUrl.fromLocalFile(str(html_loc).replace("\\", "/"))
+            self.webView.setUrl(map_QUrl)
+            OTLLogger.logger.debug(map_QUrl.toString())
+            # self.webView.setHtml(open(html_loc).read(),resources)
 
     def opened(self):
         self.check_if_refresh_message_is_needed()
