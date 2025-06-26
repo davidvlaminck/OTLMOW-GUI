@@ -1407,7 +1407,7 @@ class RelationChangeDomain:
         cls.shown_objects.append(new_external_object)
 
         cls.regenerate_relation_types = True
-        cls.update_frontend()
+
         
     @classmethod
     def is_visualisation_uptodate(cls):

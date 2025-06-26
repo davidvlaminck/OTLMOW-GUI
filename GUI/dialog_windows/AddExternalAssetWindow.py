@@ -74,6 +74,7 @@ class AddExternalAssetWindow:
         type_uri = Helpers.all_OTL_asset_types_dict[combobox_choice]
 
         RelationChangeDomain.create_and_add_new_external_asset(id_or_name=id_or_name, type_uri=type_uri)
+        RelationChangeDomain.update_frontend()
         dialog_window.close()
 
     def create_button_box(self):
