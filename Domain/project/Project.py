@@ -1105,11 +1105,50 @@ class Project:
 
         :return: None
         """
-
-        self.eigen_referentie = new_eigen_ref
+        # check if there is a difference avoid unnecessary renaming of folders
+        if new_eigen_ref != self.eigen_referentie:
+            # include the new_subset_path so it can be changed to the new folder name if it is the old subset
+            new_subset_path = self.update_eigen_referentie(new_eigen_ref,new_subset_path)
         self.bestek = new_bestek
         self.change_subset(new_subset_path)
         self.update_last_alter_time()
+
+
+    def update_eigen_referentie(self,new_eigen_ref:str, new_subset_path:Path=None ) -> Path:
+        new_project_path = Path(ProgramFileStructure.get_otl_wizard_projects_dir() / new_eigen_ref)
+        try:
+            if new_project_path.exists():
+                raise FileExistsError
+            shutil.move(self.project_path, new_project_path)
+        except FileExistsError as ex:
+            OTLLogger.logger.error("Project dir %s already exists", new_project_path)
+            raise ProjectExistsError(eigen_referentie=new_eigen_ref)
+        except PermissionError as ex:
+            OTLLogger.logger.error("No permission to rename ", self.project_path)
+            raise ex
+
+        # try:
+        #     shutil.copytree(self.project_path, new_project_path)
+        # except FileExistsError as ex:
+        #     OTLLogger.logger.error("Project dir %s already exists", new_project_path)
+        #     raise ProjectExistsError(eigen_referentie=new_eigen_ref)
+
+        # delete the original path
+        # self.delete_project_dir_by_path()
+
+        # change the new subset path otherwise change the old one
+        if not new_subset_path:
+            new_subset_path = self.subset_path
+        elif new_subset_path == self.subset_path:
+            new_subset_path = new_project_path / self.subset_path.name
+
+
+        # make sure the current data is correctly renamed before updating the projects attributes
+        self.eigen_referentie = new_eigen_ref
+        self.project_path = new_project_path
+
+        return new_subset_path
+
 
     def update_last_alter_time(self):
         """
