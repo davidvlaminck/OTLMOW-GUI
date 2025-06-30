@@ -177,7 +177,7 @@ class VisualisationHelper:
         return ["function sendCurrentCombinedDataToPython()",
                 "{",
                 '   network.storePositions() // alters the data in network.body.data.nodes with the current coordinates so i can be read and stored',
-                '   console.log("called storePositions()")',
+                # '   console.log("called storePositions()")',
                 "   var nodeList = ExtractNodeList();    //nodes and their position (including edgeJointNodes)",
                 "   var edgeList = ExtractEdgeList();    //edges (including subEdges)",
                 "   ",
@@ -195,7 +195,7 @@ class VisualisationHelper:
                 "                       'SubEdgesToOriginalRelationIdList': SubEdgesToOriginalRelationIdList"
                 "                       }",
                 '   var combinedDataStr = JSON.stringify(combinedData)',
-                '   console.log(combinedDataStr)',
+                # '   console.log(combinedDataStr)',
                 # '   alert("DataVisualisationScreen: " + combinedDataStr);'
                 "   if (window.backend)",
                 "   {",
@@ -293,6 +293,35 @@ class VisualisationHelper:
                 '      {console.log("attempted to remove: " + id)}',
                 '}']
 
+    @classmethod
+    def create_removeEdgeJointNode_js_function(cls):
+        return ['function removeEdgeJointNode(id)',
+                '{',
+                '  if (network.body.data.edges._data.has(id))',
+                '       applyRemoveEdgesFromNetwork([id]);//defined in PyViswrapper',
+                '  else if (!relationIdToSubEdges)',
+                '      console.log("attempted to remove: " + id)',
+                '  else if (relationIdToSubEdges.has(id))',
+                '  {',
+                '      //remove all selfmade subEdges and jointNodes that the original relations was replaced with',
+                '      subEdges = relationIdToSubEdges.get(id)',
+                '      jointNodes = relationIdToJointNodes.get(id)',
+                '      ',
+                '      applyRemoveEdgesFromNetwork(subEdges); //defined in PyViswrapper',
+                '      applyRemoveNodesFromNetwork(jointNodes); //defined in PyViswrapper',
+                '      ',
+                '      //remove stored data on subedges and jointnodes',
+                '      subEdges.forEach((subEdgeId) =>',
+                '      {',
+                '          SubEdgesToOriginalRelationId.delete(subEdgeId);',
+                '      })',
+                '      relationIdToTotalSubEdgeCount.delete(id);',
+                '      relationIdToSubEdges.delete(id);',
+                '      relationIdToJointNodes.delete(id);',
+                '  }',
+                '  else',
+                '      {console.log("attempted to remove: " + id)}',
+                '}']
 
     @classmethod
     def remove_relations(cls,to_remove_list, vis_wrap, webview):

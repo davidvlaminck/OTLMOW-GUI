@@ -51,6 +51,10 @@ function rectangle_mousedown(evt){
             endY: pageY - container.offsetTop
         });
         drag = true;
+
+        node_id_when_last_right_click_down = currentlyHoveredNode;
+
+        console.log("rectangle_mousedown drag: " + drag  + " nodeid: " + node_id_when_last_right_click_down)
     }
 }
 
@@ -65,6 +69,7 @@ function rectangle_mousedrag(evt){
         drag = false;
         network.redraw();
     } else if(drag) {
+        drag_happened = true
         // When mousemove, update the rectangle state
         Object.assign(DOMRect, {
             endX: pageX - container.offsetLeft,
@@ -72,6 +77,8 @@ function rectangle_mousedrag(evt){
         });
         network.redraw();
     }
+
+    console.log("rectangle_mousedrag drag: " + drag )
 }
 
 function rectangle_mouseup(evt){
@@ -83,10 +90,30 @@ function rectangle_mouseup(evt){
 
     // When mouseup, select the nodes in the rectangle
     if(which === RIGHT_CLICK) {
+        if(drag && drag_happened)
+        {
+            //if the user dragged then a rectangle was drawn and elements need to be selected
+            network.redraw();
+            selectFromDOMRect();
+            drag_happened = false
+        }
+        else
+        {
+            node_id_at_mouse_up = currentlyHoveredNode;
+            if( node_id_at_mouse_up &&
+                node_id_when_last_right_click_down  == node_id_at_mouse_up &&
+                node_id_at_mouse_up.includes('edgeJoint'))
+            {
+
+                console.log("need to remove node: " + node_id_at_mouse_up)
+            }
+        }
+        node_id_when_last_right_click_down = null;
         drag = false;
-        network.redraw();
-        selectFromDOMRect();
+        console.log("rectangle_mouseup drag: " + drag )
+
     }
+
 }
 
 function draw_rectangle_on_network(ctx){
@@ -107,7 +134,9 @@ function draw_rectangle_on_network(ctx){
 
 function makeMeMultiSelect(container, network) {
     // State
+    node_id_when_last_right_click_down = null;
     drag = false;
+    drag_happened = false;
     DOMRect = {};
 
     // Disable default right-click dropdown menu
