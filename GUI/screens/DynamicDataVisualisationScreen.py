@@ -54,10 +54,10 @@ class Backend(QObject):
         new_relationIdToTotalSubEdgeCountList_data_str = json.dumps(data['relationIdToTotalSubEdgeCountList']) #data supporting dynamic removal functionality
         new_relationIdToJointNodesList_data_str = json.dumps(data['relationIdToJointNodesList']) #data supporting dynamic removal functionality
         new_SubEdgesToOriginalRelationIdList_data_str = json.dumps(data['SubEdgesToOriginalRelationIdList']) #data supporting dynamic removal functionality
-        edgeJointNodesIdToConnectionDataDictList_data_str = json.dumps(data[
+        new_edgeJointNodesIdToConnectionDataDictList_data_str = json.dumps(data[
                                                                        'edgeJointNodesIdToConnectionDataDictList'])  # data supporting right-click edgeJointNode removal functionality
 
-        OTLLogger.logger.debug(edgeJointNodesIdToConnectionDataDictList_data_str)
+        OTLLogger.logger.debug(new_edgeJointNodesIdToConnectionDataDictList_data_str)
 
         new_node_data_str = self.correct_node_title_attributes(new_node_data_str)
 
@@ -79,7 +79,8 @@ class Backend(QObject):
                                      new_relationIdToSubEdges_data=new_relationIdToSubEdges_data_str,
                                      new_relationIdToTotalSubEdgeCount_data=new_relationIdToTotalSubEdgeCountList_data_str,
                                      new_relationIdToJointNodes_data=new_relationIdToJointNodesList_data_str,
-                                     new_SubEdgesToOriginalRelationId_data=new_SubEdgesToOriginalRelationIdList_data_str)
+                                     new_SubEdgesToOriginalRelationId_data=new_SubEdgesToOriginalRelationIdList_data_str,
+                                     new_edgeJointNodesIdToConnectionDataDict_data=new_edgeJointNodesIdToConnectionDataDictList_data_str)
     @pyqtSlot()
     def receive_network_changed_notification(self):
         self.parent_screen.set_graph_saved_status(False)
@@ -404,7 +405,8 @@ Help voor het gebruik van het datavisualisatie scherm:
                   new_relationIdToSubEdges_data:str="",
                   new_relationIdToTotalSubEdgeCount_data:str="",
                   new_relationIdToJointNodes_data:str="",
-                  new_SubEdgesToOriginalRelationId_data:str=""
+                  new_SubEdgesToOriginalRelationId_data:str="",
+                  new_edgeJointNodesIdToConnectionDataDict_data:str=""
                   ) -> None:
 
         OTLLogger.logger.debug(
@@ -429,6 +431,9 @@ Help voor het gebruik van het datavisualisatie scherm:
         old_SubEdgesToOriginalRelationId_data = cls.extract_support_data(
             variable_name="SubEdgesToOriginalRelationId",
             file_data=file_data)
+        old_edgeJointNodesIdToConnectionDataDict_data = cls.extract_support_data(
+            variable_name="edgeJointNodesIdToConnectionDataDict",
+            file_data=file_data)
 
         if old_node_data and old_edge_data:
 
@@ -452,6 +457,10 @@ Help voor het gebruik van het datavisualisatie scherm:
             file_data = cls.replace_support_data(variable_name="SubEdgesToOriginalRelationId",
                                                  old_data=old_SubEdgesToOriginalRelationId_data,
                                                  new_data=new_SubEdgesToOriginalRelationId_data,
+                                                 file_data=file_data)
+            file_data = cls.replace_support_data(variable_name="edgeJointNodesIdToConnectionDataDict",
+                                                 old_data=old_edgeJointNodesIdToConnectionDataDict_data,
+                                                 new_data=new_edgeJointNodesIdToConnectionDataDict_data,
                                                  file_data=file_data)
 
             file_data = cls.disable_hierarchical_options(file_data)
