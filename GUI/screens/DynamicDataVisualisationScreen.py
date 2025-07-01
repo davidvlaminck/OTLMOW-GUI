@@ -54,6 +54,10 @@ class Backend(QObject):
         new_relationIdToTotalSubEdgeCountList_data_str = json.dumps(data['relationIdToTotalSubEdgeCountList']) #data supporting dynamic removal functionality
         new_relationIdToJointNodesList_data_str = json.dumps(data['relationIdToJointNodesList']) #data supporting dynamic removal functionality
         new_SubEdgesToOriginalRelationIdList_data_str = json.dumps(data['SubEdgesToOriginalRelationIdList']) #data supporting dynamic removal functionality
+        edgeJointNodesIdToConnectionDataDictList_data_str = json.dumps(data[
+                                                                       'edgeJointNodesIdToConnectionDataDictList'])  # data supporting right-click edgeJointNode removal functionality
+
+        OTLLogger.logger.debug(edgeJointNodesIdToConnectionDataDictList_data_str)
 
         new_node_data_str = self.correct_node_title_attributes(new_node_data_str)
 

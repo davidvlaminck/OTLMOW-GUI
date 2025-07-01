@@ -148,7 +148,7 @@ class VisualisationHelper:
                 "       network.setOptions(newOptions);",
                 '       newOptions={\"physics\":{\"enabled\":false}};\n',
                 "       network.setOptions(newOptions);",
-                # "       sendCurrentCombinedDataToPython()",
+                "       sendCurrentCombinedDataToPython()",
                 "       isPhysicsOn = false;\n",
                 "   }",
                 "};",
@@ -186,14 +186,17 @@ class VisualisationHelper:
                 "   var relationIdToTotalSubEdgeCountList = Array.from(relationIdToTotalSubEdgeCount.entries());   //data supporting dynamic removal functionality",
                 "   var relationIdToJointNodesList = Array.from(relationIdToJointNodes.entries());   //data supporting dynamic removal functionality",
                 "   var SubEdgesToOriginalRelationIdList = Array.from(SubEdgesToOriginalRelationId.entries());   //data supporting dynamic removal functionality",
+                "   var edgeJointNodesIdToConnectionDataDictList = Array.from(edgeJointNodesIdToConnectionDataDict.entries());   //data supporting right-click edgeJointNode removal functionality",
                 "   ",
+                # "   var edgeJointNodesIdToConnectionDataDictList = JSON.parse(edgeJointNodesIdToConnectionDataDict;   //data supporting right-click edgeJointNode removal functionality",
                 "   var combinedData = {'html_path': html_path,"
                 "                       'nodeList': nodeList,"
                 "                       'edgeList': edgeList,"
                 "                       'relationIdToSubEdgesList':relationIdToSubEdgesList,"
                 "                       'relationIdToTotalSubEdgeCountList': relationIdToTotalSubEdgeCountList,"
                 "                       'relationIdToJointNodesList': relationIdToJointNodesList,"
-                "                       'SubEdgesToOriginalRelationIdList': SubEdgesToOriginalRelationIdList"
+                "                       'SubEdgesToOriginalRelationIdList': SubEdgesToOriginalRelationIdList,"
+                "                       'edgeJointNodesIdToConnectionDataDictList' : edgeJointNodesIdToConnectionDataDictList"
                 "                       }",
                 '   var combinedDataStr = JSON.stringify(combinedData)',
                 # '   console.log(combinedDataStr)',
@@ -316,21 +319,14 @@ class VisualisationHelper:
                 '       //also remove them from supporting data'
                 '       SubEdgesToOriginalRelationId.delete(subEdge1Id);',
                 '       SubEdgesToOriginalRelationId.delete(subEdge2Id);',
-                '       if(originalEdgeId != previousEdgeId)',
-                '       {',
-                '           var currCount = relationIdToTotalSubEdgeCount.get(originalEdgeId);',
-                '           relationIdToTotalSubEdgeCount.set(originalEdgeId, currCount-1);',
-                '           relationIdToSubEdges.get(originalEdgeId).splice(subEdge1Id,1);'
-                '           relationIdToSubEdges.get(originalEdgeId).splice(subEdge2Id,1);'
-                '           '
-                '           relationIdToSubEdges.get(originalEdgeId).push(previousEdgeId)',
-                '           SubEdgesToOriginalRelationId.set(previousEdgeId,originalEdgeId);',
-                '       }',
-                '       else',
-                '       {',
-                '           relationIdToTotalSubEdgeCount.delete(originalEdgeId);',
-                '           relationIdToSubEdges.delete(originalEdgeId);',
-                '       }',
+
+                '       var currCount = relationIdToTotalSubEdgeCount.get(originalEdgeId);',
+                '       relationIdToTotalSubEdgeCount.set(originalEdgeId, currCount-1);',
+                '       relationIdToSubEdges.get(originalEdgeId).splice(subEdge1Id,1);',
+                '       relationIdToSubEdges.get(originalEdgeId).splice(subEdge2Id,1);',
+                '       relationIdToSubEdges.get(originalEdgeId).push(previousEdgeId)',
+                '       SubEdgesToOriginalRelationId.set(previousEdgeId,originalEdgeId);',
+
                 '       //add a new subedge with originalEdgeId between the to and from node',
                 '       newEdgeAttributes.id = previousEdgeId;'   ,
                 '       newEdgeAttributes.to = toNodeId;',
@@ -346,10 +342,22 @@ class VisualisationHelper:
                 '       updateConnectingEdgeOnNeighbouringEdgeJointNode(fromNodeId,subEdge1Id,previousEdgeId)',
                 '       updateConnectingEdgeOnNeighbouringEdgeJointNode(fromNodeId,subEdge2Id,previousEdgeId)',
                 '       ' ,
+                '   console.log("remove edge jointnode")',
+                'edgeJointNodesIdToConnectionDataDict.forEach((data,key) =>',
+                '      {',
+                '         console.log(key +": " + JSON.stringify(data))',
+                '      })',
+                '   console.log(" network.body.data.edges:\\n ")',
+                'network.body.data.edges._data.forEach((data,key) =>',
+                '      {',
+                '         console.log(key +": " + JSON.stringify(data))',
+                '      })',
+                 # '   console.log(" edges:\\n "+  Array.from(network.body.data.edges._data.entries()))',
                 '       //remove edgeJointNode from supporting data',
                 '       relationIdToJointNodes.delete(node_id);',
                 '       //remove edgeJointNode from network',
                 '       applyRemoveNodesFromNetwork([node_id])',
+                '       currentlyHoveredNode = null',
                 '   }',
                 '}',
 
