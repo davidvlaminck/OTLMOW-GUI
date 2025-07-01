@@ -108,6 +108,7 @@ class VisualisationHelper:
             add_data.extend(cls.create_AddEdge_js_function())
             add_data.extend(cls.create_AddEdgeWithLabel_js_function())
             add_data.extend(cls.create_removeEdge_js_function())
+            add_data.extend(cls.create_removeEdgeJointNode_js_function())
 
             add_data.extend(cls.load_js_script_file("dragMultiSelect.js"))
 
@@ -295,33 +296,64 @@ class VisualisationHelper:
 
     @classmethod
     def create_removeEdgeJointNode_js_function(cls):
-        return ['function removeEdgeJointNode(id)',
+        return ['function removeEdgeJointNode(node_id)',
                 '{',
-                '  if (network.body.data.edges._data.has(id))',
-                '       applyRemoveEdgesFromNetwork([id]);//defined in PyViswrapper',
-                '  else if (!relationIdToSubEdges)',
-                '      console.log("attempted to remove: " + id)',
-                '  else if (relationIdToSubEdges.has(id))',
-                '  {',
-                '      //remove all selfmade subEdges and jointNodes that the original relations was replaced with',
-                '      subEdges = relationIdToSubEdges.get(id)',
-                '      jointNodes = relationIdToJointNodes.get(id)',
-                '      ',
-                '      applyRemoveEdgesFromNetwork(subEdges); //defined in PyViswrapper',
-                '      applyRemoveNodesFromNetwork(jointNodes); //defined in PyViswrapper',
-                '      ',
-                '      //remove stored data on subedges and jointnodes',
-                '      subEdges.forEach((subEdgeId) =>',
-                '      {',
-                '          SubEdgesToOriginalRelationId.delete(subEdgeId);',
-                '      })',
-                '      relationIdToTotalSubEdgeCount.delete(id);',
-                '      relationIdToSubEdges.delete(id);',
-                '      relationIdToJointNodes.delete(id);',
-                '  }',
-                '  else',
-                '      {console.log("attempted to remove: " + id)}',
-                '}']
+                '   if (edgeJointNodesIdToConnectionDataDict.has(node_id))',
+                '   {',
+                '       var edgeNodeConnectionData = edgeJointNodesIdToConnectionDataDict.get(node_id);',
+                '       var originalEdgeId = edgeNodeConnectionData["originalEdgeId"]; ',
+                '       var previousEdgeId = edgeNodeConnectionData["previousEdgeId"];',
+                '       var subEdge1Id = edgeNodeConnectionData["newSubEdge1Id"]; ',
+                '       var subEdge2Id = edgeNodeConnectionData["newSubEdge2Id"]; ',
+                '       var toNodeId = edgeNodeConnectionData["newSubEdge1Data.to"]; ',
+                '       var fromNodeId = edgeNodeConnectionData["newSubEdge2Data.from"]; ',
+                '       ',
+                '       //get attribute of a subedge',
+                '       newEdgeAttributes = JSON.parse(JSON.stringify(network.body.data.edges._data.get(subEdge1Id)));',
+                '       //remove the 2 subedges in network',
+                '       applyRemoveEdgesFromNetwork([subEdge1Id,subEdge2Id]);',
+                '       ',
+                '       //also remove them from supporting data'
+                '       SubEdgesToOriginalRelationId.delete(subEdge1Id);',
+                '       SubEdgesToOriginalRelationId.delete(subEdge2Id);',
+                '       if(originalEdgeId != previousEdgeId)',
+                '       {',
+                '           var currCount = relationIdToTotalSubEdgeCount.get(originalEdgeId);',
+                '           relationIdToTotalSubEdgeCount.set(originalEdgeId, currCount-1);',
+                '           relationIdToSubEdges.get(originalEdgeId).splice(subEdge1Id,1);'
+                '           relationIdToSubEdges.get(originalEdgeId).splice(subEdge2Id,1);'
+                '           '
+                '           relationIdToSubEdges.get(originalEdgeId).push(previousEdgeId)',
+                '           SubEdgesToOriginalRelationId.set(previousEdgeId,originalEdgeId);',
+                '       }',
+                '       else',
+                '       {',
+                '           relationIdToTotalSubEdgeCount.delete(originalEdgeId);',
+                '           relationIdToSubEdges.delete(originalEdgeId);',
+                '       }',
+                '       //add a new subedge with originalEdgeId between the to and from node',
+                '       newEdgeAttributes.id = previousEdgeId;'   ,
+                '       newEdgeAttributes.to = toNodeId;',
+                '       newEdgeAttributes.from = fromNodeId; ',
+                "       applyAddEdgesToNetwork([newEdgeAttributes])",
+                '       ',
+                '       //edit supporting data of the to and from nodes so they have the correct',
+                '       //to and from themselves',
+                '       updateNeighbouringEdgeJointNode(toNodeId, node_id, fromNodeId)',
+                '       updateNeighbouringEdgeJointNode(fromNodeId, node_id, toNodeId)',
+                '       updateConnectingEdgeOnNeighbouringEdgeJointNode(toNodeId,subEdge1Id,previousEdgeId)',
+                '       updateConnectingEdgeOnNeighbouringEdgeJointNode(toNodeId,subEdge2Id,previousEdgeId)',
+                '       updateConnectingEdgeOnNeighbouringEdgeJointNode(fromNodeId,subEdge1Id,previousEdgeId)',
+                '       updateConnectingEdgeOnNeighbouringEdgeJointNode(fromNodeId,subEdge2Id,previousEdgeId)',
+                '       ' ,
+                '       //remove edgeJointNode from supporting data',
+                '       relationIdToJointNodes.delete(node_id);',
+                '       //remove edgeJointNode from network',
+                '       applyRemoveNodesFromNetwork([node_id])',
+                '   }',
+                '}',
+
+                ]
 
     @classmethod
     def remove_relations(cls,to_remove_list, vis_wrap, webview):

@@ -106,6 +106,7 @@ function rectangle_mouseup(evt){
             {
 
                 console.log("need to remove node: " + node_id_at_mouse_up)
+                removeEdgeJointNode(node_id_at_mouse_up)
             }
         }
         node_id_when_last_right_click_down = null;
