@@ -53,8 +53,6 @@ function rectangle_mousedown(evt){
         drag = true;
 
         node_id_when_last_right_click_down = currentlyHoveredNode;
-
-        console.log("rectangle_mousedown drag: " + drag  + " nodeid: " + node_id_when_last_right_click_down)
     }
 }
 
@@ -78,7 +76,6 @@ function rectangle_mousedrag(evt){
         network.redraw();
     }
 
-    console.log("rectangle_mousedrag drag: " + drag )
 }
 
 function rectangle_mouseup(evt){
@@ -104,14 +101,12 @@ function rectangle_mouseup(evt){
                 node_id_when_last_right_click_down  == node_id_at_mouse_up &&
                 node_id_at_mouse_up.includes('edgeJoint'))
             {
-
-                console.log("need to remove node: " + node_id_at_mouse_up)
                 removeEdgeJointNode(node_id_at_mouse_up)
             }
         }
         node_id_when_last_right_click_down = null;
         drag = false;
-        console.log("rectangle_mouseup drag: " + drag )
+
 
     }
 
