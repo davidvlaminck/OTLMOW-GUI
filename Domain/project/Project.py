@@ -49,6 +49,9 @@ class Project:
     project_files_foldername = 'project_files'
     old_project_files_foldername = 'OTL-template-files' # for legacy compatibility
     quick_saves_foldername =  "quick_saves"
+    visualisation_foldername = "visuals"
+    visualisation_filename = "graph_visualisation.html"
+    visualisation_uptodate_filename = "visuals_uptodate_state.json"
 
     max_days_quicksave_stored = 7
     quicksave_date_format = "%y%m%d_%H%M%S"
@@ -100,7 +103,6 @@ class Project:
         #status tracking if the visualisation is uptodate with changes in relations and OTL-assets
         self.visualisation_uptodate: VisualisationStateTracker = VisualisationStateTracker()
         self.graph_saved_status: bool = True # status tracking if graph changes are written to html
-
 
     @classmethod
     def load_project(cls, project_path: Path = None):
@@ -195,7 +197,7 @@ class Project:
         return otl_wizard_project_dir / self.project_path.name
 
     def get_current_visuals_folder_path(self) -> Path:
-        visuals_folder = global_vars.current_project.get_project_local_path() / "visuals"
+        visuals_folder = global_vars.current_project.get_project_local_path() / self.visualisation_foldername
 
         if not visuals_folder.exists():
             os.makedirs(visuals_folder, exist_ok=True)
@@ -203,10 +205,10 @@ class Project:
         return visuals_folder
 
     def get_current_visuals_html_path(self) -> Path:
-        return self.get_current_visuals_folder_path() / "graph_visualisation.html"
+        return self.get_current_visuals_folder_path() / self.visualisation_filename
 
     def get_current_visuals_uptodate_state_path(self) -> Path:
-        visuals_uptodate_state_path = self.get_current_visuals_folder_path() / "visuals_uptodate_state.json"
+        visuals_uptodate_state_path = self.get_current_visuals_folder_path() / self.visualisation_uptodate_filename
 
         if not visuals_uptodate_state_path.exists():
             with open(visuals_uptodate_state_path,"w") as file:
