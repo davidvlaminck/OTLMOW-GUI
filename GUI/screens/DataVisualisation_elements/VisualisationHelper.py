@@ -29,7 +29,8 @@ class VisualisationHelper:
             visualisation_option= 2
         elif vis_mode == "3 Shell visualisatie":
             visualisation_option = 3
-
+        elif vis_mode == "4 Oude hiërarchische visualisatie":
+            visualisation_option = 4
 
 
 
