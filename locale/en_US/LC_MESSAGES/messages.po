@@ -578,12 +578,14 @@ msgid ""
 msgstr ""
 "Help for the usage of the data visualisation screen\n"
 "        \n"
+"- Holding left-mouse button and dragging in empty space => pan view\n"
 "- Holding left-mouse button on OTL-asset/joint => Drag OTL-asset/joint\n"
 "- Left-mouse click on relation arrow => Adds a dragable joint\n"
-"- Holder right-mouse button and dragging in empty space => Creates a "
+"- Holding right-mouse button and dragging in empty space => Creates a "
 "selection box to select multiple OTL-assets (+ joints)\n"
 "- Ctrl-key + left-mouse button on OTL-asset => Add/remove from OTL-asset "
 "selection\n"
+"- Right-mouse click on dragable joint => Remove joint\n"
 
 #: GUI/screens/DynamicDataVisualisationScreen.py:281
 #: GUI/screens/MapScreen.py:225 GUI/screens/MapScreen_test.py:210
