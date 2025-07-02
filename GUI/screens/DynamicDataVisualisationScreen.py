@@ -61,17 +61,14 @@ class Backend(QObject):
 
         new_node_data_str = self.correct_node_title_attributes(new_node_data_str)
 
-        if "html_path" in data:
-            html_path = Path(data["html_path"])# the html_path added to the html incase tha project is already set to None
-        else:
-            try:
-                html_path = self.parent_screen.get_current_html_path()
-            except:
-                OTLLogger.logger.error("Couldn't save the html because the html is outdated and the project is already closed")
-                notification = NotificationWindow(title=GlobalTranslate._("Couldn't save visualisation"),
-                                                  message=GlobalTranslate._("Couldn't save the html because the html is outdated and the project is already closed\nTo fix this refresh the visualisation."))
-                notification.exec()
-                return
+        try:
+            html_path = self.parent_screen.get_current_html_path()
+        except:
+            OTLLogger.logger.error("Couldn't save the html because the html is outdated and the project is already closed")
+            notification = NotificationWindow(title=GlobalTranslate._("Couldn't save visualisation"),
+                                              message=GlobalTranslate._("Couldn't save the html because the html is outdated and the project is already closed\nTo fix this refresh the visualisation."))
+            notification.exec()
+            return
 
         self.parent_screen.save_html(file_path=html_path,
                                      new_node_data=new_node_data_str,

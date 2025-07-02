@@ -197,7 +197,7 @@ class Project:
         return otl_wizard_project_dir / self.project_path.name
 
     def get_current_visuals_folder_path(self) -> Path:
-        visuals_folder = global_vars.current_project.get_project_local_path() / self.visualisation_foldername
+        visuals_folder = self.get_project_local_path() / self.visualisation_foldername
 
         if not visuals_folder.exists():
             os.makedirs(visuals_folder, exist_ok=True)
@@ -520,6 +520,18 @@ class Project:
             if last_quick_save_path and last_quick_save_path.exists():
                 last_quick_save_zip_path = Path(self.quick_saves_foldername) / last_quick_save_path.name
                 project_zip.write(last_quick_save_path, arcname=last_quick_save_zip_path)
+
+            visualisation_html_path = self.get_current_visuals_html_path()
+            if visualisation_html_path and visualisation_html_path.exists():
+                visualisation_html_zip_path = Path(
+                    self.visualisation_foldername) / visualisation_html_path.name
+                project_zip.write(visualisation_html_path, arcname=visualisation_html_zip_path)
+
+            visualisation_uptodate_json_path = self.get_current_visuals_uptodate_state_path()
+            if visualisation_uptodate_json_path and visualisation_uptodate_json_path.exists():
+                visualisation_uptodate_json_zip_path = Path(
+                    self.visualisation_foldername) / visualisation_uptodate_json_path.name
+                project_zip.write(visualisation_uptodate_json_path, arcname=visualisation_uptodate_json_zip_path)
 
     @classmethod
     def import_project(cls, file_path: Path):
