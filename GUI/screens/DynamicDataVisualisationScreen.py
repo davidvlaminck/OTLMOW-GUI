@@ -81,6 +81,8 @@ class Backend(QObject):
                                      new_SubEdgesToOriginalRelationId_data=new_SubEdgesToOriginalRelationIdList_data_str,
                                      new_edgeJointNodesIdToConnectionDataDict_data=new_edgeJointNodesIdToConnectionDataDictList_data_str,
                                      new_collection_id_to_list_of_relation_ids_dict=new_collection_id_to_list_of_relation_ids_data_str)
+        global_vars.current_project.visualisation_uptodate.reset_full_state()
+        global_vars.current_project.save_visualisation_python_support_data(self.parent_screen.std_vis_wrap)
     @pyqtSlot()
     def receive_network_changed_notification(self):
         self.parent_screen.set_graph_saved_status(False)
@@ -273,11 +275,12 @@ Help voor het gebruik van het datavisualisatie scherm:
         self.loading_graph_status_label.setText(self._("Loading graph"))
 
         self.view.setUrl(QUrl.fromLocalFile(str(html_loc).replace("\\","/")))
-        global_vars.current_project.load_visualisation_uptodate_state()
-        self.set_graph_saved_status(True)
 
         if not self.std_vis_wrap:
             self.std_vis_wrap = VisualisationHelper.get_std_vis_wrap_instance()
+
+        global_vars.current_project.load_visualisation_python_support_data(self.std_vis_wrap)
+        self.set_graph_saved_status(True)
 
     def recreate_html(self,html_path:Path):
         OTLLogger.logger.debug(
@@ -288,8 +291,7 @@ Help voor het gebruik van het datavisualisatie scherm:
 
         self.fill_frame_layout_legend()
 
-        global_vars.current_project.visualisation_uptodate.reset_full_state()
-        global_vars.current_project.save_visualisation_uptodate_state()
+
 
         self.refresh_needed_label.setHidden(True)
 
@@ -316,9 +318,10 @@ Help voor het gebruik van het datavisualisatie scherm:
             self.std_vis_wrap = VisualisationHelper.create_html(html_loc= html_path,
                                                                 objects_in_memory=self.objects_in_memory,
                                                                 vis_mode=self.visualisation_mode.currentText())
+            global_vars.current_project.visualisation_uptodate.reset_full_state()
+            global_vars.current_project.save_visualisation_python_support_data(self.std_vis_wrap)
             self.load_html(html_path)
-
-        self.set_graph_saved_status(True)
+            self.set_graph_saved_status(False)
 
         object_count = len(self.objects_in_memory)
         OTLLogger.logger.debug(
@@ -500,8 +503,8 @@ Help voor het gebruik van het datavisualisatie scherm:
     @classmethod
     def replace_support_dict_data(cls, variable_name, old_data, new_data, file_data):
         file_data = file_data.replace(
-            f"var {variable_name} = {old_data};",
-            f"var {variable_name} = {new_data};")
+            f"var {variable_name} = {old_data}",
+            f"var {variable_name} = {new_data}")
         return file_data
 
     @classmethod
@@ -582,7 +585,21 @@ Help voor het gebruik van het datavisualisatie scherm:
 
 
         pattern = re.compile(
-            fr'var\s*{variable_name}\s*=\s*{{([\s\S]*?)\)}};',
+            fr'var\s*{variable_name}\s*=\s*([\s\S]*?);',
+            re.DOTALL
+        )
+        m = pattern.search(file_data)
+        if m:
+            old_edges_data = m.group(1)
+        else:
+            old_edges_data = None
+        return old_edges_data
+
+    @classmethod
+    def test_extract_support_dict_data(cls, regex:str, file_data):
+
+        pattern = re.compile(
+            regex,
             re.DOTALL
         )
         m = pattern.search(file_data)

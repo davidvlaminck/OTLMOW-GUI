@@ -13,6 +13,7 @@ from otlmow_converter.OtlmowConverter import OtlmowConverter
 from otlmow_model.OtlmowModel.BaseClasses.RelationInteractor import RelationInteractor
 from otlmow_model.OtlmowModel.Classes.ImplementatieElement.AIMObject import AIMObject
 from otlmow_model.OtlmowModel.Classes.ImplementatieElement.RelatieObject import RelatieObject
+from otlmow_visuals.PyVisWrapper import PyVisWrapper
 
 from Domain import global_vars
 from Domain.util.Helpers import Helpers
@@ -51,7 +52,7 @@ class Project:
     quick_saves_foldername =  "quick_saves"
     visualisation_foldername = "visuals"
     visualisation_filename = "graph_visualisation.html"
-    visualisation_uptodate_filename = "visuals_uptodate_state.json"
+    visualisation_python_support_data_filename = "visuals_python_support_data.json"
 
     max_days_quicksave_stored = 7
     quicksave_date_format = "%y%m%d_%H%M%S"
@@ -207,8 +208,8 @@ class Project:
     def get_current_visuals_html_path(self) -> Path:
         return self.get_current_visuals_folder_path() / self.visualisation_filename
 
-    def get_current_visuals_uptodate_state_path(self) -> Path:
-        visuals_uptodate_state_path = self.get_current_visuals_folder_path() / self.visualisation_uptodate_filename
+    def get_visualisation_python_support_data_path(self) -> Path:
+        visuals_uptodate_state_path = self.get_current_visuals_folder_path() / self.visualisation_python_support_data_filename
 
         if not visuals_uptodate_state_path.exists():
             with open(visuals_uptodate_state_path,"w") as file:
@@ -216,21 +217,49 @@ class Project:
 
         return visuals_uptodate_state_path
 
-    def load_visualisation_uptodate_state(self) -> None:
-        file_path = self.get_current_visuals_uptodate_state_path()
+    def load_visualisation_python_support_data(self,vis_wrap: Optional[PyVisWrapper] = None) -> None:
+        file_path = self.get_visualisation_python_support_data_path()
 
-        with open( file_path, "r") as file:
-           read_file = file.read()
-           OTLLogger.logger.debug(f"uptodate_load: {read_file}")
         with open(file_path, "r") as file:
             json_data = json.load(file)
-            self.visualisation_uptodate.set_clear_all(not json_data["visuals_uptodate"])
 
-    def save_visualisation_uptodate_state(self) -> None:
-        file_path = self.get_current_visuals_uptodate_state_path()
+            self.visualisation_uptodate.set_clear_all(not json_data["visuals_uptodate"])
+            if vis_wrap and "collection_support_data" in json_data.keys():
+                vis_wrap.special_edges = json_data["collection_support_data"]["vis_wrap.special_edges"]
+                vis_wrap.asset_id_to_display_name_dict = json_data["collection_support_data"][
+                    "vis_wrap.asset_id_to_display_name_dict"]
+                vis_wrap.relation_id_to_collection_id = json_data["collection_support_data"][
+                    "vis_wrap.relation_id_to_collection_id"]
+                vis_wrap.collection_id_to_list_of_relation_ids = json_data["collection_support_data"][
+                    "vis_wrap.collection_id_to_list_of_relation_ids"]
+                vis_wrap.collection_relation_count_threshold = json_data["collection_support_data"][
+                    "vis_wrap.collection_relation_count_threshold"]
+
+    def save_visualisation_python_support_data(self,vis_wrap: Optional[PyVisWrapper] = None) -> None:
+        file_path = self.get_visualisation_python_support_data_path()
+
+        if file_path.exists():
+            # load file first to preserve previously saved data
+            with open(file_path, "r") as file:
+                json_data = json.load(file)
+        else:
+            json_data = {}
+
+
+        json_data["visuals_uptodate"] = not self.visualisation_uptodate.get_clear_all()
+        if vis_wrap:
+            if "collection_support_data" not in json_data.keys():
+                json_data["collection_support_data"] = {}
+
+            json_data["collection_support_data"]["vis_wrap.special_edges"] = vis_wrap.special_edges
+            json_data["collection_support_data"]["vis_wrap.asset_id_to_display_name_dict"] = vis_wrap.asset_id_to_display_name_dict
+            json_data["collection_support_data"]["vis_wrap.relation_id_to_collection_id"] = vis_wrap.relation_id_to_collection_id
+            json_data["collection_support_data"]["vis_wrap.collection_id_to_list_of_relation_ids"] = vis_wrap.collection_id_to_list_of_relation_ids
+            json_data["collection_support_data"]["vis_wrap.collection_relation_count_threshold"] = vis_wrap.collection_relation_count_threshold
+            # json_data["visualisation_option"] =
 
         with open(file_path, "w") as file:
-            json.dump({"visuals_uptodate":not self.visualisation_uptodate.get_clear_all()},file)
+            json.dump(json_data ,file)
 
     def save_project_details(self, project_dir_path: Path) -> None:
         """
@@ -527,7 +556,7 @@ class Project:
                     self.visualisation_foldername) / visualisation_html_path.name
                 project_zip.write(visualisation_html_path, arcname=visualisation_html_zip_path)
 
-            visualisation_uptodate_json_path = self.get_current_visuals_uptodate_state_path()
+            visualisation_uptodate_json_path = self.get_visualisation_python_support_data_path()
             if visualisation_uptodate_json_path and visualisation_uptodate_json_path.exists():
                 visualisation_uptodate_json_zip_path = Path(
                     self.visualisation_foldername) / visualisation_uptodate_json_path.name
