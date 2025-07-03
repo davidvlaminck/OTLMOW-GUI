@@ -378,6 +378,7 @@ class VisualisationHelper:
                 new_label, new_title = cls.create_new_special_node_text(collection_id,vis_wrap)
                 # https://stackoverflow.com/questions/32765015/vis-js-modify-node-properties-on-click
                 js_code = f'network.body.data.nodes.updateOnly({{id: "{collection_id}", label: "{new_label}", title:`{new_title}`}});'
+                js_code += f'\nremoveEdge("{relation_object.assetId.identificator}");'
             else:
                 js_code = f'removeEdge("{relation_object.assetId.identificator}");'
 
@@ -409,6 +410,8 @@ class VisualisationHelper:
                                                                                collection_id,
                                                                                rel_id,
                                                                                screen_name_of_new_asset)
+                            # point the original relation to the collection instead of its intended target
+                            add_edge_arguments["from_id"] = collection_id
                         elif special_edge["to"] == add_edge_arguments["to_id"]:
                             # is this case:
                             # special_edge["to"] is the id of the asset that has relations to many assets
@@ -419,9 +422,15 @@ class VisualisationHelper:
                                                                                collection_id,
                                                                                rel_id,
                                                                                screen_name_of_new_asset)
+                            # point the original relation to the collection instead of its intended target
+                            add_edge_arguments["to_id"] = collection_id
 
+                add_js_code = f'AddEdgeWithLabel("{add_edge_arguments["id"]}","{add_edge_arguments["from_id"]}", "{add_edge_arguments["to_id"]}","{add_edge_arguments["color"]}","{add_edge_arguments["arrow"]}","{add_edge_arguments["label"]}")'
                 if not added_to_collection:
-                    js_code = f'AddEdgeWithLabel("{add_edge_arguments["id"]}","{add_edge_arguments["from_id"]}", "{add_edge_arguments["to_id"]}","{add_edge_arguments["color"]}","{add_edge_arguments["arrow"]}","{add_edge_arguments["label"]}")'
+                    js_code = add_js_code
+                else:
+                    js_code += add_js_code
+
             elif "arrow" in add_edge_arguments:  # a directional relation
                 # first check if the new relation needs to be added to a current collection
                 added_to_collection = False
@@ -442,6 +451,8 @@ class VisualisationHelper:
                                                                                collection_id,
                                                                                rel_id,
                                                                                screen_name_of_new_asset)
+                            # point the original relation to the collection instead of its intended target
+                            add_edge_arguments["from_id"] = collection_id
                         elif special_edge["to"] == add_edge_arguments["to_id"]:
                             # is this case:
                             # special_edge["to"] is the id of the asset that has relations to many assets
@@ -455,9 +466,15 @@ class VisualisationHelper:
                                                                                collection_id,
                                                                                rel_id,
                                                                                screen_name_of_new_asset)
+                            # point the original relation to the collection instead of its intended target
+                            add_edge_arguments["to_id"] = collection_id
 
-                if not added_to_collection:
-                    js_code = f'AddEdge("{add_edge_arguments["id"]}","{add_edge_arguments["from_id"]}", "{add_edge_arguments["to_id"]}","{add_edge_arguments["color"]}","{add_edge_arguments["arrow"]}");'
+                    add_js_code = f'AddEdge("{add_edge_arguments["id"]}","{add_edge_arguments["from_id"]}", "{add_edge_arguments["to_id"]}","{add_edge_arguments["color"]}","{add_edge_arguments["arrow"]}");'
+                    if not added_to_collection:
+                        js_code = add_js_code
+                    else:
+                        js_code += add_js_code
+
             else:  # a bidirectional relation
                 # first check if the new relation needs to be added to a current collection
                 added_to_collection = False
@@ -475,6 +492,8 @@ class VisualisationHelper:
                                                                                collection_id,
                                                                                rel_id,
                                                                                screen_name_of_new_asset)
+                            # point the original relation to the collection instead of its intended target
+                            add_edge_arguments["from_id"] = collection_id
                         elif special_edge["to"] == add_edge_arguments["to_id"]:
                             # is this case:
                             # special_edge["to"] is the id of the asset that has relations to many assets
@@ -486,9 +505,15 @@ class VisualisationHelper:
                                                                                collection_id,
                                                                                rel_id,
                                                                                screen_name_of_new_asset)
+                            # point the original relation to the collection instead of its intended target
+                            add_edge_arguments["to_id"] = collection_id
 
+                add_js_code = f'AddEdge("{add_edge_arguments["id"]}","{add_edge_arguments["from_id"]}", "{add_edge_arguments["to_id"]}","{add_edge_arguments["color"]}",null);'
                 if not added_to_collection:
-                    js_code = f'AddEdge("{add_edge_arguments["id"]}","{add_edge_arguments["from_id"]}", "{add_edge_arguments["to_id"]}","{add_edge_arguments["color"]}",null);'
+                    js_code = add_js_code
+                else:
+                    js_code += add_js_code
+
             OTLLogger.logger.debug(js_code)
             webview.page().runJavaScript(js_code)
 
