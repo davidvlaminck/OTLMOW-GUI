@@ -56,8 +56,10 @@ class Backend(QObject):
         new_SubEdgesToOriginalRelationIdList_data_str = json.dumps(data['SubEdgesToOriginalRelationIdList']) #data supporting dynamic removal functionality
         new_edgeJointNodesIdToConnectionDataDictList_data_str = json.dumps(data[
                                                                        'edgeJointNodesIdToConnectionDataDictList'])  # data supporting right-click edgeJointNode removal functionality
+        new_collection_id_to_list_of_relation_ids_data_str = json.dumps(data[
+                                                                               'collection_id_to_list_of_relation_ids'])  # data supporting hover to show collection edge functionality
 
-        OTLLogger.logger.debug(new_edgeJointNodesIdToConnectionDataDictList_data_str)
+        OTLLogger.logger.debug(new_collection_id_to_list_of_relation_ids_data_str)
 
         new_node_data_str = self.correct_node_title_attributes(new_node_data_str)
 
@@ -77,7 +79,8 @@ class Backend(QObject):
                                      new_relationIdToTotalSubEdgeCount_data=new_relationIdToTotalSubEdgeCountList_data_str,
                                      new_relationIdToJointNodes_data=new_relationIdToJointNodesList_data_str,
                                      new_SubEdgesToOriginalRelationId_data=new_SubEdgesToOriginalRelationIdList_data_str,
-                                     new_edgeJointNodesIdToConnectionDataDict_data=new_edgeJointNodesIdToConnectionDataDictList_data_str)
+                                     new_edgeJointNodesIdToConnectionDataDict_data=new_edgeJointNodesIdToConnectionDataDictList_data_str,
+                                     new_collection_id_to_list_of_relation_ids_dict=new_collection_id_to_list_of_relation_ids_data_str)
     @pyqtSlot()
     def receive_network_changed_notification(self):
         self.parent_screen.set_graph_saved_status(False)
@@ -363,7 +366,8 @@ Help voor het gebruik van het datavisualisatie scherm:
             self.load_html(html_path)
             global_vars.current_project.visualisation_uptodate.reset_relations_uptodate()
         else:
-            self.recreate_html(html_path)
+            # self.recreate_html(html_path)
+            global_vars.current_project.visualisation_uptodate.set_clear_all(True)
 
         self.changed_project_bool = False
 
@@ -404,7 +408,8 @@ Help voor het gebruik van het datavisualisatie scherm:
                   new_relationIdToTotalSubEdgeCount_data:str="",
                   new_relationIdToJointNodes_data:str="",
                   new_SubEdgesToOriginalRelationId_data:str="",
-                  new_edgeJointNodesIdToConnectionDataDict_data:str=""
+                  new_edgeJointNodesIdToConnectionDataDict_data:str="",
+                  new_collection_id_to_list_of_relation_ids_dict:str = ""
                   ) -> None:
 
         OTLLogger.logger.debug(
@@ -431,6 +436,10 @@ Help voor het gebruik van het datavisualisatie scherm:
             file_data=file_data)
         old_edgeJointNodesIdToConnectionDataDict_data = cls.extract_support_data(
             variable_name="edgeJointNodesIdToConnectionDataDict",
+            file_data=file_data)
+
+        old_collection_id_to_list_of_relation_ids_dict = cls.extract_support_dict_data(
+            variable_name="collection_id_to_list_of_relation_ids",
             file_data=file_data)
 
         if old_node_data and old_edge_data:
@@ -460,6 +469,11 @@ Help voor het gebruik van het datavisualisatie scherm:
                                                  old_data=old_edgeJointNodesIdToConnectionDataDict_data,
                                                  new_data=new_edgeJointNodesIdToConnectionDataDict_data,
                                                  file_data=file_data)
+            file_data = cls.replace_support_dict_data(
+                variable_name="collection_id_to_list_of_relation_ids",
+                old_data=old_collection_id_to_list_of_relation_ids_dict,
+                new_data=new_collection_id_to_list_of_relation_ids_dict,
+                file_data=file_data)
 
             file_data = cls.disable_hierarchical_options(file_data)
             file_data = cls.disable_physics_option(file_data)
@@ -481,6 +495,13 @@ Help voor het gebruik van het datavisualisatie scherm:
         file_data = file_data.replace(
             f"var {variable_name} = new Map({old_data});",
             f"var {variable_name} = new Map({new_data});")
+        return file_data
+
+    @classmethod
+    def replace_support_dict_data(cls, variable_name, old_data, new_data, file_data):
+        file_data = file_data.replace(
+            f"var {variable_name} = {old_data};",
+            f"var {variable_name} = {new_data};")
         return file_data
 
     @classmethod
@@ -552,6 +573,21 @@ Help voor het gebruik van het datavisualisatie scherm:
         m = pattern.search(file_data)
         if m:
             old_edges_data = m.group(1)
+        else:
+            old_edges_data = None
+        return old_edges_data
+
+    @classmethod
+    def extract_support_dict_data(cls, variable_name, file_data):
+
+
+        pattern = re.compile(
+            fr'var\s*{variable_name}\s*=\s*{{([\s\S]*?)\)}};',
+            re.DOTALL
+        )
+        m = pattern.search(file_data)
+        if m:
+            old_edges_data = "{" + m.group(1) + "}"
         else:
             old_edges_data = None
         return old_edges_data
