@@ -111,6 +111,8 @@ class VisualisationHelper:
             add_data.extend(cls.create_AddEdgeWithLabel_js_function())
             add_data.extend(cls.create_removeEdge_js_function())
             add_data.extend(cls.create_removeEdgeJointNode_js_function())
+            add_data.extend(cls.create_UpdateCollectionAttributes_js_function())
+
 
             add_data.extend(cls.load_js_script_file("dragMultiSelect.js"))
 
@@ -302,33 +304,12 @@ class VisualisationHelper:
                 '}']
 
     @classmethod
-    def create_removeEdgeFromCollection_js_function(cls):
-        return ['function removeEdgeFromCollection(id)',
+    def create_UpdateCollectionAttributes_js_function(cls):
+        return ['function UpdateCollectionAttributes(collection_id,new_label,new_title,new_collection_id_to_list_of_relation_ids)',
                 '{',
-                '  if (network.body.data.edges._data.has(id))',
-                '       applyRemoveEdgesFromNetwork([id]);//defined in PyViswrapper',
-                '  else if (!relationIdToSubEdges)',
-                '      console.log("attempted to remove: " + id)',
-                '  else if (relationIdToSubEdges.has(id))',
-                '  {',
-                '      //remove all selfmade subEdges and jointNodes that the original relations was replaced with',
-                '      subEdges = relationIdToSubEdges.get(id)',
-                '      jointNodes = relationIdToJointNodes.get(id)',
-                '      ',
-                '      applyRemoveEdgesFromNetwork(subEdges); //defined in PyViswrapper',
-                '      applyRemoveNodesFromNetwork(jointNodes); //defined in PyViswrapper',
-                '      ',
-                '      //remove stored data on subedges and jointnodes',
-                '      subEdges.forEach((subEdgeId) =>',
-                '      {',
-                '          SubEdgesToOriginalRelationId.delete(subEdgeId);',
-                '      })',
-                '      relationIdToTotalSubEdgeCount.delete(id);',
-                '      relationIdToSubEdges.delete(id);',
-                '      relationIdToJointNodes.delete(id);',
-                '  }',
-                '  else',
-                '      {console.log("attempted to remove: " + id)}',
+                "      var newPos = network.getPosition(collection_id)",
+                '      applyUpdateNodeInNetwork({"id": collection_id, "label": new_label, "title":new_title,"x":  newPos.x,"y": newPos.y});',
+                '      collection_id_to_list_of_relation_ids = new_collection_id_to_list_of_relation_ids;',
                 '}']
 
     @classmethod
@@ -409,10 +390,9 @@ class VisualisationHelper:
                     [rel_set for rel_set in vis_wrap.collection_id_to_list_of_relation_ids[
                         collection_id] if rel_set[0] != rel_id]
                 new_label, new_title = cls.create_new_special_node_text(collection_id,vis_wrap)
-                # https://stackoverflow.com/questions/32765015/vis-js-modify-node-properties-on-click
-                js_code = f'network.body.data.nodes.updateOnly({{id: "{collection_id}", label: "{new_label}", title:`{new_title}`}});'
+
+                js_code = f'UpdateCollectionAttributes("{collection_id}", "{new_label}","{new_title}",{json.dumps(vis_wrap.collection_id_to_list_of_relation_ids)});'
                 js_code += f'\nremoveEdge("{relation_object.assetId.identificator}");'
-                js_code += f'\ncollection_id_to_list_of_relation_ids = {json.dumps(vis_wrap.collection_id_to_list_of_relation_ids)};'
             else:
                 js_code = f'removeEdge("{relation_object.assetId.identificator}");'
 
@@ -462,7 +442,7 @@ class VisualisationHelper:
                 if not added_to_collection:
                     js_code = f'AddEdgeWithLabel("{add_edge_arguments["id"]}","{add_edge_arguments["from_id"]}", "{add_edge_arguments["to_id"]}","{add_edge_arguments["color"]}","{add_edge_arguments["arrow"]}","{add_edge_arguments["label"]}, false")'
                 else:
-                    js_code += f'AddEdgeWithLabel("{add_edge_arguments["id"]}","{add_edge_arguments["from_id"]}", "{add_edge_arguments["to_id"]}","{add_edge_arguments["color"]}","{add_edge_arguments["arrow"]}","{add_edge_arguments["label"]}, true")'
+                    js_code += f'\nAddEdgeWithLabel("{add_edge_arguments["id"]}","{add_edge_arguments["from_id"]}", "{add_edge_arguments["to_id"]}","{add_edge_arguments["color"]}","{add_edge_arguments["arrow"]}","{add_edge_arguments["label"]}, true")'
 
 
             elif "arrow" in add_edge_arguments:  # a directional relation
@@ -507,7 +487,7 @@ class VisualisationHelper:
                         js_code = f'AddEdge("{add_edge_arguments["id"]}","{add_edge_arguments["from_id"]}", "{add_edge_arguments["to_id"]}","{add_edge_arguments["color"]}","{add_edge_arguments["arrow"]}, false");'
 
                     else:
-                        js_code += f'AddEdge("{add_edge_arguments["id"]}","{add_edge_arguments["from_id"]}", "{add_edge_arguments["to_id"]}","{add_edge_arguments["color"]}","{add_edge_arguments["arrow"]}, true");'
+                        js_code += f'\nAddEdge("{add_edge_arguments["id"]}","{add_edge_arguments["from_id"]}", "{add_edge_arguments["to_id"]}","{add_edge_arguments["color"]}","{add_edge_arguments["arrow"]}, true");'
 
             else:  # a bidirectional relation
                 # first check if the new relation needs to be added to a current collection
@@ -545,7 +525,7 @@ class VisualisationHelper:
                 if not added_to_collection:
                     js_code = f'AddEdge("{add_edge_arguments["id"]}","{add_edge_arguments["from_id"]}", "{add_edge_arguments["to_id"]}","{add_edge_arguments["color"]}",null, false);'
                 else:
-                    js_code += f'AddEdge("{add_edge_arguments["id"]}","{add_edge_arguments["from_id"]}", "{add_edge_arguments["to_id"]}","{add_edge_arguments["color"]}",null, true);'
+                    js_code += f'\nAddEdge("{add_edge_arguments["id"]}","{add_edge_arguments["from_id"]}", "{add_edge_arguments["to_id"]}","{add_edge_arguments["color"]}",null, true);'
 
             OTLLogger.logger.debug(js_code)
             webview.page().runJavaScript(js_code)
@@ -559,8 +539,8 @@ class VisualisationHelper:
             collection_id].append(new_rel_id_and_asset_screen_name_set)
         new_label, new_title = cls.create_new_special_node_text(collection_id, vis_wrap)
 
-        js_code = f'applyUpdateNodeInNetwork({{id: "{collection_id}", label: "{new_label}", title:`{new_title}`}});'
-        js_code += f'\ncollection_id_to_list_of_relation_ids = {json.dumps(vis_wrap.collection_id_to_list_of_relation_ids)};'
+        js_code = f'UpdateCollectionAttributes("{collection_id}", "{new_label}","{new_title}",{json.dumps(vis_wrap.collection_id_to_list_of_relation_ids)});'
+
         return js_code
 
     @classmethod
@@ -573,4 +553,6 @@ class VisualisationHelper:
                 collection_id])
         new_label = f"<i><b>Collectie ({new_collection_size})</b></i>"
         new_title = f"Collectie ({new_collection_size}):\n{new_collection_content}"
+        # next line is so it can be communicated the to javascript correctly
+        new_title = new_title.replace("\n", "\\n")
         return new_label, new_title
