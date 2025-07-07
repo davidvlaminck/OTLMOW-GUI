@@ -27,12 +27,13 @@ class VisualisationHelper:
         if vis_mode == "1 Hiërarchische visualisatie":
             visualisation_option = 1
         elif vis_mode == "2 Spinnenweb visualisatie":
-            visualisation_option= 2
+            visualisation_option= 4
         elif vis_mode == "3 Shell visualisatie":
             visualisation_option = 3
-        elif vis_mode == "4 Oude hiërarchische visualisatie":
+        elif vis_mode == "4 Repulsion visualisatie":
             visualisation_option = 4
-
+        elif vis_mode == "4 ForceAtlas2Based visualisatie":
+            visualisation_option = 5
 
 
 
@@ -78,6 +79,7 @@ class VisualisationHelper:
                         "// add webchannel to javascript to communicate with python",
                         'document.addEventListener("DOMContentLoaded", function() '
                         '{',
+                        "network.on('stabilizationIterationsDone',onStabilized)",
                         "   makeMeMultiSelect(container, network, nodes);",
                         "   try",
                         "   {",
@@ -160,7 +162,21 @@ class VisualisationHelper:
                 "       isPhysicsOn = false;\n",
                 "   }",
                 "};",
-                "container.addEventListener('mouseover', disablePhysics);"]
+                # "container.addEventListener('mouseover', disablePhysics);",
+                "function onStabilized()",
+                "{",
+                "   if(isPhysicsOn)",
+                "   {",
+                '       newOptions={"layout":{"hierarchical":{"enabled":false}}};\n',
+                "       network.setOptions(newOptions);",
+                '       newOptions={\"physics\":{\"enabled\":false}};\n',
+                "       network.setOptions(newOptions);",
+                # "       sendCurrentCombinedDataToPython()",
+                "       isPhysicsOn = false;\n",
+                "   }",
+                "};",
+
+                ]
 
     @classmethod
     def create_AddEdge_js_function(cls):

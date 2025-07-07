@@ -188,7 +188,8 @@ class DynamicDataVisualisationScreen(Screen):
         self.visualisation_mode.addItems(["1 Hiërarchische visualisatie",
                                           "2 Spinnenweb visualisatie",
                                           "3 Shell visualisatie",
-                                          "4 Oude hiërarchische visualisatie"])
+                                          "4 ForceAtlas2Based visualisatie",
+                                          ])
         self.visualisation_mode.setToolTip(self._("Options to generate the visualisation differently"))
 
         self.refresh_needed_label.setText(
