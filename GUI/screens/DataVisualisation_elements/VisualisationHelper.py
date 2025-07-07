@@ -112,6 +112,10 @@ class VisualisationHelper:
             add_data.extend(cls.create_removeEdge_js_function())
             add_data.extend(cls.create_removeEdgeJointNode_js_function())
             add_data.extend(cls.create_UpdateCollectionAttributes_js_function())
+            add_data.extend(cls.create_getFlatListOfRelationIdsInCollection())
+            add_data.extend(cls.create_UpdateAllRelationHiddenStatesOfColor_js_function())
+            add_data.extend(cls.
+                            create_setAllNonCollectionEdgesToUnhidden_js_function())
 
 
             add_data.extend(cls.load_js_script_file("dragMultiSelect.js"))
@@ -160,7 +164,7 @@ class VisualisationHelper:
 
     @classmethod
     def create_AddEdge_js_function(cls):
-        return ["function AddEdge(id,from_id, to_id,color,arrow)",
+        return ["function AddEdge(id,from_id, to_id,color,arrow,hidden)",
                 "{",
                 '   applyAddEdgesToNetwork([{'
                 '       "id": id,'
@@ -168,6 +172,7 @@ class VisualisationHelper:
                 '       "arrows": arrow,'
                 '       "color": color,'
                 '       "from": from_id,'
+                '       "hidden": hidden,'
                 '       "smooth": '
                 '           {'
                 '           "enabled": false'
@@ -181,6 +186,7 @@ class VisualisationHelper:
     def create_sendCurrentCombinedDataToPython_js_function(cls):
         return ["function sendCurrentCombinedDataToPython()",
                 "{",
+                # '   unhideAllRelations()',
                 '   network.storePositions() // alters the data in network.body.data.nodes with the current coordinates so i can be read and stored',
                 # '   console.log("called storePositions()")',
                 "   var nodeList = ExtractNodeList();    //nodes and their position (including edgeJointNodes)",
@@ -191,6 +197,10 @@ class VisualisationHelper:
                 "   var relationIdToJointNodesList = Array.from(relationIdToJointNodes.entries());   //data supporting dynamic removal functionality",
                 "   var SubEdgesToOriginalRelationIdList = Array.from(SubEdgesToOriginalRelationId.entries());   //data supporting dynamic removal functionality",
                 "   var edgeJointNodesIdToConnectionDataDictList = Array.from(edgeJointNodesIdToConnectionDataDict.entries());   //data supporting right-click edgeJointNode removal functionality",
+                "   ",
+                "   //set all relations to unhidden if they were hidden by the python interface",
+                "   setAllNonCollectionEdgesToUnhidden(edgeList);",
+                "   ",
                 "   ",
                 # "   var edgeJointNodesIdToConnectionDataDictList = JSON.parse(edgeJointNodesIdToConnectionDataDict;   //data supporting right-click edgeJointNode removal functionality",
                 "   var combinedData = {'html_path': html_path,"
@@ -238,6 +248,35 @@ class VisualisationHelper:
                 "   }",
                 "   return nodeList",
                 "}"]
+
+    @classmethod
+    def create_setAllNonCollectionEdgesToUnhidden_js_function(cls):
+        return ["function setAllNonCollectionEdgesToUnhidden(edgeList)",
+                '{',
+                '   //collect all relation_ids that are in a collection they should not be unhidden',
+                '   var relation_ids_in_collection_id = getFlatListOfRelationIdsInCollection()',
+                '   edgeList.forEach((edgeData) =>',
+                '   {',
+                '       if( !relation_ids_in_collection_id.includes(edgeData["id"]))',
+                '           edgeData["hidden"] = false;',
+                '   })',
+                '   return edgeList',
+                '} ']
+
+    @classmethod
+    def create_getFlatListOfRelationIdsInCollection(cls):
+        return ["function getFlatListOfRelationIdsInCollection()",
+                '{',
+                '   relation_ids_in_collection_id = []',
+                '   for (collection_id in collection_id_to_list_of_relation_ids)',
+                '   {',
+                '       for (rel_tuple_index in collection_id_to_list_of_relation_ids[collection_id])',
+                '       {',
+                '           relation_ids_in_collection_id.push(collection_id_to_list_of_relation_ids[collection_id][rel_tuple_index][0])',
+                '       }',
+                '   }',
+                '   return relation_ids_in_collection_id;',
+                '}']
 
     @classmethod
     def create_ExtractEdgeList_js_function(cls):
@@ -311,6 +350,37 @@ class VisualisationHelper:
                 '      applyUpdateNodeInNetwork({"id": collection_id, "label": new_label, "title":new_title,"x":  newPos.x,"y": newPos.y});',
                 '      collection_id_to_list_of_relation_ids = new_collection_id_to_list_of_relation_ids;',
                 '}']
+
+    @classmethod
+    def create_UpdateAllRelationHiddenStatesOfColor_js_function(cls):
+        return [
+            'function UpdateAllRelationHiddenStatesOfColor(color,hidden)',
+            '{',
+            '       var newAttributesEdgesList = [];'
+            '       network.body.data.edges._data.forEach((data,key) =>',
+            '       {',
+            '           var relation_ids_in_collection_id = getFlatListOfRelationIdsInCollection()',
+            # '           if (data["color"] == color &&(data["id"].includes("special_edge")|| !relation_ids_in_collection_id.includes(data["id"])))'  ,
+            '           if (data["color"] == color && !relation_ids_in_collection_id.includes(data["id"]))',
+            '               newAttributesEdgesList.push({"id": data["id"], "hidden": hidden});',
+            '       })',
+            '       applyUpdateEdgeInNetwork(newAttributesEdgesList,false);',
+            '}'
+        ]
+
+    @classmethod
+    def create_unhideAllRelations_js_function(cls):
+        return [
+            'function unhideAllRelations()',
+            '{',
+            '       var newAttributesEdgesList = [];'
+            '       network.body.data.edges._data.forEach((data,key) =>',
+            '       {',
+            '               newAttributesEdgesList.push({"id": data["id"], "hidden": false});'
+            '       })',
+            '       applyUpdateEdgeInNetwork(newAttributesEdgesList,false);',
+            '}'
+        ]
 
     @classmethod
     def create_removeEdgeJointNode_js_function(cls):
@@ -400,7 +470,7 @@ class VisualisationHelper:
             webview.page().runJavaScript(js_code)
 
     @classmethod
-    def add_new_relations(cls, to_add_list, vis_wrap,webview):
+    def add_new_relations(cls, to_add_list, vis_wrap,webview,relation_visible_dict):
         js_code = ""
         # if there are new relations add them to the visualisation
         for relation_object in to_add_list:
@@ -440,7 +510,12 @@ class VisualisationHelper:
                             add_edge_arguments["to_id"] = collection_id
 
                 if not added_to_collection:
-                    js_code = f'AddEdgeWithLabel("{add_edge_arguments["id"]}","{add_edge_arguments["from_id"]}", "{add_edge_arguments["to_id"]}","{add_edge_arguments["color"]}","{add_edge_arguments["arrow"]}","{add_edge_arguments["label"]}, false")'
+                    js_bool_hidden = "false"
+                    rel_type = relation_object.typeURI
+                    if rel_type in relation_visible_dict.keys() and not relation_visible_dict[rel_type]:
+                        js_bool_hidden = "true"
+
+                    js_code = f'AddEdgeWithLabel("{add_edge_arguments["id"]}","{add_edge_arguments["from_id"]}", "{add_edge_arguments["to_id"]}","{add_edge_arguments["color"]}","{add_edge_arguments["arrow"]}","{add_edge_arguments["label"]}, {js_bool_hidden}")'
                 else:
                     js_code += f'\nAddEdgeWithLabel("{add_edge_arguments["id"]}","{add_edge_arguments["from_id"]}", "{add_edge_arguments["to_id"]}","{add_edge_arguments["color"]}","{add_edge_arguments["arrow"]}","{add_edge_arguments["label"]}, true")'
 
@@ -484,7 +559,12 @@ class VisualisationHelper:
                             add_edge_arguments["to_id"] = collection_id
 
                     if not added_to_collection:
-                        js_code = f'AddEdge("{add_edge_arguments["id"]}","{add_edge_arguments["from_id"]}", "{add_edge_arguments["to_id"]}","{add_edge_arguments["color"]}","{add_edge_arguments["arrow"]}, false");'
+                        js_bool_hidden = "false"
+                        rel_type = relation_object.typeURI
+                        if rel_type in relation_visible_dict.keys() and not relation_visible_dict[
+                            rel_type]:
+                            js_bool_hidden = "true"
+                        js_code = f'AddEdge("{add_edge_arguments["id"]}","{add_edge_arguments["from_id"]}", "{add_edge_arguments["to_id"]}","{add_edge_arguments["color"]}","{add_edge_arguments["arrow"]}, {js_bool_hidden}");'
 
                     else:
                         js_code += f'\nAddEdge("{add_edge_arguments["id"]}","{add_edge_arguments["from_id"]}", "{add_edge_arguments["to_id"]}","{add_edge_arguments["color"]}","{add_edge_arguments["arrow"]}, true");'
@@ -523,7 +603,12 @@ class VisualisationHelper:
                             add_edge_arguments["to_id"] = collection_id
 
                 if not added_to_collection:
-                    js_code = f'AddEdge("{add_edge_arguments["id"]}","{add_edge_arguments["from_id"]}", "{add_edge_arguments["to_id"]}","{add_edge_arguments["color"]}",null, false);'
+                    js_bool_hidden = "false"
+                    rel_type = relation_object.typeURI
+                    if rel_type in relation_visible_dict.keys() and not relation_visible_dict[
+                        rel_type]:
+                        js_bool_hidden = "true"
+                    js_code = f'AddEdge("{add_edge_arguments["id"]}","{add_edge_arguments["from_id"]}", "{add_edge_arguments["to_id"]}","{add_edge_arguments["color"]}",null, {js_bool_hidden});'
                 else:
                     js_code += f'\nAddEdge("{add_edge_arguments["id"]}","{add_edge_arguments["from_id"]}", "{add_edge_arguments["to_id"]}","{add_edge_arguments["color"]}",null, true);'
 

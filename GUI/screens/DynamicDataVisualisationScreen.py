@@ -127,13 +127,14 @@ class DynamicDataVisualisationScreen(Screen):
         self.visualisation_mode = QComboBox()
         self.too_many_objects_message = QLabel()
         self.relation_color_legend_title = QLabel()
+        self.relation_id_to_relation_show_checkbox_dict = {}
 
         self.main_layout = QVBoxLayout()
         self.main_widget = self.create_main_widget()
         self.main_layout.addWidget(self.main_widget)
         self.setLayout(self.main_layout)
 
-        self.relation_id_to_relation_show_checkbox_dict = {}
+
 
     def create_main_widget(self):
         main_widget = QWidget()
@@ -252,16 +253,28 @@ Help voor het gebruik van het datavisualisatie scherm:
         return frame
 
     def fill_frame_layout_legend(self):
+        typeURIs_in_memory = [object_in_memory.typeURI for object_in_memory in
+                              self.objects_in_memory]
+
+        initial_state_per_relation_dict = {}
+        key_list = list(self.relation_id_to_relation_show_checkbox_dict.keys())
+        for relatie in typeURIs_in_memory:
+            if relatie in key_list:
+                initial_state_per_relation_dict[relatie] = self.relation_id_to_relation_show_checkbox_dict[
+                    relatie].isChecked()
+            else:
+                initial_state_per_relation_dict[relatie] =  True
+
+
         for i in reversed(range(self.frame_layout_legend.count())):
             item = self.frame_layout_legend.takeAt(i)
             if item.widget():
                 item.widget().deleteLater()
-
+        self.relation_id_to_relation_show_checkbox_dict.clear()
 
         relatie_color_dict = PyVisWrapper().relatie_color_dict
 
-        typeURIs_in_memory = [object_in_memory.typeURI for object_in_memory in
-                              self.objects_in_memory]
+
         for relatie, color in relatie_color_dict.items():
 
             if relatie not in typeURIs_in_memory:
@@ -271,9 +284,11 @@ Help voor het gebruik van het datavisualisatie scherm:
             item_layout_legend = QHBoxLayout()
 
             show_checkbox = QCheckBox()
-            show_checkbox.setChecked(True)
+            show_checkbox.setChecked(initial_state_per_relation_dict[relatie])
+            show_checkbox.stateChanged.connect(self.create_on_stateChange_listener(relation_color=color))
             # store checkbox tied to it's relation typeURI
-            self.relation_id_to_relation_show_checkbox_dict[relatie] = show_checkbox
+            self.relation_id_to_relation_show_checkbox_dict[
+                relatie] = show_checkbox
 
             label = QLabel()
             relatie_name = relatie.split('#')[-1]
@@ -298,6 +313,17 @@ Help voor het gebruik van het datavisualisatie scherm:
         if self.frame_layout_legend:
             self.frame_layout_legend.addStretch()
 
+    def create_on_stateChange_listener(self,relation_color):
+        return lambda state : self.set_relations_visibility(relation_color,state)
+
+    def set_relations_visibility(self,relation_color:str, visibility:bool):
+        if visibility:
+            js_bool_hidden = "false"
+        else:
+            js_bool_hidden = "true"
+        js_code = f"UpdateAllRelationHiddenStatesOfColor('{relation_color}',{js_bool_hidden})"
+        OTLLogger.logger.debug(js_code)
+        self.view.page().runJavaScript(js_code)
 
     def reset_ui(self, _):
         pass
@@ -378,7 +404,7 @@ Help voor het gebruik van het datavisualisatie scherm:
             to_remove_list = global_vars.current_project.visualisation_uptodate.get_to_be_removed_relations()
 
             VisualisationHelper.add_new_relations(to_add_list=to_add_list,
-                                   vis_wrap=self.std_vis_wrap, webview=self.view)
+                                   vis_wrap=self.std_vis_wrap, webview=self.view,relation_visible_dict=self.relation_id_to_relation_show_checkbox_dict)
             VisualisationHelper.remove_relations(to_remove_list=to_remove_list,
                                   vis_wrap=self.std_vis_wrap, webview=self.view)
 
