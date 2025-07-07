@@ -10,7 +10,7 @@ import qtawesome as qta
 
 from PyQt6.QtWebEngineCore import QWebEngineSettings
 from PyQt6.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QLabel, QComboBox, QSizePolicy, \
-    QWidget, QFrame, QHBoxLayout
+    QWidget, QFrame, QHBoxLayout, QCheckBox
 from PyQt6.QtWebEngineWidgets import QWebEngineView
 from PyQt6.QtWebChannel import QWebChannel
 from PyQt6.QtCore import QObject, pyqtSlot, QUrl
@@ -56,8 +56,10 @@ class Backend(QObject):
         new_SubEdgesToOriginalRelationIdList_data_str = json.dumps(data['SubEdgesToOriginalRelationIdList']) #data supporting dynamic removal functionality
         new_edgeJointNodesIdToConnectionDataDictList_data_str = json.dumps(data[
                                                                        'edgeJointNodesIdToConnectionDataDictList'])  # data supporting right-click edgeJointNode removal functionality
-        new_collection_id_to_list_of_relation_ids_data_str = json.dumps(data[
-                                                                               'collection_id_to_list_of_relation_ids'])  # data supporting hover to show collection edge functionality
+        new_collection_id_to_list_of_relation_ids_data_str = "{}"
+        if 'collection_id_to_list_of_relation_ids' in data.keys():
+            new_collection_id_to_list_of_relation_ids_data_str = json.dumps(data[
+                                                                                   'collection_id_to_list_of_relation_ids'])  # data supporting hover to show collection edge functionality
 
         OTLLogger.logger.debug(new_collection_id_to_list_of_relation_ids_data_str)
 
@@ -130,6 +132,8 @@ class DynamicDataVisualisationScreen(Screen):
         self.main_widget = self.create_main_widget()
         self.main_layout.addWidget(self.main_widget)
         self.setLayout(self.main_layout)
+
+        self.relation_id_to_relation_show_checkbox_dict = {}
 
     def create_main_widget(self):
         main_widget = QWidget()
@@ -242,13 +246,17 @@ Help voor het gebruik van het datavisualisatie scherm:
 
         frame = QFrame()
         self.frame_layout_legend = QHBoxLayout()
+        self.frame_layout_legend.setContentsMargins(0, 0, 0, 0)
         self.fill_frame_layout_legend()
         frame.setLayout(self.frame_layout_legend)
         return frame
 
     def fill_frame_layout_legend(self):
         for i in reversed(range(self.frame_layout_legend.count())):
-            self.frame_layout_legend.itemAt(i).widget().deleteLater()
+            item = self.frame_layout_legend.takeAt(i)
+            if item.widget():
+                item.widget().deleteLater()
+
 
         relatie_color_dict = PyVisWrapper().relatie_color_dict
 
@@ -259,13 +267,37 @@ Help voor het gebruik van het datavisualisatie scherm:
             if relatie not in typeURIs_in_memory:
                 continue
 
-            color_label = QLabel()
+            item_frame = QFrame()
+            item_layout_legend = QHBoxLayout()
+
+            show_checkbox = QCheckBox()
+            show_checkbox.setChecked(True)
+            # store checkbox tied to it's relation typeURI
+            self.relation_id_to_relation_show_checkbox_dict[relatie] = show_checkbox
+
             label = QLabel()
             relatie_name = relatie.split('#')[-1]
             label.setText(relatie_name)
-            color_label.setStyleSheet(f"background-color: #{color}")
-            self.frame_layout_legend.addWidget(color_label)
-            self.frame_layout_legend.addWidget(label)
+            label.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Expanding)
+            # label.setFixedWidth(50)
+
+            color_label = QLabel()
+            color_label.setStyleSheet(f"background-color: #{color}; ")
+            color_label.setSizePolicy(QSizePolicy.Policy.Maximum,QSizePolicy.Policy.Expanding)
+            color_label.setFixedWidth(30)
+
+            item_layout_legend.addWidget(label)
+            item_layout_legend.addWidget(show_checkbox)
+            item_layout_legend.addWidget(color_label)
+            item_layout_legend.setContentsMargins(10, 0, 0, 0)
+
+            item_frame.setLayout(item_layout_legend)
+            item_frame.setSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+            self.frame_layout_legend.addWidget(item_frame)
+
+        if self.frame_layout_legend:
+            self.frame_layout_legend.addStretch()
+
 
     def reset_ui(self, _):
         pass
