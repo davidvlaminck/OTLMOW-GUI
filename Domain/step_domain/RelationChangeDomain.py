@@ -1116,6 +1116,8 @@ class RelationChangeDomain:
         cls.get_screen().expand_existing_relations_folder_of(
             relation_typeURI=relation_object.typeURI)
 
+
+
     @classmethod
     def update_frontend(cls):
         """

@@ -253,3 +253,15 @@ class Helpers:
             command = f'explorer "{document_path.parent}"'
         OTLLogger.logger.debug(command)
         subprocess.Popen(command)
+
+    @classmethod
+    def compare_RelatieObjects(cls, obj1, obj2):
+        dict1 = obj1.create_dict_from_asset(obj1)
+        dict2 = obj2.create_dict_from_asset(obj2)
+
+        if "isActief" in dict1:
+            dict1.pop("isActief")
+        if "isActief" in dict2:
+            dict2.pop("isActief")
+
+        return dict1 == dict2
