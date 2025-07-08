@@ -570,7 +570,7 @@ msgstr "Help met het data visualisatie scherm"
 
 #: GUI/screens/DynamicDataVisualisationScreen.py:225
 msgid "Open visualisation html file location"
-msgstr "Open de visualisatie html-bestand location"
+msgstr "Open de visualisatie html-bestand locatie"
 
 #: GUI/screens/DynamicDataVisualisationScreen.py:244
 msgid ""
