@@ -17,9 +17,12 @@ from PyQt6.QtCore import QObject, pyqtSlot, QUrl
 from otlmow_model.OtlmowModel.BaseClasses.OTLObject import OTLObject
 from otlmow_visuals.PyVisWrapper import PyVisWrapper
 
+import Domain
 from Domain import global_vars
+
 from Domain.logger.OTLLogger import OTLLogger
 from Domain.step_domain.RelationChangeDomain import RelationChangeDomain
+from Domain.util.Helpers import Helpers
 from GUI.dialog_windows.LoadingImageWindow import add_loading_screen
 from GUI.dialog_windows.NotificationWindow import NotificationWindow
 from GUI.dialog_windows.OverwriteGraphWarningWindow import OverwriteGraphWarningWindow
@@ -214,7 +217,12 @@ class DynamicDataVisualisationScreen(Screen):
         help_btn.setToolTip(self._("Help for data visualisation screen"))
 
 
-
+        open_html_location_btn = ButtonWidget()
+        # see all qta mdi icon options in: https://cdn.jsdelivr.net/npm/@mdi/font@5.9.55/preview.html
+        open_html_location_btn.setIcon(qta.icon('mdi.folder-marker', color='white'))
+        open_html_location_btn.setProperty('class', 'primary-button')
+        open_html_location_btn.clicked.connect(lambda: Helpers.open_folder_and_select_document(global_vars.current_project.get_current_visuals_html_path()))
+        open_html_location_btn.setToolTip(self._("Open visualisation html file location"))
 
         frame_layout.addWidget(regenerate_btn)
         frame_layout.addWidget(self.visualisation_mode)
@@ -224,6 +232,7 @@ class DynamicDataVisualisationScreen(Screen):
         frame_layout.addStretch()
         frame_layout.addWidget(self.graph_saved_status_label)
         frame_layout.addWidget(save_btn)
+        frame_layout.addWidget(open_html_location_btn)
         frame_layout.addWidget(help_btn)
         frame_layout.setContentsMargins(0, 0, 0, 0)
 

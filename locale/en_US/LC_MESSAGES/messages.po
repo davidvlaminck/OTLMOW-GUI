@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-06-24 17:12+0200\n"
+"POT-Creation-Date: 2025-07-07 17:20+0200\n"
 "PO-Revision-Date: 2023-10-19 13:11+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en_US\n"
@@ -18,19 +18,19 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.16.0\n"
 
-#: Domain/project/Project.py:499
+#: Domain/project/Project.py:530
 msgid "There are files missing that belong to this project:\n"
 msgstr "There are files missing that belong to this project:\n"
 
-#: Domain/project/Project.py:505
+#: Domain/project/Project.py:536
 msgid "Do you still want to export?"
 msgstr "Do you still want to export?"
 
-#: Domain/project/Project.py:506 GUI/screens/InsertDataScreen.py:219
+#: Domain/project/Project.py:537 GUI/screens/InsertDataScreen.py:219
 msgid "Missing project files"
 msgstr "Missing project files"
 
-#: Domain/project/Project.py:944
+#: Domain/project/Project.py:987
 msgid "Can't insert duplicate filename {0}"
 msgstr ""
 "Filename \"{0}\" already exists in this project.\n"
@@ -40,7 +40,7 @@ msgstr ""
 "    2. Change the name of the new file before inserting.\n"
 "            "
 
-#: Domain/project/Project.py:947
+#: Domain/project/Project.py:990
 msgid "Duplicate filename"
 msgstr "Duplicate filename"
 
@@ -200,7 +200,7 @@ msgstr "OTL-asset type"
 msgid "asset_type_dummy"
 msgstr "Onderdeel#Verkeersbord"
 
-#: GUI/dialog_windows/AddExternalAssetWindow.py:83
+#: GUI/dialog_windows/AddExternalAssetWindow.py:84
 #: GUI/dialog_windows/ChangeSubsetWindow.py:113
 #: GUI/dialog_windows/DefineHeeftBetrokkeneRelationWindow.py:107
 #: GUI/dialog_windows/RemoveProjectFilesWindow.py:33
@@ -208,7 +208,7 @@ msgstr "Onderdeel#Verkeersbord"
 msgid "submit"
 msgstr "Submit"
 
-#: GUI/dialog_windows/AddExternalAssetWindow.py:85
+#: GUI/dialog_windows/AddExternalAssetWindow.py:86
 #: GUI/dialog_windows/ChangeSubsetWindow.py:115
 #: GUI/dialog_windows/DefineHeeftBetrokkeneRelationWindow.py:109
 #: GUI/dialog_windows/OverwriteGraphWarningWindow.py:45
@@ -521,11 +521,11 @@ msgstr "Convert"
 msgid "file_for_conversion"
 msgstr "File conversion"
 
-#: GUI/screens/DynamicDataVisualisationScreen.py:64
+#: GUI/screens/DynamicDataVisualisationScreen.py:75
 msgid "Couldn't save visualisation"
 msgstr "Couldn't save visualisation"
 
-#: GUI/screens/DynamicDataVisualisationScreen.py:65
+#: GUI/screens/DynamicDataVisualisationScreen.py:76
 msgid ""
 "Couldn't save the html because the html is outdated and the project is "
 "already closed\n"
@@ -535,35 +535,39 @@ msgstr ""
 "already closed\n"
 "To fix this refresh the visualisation."
 
-#: GUI/screens/DynamicDataVisualisationScreen.py:138
-#: GUI/screens/MapScreen.py:138 GUI/screens/MapScreen.py:181
+#: GUI/screens/DynamicDataVisualisationScreen.py:168
+#: GUI/screens/MapScreen.py:144 GUI/screens/MapScreen.py:187
 #: GUI/screens/MapScreen_test.py:132 GUI/screens/MapScreen_test.py:178
 msgid "relations legend"
 msgstr "Color legend relations:"
 
-#: GUI/screens/DynamicDataVisualisationScreen.py:159
+#: GUI/screens/DynamicDataVisualisationScreen.py:189
 msgid "Regenerate the visualisation"
 msgstr "Regenerate the visualisation"
 
-#: GUI/screens/DynamicDataVisualisationScreen.py:164
+#: GUI/screens/DynamicDataVisualisationScreen.py:196
 msgid "Options to generate the visualisation differently"
 msgstr "Opties om de visualisatie anders te genereren"
 
-#: GUI/screens/DynamicDataVisualisationScreen.py:167
-#: GUI/screens/MapScreen.py:166 GUI/screens/MapScreen_test.py:162
+#: GUI/screens/DynamicDataVisualisationScreen.py:199
+#: GUI/screens/MapScreen.py:172 GUI/screens/MapScreen_test.py:162
 msgid "The visualisation is outdated, refresh to see new changes"
 msgstr "The visualisation is outdated, refresh to see new changes"
 
-#: GUI/screens/DynamicDataVisualisationScreen.py:178
+#: GUI/screens/DynamicDataVisualisationScreen.py:210
 msgid "Save changes"
 msgstr "Save changes"
 
-#: GUI/screens/DynamicDataVisualisationScreen.py:185
-#: GUI/screens/DynamicDataVisualisationScreen.py:203
+#: GUI/screens/DynamicDataVisualisationScreen.py:217
+#: GUI/screens/DynamicDataVisualisationScreen.py:243
 msgid "Help for data visualisation screen"
 msgstr "Help for data visualisation screen"
 
-#: GUI/screens/DynamicDataVisualisationScreen.py:204
+#: GUI/screens/DynamicDataVisualisationScreen.py:225
+msgid "Open visualisation html file location"
+msgstr "Open visualisation html file location"
+
+#: GUI/screens/DynamicDataVisualisationScreen.py:244
 msgid ""
 "\n"
 "Help voor het gebruik van het datavisualisatie scherm:\n"
@@ -587,8 +591,12 @@ msgstr ""
 "selection\n"
 "- Right-mouse click on dragable joint => Remove joint\n"
 
-#: GUI/screens/DynamicDataVisualisationScreen.py:281
-#: GUI/screens/MapScreen.py:225 GUI/screens/MapScreen_test.py:210
+#: GUI/screens/DynamicDataVisualisationScreen.py:343
+msgid "Loading graph"
+msgstr "Loading graph..."
+
+#: GUI/screens/DynamicDataVisualisationScreen.py:374
+#: GUI/screens/MapScreen.py:235 GUI/screens/MapScreen_test.py:210
 msgid ""
 "There are too many assets and relations to create a visualisation.\n"
 "maximum: {0}\n"
@@ -598,11 +606,11 @@ msgstr ""
 "maximum: {0}\n"
 "current: {1}"
 
-#: GUI/screens/DynamicDataVisualisationScreen.py:374
+#: GUI/screens/DynamicDataVisualisationScreen.py:469
 msgid "Changes saved"
 msgstr "Changes saved"
 
-#: GUI/screens/DynamicDataVisualisationScreen.py:377
+#: GUI/screens/DynamicDataVisualisationScreen.py:472
 msgid "Changes are not saved"
 msgstr "Changes are not saved"
 
