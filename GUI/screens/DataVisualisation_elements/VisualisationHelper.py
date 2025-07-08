@@ -518,7 +518,7 @@ class VisualisationHelper:
 
     @classmethod
     def add_new_relations(cls, to_add_list, vis_wrap,webview,relation_visible_dict):
-        js_code = ""
+
         if not vis_wrap:
             return
         # if there are new relations add them to the visualisation
@@ -546,10 +546,12 @@ class VisualisationHelper:
                                 screen_name_of_new_asset = vis_wrap.asset_id_to_display_name_dict[collect_id_to_original_asset_id_dict[add_edge_arguments["to_id"]]]
 
                             added_to_collection = True
-                            js_code += cls.create_js_code_to_add_to_collection(vis_wrap,
+                            js_code = cls.create_js_code_to_add_to_collection(vis_wrap,
                                                                                collection_id,
                                                                                rel_id,
-                                                                               screen_name_of_new_asset) + "\n"
+                                                                               screen_name_of_new_asset)
+                            OTLLogger.logger.debug(js_code)
+                            webview.page().runJavaScript(js_code)
                             # point the original relation to the collection instead of its intended target
                             collect_id_to_original_asset_id_dict[collection_id] = add_edge_arguments["from_id"]
                             add_edge_arguments["from_id"] = collection_id
@@ -564,10 +566,12 @@ class VisualisationHelper:
                                 OTLLogger.logger.debug(f"Couldn't find display name of node id: {add_edge_arguments["from_id"]}\n Needs refresh")
                                 screen_name_of_new_asset = vis_wrap.asset_id_to_display_name_dict[collect_id_to_original_asset_id_dict[add_edge_arguments["from_id"]]]
                             added_to_collection = True
-                            js_code += cls.create_js_code_to_add_to_collection(vis_wrap,
+                            js_code = cls.create_js_code_to_add_to_collection(vis_wrap,
                                                                                collection_id,
                                                                                rel_id,
-                                                                               screen_name_of_new_asset) + "\n"
+                                                                               screen_name_of_new_asset)
+                            OTLLogger.logger.debug(js_code)
+                            webview.page().runJavaScript(js_code)
                             # point the original relation to the collection instead of its intended target
                             collect_id_to_original_asset_id_dict[collection_id] = \
                             add_edge_arguments["to_id"]
@@ -580,9 +584,12 @@ class VisualisationHelper:
                         js_bool_hidden = "true"
 
                     js_code = f'AddEdgeWithLabel("{add_edge_arguments["id"]}","{add_edge_arguments["from_id"]}", "{add_edge_arguments["to_id"]}","{add_edge_arguments["color"]}","{add_edge_arguments["arrow"]}","{add_edge_arguments["label"]}", {js_bool_hidden})'
+                    OTLLogger.logger.debug(js_code)
+                    webview.page().runJavaScript(js_code)
                 else:
-                    js_code += f'\nAddEdgeWithLabel("{add_edge_arguments["id"]}","{add_edge_arguments["from_id"]}", "{add_edge_arguments["to_id"]}","{add_edge_arguments["color"]}","{add_edge_arguments["arrow"]}","{add_edge_arguments["label"]}", true)'
-
+                    js_code = f'\nAddEdgeWithLabel("{add_edge_arguments["id"]}","{add_edge_arguments["from_id"]}", "{add_edge_arguments["to_id"]}","{add_edge_arguments["color"]}","{add_edge_arguments["arrow"]}","{add_edge_arguments["label"]}", true)'
+                    OTLLogger.logger.debug(js_code)
+                    webview.page().runJavaScript(js_code)
 
             elif "arrow" in add_edge_arguments:  # a directional relation
                 # first check if the new relation needs to be added to a current collection
@@ -606,10 +613,12 @@ class VisualisationHelper:
 
 
                             added_to_collection = True
-                            js_code += cls.create_js_code_to_add_to_collection(vis_wrap,
+                            js_code = cls.create_js_code_to_add_to_collection(vis_wrap,
                                                                                collection_id,
                                                                                rel_id,
-                                                                               screen_name_of_new_asset) + "\n"
+                                                                               screen_name_of_new_asset)
+                            OTLLogger.logger.debug(js_code)
+                            webview.page().runJavaScript(js_code)
                             # point the original relation to the collection instead of its intended target
                             collect_id_to_original_asset_id_dict[collection_id] = \
                                 add_edge_arguments["to_id"]
@@ -628,10 +637,12 @@ class VisualisationHelper:
                                 f"Couldn't find display name of node id: {add_edge_arguments["from_id"]}\n Needs refresh")
                                 screen_name_of_new_asset = vis_wrap.asset_id_to_display_name_dict[collect_id_to_original_asset_id_dict[add_edge_arguments["from_id"]]]
                             added_to_collection = True
-                            js_code += cls.create_js_code_to_add_to_collection(vis_wrap,
+                            js_code = cls.create_js_code_to_add_to_collection(vis_wrap,
                                                                                collection_id,
                                                                                rel_id,
-                                                                               screen_name_of_new_asset) + "\n"
+                                                                               screen_name_of_new_asset)
+                            OTLLogger.logger.debug(js_code)
+                            webview.page().runJavaScript(js_code)
                             # point the original relation to the collection instead of its intended target
                             collect_id_to_original_asset_id_dict[collection_id] = \
                                 add_edge_arguments["to_id"]
@@ -644,10 +655,12 @@ class VisualisationHelper:
                             rel_type]:
                             js_bool_hidden = "true"
                         js_code = f'AddEdge("{add_edge_arguments["id"]}","{add_edge_arguments["from_id"]}", "{add_edge_arguments["to_id"]}","{add_edge_arguments["color"]}","{add_edge_arguments["arrow"]}", {js_bool_hidden});'
-
+                        OTLLogger.logger.debug(js_code)
+                        webview.page().runJavaScript(js_code)
                     else:
-                        js_code += f'\nAddEdge("{add_edge_arguments["id"]}","{add_edge_arguments["from_id"]}", "{add_edge_arguments["to_id"]}","{add_edge_arguments["color"]}","{add_edge_arguments["arrow"]}", true);'
-
+                        js_code = f'AddEdge("{add_edge_arguments["id"]}","{add_edge_arguments["from_id"]}", "{add_edge_arguments["to_id"]}","{add_edge_arguments["color"]}","{add_edge_arguments["arrow"]}", true);'
+                        OTLLogger.logger.debug(js_code)
+                        webview.page().runJavaScript(js_code)
             else:  # a bidirectional relation
                 # first check if the new relation needs to be added to a current collection
                 added_to_collection = False
@@ -666,10 +679,12 @@ class VisualisationHelper:
                                 f"Couldn't find display name of node id: {add_edge_arguments["to_id"]}\n Needs refresh")
                                 screen_name_of_new_asset = vis_wrap.asset_id_to_display_name_dict[collect_id_to_original_asset_id_dict[add_edge_arguments["to_id"]]]
                             added_to_collection = True
-                            js_code += cls.create_js_code_to_add_to_collection(vis_wrap,
+                            js_code =  cls.create_js_code_to_add_to_collection(vis_wrap,
                                                                                collection_id,
                                                                                rel_id,
-                                                                               screen_name_of_new_asset) + "\n"
+                                                                               screen_name_of_new_asset)
+                            OTLLogger.logger.debug(js_code)
+                            webview.page().runJavaScript(js_code)
                             # point the original relation to the collection instead of its intended target
                             collect_id_to_original_asset_id_dict[collection_id] = \
                                 add_edge_arguments["from_id"]
@@ -687,10 +702,12 @@ class VisualisationHelper:
                                 screen_name_of_new_asset = vis_wrap.asset_id_to_display_name_dict[collect_id_to_original_asset_id_dict[add_edge_arguments["from_id"]]]
 
                             added_to_collection = True
-                            js_code += cls.create_js_code_to_add_to_collection(vis_wrap,
+                            js_code = cls.create_js_code_to_add_to_collection(vis_wrap,
                                                                                collection_id,
                                                                                rel_id,
-                                                                               screen_name_of_new_asset) + "\n"
+                                                                               screen_name_of_new_asset)
+                            OTLLogger.logger.debug(js_code)
+                            webview.page().runJavaScript(js_code)
                             # point the original relation to the collection instead of its intended target
                             collect_id_to_original_asset_id_dict[collection_id] = \
                                 add_edge_arguments["to_id"]
@@ -703,11 +720,13 @@ class VisualisationHelper:
                         rel_type]:
                         js_bool_hidden = "true"
                     js_code = f'AddEdge("{add_edge_arguments["id"]}","{add_edge_arguments["from_id"]}", "{add_edge_arguments["to_id"]}","{add_edge_arguments["color"]}",null, {js_bool_hidden});'
+                    OTLLogger.logger.debug(js_code)
+                    webview.page().runJavaScript(js_code)
                 else:
-                    js_code += f'\nAddEdge("{add_edge_arguments["id"]}","{add_edge_arguments["from_id"]}", "{add_edge_arguments["to_id"]}","{add_edge_arguments["color"]}",null, true);'
+                    js_code = f'\nAddEdge("{add_edge_arguments["id"]}","{add_edge_arguments["from_id"]}", "{add_edge_arguments["to_id"]}","{add_edge_arguments["color"]}",null, true);'
+                    OTLLogger.logger.debug(js_code)
+                    webview.page().runJavaScript(js_code)
 
-            OTLLogger.logger.debug(js_code)
-            webview.page().runJavaScript(js_code)
 
     @classmethod
     def create_js_code_to_add_to_collection(cls, vis_wrap, collection_id, rel_id,
