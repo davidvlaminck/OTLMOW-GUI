@@ -501,13 +501,14 @@ class VisualisationHelper:
 
             if rel_id in vis_wrap.relation_id_to_collection_id:
                 collection_ids = vis_wrap.relation_id_to_collection_id.pop(rel_id)
+                js_code = ""
                 for collection_id in collection_ids:
                     vis_wrap.collection_id_to_list_of_relation_ids[collection_id] = \
                         [rel_set for rel_set in vis_wrap.collection_id_to_list_of_relation_ids[
                             collection_id] if rel_set[0] != rel_id]
                     new_label, new_title = cls.create_new_special_node_text(collection_id,vis_wrap)
 
-                    js_code = f'UpdateCollectionAttributes("{collection_id}", "{new_label}","{new_title}",{json.dumps(vis_wrap.collection_id_to_list_of_relation_ids)});'
+                    js_code += f'UpdateCollectionAttributes("{collection_id}", "{new_label}","{new_title}",{json.dumps(vis_wrap.collection_id_to_list_of_relation_ids)});\n'
                 js_code += f'\nremoveEdge("{relation_object.assetId.identificator}");'
             else:
                 js_code = f'removeEdge("{relation_object.assetId.identificator}");'
@@ -524,6 +525,8 @@ class VisualisationHelper:
         for relation_object in to_add_list:
             rel_id = relation_object.assetId.identificator
             add_edge_arguments = vis_wrap.create_edge_inject_arguments(relation_object)
+            collect_id_to_original_asset_id_dict= {}
+
             if "label" in add_edge_arguments:  # a heeftBetrokkene relation with their rol as label
                 # first check if the new relation needs to be added to a current collection
                 added_to_collection = False
@@ -540,15 +543,17 @@ class VisualisationHelper:
                                 screen_name_of_new_asset = vis_wrap.asset_id_to_display_name_dict[add_edge_arguments["to_id"]]
                             except:
                                 OTLLogger.logger.debug(f"Couldn't find display name of node id: {add_edge_arguments["to_id"]}\n Needs refresh")
-                                screen_name_of_new_asset = add_edge_arguments["to_id"]
+                                screen_name_of_new_asset = vis_wrap.asset_id_to_display_name_dict[collect_id_to_original_asset_id_dict[add_edge_arguments["to_id"]]]
 
                             added_to_collection = True
-                            js_code = cls.create_js_code_to_add_to_collection(vis_wrap,
+                            js_code += cls.create_js_code_to_add_to_collection(vis_wrap,
                                                                                collection_id,
                                                                                rel_id,
-                                                                               screen_name_of_new_asset)
+                                                                               screen_name_of_new_asset) + "\n"
                             # point the original relation to the collection instead of its intended target
+                            collect_id_to_original_asset_id_dict[collection_id] = add_edge_arguments["from_id"]
                             add_edge_arguments["from_id"] = collection_id
+
                         elif special_edge["to"] == add_edge_arguments["to_id"]:
                             # is this case:
                             # special_edge["to"] is the id of the asset that has relations to many assets
@@ -557,13 +562,15 @@ class VisualisationHelper:
                                 screen_name_of_new_asset = vis_wrap.asset_id_to_display_name_dict[add_edge_arguments["from_id"]]
                             except:
                                 OTLLogger.logger.debug(f"Couldn't find display name of node id: {add_edge_arguments["from_id"]}\n Needs refresh")
-                                screen_name_of_new_asset = add_edge_arguments["from_id"]
+                                screen_name_of_new_asset = vis_wrap.asset_id_to_display_name_dict[collect_id_to_original_asset_id_dict[add_edge_arguments["from_id"]]]
                             added_to_collection = True
-                            js_code = cls.create_js_code_to_add_to_collection(vis_wrap,
+                            js_code += cls.create_js_code_to_add_to_collection(vis_wrap,
                                                                                collection_id,
                                                                                rel_id,
-                                                                               screen_name_of_new_asset)
+                                                                               screen_name_of_new_asset) + "\n"
                             # point the original relation to the collection instead of its intended target
+                            collect_id_to_original_asset_id_dict[collection_id] = \
+                            add_edge_arguments["to_id"]
                             add_edge_arguments["to_id"] = collection_id
 
                 if not added_to_collection:
@@ -595,15 +602,17 @@ class VisualisationHelper:
                                         add_edge_arguments["to_id"]]
                             except:
                                 OTLLogger.logger.debug(f"Couldn't find display name of node id: {add_edge_arguments["to_id"]}\n Needs refresh")
-                                screen_name_of_new_asset = add_edge_arguments["to_id"]
+                                screen_name_of_new_asset = vis_wrap.asset_id_to_display_name_dict[collect_id_to_original_asset_id_dict[add_edge_arguments["to_id"]]]
 
 
                             added_to_collection = True
-                            js_code = cls.create_js_code_to_add_to_collection(vis_wrap,
+                            js_code += cls.create_js_code_to_add_to_collection(vis_wrap,
                                                                                collection_id,
                                                                                rel_id,
-                                                                               screen_name_of_new_asset)
+                                                                               screen_name_of_new_asset) + "\n"
                             # point the original relation to the collection instead of its intended target
+                            collect_id_to_original_asset_id_dict[collection_id] = \
+                                add_edge_arguments["to_id"]
                             add_edge_arguments["from_id"] = collection_id
                         elif special_edge["to"] == add_edge_arguments["to_id"]:
                             # is this case:
@@ -617,13 +626,15 @@ class VisualisationHelper:
                             except:
                                 OTLLogger.logger.debug(
                                 f"Couldn't find display name of node id: {add_edge_arguments["from_id"]}\n Needs refresh")
-                                screen_name_of_new_asset = add_edge_arguments["from_id"]
+                                screen_name_of_new_asset = vis_wrap.asset_id_to_display_name_dict[collect_id_to_original_asset_id_dict[add_edge_arguments["from_id"]]]
                             added_to_collection = True
-                            js_code = cls.create_js_code_to_add_to_collection(vis_wrap,
+                            js_code += cls.create_js_code_to_add_to_collection(vis_wrap,
                                                                                collection_id,
                                                                                rel_id,
-                                                                               screen_name_of_new_asset)
+                                                                               screen_name_of_new_asset) + "\n"
                             # point the original relation to the collection instead of its intended target
+                            collect_id_to_original_asset_id_dict[collection_id] = \
+                                add_edge_arguments["to_id"]
                             add_edge_arguments["to_id"] = collection_id
 
                     if not added_to_collection:
@@ -653,13 +664,15 @@ class VisualisationHelper:
                             except:
                                 OTLLogger.logger.debug(
                                 f"Couldn't find display name of node id: {add_edge_arguments["to_id"]}\n Needs refresh")
-                                screen_name_of_new_asset = add_edge_arguments["to_id"]
+                                screen_name_of_new_asset = vis_wrap.asset_id_to_display_name_dict[collect_id_to_original_asset_id_dict[add_edge_arguments["to_id"]]]
                             added_to_collection = True
-                            js_code = cls.create_js_code_to_add_to_collection(vis_wrap,
+                            js_code += cls.create_js_code_to_add_to_collection(vis_wrap,
                                                                                collection_id,
                                                                                rel_id,
-                                                                               screen_name_of_new_asset)
+                                                                               screen_name_of_new_asset) + "\n"
                             # point the original relation to the collection instead of its intended target
+                            collect_id_to_original_asset_id_dict[collection_id] = \
+                                add_edge_arguments["from_id"]
                             add_edge_arguments["from_id"] = collection_id
                         elif special_edge["to"] == add_edge_arguments["to_id"]:
                             # is this case:
@@ -671,14 +684,16 @@ class VisualisationHelper:
                             except:
                                 OTLLogger.logger.debug(
                                 f"Couldn't find display name of node id: {add_edge_arguments["from_id"]}\n Needs refresh")
-                                screen_name_of_new_asset = add_edge_arguments["from_id"]
+                                screen_name_of_new_asset = vis_wrap.asset_id_to_display_name_dict[collect_id_to_original_asset_id_dict[add_edge_arguments["from_id"]]]
 
                             added_to_collection = True
-                            js_code = cls.create_js_code_to_add_to_collection(vis_wrap,
+                            js_code += cls.create_js_code_to_add_to_collection(vis_wrap,
                                                                                collection_id,
                                                                                rel_id,
-                                                                               screen_name_of_new_asset)
+                                                                               screen_name_of_new_asset) + "\n"
                             # point the original relation to the collection instead of its intended target
+                            collect_id_to_original_asset_id_dict[collection_id] = \
+                                add_edge_arguments["to_id"]
                             add_edge_arguments["to_id"] = collection_id
 
                 if not added_to_collection:
