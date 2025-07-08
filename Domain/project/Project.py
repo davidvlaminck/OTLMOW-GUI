@@ -6,6 +6,7 @@ import json
 import os
 import shutil
 import zipfile
+from collections import defaultdict
 from pathlib import Path
 from typing import Optional, Union, cast
 
@@ -228,10 +229,10 @@ class Project:
                 vis_wrap.special_edges = json_data["collection_support_data"]["vis_wrap.special_edges"]
                 vis_wrap.asset_id_to_display_name_dict = json_data["collection_support_data"][
                     "vis_wrap.asset_id_to_display_name_dict"]
-                vis_wrap.relation_id_to_collection_id = json_data["collection_support_data"][
-                    "vis_wrap.relation_id_to_collection_id"]
-                vis_wrap.collection_id_to_list_of_relation_ids = json_data["collection_support_data"][
-                    "vis_wrap.collection_id_to_list_of_relation_ids"]
+                vis_wrap.relation_id_to_collection_id = defaultdict(list,json_data["collection_support_data"][
+                    "vis_wrap.relation_id_to_collection_id"])
+                vis_wrap.collection_id_to_list_of_relation_ids = defaultdict(list,json_data["collection_support_data"][
+                    "vis_wrap.collection_id_to_list_of_relation_ids"])
                 vis_wrap.collection_relation_count_threshold = json_data["collection_support_data"][
                     "vis_wrap.collection_relation_count_threshold"]
 
