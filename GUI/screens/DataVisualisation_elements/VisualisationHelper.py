@@ -492,6 +492,9 @@ class VisualisationHelper:
 
     @classmethod
     def remove_relations(cls,to_remove_list, vis_wrap, webview):
+        if not vis_wrap:
+            return
+
         # if there are removed relations remove them from the visualisation
         for relation_object in to_remove_list:
             rel_id = relation_object.assetId.identificator
@@ -514,6 +517,8 @@ class VisualisationHelper:
     @classmethod
     def add_new_relations(cls, to_add_list, vis_wrap,webview,relation_visible_dict):
         js_code = ""
+        if not vis_wrap:
+            return
         # if there are new relations add them to the visualisation
         for relation_object in to_add_list:
             rel_id = relation_object.assetId.identificator
