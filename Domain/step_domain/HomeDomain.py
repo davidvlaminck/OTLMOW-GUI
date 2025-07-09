@@ -153,6 +153,7 @@ class HomeDomain:
         project.change_subset(new_path=Path(new_path))
 
         TemplateDomain.init_static()
+        RelationChangeDomain.clear_data()
         RelationChangeDomain.init_static(project=project)
 
         main_window.reset_ui(GlobalTranslate._)

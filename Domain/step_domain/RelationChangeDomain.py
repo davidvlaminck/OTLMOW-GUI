@@ -178,6 +178,8 @@ class RelationChangeDomain:
 
     search_full_OTL_mode = False
 
+    cleared_data = True
+
     @classmethod
     def init_static(cls, project: Project, asynchronous=True) -> None:
         """
@@ -371,6 +373,7 @@ class RelationChangeDomain:
         cls.get_screen().fill_existing_relations_list(cls.existing_relations)
         global_vars.otl_wizard.main_window.step3_visuals.update_only_legend()
 
+        cls.cleared_data = False
         cls.map_uptodate = False
         timing_ref = f"set_instances"
         OTLLogger.logger.debug(
