@@ -83,6 +83,7 @@ class VisualisationHelper:
                         "   network.on('stabilizationIterationsDone',onIterationStabilized)",
                         "   network.on('stabilized',onStabilized)",
                         "   container.addEventListener('mouseover', disablePhysics);",
+                        "   setTimeout(disablePhysics, 300);",
                         "   makeMeMultiSelect(container, network, nodes);",
                         "   try",
                         "   {",
