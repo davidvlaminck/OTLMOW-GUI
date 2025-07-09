@@ -646,19 +646,19 @@ class VisualisationHelper:
                                 add_edge_arguments["to_id"]
                             add_edge_arguments["to_id"] = collection_id
 
-                    if not added_to_collection:
-                        js_bool_hidden = "false"
-                        rel_type = relation_object.typeURI
-                        if rel_type in relation_visible_dict.keys() and not relation_visible_dict[
-                            rel_type]:
-                            js_bool_hidden = "true"
-                        js_code = f'AddEdge("{add_edge_arguments["id"]}","{add_edge_arguments["from_id"]}", "{add_edge_arguments["to_id"]}","{add_edge_arguments["color"]}","{add_edge_arguments["arrow"]}", {js_bool_hidden});'
-                        OTLLogger.logger.debug(js_code)
-                        webview.page().runJavaScript(js_code)
-                    else:
-                        js_code = f'AddEdge("{add_edge_arguments["id"]}","{add_edge_arguments["from_id"]}", "{add_edge_arguments["to_id"]}","{add_edge_arguments["color"]}","{add_edge_arguments["arrow"]}", true);'
-                        OTLLogger.logger.debug(js_code)
-                        webview.page().runJavaScript(js_code)
+                if not added_to_collection:
+                    js_bool_hidden = "false"
+                    rel_type = relation_object.typeURI
+                    if rel_type in relation_visible_dict.keys() and not relation_visible_dict[
+                        rel_type]:
+                        js_bool_hidden = "true"
+                    js_code = f'AddEdge("{add_edge_arguments["id"]}","{add_edge_arguments["from_id"]}", "{add_edge_arguments["to_id"]}","{add_edge_arguments["color"]}","{add_edge_arguments["arrow"]}", {js_bool_hidden});'
+                    OTLLogger.logger.debug(js_code)
+                    webview.page().runJavaScript(js_code)
+                else:
+                    js_code = f'AddEdge("{add_edge_arguments["id"]}","{add_edge_arguments["from_id"]}", "{add_edge_arguments["to_id"]}","{add_edge_arguments["color"]}","{add_edge_arguments["arrow"]}", true);'
+                    OTLLogger.logger.debug(js_code)
+                    webview.page().runJavaScript(js_code)
             else:  # a bidirectional relation
                 # first check if the new relation needs to be added to a current collection
                 added_to_collection = False
