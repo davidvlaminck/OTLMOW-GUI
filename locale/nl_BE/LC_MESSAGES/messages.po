@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: jasper.berton@mow.vlaanderen.be\n"
-"POT-Creation-Date: 2025-07-07 17:20+0200\n"
+"POT-Creation-Date: 2025-07-09 13:31+0200\n"
 "PO-Revision-Date: 2023-10-19 13:13+0200\n"
 "Last-Translator: Jasper Berton <jasper.berton@mow.vlaanderen.be>\n"
 "Language: nl_BE\n"
@@ -18,19 +18,19 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.16.0\n"
 
-#: Domain/project/Project.py:530
+#: Domain/project/Project.py:531
 msgid "There are files missing that belong to this project:\n"
 msgstr "Er zijn bestanden die missen uit dit project:"
 
-#: Domain/project/Project.py:536
+#: Domain/project/Project.py:537
 msgid "Do you still want to export?"
 msgstr "Wilt u toch exporteren?"
 
-#: Domain/project/Project.py:537 GUI/screens/InsertDataScreen.py:219
+#: Domain/project/Project.py:538 GUI/screens/InsertDataScreen.py:219
 msgid "Missing project files"
 msgstr "Missende project bestanden"
 
-#: Domain/project/Project.py:987
+#: Domain/project/Project.py:988
 msgid "Can't insert duplicate filename {0}"
 msgstr ""
 "Bestandsnaam \"{0}\" bestaat al in dit project.\n"
@@ -40,7 +40,7 @@ msgstr ""
 "    2. De naam van het nieuwe bestand veranderen voor het inladen.\n"
 "            "
 
-#: Domain/project/Project.py:990
+#: Domain/project/Project.py:991
 msgid "Duplicate filename"
 msgstr "Bestandsnaam duplicaat"
 
@@ -538,41 +538,49 @@ msgstr ""
 "al gesloten is.\n"
 "Vernieuw de visualisatie om dit op te lossen."
 
-#: GUI/screens/DynamicDataVisualisationScreen.py:168
+#: GUI/screens/DynamicDataVisualisationScreen.py:171
 #: GUI/screens/MapScreen.py:144 GUI/screens/MapScreen.py:187
 #: GUI/screens/MapScreen_test.py:132 GUI/screens/MapScreen_test.py:178
 msgid "relations legend"
 msgstr "Mogelijke relaties"
 
-#: GUI/screens/DynamicDataVisualisationScreen.py:189
+#: GUI/screens/DynamicDataVisualisationScreen.py:192
 msgid "Regenerate the visualisation"
 msgstr "Hergenereer de visualisatie"
 
-#: GUI/screens/DynamicDataVisualisationScreen.py:196
+#: GUI/screens/DynamicDataVisualisationScreen.py:199
 msgid "Options to generate the visualisation differently"
 msgstr "Opties om de visualisatie anders te genereren"
 
-#: GUI/screens/DynamicDataVisualisationScreen.py:199
+#: GUI/screens/DynamicDataVisualisationScreen.py:201
+msgid ""
+"Deze slider duidt de hoeveelheid van dezelfde relaties naar één asset "
+"nodig voor het bundelen in een collectie"
+msgstr ""
+"Deze slider duidt de hoeveelheid van dezelfde relaties naar één asset "
+"nodig voor het bundelen in een collectie"
+
+#: GUI/screens/DynamicDataVisualisationScreen.py:214
 #: GUI/screens/MapScreen.py:172 GUI/screens/MapScreen_test.py:162
 msgid "The visualisation is outdated, refresh to see new changes"
 msgstr ""
 "The visualisatie is verouderd, druk refresh om de nieuwe veranderingen te"
 " zien"
 
-#: GUI/screens/DynamicDataVisualisationScreen.py:210
+#: GUI/screens/DynamicDataVisualisationScreen.py:225
 msgid "Save changes"
 msgstr "Sla veranderingen op"
 
-#: GUI/screens/DynamicDataVisualisationScreen.py:217
-#: GUI/screens/DynamicDataVisualisationScreen.py:243
+#: GUI/screens/DynamicDataVisualisationScreen.py:232
+#: GUI/screens/DynamicDataVisualisationScreen.py:267
 msgid "Help for data visualisation screen"
 msgstr "Help met het data visualisatie scherm"
 
-#: GUI/screens/DynamicDataVisualisationScreen.py:225
+#: GUI/screens/DynamicDataVisualisationScreen.py:240
 msgid "Open visualisation html file location"
 msgstr "Open de visualisatie html-bestand locatie"
 
-#: GUI/screens/DynamicDataVisualisationScreen.py:244
+#: GUI/screens/DynamicDataVisualisationScreen.py:268
 msgid ""
 "\n"
 "Help voor het gebruik van het datavisualisatie scherm:\n"
@@ -599,11 +607,11 @@ msgstr ""
 "- Rechter-muisknop op versleepbaar gewricht => Verwijder gewricht\n"
 "        "
 
-#: GUI/screens/DynamicDataVisualisationScreen.py:343
+#: GUI/screens/DynamicDataVisualisationScreen.py:371
 msgid "Loading graph"
 msgstr "Visualisatie aan het laden..."
 
-#: GUI/screens/DynamicDataVisualisationScreen.py:374
+#: GUI/screens/DynamicDataVisualisationScreen.py:403
 #: GUI/screens/MapScreen.py:235 GUI/screens/MapScreen_test.py:210
 msgid ""
 "There are too many assets and relations to create a visualisation.\n"
@@ -615,11 +623,15 @@ msgstr ""
 "Maximum: {0}\n"
 "Huidig: {1}"
 
-#: GUI/screens/DynamicDataVisualisationScreen.py:469
+#: GUI/screens/DynamicDataVisualisationScreen.py:475
+msgid "uit"
+msgstr "uit"
+
+#: GUI/screens/DynamicDataVisualisationScreen.py:519
 msgid "Changes saved"
 msgstr "Veranderingen opgeslagen"
 
-#: GUI/screens/DynamicDataVisualisationScreen.py:472
+#: GUI/screens/DynamicDataVisualisationScreen.py:522
 msgid "Changes are not saved"
 msgstr "Veranderingen zijn niet opgeslagen"
 

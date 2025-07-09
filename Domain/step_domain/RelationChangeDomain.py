@@ -219,6 +219,7 @@ class RelationChangeDomain:
                     # should only go here if you are testing
                     cls.load_project_relation_data()
 
+
     @classmethod
     def get_empty_visualisation_uptodate(cls):
         return {"remove":[],"add":[],"clear_all": False}
@@ -239,6 +240,7 @@ class RelationChangeDomain:
         global_vars.current_project.visualisation_uptodate.reset_relations_uptodate()
         # global_vars.current_project.visualisation_uptodate.set_clear_all(True)
         cls.map_uptodate = False
+        cls.cleared_data = True
 
     @classmethod
     @add_loading_screen
@@ -372,6 +374,7 @@ class RelationChangeDomain:
         cls.get_screen().fill_possible_relations_list(None, {})
         cls.get_screen().fill_existing_relations_list(cls.existing_relations)
         global_vars.otl_wizard.main_window.step3_visuals.update_only_legend()
+        global_vars.otl_wizard.main_window.step3_visuals.update_slider_range()
 
         cls.cleared_data = False
         cls.map_uptodate = False

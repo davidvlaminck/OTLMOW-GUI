@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-07-07 17:20+0200\n"
+"POT-Creation-Date: 2025-07-09 13:31+0200\n"
 "PO-Revision-Date: 2023-10-19 13:11+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en_US\n"
@@ -18,19 +18,19 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.16.0\n"
 
-#: Domain/project/Project.py:530
+#: Domain/project/Project.py:531
 msgid "There are files missing that belong to this project:\n"
 msgstr "There are files missing that belong to this project:\n"
 
-#: Domain/project/Project.py:536
+#: Domain/project/Project.py:537
 msgid "Do you still want to export?"
 msgstr "Do you still want to export?"
 
-#: Domain/project/Project.py:537 GUI/screens/InsertDataScreen.py:219
+#: Domain/project/Project.py:538 GUI/screens/InsertDataScreen.py:219
 msgid "Missing project files"
 msgstr "Missing project files"
 
-#: Domain/project/Project.py:987
+#: Domain/project/Project.py:988
 msgid "Can't insert duplicate filename {0}"
 msgstr ""
 "Filename \"{0}\" already exists in this project.\n"
@@ -40,7 +40,7 @@ msgstr ""
 "    2. Change the name of the new file before inserting.\n"
 "            "
 
-#: Domain/project/Project.py:990
+#: Domain/project/Project.py:991
 msgid "Duplicate filename"
 msgstr "Duplicate filename"
 
@@ -535,39 +535,45 @@ msgstr ""
 "already closed\n"
 "To fix this refresh the visualisation."
 
-#: GUI/screens/DynamicDataVisualisationScreen.py:168
+#: GUI/screens/DynamicDataVisualisationScreen.py:171
 #: GUI/screens/MapScreen.py:144 GUI/screens/MapScreen.py:187
 #: GUI/screens/MapScreen_test.py:132 GUI/screens/MapScreen_test.py:178
 msgid "relations legend"
 msgstr "Color legend relations:"
 
-#: GUI/screens/DynamicDataVisualisationScreen.py:189
+#: GUI/screens/DynamicDataVisualisationScreen.py:192
 msgid "Regenerate the visualisation"
 msgstr "Regenerate the visualisation"
 
-#: GUI/screens/DynamicDataVisualisationScreen.py:196
+#: GUI/screens/DynamicDataVisualisationScreen.py:199
 msgid "Options to generate the visualisation differently"
 msgstr "Opties om de visualisatie anders te genereren"
 
-#: GUI/screens/DynamicDataVisualisationScreen.py:199
+#: GUI/screens/DynamicDataVisualisationScreen.py:201
+msgid ""
+"Deze slider duidt de hoeveelheid van dezelfde relaties naar één asset "
+"nodig voor het bundelen in een collectie"
+msgstr "This slider indicates the amount of same relations to one asset needed to bundle them into a collection"
+
+#: GUI/screens/DynamicDataVisualisationScreen.py:214
 #: GUI/screens/MapScreen.py:172 GUI/screens/MapScreen_test.py:162
 msgid "The visualisation is outdated, refresh to see new changes"
 msgstr "The visualisation is outdated, refresh to see new changes"
 
-#: GUI/screens/DynamicDataVisualisationScreen.py:210
+#: GUI/screens/DynamicDataVisualisationScreen.py:225
 msgid "Save changes"
 msgstr "Save changes"
 
-#: GUI/screens/DynamicDataVisualisationScreen.py:217
-#: GUI/screens/DynamicDataVisualisationScreen.py:243
+#: GUI/screens/DynamicDataVisualisationScreen.py:232
+#: GUI/screens/DynamicDataVisualisationScreen.py:267
 msgid "Help for data visualisation screen"
 msgstr "Help for data visualisation screen"
 
-#: GUI/screens/DynamicDataVisualisationScreen.py:225
+#: GUI/screens/DynamicDataVisualisationScreen.py:240
 msgid "Open visualisation html file location"
 msgstr "Open visualisation html file location"
 
-#: GUI/screens/DynamicDataVisualisationScreen.py:244
+#: GUI/screens/DynamicDataVisualisationScreen.py:268
 msgid ""
 "\n"
 "Help voor het gebruik van het datavisualisatie scherm:\n"
@@ -591,11 +597,11 @@ msgstr ""
 "selection\n"
 "- Right-mouse click on dragable joint => Remove joint\n"
 
-#: GUI/screens/DynamicDataVisualisationScreen.py:343
+#: GUI/screens/DynamicDataVisualisationScreen.py:371
 msgid "Loading graph"
 msgstr "Loading graph..."
 
-#: GUI/screens/DynamicDataVisualisationScreen.py:374
+#: GUI/screens/DynamicDataVisualisationScreen.py:403
 #: GUI/screens/MapScreen.py:235 GUI/screens/MapScreen_test.py:210
 msgid ""
 "There are too many assets and relations to create a visualisation.\n"
@@ -606,11 +612,15 @@ msgstr ""
 "maximum: {0}\n"
 "current: {1}"
 
-#: GUI/screens/DynamicDataVisualisationScreen.py:469
+#: GUI/screens/DynamicDataVisualisationScreen.py:475
+msgid "uit"
+msgstr "off"
+
+#: GUI/screens/DynamicDataVisualisationScreen.py:519
 msgid "Changes saved"
 msgstr "Changes saved"
 
-#: GUI/screens/DynamicDataVisualisationScreen.py:472
+#: GUI/screens/DynamicDataVisualisationScreen.py:522
 msgid "Changes are not saved"
 msgstr "Changes are not saved"
 

@@ -10,10 +10,10 @@ import qtawesome as qta
 
 from PyQt6.QtWebEngineCore import QWebEngineSettings
 from PyQt6.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QLabel, QComboBox, QSizePolicy, \
-    QWidget, QFrame, QHBoxLayout, QCheckBox
+    QWidget, QFrame, QHBoxLayout, QCheckBox, QSlider
 from PyQt6.QtWebEngineWidgets import QWebEngineView
 from PyQt6.QtWebChannel import QWebChannel
-from PyQt6.QtCore import QObject, pyqtSlot, QUrl
+from PyQt6.QtCore import QObject, pyqtSlot, QUrl, Qt
 from otlmow_model.OtlmowModel.BaseClasses.OTLObject import OTLObject
 from otlmow_visuals.PyVisWrapper import PyVisWrapper
 
@@ -119,6 +119,7 @@ class DynamicDataVisualisationScreen(Screen):
         self.objects_in_memory = []
         self.std_vis_wrap = None
         self.js_is_loading = False
+        self.max_slider_value = 50
 
         # translation model
         self._ = _
@@ -128,6 +129,8 @@ class DynamicDataVisualisationScreen(Screen):
         self.graph_saved_status_label = QLabel()
         self.loading_graph_status_label = QLabel()
         self.visualisation_mode = QComboBox()
+        self.collection_threshold_slider = QSlider(Qt.Orientation.Horizontal)
+        self.collection_threshold_label = QLabel()
         self.too_many_objects_message = QLabel()
         self.relation_color_legend_title = QLabel()
         self.relation_id_to_relation_show_checkbox_dict = {}
@@ -195,6 +198,18 @@ class DynamicDataVisualisationScreen(Screen):
                                           ])
         self.visualisation_mode.setToolTip(self._("Options to generate the visualisation differently"))
 
+        collection_threshold_tooltip = self._("Deze slider duidt de hoeveelheid van dezelfde relaties naar één asset nodig voor het bundelen in een collectie")
+        self.collection_threshold_slider.setRange(0, 50)
+        self.collection_threshold_slider.setValue(10)
+        self.collection_threshold_slider.setToolTip(collection_threshold_tooltip)
+        self.collection_threshold_slider.setFixedWidth(100)
+
+        self.collection_threshold_label.setText((str(self.collection_threshold_slider.value())))
+        self.collection_threshold_label.setToolTip(collection_threshold_tooltip)
+
+        # Connect slider change to label update
+        self.collection_threshold_slider.valueChanged.connect(self.on_value_changed)
+
         self.refresh_needed_label.setText(
             self._("The visualisation is outdated, refresh to see new changes"))
         self.refresh_needed_label.setStyleSheet('color:#DD1111;')
@@ -226,6 +241,8 @@ class DynamicDataVisualisationScreen(Screen):
 
         frame_layout.addWidget(regenerate_btn)
         frame_layout.addWidget(self.visualisation_mode)
+        frame_layout.addWidget(self.collection_threshold_slider)
+        frame_layout.addWidget(self.collection_threshold_label)
         frame_layout.addWidget(self.refresh_needed_label)
         frame_layout.addStretch()
         frame_layout.addWidget(self.loading_graph_status_label)
@@ -238,6 +255,13 @@ class DynamicDataVisualisationScreen(Screen):
 
         frame.setLayout(frame_layout)
         return frame
+
+    def on_value_changed(self, val: int):
+        self.collection_threshold_label.setText(str(val))
+        self.check_if_slider_is_at_maxSliderValue()
+        global_vars.current_project.visualisation_uptodate.set_clear_all(True)
+        if global_vars.current_project.visualisation_uptodate.get_clear_all():
+            self.refresh_needed_label.setHidden(False)
 
     def show_help_dialog_window(self):
         title = self._("Help for data visualisation screen")
@@ -311,6 +335,9 @@ Help voor het gebruik van het datavisualisatie scherm:
             color_label.setSizePolicy(QSizePolicy.Policy.Maximum,QSizePolicy.Policy.Expanding)
             color_label.setFixedWidth(30)
 
+
+
+
             item_layout_legend.addWidget(label)
             item_layout_legend.addWidget(show_checkbox)
             item_layout_legend.addWidget(color_label)
@@ -322,6 +349,7 @@ Help voor het gebruik van het datavisualisatie scherm:
 
         if self.frame_layout_legend:
             self.frame_layout_legend.addStretch()
+
 
     def create_on_stateChange_listener(self,relation_color):
         return lambda state : self.set_relations_visibility(relation_color,state)
@@ -348,6 +376,7 @@ Help voor het gebruik van het datavisualisatie scherm:
             self.std_vis_wrap = VisualisationHelper.get_std_vis_wrap_instance()
 
         global_vars.current_project.load_visualisation_python_support_data(self.std_vis_wrap)
+
         self.set_graph_saved_status(True)
 
     def recreate_html(self,html_path:Path):
@@ -385,7 +414,8 @@ Help voor het gebruik van het datavisualisatie scherm:
 
             self.std_vis_wrap = VisualisationHelper.create_html(html_loc= html_path,
                                                                 objects_in_memory=self.objects_in_memory,
-                                                                vis_mode=self.visualisation_mode.currentText())
+                                                                vis_mode=self.visualisation_mode.currentText(),
+                                                                collection_threshold = self.collection_threshold_slider.value())
             global_vars.current_project.visualisation_uptodate.reset_full_state()
             global_vars.current_project.save_visualisation_python_support_data(self.std_vis_wrap)
             self.load_html(html_path)
@@ -410,6 +440,7 @@ Help voor het gebruik van het datavisualisatie scherm:
             #     self.refresh_needed_label.setHidden(False)
             #     return
 
+
             to_add_list = global_vars.current_project.visualisation_uptodate.get_to_be_inserted_relations()
             to_remove_list = global_vars.current_project.visualisation_uptodate.get_to_be_removed_relations()
 
@@ -426,6 +457,23 @@ Help voor het gebruik van het datavisualisatie scherm:
 
         self.refresh_needed_label.setHidden(True)
 
+    def update_slider_range(self):
+        asset_count_in_project = len(RelationChangeDomain.get_shown_objects())
+        self.max_slider_value = asset_count_in_project + 1
+        self.collection_threshold_slider.blockSignals(True)
+        self.collection_threshold_slider.setRange(0, self.max_slider_value)
+        if self.max_slider_value > 10:
+            self.collection_threshold_slider.setValue(10)
+            self.collection_threshold_label.setText(str(self.collection_threshold_slider.value()))
+        else:
+            self.collection_threshold_slider.setValue(self.max_slider_value)
+            self.check_if_slider_is_at_maxSliderValue()
+        self.collection_threshold_slider.blockSignals(False)
+
+    def check_if_slider_is_at_maxSliderValue(self):
+        if self.collection_threshold_slider.value() >= self.max_slider_value:
+            self.collection_threshold_label.setText(self._("uit"))
+
     def update_only_legend(self):
         self.objects_in_memory = self.load_assets()
         self.fill_frame_layout_legend()
@@ -436,6 +484,8 @@ Help voor het gebruik van het datavisualisatie scherm:
 
             self.load_html(html_path)
             global_vars.current_project.visualisation_uptodate.reset_relations_uptodate()
+            self.update_slider_range()
+
         else:
             # self.recreate_html(html_path)
             global_vars.current_project.visualisation_uptodate.set_clear_all(True)

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-07-07 17:20+0200\n"
+"POT-Creation-Date: 2025-07-09 13:31+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,23 +17,23 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.16.0\n"
 
-#: Domain/project/Project.py:530
+#: Domain/project/Project.py:531
 msgid "There are files missing that belong to this project:\n"
 msgstr ""
 
-#: Domain/project/Project.py:536
+#: Domain/project/Project.py:537
 msgid "Do you still want to export?"
 msgstr ""
 
-#: Domain/project/Project.py:537 GUI/screens/InsertDataScreen.py:219
+#: Domain/project/Project.py:538 GUI/screens/InsertDataScreen.py:219
 msgid "Missing project files"
 msgstr ""
 
-#: Domain/project/Project.py:987
+#: Domain/project/Project.py:988
 msgid "Can't insert duplicate filename {0}"
 msgstr ""
 
-#: Domain/project/Project.py:990
+#: Domain/project/Project.py:991
 msgid "Duplicate filename"
 msgstr ""
 
@@ -475,39 +475,45 @@ msgid ""
 "To fix this refresh the visualisation."
 msgstr ""
 
-#: GUI/screens/DynamicDataVisualisationScreen.py:168
+#: GUI/screens/DynamicDataVisualisationScreen.py:171
 #: GUI/screens/MapScreen.py:144 GUI/screens/MapScreen.py:187
 #: GUI/screens/MapScreen_test.py:132 GUI/screens/MapScreen_test.py:178
 msgid "relations legend"
 msgstr ""
 
-#: GUI/screens/DynamicDataVisualisationScreen.py:189
+#: GUI/screens/DynamicDataVisualisationScreen.py:192
 msgid "Regenerate the visualisation"
 msgstr ""
 
-#: GUI/screens/DynamicDataVisualisationScreen.py:196
+#: GUI/screens/DynamicDataVisualisationScreen.py:199
 msgid "Options to generate the visualisation differently"
 msgstr ""
 
-#: GUI/screens/DynamicDataVisualisationScreen.py:199
+#: GUI/screens/DynamicDataVisualisationScreen.py:201
+msgid ""
+"Deze slider duidt de hoeveelheid van dezelfde relaties naar één asset "
+"nodig voor het bundelen in een collectie"
+msgstr ""
+
+#: GUI/screens/DynamicDataVisualisationScreen.py:214
 #: GUI/screens/MapScreen.py:172 GUI/screens/MapScreen_test.py:162
 msgid "The visualisation is outdated, refresh to see new changes"
 msgstr ""
 
-#: GUI/screens/DynamicDataVisualisationScreen.py:210
+#: GUI/screens/DynamicDataVisualisationScreen.py:225
 msgid "Save changes"
 msgstr ""
 
-#: GUI/screens/DynamicDataVisualisationScreen.py:217
-#: GUI/screens/DynamicDataVisualisationScreen.py:243
+#: GUI/screens/DynamicDataVisualisationScreen.py:232
+#: GUI/screens/DynamicDataVisualisationScreen.py:267
 msgid "Help for data visualisation screen"
 msgstr ""
 
-#: GUI/screens/DynamicDataVisualisationScreen.py:225
+#: GUI/screens/DynamicDataVisualisationScreen.py:240
 msgid "Open visualisation html file location"
 msgstr ""
 
-#: GUI/screens/DynamicDataVisualisationScreen.py:244
+#: GUI/screens/DynamicDataVisualisationScreen.py:268
 msgid ""
 "\n"
 "Help voor het gebruik van het datavisualisatie scherm:\n"
@@ -521,11 +527,11 @@ msgid ""
 "        "
 msgstr ""
 
-#: GUI/screens/DynamicDataVisualisationScreen.py:343
+#: GUI/screens/DynamicDataVisualisationScreen.py:371
 msgid "Loading graph"
 msgstr ""
 
-#: GUI/screens/DynamicDataVisualisationScreen.py:374
+#: GUI/screens/DynamicDataVisualisationScreen.py:403
 #: GUI/screens/MapScreen.py:235 GUI/screens/MapScreen_test.py:210
 msgid ""
 "There are too many assets and relations to create a visualisation.\n"
@@ -533,11 +539,15 @@ msgid ""
 "current: {1}"
 msgstr ""
 
-#: GUI/screens/DynamicDataVisualisationScreen.py:469
+#: GUI/screens/DynamicDataVisualisationScreen.py:475
+msgid "uit"
+msgstr ""
+
+#: GUI/screens/DynamicDataVisualisationScreen.py:519
 msgid "Changes saved"
 msgstr ""
 
-#: GUI/screens/DynamicDataVisualisationScreen.py:472
+#: GUI/screens/DynamicDataVisualisationScreen.py:522
 msgid "Changes are not saved"
 msgstr ""
 

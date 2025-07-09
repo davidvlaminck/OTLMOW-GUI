@@ -19,7 +19,10 @@ class VisualisationHelper:
         return PyVisWrapper()
 
     @classmethod
-    def create_html(cls,html_loc:Path, objects_in_memory: List[OTLObject], vis_mode="1 Hiërarchische visualisatie"):
+    def create_html(cls,html_loc:Path,
+                    objects_in_memory: List[OTLObject],
+                    vis_mode="1 Hiërarchische visualisatie",
+                    collection_threshold=-1):
 
         objects_in_memory = deepcopy(objects_in_memory)
 
@@ -39,7 +42,7 @@ class VisualisationHelper:
 
         stdVis = cls.get_std_vis_wrap_instance()
         stdVis.show(list_of_objects=objects_in_memory, visualisation_option = visualisation_option,
-                    html_path=Path(html_loc), launch_html=False)
+                    html_path=Path(html_loc), launch_html=False,collection_threshold=collection_threshold)
 
         cls.modify_html(html_loc)
 
