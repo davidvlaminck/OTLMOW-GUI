@@ -10,7 +10,6 @@ from collections import defaultdict
 from pathlib import Path
 from typing import Optional, Union, cast
 
-from otlmow_converter.OtlmowConverter import OtlmowConverter
 from otlmow_model.OtlmowModel.BaseClasses.RelationInteractor import RelationInteractor
 from otlmow_model.OtlmowModel.Classes.ImplementatieElement.AIMObject import AIMObject
 from otlmow_model.OtlmowModel.Classes.ImplementatieElement.RelatieObject import RelatieObject
@@ -434,28 +433,30 @@ class Project:
         OTLLogger.logger.debug(f"Execute Project.make_quick_save({save_path.name}) for project {self.eigen_referentie} ({object_count} objects)", extra={
             "timing_ref": f"make_quick_save_{save_path.stem}"})
 
-        await OtlmowConverter.from_objects_to_file_async(file_path=save_path,
-                                             sequence_of_objects=self.assets_in_memory)
+        await Helpers.from_objects_to_file_async(save_path,self.assets_in_memory)
         self.last_quick_save = save_path
         self.save_project_to_dir()
         OTLLogger.logger.debug(
             f"Execute Project.make_quick_save({save_path.name}) for project {self.eigen_referentie} ({object_count} objects)",
             extra={
                 "timing_ref": f"make_quick_save_{save_path.stem}"})
+
+
 
     async def make_quick_save(self, save_path: Path) -> None:
         object_count = len(self.assets_in_memory)
         OTLLogger.logger.debug(f"Execute Project.make_quick_save({save_path.name}) for project {self.eigen_referentie} ({object_count} objects)", extra={
             "timing_ref": f"make_quick_save_{save_path.stem}"})
 
-        OtlmowConverter.from_objects_to_file(file_path=save_path,
-                                             sequence_of_objects=self.assets_in_memory)
+        await Helpers.from_objects_to_file(save_path,self.assets_in_memory)
         self.last_quick_save = save_path
         self.save_project_to_dir()
         OTLLogger.logger.debug(
             f"Execute Project.make_quick_save({save_path.name}) for project {self.eigen_referentie} ({object_count} objects)",
             extra={
                 "timing_ref": f"make_quick_save_{save_path.stem}"})
+
+
 
     def remove_too_old_quicksaves(self, current_date: datetime, max_days_stored: datetime,
                                    date_format: str) -> None:

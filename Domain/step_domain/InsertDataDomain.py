@@ -2,12 +2,7 @@ from pathlib import Path
 from typing import List, Iterable, Optional, cast, Union
 
 from openpyxl.reader.excel import load_workbook
-from otlmow_converter import HelperFunctions
-from otlmow_converter.Exceptions.CannotCombineAssetsError import CannotCombineAssetsError
-from otlmow_converter.Exceptions.CannotCombineDifferentAssetsError import \
-    CannotCombineAssetsWithDifferentTypeError
 from otlmow_converter.Exceptions.ExceptionsGroup import ExceptionsGroup
-from otlmow_converter.OtlmowConverter import OtlmowConverter
 
 from otlmow_model.OtlmowModel.BaseClasses.OTLObject import OTLObject, \
     dynamic_create_instance_from_uri

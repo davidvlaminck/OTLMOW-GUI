@@ -1,6 +1,5 @@
-import asyncio
+
 import base64
-import logging
 import os
 import subprocess
 import tempfile
@@ -12,7 +11,7 @@ from otlmow_converter.Exceptions.ExceptionsGroup import ExceptionsGroup
 from otlmow_converter.OtlmowConverter import OtlmowConverter
 from otlmow_model.OtlmowModel.BaseClasses.OTLObject import OTLObject, \
     dynamic_create_instance_from_ns_and_name, dynamic_create_instance_from_uri
-from otlmow_model.OtlmowModel.Classes.Agent import Agent
+
 from otlmow_model.OtlmowModel.Helpers import OTLObjectHelper
 from otlmow_model.OtlmowModel.Helpers.GenericHelper import validate_guid, get_shortened_uri, get_ns_and_name_from_uri, \
     get_titlecase_from_ns
@@ -21,7 +20,6 @@ from packaging.version import Version
 
 from Domain.logger.OTLLogger import OTLLogger
 from GUI.dialog_windows.LoadingImageWindow import add_loading_screen
-from GUI.dialog_windows.NotificationWindow import NotificationWindow
 from GUI.screens.RelationChange_elements.RelationChangeHelpers import RelationChangeHelpers
 
 
@@ -265,3 +263,13 @@ class Helpers:
             dict2.pop("isActief")
 
         return dict1 == dict2
+
+    @classmethod
+    async def from_objects_to_file(cls, save_path,assets_in_memory):
+        OtlmowConverter.from_objects_to_file(file_path=save_path,
+                                             sequence_of_objects=assets_in_memory)
+
+    @classmethod
+    async def from_objects_to_file_async(cls, save_path,assets_in_memory):
+        return OtlmowConverter.from_objects_to_file_async(file_path=save_path,
+                                                          sequence_of_objects=assets_in_memory)
