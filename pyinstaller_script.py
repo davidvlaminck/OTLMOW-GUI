@@ -1,5 +1,6 @@
 import pathlib
 import shutil
+import sys
 
 import PyInstaller.__main__
 
@@ -10,11 +11,29 @@ home_path = pathlib.Path.home()
 OTLLogger.init()
 OTLLogger.logger.debug("PyInstaller.__main__.run", extra={"timing_ref":"PyInstaller.__main__.run"})
 
+root_path = pathlib.Path(__file__).parent
+OTLLogger.logger.debug("root_path: " + str(root_path))
+OTLLogger.logger.debug("sys.path: " + str(sys.path))
+
+paths = None
+for sys_path in sys.path:
+    if 'site-packages' in sys_path:
+        paths = sys_path
+
+
+if not paths:
+    raise FileNotFoundError("cannot find the site-packages folder")
+
+
+OTLLogger.logger.debug("paths: " + paths)
+
+
+
 PyInstaller.__main__.run([
     r'OTL Wizard 2.py',
-    '--distpath', str(home_path / 'PycharmProjects'/ 'OTLMOW-GUI' /  'LatestReleaseMulti'),
+    '--distpath', str(root_path /  'LatestReleaseMulti'),
     '--contents-directory', 'data',
-    '--paths', str(home_path / 'PycharmProjects' / 'OTLMOW-GUI' / 'venv3-13' / 'Lib' / 'site-packages'),
+    '--paths', paths,
     '--exclude-module','otlmow_model',
     '--collect-all', 'otlmow_converter',
     '--collect-all', 'otlmow_model',
