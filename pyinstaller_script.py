@@ -49,7 +49,7 @@ PyInstaller.__main__.run([
     '--add-data', 'pyproject.toml:.',
     '--add-data', 'javascripts_visualisation:javascripts_visualisation',
     '--icon','img/wizard.png',
-    '--splash','img/wizard1.png',
+    '--splash','img/Logo-OTL_Wizard_2_no_purple_edge_V3.png',
     '--noconfirm',
     # '--onefile',  # All files packed together in one executable file
     '--noconsole', # no cmd/powershell window with debug output
