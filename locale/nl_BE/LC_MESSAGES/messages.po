@@ -571,7 +571,7 @@ msgstr ""
 #: GUI/screens/MapScreen.py:172
 msgid "The visualisation is outdated, refresh to see new changes"
 msgstr ""
-"The visualisatie is verouderd, druk "Hergeneer" om de nieuwe veranderingen te"
+"De visualisatie is verouderd, druk "Hergenereer" om de nieuwe veranderingen te"
 " zien"
 
 #: GUI/screens/DynamicDataVisualisationScreen.py:225
