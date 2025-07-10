@@ -12,6 +12,7 @@
 #define MyAppAssocName MyAppBaseName + " project"
 #define MyAppAssocExt ".otlw"
 #define MyAppAssocKey StringChange(MyAppAssocName, " ", "") + MyAppAssocExt
+#define MyAppDevRoot "C:\Users\chris\PycharmProjects\OTLMOW-GUI-testing"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.
@@ -39,11 +40,11 @@ DisableProgramGroupPage=yes
 PrivilegesRequired=lowest
 UsePreviousAppDir=no
 //PrivilegesRequiredOverridesAllowed=dialog
-InfoBeforeFile=C:\Users\chris\PycharmProjects\OTLMOW-GUI\LatestReleaseMulti\before_install_text_FDOtool_warning.txt
-InfoAfterFile=C:\Users\chris\PycharmProjects\OTLMOW-GUI\LatestReleaseMulti\long_startup_warning.txt
-OutputDir=C:\Users\chris\PycharmProjects\OTLMOW-GUI\LatestReleaseMulti
+InfoBeforeFile={#MyAppDevRoot}\LatestReleaseMulti\before_install_text_FDOtool_warning.txt
+InfoAfterFile={#MyAppDevRoot}\LatestReleaseMulti\long_startup_warning.txt
+OutputDir={#MyAppDevRoot}\LatestReleaseMulti
 OutputBaseFilename={#MyInstallerOutputName}
-SetupIconFile=C:\Users\chris\PycharmProjects\OTLMOW-GUI\img\wizard.ico
+SetupIconFile={#MyAppDevRoot}\img\wizard.ico
 Compression=lzma
 SolidCompression=yes
 WizardStyle=modern
@@ -56,9 +57,9 @@ Name: "dutch"; MessagesFile: "compiler:Languages\Dutch.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "C:\Users\chris\PycharmProjects\OTLMOW-GUI\LatestReleaseMulti\OTL Wizard 2\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\chris\PycharmProjects\OTLMOW-GUI\LatestReleaseMulti\OTL Wizard 2\data\*"; DestDir: "{app}\data"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "C:\Users\chris\PycharmProjects\OTLMOW-GUI\LatestReleaseMulti\additional_programs\*"; DestDir: "{app}\additional_programs"; Flags: ignoreversion recursesubdirs createallsubdirs;
+Source: "{#MyAppDevRoot}\LatestReleaseMulti\OTL Wizard 2\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#MyAppDevRoot}\LatestReleaseMulti\OTL Wizard 2\data\*"; DestDir: "{app}\data"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#MyAppDevRoot}\LatestReleaseMulti\additional_programs\*"; DestDir: "{app}\additional_programs"; Flags: ignoreversion recursesubdirs createallsubdirs;
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Registry]
