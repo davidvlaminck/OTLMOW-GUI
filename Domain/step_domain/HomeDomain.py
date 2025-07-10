@@ -207,7 +207,8 @@ class HomeDomain:
 
         TemplateDomain.init_static()
         InsertDataDomain.init_static()
-        RelationChangeDomain.clear_data()
+        # RelationChangeDomain.clear_data()
+        RelationChangeDomain.init_static(project=selected_project)
         ExportFilteredDataSubDomain.clear_data()
         global_vars.otl_wizard.main_window.step3_visuals.changed_project_bool = True
 

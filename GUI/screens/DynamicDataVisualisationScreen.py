@@ -435,6 +435,7 @@ Help voor het gebruik van het datavisualisatie scherm:
         if self.changed_project_bool:
             self.changed_project()
 
+
         elif not RelationChangeDomain.is_visualisation_uptodate():
             # if self.visualisation_mode.currentText() != "standaard visualisatie":
             #     self.refresh_needed_label.setHidden(False)

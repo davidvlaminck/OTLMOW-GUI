@@ -265,11 +265,11 @@ class Helpers:
         return dict1 == dict2
 
     @classmethod
-    async def from_objects_to_file(cls, save_path,assets_in_memory):
+    def from_objects_to_file(cls, save_path,assets_in_memory):
         OtlmowConverter.from_objects_to_file(file_path=save_path,
                                              sequence_of_objects=assets_in_memory)
 
     @classmethod
     async def from_objects_to_file_async(cls, save_path,assets_in_memory):
-        return OtlmowConverter.from_objects_to_file_async(file_path=save_path,
+        return await OtlmowConverter.from_objects_to_file_async(file_path=save_path,
                                                           sequence_of_objects=assets_in_memory)

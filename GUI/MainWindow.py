@@ -160,9 +160,9 @@ class MainWindow(QStackedWidget):
         # the information is updated if the project has changed
         # if (index in [3, 4] and (not RelationChangeDomain.project or
         #                          RelationChangeDomain.project != global_vars.current_project)):
-        if (index in [3, 4] ):
-            if RelationChangeDomain.cleared_data:
-                RelationChangeDomain.init_static(project=global_vars.current_project)
+        # if (index in [3, 4] ):
+        #     if RelationChangeDomain.cleared_data:
+        #         RelationChangeDomain.init_static(project=global_vars.current_project)
 
         #everytime you go to a specific page update the frontend to always show the last Domain state
         if index == 1:

@@ -423,9 +423,9 @@ class Project:
                 create_task_reraise_exception(self.make_quick_save_async(save_path=save_path))
             except DeprecationWarning:
                 # should only go here if you are testing
-                await self.make_quick_save(save_path=save_path)
+                self.make_quick_save(save_path=save_path)
         else:
-            await self.make_quick_save(save_path=save_path)
+            self.make_quick_save(save_path=save_path)
 
 
     async def make_quick_save_async(self, save_path: Path) -> None:
@@ -443,12 +443,12 @@ class Project:
 
 
 
-    async def make_quick_save(self, save_path: Path) -> None:
+    def make_quick_save(self, save_path: Path) -> None:
         object_count = len(self.assets_in_memory)
         OTLLogger.logger.debug(f"Execute Project.make_quick_save({save_path.name}) for project {self.eigen_referentie} ({object_count} objects)", extra={
             "timing_ref": f"make_quick_save_{save_path.stem}"})
 
-        await Helpers.from_objects_to_file(save_path,self.assets_in_memory)
+        Helpers.from_objects_to_file(save_path,self.assets_in_memory)
         self.last_quick_save = save_path
         self.save_project_to_dir()
         OTLLogger.logger.debug(
