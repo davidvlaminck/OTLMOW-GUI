@@ -549,7 +549,7 @@ msgstr ""
 #: GUI/screens/DynamicDataVisualisationScreen.py:171
 #: GUI/screens/MapScreen.py:144 GUI/screens/MapScreen.py:187
 msgid "relations legend"
-msgstr "Mogelijke relaties"
+msgstr "Kleur legende relaties:"
 
 #: GUI/screens/DynamicDataVisualisationScreen.py:192
 msgid "Regenerate the visualisation"
