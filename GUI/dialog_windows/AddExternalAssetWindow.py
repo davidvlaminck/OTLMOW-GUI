@@ -2,6 +2,7 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QDialog, QLabel, QVBoxLayout, QHBoxLayout, QLineEdit, QDialogButtonBox, \
     QComboBox
 
+from Domain import global_vars
 from Domain.util.Helpers import Helpers
 
 from Domain.step_domain.RelationChangeDomain import RelationChangeDomain
@@ -74,6 +75,7 @@ class AddExternalAssetWindow:
         type_uri = Helpers.all_OTL_asset_types_dict[combobox_choice]
 
         RelationChangeDomain.create_and_add_new_external_asset(id_or_name=id_or_name, type_uri=type_uri)
+        global_vars.current_project.visualisation_uptodate.set_clear_all(True)
         RelationChangeDomain.update_frontend()
         dialog_window.close()
 
