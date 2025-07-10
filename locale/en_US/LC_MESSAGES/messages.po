@@ -541,7 +541,7 @@ msgid ""
 msgstr ""
 "Couldn't save the html because the html is outdated and the project is "
 "already closed\n"
-"To fix this refresh the visualisation."
+"To fix this regenerate the visualisation."
 
 #: GUI/screens/DynamicDataVisualisationScreen.py:171
 #: GUI/screens/MapScreen.py:144 GUI/screens/MapScreen.py:187
@@ -567,7 +567,7 @@ msgstr ""
 #: GUI/screens/DynamicDataVisualisationScreen.py:214
 #: GUI/screens/MapScreen.py:172
 msgid "The visualisation is outdated, refresh to see new changes"
-msgstr "The visualisation is outdated, refresh to see new changes"
+msgstr "The visualisation is outdated, regenerate to see new changes"
 
 #: GUI/screens/DynamicDataVisualisationScreen.py:225
 msgid "Save changes"
