@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: jasper.berton@mow.vlaanderen.be\n"
-"POT-Creation-Date: 2025-07-09 13:31+0200\n"
+"POT-Creation-Date: 2025-07-10 11:26+0200\n"
 "PO-Revision-Date: 2023-10-19 13:13+0200\n"
 "Last-Translator: Jasper Berton <jasper.berton@mow.vlaanderen.be>\n"
 "Language: nl_BE\n"
@@ -18,19 +18,19 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.16.0\n"
 
-#: Domain/project/Project.py:531
+#: Domain/project/Project.py:532
 msgid "There are files missing that belong to this project:\n"
 msgstr "Er zijn bestanden die missen uit dit project:"
 
-#: Domain/project/Project.py:537
+#: Domain/project/Project.py:538
 msgid "Do you still want to export?"
 msgstr "Wilt u toch exporteren?"
 
-#: Domain/project/Project.py:538 GUI/screens/InsertDataScreen.py:219
+#: Domain/project/Project.py:539 GUI/screens/InsertDataScreen.py:219
 msgid "Missing project files"
 msgstr "Missende project bestanden"
 
-#: Domain/project/Project.py:988
+#: Domain/project/Project.py:989
 msgid "Can't insert duplicate filename {0}"
 msgstr ""
 "Bestandsnaam \"{0}\" bestaat al in dit project.\n"
@@ -40,7 +40,7 @@ msgstr ""
 "    2. De naam van het nieuwe bestand veranderen voor het inladen.\n"
 "            "
 
-#: Domain/project/Project.py:991
+#: Domain/project/Project.py:992
 msgid "Duplicate filename"
 msgstr "Bestandsnaam duplicaat"
 
@@ -94,7 +94,7 @@ msgstr "Subset is leeg"
 msgid "wrong_database_error"
 msgstr "Subset .db bestand kan niet gelezen worden"
 
-#: Domain/step_domain/InsertDataDomain.py:412
+#: Domain/step_domain/InsertDataDomain.py:407
 msgid "[FILE INFO NOT AVAILABLE]"
 msgstr "[BESTANDSINFO NIET BESCHIKBAAR]"
 
@@ -271,17 +271,25 @@ msgstr ""
 "Welke rol heeft Agent '{0}' in de HeeftBetrokkene relaties tot de "
 "selecteerde assets?"
 
-#: GUI/dialog_windows/LanguageWindow.py:23
+#: GUI/dialog_windows/LanguageWindow.py:24
 msgid "change_language_title"
 msgstr "Taal veranderen"
 
-#: GUI/dialog_windows/LanguageWindow.py:27
+#: GUI/dialog_windows/LanguageWindow.py:28
 msgid "language_option_dutch"
 msgstr "Nederlands"
 
-#: GUI/dialog_windows/LanguageWindow.py:28
+#: GUI/dialog_windows/LanguageWindow.py:29
 msgid "language_option_english"
 msgstr "English"
+
+#: GUI/dialog_windows/LanguageWindow.py:54
+msgid "Please restart the application to apply the changes"
+msgstr "EN: Please restart the application to apply the changes\n\nNL: Herstart alsjeblieft de applicatie om de veranderingen toe te passen."
+
+#: GUI/dialog_windows/LanguageWindow.py:55
+msgid "Restart required"
+msgstr "Restart of application required"
 
 #: GUI/dialog_windows/MenuActionsWindow.py:15 GUI/header/HeaderBar.py:160
 #: GUI/header/HeaderBar.py:297
@@ -540,7 +548,6 @@ msgstr ""
 
 #: GUI/screens/DynamicDataVisualisationScreen.py:171
 #: GUI/screens/MapScreen.py:144 GUI/screens/MapScreen.py:187
-#: GUI/screens/MapScreen_test.py:132 GUI/screens/MapScreen_test.py:178
 msgid "relations legend"
 msgstr "Mogelijke relaties"
 
@@ -561,7 +568,7 @@ msgstr ""
 "nodig voor het bundelen in een collectie"
 
 #: GUI/screens/DynamicDataVisualisationScreen.py:214
-#: GUI/screens/MapScreen.py:172 GUI/screens/MapScreen_test.py:162
+#: GUI/screens/MapScreen.py:172
 msgid "The visualisation is outdated, refresh to see new changes"
 msgstr ""
 "The visualisatie is verouderd, druk refresh om de nieuwe veranderingen te"
@@ -612,7 +619,7 @@ msgid "Loading graph"
 msgstr "Visualisatie aan het laden..."
 
 #: GUI/screens/DynamicDataVisualisationScreen.py:403
-#: GUI/screens/MapScreen.py:235 GUI/screens/MapScreen_test.py:210
+#: GUI/screens/MapScreen.py:235
 msgid ""
 "There are too many assets and relations to create a visualisation.\n"
 "maximum: {0}\n"
@@ -623,15 +630,15 @@ msgstr ""
 "Maximum: {0}\n"
 "Huidig: {1}"
 
-#: GUI/screens/DynamicDataVisualisationScreen.py:475
+#: GUI/screens/DynamicDataVisualisationScreen.py:476
 msgid "uit"
 msgstr "uit"
 
-#: GUI/screens/DynamicDataVisualisationScreen.py:519
+#: GUI/screens/DynamicDataVisualisationScreen.py:520
 msgid "Changes saved"
 msgstr "Veranderingen opgeslagen"
 
-#: GUI/screens/DynamicDataVisualisationScreen.py:522
+#: GUI/screens/DynamicDataVisualisationScreen.py:523
 msgid "Changes are not saved"
 msgstr "Veranderingen zijn niet opgeslagen"
 
@@ -868,31 +875,6 @@ msgstr "Selecteer bestandstype voor export"
 msgid "The type of file the template will be created in"
 msgstr "Het bestandtype dat de template zal hebben"
 
-#: GUI/screens/AssetDataChange_elements/TableModel.py:11
-#: GUI/screens/ExportData_elements/TableModel.py:11
-msgid "id"
-msgstr "Id"
-
-#: GUI/screens/AssetDataChange_elements/TableModel.py:11
-#: GUI/screens/ExportData_elements/TableModel.py:11
-msgid "action"
-msgstr "Actie"
-
-#: GUI/screens/AssetDataChange_elements/TableModel.py:11
-#: GUI/screens/ExportData_elements/TableModel.py:11
-msgid "name_attribute"
-msgstr "Naam attribuut"
-
-#: GUI/screens/AssetDataChange_elements/TableModel.py:11
-#: GUI/screens/ExportData_elements/TableModel.py:11
-msgid "old_attribute"
-msgstr "Oud attribuut"
-
-#: GUI/screens/AssetDataChange_elements/TableModel.py:12
-#: GUI/screens/ExportData_elements/TableModel.py:12
-msgid "new_attribute"
-msgstr "Nieuw attribuut"
-
 #: GUI/screens/ExportData_elements/AbstractExportDataSubScreen.py:77
 #: GUI/screens/ExportData_elements/AbstractExportDataSubScreen.py:124
 msgid "export relations and assets in different files"
@@ -921,6 +903,26 @@ msgstr "Reset velden"
 #: GUI/screens/ExportData_elements/TableModel.py:11
 msgid "#"
 msgstr ""
+
+#: GUI/screens/ExportData_elements/TableModel.py:11
+msgid "id"
+msgstr "Id"
+
+#: GUI/screens/ExportData_elements/TableModel.py:11
+msgid "action"
+msgstr "Actie"
+
+#: GUI/screens/ExportData_elements/TableModel.py:11
+msgid "name_attribute"
+msgstr "Naam attribuut"
+
+#: GUI/screens/ExportData_elements/TableModel.py:11
+msgid "old_attribute"
+msgstr "Oud attribuut"
+
+#: GUI/screens/ExportData_elements/TableModel.py:12
+msgid "new_attribute"
+msgstr "Nieuw attribuut"
 
 #: GUI/screens/Home_elements/OverviewTable.py:78
 #: GUI/screens/Home_elements/OverviewTable.py:315

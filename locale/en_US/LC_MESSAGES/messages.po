@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-07-09 13:31+0200\n"
+"POT-Creation-Date: 2025-07-10 11:26+0200\n"
 "PO-Revision-Date: 2023-10-19 13:11+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en_US\n"
@@ -18,19 +18,19 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.16.0\n"
 
-#: Domain/project/Project.py:531
+#: Domain/project/Project.py:532
 msgid "There are files missing that belong to this project:\n"
 msgstr "There are files missing that belong to this project:\n"
 
-#: Domain/project/Project.py:537
+#: Domain/project/Project.py:538
 msgid "Do you still want to export?"
 msgstr "Do you still want to export?"
 
-#: Domain/project/Project.py:538 GUI/screens/InsertDataScreen.py:219
+#: Domain/project/Project.py:539 GUI/screens/InsertDataScreen.py:219
 msgid "Missing project files"
 msgstr "Missing project files"
 
-#: Domain/project/Project.py:988
+#: Domain/project/Project.py:989
 msgid "Can't insert duplicate filename {0}"
 msgstr ""
 "Filename \"{0}\" already exists in this project.\n"
@@ -40,7 +40,7 @@ msgstr ""
 "    2. Change the name of the new file before inserting.\n"
 "            "
 
-#: Domain/project/Project.py:991
+#: Domain/project/Project.py:992
 msgid "Duplicate filename"
 msgstr "Duplicate filename"
 
@@ -94,7 +94,7 @@ msgstr "Subset is empty"
 msgid "wrong_database_error"
 msgstr ""
 
-#: Domain/step_domain/InsertDataDomain.py:412
+#: Domain/step_domain/InsertDataDomain.py:407
 msgid "[FILE INFO NOT AVAILABLE]"
 msgstr "[FILE INFO NOT AVAILABLE]"
 
@@ -269,17 +269,25 @@ msgstr ""
 "What role does Agent '{0}' have towards asset '{1}' in this "
 "HeeftBetrokkene relation?"
 
-#: GUI/dialog_windows/LanguageWindow.py:23
+#: GUI/dialog_windows/LanguageWindow.py:24
 msgid "change_language_title"
 msgstr "Change language"
 
-#: GUI/dialog_windows/LanguageWindow.py:27
+#: GUI/dialog_windows/LanguageWindow.py:28
 msgid "language_option_dutch"
 msgstr "Nederlands"
 
-#: GUI/dialog_windows/LanguageWindow.py:28
+#: GUI/dialog_windows/LanguageWindow.py:29
 msgid "language_option_english"
 msgstr "English"
+
+#: GUI/dialog_windows/LanguageWindow.py:54
+msgid "Please restart the application to apply the changes"
+msgstr "NL: Herstart alsjeblieft de applicatie om de veranderingen toe te passen.\n\nEN: Please restart the application to apply the changes"
+
+#: GUI/dialog_windows/LanguageWindow.py:55
+msgid "Restart required"
+msgstr "Herstart van applicatie nodig"
 
 #: GUI/dialog_windows/MenuActionsWindow.py:15 GUI/header/HeaderBar.py:160
 #: GUI/header/HeaderBar.py:297
@@ -537,7 +545,6 @@ msgstr ""
 
 #: GUI/screens/DynamicDataVisualisationScreen.py:171
 #: GUI/screens/MapScreen.py:144 GUI/screens/MapScreen.py:187
-#: GUI/screens/MapScreen_test.py:132 GUI/screens/MapScreen_test.py:178
 msgid "relations legend"
 msgstr "Color legend relations:"
 
@@ -553,10 +560,12 @@ msgstr "Opties om de visualisatie anders te genereren"
 msgid ""
 "Deze slider duidt de hoeveelheid van dezelfde relaties naar één asset "
 "nodig voor het bundelen in een collectie"
-msgstr "This slider indicates the amount of same relations to one asset needed to bundle them into a collection"
+msgstr ""
+"This slider indicates the amount of same relations to one asset needed to"
+" bundle them into a collection"
 
 #: GUI/screens/DynamicDataVisualisationScreen.py:214
-#: GUI/screens/MapScreen.py:172 GUI/screens/MapScreen_test.py:162
+#: GUI/screens/MapScreen.py:172
 msgid "The visualisation is outdated, refresh to see new changes"
 msgstr "The visualisation is outdated, refresh to see new changes"
 
@@ -602,7 +611,7 @@ msgid "Loading graph"
 msgstr "Loading graph..."
 
 #: GUI/screens/DynamicDataVisualisationScreen.py:403
-#: GUI/screens/MapScreen.py:235 GUI/screens/MapScreen_test.py:210
+#: GUI/screens/MapScreen.py:235
 msgid ""
 "There are too many assets and relations to create a visualisation.\n"
 "maximum: {0}\n"
@@ -612,15 +621,15 @@ msgstr ""
 "maximum: {0}\n"
 "current: {1}"
 
-#: GUI/screens/DynamicDataVisualisationScreen.py:475
+#: GUI/screens/DynamicDataVisualisationScreen.py:476
 msgid "uit"
 msgstr "off"
 
-#: GUI/screens/DynamicDataVisualisationScreen.py:519
+#: GUI/screens/DynamicDataVisualisationScreen.py:520
 msgid "Changes saved"
 msgstr "Changes saved"
 
-#: GUI/screens/DynamicDataVisualisationScreen.py:522
+#: GUI/screens/DynamicDataVisualisationScreen.py:523
 msgid "Changes are not saved"
 msgstr "Changes are not saved"
 
@@ -857,31 +866,6 @@ msgstr "Select file type for export"
 msgid "The type of file the template will be created in"
 msgstr "The type of file the template will be created in"
 
-#: GUI/screens/AssetDataChange_elements/TableModel.py:11
-#: GUI/screens/ExportData_elements/TableModel.py:11
-msgid "id"
-msgstr "Id"
-
-#: GUI/screens/AssetDataChange_elements/TableModel.py:11
-#: GUI/screens/ExportData_elements/TableModel.py:11
-msgid "action"
-msgstr "Action"
-
-#: GUI/screens/AssetDataChange_elements/TableModel.py:11
-#: GUI/screens/ExportData_elements/TableModel.py:11
-msgid "name_attribute"
-msgstr "Name of attribute"
-
-#: GUI/screens/AssetDataChange_elements/TableModel.py:11
-#: GUI/screens/ExportData_elements/TableModel.py:11
-msgid "old_attribute"
-msgstr "Old attribute"
-
-#: GUI/screens/AssetDataChange_elements/TableModel.py:12
-#: GUI/screens/ExportData_elements/TableModel.py:12
-msgid "new_attribute"
-msgstr "New attribute"
-
 #: GUI/screens/ExportData_elements/AbstractExportDataSubScreen.py:77
 #: GUI/screens/ExportData_elements/AbstractExportDataSubScreen.py:124
 msgid "export relations and assets in different files"
@@ -910,6 +894,26 @@ msgstr "Reset fields"
 #: GUI/screens/ExportData_elements/TableModel.py:11
 msgid "#"
 msgstr ""
+
+#: GUI/screens/ExportData_elements/TableModel.py:11
+msgid "id"
+msgstr "Id"
+
+#: GUI/screens/ExportData_elements/TableModel.py:11
+msgid "action"
+msgstr "Action"
+
+#: GUI/screens/ExportData_elements/TableModel.py:11
+msgid "name_attribute"
+msgstr "Name of attribute"
+
+#: GUI/screens/ExportData_elements/TableModel.py:11
+msgid "old_attribute"
+msgstr "Old attribute"
+
+#: GUI/screens/ExportData_elements/TableModel.py:12
+msgid "new_attribute"
+msgstr "New attribute"
 
 #: GUI/screens/Home_elements/OverviewTable.py:78
 #: GUI/screens/Home_elements/OverviewTable.py:315
