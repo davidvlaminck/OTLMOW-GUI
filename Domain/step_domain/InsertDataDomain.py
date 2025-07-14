@@ -395,6 +395,9 @@ class InsertDataDomain:
             OTLLogger.logger.debug(
                 f"Executing InsertDataDomain.load_and_validate_documents() for project {global_vars.current_project.eigen_referentie} (INVALID)",
                 extra={"timing_ref": f"validate_{global_vars.current_project.eigen_referentie}"})
+            # state can be changed to either OK or ERROR
+            global_vars.current_project.save_project_filepaths_to_file()
+            cls.update_frontend()
             return error_set, []
 
         objects_in_memory = cls.flatten_list(objects_lists=list(assets_per_filepath_str_dict.values()))
