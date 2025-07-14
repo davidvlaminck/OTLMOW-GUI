@@ -277,6 +277,7 @@ class RelationChangeScreen(RelationChangeScreenInterface):
         map_button.setSizePolicy(QSizePolicy.Policy.Minimum,QSizePolicy.Policy.Expanding)
         map_button.setProperty('class', 'map-button')
         map_button.clicked.connect(lambda: self.toggle_map_window())
+        map_button.setToolTip(self._("Toon kaart met OTL-assets uit de eerste kolom"))
         # map_button.setContentsMargins(22,0,0,0)
 
         self.frame_layout.addWidget(map_button)

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-07-10 11:26+0200\n"
+"POT-Creation-Date: 2025-07-14 17:28+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -82,15 +82,15 @@ msgstr ""
 msgid "wrong_database_error"
 msgstr ""
 
-#: Domain/step_domain/InsertDataDomain.py:407
+#: Domain/step_domain/InsertDataDomain.py:410
 msgid "[FILE INFO NOT AVAILABLE]"
 msgstr ""
 
-#: Domain/step_domain/TemplateDomain.py:79
+#: Domain/step_domain/TemplateDomain.py:85
 msgid "permission_to_file_was_denied_likely_due_to_the_file_being_open_in_excel"
 msgstr ""
 
-#: Domain/step_domain/TemplateDomain.py:79
+#: Domain/step_domain/TemplateDomain.py:87
 msgid "permission_denied"
 msgstr ""
 
@@ -111,7 +111,7 @@ msgstr ""
 msgid "There were errors while combining the assets"
 msgstr ""
 
-#: Domain/util/SDFHandler.py:184
+#: Domain/util/SDFHandler.py:188
 msgid "FDOToolbox not installed"
 msgstr ""
 
@@ -155,30 +155,30 @@ msgstr ""
 msgid "Back"
 msgstr ""
 
-#: GUI/dialog_windows/AddExternalAssetWindow.py:29
+#: GUI/dialog_windows/AddExternalAssetWindow.py:30
 msgid "add_external_asset_title"
 msgstr ""
 
-#: GUI/dialog_windows/AddExternalAssetWindow.py:35
+#: GUI/dialog_windows/AddExternalAssetWindow.py:36
 msgid "asset_id_or_name"
 msgstr ""
 
-#: GUI/dialog_windows/AddExternalAssetWindow.py:37
+#: GUI/dialog_windows/AddExternalAssetWindow.py:38
 msgid "asset_id_dummy"
 msgstr ""
 
-#: GUI/dialog_windows/AddExternalAssetWindow.py:42
+#: GUI/dialog_windows/AddExternalAssetWindow.py:43
 #: GUI/dialog_windows/DefineHeeftBetrokkeneRelationWindow.py:51
 #: GUI/screens/RelationChange_elements/PossibleRelationListWidget.py:28
 msgid "asset_type"
 msgstr ""
 
-#: GUI/dialog_windows/AddExternalAssetWindow.py:45
+#: GUI/dialog_windows/AddExternalAssetWindow.py:46
 #: GUI/dialog_windows/DefineHeeftBetrokkeneRelationWindow.py:54
 msgid "asset_type_dummy"
 msgstr ""
 
-#: GUI/dialog_windows/AddExternalAssetWindow.py:84
+#: GUI/dialog_windows/AddExternalAssetWindow.py:86
 #: GUI/dialog_windows/ChangeSubsetWindow.py:113
 #: GUI/dialog_windows/DefineHeeftBetrokkeneRelationWindow.py:107
 #: GUI/dialog_windows/RemoveProjectFilesWindow.py:33
@@ -186,7 +186,7 @@ msgstr ""
 msgid "submit"
 msgstr ""
 
-#: GUI/dialog_windows/AddExternalAssetWindow.py:86
+#: GUI/dialog_windows/AddExternalAssetWindow.py:88
 #: GUI/dialog_windows/ChangeSubsetWindow.py:115
 #: GUI/dialog_windows/DefineHeeftBetrokkeneRelationWindow.py:109
 #: GUI/dialog_windows/OverwriteGraphWarningWindow.py:45
@@ -628,6 +628,10 @@ msgid ""
 " project"
 msgstr ""
 
+#: GUI/screens/RelationChangeScreen.py:280
+msgid "Toon kaart met OTL-assets uit de eerste kolom"
+msgstr ""
+
 #: GUI/screens/TemplateScreen.py:113
 msgid "Adds choice lists to relevant attributes"
 msgstr ""
@@ -761,7 +765,7 @@ msgstr ""
 msgid "Select at least 1 class to export"
 msgstr ""
 
-#: GUI/screens/RelationChange_elements/AbstractInstanceListWidget.py:552
+#: GUI/screens/RelationChange_elements/AbstractInstanceListWidget.py:565
 #: GUI/screens/TemplateScreen.py:891
 msgid "loading"
 msgstr ""
@@ -846,15 +850,15 @@ msgstr ""
 msgid "no_results"
 msgstr ""
 
-#: GUI/screens/RelationChange_elements/AbstractInstanceListWidget.py:378
+#: GUI/screens/RelationChange_elements/AbstractInstanceListWidget.py:391
 msgid "search_button"
 msgstr ""
 
-#: GUI/screens/RelationChange_elements/AbstractInstanceListWidget.py:414
+#: GUI/screens/RelationChange_elements/AbstractInstanceListWidget.py:427
 msgid "no_instance_selected"
 msgstr ""
 
-#: GUI/screens/RelationChange_elements/AbstractInstanceListWidget.py:524
+#: GUI/screens/RelationChange_elements/AbstractInstanceListWidget.py:537
 #: GUI/screens/RelationChange_elements/ObjectListWidget.py:162
 msgid "no_options_available"
 msgstr ""
