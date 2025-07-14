@@ -341,7 +341,7 @@ msgstr "Verwijder project bestanden"
 
 #: GUI/dialog_windows/RemoveProjectFilesWindow.py:19
 msgid "remove_project_files_question"
-msgstr "Bent u zeker dat u alle bestanden in die project wilt verwijderen?"
+msgstr "Bent u zeker dat u alle bestanden in dit project wilt verwijderen?"
 
 #: GUI/dialog_windows/RemoveProjectWindow.py:17
 msgid "delete"
@@ -549,7 +549,7 @@ msgstr ""
 #: GUI/screens/DynamicDataVisualisationScreen.py:171
 #: GUI/screens/MapScreen.py:144 GUI/screens/MapScreen.py:187
 msgid "relations legend"
-msgstr "Kleur legende relaties:"
+msgstr "Kleur legende relaties"
 
 #: GUI/screens/DynamicDataVisualisationScreen.py:192
 msgid "Regenerate the visualisation"
