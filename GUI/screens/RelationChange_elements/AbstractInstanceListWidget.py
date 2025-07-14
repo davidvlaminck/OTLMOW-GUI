@@ -12,6 +12,7 @@ import qtawesome as qta
 from otlmow_model.OtlmowModel.Classes.ImplementatieElement.AIMObject import AIMObject
 from otlmow_visuals.PyVisWrapper import PyVisWrapper
 
+from Domain.logger.OTLLogger import OTLLogger
 from Domain.step_domain.RelationChangeDomain import RelationChangeDomain
 from GUI.Styling import Styling
 from GUI.screens.general_elements.ButtonWidget import ButtonWidget
@@ -190,6 +191,16 @@ class AbstractInstanceListWidget:
             return None
 
     def fill_list(self, source_object: Optional[AIMObject], objects: Collection, last_added) -> None:
+        list_label_text = "None"
+        if self.list_label:
+            list_label_text = self.list_label.text()
+
+        timing_ref = f"fill_list_{list_label_text}"
+        object_list_length = len(objects)
+        OTLLogger.logger.debug(
+            f"Execute AbstractInstanceListWidget.fill_list() ({object_list_length} objects) in list: {list_label_text} ",
+            extra={"timing_ref": timing_ref})
+
         # sourcery skip: remove-dict-keys
         # objects = RelationChangeDomain.objects
         self.list_gui.setSortingEnabled(False)
@@ -318,7 +329,9 @@ class AbstractInstanceListWidget:
             for i in range(len(self.labels)):
                 self.list_gui.model.setHeaderData(i, Qt.Orientation.Horizontal, self.labels[i])
 
-
+        OTLLogger.logger.debug(
+            f"Execute AbstractInstanceListWidget.fill_list() ({object_list_length} objects) in list: {list_label_text} ",
+            extra={"timing_ref": timing_ref})
 
     @abc.abstractmethod
     def create_instance_standard_item(self, text_and_data):
