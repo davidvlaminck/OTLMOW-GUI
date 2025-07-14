@@ -368,7 +368,7 @@ class RelationChangeDomain:
         cls.add_external_objects_to_shown_objects()
         cls.add_agent_objects_to_shown_objects()
 
-        cls.create_and_add_missing_external_assets_from_relations()
+        await cls.create_and_add_missing_external_assets_from_relations()
 
         cls.get_screen().fill_object_list(cls.shown_objects)
         cls.get_screen().fill_possible_relations_list(None, {})
@@ -385,7 +385,7 @@ class RelationChangeDomain:
             extra={"timing_ref": timing_ref})
 
     @classmethod
-    def create_and_add_missing_external_assets_from_relations(cls) -> None:
+    async def create_and_add_missing_external_assets_from_relations(cls) -> None:
         """
         Creates and adds missing external assets based on existing relations.
 
@@ -396,8 +396,15 @@ class RelationChangeDomain:
         :param cls: The class itself.
         :returns: None
         """
+        timing_ref = f"create_missing_external_assets"
+        OTLLogger.logger.debug(
+            f"Execute RelationChangeDomain.create_and_add_missing_external_assets_from_relations() for project "
+            f"{global_vars.current_project.eigen_referentie}",
+            extra={"timing_ref": timing_ref})
+
 
         for relation_object in RelationChangeDomain.get_all_relations():
+            await asyncio.sleep(0)
             source_id =  relation_object.bronAssetId.identificator
             target_id = relation_object.doelAssetId.identificator
 
@@ -431,6 +438,11 @@ class RelationChangeDomain:
                 except ValueError as e:
                     # should there be a wrong typeURI
                     OTLLogger.logger.debug(e)
+
+        OTLLogger.logger.debug(
+            f"Execute RelationChangeDomain.create_and_add_missing_external_assets_from_relations() for project "
+            f"{global_vars.current_project.eigen_referentie}",
+            extra={"timing_ref": timing_ref})
 
     @classmethod
     def get_all_relations(cls) -> list[RelatieObject]:
