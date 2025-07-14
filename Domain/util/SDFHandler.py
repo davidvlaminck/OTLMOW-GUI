@@ -123,7 +123,9 @@ class SDFHandler:
 
         output_csv_filepath_list = []
 
-        cls.check_if_FDOToolbox_is_installed()
+        if not cls.check_if_FDOToolbox_is_installed():
+            pass
+            # return []
         cls._validate_SDF_file(sdf_filepath)
 
         # format the expected output csv files based on the classes in the sdf file
@@ -171,7 +173,7 @@ class SDFHandler:
         return result.stdout.strip(), result.stderr.strip()
 
     @classmethod
-    def check_if_FDOToolbox_is_installed(cls):
+    def check_if_FDOToolbox_is_installed(cls) -> bool:
 
         try:
             if not os.path.exists(global_vars.FDO_toolbox_path_str):
@@ -179,13 +181,15 @@ class SDFHandler:
         except FDOToolboxNotInstalledError as e:
             #only show the notification window if the GUI MainWindow object exists²
             if global_vars.otl_wizard and global_vars.otl_wizard.main_window:
+
+
                 answer = global_vars.otl_wizard.main_window.show_blocking_yes_no_notification_window(
                     text=str(e),
                     title=GlobalTranslate._("FDOToolbox not installed")
                 )
 
                 if answer != 16384: # QMessageBox.ButtonRole.NoRole:
-                    return
+                    return False
 
                 test_path = Path(os.getcwd()) / Path(
                     "LatestReleaseMulti\\additional_programs\\FDOToolbox-Release-v1.5.3-x64-Setup.exe")
@@ -198,8 +202,10 @@ class SDFHandler:
                     subprocess.Popen(
                         f'explorer /select,"{test_path}"')
 
-                # raise FDOToolboxNotInstalledError(GlobalTranslate._) from e
+                return False
 
+                # raise FDOToolboxNotInstalledError(GlobalTranslate._) from e
+        return True
 
     @classmethod
     def _convert_XSD_to_SDF(cls, input_xsd_path:Path, output_sdf_path:Path) -> None:
@@ -221,7 +227,8 @@ class SDFHandler:
                                         selected_classes_typeURI_list: Optional[list[str]]=None,
                                         model_directory: Path = None) -> None:
 
-        cls.check_if_FDOToolbox_is_installed()
+        if not cls.check_if_FDOToolbox_is_installed():
+            pass
 
         temp_path: Path = Helpers.create_temp_path(path_to_template_file_and_extension=sdf_path)
         temp_path = temp_path.parent / f'{temp_path.name}.xsd'
