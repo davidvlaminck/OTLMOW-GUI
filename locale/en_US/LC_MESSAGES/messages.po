@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-07-14 17:28+0200\n"
+"POT-Creation-Date: 2025-07-15 11:46+0200\n"
 "PO-Revision-Date: 2023-10-19 13:11+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en_US\n"
@@ -182,6 +182,7 @@ msgid "add_external_asset_title"
 msgstr "Add external OTL-asset"
 
 #: GUI/dialog_windows/AddExternalAssetWindow.py:36
+#: GUI/dialog_windows/AddExternalAssetWindow.py:74
 msgid "asset_id_or_name"
 msgstr "Identificator/Name"
 
@@ -200,7 +201,15 @@ msgstr "OTL-asset type"
 msgid "asset_type_dummy"
 msgstr "Onderdeel#Verkeersbord"
 
-#: GUI/dialog_windows/AddExternalAssetWindow.py:86
+#: GUI/dialog_windows/AddExternalAssetWindow.py:74
+msgid " is leeg"
+msgstr " is empty"
+
+#: GUI/dialog_windows/AddExternalAssetWindow.py:79
+msgid "OTL-asset with {0} \"{1}\" already exists"
+msgstr ""
+
+#: GUI/dialog_windows/AddExternalAssetWindow.py:96
 #: GUI/dialog_windows/ChangeSubsetWindow.py:113
 #: GUI/dialog_windows/DefineHeeftBetrokkeneRelationWindow.py:107
 #: GUI/dialog_windows/RemoveProjectFilesWindow.py:33
@@ -208,7 +217,7 @@ msgstr "Onderdeel#Verkeersbord"
 msgid "submit"
 msgstr "Submit"
 
-#: GUI/dialog_windows/AddExternalAssetWindow.py:88
+#: GUI/dialog_windows/AddExternalAssetWindow.py:98
 #: GUI/dialog_windows/ChangeSubsetWindow.py:115
 #: GUI/dialog_windows/DefineHeeftBetrokkeneRelationWindow.py:109
 #: GUI/dialog_windows/OverwriteGraphWarningWindow.py:45

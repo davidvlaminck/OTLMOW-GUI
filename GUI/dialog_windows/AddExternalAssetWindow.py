@@ -69,7 +69,17 @@ class AddExternalAssetWindow:
         dialog_window.exec()
 
     def add_asset(self, dialog_window):
-        id_or_name = self.input_asset_id_or_name.text()
+        id_or_name = self.input_asset_id_or_name.text().strip()
+        if not id_or_name:
+            error_text = self._("asset_id_or_name") + self._(" is leeg")
+            self.error_label.setText(str(error_text))
+            return
+
+        if RelationChangeDomain.get_object(id_or_name):
+            error_text = self._('OTL-asset with {0} "{1}" already exists'.format(self._("asset_id_or_name"),id_or_name ))
+            self.error_label.setText(str(error_text))
+            return
+
         combobox_choice = self.combobox_asset_type.currentText()
 
         type_uri = Helpers.all_OTL_asset_types_dict[combobox_choice]
