@@ -213,7 +213,7 @@ class DynamicDataVisualisationScreen(Screen):
         self.refresh_needed_label.setText(
             self._("The visualisation is outdated, refresh to see new changes"))
         self.refresh_needed_label.setStyleSheet('color:#DD1111;')
-        # self.refresh_needed_label.setHidden(True)
+        # self.set_refresh_need_label_hidden_status(True)
 
         self.set_graph_saved_status(True)
 
@@ -260,8 +260,7 @@ class DynamicDataVisualisationScreen(Screen):
         self.collection_threshold_label.setText(str(val))
         self.check_if_slider_is_at_maxSliderValue()
         global_vars.current_project.visualisation_uptodate.set_clear_all(True)
-        if global_vars.current_project.visualisation_uptodate.get_clear_all():
-            self.refresh_needed_label.setHidden(False)
+        self.update_refresh_need_label_state()
 
     def show_help_dialog_window(self):
         title = self._("Help for data visualisation screen")
@@ -389,12 +388,13 @@ Help voor het gebruik van het datavisualisatie scherm:
         self.fill_frame_layout_legend()
 
 
+        global_vars.current_project.visualisation_uptodate.reset_full_state()
+        self.update_refresh_need_label_state()
 
-        self.refresh_needed_label.setHidden(True)
 
         object_count = len(self.objects_in_memory)
-
         if object_count > VisualisationHelper.object_count_limit:
+            # OBSOLETE: since V1.1 this will nearly never be entered since the threshold is so high
             # do not draw the visualisation when there are too many assets
             self.view.setVisible(False)
             if not self.too_many_objects_message.isVisible():
@@ -407,7 +407,7 @@ Help voor het gebruik van het datavisualisatie scherm:
                 object_count))
 
         else:
-            # do not draw the visualisation when there are too many assets
+
             self.too_many_objects_message.setVisible(False)
             if not self.view.isVisible():
                 self.view.setVisible(True)
@@ -438,7 +438,7 @@ Help voor het gebruik van het datavisualisatie scherm:
 
         elif not RelationChangeDomain.is_visualisation_uptodate():
             # if self.visualisation_mode.currentText() != "standaard visualisatie":
-            #     self.refresh_needed_label.setHidden(False)
+            #     self.set_refresh_need_label_hidden_status(False)
             #     return
 
 
@@ -452,11 +452,13 @@ Help voor het gebruik van het datavisualisatie scherm:
 
             global_vars.current_project.visualisation_uptodate.reset_relations_uptodate()
 
-            if global_vars.current_project.visualisation_uptodate.get_clear_all():
-                self.refresh_needed_label.setHidden(False)
-                return
+        self.update_refresh_need_label_state()
 
-        self.refresh_needed_label.setHidden(True)
+    def update_refresh_need_label_state(self):
+        if global_vars.current_project.visualisation_uptodate.is_uptodate():
+            self.set_refresh_need_label_hidden_status(True)
+        else:
+            self.set_refresh_need_label_hidden_status(False)
 
     def update_slider_range(self):
         asset_count_in_project = len(RelationChangeDomain.get_shown_objects())
@@ -489,9 +491,13 @@ Help voor het gebruik van het datavisualisatie scherm:
 
         else:
             # self.recreate_html(html_path)
+            self.view.setHtml("")
             global_vars.current_project.visualisation_uptodate.set_clear_all(True)
 
         self.changed_project_bool = False
+
+    def set_refresh_need_label_hidden_status(self,new_state:bool):
+        self.refresh_needed_label.setHidden(new_state)
 
     def load_assets(self) -> List[OTLObject]:
         assets = RelationChangeDomain.get_visualisation_instances()
