@@ -56,7 +56,7 @@ class ExportFilteredDataSubDomain:
         cls.get_screen().update_original_files_list(cls.original_documents)
 
     @classmethod
-    def generate_diff_report(cls, original_data: list, new_data: list, model_directory: Path) -> List[ReportItem]:
+    def generate_diff_report(cls, original_data: list, new_data: list, model_directory: Path=None) -> List[ReportItem]:
         report_list = []
         diff_lists = cls.generate_difference_between_two_lists(list1=original_data, list2=new_data,
                                                                model_directory=model_directory)
@@ -93,7 +93,7 @@ class ExportFilteredDataSubDomain:
     @add_loading_screen_no_delay
     @async_save_assets
     async def get_diff_report(cls) -> None:
-        model_dir = ProgramFileStructure.get_otl_wizard_model_dir()
+        # model_dir = ProgramFileStructure.get_otl_wizard_model_dir()
         original_assets, error_set = await cls.generate_original_assets_from_files(original_documents=list(cls.original_documents.values()))
 
         if error_set:
@@ -104,7 +104,7 @@ class ExportFilteredDataSubDomain:
         new_assets = RelationChangeDomain.get_export_instances()
 
         cls.get_screen().positive_feedback_message()
-        cls.get_screen().fill_up_change_table(cls.generate_diff_report(original_assets, new_assets, model_dir))
+        cls.get_screen().fill_up_change_table(cls.generate_diff_report(original_assets, new_assets))
 
     @classmethod
     def sync_export_diff_report(cls,
@@ -136,11 +136,9 @@ class ExportFilteredDataSubDomain:
 
 
             diff_1_assets = compare_two_lists_of_objects_attribute_level(first_list=original_assets,
-                                                                  second_list=changed_assets,
-                                                                  model_directory=ProgramFileStructure.get_otl_wizard_model_dir())
+                                                                  second_list=changed_assets)
             diff_1_relations = compare_two_lists_of_objects_attribute_level(first_list=original_relations,
-                                                                         second_list=changed_relations,
-                                                                         model_directory=ProgramFileStructure.get_otl_wizard_model_dir())
+                                                                         second_list=changed_relations)
 
             assets = sorted(diff_1_assets,key=lambda relation1: relation1.typeURI)
             relations = sorted(diff_1_relations, key=lambda relation1: relation1.typeURI)
@@ -242,7 +240,7 @@ class ExportFilteredDataSubDomain:
         )
 
     @classmethod
-    def generate_difference_between_two_lists(cls,list1: list, list2: list, model_directory: Path) -> list:
+    def generate_difference_between_two_lists(cls,list1: list, list2: list, model_directory: Path=None) -> list:
         diff_1 = compare_two_lists_of_objects_attribute_level(
             first_list=list1, second_list=list2, model_directory=model_directory)
         return compare_two_lists_of_objects_attribute_level(
