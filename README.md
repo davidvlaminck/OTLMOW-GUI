@@ -67,30 +67,52 @@ tranlation for that text in like:
     NOTE: Keep using PyInstaller 6.10.0, newer version can get [false positives](https://github.com/pyinstaller/pyinstaller/issues/5854) on Windows Defender. Lookout for detections of 
     Wacatac.B!ml, Wacatac.H!ml, Wacapew.C!ml these are false positives. 
     They get detected only when you compile with newer versions and not when you compile with older versions of PyInstaller.
-    If any user has a detection, it is most likely because of an outdated Windows Defender. Ask them to update Windows and/or Windows Defender.
-2. Run the `pyinstaller_script.py` in that environment.  
+    If any user has a detection, it is most likely because of an outdated Windows Defender. Ask them to update Windows and/or Windows Defender.  
+  
+
+2. To change the version number of OTL Wizard 2, you need to change two version variables.  
+   These are:  
+    variable `version = "<your_version_number>"` in `pyproject.toml`  
+    variable `#define MyAppVersion "<your_version_number>"` in `LatestReleaseMulti/inno_setup_installer_setup_script.iss`  
+  
+
+3. Run the `pyinstaller_script.py` in that environment.  
     This will make the file:`LatestReleaseMulti/OTL Wizard 2/OTL Wizard 2.exe`  
     and accompanying folder:`LatestReleaseMulti/OTL Wizard 2/data`
-3. Sign the `LatestReleaseMulti/OTL Wizard 2/OTL Wizard 2.exe` file with windows [signtool](https://learn.microsoft.com/en-us/windows/win32/seccrypto/signtool) to get this signtool you need to install the [windows SDK](https://developer.microsoft.com/en-us/windows/downloads/windows-sdk/)  
+  
+
+4. Sign the `LatestReleaseMulti/OTL Wizard 2/OTL Wizard 2.exe` file with windows [signtool](https://learn.microsoft.com/en-us/windows/win32/seccrypto/signtool) to get this signtool you need to install the [windows SDK](https://developer.microsoft.com/en-us/windows/downloads/windows-sdk/)  
    Get a certificate from the Vlaamse Overheid or Agentschap Wegen en Verkeer.  
    Use this certificate to sign the generated exe-file with the command:  
    `C:\"Program Files (x86)"\"Windows Kits"\10\"App Certification Kit"\signtool.exe sign /f "<absolute path to certificate file>" /fd SHA256 "<absolute path to OTL Wizard 2.exe file>"`
-4. Download and install [Inno Setup Compiler](https://jrsoftware.org/isinfo.php)
-5. In the `LatestReleaseMulti/inno_setup_installer_setup_script.iss` script replace the MyAppDevRoot variable with the absolute path to the root of your project
-6. Open `LatestReleaseMulti/inno_setup_installer_setup_script.iss` with Inno Setup Compiler and compile.  
-    This should create `LatestReleaseMulti/OTL wizard 2 installer.exe`
-7. Sign the `LatestReleaseMulti/OTL wizard 2 installer.exe` file with windows [signtool](https://learn.microsoft.com/en-us/windows/win32/seccrypto/signtool) from step 3
+  
+
+5. Download and install [Inno Setup Compiler](https://jrsoftware.org/isinfo.php)
+  
+
+6. In the `LatestReleaseMulti/inno_setup_installer_setup_script.iss` script replace the MyAppDevRoot variable with the absolute path to the root of your project
+  
+
+7. Open `LatestReleaseMulti/inno_setup_installer_setup_script.iss` with Inno Setup Compiler and compile.  
+    This should create `LatestReleaseMulti/OTL wizard 2 installer V<version>.exe`
+  
+
+8. Sign the `LatestReleaseMulti/OTL wizard 2 installer V<version>.exe` file with windows [signtool](https://learn.microsoft.com/en-us/windows/win32/seccrypto/signtool) from step 3
    Use the same certificate from the Vlaamse Overheid or Agentschap Wegen en Verkeer as that from step 3.  
    Use this certificate to sign the generated installer exe-file with the command:  
-   `C:\"Program Files (x86)"\"Windows Kits"\10\"App Certification Kit"\signtool.exe sign /f "<absolute path to certificate file>" /fd SHA256 "<absolute path to OTL wizard 2 installer.exe file>"`
-8. To make the zipped version (no install needed).  
+   `C:\"Program Files (x86)"\"Windows Kits"\10\"App Certification Kit"\signtool.exe sign /f "<absolute path to certificate file>" /fd SHA256 "<absolute path to OTL wizard 2 installer V<version>.exe file>"`
+  
+
+9. To make the zipped version (no install needed).  
     Place the following files and folders into a folder and zip it preferrably with the foldername: `OTL Wizard 2 V<your version number>`:   
     File:`LatestReleaseMulti/OTL Wizard 2/OTL Wizard 2.exe`  (preferrably rename it to `OTL Wizard 2 V<your version number>.exe`)  
     Folder:`LatestReleaseMulti/OTL Wizard 2/data`  
     Folder:`LatestReleaseMulti/additional_programs`  
     The zip should look like this:  
     ![zip_contents_example.png](zip_contents_example.png)
-9. Until V1.1 publishing to the wider audience is done by placing both the zip and installer-exe file in folder `LatestRelease` 
+  
+
+10. Until V1.1 publishing to the wider audience is done by placing both the zip and installer-exe file in folder `LatestRelease` 
     and push to or merge into the master branch of this repository (OTLMOW-GUI) (needs permission from repository owner)  
     
 ## Custom logging implementation usage
