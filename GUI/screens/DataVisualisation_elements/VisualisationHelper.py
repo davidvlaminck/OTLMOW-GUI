@@ -24,7 +24,10 @@ class VisualisationHelper:
                     vis_mode="1 Hiërarchische visualisatie",
                     collection_threshold=-1):
 
+
         objects_in_memory = deepcopy(objects_in_memory)
+        # sort on typeURI to ensure color coding is always the same for the same set of assets
+        objects_in_memory.sort(key=lambda otl_object: otl_object.typeURI)
 
         visualisation_option = 1
         if vis_mode == "1 Hiërarchische visualisatie":
