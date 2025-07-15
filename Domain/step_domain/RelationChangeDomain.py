@@ -1398,6 +1398,14 @@ class RelationChangeDomain:
         cls.shown_objects.extend(cls.agent_objects)
         cls.regenerate_relation_types = True
 
+    @classmethod
+    @add_loading_screen
+    @async_save_assets
+    async def user_input_to_create_and_add_new_external_asset(cls, id_or_name: str, type_uri: str):
+        cls.create_and_add_new_external_asset( id_or_name, type_uri)
+        global_vars.current_project.visualisation_uptodate.set_clear_all(True)
+        RelationChangeDomain.update_frontend()
+
     # noinspection PyUnresolvedReferences,PyTypeChecker
     @classmethod
     def create_and_add_new_external_asset(cls, id_or_name: str, type_uri: str):

@@ -6,6 +6,7 @@ from Domain import global_vars
 from Domain.util.Helpers import Helpers
 
 from Domain.step_domain.RelationChangeDomain import RelationChangeDomain
+from exception_handler.ExceptionHandlers import create_task_reraise_exception
 
 
 class AddExternalAssetWindow:
@@ -84,9 +85,14 @@ class AddExternalAssetWindow:
 
         type_uri = Helpers.all_OTL_asset_types_dict[combobox_choice]
 
-        RelationChangeDomain.create_and_add_new_external_asset(id_or_name=id_or_name, type_uri=type_uri)
-        global_vars.current_project.visualisation_uptodate.set_clear_all(True)
-        RelationChangeDomain.update_frontend()
+        # Replaced by an async call
+        # RelationChangeDomain.create_and_add_new_external_asset(id_or_name=id_or_name, type_uri=type_uri)
+        # global_vars.current_project.visualisation_uptodate.set_clear_all(True)
+        # RelationChangeDomain.update_frontend()
+
+        #async version that also saves the assets after executing
+        create_task_reraise_exception(RelationChangeDomain.user_input_to_create_and_add_new_external_asset(id_or_name=id_or_name, type_uri=type_uri))
+
         dialog_window.close()
 
     def create_button_box(self):
