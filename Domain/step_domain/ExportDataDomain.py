@@ -112,7 +112,7 @@ class ExportDataDomain:
         OTLLogger.logger.debug("started splitting relations and objects for export")
         assets_in_memory = []
         relations_in_memory = []
-        OTLLogger.logger.debug(f'objects in memory: {objects_in_memory}')
+
         for obj in objects_in_memory:
             if hasattr(obj, 'bronAssetId') or isinstance(obj, RelatieObject):
                 relations_in_memory.append(obj)
