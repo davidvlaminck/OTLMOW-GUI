@@ -197,6 +197,7 @@ class DynamicDataVisualisationScreen(Screen):
                                           "4 ForceAtlas2Based visualisatie",
                                           ])
         self.visualisation_mode.setToolTip(self._("Options to generate the visualisation differently"))
+        self.visualisation_mode.currentTextChanged.connect(self.on_visualisation_option_change)
 
         collection_threshold_tooltip = self._("Deze slider duidt de hoeveelheid van dezelfde relaties naar één asset nodig voor het bundelen in een collectie")
         self.collection_threshold_slider.setRange(0, 50)
@@ -255,6 +256,10 @@ class DynamicDataVisualisationScreen(Screen):
 
         frame.setLayout(frame_layout)
         return frame
+
+    def on_visualisation_option_change(self):
+        global_vars.current_project.visualisation_uptodate.set_clear_all(True)
+        self.update_refresh_need_label_state()
 
     def on_value_changed(self, val: int):
         self.collection_threshold_label.setText(str(val))
