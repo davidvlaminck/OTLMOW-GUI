@@ -421,6 +421,10 @@ Help voor het gebruik van het datavisualisatie scherm:
             self.load_html(html_path)
             self.set_graph_saved_status(False)
 
+        #reset the state of all color legend checkboxes
+        self.relation_id_to_relation_show_checkbox_dict.clear()
+        self.update_only_legend()
+
         object_count = len(self.objects_in_memory)
         OTLLogger.logger.debug(
             f"Executing DataVisualisationScreen.reload_html() for project {global_vars.current_project.eigen_referentie} ({object_count} objects)",
@@ -483,11 +487,13 @@ Help voor het gebruik van het datavisualisatie scherm:
 
     def changed_project(self):
         html_path: Path = self.get_current_html_path()
+        self.relation_id_to_relation_show_checkbox_dict.clear()
         if html_path.exists():
 
             self.load_html(html_path)
             global_vars.current_project.visualisation_uptodate.reset_relations_uptodate()
             self.update_slider_range()
+            self.update_only_legend()
 
         else:
             # self.recreate_html(html_path)
