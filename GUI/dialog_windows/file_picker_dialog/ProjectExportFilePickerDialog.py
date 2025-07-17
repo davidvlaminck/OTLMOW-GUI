@@ -19,3 +19,6 @@ class ProjectExportFilePickerDialog(SaveFilePickerDialog):
     def get_filename_suggestion(self, project_name):
         return project_name + "_project"
 
+    def store_save_filename(self, res: list[str]):
+        pass
+

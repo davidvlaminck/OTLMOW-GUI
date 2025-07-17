@@ -35,7 +35,7 @@ class ExistingRelationListWidget(AbstractInstanceListWidget):
         self.frame_layout.setContentsMargins(11, 0, 0, 0)
         return frame
 
-    def on_item_selected_listener(self,  selected: QItemSelectionModel, deselected:QItemSelectionModel):
+    def on_item_selectionChange_listener(self, selected: QItemSelectionModel, deselected:QItemSelectionModel):
         no_item_selected = True
 
         for index in deselected.indexes():
@@ -188,4 +188,7 @@ class ExistingRelationListWidget(AbstractInstanceListWidget):
 
     def get_no_instance_selected_message(self):
         return self._("no_relation_selected")
+
+    def update_this_gui_list_content(self):
+        RelationChangeDomain.update_frontend_existing_relations()
 

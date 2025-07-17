@@ -1,6 +1,5 @@
-import asyncio
+
 import base64
-import logging
 import os
 import subprocess
 import tempfile
@@ -12,7 +11,7 @@ from otlmow_converter.Exceptions.ExceptionsGroup import ExceptionsGroup
 from otlmow_converter.OtlmowConverter import OtlmowConverter
 from otlmow_model.OtlmowModel.BaseClasses.OTLObject import OTLObject, \
     dynamic_create_instance_from_ns_and_name, dynamic_create_instance_from_uri
-from otlmow_model.OtlmowModel.Classes.Agent import Agent
+
 from otlmow_model.OtlmowModel.Helpers import OTLObjectHelper
 from otlmow_model.OtlmowModel.Helpers.GenericHelper import validate_guid, get_shortened_uri, get_ns_and_name_from_uri, \
     get_titlecase_from_ns
@@ -21,7 +20,6 @@ from packaging.version import Version
 
 from Domain.logger.OTLLogger import OTLLogger
 from GUI.dialog_windows.LoadingImageWindow import add_loading_screen
-from GUI.dialog_windows.NotificationWindow import NotificationWindow
 from GUI.screens.RelationChange_elements.RelationChangeHelpers import RelationChangeHelpers
 
 
@@ -253,3 +251,25 @@ class Helpers:
             command = f'explorer "{document_path.parent}"'
         OTLLogger.logger.debug(command)
         subprocess.Popen(command)
+
+    @classmethod
+    def compare_RelatieObjects(cls, obj1, obj2):
+        dict1 = obj1.create_dict_from_asset(obj1)
+        dict2 = obj2.create_dict_from_asset(obj2)
+
+        if "isActief" in dict1:
+            dict1.pop("isActief")
+        if "isActief" in dict2:
+            dict2.pop("isActief")
+
+        return dict1 == dict2
+
+    @classmethod
+    def from_objects_to_file(cls, save_path,assets_in_memory):
+        OtlmowConverter.from_objects_to_file(file_path=save_path,
+                                             sequence_of_objects=assets_in_memory)
+
+    @classmethod
+    async def from_objects_to_file_async(cls, save_path,assets_in_memory):
+        return await OtlmowConverter.from_objects_to_file_async(file_path=save_path,
+                                                          sequence_of_objects=assets_in_memory)

@@ -2,10 +2,9 @@ from typing import Optional, Callable, List
 
 from PyQt6.QtWidgets import QWidget, QFrame
 from otlmow_model.OtlmowModel.BaseClasses.RelationInteractor import RelationInteractor
+from otlmow_model.OtlmowModel.Classes.ImplementatieElement.RelatieObject import RelatieObject
 
 from GUI.screens.Screen import Screen
-from UnitTests.TestClasses.Classes.ImplementatieElement.RelatieObject import RelatieObject
-
 
 class RelationChangeScreenInterface(Screen):
     def set_gui_lists_to_loading_state(self) -> None:

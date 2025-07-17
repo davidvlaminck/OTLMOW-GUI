@@ -95,7 +95,7 @@ class HomeScreen(HomeScreenInterface):
 
         #AWV logo
         AWV_logo_label = QLabel()
-        pixmap = QPixmap(f'{IMG_DIR}/AWV_200.png')
+        pixmap = QPixmap(f'{IMG_DIR}/Vlaanderen_is_veilig_onderweg_vol-01_200.png')
         AWV_logo_label.setPixmap(pixmap)
 
         # add header to the vertical layout

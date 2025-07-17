@@ -7,6 +7,7 @@ from PyQt6.QtWidgets import QDialog, QHBoxLayout, QPushButton, QStackedWidget
 
 from Domain.enums import Language
 from Domain.Settings import Settings
+from GUI.dialog_windows.NotificationWindow import NotificationWindow
 from GUI.translation.GlobalTranslate import GlobalTranslate
 
 ROOT_DIR = Path(__file__).parent.parent
@@ -50,7 +51,10 @@ class LanguageWindow(QDialog):
         :return: None
         """
         Settings.change_language_on_settings_file(lang)
-        settings = Settings.get_or_create_settings_file()
-        self._ = GlobalTranslate(settings, LANG_DIR).get_all()
-        main_window.reset_ui(self._)
+        restart_request_dialog = NotificationWindow(message=self._("Please restart the application to apply the changes"),
+                                                    title=self._("Restart required"))
+        restart_request_dialog.exec()
+        # settings = Settings.get_or_create_settings_file()
+        # self._ = GlobalTranslate(settings, LANG_DIR).get_all()
+        # main_window.reset_ui(self._)
         self.close()

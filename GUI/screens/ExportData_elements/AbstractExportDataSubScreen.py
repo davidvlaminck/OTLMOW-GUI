@@ -11,6 +11,7 @@ from PyQt6.QtWidgets import QVBoxLayout, QPushButton, QFrame, QLabel, QHBoxLayou
 
 from Domain import global_vars
 from Domain.step_domain.ExportDataDomain import ExportDataDomain
+from Domain.util.Helpers import Helpers
 from GUI.dialog_windows.file_picker_dialog.SaveFilePickerDialog import SaveFilePickerDialog
 from GUI.screens.Screen import Screen
 from exception_handler.ExceptionHandlers import create_task_reraise_exception
@@ -181,3 +182,7 @@ class AbstractExportDataSubScreen(Screen):
         else:
             self.extra_option_csv.setChecked(False)
             self.extra_option_csv.setHidden(True)
+
+
+    def open_folder_of_created_export_files(self, document_path:Path):
+        Helpers.open_folder_and_select_document(document_path)

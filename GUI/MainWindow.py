@@ -7,7 +7,6 @@ from PyQt6.QtWidgets import QStackedWidget, QWidget
 
 from Domain import global_vars
 from Domain.logger.OTLLogger import OTLLogger
-from Domain.project.Project import Project
 from Domain.step_domain.ExportDataDomain import ExportDataDomain
 from Domain.step_domain.ExportFilteredDataSubDomain import ExportFilteredDataSubDomain
 from Domain.step_domain.HomeDomain import HomeDomain
@@ -16,11 +15,10 @@ from Domain.step_domain.RelationChangeDomain import RelationChangeDomain
 from Domain.step_domain.TemplateDomain import TemplateDomain
 from GUI.dialog_windows.NotificationWindow import NotificationWindow
 from GUI.dialog_windows.YesOrNoNotificationWindow import YesOrNoNotificationWindow
+from GUI.dialog_windows.YesOrNoOrAbortNotificationWindow import YesOrNoOrAbortNotificationWindow
 from GUI.dialog_windows.file_picker_dialog.SubsetLoadFilePickerDialog import \
     SubsetLoadFilePickerDialog
 
-from GUI.screens.MapScreen import MapScreen
-from GUI.screens.DataVisualisationScreen import DataVisualisationScreen
 from GUI.screens.ExportDataScreen import ExportDataScreen
 from GUI.screens.HomeScreen import HomeScreen
 from GUI.screens.InsertDataScreen import InsertDataScreen
@@ -28,6 +26,7 @@ from GUI.screens.RelationChangeScreen import RelationChangeScreen
 from GUI.screens.Screen import Screen
 from GUI.screens.TemplateScreen import TemplateScreen
 from GUI.header.TabWidget import TabWidget
+from GUI.screens.DynamicDataVisualisationScreen import DynamicDataVisualisationScreen
 
 
 class MainWindow(QStackedWidget):
@@ -44,7 +43,8 @@ class MainWindow(QStackedWidget):
         self.step2_tabwidget:TabWidget = TabWidget(self._, page_nr=2, widget1=self.step2,
                                          description1="insert_data",
                                          has_save_btn=False)
-        self.step3_visuals:DataVisualisationScreen = DataVisualisationScreen(self._)
+        # self.step3_visuals:DataVisualisationScreen = DataVisualisationScreen(self._)
+        self.step3_visuals: DynamicDataVisualisationScreen = DynamicDataVisualisationScreen(self._)
         # self.step3_map:MapScreen = MapScreen(self._)
         # self.step3_data:AssetDataChangeScreen = AssetDataChangeScreen(self._)
         self.step3_relations:RelationChangeScreen = RelationChangeScreen(self._)
@@ -98,8 +98,41 @@ class MainWindow(QStackedWidget):
 
     def closeEvent(self, event):
         # Handle window close event
-        OTLLogger.logger.debug("Window is closing...")
+        OTLLogger.logger.debug("Checking if data visualisation is saved")
+        if (global_vars.current_project and
+            not global_vars.current_project.get_saved_graph_status()):
 
+            title = self._("unsaved_graph_changes_warning_title")
+            text = self._("unsaved_graph_changes_warning_text")
+            alt_yes_text = self._("Continue")
+            alt_no_text = self._("Back")
+
+            warning_dialog = YesOrNoNotificationWindow(message=text,
+                                                       title=title,
+                                                       alt_yes_text=alt_yes_text,
+                                                       alt_no_text=alt_no_text)
+            answer = warning_dialog.exec()
+
+            if answer == 16384:  # QMessageBox.ButtonRole.YesRole:
+                # # save graph before closing application
+                # global_vars.otl_wizard.main_window.step3_visuals.save_in_memory_changes_to_html()
+                # asyncio.sleep(1)
+
+                # close without doing anything else
+                pass
+            elif answer == 65536: # QMessageBox.ButtonRole.NoRole:
+                # # close without doing anything else
+                # pass
+
+                # don't close return to application
+                event.ignore()
+                return
+            elif answer == 262144: # QMessageBox.ButtonRole.AbortRole also X-button
+                # don't close return to application
+                event.ignore()
+                return
+
+        OTLLogger.logger.debug("Window is closing...")
         # Stop the asyncio event loop
         loop = asyncio.get_event_loop()
         if loop.is_running():
@@ -127,8 +160,9 @@ class MainWindow(QStackedWidget):
         # the information is updated if the project has changed
         # if (index in [3, 4] and (not RelationChangeDomain.project or
         #                          RelationChangeDomain.project != global_vars.current_project)):
-        if (index in [3, 4] ):
-            RelationChangeDomain.init_static(project=global_vars.current_project)
+        # if (index in [3, 4] ):
+        #     if RelationChangeDomain.cleared_data:
+        #         RelationChangeDomain.init_static(project=global_vars.current_project)
 
         #everytime you go to a specific page update the frontend to always show the last Domain state
         if index == 1:
@@ -137,6 +171,7 @@ class MainWindow(QStackedWidget):
             InsertDataDomain.update_frontend()
         elif index == 3:
             RelationChangeDomain.update_frontend()
+            self.step3_visuals.opened()
         elif index == 4:
             ExportDataDomain.update_frontend()
             ExportFilteredDataSubDomain.update_frontend()

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "otlmow_gui"
-version = "1.0rc4"
+version = "1.1.5-TEST"
 authors = [{name = "David Vlaminck", email = "david.vlaminck@mow.vlaanderen.be"},
     {name = "Jasper Berton", email = "jasperberton1@telenet.be"},
     {name = "Christiaan Vanbergen", email = "christiaan.vanbergen.btf@gmail.com"}]

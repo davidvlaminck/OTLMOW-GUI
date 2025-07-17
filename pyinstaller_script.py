@@ -1,5 +1,6 @@
 import pathlib
 import shutil
+import sys
 
 import PyInstaller.__main__
 
@@ -10,12 +11,29 @@ home_path = pathlib.Path.home()
 OTLLogger.init()
 OTLLogger.logger.debug("PyInstaller.__main__.run", extra={"timing_ref":"PyInstaller.__main__.run"})
 
+root_path = pathlib.Path(__file__).parent
+OTLLogger.logger.debug("root_path: " + str(root_path))
+OTLLogger.logger.debug("sys.path: " + str(sys.path))
+
+paths = None
+for sys_path in sys.path:
+    if 'site-packages' in sys_path:
+        paths = sys_path
+
+
+if not paths:
+    raise FileNotFoundError("cannot find the site-packages folder")
+
+
+OTLLogger.logger.debug("paths: " + paths)
+
+
+
 PyInstaller.__main__.run([
     r'OTL Wizard 2.py',
-    '--distpath', str(home_path / 'PycharmProjects'/ 'OTLMOW-GUI' /  'LatestReleaseMulti'),
+    '--distpath', str(root_path /  'LatestReleaseMulti'),
     '--contents-directory', 'data',
-
-    '--paths', str(home_path / 'PycharmProjects' / 'OTLMOW-GUI' / 'venv3-13' / 'Lib' / 'site-packages'),
+    '--paths', paths,
     '--exclude-module','otlmow_model',
     '--collect-all', 'otlmow_converter',
     '--collect-all', 'otlmow_model',
@@ -29,8 +47,9 @@ PyInstaller.__main__.run([
     '--add-data', 'demo_projects:demo_projects',
     '--add-data', 'img:img',
     '--add-data', 'pyproject.toml:.',
+    '--add-data', 'javascripts_visualisation:javascripts_visualisation',
     '--icon','img/wizard.png',
-    '--splash','img/wizard1.png',
+    '--splash','img/Logo-OTL_Wizard_2_no_purple_edge_V3.png',
     '--noconfirm',
     # '--onefile',  # All files packed together in one executable file
     '--noconsole', # no cmd/powershell window with debug output

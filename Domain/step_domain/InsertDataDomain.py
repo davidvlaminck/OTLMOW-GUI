@@ -2,17 +2,13 @@ from pathlib import Path
 from typing import List, Iterable, Optional, cast, Union
 
 from openpyxl.reader.excel import load_workbook
-from otlmow_converter import HelperFunctions
-from otlmow_converter.Exceptions.CannotCombineAssetsError import CannotCombineAssetsError
-from otlmow_converter.Exceptions.CannotCombineDifferentAssetsError import \
-    CannotCombineAssetsWithDifferentTypeError
 from otlmow_converter.Exceptions.ExceptionsGroup import ExceptionsGroup
-from otlmow_converter.OtlmowConverter import OtlmowConverter
 
 from otlmow_model.OtlmowModel.BaseClasses.OTLObject import OTLObject, \
     dynamic_create_instance_from_uri
 from otlmow_model.OtlmowModel.BaseClasses.RelationInteractor import RelationInteractor
 from otlmow_model.OtlmowModel.Classes.Agent import Agent
+from otlmow_model.OtlmowModel.Classes.ImplementatieElement.AIMObject import AIMObject
 from otlmow_model.OtlmowModel.Classes.ImplementatieElement.RelatieObject import RelatieObject
 from otlmow_model.OtlmowModel.Helpers import OTLObjectHelper, RelationValidator
 
@@ -36,7 +32,7 @@ from GUI.dialog_windows.LoadingImageWindow import add_loading_screen_no_delay
 from GUI.dialog_windows.NotificationWindow import NotificationWindow
 from GUI.screens.RelationChange_elements.RelationChangeHelpers import RelationChangeHelpers
 from GUI.translation.GlobalTranslate import GlobalTranslate
-from UnitTests.TestClasses.Classes.ImplementatieElement.AIMObject import AIMObject
+
 
 
 
@@ -66,7 +62,7 @@ class InsertDataDomain:
     """
 
     @classmethod
-    def init_static(cls):
+    def init_static(cls,force_refresh = False):
         """
         Initializes static resources for the InsertDataDomain class.
 
@@ -76,7 +72,7 @@ class InsertDataDomain:
         :param cls: The class itself.
         :returns: None
         """
-        if not Helpers.all_OTL_asset_types_dict:
+        if not Helpers.all_OTL_asset_types_dict or force_refresh:
             Helpers.create_external_typeURI_options()
 
         cls.get_screen().clear_feedback()
@@ -399,6 +395,9 @@ class InsertDataDomain:
             OTLLogger.logger.debug(
                 f"Executing InsertDataDomain.load_and_validate_documents() for project {global_vars.current_project.eigen_referentie} (INVALID)",
                 extra={"timing_ref": f"validate_{global_vars.current_project.eigen_referentie}"})
+            # state can be changed to either OK or ERROR
+            global_vars.current_project.save_project_filepaths_to_file()
+            cls.update_frontend()
             return error_set, []
 
         objects_in_memory = cls.flatten_list(objects_lists=list(assets_per_filepath_str_dict.values()))
@@ -418,10 +417,12 @@ class InsertDataDomain:
         cls.update_frontend()
 
         # passing objects to other screens
-        global_vars.otl_wizard.main_window.step3_visuals.create_html(
-            objects_in_memory=objects_in_memory)
-        RelationChangeDomain.set_instances(objects_list=objects_in_memory)
-        global_vars.otl_wizard.main_window.step3_visuals.reload_html()
+        # global_vars.otl_wizard.main_window.step3_visuals.create_html(
+        #     objects_in_memory=objects_in_memory)
+        await RelationChangeDomain.set_instances(objects_list=objects_in_memory)
+        # global_vars.otl_wizard.main_window.step3_visuals.reload_html()
+        global_vars.current_project.visualisation_uptodate.set_clear_all(True)
+        global_vars.current_project.save_visualisation_python_support_data()
 
         object_count = len(objects_in_memory)
         OTLLogger.logger.debug(

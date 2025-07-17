@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-04-29 15:41+0200\n"
+"POT-Creation-Date: 2025-07-15 11:46+0200\n"
 "PO-Revision-Date: 2023-10-19 13:11+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en_US\n"
@@ -18,19 +18,19 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.16.0\n"
 
-#: Domain/project/Project.py:456
+#: Domain/project/Project.py:532
 msgid "There are files missing that belong to this project:\n"
 msgstr "There are files missing that belong to this project:\n"
 
-#: Domain/project/Project.py:462
+#: Domain/project/Project.py:538
 msgid "Do you still want to export?"
 msgstr "Do you still want to export?"
 
-#: Domain/project/Project.py:463 GUI/screens/InsertDataScreen.py:219
+#: Domain/project/Project.py:539 GUI/screens/InsertDataScreen.py:219
 msgid "Missing project files"
 msgstr "Missing project files"
 
-#: Domain/project/Project.py:902
+#: Domain/project/Project.py:989
 msgid "Can't insert duplicate filename {0}"
 msgstr ""
 "Filename \"{0}\" already exists in this project.\n"
@@ -40,37 +40,71 @@ msgstr ""
 "    2. Change the name of the new file before inserting.\n"
 "            "
 
-#: Domain/project/Project.py:905
+#: Domain/project/Project.py:992
 msgid "Duplicate filename"
 msgstr "Duplicate filename"
 
-#: Domain/step_domain/HomeDomain.py:114
+#: Domain/step_domain/ExportDataDomain.py:94
+msgid "Toestemming geweigerd"
+msgstr "Permission denied"
+
+#: Domain/step_domain/ExportDataDomain.py:95
+msgid ""
+"Geen toestemming om te exporteren naar \n"
+"{filename}\n"
+"Is het bestand nog open?"
+msgstr ""
+"No permission to export to \n"
+"{filename}\n"
+"Is the file still open?"
+
+#: Domain/step_domain/ExportFilteredDataSubDomain.py:153
+msgid "Geen data"
+msgstr "No Data"
+
+#: Domain/step_domain/ExportFilteredDataSubDomain.py:154
+msgid "Er is geen data om te exporteren"
+msgstr "There is no data to export"
+
+#: Domain/step_domain/ExportFilteredDataSubDomain.py:159
+msgid "Fout in originele bestanden"
+msgstr "Error in the original files"
+
+#: Domain/step_domain/ExportFilteredDataSubDomain.py:160
+msgid ""
+"Er is een fout in de originele bestanden\n"
+"Klik op \"Toon verschillen\" om een overzicht van de fouten te zien"
+msgstr ""
+"There is an error in the original files\n"
+"Click on \"Show difference\" to get an overview of the errors"
+
+#: Domain/step_domain/HomeDomain.py:115
 msgid "own_reference_empty_error"
 msgstr "Own reference is empty"
 
-#: Domain/step_domain/HomeDomain.py:116
+#: Domain/step_domain/HomeDomain.py:117
 msgid "bestek_empty_error"
 msgstr "Subset is empty"
 
-#: Domain/step_domain/HomeDomain.py:118
+#: Domain/step_domain/HomeDomain.py:119
 msgid "db_path_empty_error"
 msgstr "Subset is empty"
 
-#: Domain/step_domain/HomeDomain.py:120
+#: Domain/step_domain/HomeDomain.py:121
 msgid "wrong_database_error"
 msgstr ""
 
-#: Domain/step_domain/InsertDataDomain.py:406
+#: Domain/step_domain/InsertDataDomain.py:410
 msgid "[FILE INFO NOT AVAILABLE]"
-msgstr ""
+msgstr "[FILE INFO NOT AVAILABLE]"
 
-#: Domain/step_domain/TemplateDomain.py:80
+#: Domain/step_domain/TemplateDomain.py:85
 msgid "permission_to_file_was_denied_likely_due_to_the_file_being_open_in_excel"
 msgstr ""
 "You don't have permission to edit this file! \n"
 "This is likely because it is is still open in excel."
 
-#: Domain/step_domain/TemplateDomain.py:80
+#: Domain/step_domain/TemplateDomain.py:87
 msgid "permission_denied"
 msgstr "No permission to open the file"
 
@@ -79,6 +113,8 @@ msgid ""
 "Cannot combine the assets with id: \"{object_id}\"\n"
 "due to conflicting types: {short_uri} != {short_uri_2}"
 msgstr ""
+"Cannot combine the assets with id: \"{object_id}\"\n"
+"due to conflicting types: {short_uri} != {short_uri_2}"
 
 #: Domain/util/CombineAssetHelper.py:61
 msgid ""
@@ -86,12 +122,15 @@ msgid ""
 "\"{short_uri}\"\n"
 "due to conflicting values in attribute(s):\n"
 msgstr ""
+"Cannot combine the assets with id: \"{object_id}\" with type "
+"\"{short_uri}\"\n"
+"due to conflicting values in attribute(s):\n"
 
 #: Domain/util/CombineAssetHelper.py:69
 msgid "There were errors while combining the assets"
-msgstr ""
+msgstr "There were errors while combining the assets"
 
-#: Domain/util/SDFHandler.py:184
+#: Domain/util/SDFHandler.py:188
 msgid "FDOToolbox not installed"
 msgstr "FDOToolbox not installed"
 
@@ -119,43 +158,72 @@ msgstr "Relation changes"
 msgid "export_data"
 msgstr "Export data"
 
-#: GUI/dialog_windows/AddExternalAssetWindow.py:29
+#: GUI/MainWindow.py:105 GUI/header/TabWidget.py:65
+msgid "unsaved_graph_changes_warning_title"
+msgstr "There are still unsaved changes in the visualisation"
+
+#: GUI/MainWindow.py:106 GUI/header/TabWidget.py:66
+msgid "unsaved_graph_changes_warning_text"
+msgstr ""
+"The change you made in the data visualisation are not save yet.\n"
+"\n"
+"Do you want to continue without saving the changes?"
+
+#: GUI/MainWindow.py:107 GUI/header/TabWidget.py:67
+msgid "Continue"
+msgstr "Continue"
+
+#: GUI/MainWindow.py:108 GUI/header/TabWidget.py:68
+msgid "Back"
+msgstr "Back"
+
+#: GUI/dialog_windows/AddExternalAssetWindow.py:30
 msgid "add_external_asset_title"
 msgstr "Add external OTL-asset"
 
-#: GUI/dialog_windows/AddExternalAssetWindow.py:35
+#: GUI/dialog_windows/AddExternalAssetWindow.py:36
+#: GUI/dialog_windows/AddExternalAssetWindow.py:74
 msgid "asset_id_or_name"
 msgstr "Identificator/Name"
 
-#: GUI/dialog_windows/AddExternalAssetWindow.py:37
+#: GUI/dialog_windows/AddExternalAssetWindow.py:38
 msgid "asset_id_dummy"
 msgstr "extern asset 1"
 
-#: GUI/dialog_windows/AddExternalAssetWindow.py:42
+#: GUI/dialog_windows/AddExternalAssetWindow.py:43
 #: GUI/dialog_windows/DefineHeeftBetrokkeneRelationWindow.py:51
-#: GUI/screens/RelationChange_elements/PossibleRelationListWidget.py:27
+#: GUI/screens/RelationChange_elements/PossibleRelationListWidget.py:28
 msgid "asset_type"
 msgstr "OTL-asset type"
 
-#: GUI/dialog_windows/AddExternalAssetWindow.py:45
+#: GUI/dialog_windows/AddExternalAssetWindow.py:46
 #: GUI/dialog_windows/DefineHeeftBetrokkeneRelationWindow.py:54
 msgid "asset_type_dummy"
 msgstr "Onderdeel#Verkeersbord"
 
-#: GUI/dialog_windows/AddExternalAssetWindow.py:83
+#: GUI/dialog_windows/AddExternalAssetWindow.py:74
+msgid " is leeg"
+msgstr " is empty"
+
+#: GUI/dialog_windows/AddExternalAssetWindow.py:79
+msgid "OTL-asset with {0} \"{1}\" already exists"
+msgstr ""
+
+#: GUI/dialog_windows/AddExternalAssetWindow.py:96
 #: GUI/dialog_windows/ChangeSubsetWindow.py:113
 #: GUI/dialog_windows/DefineHeeftBetrokkeneRelationWindow.py:107
 #: GUI/dialog_windows/RemoveProjectFilesWindow.py:33
-#: GUI/dialog_windows/UpsertProjectWindow.py:149
+#: GUI/dialog_windows/UpsertProjectWindow.py:151
 msgid "submit"
 msgstr "Submit"
 
-#: GUI/dialog_windows/AddExternalAssetWindow.py:85
+#: GUI/dialog_windows/AddExternalAssetWindow.py:98
 #: GUI/dialog_windows/ChangeSubsetWindow.py:115
 #: GUI/dialog_windows/DefineHeeftBetrokkeneRelationWindow.py:109
+#: GUI/dialog_windows/OverwriteGraphWarningWindow.py:45
 #: GUI/dialog_windows/RemoveProjectFilesWindow.py:35
-#: GUI/dialog_windows/RevalidateDocumentsWindow.py:37
-#: GUI/dialog_windows/UpsertProjectWindow.py:151
+#: GUI/dialog_windows/RevalidateDocumentsWindow.py:38
+#: GUI/dialog_windows/UpsertProjectWindow.py:153
 msgid "cancel"
 msgstr "Cancel"
 
@@ -165,8 +233,8 @@ msgid "change_subset"
 msgstr "Change subset"
 
 #: GUI/dialog_windows/ChangeSubsetWindow.py:33
-#: GUI/dialog_windows/UpsertProjectWindow.py:87
-#: GUI/dialog_windows/UpsertProjectWindow.py:90
+#: GUI/dialog_windows/UpsertProjectWindow.py:89
+#: GUI/dialog_windows/UpsertProjectWindow.py:92
 #: GUI/screens/Home_elements/OverviewTable.py:78
 #: GUI/screens/Home_elements/OverviewTable.py:315
 #: GUI/screens/TemplateScreen.py:575
@@ -210,44 +278,73 @@ msgstr ""
 "What role does Agent '{0}' have towards asset '{1}' in this "
 "HeeftBetrokkene relation?"
 
-#: GUI/dialog_windows/LanguageWindow.py:23
+#: GUI/dialog_windows/LanguageWindow.py:24
 msgid "change_language_title"
 msgstr "Change language"
 
-#: GUI/dialog_windows/LanguageWindow.py:27
+#: GUI/dialog_windows/LanguageWindow.py:28
 msgid "language_option_dutch"
 msgstr "Nederlands"
 
-#: GUI/dialog_windows/LanguageWindow.py:28
+#: GUI/dialog_windows/LanguageWindow.py:29
 msgid "language_option_english"
 msgstr "English"
 
-#: GUI/dialog_windows/MenuActionsWindow.py:13 GUI/header/HeaderBar.py:158
-#: GUI/header/HeaderBar.py:290
+#: GUI/dialog_windows/LanguageWindow.py:54
+msgid "Please restart the application to apply the changes"
+msgstr ""
+"NL: Herstart alsjeblieft de applicatie om de veranderingen toe te passen."
+"\n"
+"\n"
+"EN: Please restart the application to apply the changes"
+
+#: GUI/dialog_windows/LanguageWindow.py:55
+msgid "Restart required"
+msgstr "Herstart van applicatie nodig"
+
+#: GUI/dialog_windows/MenuActionsWindow.py:15 GUI/header/HeaderBar.py:160
+#: GUI/header/HeaderBar.py:297
 msgid "about"
 msgstr "About"
 
-#: GUI/dialog_windows/MenuActionsWindow.py:16
+#: GUI/dialog_windows/MenuActionsWindow.py:18
 msgid "made_by"
 msgstr "Mady by"
 
-#: GUI/dialog_windows/MenuActionsWindow.py:28
+#: GUI/dialog_windows/MenuActionsWindow.py:32
 msgid "error_title"
 msgstr "Report problem"
 
-#: GUI/dialog_windows/MenuActionsWindow.py:29
+#: GUI/dialog_windows/MenuActionsWindow.py:33
 msgid "error_report"
 msgstr ""
 "When an issue is found in the program, please report it to the developers"
 " listed below."
 
-#: GUI/dialog_windows/MenuActionsWindow.py:30
+#: GUI/dialog_windows/MenuActionsWindow.py:34
 msgid "contact"
 msgstr "Contact"
 
-#: GUI/dialog_windows/MenuActionsWindow.py:41
+#: GUI/dialog_windows/MenuActionsWindow.py:46
 msgid "version"
 msgstr "Version"
+
+#: GUI/dialog_windows/OverwriteGraphWarningWindow.py:20
+msgid "overwrite_graph_warning_title"
+msgstr "You are going to overwrite the current visualisation"
+
+#: GUI/dialog_windows/OverwriteGraphWarningWindow.py:23
+msgid "overwrite_graph_warning_text"
+msgstr ""
+"Warning, This action will permanently overwrite the current data "
+"visualisation (including the saved changes).\n"
+"\n"
+" Are you sure you went to continue?"
+
+#: GUI/dialog_windows/OverwriteGraphWarningWindow.py:43
+#: GUI/dialog_windows/RevalidateDocumentsWindow.py:36
+msgid "continue"
+msgstr "Continue"
 
 #: GUI/dialog_windows/RemoveProjectFilesWindow.py:16
 msgid "remove_project_files_title"
@@ -265,11 +362,11 @@ msgstr "Delete project"
 msgid "project_deletion_question"
 msgstr "Are you sure you want to delete this project?"
 
-#: GUI/dialog_windows/RevalidateDocumentsWindow.py:18
+#: GUI/dialog_windows/RevalidateDocumentsWindow.py:19
 msgid "revalidate_documents_files_title"
 msgstr "Overwrite warning"
 
-#: GUI/dialog_windows/RevalidateDocumentsWindow.py:21
+#: GUI/dialog_windows/RevalidateDocumentsWindow.py:22
 msgid "revalidate_documents_files_question"
 msgstr ""
 "By validating the documents all changes in step '3. Change Asset Data' "
@@ -278,10 +375,6 @@ msgstr ""
 "\n"
 "If you wish to keep these you should export all the data via step '4. "
 "Export Asset Data'"
-
-#: GUI/dialog_windows/RevalidateDocumentsWindow.py:35
-msgid "continue"
-msgstr "Continue"
 
 #: GUI/dialog_windows/SuggestUpdateWindow.py:19
 msgid "otl_model_out_of_date_title"
@@ -313,27 +406,39 @@ msgstr ""
 "\n"
 "Do you want to go the webpage where you can download the new version?"
 
-#: GUI/dialog_windows/UpsertProjectWindow.py:49
+#: GUI/dialog_windows/UpsertProjectWindow.py:51
 msgid "alter_project_title"
 msgstr "Alter Project"
 
-#: GUI/dialog_windows/UpsertProjectWindow.py:54
+#: GUI/dialog_windows/UpsertProjectWindow.py:56
 msgid "new_project_title"
 msgstr "New Project"
 
-#: GUI/dialog_windows/UpsertProjectWindow.py:110
 #: GUI/dialog_windows/UpsertProjectWindow.py:112
+#: GUI/dialog_windows/UpsertProjectWindow.py:114
 #: GUI/screens/Home_elements/OverviewTable.py:78
 #: GUI/screens/Home_elements/OverviewTable.py:315
 msgid "service_order"
 msgstr "Service order"
 
-#: GUI/dialog_windows/UpsertProjectWindow.py:128
 #: GUI/dialog_windows/UpsertProjectWindow.py:130
+#: GUI/dialog_windows/UpsertProjectWindow.py:132
 #: GUI/screens/Home_elements/OverviewTable.py:78
 #: GUI/screens/Home_elements/OverviewTable.py:315
 msgid "own_reference"
 msgstr "Own reference"
+
+#: GUI/dialog_windows/UpsertProjectWindow.py:197 GUI/header/HeaderBar.py:269
+msgid "Project bestaat al"
+msgstr "Project already exists"
+
+#: GUI/dialog_windows/UpsertProjectWindow.py:199
+msgid ""
+"Project naam: \"{project_naam}\" bestaat al.\n"
+"Geef 1 van de projecten een andere naam of verwijder het bestaande project"
+msgstr ""
+"Project name: \"{project_naam}\" exists already.\n"
+"Rename 1 of the projects or remove the existing project"
 
 #: GUI/dialog_windows/file_picker_dialog/AbstractFilePickerDialog.py:40
 #: GUI/dialog_windows/file_picker_dialog/LoadFilePickerDialog.py:26
@@ -373,33 +478,41 @@ msgstr "Database files (*.db)"
 msgid "Sla template op"
 msgstr "Save template"
 
-#: GUI/header/HeaderBar.py:89 GUI/header/HeaderBar.py:285
+#: GUI/header/HeaderBar.py:91 GUI/header/HeaderBar.py:292
 msgid "new_project_button"
 msgstr "New Project"
 
-#: GUI/header/HeaderBar.py:156 GUI/header/HeaderBar.py:289
+#: GUI/header/HeaderBar.py:158 GUI/header/HeaderBar.py:296
 msgid "help"
 msgstr "Help"
 
-#: GUI/header/HeaderBar.py:160 GUI/header/HeaderBar.py:291
+#: GUI/header/HeaderBar.py:162 GUI/header/HeaderBar.py:298
 msgid "report error"
 msgstr "Report issue"
 
-#: GUI/header/HeaderBar.py:162
+#: GUI/header/HeaderBar.py:164
 msgid "logs"
 msgstr "Logs"
 
-#: GUI/header/HeaderBar.py:208 GUI/header/HeaderBar.py:286
+#: GUI/header/HeaderBar.py:210 GUI/header/HeaderBar.py:293
 msgid "return_to_home_screen"
 msgstr "Back home"
 
-#: GUI/header/HeaderBar.py:228 GUI/header/HeaderBar.py:287
+#: GUI/header/HeaderBar.py:230 GUI/header/HeaderBar.py:294
 msgid "save_button"
 msgstr "Save"
 
-#: GUI/header/HeaderBar.py:252 GUI/header/HeaderBar.py:288
+#: GUI/header/HeaderBar.py:254 GUI/header/HeaderBar.py:295
 msgid "import"
 msgstr "Import"
+
+#: GUI/header/HeaderBar.py:270
+msgid ""
+"Project naam: \"{project_naam}\" bestaat al.\n"
+"Verwijder het bestaande project en importeer opnieuw"
+msgstr ""
+"Project name: \"{project_naam}\" already exists.\n"
+"Remove the existing project and import again"
 
 #: GUI/header/StepperWidget.py:69
 msgid "step1"
@@ -429,20 +542,89 @@ msgstr "Convert"
 msgid "file_for_conversion"
 msgstr "File conversion"
 
-#: GUI/screens/DataVisualisationScreen.py:70
-#: GUI/screens/DataVisualisationScreen.py:136 GUI/screens/MapScreen.py:138
-#: GUI/screens/MapScreen.py:181 GUI/screens/MapScreen_test.py:132
-#: GUI/screens/MapScreen_test.py:178
+#: GUI/screens/DynamicDataVisualisationScreen.py:75
+msgid "Couldn't save visualisation"
+msgstr "Couldn't save visualisation"
+
+#: GUI/screens/DynamicDataVisualisationScreen.py:76
+msgid ""
+"Couldn't save the html because the html is outdated and the project is "
+"already closed\n"
+"To fix this refresh the visualisation."
+msgstr ""
+"Couldn't save the html because the html is outdated and the project is "
+"already closed\n"
+"To fix this regenerate the visualisation."
+
+#: GUI/screens/DynamicDataVisualisationScreen.py:171
+#: GUI/screens/MapScreen.py:144 GUI/screens/MapScreen.py:187
 msgid "relations legend"
 msgstr "Color legend relations:"
 
-#: GUI/screens/DataVisualisationScreen.py:120 GUI/screens/MapScreen.py:166
-#: GUI/screens/MapScreen_test.py:162
-msgid "The visualisation is outdated, refresh to see new changes"
-msgstr "The visualisation is outdated, refresh to see new changes"
+#: GUI/screens/DynamicDataVisualisationScreen.py:192
+msgid "Regenerate the visualisation"
+msgstr "Regenerate the visualisation"
 
-#: GUI/screens/DataVisualisationScreen.py:165 GUI/screens/MapScreen.py:226
-#: GUI/screens/MapScreen_test.py:210
+#: GUI/screens/DynamicDataVisualisationScreen.py:199
+msgid "Options to generate the visualisation differently"
+msgstr "Opties om de visualisatie anders te genereren"
+
+#: GUI/screens/DynamicDataVisualisationScreen.py:201
+msgid ""
+"Deze slider duidt de hoeveelheid van dezelfde relaties naar één asset "
+"nodig voor het bundelen in een collectie"
+msgstr ""
+"This slider indicates the amount of same relations to one asset needed to"
+" bundle them into a collection"
+
+#: GUI/screens/DynamicDataVisualisationScreen.py:214
+#: GUI/screens/MapScreen.py:172
+msgid "The visualisation is outdated, refresh to see new changes"
+msgstr "The visualisation is outdated, regenerate to see new changes"
+
+#: GUI/screens/DynamicDataVisualisationScreen.py:225
+msgid "Save changes"
+msgstr "Save changes"
+
+#: GUI/screens/DynamicDataVisualisationScreen.py:232
+#: GUI/screens/DynamicDataVisualisationScreen.py:267
+msgid "Help for data visualisation screen"
+msgstr "Help for data visualisation screen"
+
+#: GUI/screens/DynamicDataVisualisationScreen.py:240
+msgid "Open visualisation html file location"
+msgstr "Open visualisation html file location"
+
+#: GUI/screens/DynamicDataVisualisationScreen.py:268
+msgid ""
+"\n"
+"Help voor het gebruik van het datavisualisatie scherm:\n"
+"        \n"
+"- Linker-muisknop inhouden op OTL-asset => slepen\n"
+"- Linker-muisknop op relatie pijl => een versleepbaar gewricht toevoegen\n"
+"- Rechter-muisknop inhouden en slepen in lege ruimte => selectie box om "
+"meerder OTL-assets (+ gewrichten) te selecteren\n"
+"- Ctrl-knop + Linker-muisknop op OTL-asset => toevoegen/verwijderen van "
+"OTL-asset aan selectie\n"
+"        "
+msgstr ""
+"Help for the usage of the data visualisation screen\n"
+"        \n"
+"- Holding left-mouse button and dragging in empty space => pan view\n"
+"- Holding left-mouse button on OTL-asset/joint => Drag OTL-asset/joint\n"
+"- Left-mouse click on relation arrow => Adds a dragable joint\n"
+"- Holding right-mouse button and dragging in empty space => Creates a "
+"selection box to select multiple OTL-assets (+ joints)\n"
+"- Ctrl-key + left-mouse button on OTL-asset => Add/remove from OTL-asset "
+"selection\n"
+"- Right-mouse click on dragable joint => Remove joint\n"
+
+#: GUI/screens/DynamicDataVisualisationScreen.py:371
+msgid "Loading graph"
+msgstr "Loading graph..."
+
+#: GUI/screens/DynamicDataVisualisationScreen.py:403
+#: GUI/screens/MapScreen.py:235
 msgid ""
 "There are too many assets and relations to create a visualisation.\n"
 "maximum: {0}\n"
@@ -452,13 +634,25 @@ msgstr ""
 "maximum: {0}\n"
 "current: {1}"
 
+#: GUI/screens/DynamicDataVisualisationScreen.py:476
+msgid "uit"
+msgstr "off"
+
+#: GUI/screens/DynamicDataVisualisationScreen.py:520
+msgid "Changes saved"
+msgstr "Changes saved"
+
+#: GUI/screens/DynamicDataVisualisationScreen.py:523
+msgid "Changes are not saved"
+msgstr "Changes are not saved"
+
 #: GUI/screens/ExportDataScreen.py:78 GUI/screens/ExportDataScreen.py:164
 msgid "export_to_davie"
 msgstr "Export data ready for DAVIE"
 
 #: GUI/screens/ExportDataScreen.py:82
-#: GUI/screens/ExportData_elements/AbstractExportDataSubScreen.py:123
-#: GUI/screens/ExportData_elements/AbstractExportDataSubScreen.py:128
+#: GUI/screens/ExportData_elements/AbstractExportDataSubScreen.py:125
+#: GUI/screens/ExportData_elements/AbstractExportDataSubScreen.py:130
 msgid "export assets in different files"
 msgstr "Export asset types in different files"
 
@@ -474,16 +668,16 @@ msgstr "Without unedited data"
 msgid "search_text"
 msgstr "Enter project or service order to search"
 
-#: GUI/screens/InsertDataScreen.py:160 GUI/screens/InsertDataScreen.py:551
+#: GUI/screens/InsertDataScreen.py:161 GUI/screens/InsertDataScreen.py:551
 msgid "control_button"
 msgstr "Control"
 
-#: GUI/screens/InsertDataScreen.py:166
+#: GUI/screens/InsertDataScreen.py:167
 msgid "reset_fields"
 msgstr "Reset fields"
 
-#: GUI/screens/ExportData_elements/ExportFilteredDataSubScreen.py:164
-#: GUI/screens/InsertDataScreen.py:171
+#: GUI/screens/ExportData_elements/ExportFilteredDataSubScreen.py:165
+#: GUI/screens/InsertDataScreen.py:172
 msgid "choose_file"
 msgstr "Pick your file..."
 
@@ -499,7 +693,7 @@ msgstr ""
 msgid "input_file"
 msgstr "Load in file:"
 
-#: GUI/screens/ExportData_elements/ExportFilteredDataSubScreen.py:123
+#: GUI/screens/ExportData_elements/ExportFilteredDataSubScreen.py:124
 #: GUI/screens/InsertDataScreen.py:477
 msgid "all_info_correct"
 msgstr "All data is OTL-conform"
@@ -508,7 +702,7 @@ msgstr "All data is OTL-conform"
 msgid "warning"
 msgstr "Warning"
 
-#: GUI/screens/ExportData_elements/ExportFilteredDataSubScreen.py:134
+#: GUI/screens/ExportData_elements/ExportFilteredDataSubScreen.py:135
 #: GUI/screens/ExportData_elements/TableErrorModel.py:11
 #: GUI/screens/InsertDataScreen.py:542
 msgid "error"
@@ -525,6 +719,10 @@ msgid ""
 msgstr ""
 "Press validate to get feedback on the OTL-conformity of the files in this"
 " project"
+
+#: GUI/screens/RelationChangeScreen.py:280
+msgid "Toon kaart met OTL-assets uit de eerste kolom"
+msgstr "Show map with OTL-assets from the first column"
 
 #: GUI/screens/TemplateScreen.py:113
 msgid "Adds choice lists to relevant attributes"
@@ -608,8 +806,8 @@ msgstr "Export additional attribute information"
 msgid "example_settings"
 msgstr "Example settings"
 
-#: GUI/screens/ExportData_elements/AbstractExportDataSubScreen.py:97
-#: GUI/screens/ExportData_elements/AbstractExportDataSubScreen.py:120
+#: GUI/screens/ExportData_elements/AbstractExportDataSubScreen.py:99
+#: GUI/screens/ExportData_elements/AbstractExportDataSubScreen.py:122
 #: GUI/screens/TemplateScreen.py:364
 msgid "export"
 msgstr "Export"
@@ -662,78 +860,77 @@ msgstr "Export template"
 msgid "Select at least 1 class to export"
 msgstr "Select at least 1 class to export"
 
-#: GUI/screens/RelationChange_elements/AbstractInstanceListWidget.py:542
-#: GUI/screens/TemplateScreen.py:892
+#: GUI/screens/RelationChange_elements/AbstractInstanceListWidget.py:565
+#: GUI/screens/TemplateScreen.py:891
 msgid "loading"
 msgstr "Loading"
 
-#: GUI/screens/TemplateScreen.py:910
+#: GUI/screens/TemplateScreen.py:909
 msgid "no classes found in specified path"
 msgstr "No asset types found in specified path"
 
-#: GUI/screens/TemplateScreen.py:957
+#: GUI/screens/TemplateScreen.py:956
 msgid "Agent class is not allowed in the template"
 msgstr "Agent class is not allowed in the template"
 
-#: GUI/screens/ExportData_elements/AbstractExportDataSubScreen.py:58
-#: GUI/screens/ExportData_elements/AbstractExportDataSubScreen.py:121
-#: GUI/screens/TemplateScreen.py:996
+#: GUI/screens/ExportData_elements/AbstractExportDataSubScreen.py:60
+#: GUI/screens/ExportData_elements/AbstractExportDataSubScreen.py:123
+#: GUI/screens/TemplateScreen.py:995
 msgid "select file type for export"
 msgstr "Select file type for export"
 
-#: GUI/screens/TemplateScreen.py:1006
+#: GUI/screens/TemplateScreen.py:1005
 msgid "The type of file the template will be created in"
 msgstr "The type of file the template will be created in"
 
-#: GUI/screens/AssetDataChange_elements/TableModel.py:11
+#: GUI/screens/ExportData_elements/AbstractExportDataSubScreen.py:77
+#: GUI/screens/ExportData_elements/AbstractExportDataSubScreen.py:124
+msgid "export relations and assets in different files"
+msgstr "Export relations and assets in different files"
+
+#: GUI/screens/ExportData_elements/AbstractExportDataSubScreen.py:126
+msgid "file_to_upload"
+msgstr "file to upload:"
+
+#: GUI/screens/ExportData_elements/ExportFilteredDataSubScreen.py:102
+msgid "changes preview"
+msgstr "Changes preview"
+
+#: GUI/screens/ExportData_elements/ExportFilteredDataSubScreen.py:150
+msgid "original_file_load"
+msgstr "Original file to load:"
+
+#: GUI/screens/ExportData_elements/ExportFilteredDataSubScreen.py:168
+msgid "show differences"
+msgstr "Show differences"
+
+#: GUI/screens/ExportData_elements/ExportFilteredDataSubScreen.py:178
+msgid "empty fields"
+msgstr "Reset fields"
+
+#: GUI/screens/ExportData_elements/TableModel.py:11
+msgid "#"
+msgstr ""
+
 #: GUI/screens/ExportData_elements/TableModel.py:11
 msgid "id"
 msgstr "Id"
 
-#: GUI/screens/AssetDataChange_elements/TableModel.py:11
 #: GUI/screens/ExportData_elements/TableModel.py:11
 msgid "action"
 msgstr "Action"
 
-#: GUI/screens/AssetDataChange_elements/TableModel.py:11
 #: GUI/screens/ExportData_elements/TableModel.py:11
 msgid "name_attribute"
 msgstr "Name of attribute"
 
-#: GUI/screens/AssetDataChange_elements/TableModel.py:11
 #: GUI/screens/ExportData_elements/TableModel.py:11
 msgid "old_attribute"
 msgstr "Old attribute"
 
-#: GUI/screens/AssetDataChange_elements/TableModel.py:12
 #: GUI/screens/ExportData_elements/TableModel.py:12
 msgid "new_attribute"
 msgstr "New attribute"
-
-#: GUI/screens/ExportData_elements/AbstractExportDataSubScreen.py:75
-#: GUI/screens/ExportData_elements/AbstractExportDataSubScreen.py:122
-msgid "export relations and assets in different files"
-msgstr "Export relations and assets in different files"
-
-#: GUI/screens/ExportData_elements/AbstractExportDataSubScreen.py:124
-msgid "file_to_upload"
-msgstr "file to upload:"
-
-#: GUI/screens/ExportData_elements/ExportFilteredDataSubScreen.py:101
-msgid "changes preview"
-msgstr "Changes preview"
-
-#: GUI/screens/ExportData_elements/ExportFilteredDataSubScreen.py:149
-msgid "original_file_load"
-msgstr "Original file to load:"
-
-#: GUI/screens/ExportData_elements/ExportFilteredDataSubScreen.py:167
-msgid "show differences"
-msgstr "Show differences"
-
-#: GUI/screens/ExportData_elements/ExportFilteredDataSubScreen.py:177
-msgid "empty fields"
-msgstr "Reset fields"
 
 #: GUI/screens/Home_elements/OverviewTable.py:78
 #: GUI/screens/Home_elements/OverviewTable.py:315
@@ -748,100 +945,100 @@ msgstr "Dubbelklik om project te openen"
 msgid "no_results"
 msgstr "No results found for this search value"
 
-#: GUI/screens/RelationChange_elements/AbstractInstanceListWidget.py:374
+#: GUI/screens/RelationChange_elements/AbstractInstanceListWidget.py:391
 msgid "search_button"
 msgstr "Search"
 
-#: GUI/screens/RelationChange_elements/AbstractInstanceListWidget.py:407
+#: GUI/screens/RelationChange_elements/AbstractInstanceListWidget.py:427
 msgid "no_instance_selected"
 msgstr "No object selected"
 
-#: GUI/screens/RelationChange_elements/AbstractInstanceListWidget.py:514
-#: GUI/screens/RelationChange_elements/ObjectListWidget.py:165
+#: GUI/screens/RelationChange_elements/AbstractInstanceListWidget.py:537
+#: GUI/screens/RelationChange_elements/ObjectListWidget.py:162
 msgid "no_options_available"
 msgstr "No options available"
 
-#: GUI/screens/RelationChange_elements/ExistingRelationListWidget.py:25
+#: GUI/screens/RelationChange_elements/ExistingRelationListWidget.py:26
 msgid "source_asset"
 msgstr "Source asset"
 
-#: GUI/screens/RelationChange_elements/ExistingRelationListWidget.py:25
+#: GUI/screens/RelationChange_elements/ExistingRelationListWidget.py:26
 msgid "target_asset"
 msgstr "Target asset"
 
-#: GUI/screens/RelationChange_elements/ExistingRelationListWidget.py:28
+#: GUI/screens/RelationChange_elements/ExistingRelationListWidget.py:29
 msgid "existing_relations_list"
 msgstr "Existing relations"
 
-#: GUI/screens/RelationChange_elements/ExistingRelationListWidget.py:29
+#: GUI/screens/RelationChange_elements/ExistingRelationListWidget.py:30
 msgid "existing_relations_description"
 msgstr "Shows the existing relations in the project"
 
-#: GUI/screens/RelationChange_elements/ExistingRelationListWidget.py:30
+#: GUI/screens/RelationChange_elements/ExistingRelationListWidget.py:31
 msgid "existing_relation_attributes"
 msgstr "Existing relation attributes (last selected)"
 
-#: GUI/screens/RelationChange_elements/ExistingRelationListWidget.py:92
+#: GUI/screens/RelationChange_elements/ExistingRelationListWidget.py:93
 msgid "remove_relation"
 msgstr "Remove relations"
 
-#: GUI/screens/RelationChange_elements/ExistingRelationListWidget.py:191
-#: GUI/screens/RelationChange_elements/PossibleRelationListWidget.py:282
+#: GUI/screens/RelationChange_elements/ExistingRelationListWidget.py:190
+#: GUI/screens/RelationChange_elements/PossibleRelationListWidget.py:281
 msgid "no_relation_selected"
 msgstr "No relation selected"
 
-#: GUI/screens/RelationChange_elements/ObjectListWidget.py:25
+#: GUI/screens/RelationChange_elements/ObjectListWidget.py:26
 msgid "OTL_asset"
 msgstr "OTL-asset"
 
-#: GUI/screens/RelationChange_elements/ObjectListWidget.py:28
+#: GUI/screens/RelationChange_elements/ObjectListWidget.py:29
 msgid "class_list"
 msgstr "OTL-assets"
 
-#: GUI/screens/RelationChange_elements/ObjectListWidget.py:29
+#: GUI/screens/RelationChange_elements/ObjectListWidget.py:30
 msgid "otl_asset_description"
 msgstr "Select an OTL-asset here to make a relation with it"
 
-#: GUI/screens/RelationChange_elements/ObjectListWidget.py:30
+#: GUI/screens/RelationChange_elements/ObjectListWidget.py:31
 msgid "object_attributes"
 msgstr "OTL-asset attributes"
 
-#: GUI/screens/RelationChange_elements/ObjectListWidget.py:103
+#: GUI/screens/RelationChange_elements/ObjectListWidget.py:100
 msgid "add_external_asset"
 msgstr "Add external OTL-asset"
 
-#: GUI/screens/RelationChange_elements/PossibleRelationListWidget.py:27
+#: GUI/screens/RelationChange_elements/PossibleRelationListWidget.py:28
 msgid "related_asset"
 msgstr "Target or source"
 
-#: GUI/screens/RelationChange_elements/PossibleRelationListWidget.py:30
+#: GUI/screens/RelationChange_elements/PossibleRelationListWidget.py:31
 msgid "relations_list"
 msgstr "Possible relations"
 
-#: GUI/screens/RelationChange_elements/PossibleRelationListWidget.py:31
+#: GUI/screens/RelationChange_elements/PossibleRelationListWidget.py:32
 msgid "possible_relation_subscription"
 msgstr ""
 "Shows the possible relations that the selected OTL-asset can have with "
 "all the other OTL-assets"
 
-#: GUI/screens/RelationChange_elements/PossibleRelationListWidget.py:32
+#: GUI/screens/RelationChange_elements/PossibleRelationListWidget.py:33
 msgid "possible_relation_partner_asset_attributes"
 msgstr "Related asset attributes (last selected)"
 
-#: GUI/screens/RelationChange_elements/PossibleRelationListWidget.py:46
+#: GUI/screens/RelationChange_elements/PossibleRelationListWidget.py:47
 msgid "Select_an_OTL-asset_to_see_possible_relations"
 msgstr "Select an OTL-asset to see it's possible relations"
 
-#: GUI/screens/RelationChange_elements/PossibleRelationListWidget.py:125
+#: GUI/screens/RelationChange_elements/PossibleRelationListWidget.py:126
 #, fuzzy
 msgid "add_relation"
 msgstr "Possible relations:"
 
-#: GUI/screens/RelationChange_elements/PossibleRelationListWidget.py:285
+#: GUI/screens/RelationChange_elements/PossibleRelationListWidget.py:284
 msgid "Toon all OTL-relaties"
 msgstr "Show all OTL-relations"
 
-#: GUI/screens/RelationChange_elements/PossibleRelationListWidget.py:286
+#: GUI/screens/RelationChange_elements/PossibleRelationListWidget.py:285
 msgid ""
 "Toon alle mogelijke relaties met het geselecteerde asset in het volledige"
 " OTL (i.p.v. alleen subset)"
@@ -874,7 +1071,8 @@ msgstr ""
 
 #: GUI/translation/ValidationErrorReportTranslations.py:34
 msgid "{doc_name}: type uri not in first row of {tab}\n"
-msgstr "{doc_name}: TypeUri not found in first row of worksheet {tab}\n"
+msgstr ""
+"{doc_name}: TypeUri not found in first row of worksheet {tab}\n"
 "Please remove the rows above the headers row\n"
 
 #: GUI/translation/ValidationErrorReportTranslations.py:41

@@ -12,6 +12,7 @@ from Domain.step_domain.TemplateDomain import TemplateDomain
 from Exceptions.EmptyFieldError import EmptyFieldError
 from Exceptions.NotASqlliteFileError import NotASqlliteFileError
 from Exceptions.WrongDatabaseError import WrongDatabaseError
+from GUI.dialog_windows.ProjectExistsError import ProjectExistsError
 from GUI.screens.Screen import Screen
 from GUI.screens.screen_interface.HomeScreenInterface import HomeScreenInterface
 
@@ -152,6 +153,7 @@ class HomeDomain:
         project.change_subset(new_path=Path(new_path))
 
         TemplateDomain.init_static()
+        RelationChangeDomain.clear_data()
         RelationChangeDomain.init_static(project=project)
 
         main_window.reset_ui(GlobalTranslate._)
@@ -205,8 +207,10 @@ class HomeDomain:
 
         TemplateDomain.init_static()
         InsertDataDomain.init_static()
-        RelationChangeDomain.clear_data()
+        # RelationChangeDomain.clear_data()
+        RelationChangeDomain.init_static(project=selected_project)
         ExportFilteredDataSubDomain.clear_data()
+        global_vars.otl_wizard.main_window.step3_visuals.changed_project_bool = True
 
         global_vars.otl_wizard.main_window.enable_steps()
 
@@ -268,8 +272,15 @@ class HomeDomain:
         """
 
         project = Project(eigen_referentie=eigen_ref, subset_path=subset_path, bestek=bestek)
+
+        project_dir_path = project.get_project_local_path()
+        if  project_dir_path.exists():
+            OTLLogger.logger.error("Project dir %s already exists", project_dir_path)
+            raise ProjectExistsError(eigen_referentie=project.eigen_referentie)
+
         cls.projects[eigen_ref] = project
         project.save_project_to_dir()
+
         return project
 
     @classmethod

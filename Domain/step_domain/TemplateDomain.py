@@ -15,6 +15,7 @@ from Domain.util.Helpers import Helpers
 from Domain.util.SDFHandler import SDFHandler
 from Domain.logger.OTLLogger import OTLLogger
 from Domain.network.Updater import Updater
+from Exceptions.FDOToolboxNotInstalledError import FDOToolboxNotInstalledError
 from GUI.dialog_windows.LoadingImageWindow import add_loading_screen, LoadingImageWindow
 from GUI.dialog_windows.NotificationWindow import NotificationWindow
 from GUI.dialog_windows.SuggestUpdateWindow import SuggestUpdateWindow
@@ -73,10 +74,18 @@ class TemplateDomain:
                     dummy_data_rows=amount_of_examples,
                     model_directory=model_directory,
                     abbreviate_excel_sheettitles=True)
+        except FDOToolboxNotInstalledError as e:
+            pass
+            # document_path_str = str(document_path)
+            # OTLLogger.logger.debug(f"Permission to file was denied: {document_path_str}")
+            # NotificationWindow(GlobalTranslate._("permission_to_file_was_denied_likely_due_to_the_file_being_open_in_excel") + ":\n" + document_path_str, title=GlobalTranslate._("permission_denied"))
         except PermissionError as e:
             document_path_str = str(document_path)
             OTLLogger.logger.debug(f"Permission to file was denied: {document_path_str}")
-            NotificationWindow(GlobalTranslate._("permission_to_file_was_denied_likely_due_to_the_file_being_open_in_excel") + ":\n" + document_path_str, title=GlobalTranslate._("permission_denied"))
+            NotificationWindow(GlobalTranslate._(
+                "permission_to_file_was_denied_likely_due_to_the_file_being_open_in_excel") + ":\n" + document_path_str,
+                               title=GlobalTranslate._("permission_denied"))
+
         except ExceptionsGroup as e:
             OTLLogger.logger.debug("Error while creating template")
             OTLLogger.logger.error(e)
@@ -207,7 +216,8 @@ class TemplateDomain:
                                              add_geo_artefact=geometry_column_added,
                                              add_attribute_info=export_attribute_info,
                                              highlight_deprecated_attributes=highlight_deprecated_attributes,
-                                             amount_of_examples=amount_of_examples)
+                                             amount_of_examples=amount_of_examples,
+                                             )
         if ".xlsx" in str(document_path):
             if platform.system() == 'Linux':
                 os.open(document_path, os.O_WRONLY)

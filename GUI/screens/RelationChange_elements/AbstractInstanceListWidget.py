@@ -9,13 +9,15 @@ from PyQt6.QtWidgets import QTreeWidget, QFrame, QVBoxLayout, QLabel, QListWidge
     QStyledItemDelegate
 
 import qtawesome as qta
+from otlmow_model.OtlmowModel.Classes.ImplementatieElement.AIMObject import AIMObject
 from otlmow_visuals.PyVisWrapper import PyVisWrapper
 
+from Domain.logger.OTLLogger import OTLLogger
 from Domain.step_domain.RelationChangeDomain import RelationChangeDomain
 from GUI.Styling import Styling
 from GUI.screens.general_elements.ButtonWidget import ButtonWidget
 from GUI.screens.RelationChange_elements.FolderTreeView import FolderTreeView
-from UnitTests.TestClasses.Classes.ImplementatieElement.AIMObject import AIMObject
+
 ROOT_DIR = Path(__file__).parent.parent.parent.parent
 IMG_DIR = ROOT_DIR / 'img/'
 MULTI_SELECTION = QListWidget.SelectionMode.MultiSelection
@@ -108,8 +110,7 @@ class AbstractInstanceListWidget:
 
         self.list_gui = FolderTreeView()
         self.list_gui.setProperty('class', 'list')
-        self.list_gui.selectionModel().selectionChanged.connect(self.on_item_selected_listener)
-        self.list_gui.selectionModel().selection
+        self.list_gui.selectionModel().selectionChanged.connect(self.on_item_selectionChange_listener)
         self.list_gui.expanded.connect(self.record_expanse_listener)
         self.list_gui.collapsed.connect(self.record_collapse_listener)
         self.list_gui.clicked.connect(self.clicked_item_listener)
@@ -183,9 +184,23 @@ class AbstractInstanceListWidget:
           self.asset_clicked_listener()
 
     def is_item_a_type_folder_at_row(self, model_index):
-        return self.list_gui.model.itemFromIndex(model_index).hasChildren()
+        folder_item = self.list_gui.model.itemFromIndex(model_index)
+        if folder_item.hasChildren():
+            return folder_item
+        else:
+            return None
 
     def fill_list(self, source_object: Optional[AIMObject], objects: Collection, last_added) -> None:
+        list_label_text = "None"
+        if self.list_label:
+            list_label_text = self.list_label.text()
+
+        timing_ref = f"fill_list_{list_label_text}"
+        object_list_length = len(objects)
+        OTLLogger.logger.debug(
+            f"Execute AbstractInstanceListWidget.fill_list() ({object_list_length} objects) in list: {list_label_text} ",
+            extra={"timing_ref": timing_ref})
+
         # sourcery skip: remove-dict-keys
         # objects = RelationChangeDomain.objects
         self.list_gui.setSortingEnabled(False)
@@ -314,7 +329,9 @@ class AbstractInstanceListWidget:
             for i in range(len(self.labels)):
                 self.list_gui.model.setHeaderData(i, Qt.Orientation.Horizontal, self.labels[i])
 
-
+        OTLLogger.logger.debug(
+            f"Execute AbstractInstanceListWidget.fill_list() ({object_list_length} objects) in list: {list_label_text} ",
+            extra={"timing_ref": timing_ref})
 
     @abc.abstractmethod
     def create_instance_standard_item(self, text_and_data):
@@ -329,7 +346,7 @@ class AbstractInstanceListWidget:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def on_item_selected_listener(self,  selected: QItemSelectionModel, deselected:QItemSelectionModel):
+    def on_item_selectionChange_listener(self, selected: QItemSelectionModel, deselected:QItemSelectionModel):
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -389,7 +406,10 @@ class AbstractInstanceListWidget:
         if not self.search_text:
             self.set_all_folder_items_collapsed()
 
-        RelationChangeDomain.update_frontend()
+        self.update_this_gui_list_content()
+
+
+        # RelationChangeDomain.update_frontend()
 
     def clear_search_listener(self) -> None:
         self.search_bar.setText("")
@@ -455,14 +475,17 @@ class AbstractInstanceListWidget:
         return False
 
     def record_expanse_listener(self, index):
-
-        expanded_folder_item = self.list_gui.model.itemFromIndex(index)
-        self.type_open_status[expanded_folder_item.text()] = True
+        folder_item: QStandardItem = self.is_item_a_type_folder_at_row(index)
+        if folder_item:
+            asset_type = folder_item.data(self.data_1_index)
+            self.type_open_status[asset_type] = True
 
     def record_collapse_listener(self, index):
 
-        collapsed_folder_item = self.list_gui.model.itemFromIndex(index)
-        self.type_open_status[collapsed_folder_item.text()] = False
+        folder_item: QStandardItem = self.is_item_a_type_folder_at_row(index)
+        if folder_item:
+            asset_type = folder_item.data(self.data_1_index)
+            self.type_open_status[asset_type] = False
 
 
     def expand_folder_of(self,typeURI: str):
@@ -572,3 +595,7 @@ class AbstractInstanceListWidget:
 
     def get_adjustable_subtext_frame(self):
         return self.list_subtext_frame
+
+    @abc.abstractmethod
+    def update_this_gui_list_content(self):
+        pass

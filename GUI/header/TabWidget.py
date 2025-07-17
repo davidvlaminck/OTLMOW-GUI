@@ -5,6 +5,8 @@ from PyQt6.QtWidgets import QTabWidget, QVBoxLayout
 
 from Domain import global_vars
 from Domain.logger.OTLLogger import OTLLogger
+from GUI.dialog_windows.YesOrNoNotificationWindow import YesOrNoNotificationWindow
+from GUI.dialog_windows.YesOrNoOrAbortNotificationWindow import YesOrNoOrAbortNotificationWindow
 from GUI.screens.Screen import Screen
 from GUI.header.HeaderBar import HeaderBar
 from GUI.header.StepperWidget import StepperWidget
@@ -55,8 +57,36 @@ class TabWidget(Screen):
         self.tabs.setProperty('class', 'tab-widget')
 
     def onClickReturnToHomeScreen(self):
+
+        # first check if there are any unsaved changes in the graph
+        if (global_vars.current_project and
+            not global_vars.current_project.get_saved_graph_status()):
+
+            title = self._("unsaved_graph_changes_warning_title")
+            text = self._("unsaved_graph_changes_warning_text")
+            alt_yes_text = self._("Continue")
+            alt_no_text = self._("Back")
+
+            warning_dialog = YesOrNoNotificationWindow(message=text,
+                                                       title=title,
+                                                       alt_yes_text=alt_yes_text,
+                                                       alt_no_text=alt_no_text)
+            answer = warning_dialog.exec()
+
+            if answer == 16384:  # QMessageBox.ButtonRole.YesRole:
+                # close project without doing anything else
+                pass
+            elif answer == 65536: # QMessageBox.ButtonRole.NoRole:
+                # don't close project return to project
+                return
+            elif answer == 262144: # QMessageBox.ButtonRole.AbortRole also X-button
+                # don't close project return to project
+                return
+
+
         self.main_window.setCurrentIndex(0)
         global_vars.current_project.clear_model_builder_from_memory()
+        global_vars.current_project = None
         self.main_window.home_screen.sort_on_last_edit()
 
     def init_ui(self):

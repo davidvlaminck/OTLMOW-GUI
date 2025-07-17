@@ -2,9 +2,11 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QDialog, QLabel, QVBoxLayout, QHBoxLayout, QLineEdit, QDialogButtonBox, \
     QComboBox
 
+from Domain import global_vars
 from Domain.util.Helpers import Helpers
 
 from Domain.step_domain.RelationChangeDomain import RelationChangeDomain
+from exception_handler.ExceptionHandlers import create_task_reraise_exception
 
 
 class AddExternalAssetWindow:
@@ -68,12 +70,29 @@ class AddExternalAssetWindow:
         dialog_window.exec()
 
     def add_asset(self, dialog_window):
-        id_or_name = self.input_asset_id_or_name.text()
+        id_or_name = self.input_asset_id_or_name.text().strip()
+        if not id_or_name:
+            error_text = self._("asset_id_or_name") + self._(" is leeg")
+            self.error_label.setText(str(error_text))
+            return
+
+        if RelationChangeDomain.get_object(id_or_name):
+            error_text = self._('OTL-asset with {0} "{1}" already exists'.format(self._("asset_id_or_name"),id_or_name ))
+            self.error_label.setText(str(error_text))
+            return
+
         combobox_choice = self.combobox_asset_type.currentText()
 
         type_uri = Helpers.all_OTL_asset_types_dict[combobox_choice]
 
-        RelationChangeDomain.create_and_add_new_external_asset(id_or_name=id_or_name, type_uri=type_uri)
+        # Replaced by an async call
+        # RelationChangeDomain.create_and_add_new_external_asset(id_or_name=id_or_name, type_uri=type_uri)
+        # global_vars.current_project.visualisation_uptodate.set_clear_all(True)
+        # RelationChangeDomain.update_frontend()
+
+        #async version that also saves the assets after executing
+        create_task_reraise_exception(RelationChangeDomain.user_input_to_create_and_add_new_external_asset(id_or_name=id_or_name, type_uri=type_uri))
+
         dialog_window.close()
 
     def create_button_box(self):

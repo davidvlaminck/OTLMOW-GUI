@@ -68,7 +68,7 @@ class PossibleRelationListWidget(AbstractInstanceListWidget):
     def object_selected_listener(self, item) -> None:
         pass
 
-    def on_item_selected_listener(self, selected: QItemSelectionModel, deselected:QItemSelectionModel):
+    def on_item_selectionChange_listener(self, selected: QItemSelectionModel, deselected:QItemSelectionModel):
         no_item_selected = True
 
         for index in deselected.indexes():
@@ -302,3 +302,8 @@ class PossibleRelationListWidget(AbstractInstanceListWidget):
             RelationChangeDomain.set_search_full_OTL_mode(state=False)
 
         RelationChangeDomain.update_frontend()
+
+    def update_this_gui_list_content(self):
+        RelationChangeDomain.update_frontend_possible_relations()
+
+

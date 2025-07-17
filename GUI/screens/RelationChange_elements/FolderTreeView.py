@@ -78,5 +78,7 @@ class FolderTreeView(QTreeView):
     def toggle_expand_state_of_item_at_row(self, table_coord: QModelIndex):
         if self.isExpanded(table_coord):
             self.collapse(table_coord)
-        else:
-            self.expand(table_coord)
+            return False
+
+        self.expand(table_coord)
+        return True

@@ -93,7 +93,7 @@ async def test_full_set_possible_relations(root_directory:Path,
     assert len(RelationChangeDomain.possible_relations_per_class_dict[class1]) == 74
 
     class2 = "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Funderingsmassief"
-    assert len(RelationChangeDomain.possible_relations_per_class_dict[class2]) == 731
+    assert len(RelationChangeDomain.possible_relations_per_class_dict[class2]) == 746
 
     class3 = "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Pictogram"
     assert len(RelationChangeDomain.possible_relations_per_class_dict[class3]) == 118

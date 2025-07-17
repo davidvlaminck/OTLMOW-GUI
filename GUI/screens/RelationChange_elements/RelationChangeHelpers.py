@@ -5,12 +5,12 @@ from typing import Optional, List, cast
 
 from otlmow_model.OtlmowModel.BaseClasses.RelationInteractor import RelationInteractor
 from otlmow_model.OtlmowModel.Classes.Agent import Agent
+from otlmow_model.OtlmowModel.Classes.ImplementatieElement.AIMObject import AIMObject
 from otlmow_model.OtlmowModel.Helpers import OTLObjectHelper
 from otlmow_template.SubsetTemplateCreator import ROOT_DIR
 
 from Domain import global_vars
 from GUI.translation.GlobalTranslate import GlobalTranslate
-from UnitTests.TestClasses.Classes.ImplementatieElement.AIMObject import AIMObject
 
 ROOT_DIR_GUI = Path(__file__).parent.parent.parent.parent
 SITE_PACKAGES_ROOT = ROOT_DIR
@@ -65,7 +65,7 @@ class RelationChangeHelpers:
 
     @classmethod
     def abbreviate_if_AIM_id(cls,id):
-        return id.split("-")[0] if OTLObjectHelper.is_aim_id(id) else id
+        return id.split("-")[0] + "-..." if OTLObjectHelper.is_aim_id(id) else id
 
     @classmethod
     def is_unique_across_namespaces(cls, typeURI,objects):

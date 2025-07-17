@@ -6,13 +6,14 @@ import json
 import os
 import shutil
 import zipfile
+from collections import defaultdict
 from pathlib import Path
 from typing import Optional, Union, cast
 
-from otlmow_converter.OtlmowConverter import OtlmowConverter
 from otlmow_model.OtlmowModel.BaseClasses.RelationInteractor import RelationInteractor
 from otlmow_model.OtlmowModel.Classes.ImplementatieElement.AIMObject import AIMObject
 from otlmow_model.OtlmowModel.Classes.ImplementatieElement.RelatieObject import RelatieObject
+from otlmow_visuals.PyVisWrapper import PyVisWrapper
 
 from Domain import global_vars
 from Domain.util.Helpers import Helpers
@@ -21,9 +22,11 @@ from Domain.logger.OTLLogger import OTLLogger
 from Domain.project.ProjectFile import ProjectFile
 from Domain.enums import FileState
 from Domain.ProgramFileStructure import ProgramFileStructure
+from Domain.util.VisualisationStateTracker import VisualisationStateTracker
 from Exceptions.ExcelFileUnavailableError import ExcelFileUnavailableError
 from GUI.dialog_windows.LoadingImageWindow import add_loading_screen
 from GUI.dialog_windows.NotificationWindow import NotificationWindow
+from GUI.dialog_windows.ProjectExistsError import ProjectExistsError
 from GUI.dialog_windows.YesOrNoNotificationWindow import YesOrNoNotificationWindow
 from GUI.translation.GlobalTranslate import GlobalTranslate
 from exception_handler.ExceptionHandlers import create_task_reraise_exception
@@ -47,6 +50,9 @@ class Project:
     project_files_foldername = 'project_files'
     old_project_files_foldername = 'OTL-template-files' # for legacy compatibility
     quick_saves_foldername =  "quick_saves"
+    visualisation_foldername = "visuals"
+    visualisation_filename = "graph_visualisation.html"
+    visualisation_python_support_data_filename = "visuals_python_support_data.json"
 
     max_days_quicksave_stored = 7
     quicksave_date_format = "%y%m%d_%H%M%S"
@@ -95,7 +101,9 @@ class Project:
 
         self.saved_project_files: list[ProjectFile] = []
         self.model_builder = None
-
+        #status tracking if the visualisation is uptodate with changes in relations and OTL-assets
+        self.visualisation_uptodate: VisualisationStateTracker = VisualisationStateTracker()
+        self.graph_saved_status: bool = True # status tracking if graph changes are written to html
 
     @classmethod
     def load_project(cls, project_path: Path = None):
@@ -174,18 +182,84 @@ class Project:
             project.save_project_to_dir()
         """
 
+        project_dir_path = self.get_project_local_path()
 
-        otl_wizard_project_dir = ProgramFileStructure.get_otl_wizard_projects_dir()
-        project_dir_path = otl_wizard_project_dir / self.project_path.name
         OTLLogger.logger.debug("Saving project to %s", project_dir_path)
         project_dir_path.mkdir(exist_ok=True, parents=True)
-
         self.save_project_details(project_dir_path=project_dir_path)
 
         if self.subset_path and self.subset_path.parent.absolute() != project_dir_path.absolute():
             # move subset to project dir
             new_subset_path = project_dir_path / self.subset_path.name
             shutil.copy(src=self.subset_path, dst=new_subset_path)
+
+    def get_project_local_path(self) -> Path:
+        otl_wizard_project_dir = ProgramFileStructure.get_otl_wizard_projects_dir()
+        return otl_wizard_project_dir / self.project_path.name
+
+    def get_current_visuals_folder_path(self) -> Path:
+        visuals_folder = self.get_project_local_path() / self.visualisation_foldername
+
+        if not visuals_folder.exists():
+            os.makedirs(visuals_folder, exist_ok=True)
+
+        return visuals_folder
+
+    def get_current_visuals_html_path(self) -> Path:
+        return self.get_current_visuals_folder_path() / self.visualisation_filename
+
+    def get_visualisation_python_support_data_path(self) -> Path:
+        visuals_uptodate_state_path = self.get_current_visuals_folder_path() / self.visualisation_python_support_data_filename
+
+        if not visuals_uptodate_state_path.exists():
+            with open(visuals_uptodate_state_path,"w") as file:
+                json.dump({"visuals_uptodate":False},file)
+
+        return visuals_uptodate_state_path
+
+    def load_visualisation_python_support_data(self,vis_wrap: Optional[PyVisWrapper] = None) -> None:
+        file_path = self.get_visualisation_python_support_data_path()
+
+        with open(file_path, "r") as file:
+            json_data = json.load(file)
+
+            self.visualisation_uptodate.set_clear_all(not json_data["visuals_uptodate"])
+            if vis_wrap and "collection_support_data" in json_data.keys():
+                vis_wrap.special_edges = json_data["collection_support_data"]["vis_wrap.special_edges"]
+                vis_wrap.asset_id_to_display_name_dict = json_data["collection_support_data"][
+                    "vis_wrap.asset_id_to_display_name_dict"]
+                vis_wrap.relation_id_to_collection_id = defaultdict(list,json_data["collection_support_data"][
+                    "vis_wrap.relation_id_to_collection_id"])
+                vis_wrap.collection_id_to_list_of_relation_ids = defaultdict(list,json_data["collection_support_data"][
+                    "vis_wrap.collection_id_to_list_of_relation_ids"])
+                vis_wrap.collection_relation_count_threshold = json_data["collection_support_data"][
+                    "vis_wrap.collection_relation_count_threshold"]
+
+    def save_visualisation_python_support_data(self,vis_wrap: Optional[PyVisWrapper] = None) -> None:
+        file_path = self.get_visualisation_python_support_data_path()
+
+        if file_path.exists():
+            # load file first to preserve previously saved data
+            with open(file_path, "r") as file:
+                json_data = json.load(file)
+        else:
+            json_data = {}
+
+
+        json_data["visuals_uptodate"] = not self.visualisation_uptodate.get_clear_all()
+        if vis_wrap:
+            if "collection_support_data" not in json_data.keys():
+                json_data["collection_support_data"] = {}
+
+            json_data["collection_support_data"]["vis_wrap.special_edges"] = vis_wrap.special_edges
+            json_data["collection_support_data"]["vis_wrap.asset_id_to_display_name_dict"] = vis_wrap.asset_id_to_display_name_dict
+            json_data["collection_support_data"]["vis_wrap.relation_id_to_collection_id"] = vis_wrap.relation_id_to_collection_id
+            json_data["collection_support_data"]["vis_wrap.collection_id_to_list_of_relation_ids"] = vis_wrap.collection_id_to_list_of_relation_ids
+            json_data["collection_support_data"]["vis_wrap.collection_relation_count_threshold"] = vis_wrap.collection_relation_count_threshold
+            # json_data["visualisation_option"] =
+
+        with open(file_path, "w") as file:
+            json.dump(json_data ,file)
 
     def save_project_details(self, project_dir_path: Path) -> None:
         """
@@ -349,9 +423,9 @@ class Project:
                 create_task_reraise_exception(self.make_quick_save_async(save_path=save_path))
             except DeprecationWarning:
                 # should only go here if you are testing
-                await self.make_quick_save(save_path=save_path)
+                self.make_quick_save(save_path=save_path)
         else:
-            await self.make_quick_save(save_path=save_path)
+            self.make_quick_save(save_path=save_path)
 
 
     async def make_quick_save_async(self, save_path: Path) -> None:
@@ -359,8 +433,7 @@ class Project:
         OTLLogger.logger.debug(f"Execute Project.make_quick_save({save_path.name}) for project {self.eigen_referentie} ({object_count} objects)", extra={
             "timing_ref": f"make_quick_save_{save_path.stem}"})
 
-        await OtlmowConverter.from_objects_to_file_async(file_path=save_path,
-                                             sequence_of_objects=self.assets_in_memory)
+        await Helpers.from_objects_to_file_async(save_path,self.assets_in_memory)
         self.last_quick_save = save_path
         self.save_project_to_dir()
         OTLLogger.logger.debug(
@@ -368,19 +441,22 @@ class Project:
             extra={
                 "timing_ref": f"make_quick_save_{save_path.stem}"})
 
-    async def make_quick_save(self, save_path: Path) -> None:
+
+
+    def make_quick_save(self, save_path: Path) -> None:
         object_count = len(self.assets_in_memory)
         OTLLogger.logger.debug(f"Execute Project.make_quick_save({save_path.name}) for project {self.eigen_referentie} ({object_count} objects)", extra={
             "timing_ref": f"make_quick_save_{save_path.stem}"})
 
-        OtlmowConverter.from_objects_to_file(file_path=save_path,
-                                             sequence_of_objects=self.assets_in_memory)
+        Helpers.from_objects_to_file(save_path,self.assets_in_memory)
         self.last_quick_save = save_path
         self.save_project_to_dir()
         OTLLogger.logger.debug(
             f"Execute Project.make_quick_save({save_path.name}) for project {self.eigen_referentie} ({object_count} objects)",
             extra={
                 "timing_ref": f"make_quick_save_{save_path.stem}"})
+
+
 
     def remove_too_old_quicksaves(self, current_date: datetime, max_days_stored: datetime,
                                    date_format: str) -> None:
@@ -476,6 +552,18 @@ class Project:
                 last_quick_save_zip_path = Path(self.quick_saves_foldername) / last_quick_save_path.name
                 project_zip.write(last_quick_save_path, arcname=last_quick_save_zip_path)
 
+            visualisation_html_path = self.get_current_visuals_html_path()
+            if visualisation_html_path and visualisation_html_path.exists():
+                visualisation_html_zip_path = Path(
+                    self.visualisation_foldername) / visualisation_html_path.name
+                project_zip.write(visualisation_html_path, arcname=visualisation_html_zip_path)
+
+            visualisation_uptodate_json_path = self.get_visualisation_python_support_data_path()
+            if visualisation_uptodate_json_path and visualisation_uptodate_json_path.exists():
+                visualisation_uptodate_json_zip_path = Path(
+                    self.visualisation_foldername) / visualisation_uptodate_json_path.name
+                project_zip.write(visualisation_uptodate_json_path, arcname=visualisation_uptodate_json_zip_path)
+
     @classmethod
     def import_project(cls, file_path: Path):
         """
@@ -503,9 +591,8 @@ class Project:
             try:
                 project_dir_path.mkdir(exist_ok=False, parents=True)
             except FileExistsError as ex:
-                # TODO: warning user with dialog window when the project already exists
                 OTLLogger.logger.error("Project dir %s already exists", project_dir_path)
-                raise ex
+                raise ProjectExistsError(eigen_referentie=project_details['eigen_referentie'])
 
             project_file.extractall(path=project_dir_path)
 
@@ -1063,11 +1150,50 @@ class Project:
 
         :return: None
         """
-
-        self.eigen_referentie = new_eigen_ref
+        # check if there is a difference avoid unnecessary renaming of folders
+        if new_eigen_ref != self.eigen_referentie:
+            # include the new_subset_path so it can be changed to the new folder name if it is the old subset
+            new_subset_path = self.update_eigen_referentie(new_eigen_ref,new_subset_path)
         self.bestek = new_bestek
         self.change_subset(new_subset_path)
         self.update_last_alter_time()
+
+
+    def update_eigen_referentie(self,new_eigen_ref:str, new_subset_path:Path=None ) -> Path:
+        new_project_path = Path(ProgramFileStructure.get_otl_wizard_projects_dir() / new_eigen_ref)
+        try:
+            if new_project_path.exists():
+                raise FileExistsError
+            shutil.move(self.project_path, new_project_path)
+        except FileExistsError as ex:
+            OTLLogger.logger.error("Project dir %s already exists", new_project_path)
+            raise ProjectExistsError(eigen_referentie=new_eigen_ref)
+        except PermissionError as ex:
+            OTLLogger.logger.error("No permission to rename ", self.project_path)
+            raise ex
+
+        # try:
+        #     shutil.copytree(self.project_path, new_project_path)
+        # except FileExistsError as ex:
+        #     OTLLogger.logger.error("Project dir %s already exists", new_project_path)
+        #     raise ProjectExistsError(eigen_referentie=new_eigen_ref)
+
+        # delete the original path
+        # self.delete_project_dir_by_path()
+
+        # change the new subset path otherwise change the old one
+        if not new_subset_path:
+            new_subset_path = self.subset_path
+        elif new_subset_path == self.subset_path:
+            new_subset_path = new_project_path / self.subset_path.name
+
+
+        # make sure the current data is correctly renamed before updating the projects attributes
+        self.eigen_referentie = new_eigen_ref
+        self.project_path = new_project_path
+
+        return new_subset_path
+
 
     def update_last_alter_time(self):
         """
@@ -1094,3 +1220,8 @@ class Project:
                 self.laatst_bewerkt == __value.laatst_bewerkt and
                 self.saved_project_files == __value.saved_project_files)
 
+    def set_saved_graph_status(self,new_status:bool) -> None:
+        self.graph_saved_status = new_status
+
+    def get_saved_graph_status(self) -> bool:
+        return self.graph_saved_status

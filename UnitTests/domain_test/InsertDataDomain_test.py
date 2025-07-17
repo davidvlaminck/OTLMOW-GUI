@@ -51,7 +51,7 @@ async def test_load_and_validate_document_good_path(mock_screen: InsertDataScree
                                               mock_step3_visuals) -> None:
 
     test_object_lists_file_path: list[str] = setup_simpel_vergelijking_template5
-    InsertDataDomain.init_static()
+    InsertDataDomain.init_static(force_refresh=True)
 
     InsertDataDomain.add_files_to_backend_list(test_object_lists_file_path)
 

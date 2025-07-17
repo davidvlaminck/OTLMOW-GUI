@@ -173,10 +173,12 @@ class RelationChangeDomain:
     last_added_to_possible: Optional[list[RelatieObject]] = []  # relation last added to col 2
 
     regenerate_relation_types = False
-    visualisation_uptodate = True
+
     map_uptodate = True
 
     search_full_OTL_mode = False
+
+    cleared_data = True
 
     @classmethod
     def init_static(cls, project: Project, asynchronous=True) -> None:
@@ -219,6 +221,11 @@ class RelationChangeDomain:
 
 
     @classmethod
+    def get_empty_visualisation_uptodate(cls):
+        return {"remove":[],"add":[],"clear_all": False}
+
+
+    @classmethod
     def clear_data(cls):
         cls.selected_object = None
 
@@ -230,8 +237,10 @@ class RelationChangeDomain:
         cls.possible_object_to_object_relations_dict = {}
         cls.aim_id_relations = []
         cls.regenerate_relation_types = False
-        cls.visualisation_uptodate = False
+        global_vars.current_project.visualisation_uptodate.reset_relations_uptodate()
+        # global_vars.current_project.visualisation_uptodate.set_clear_all(True)
         cls.map_uptodate = False
+        cls.cleared_data = True
 
     @classmethod
     @add_loading_screen
@@ -246,7 +255,11 @@ class RelationChangeDomain:
         :param cls: The class itself.
         :returns: None
         """
-
+        timing_ref = f"load_project_data_async"
+        OTLLogger.logger.debug(
+            f"Execute RelationChangeDomain.load_project_relation_data_async() for project "
+            f"{global_vars.current_project.eigen_referentie}",
+            extra={"timing_ref": timing_ref})
         cls.get_screen().set_gui_lists_to_loading_state()
 
 
@@ -254,8 +267,13 @@ class RelationChangeDomain:
         cls.clear_data()
         gc.collect()
 
-        cls.set_instances(objects_list=await cls.project.load_validated_assets_async())
-        global_vars.otl_wizard.main_window.step3_visuals.reload_html()
+        await cls.set_instances(objects_list=await cls.project.load_validated_assets_async())
+        # global_vars.otl_wizard.main_window.step3_visuals.reload_html()
+        timing_ref = f"load_project_data_async"
+        OTLLogger.logger.debug(
+            f"Execute RelationChangeDomain.load_project_relation_data_async() for project "
+            f"{global_vars.current_project.eigen_referentie}",
+            extra={"timing_ref": timing_ref})
 
     @classmethod
     async def load_project_relation_data(cls) -> None:
@@ -269,18 +287,27 @@ class RelationChangeDomain:
         :param cls: The class itself.
         :returns: None
         """
-
+        timing_ref = f"load_project_data"
+        OTLLogger.logger.debug(
+            f"Execute RelationChangeDomain.load_project_relation_data() for project "
+            f"{global_vars.current_project.eigen_referentie}",
+            extra={"timing_ref": timing_ref})
         cls.get_screen().set_gui_lists_to_loading_state()
 
         # throw away old data before loading the new
         cls.clear_data()
         gc.collect()
 
-        cls.set_instances(objects_list=cls.project.load_validated_assets())
-        global_vars.otl_wizard.main_window.step3_visuals.reload_html()
+        await cls.set_instances(objects_list=cls.project.load_validated_assets())
+        # global_vars.otl_wizard.main_window.step3_visuals.reload_html()
+        timing_ref = f"load_project_data"
+        OTLLogger.logger.debug(
+            f"Execute RelationChangeDomain.load_project_relation_data() for project "
+            f"{global_vars.current_project.eigen_referentie}",
+            extra={"timing_ref": timing_ref})
 
     @classmethod
-    def set_instances(cls, objects_list: list[Union[RelatieObject, RelationInteractor]]) -> None:
+    async def set_instances(cls, objects_list: list[Union[RelatieObject, RelationInteractor]]) -> None:
         # sourcery skip: use-contextlib-suppress
         """Processes and categorizes AIM objects for relation management.
 
@@ -294,6 +321,11 @@ class RelationChangeDomain:
         :type objects_list: list[Union[RelatieObject, RelationInteractor]]
         :returns: None
         """
+        timing_ref = f"set_instances"
+        OTLLogger.logger.debug(
+            f"Execute RelationChangeDomain.set_instances() for project "
+            f"{global_vars.current_project.eigen_referentie}",
+            extra={"timing_ref": timing_ref})
 
         cls.existing_relations = []
         cls.aim_id_relations = []
@@ -304,7 +336,7 @@ class RelationChangeDomain:
         cls.shown_objects = []
 
         for instance in objects_list:
-
+            await asyncio.sleep(0)
             if is_relation(instance):
                 # noinspection PyTypeChecker
                 relation_instance: RelatieObject = instance
@@ -336,16 +368,24 @@ class RelationChangeDomain:
         cls.add_external_objects_to_shown_objects()
         cls.add_agent_objects_to_shown_objects()
 
-        cls.create_and_add_missing_external_assets_from_relations()
+        await cls.create_and_add_missing_external_assets_from_relations()
 
         cls.get_screen().fill_object_list(cls.shown_objects)
         cls.get_screen().fill_possible_relations_list(None, {})
         cls.get_screen().fill_existing_relations_list(cls.existing_relations)
-        cls.visualisation_uptodate = False
+        global_vars.otl_wizard.main_window.step3_visuals.update_only_legend()
+        global_vars.otl_wizard.main_window.step3_visuals.update_slider_range()
+
+        cls.cleared_data = False
         cls.map_uptodate = False
+        timing_ref = f"set_instances"
+        OTLLogger.logger.debug(
+            f"Execute RelationChangeDomain.set_instances() for project "
+            f"{global_vars.current_project.eigen_referentie}",
+            extra={"timing_ref": timing_ref})
 
     @classmethod
-    def create_and_add_missing_external_assets_from_relations(cls) -> None:
+    async def create_and_add_missing_external_assets_from_relations(cls) -> None:
         """
         Creates and adds missing external assets based on existing relations.
 
@@ -356,8 +396,15 @@ class RelationChangeDomain:
         :param cls: The class itself.
         :returns: None
         """
+        timing_ref = f"create_missing_external_assets"
+        OTLLogger.logger.debug(
+            f"Execute RelationChangeDomain.create_and_add_missing_external_assets_from_relations() for project "
+            f"{global_vars.current_project.eigen_referentie}",
+            extra={"timing_ref": timing_ref})
+
 
         for relation_object in RelationChangeDomain.get_all_relations():
+            await asyncio.sleep(0)
             source_id =  relation_object.bronAssetId.identificator
             target_id = relation_object.doelAssetId.identificator
 
@@ -391,6 +438,11 @@ class RelationChangeDomain:
                 except ValueError as e:
                     # should there be a wrong typeURI
                     OTLLogger.logger.debug(e)
+
+        OTLLogger.logger.debug(
+            f"Execute RelationChangeDomain.create_and_add_missing_external_assets_from_relations() for project "
+            f"{global_vars.current_project.eigen_referentie}",
+            extra={"timing_ref": timing_ref})
 
     @classmethod
     def get_all_relations(cls) -> list[RelatieObject]:
@@ -469,6 +521,8 @@ class RelationChangeDomain:
             RelationChangeDomain.set_possible_relations(selected_object)
         """
 
+
+
         cls.set_selected_object(selected_object)
         if not cls.selected_object:
             cls.get_screen().clear_possible_relation_elements()
@@ -513,6 +567,7 @@ class RelationChangeDomain:
                                                       relations=possible_relations_for_this_object,
                                                       last_added=cls.last_added_to_possible)
         cls.get_screen().fill_object_attribute_field(object_attribute_dict=object_attributes_dict)
+
 
     @classmethod
     def get_possible_relations_for(cls, selected_id=str):
@@ -663,7 +718,11 @@ class RelationChangeDomain:
         log_typeURI = RelationChangeHelpers.get_abbreviated_typeURI(selected_typeURI)
         OTLLogger.logger.debug(f"Execute RelationChangeDomain.collect_possible_relations_to_class_types_from({log_typeURI}) for project {global_vars.current_project.eigen_referentie}",
                                extra={"timing_ref": f"collect_possible_relations_classes"})
-        try:
+
+        if selected_typeURI.startswith("https://lgc"): # selected_object is legacy
+            cls.possible_relations_per_class_dict[selected_typeURI] = (
+                cls.get_hoortbij_relaties_from_legacy_asset(selected_typeURI))
+        else:
             if (cls.external_objects or
                 cls.agent_objects or
                 cls.search_full_OTL_mode):
@@ -672,18 +731,15 @@ class RelationChangeDomain:
                     RelationChangeDomain.get_all_concrete_relation_from_full_model(
                         selected_object=selected_object))
             else:
-                cls.possible_relations_per_class_dict[selected_typeURI] = \
-                    cls.collector.find_all_concrete_relations(objectUri=selected_typeURI,
+                try:
+                    cls.possible_relations_per_class_dict[selected_typeURI] = \
+                        cls.collector.find_all_concrete_relations(objectUri=selected_typeURI,
                                                               allow_duplicates=False)
-        except ValueError as e:
-            OTLLogger.logger.debug(e)
-            cls.possible_relations_per_class_dict[selected_typeURI] = (
-                RelationChangeDomain.get_all_concrete_relation_from_full_model(
-                    selected_object=selected_object))
-
-        if selected_typeURI.startswith("https://lgc"): # selected_object is legacy
-            cls.possible_relations_per_class_dict[selected_typeURI] = (
-                cls.get_hoortbij_relaties_from_legacy_asset(selected_typeURI))
+                except ValueError as e:
+                    OTLLogger.logger.debug(f"Didn't find relations in subset:\n {e}")
+                    cls.possible_relations_per_class_dict[selected_typeURI] = (
+                        RelationChangeDomain.get_all_concrete_relation_from_full_model(
+                            selected_object=selected_object))
 
         relation_count = len(cls.possible_relations_per_class_dict[selected_object.typeURI])
         OTLLogger.logger.debug(
@@ -1072,11 +1128,13 @@ class RelationChangeDomain:
 
         :return: None
         """
-        cls.visualisation_uptodate = False
+        global_vars.current_project.visualisation_uptodate.insert_relation(relation_object)
         relation_object.isActief = True
         cls.existing_relations.append(relation_object)
         cls.get_screen().expand_existing_relations_folder_of(
             relation_typeURI=relation_object.typeURI)
+
+
 
     @classmethod
     def update_frontend(cls):
@@ -1089,15 +1147,36 @@ class RelationChangeDomain:
         """
         OTLLogger.logger.debug("Execute RelationChangeDomain.update_frontend",
                                extra={"timing_ref": f"update_frontend"})
-        cls.get_screen().fill_object_list(objects=cls.shown_objects)
-        cls.get_screen().fill_existing_relations_list(relations_objects=cls.existing_relations,
-                                                      last_added=cls.last_added_to_existing)
+        cls.update_frontend_objects()
+        cls.update_frontend_existing_relations()
 
+        if cls.selected_object:
+            create_task_reraise_exception(cls.set_possible_relations(selected_object=cls.selected_object))
 
-        create_task_reraise_exception(cls.set_possible_relations(selected_object=cls.selected_object))
+        global_vars.otl_wizard.main_window.step3_visuals.update_only_legend()
 
         OTLLogger.logger.debug("Execute RelationChangeDomain.update_frontend",
                                extra={"timing_ref": f"update_frontend"})
+
+    @classmethod
+    def update_frontend_objects(cls):
+        cls.get_screen().fill_object_list(objects=cls.shown_objects)
+
+    @classmethod
+    def update_frontend_existing_relations(cls):
+        cls.get_screen().fill_existing_relations_list(relations_objects=cls.existing_relations,
+                                                      last_added=cls.last_added_to_existing)
+
+    @classmethod
+    def update_frontend_possible_relations(cls):
+        if cls.selected_object:
+            selected_id = RelationChangeHelpers.get_corrected_identificator(otl_object=cls.selected_object)
+            possible_relations_for_this_object = cls.get_possible_relations_for(
+                selected_id=selected_id)
+
+            cls.get_screen().fill_possible_relations_list(source_object=cls.selected_object,
+                                                      relations=possible_relations_for_this_object,
+                                                      last_added=cls.last_added_to_possible)
 
     @classmethod
     def set_selected_object_from_map(cls, identificator):
@@ -1135,8 +1214,9 @@ class RelationChangeDomain:
         :return: The relation object that was removed from the existing relations.
         :rtype: RelatieObject
         """
-        cls.visualisation_uptodate = False
+
         removed_relation = cls.existing_relations.pop(index)
+        global_vars.current_project.visualisation_uptodate.remove_relation(removed_relation)
         # if the removed relation already had an AIM ID it is set to false and kept if not it is
         # removed and made again in the possible relations
         removed_relation.isActief = False
@@ -1259,7 +1339,7 @@ class RelationChangeDomain:
 
     @classmethod
     def get_visualisation_instances(cls)-> list[Union[RelatieObject, RelationInteractor]]:
-        cls.visualisation_uptodate = True
+        # cls.visualisation_uptodate = True
         return [asset for asset in RelationChangeDomain.get_quicksave_instances() if
          asset.isActief != False]
 
@@ -1318,6 +1398,14 @@ class RelationChangeDomain:
         cls.shown_objects.extend(cls.agent_objects)
         cls.regenerate_relation_types = True
 
+    @classmethod
+    @add_loading_screen
+    @async_save_assets
+    async def user_input_to_create_and_add_new_external_asset(cls, id_or_name: str, type_uri: str):
+        cls.create_and_add_new_external_asset( id_or_name, type_uri)
+        global_vars.current_project.visualisation_uptodate.set_clear_all(True)
+        RelationChangeDomain.update_frontend()
+
     # noinspection PyUnresolvedReferences,PyTypeChecker
     @classmethod
     def create_and_add_new_external_asset(cls, id_or_name: str, type_uri: str):
@@ -1347,11 +1435,11 @@ class RelationChangeDomain:
         cls.shown_objects.append(new_external_object)
 
         cls.regenerate_relation_types = True
-        cls.update_frontend()
+
         
     @classmethod
     def is_visualisation_uptodate(cls):
-        return cls.visualisation_uptodate
+        return global_vars.current_project.visualisation_uptodate.is_uptodate()
 
     @classmethod
     def get_current_relation_change_screen_object_list_content_dict(cls):
@@ -1371,3 +1459,4 @@ class RelationChangeDomain:
     def set_search_full_OTL_mode(cls,state:bool) -> None:
         cls.search_full_OTL_mode = state
         cls.regenerate_relation_types = True
+

@@ -14,6 +14,8 @@ import qtawesome as qta
 
 from Exceptions.EmptyFieldError import EmptyFieldError
 from Exceptions.WrongDatabaseError import WrongDatabaseError
+from GUI.dialog_windows.NotificationWindow import NotificationWindow
+from GUI.dialog_windows.ProjectExistsError import ProjectExistsError
 from GUI.dialog_windows.file_picker_dialog.SubsetLoadFilePickerDialog import \
     SubsetLoadFilePickerDialog
 
@@ -188,8 +190,17 @@ class UpsertProjectWindow(QDialog):
             return
         self.error_label.setText("")
 
-        HomeDomain.process_upsert_dialog_input(input_bestek, input_eigen_ref.strip(), input_subset, project)
-        self.close()
+        try:
+            HomeDomain.process_upsert_dialog_input(input_bestek, input_eigen_ref.strip(), input_subset, project)
+            self.close()
+        except ProjectExistsError as e:
+            notification = NotificationWindow(title=self._("Project bestaat al"),
+                                              message=self._(
+                                                  "Project naam: \"{project_naam}\" bestaat al.\nGeef 1 van de projecten een andere naam of verwijder het bestaande project".format(
+                                                      project_naam=e.eigen_referentie)))
+            notification.exec()
+
+
 
 
     @staticmethod
