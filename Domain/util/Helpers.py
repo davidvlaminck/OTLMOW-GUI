@@ -208,13 +208,13 @@ class Helpers:
             return None
         try:
             if short_uri == 'purl:Agent':
-                pre, name = short_uri.split(':')
-                agent = dynamic_create_instance_from_uri(name, model_directory=model_directory)
+                agent = dynamic_create_instance_from_uri('http://purl.org/dc/terms/Agent',
+                                                         model_directory=model_directory)
                 return agent.typeURI
 
             ns, name = short_uri.split('#')
             instance:OTLObject = dynamic_create_instance_from_ns_and_name(ns, name,
-                                                                model_directory=model_directory)
+                                                                          model_directory=model_directory)
             return instance.typeURI
         except ModuleNotFoundError:
             warnings.warn(
