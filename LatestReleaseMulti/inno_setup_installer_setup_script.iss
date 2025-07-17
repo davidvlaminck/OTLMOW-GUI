@@ -12,7 +12,7 @@
 #define MyAppAssocName MyAppBaseName + " project"
 #define MyAppAssocExt ".otlw"
 #define MyAppAssocKey StringChange(MyAppAssocName, " ", "") + MyAppAssocExt
-#define MyAppDevRoot "C:\Users\chris\PycharmProjects\OTLMOW-GUI-testing"
+#define MyAppDevRoot "C:\Users\chris\PycharmProjects\OTLMOW-GUI"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.

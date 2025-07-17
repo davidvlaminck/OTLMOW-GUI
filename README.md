@@ -25,28 +25,40 @@ It is split into different packages to reduce compatibility issues
 ## Setup development environment guide
 ### NEEDS atleast python 3.13.2 to use the pyinstaller_script.py to create an .exe file
 
-Follow these steps to start working with the OTL-wizard 2 source code and run de development version
+Follow these steps to start working with the OTL-wizard 2 source code and run de development version  
+Each step will have the required commands in a PowerShell terminal as administrator (windows) starting from an empty folder.
 
-1. Clone this repository into a folder or use an IDE to setup a project from this repository.
+1. Clone this repository into a folder or use an IDE to setup a project from this repository.  
+   ```
+   git clone https://github.com/davidvlaminck/OTLMOW-GUI.git
+   cd .\OTLMOW-GUI\ 
+   ```  
 
-
-2. Setup a virtual python >= 2.13.2 enviroment with your preferred virtual environment library and install the requirements.txt
-
+2. Setup a virtual python >= 3.13.2 environment and install the requirements.txt  
+   ```
+   python -m venv venv # your python environment variable needs to point to a python version higher than 3.13.2
+   Set-ExecutionPolicy RemoteSigned # needed to let PowerShell execute .ps scripts
+   venv\Scripts\activate
+   python --version #shows the version of your python check if it is >3.13.2
+   pip install -r requirements.txt
+   ```  
 
 3. (SKIPABLE) To use de SDF-file functionality (only windows) install the FDO Toolbox, you can find the installer in this 
     repository at:  
-`LatestReleaseMulti/additional_programs/FDOToolbox-Release-v1.5.3-x64-Setup.exe`
+    ```
+    LatestReleaseMulti/additional_programs/FDOToolbox-Release-v1.5.3-x64-Setup.exe
+    ```
 
 
 4. To run the OTL wizard 2 open a terminal in de root of the project and activate your virtual environment,  
 then run the following:
-```
-python OTL Wizard 2.py
-```
+    ```
+    python "OTL Wizard 2.py"
+    ```
     
 ## exe and installer creation guide
 
-Follow these steps to create a new executable of OTL Wizard 2 and a new installer. These are ready for distribution then.
+Follow these steps (NOT PowerShell commands) to create a new executable of OTL Wizard 2 and a new installer. These are ready for distribution then.
 
 1. Make sure you have a python 3.13 environment with the requirements.txt installed set up, see [Setup development environment guide](#Setup-development-environment-guide)  
     NOTE: Keep using PyInstaller 6.10.0, newer version can get [false positives](https://github.com/pyinstaller/pyinstaller/issues/5854) on Windows Defender. Lookout for detections of 
@@ -75,8 +87,10 @@ Follow these steps to create a new executable of OTL Wizard 2 and a new installe
 5. Download and install [Inno Setup Compiler](https://jrsoftware.org/isinfo.php)
   
 
-6. In the `LatestReleaseMulti/inno_setup_installer_setup_script.iss` script replace the MyAppDevRoot variable with the absolute path to the root of your project
-  
+6. In the `LatestReleaseMulti/inno_setup_installer_setup_script.iss` script replace the MyAppDevRoot variable with the absolute path to the root of your project (the folder with the `pyproject.toml` in)  
+  In the Inno Setup Compiler interface the compile button is here:  
+  ![inno_setup_compile_button](compile_button_in_inno_setup.png)  
+
 
 7. Open `LatestReleaseMulti/inno_setup_installer_setup_script.iss` with Inno Setup Compiler and compile.  
     This should create `LatestReleaseMulti/OTL wizard 2 installer V<version>.exe`
@@ -110,7 +124,7 @@ These functions will return the translation for the given text
 
 For more info on how the translations are applied in the code look at the [babel documentation](https://babel.pocoo.org/en/latest/api/core.html)  
 
-Follow these steps to add/change translations:
+Follow these steps (MOST are PowerShell commands) to add/change translations:
 
 1. Install babel in the python environment 
     `pip install babel`  
