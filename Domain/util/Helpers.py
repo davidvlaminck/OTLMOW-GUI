@@ -2,12 +2,15 @@
 import base64
 import os
 import subprocess
+import sys
 import tempfile
+import traceback
 import warnings
 from pathlib import Path
 from typing import Optional, Iterable
 
 from otlmow_converter.Exceptions.ExceptionsGroup import ExceptionsGroup
+from otlmow_converter.Exceptions.UnknownExcelError import UnknownExcelError
 from otlmow_converter.OtlmowConverter import OtlmowConverter
 from otlmow_model.OtlmowModel.BaseClasses.OTLObject import OTLObject, \
     dynamic_create_instance_from_ns_and_name, dynamic_create_instance_from_uri
@@ -100,12 +103,22 @@ class Helpers:
 
         OTLLogger.logger.debug(f"Execute OtlmowConverter.from_file_to_objects({file_path.name})",
                                extra={"timing_ref": f"file_to_objects_{file_path.stem}"})
-        exception_group = None
+
+        exception_group = ExceptionsGroup(
+            message=f'Failed to create objects')
+
         try:
             object_lists = list(await OtlmowConverter.from_file_to_objects_async(file_path,allow_non_otl_conform_attributes=allow_non_otl_conform_attributes,**kwargs))
         except ExceptionsGroup as group:
             exception_group = group
             object_lists = group.objects
+        except BaseException as ex:
+            object_lists = []
+            exc_type, exc_value, exc_tb = sys.exc_info()
+            tb = "".join(traceback.format_exception(exc_type, exc_value, exc_tb))
+            OTLLogger.logger.error("error caught!")
+            OTLLogger.logger.error("error message: \n: " + tb)
+            exception_group.add_exception(UnknownExcelError(original_exception=ex, tab=""))
 
         object_count = len(object_lists)
         OTLLogger.logger.debug(f"Execute OtlmowConverter.from_file_to_objects({file_path.name}) ({object_count} objects)",
