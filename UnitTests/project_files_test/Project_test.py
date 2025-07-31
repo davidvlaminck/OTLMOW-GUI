@@ -109,7 +109,7 @@ def create_mock_project_project_4():
     if project_path.exists():
         shutil.rmtree(project_path)
 
-@fixture
+@pytest_asyncio.fixture
 async def create_mock_project_eigen_referentie():
     project_path = Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'eigen referentie')
     project_backup_path = Path(
@@ -582,7 +582,8 @@ def test_save_project_to_dir_with_error(get_and_cleanup_empty_project):
 
 
 
-def test_save_project_given_details(mock_project_home_path,create_mock_project_eigen_referentie):
+@pytest.mark.asyncio
+async def test_save_project_given_details(mock_project_home_path,create_mock_project_eigen_referentie):
 
 
     project_dir_path = PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'eigen referentie'
