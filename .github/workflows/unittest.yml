@@ -12,19 +12,15 @@ jobs:
         python-version: [ '3.11', '3.12','3.13']
     steps:
       - uses: actions/checkout@v3
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v4
+      - name: Install uv with Python version ${{ matrix.python-version }}
+        uses: astral-sh/setup-uv@v5
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Display Python version for testing purposes
-        run: python -c "import sys; print(sys.version)"
-      - name: Install Python dependencies
-        uses: py-actions/py-dependency-install@v4
-        with:
-          path: "requirements.txt"
+      - name: Installing dependencies with uv for running the tests
+        run: uv pip install -r pyproject.toml --extra test
       - name: Install additional OS dependencies
         if: matrix.os == 'ubuntu-latest'
         run: sudo apt-get update && sudo apt-get install freeglut3 freeglut3-dev
       - name: Run unittests with pytest
         run: python -m pytest -v
-        working-directory: ./UnitTests
+        working-directory: .
