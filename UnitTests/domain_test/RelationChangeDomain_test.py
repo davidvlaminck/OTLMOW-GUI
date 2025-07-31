@@ -526,7 +526,8 @@ def test_init_static(mock_project: Project,mock_collect_all: Mock, mock_oslo_col
 # RelationChangeDomain.set_objects              #
 #################################################
 
-def test_set_objects_empty_list(mock_project: Project,
+@pytest.mark.asyncio
+async def test_set_objects_empty_list(mock_project: Project,
                                 mock_collect_all: Mock,
                                 mock_oslo_collector: Function,
                                 mock_screen: InsertDataScreen,
@@ -538,22 +539,24 @@ def test_set_objects_empty_list(mock_project: Project,
     RelationChangeDomain.init_static(mock_project)
     RelationChangeDomain.set_instances = local_mock
 
-    RelationChangeDomain.set_instances([])
+    await RelationChangeDomain.set_instances([])
 
     assert len(RelationChangeDomain.shown_objects) == 0
 
-def test_set_objects_single_item_list(mock_screen: RelationChangeScreen,mock_collect_all,
+@pytest.mark.asyncio
+async def test_set_objects_single_item_list(mock_screen: RelationChangeScreen,mock_collect_all,
                                       mock_rel_screen,mock_save_validated_assets_function,
                                       mock_load_validated_assets,mock_step3_visuals):
     RelationChangeDomain.init_static(Project(eigen_referentie="test"))
     test_object = AllCasesTestClass()
     test_object.assetId.identificator = "dummy_identificator"
-    RelationChangeDomain.set_instances([test_object])
+    await RelationChangeDomain.set_instances([test_object])
 
     assert len(RelationChangeDomain.shown_objects) == 1
     assert RelationChangeDomain.shown_objects[0].assetId.identificator == "dummy_identificator"
 
-def test_set_objects_double_item_list(mock_screen,mock_collect_all,mock_rel_screen,mock_save_validated_assets_function,
+@pytest.mark.asyncio
+async def test_set_objects_double_item_list(mock_screen,mock_collect_all,mock_rel_screen,mock_save_validated_assets_function,
                                  mock_load_validated_assets,mock_step3_visuals):
     RelationChangeDomain.init_static(Project(eigen_referentie="test"))
     test_object = AllCasesTestClass()
@@ -562,7 +565,7 @@ def test_set_objects_double_item_list(mock_screen,mock_collect_all,mock_rel_scre
     test_object2 = AllCasesTestClass()
     test_object2.assetId.identificator = "dummy_identificator2"
 
-    RelationChangeDomain.set_instances([test_object, test_object2])
+    await RelationChangeDomain.set_instances([test_object, test_object2])
     assert len(RelationChangeDomain.shown_objects) == 2
 
     assert RelationChangeDomain.shown_objects[0].assetId.identificator == "dummy_identificator"

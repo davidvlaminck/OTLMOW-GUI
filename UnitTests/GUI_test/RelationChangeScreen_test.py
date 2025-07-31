@@ -358,7 +358,8 @@ def mock_project(mock_collect_all) -> Project:
     return Project(eigen_referentie="test")
 
 
-def test_fill_class_list_empty_list(qtbot,
+@pytest.mark.asyncio
+async def test_fill_class_list_empty_list(qtbot,
                                     create_translations,
                                     mock_rel_screen: RelationChangeScreen,
                                     mock_step3_visuals,
@@ -373,7 +374,7 @@ def test_fill_class_list_empty_list(qtbot,
     RelationChangeDomain.init_static(mock_project)
     RelationChangeDomain.set_instances = local_mock
 
-    RelationChangeDomain.set_instances(test_objects_list)
+    await RelationChangeDomain.set_instances(test_objects_list)
     # relation_change_screen.fill_object_list(objects=test_objects_list)
 
     assert relation_change_screen.objects_list_gui.list_gui.model.rowCount() == 1
@@ -384,7 +385,8 @@ Just adding the qtbot to the fixtures makes the test complete without a timeout 
 """
 
 
-def test_fill_class_list_single_item_list(qtbot,
+@pytest.mark.asyncio
+async def test_fill_class_list_single_item_list(qtbot,
                                           create_translations,
                                           mock_rel_screen,
                                           mock_project,
@@ -401,7 +403,7 @@ def test_fill_class_list_single_item_list(qtbot,
     RelationChangeDomain.init_static(mock_project)
     RelationChangeDomain.set_instances = local_mock
 
-    RelationChangeDomain.set_instances(test_objects_list)
+    await RelationChangeDomain.set_instances(test_objects_list)
     # relation_change_screen.fill_object_list(objects=test_objects_list)
 
     assert relation_change_screen.objects_list_gui.list_gui.model.rowCount() == 1
@@ -416,7 +418,8 @@ Just adding the qtbot to the fixtures makes the test complete without a timeout 
 """
 
 
-def test_fill_class_list_double_item_list(qtbot,
+@pytest.mark.asyncio
+async def test_fill_class_list_double_item_list(qtbot,
                                           create_translations,
                                           mock_rel_screen,
                                           mock_project,
@@ -435,7 +438,7 @@ def test_fill_class_list_double_item_list(qtbot,
     RelationChangeDomain.init_static(mock_project,asynchronous=False)
     RelationChangeDomain.set_instances = local_mock
 
-    RelationChangeDomain.set_instances(test_objects_list)
+    await RelationChangeDomain.set_instances(test_objects_list)
 
     assert relation_change_screen.objects_list_gui.list_gui.model.rowCount() == 1
     assert relation_change_screen.objects_list_gui.list_gui.model.item(0).text() == "AllCasesTestClass (2)"
@@ -447,7 +450,8 @@ def test_fill_class_list_double_item_list(qtbot,
         1).text() == "dummy_identificator2"
 
 
-def test_fill_class_list_with_2_same_name_but_diff_namespace_items(qtbot,
+@pytest.mark.asyncio
+async def test_fill_class_list_with_2_same_name_but_diff_namespace_items(qtbot,
                                                                    create_translations,
                                                                    mock_rel_screen,
                                                                    mock_project,
@@ -468,7 +472,7 @@ def test_fill_class_list_with_2_same_name_but_diff_namespace_items(qtbot,
     RelationChangeDomain.init_static(mock_project)
     RelationChangeDomain.set_instances = local_mock
 
-    RelationChangeDomain.set_instances(test_objects_list)
+    await RelationChangeDomain.set_instances(test_objects_list)
     # mock_rel_screen.fill_object_list(objects=test_objects_list)
     relation_change_screen = mock_rel_screen
 
@@ -535,7 +539,7 @@ async def test_fill_possible_relations_list_with_2_same_name_but_diff_namespace_
     global_vars.current_project = mock_project
     RelationChangeDomain.set_instances = local_mock
 
-    RelationChangeDomain.set_instances(test_objects_list)
+    await RelationChangeDomain.set_instances(test_objects_list)
     # mock_rel_screen.fill_object_list(objects=test_objects_list)
 
     RelationChangeDomain.possible_relations_per_class_dict = {test_object2.typeURI: [mock_OSLORelatie_test[0]],
