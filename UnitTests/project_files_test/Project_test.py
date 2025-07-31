@@ -1139,7 +1139,7 @@ def test_export_project_to_file(mock_project_home_path,create_mock_project_proje
 
     with zipfile.ZipFile(file_path) as project_zip:
         list_of_files = sorted(project_zip.namelist())
-    assert list_of_files == ['OTL_AllCasesTestClass_no_double_kard.db', 'project_details.json']
+    assert list_of_files == ['OTL_AllCasesTestClass_no_double_kard.db', 'project_details.json', 'visuals/visuals_python_support_data.json']
 
     os.remove(file_path)
 
