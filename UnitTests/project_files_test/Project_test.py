@@ -1092,7 +1092,8 @@ def test_export_project_with_other_files(root_directory, setup_quicksave_test_pr
                               'project_files/simpel_vergelijking_template5.xlsx',
                               'quick_saves/quick_save-250103_170930.json',
                               'saved_documents.json',
-                              'simpele_vergelijkings_subset2.db']
+                              'simpele_vergelijkings_subset2.db',
+                              'visuals/visuals_python_support_data.json']
 
     with zipfile.ZipFile(quicksave_test_project_export_path) as project_zip:
         list_of_files = sorted(project_zip.namelist())
