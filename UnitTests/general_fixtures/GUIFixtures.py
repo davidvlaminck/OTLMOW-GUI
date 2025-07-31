@@ -1,6 +1,7 @@
 from pathlib import Path
 from unittest.mock import Mock
 
+import pytest
 from _pytest.fixtures import fixture
 
 from Domain import global_vars
@@ -14,7 +15,7 @@ def create_translations() -> None:
     setting={"language": "DUTCH"}
     GlobalTranslate(settings=setting,lang_dir=str(lang_dir))
 
-@fixture
+@pytest.fixture(scope="function")
 def mock_step3_visuals() -> None:
     step3_visuals = Mock(step3_visuals=DynamicDataVisualisationScreen)
     main_window = Mock(step3_visuals=step3_visuals)

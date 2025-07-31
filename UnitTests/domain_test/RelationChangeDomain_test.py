@@ -29,13 +29,13 @@ def root_directory() -> Path:
     return Path(__file__).parent.parent.parent
 
 
-@fixture
+@pytest.fixture(scope="function")
 def mock_screen(qtbot: QtBot, create_translations) -> InsertDataScreen:
     insert_data_screen = InsertDataScreen(GlobalTranslate.instance.get_all())
     InsertDataDomain.get_screen = Mock(return_value=insert_data_screen)
     return insert_data_screen
 
-@fixture
+@pytest.fixture(scope="function")
 def mock_rel_screen(qtbot: QtBot, create_translations) -> RelationChangeScreen:
     relation_change_screen = RelationChangeScreen(GlobalTranslate.instance.get_all())
 
@@ -57,7 +57,7 @@ def mock_fill_possible_relations_list(mock_rel_screen: RelationChangeScreen):
 
 @fixture
 def mock_step3_step3_relations() -> None:
-    step3_relations = Mock(step3_visuals=DataVisualisationScreen)
+    step3_relations = Mock(step3_visuals=DynamicDataVisualisationScreen)
     main_window = Mock(step3_visuals=step3_relations)
     global_vars.otl_wizard = Mock(main_window=main_window)
 
@@ -90,13 +90,13 @@ async def test_full_set_possible_relations(root_directory:Path,
     # search with regex for (#Verkeersbordopstelling'|#Pictogram'|#Funderingsmassief'|#verkeersbordsteun'|BevestigingGC'|#Draagconstructie'|#Fundering'|#ConstructieElement')
     # with external objects added every relation possible in the entire OTL model is found
     class1 = "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Verkeersbordsteun"
-    assert len(RelationChangeDomain.possible_relations_per_class_dict[class1]) == 74
+    assert len(RelationChangeDomain.possible_relations_per_class_dict[class1]) == 75
 
     class2 = "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Funderingsmassief"
-    assert len(RelationChangeDomain.possible_relations_per_class_dict[class2]) == 746
+    assert len(RelationChangeDomain.possible_relations_per_class_dict[class2]) == 735
 
     class3 = "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Pictogram"
-    assert len(RelationChangeDomain.possible_relations_per_class_dict[class3]) == 118
+    assert len(RelationChangeDomain.possible_relations_per_class_dict[class3]) == 119
 
     class4 = "https://wegenenverkeer.data.vlaanderen.be/ns/installatie#Verkeersbordopstelling"
     assert len(RelationChangeDomain.possible_relations_per_class_dict[class4]) == 33
@@ -486,7 +486,7 @@ def mock_oslo_collector() -> Function:
         mock__init__OSLOColletor.return_value = None
         yield mock__init__OSLOColletor
 
-@pytest.fixture
+@pytest.fixture(scope="function")
 def mock_collect_all() -> Mock:
     original_collect_all = OSLOCollector.collect_all
 

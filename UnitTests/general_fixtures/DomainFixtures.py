@@ -4,6 +4,7 @@ from collections import namedtuple
 from pathlib import Path
 from unittest.mock import Mock, AsyncMock
 
+import pytest
 from _pytest.fixtures import fixture
 
 from Domain import global_vars
@@ -40,7 +41,8 @@ def mock_get_otl_wizard_projects_dir(root_directory):
     yield
     ProgramFileStructure.get_otl_wizard_projects_dir = original_get_otl_wizard_projects_dir
 
-@fixture
+
+@pytest.fixture(scope="function")
 def mock_save_validated_assets_function() -> None:
     original_save_validated_assets = Project.save_validated_assets
     Project.save_validated_assets = AsyncMock()
@@ -104,7 +106,7 @@ def setup_test_project(root_directory: Path, mock_step3_visuals,mock_get_otl_wiz
 
 
 
-@fixture
+@pytest.fixture(scope="function")
 def mock_load_validated_assets() -> None:
     original_load_validated_assets = Project.load_validated_assets_async
 
