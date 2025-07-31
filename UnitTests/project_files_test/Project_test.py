@@ -6,7 +6,7 @@ import zipfile
 from asyncio import sleep
 from copy import deepcopy
 from datetime import timedelta
-from typing import Union
+from typing import Union, Any, AsyncGenerator
 from unittest.mock import mock_open, patch
 
 import pytest
@@ -1045,9 +1045,10 @@ async def test_save_validated_assets_delete_old_files(get_and_cleanup_empty_proj
 
     expected_quick_save_files = sorted([f"quick_save-{young_date_str}.json", project.get_last_quick_save_path().name, 'strange_name.json'])
     assert quick_save_files == expected_quick_save_files
-@fixture
-async def setup_preloaded_assets_in_memory(setup_quicksave_test_project) -> Project:
 
+
+@pytest_asyncio.fixture
+async def setup_preloaded_assets_in_memory(setup_quicksave_test_project) -> AsyncGenerator[Project, Any]:
     setup_quicksave_test_project.assets_in_memory = await setup_quicksave_test_project.load_validated_assets_async()
     yield setup_quicksave_test_project
     setup_quicksave_test_project.assets_in_memory = []
