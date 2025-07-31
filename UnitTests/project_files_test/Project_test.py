@@ -597,7 +597,7 @@ def test_save_project_given_details(mock_project_home_path,create_mock_project_e
 
     shutil.rmtree(project_dir_path)
 
-@fixture
+@pytest.fixture
 async def setup_quicksave_test_project(root_directory,mock_otl_wizard_dir) -> Project:
     backup_quicksave_test_project_path  = Path(root_directory, "OTLWizardProjects", "Projects_backup", "quicksave_test")
     quicksave_test_project_path = Path(root_directory, "OTLWizardProjects", "Projects", "quicksave_test")
