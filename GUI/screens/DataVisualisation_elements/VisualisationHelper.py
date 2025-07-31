@@ -56,12 +56,10 @@ class VisualisationHelper:
         with open(file_path) as file:
             file_data = file.readlines()
 
-        # add the qtwebchannel javascript to the list of script resources in the html
-        replace_index_lib = -1
-        for index, line in enumerate(file_data):
-            if '<script src="lib/bindings/utils.js"></script>' in line:
-                replace_index_lib = index
-                break
+        replace_index_lib = next((
+                index for index, line in enumerate(file_data)
+                if '<script src="lib/bindings/utils.js"></script>' in line),
+            -1)
         if replace_index_lib > 0:
             cls.replace_and_add_lines(file_data, replace_index_lib,
                                       '<script src="lib/bindings/utils.js"></script>',
@@ -69,16 +67,13 @@ class VisualisationHelper:
 
                                       ['<script src="qrc:///qtwebchannel/qwebchannel.js"></script>'])
 
-        # replace the main drawgraph function
-        replace_index = -1
-        for index, line in enumerate(file_data):
-            if "drawGraph();" in line:
-                replace_index = index
-                break
-
-        path_for_in_js = str(file_path.absolute()).replace("\\","\\\\")
-
+        replace_index = next((
+                index for index, line in enumerate(file_data)
+                if "drawGraph();" in line),
+            -1)
         if replace_index > 0:
+            path_for_in_js = str(file_path.absolute()).replace("\\","\\\\")
+
             add_data = ["var container = document.getElementById('mynetwork');",
                         f'var html_path = "{path_for_in_js}";',
                         "",
@@ -543,7 +538,7 @@ class VisualisationHelper:
                             try:
                                 screen_name_of_new_asset = vis_wrap.asset_id_to_display_name_dict[add_edge_arguments["to_id"]]
                             except:
-                                OTLLogger.logger.debug(f"Couldn't find display name of node id: {add_edge_arguments["to_id"]}\n Needs refresh")
+                                OTLLogger.logger.debug(f"Couldn't find display name of node id: {add_edge_arguments['to_id']}\n Needs refresh")
                                 screen_name_of_new_asset = vis_wrap.asset_id_to_display_name_dict[collect_id_to_original_asset_id_dict[add_edge_arguments["to_id"]]]
 
                             added_to_collection = True
@@ -564,7 +559,7 @@ class VisualisationHelper:
                             try:
                                 screen_name_of_new_asset = vis_wrap.asset_id_to_display_name_dict[add_edge_arguments["from_id"]]
                             except:
-                                OTLLogger.logger.debug(f"Couldn't find display name of node id: {add_edge_arguments["from_id"]}\n Needs refresh")
+                                OTLLogger.logger.debug(f"Couldn't find display name of node id: {add_edge_arguments['from_id']}\n Needs refresh")
                                 screen_name_of_new_asset = vis_wrap.asset_id_to_display_name_dict[collect_id_to_original_asset_id_dict[add_edge_arguments["from_id"]]]
                             added_to_collection = True
                             js_code = cls.create_js_code_to_add_to_collection(vis_wrap,
@@ -609,7 +604,7 @@ class VisualisationHelper:
                                     vis_wrap.asset_id_to_display_name_dict[
                                         add_edge_arguments["to_id"]]
                             except:
-                                OTLLogger.logger.debug(f"Couldn't find display name of node id: {add_edge_arguments["to_id"]}\n Needs refresh")
+                                OTLLogger.logger.debug(f"Couldn't find display name of node id: {add_edge_arguments['to_id']}\n Needs refresh")
                                 screen_name_of_new_asset = vis_wrap.asset_id_to_display_name_dict[collect_id_to_original_asset_id_dict[add_edge_arguments["to_id"]]]
 
 
@@ -635,7 +630,7 @@ class VisualisationHelper:
                                         add_edge_arguments["from_id"]]
                             except:
                                 OTLLogger.logger.debug(
-                                f"Couldn't find display name of node id: {add_edge_arguments["from_id"]}\n Needs refresh")
+                                f"Couldn't find display name of node id: {add_edge_arguments['from_id']}\n Needs refresh")
                                 screen_name_of_new_asset = vis_wrap.asset_id_to_display_name_dict[collect_id_to_original_asset_id_dict[add_edge_arguments["from_id"]]]
                             added_to_collection = True
                             js_code = cls.create_js_code_to_add_to_collection(vis_wrap,
@@ -682,9 +677,9 @@ class VisualisationHelper:
                                             add_edge_arguments["from_id"]]
                                 except:
                                     OTLLogger.logger.debug(
-                                        f"Couldn't find display name of node id: {add_edge_arguments["from_id"]}\n Needs refresh")
+                                        f"Couldn't find display name of node id: {add_edge_arguments['from_id']}\n Needs refresh")
                                     OTLLogger.logger.debug(
-                                        f"add_edge_arguments[\"from_id\"]: {add_edge_arguments["from_id"]}\ncollect_id_to_original_asset_id_dict: {collect_id_to_original_asset_id_dict}\n  vis_wrap.asset_id_to_display_name_dict: {vis_wrap.asset_id_to_display_name_dict}")
+                                        f"add_edge_arguments[\"from_id\"]: {add_edge_arguments['from_id']}\ncollect_id_to_original_asset_id_dict: {collect_id_to_original_asset_id_dict}\n  vis_wrap.asset_id_to_display_name_dict: {vis_wrap.asset_id_to_display_name_dict}")
 
                                     screen_name_of_new_asset = \
                                     vis_wrap.asset_id_to_display_name_dict[
@@ -697,9 +692,9 @@ class VisualisationHelper:
 
                                 except:
                                     OTLLogger.logger.debug(
-                                    f"Couldn't find display name of node id: {add_edge_arguments["to_id"]}\n Needs refresh")
+                                    f"Couldn't find display name of node id: {add_edge_arguments['to_id']}\n Needs refresh")
                                     OTLLogger.logger.debug(
-                                        f"add_edge_arguments[\"to_id\"]: {add_edge_arguments["to_id"]}\ncollect_id_to_original_asset_id_dict: {collect_id_to_original_asset_id_dict}\n  vis_wrap.asset_id_to_display_name_dict: {vis_wrap.asset_id_to_display_name_dict}")
+                                        f"add_edge_arguments[\"to_id\"]: {add_edge_arguments['to_id']}\ncollect_id_to_original_asset_id_dict: {collect_id_to_original_asset_id_dict}\n  vis_wrap.asset_id_to_display_name_dict: {vis_wrap.asset_id_to_display_name_dict}")
 
                                     screen_name_of_new_asset = vis_wrap.asset_id_to_display_name_dict[collect_id_to_original_asset_id_dict[add_edge_arguments["to_id"]]]
                             added_to_collection = True
@@ -733,9 +728,9 @@ class VisualisationHelper:
                                             add_edge_arguments["from_id"]]
                                 except:
                                     OTLLogger.logger.debug(
-                                        f"Couldn't find display name of node id: {add_edge_arguments["from_id"]}\n Needs refresh")
+                                        f"Couldn't find display name of node id: {add_edge_arguments['from_id']}\n Needs refresh")
                                     OTLLogger.logger.debug(
-                                        f"add_edge_arguments[\"from_id\"]: {add_edge_arguments["from_id"]}\ncollect_id_to_original_asset_id_dict: {collect_id_to_original_asset_id_dict}\n  vis_wrap.asset_id_to_display_name_dict: {vis_wrap.asset_id_to_display_name_dict}")
+                                        f"add_edge_arguments[\"from_id\"]: {add_edge_arguments['from_id']}\ncollect_id_to_original_asset_id_dict: {collect_id_to_original_asset_id_dict}\n  vis_wrap.asset_id_to_display_name_dict: {vis_wrap.asset_id_to_display_name_dict}")
                                     screen_name_of_new_asset = \
                                     vis_wrap.asset_id_to_display_name_dict[
                                         collect_id_to_original_asset_id_dict[
@@ -748,9 +743,9 @@ class VisualisationHelper:
                                             add_edge_arguments["to_id"]]
                                 except:
                                     OTLLogger.logger.debug(
-                                        f"Couldn't find display name of node id: {add_edge_arguments["to_id"]}\n Needs refresh")
+                                        f"Couldn't find display name of node id: {add_edge_arguments['to_id']}\n Needs refresh")
                                     OTLLogger.logger.debug(
-                                        f"add_edge_arguments[\"to_id\"]: {add_edge_arguments["to_id"]}\ncollect_id_to_original_asset_id_dict: {collect_id_to_original_asset_id_dict}\n  vis_wrap.asset_id_to_display_name_dict: {vis_wrap.asset_id_to_display_name_dict}")
+                                        f"add_edge_arguments[\"to_id\"]: {add_edge_arguments['to_id']}\ncollect_id_to_original_asset_id_dict: {collect_id_to_original_asset_id_dict}\n  vis_wrap.asset_id_to_display_name_dict: {vis_wrap.asset_id_to_display_name_dict}")
                                     screen_name_of_new_asset = \
                                     vis_wrap.asset_id_to_display_name_dict[
                                         collect_id_to_original_asset_id_dict[
