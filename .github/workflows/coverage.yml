@@ -11,16 +11,12 @@ jobs:
         working-directory: ./UnitTests
     steps:
       - uses: actions/checkout@v4
-      - name: Set up Python 3.12
-        uses: actions/setup-python@v5
+      - name: Install uv with Python version 3.13
+        uses: astral-sh/setup-uv@v5
         with:
-          python-version: '3.12'
-      - name: Display Python version for testing purposes
-        run: python -c "import sys; print(sys.version)"
-      - name: Install Python dependencies
-        uses: py-actions/py-dependency-install@v4
-        with:
-          path: "requirements.txt"
+          python-version: 3.13
+      - name: Installing dependencies with uv for running the tests
+        run: uv pip install -r pyproject.toml --extra test
       - name: Run unittests with pytest and coverage
         run: python -m pytest --cov -v --cov-report=html
       - name: Coverage Badge.
