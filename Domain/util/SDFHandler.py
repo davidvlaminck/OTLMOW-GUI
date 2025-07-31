@@ -8,7 +8,6 @@ from typing import Optional
 
 from PyQt6.QtWidgets import QMessageBox
 from pandas.core.internals.managers import raise_construction_error
-from universalasync import async_to_sync_wraps
 
 from Domain import global_vars
 from Domain.util.Helpers import Helpers
