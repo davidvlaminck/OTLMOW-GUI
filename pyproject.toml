@@ -30,17 +30,24 @@ classifiers = [
 ]
 requires-python = ">=3.8"
 dependencies = [
-    'PyQt6-Qt6 == 6.5.3',
+    'PyQt6-Qt6 >= 6.5.3',
     'otlmow-model >= 2.8.1',
-    'otlmow-converter >= 0.12',
+    'otlmow-converter >= 0.15rc2',
     'otlmow-visuals >= 0.3',
-    'pyqt6 == 6.5.3',
+    'otlmow_template>=1.6',
+    'pyqt6 >= 6.8.0',
     'qtawesome >= 1.2.3',
     'PyGithub >= 2.1.1',
     'requests >= 2.31.0',
-    'PyQt6-WebEngine==6.6.0'
+    'PyQt6-WebEngine==6.6.0',
+    'fonttools>=4.56.0',
+    'pyperclip>=1.8.2',
+    'toml>=0.10.2',
+    'qasync>=0.27.1',
+    'folium>=0.19.5',
+    'shapely>=2.0.7',
+    'pyproj>=3.7.1'
 ]
-
 
 [tool.setuptools.packages.find]
 include = ["Domain*", "Exceptions*", "exception_handler*", "GUI*", "OTL Wizard 2.py",]
@@ -48,3 +55,6 @@ include = ["Domain*", "Exceptions*", "exception_handler*", "GUI*", "OTL Wizard 2
 [project.urls]
 "Homepage" = "https://github.com/davidvlaminck/OTLMOW-GUI"
 "Bug Tracker" = "https://github.com/davidvlaminck/OTLMOW-GUI/issues"
+
+[project.optional-dependencies]
+test = [ "pytest", "pytest-cov", "pytest-subtests", "pytest-qt", "pytest-asyncio","xmltodict"]
