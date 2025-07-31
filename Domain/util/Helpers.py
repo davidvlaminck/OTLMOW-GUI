@@ -267,8 +267,8 @@ class Helpers:
 
     @classmethod
     def compare_RelatieObjects(cls, obj1, obj2):
-        dict1 = obj1.create_dict_from_asset(obj1)
-        dict2 = obj2.create_dict_from_asset(obj2)
+        dict1 = OTLObject.to_dict(obj1)
+        dict2 = OTLObject.to_dict(obj2)
 
         if "isActief" in dict1:
             dict1.pop("isActief")
