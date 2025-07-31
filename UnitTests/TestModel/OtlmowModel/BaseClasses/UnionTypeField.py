@@ -6,6 +6,7 @@ from otlmow_model.OtlmowModel.Exceptions.UnionTypeError import UnionTypeError
 
 class UnionTypeField(OTLField):
     waarde_shortcut_applicable = False
+    native_type = dict
 
     def __str__(self):
         return OTLField.__str__(self)

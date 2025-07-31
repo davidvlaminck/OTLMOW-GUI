@@ -1,6 +1,6 @@
 import warnings
 from pathlib import Path
-from typing import Type, Optional
+from typing import Optional
 
 from otlmow_model.OtlmowModel.BaseClasses.OTLObject import dynamic_create_instance_from_uri
 from otlmow_model.OtlmowModel.BaseClasses.RelationInteractor import RelationInteractor
@@ -13,7 +13,7 @@ from otlmow_model.OtlmowModel.Helpers.GenericHelper import get_ns_and_name_from_
 from otlmow_model.OtlmowModel.Helpers.RelationValidator import is_valid_relation
 
 
-def create_relation(relation_type: Type[RelatieObject], source: Optional[RelationInteractor] = None,
+def create_relation(relation_type: type[RelatieObject], source: Optional[RelationInteractor] = None,
                     target: Optional[RelationInteractor] = None,
                     source_uuid: Optional[str] = None, source_typeURI: Optional[str] = None,
                     target_uuid: Optional[str] = None, target_typeURI: Optional[str] = None,
@@ -121,20 +121,20 @@ def create_relation(relation_type: Type[RelatieObject], source: Optional[Relatio
             raise AttributeError('In order to create a relation_type, the target needs to have a valid assetId '
                                  '(target.assetId.identificator)')
 
-    relation_id = ''
+
     if source_is_legacy:
         relation_type.bronAssetId.identificator = source_aim_id
         relation_type.bronAssetId.toegekendDoor = 'AWV'
-        relation_id += source_aim_id
+        relation_id = source_aim_id
     else:
         if source.typeURI == 'http://purl.org/dc/terms/Agent':
             relation_type.bronAssetId.identificator = source.agentId.identificator
             relation_type.bronAssetId.toegekendDoor = source.agentId.toegekendDoor
-            relation_id += source.agentId.identificator
+            relation_id = source.agentId.identificator
         else:
             relation_type.bronAssetId.identificator = source.assetId.identificator
             relation_type.bronAssetId.toegekendDoor = source.assetId.toegekendDoor
-            relation_id += source.assetId.identificator
+            relation_id = source.assetId.identificator
 
     relation_id += '_-_'
 
@@ -152,16 +152,21 @@ def create_relation(relation_type: Type[RelatieObject], source: Optional[Relatio
             relation_type.doelAssetId.toegekendDoor = target.assetId.toegekendDoor
             relation_id += target.assetId.identificator
 
-    relation_id += '_-_' + relation_type.__class__.__name__
+    relation_id = relation_type.__class__.__name__ + '_-_' + relation_id
 
     relation_type.assetId.identificator = relation_id
     relation_type.assetId.toegekendDoor = 'OTLMOW'
 
-    # TODO replace check with check for format of AIM id, if False, add typeURI
-    if relation_type.bronAssetId.toegekendDoor != 'AWV':
+    if source_is_legacy:
+        relation_type.bron.typeURI = source_typeURI
+    else:
         relation_type.bron.typeURI = source.typeURI
-    if relation_type.doelAssetId.toegekendDoor != 'AWV':
+
+    if target_is_legacy:
+        relation_type.doel.typeURI = target_typeURI
+    else:
         relation_type.doel.typeURI = target.typeURI
+
     return relation_type
 
 

@@ -16,6 +16,7 @@ class StringField(OTLField):
     label = 'String'
     usagenote = 'https://www.w3.org/TR/xmlschema-2/#string'
     clearing_value = '88888888'
+    native_type = str
 
     @classmethod
     def convert_to_correct_type(cls, value: Any, log_warnings: bool = True) -> Optional[str]:
@@ -50,4 +51,4 @@ class StringField(OTLField):
 
     @classmethod
     def create_dummy_data(cls) -> str:
-        return 'dummy_' + ''.join(random.choice(string.ascii_letters) for _ in range(random.randint(1, 10)))
+        return 'dummy_' + ''.join(random.choice(string.ascii_letters) for _ in range(random.randint(4, 10)))

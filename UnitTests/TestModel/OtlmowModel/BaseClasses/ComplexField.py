@@ -7,3 +7,4 @@ class ComplexField(OTLField, ABC):
         return OTLField.__str__(self)
 
     waarde_shortcut_applicable = False
+    native_type = dict

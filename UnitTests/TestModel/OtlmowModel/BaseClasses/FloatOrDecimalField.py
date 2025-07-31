@@ -16,6 +16,7 @@ class FloatOrDecimalField(OTLField):
     label = 'Decimaal getal'
     usagenote = 'https://www.w3.org/TR/xmlschema-2/#decimal'
     clearing_value = 88888888.0
+    native_type = float
 
     @classmethod
     def convert_to_correct_type(cls, value: Any, log_warnings: bool = True) -> Optional[float]:

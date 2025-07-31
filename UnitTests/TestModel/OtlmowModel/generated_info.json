@@ -1,8 +1,116 @@
 {
-    "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Voedt": {
-        "directional": true
+    "relations": {
+        "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Voedt": {
+            "directional": true
+        },
+        "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Bevestiging": {
+            "directional": false
+        }
     },
-    "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Bevestiging": {
-        "directional": false
+    "classes": {
+        "https://wegenenverkeer.data.vlaanderen.be/ns/implementatieelement#AIMDBStatus": {
+            "abstract": true,
+            "ns": "implementatieelement",
+            "name": "AIMDBStatus",
+            "label": "AIM databank status",
+            "deprecated_version": "",
+            "direct_subclasses": [
+                "https://wegenenverkeer.data.vlaanderen.be/ns/implementatieelement#AIMObject",
+                "https://wegenenverkeer.data.vlaanderen.be/ns/implementatieelement#RelatieObject"
+            ]
+        },
+        "https://wegenenverkeer.data.vlaanderen.be/ns/implementatieelement#AIMObject": {
+            "abstract": true,
+            "ns": "implementatieelement",
+            "name": "AIMObject",
+            "label": "AIM object",
+            "deprecated_version": "",
+            "direct_subclasses": [
+                "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#AllCasesTestClass",
+                "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#AnotherTestClass",
+                "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#DeprecatedTestClass"
+            ]
+        },
+        "https://wegenenverkeer.data.vlaanderen.be/ns/implementatieelement#AIMToestand": {
+            "abstract": true,
+            "ns": "implementatieelement",
+            "name": "AIMToestand",
+            "label": "AIM Toestand",
+            "deprecated_version": "",
+            "direct_subclasses": [
+                "https://wegenenverkeer.data.vlaanderen.be/ns/implementatieelement#AIMObject"
+            ]
+        },
+        "https://wegenenverkeer.data.vlaanderen.be/ns/implementatieelement#DirectioneleRelatie": {
+            "abstract": true,
+            "ns": "implementatieelement",
+            "name": "DirectioneleRelatie",
+            "label": "Directionele relatie",
+            "deprecated_version": "",
+            "direct_subclasses": [
+                "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Voedt"
+            ]
+        },
+        "https://wegenenverkeer.data.vlaanderen.be/ns/implementatieelement#NietDirectioneleRelatie": {
+            "abstract": true,
+            "ns": "implementatieelement",
+            "name": "NietDirectioneleRelatie",
+            "label": "Niet-directionele relatie",
+            "deprecated_version": "",
+            "direct_subclasses": [
+                "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Bevestiging"
+            ]
+        },
+        "https://wegenenverkeer.data.vlaanderen.be/ns/implementatieelement#RelatieObject": {
+            "abstract": true,
+            "ns": "implementatieelement",
+            "name": "RelatieObject",
+            "label": "Relatieobject",
+            "deprecated_version": "",
+            "direct_subclasses": [
+                "https://wegenenverkeer.data.vlaanderen.be/ns/implementatieelement#DirectioneleRelatie",
+                "https://wegenenverkeer.data.vlaanderen.be/ns/implementatieelement#NietDirectioneleRelatie"
+            ]
+        },
+        "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#AllCasesTestClass": {
+            "abstract": false,
+            "ns": "onderdeel",
+            "name": "AllCasesTestClass",
+            "label": "All Cases TestClass",
+            "deprecated_version": "",
+            "direct_subclasses": []
+        },
+        "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#AnotherTestClass": {
+            "abstract": false,
+            "ns": "onderdeel",
+            "name": "AnotherTestClass",
+            "label": "Another TestClass",
+            "deprecated_version": "",
+            "direct_subclasses": []
+        },
+        "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Bevestiging": {
+            "abstract": false,
+            "ns": "onderdeel",
+            "name": "Bevestiging",
+            "label": "Bevestiging",
+            "deprecated_version": "",
+            "direct_subclasses": []
+        },
+        "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#DeprecatedTestClass": {
+            "abstract": false,
+            "ns": "onderdeel",
+            "name": "DeprecatedTestClass",
+            "label": "Deprecated TestClass",
+            "deprecated_version": "2.0.0",
+            "direct_subclasses": []
+        },
+        "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Voedt": {
+            "abstract": false,
+            "ns": "onderdeel",
+            "name": "Voedt",
+            "label": "Voedt",
+            "deprecated_version": "",
+            "direct_subclasses": []
+        }
     }
 }

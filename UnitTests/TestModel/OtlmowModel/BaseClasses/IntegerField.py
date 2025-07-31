@@ -16,6 +16,7 @@ class IntegerField(OTLField):
     label = 'Geheel getal'
     usagenote = 'https://www.w3.org/TR/xmlschema-2/#integer'
     clearing_value = 88888888
+    native_type = int
 
     @classmethod
     def convert_to_correct_type(cls, value: Any, log_warnings: bool = True) -> Optional[int]:

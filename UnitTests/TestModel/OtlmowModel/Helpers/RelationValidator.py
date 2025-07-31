@@ -28,7 +28,7 @@ def is_valid_relation_instance(source: RelationInteractor, relation_instance: Re
                              model_directory=model_directory)
 
 
-def is_valid_relation(relation_type: Type[RelatieObject], source: Optional[RelationInteractor] = None,
+def is_valid_relation_using_relation_uri(relation_uri: str, source: Optional[RelationInteractor] = None,
                       source_typeURI: Optional[str] = None, target: Optional[RelationInteractor] = None,
                       target_typeURI: Optional[str] = None, model_directory: Path = None) -> bool:
     """
@@ -74,17 +74,18 @@ def is_valid_relation(relation_type: Type[RelatieObject], source: Optional[Relat
     if source is None:
         source = dynamic_create_instance_from_uri(class_uri=source_typeURI, model_directory=model_directory)
 
-    if relation_type.typeURI not in source._valid_relations:
+    if relation_uri not in source._valid_relations:
         return False
 
-    targets = source._valid_relations[relation_type.typeURI].keys()
+    targets = source._valid_relations[relation_uri].keys()
     if target_typeURI in targets:
-        if 'i' in source._valid_relations[relation_type.typeURI][target_typeURI]:
+        if ( 'i' in source._valid_relations[relation_uri][target_typeURI] and
+                'o' not in source._valid_relations[relation_uri][target_typeURI]):
             return False
-        deprecated_value = list(source._valid_relations[relation_type.typeURI][target_typeURI].values())[0]
+        deprecated_value = list(source._valid_relations[relation_uri][target_typeURI].values())[0]
         if deprecated_value != '':
             warnings.warn(
-                message=f'the relation_type of type {relation_type.typeURI} between assets of types '
+                message=f'the relation_type of type {relation_uri} between assets of types '
                         f'{source_typeURI} and {target_typeURI} is deprecated since version {deprecated_value}',
                 category=RelationDeprecationWarning)
         return True
@@ -95,17 +96,43 @@ def is_valid_relation(relation_type: Type[RelatieObject], source: Optional[Relat
     for base in bases:
         base_type_uri = _get_member(base, 'typeURI')
         if base_type_uri in targets:
-            if 'i' in source._valid_relations[relation_type.typeURI][base_type_uri]:
+            if ('i' in source._valid_relations[relation_uri][base_type_uri] and
+                    'o' not in source._valid_relations[relation_uri][base_type_uri]):
                 return False
-            deprecated_value = list(source._valid_relations[relation_type.typeURI][base_type_uri].values())[0]
+            deprecated_value = list(source._valid_relations[relation_uri][base_type_uri].values())[0]
             if deprecated_value != '':
                 warnings.warn(
-                    message=f'the relation_type of type {relation_type.typeURI} between assets of types '
+                    message=f'the relation_type of type {relation_uri} between assets of types '
                             f'{source_typeURI} and {target_typeURI} is deprecated since version {deprecated_value}',
                     category=RelationDeprecationWarning)
             return True
 
     return False
+
+
+def is_valid_relation(relation_type: Type[RelatieObject], source: Optional[RelationInteractor] = None,
+                      source_typeURI: Optional[str] = None, target: Optional[RelationInteractor] = None,
+                      target_typeURI: Optional[str] = None, model_directory: Path = None) -> bool:
+    """
+    Verifies if a relation would be valid between a source and a target, given a relation_type type. Exactly one of
+    source or source_typeURI must not be None. Exactly one of target or target_typeURI must not be None.
+
+    :param relation_type: the intended type of the relation
+    :param source: the intended source for the relation_type
+    :type: RelationInteractor
+    :param source_typeURI: the typeURI of the intended source for the relation
+    :type: str
+    :param target: the intended source for the relation
+    :type: RelationInteractor
+    :param target_typeURI: the typeURI of the intended target for the relation
+    :type: str
+    :param model_directory: directory where the model is located, defaults to otlmow_model's own model
+    :type: str
+    :return: 'True' if the relation would be valid, 'False' otherwise
+    """
+    return is_valid_relation_using_relation_uri(
+        relation_uri=relation_type.typeURI, source=source, source_typeURI=source_typeURI,
+        target=target, target_typeURI=target_typeURI, model_directory=model_directory)
 
 
 def _get_member(obj, name):

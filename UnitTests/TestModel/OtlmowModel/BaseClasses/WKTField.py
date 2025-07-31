@@ -1,10 +1,9 @@
-import warnings
 from typing import Any
 
 from otlmow_model.OtlmowModel.BaseClasses.OTLField import OTLField
 from otlmow_model.OtlmowModel.BaseClasses.StringField import StringField
 from otlmow_model.OtlmowModel.BaseClasses.WKTValidator import WKTValidator
-from otlmow_model.OtlmowModel.Exceptions.WrongGeometryWarning import WrongGeometryWarning
+from otlmow_model.OtlmowModel.Exceptions.WrongGeometryTypeError import WrongGeometryTypeError
 
 
 class WKTField(StringField):
@@ -17,9 +16,9 @@ class WKTField(StringField):
 
     @classmethod
     def convert_to_correct_type(cls, value: str, log_warnings: bool = True) -> str:
-        value = (value.replace(' Z(', ' Z (').replace('T(', 'T (')
-                 .replace('G(', 'G (').replace('N(', 'N ('))
-        return value
+        return (value.replace(' Z(', ' Z (').replace('T(', 'T (')
+                .replace('G(', 'G (').replace('N(', 'N ('))
+
 
     @classmethod
     def validate(cls, value: Any, attribuut) -> bool:
@@ -34,7 +33,7 @@ class WKTField(StringField):
                 verkorte_uri = attribuut.owner.typeURI.split('#')[1]
                 error_msg = f"Asset type {verkorte_uri} shouldn't be assigned a {geo_type} as geometry, " \
                             f"valid types are {expected_types}"
-                warnings.warn(message=error_msg, category=WrongGeometryWarning)
+                raise WrongGeometryTypeError(error_msg)
         return True
 
     def __str__(self) -> str:
