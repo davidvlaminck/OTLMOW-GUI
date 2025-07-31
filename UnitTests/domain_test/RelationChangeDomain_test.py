@@ -558,7 +558,9 @@ async def test_set_objects_single_item_list(mock_screen: RelationChangeScreen,mo
 @pytest.mark.asyncio
 async def test_set_objects_double_item_list(mock_screen,mock_collect_all,mock_rel_screen,mock_save_validated_assets_function,
                                  mock_load_validated_assets,mock_step3_visuals):
-    RelationChangeDomain.init_static(Project(eigen_referentie="test"))
+    test_project = Project(eigen_referentie="test")
+    global_vars.current_project = test_project
+    RelationChangeDomain.init_static(test_project)
     test_object = AllCasesTestClass()
     test_object.assetId.identificator = "dummy_identificator"
 
@@ -571,6 +573,7 @@ async def test_set_objects_double_item_list(mock_screen,mock_collect_all,mock_re
     assert RelationChangeDomain.shown_objects[0].assetId.identificator == "dummy_identificator"
     assert RelationChangeDomain.shown_objects[1].assetId.identificator == "dummy_identificator2"
 
+    global_vars.current_project = None
 
 #################################################
 # RelationChangeDomain.set_possible_relations   #
