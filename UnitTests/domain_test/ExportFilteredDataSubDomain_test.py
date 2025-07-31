@@ -103,11 +103,7 @@ async def test_export_diff_report(root_directory: Path,
     assert objects_ref == objects_output
 
 
-
-
-
 def test_generate_report():
-
     instance_1_1 = AllCasesTestClass()
     instance_1_1.assetId.identificator = '1'
     instance_1_1.isActief = True
@@ -140,6 +136,7 @@ def test_generate_report():
     instance_list_1 = [ instance_1_2, instance_1_3]
     instance_list_2 = [ instance_2_2, instance_2_4]
 
+    model_directory_path = Path(__file__).parent.parent / 'TestModel'
     report = ExportFilteredDataSubDomain().generate_diff_report(original_data=instance_list_1, new_data=instance_list_2,
                                                                 model_directory=model_directory_path)
 
