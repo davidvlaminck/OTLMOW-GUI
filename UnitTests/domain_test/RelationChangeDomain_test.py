@@ -1,6 +1,5 @@
 from unittest.mock import patch
 
-import pytest
 from otlmow_model.OtlmowModel.Helpers.OTLObjectHelper import is_relation
 from otlmow_modelbuilder.OSLOCollector import OSLOCollector
 from otlmow_modelbuilder.SQLDataClasses.OSLORelatie import OSLORelatie
@@ -9,7 +8,6 @@ from typing import Optional
 from pytestqt.plugin import qtbot
 from pytestqt.qtbot import QtBot
 
-from Domain.util.Helpers import Helpers
 from GUI.screens.InsertDataScreen import InsertDataScreen
 from GUI.screens.RelationChangeScreen import RelationChangeScreen
 from UnitTests.TestClasses.Classes.ImplementatieElement.AIMObject import AIMObject
@@ -558,9 +556,13 @@ async def test_set_objects_single_item_list(mock_screen: RelationChangeScreen,mo
 @pytest.mark.asyncio
 async def test_set_objects_double_item_list(mock_screen,mock_collect_all,mock_rel_screen,mock_save_validated_assets_function,
                                  mock_load_validated_assets,mock_step3_visuals):
+    """
+    used RelationChangeDomain.init_static(..., asynchronous=False) to avoid race condition
+    if this was not used, the async call of init_static would add another copy of the first object in this list
+    """
     test_project = Project(eigen_referentie="test")
     global_vars.current_project = test_project
-    RelationChangeDomain.init_static(test_project)
+    RelationChangeDomain.init_static(test_project, asynchronous=False)
     test_object = AllCasesTestClass()
     test_object.assetId.identificator = "dummy_identificator"
 
