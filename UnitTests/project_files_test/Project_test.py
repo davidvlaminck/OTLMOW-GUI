@@ -10,6 +10,7 @@ from typing import Union
 from unittest.mock import mock_open, patch
 
 import pytest
+import pytest_asyncio
 from otlmow_model.OtlmowModel.BaseClasses.RelationInteractor import RelationInteractor
 from otlmow_model.OtlmowModel.Classes.ImplementatieElement.RelatieObject import RelatieObject
 
@@ -597,7 +598,7 @@ def test_save_project_given_details(mock_project_home_path,create_mock_project_e
 
     shutil.rmtree(project_dir_path)
 
-@pytest.fixture
+@pytest_asyncio.fixture
 async def setup_quicksave_test_project(root_directory,mock_otl_wizard_dir) -> Project:
     backup_quicksave_test_project_path  = Path(root_directory, "OTLWizardProjects", "Projects_backup", "quicksave_test")
     quicksave_test_project_path = Path(root_directory, "OTLWizardProjects", "Projects", "quicksave_test")
