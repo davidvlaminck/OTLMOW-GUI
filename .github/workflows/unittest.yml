@@ -21,6 +21,15 @@ jobs:
       - name: Install additional OS dependencies
         if: matrix.os == 'ubuntu-latest'
         run: sudo apt-get install '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxrender-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev libegl1
+      - name: Start Xvfb
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y xvfb
+          Xvfb :99 -screen 0 1920x1080x24 > /dev/null 2>&1 &
+          echo "DISPLAY=:99" >> $GITHUB_ENV
       - name: Run unittests with pytest
         run: python -m pytest -v
         working-directory: .
+        env:
+          DISPLAY: ${{ env.DISPLAY }}
