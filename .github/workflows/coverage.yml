@@ -1,6 +1,13 @@
 name: Coverage
 run-name: Coverage for ${{ github.sha }}
-on: [workflow_dispatch]
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+  workflow_dispatch:
 
 jobs:
   coverage:
@@ -16,7 +23,7 @@ jobs:
         with:
           python-version: 3.13
       - name: Installing dependencies with uv for running the tests
-        run: uv pip install -r pyproject.toml --extra test
+        run: uv pip install -r ../pyproject.toml --extra test
       - name: Run unittests with pytest and coverage
         run: python -m pytest --cov -v --cov-report=html
       - name: Coverage Badge.
