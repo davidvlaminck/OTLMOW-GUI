@@ -20,7 +20,7 @@ jobs:
         run: uv pip install -r pyproject.toml --extra test
       - name: Install additional OS dependencies
         if: matrix.os == 'ubuntu-latest'
-        run: sudo apt-get install '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxrender-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev
+        run: sudo apt-get install '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxrender-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev libegl1
       - name: Run unittests with pytest
         run: python -m pytest -v
         working-directory: .
