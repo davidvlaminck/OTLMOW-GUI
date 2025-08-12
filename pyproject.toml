@@ -55,4 +55,5 @@ include = ["Domain*", "Exceptions*", "exception_handler*", "GUI*", "OTL Wizard 2
 "Bug Tracker" = "https://github.com/davidvlaminck/OTLMOW-GUI/issues"
 
 [project.optional-dependencies]
-test = [ "pytest", "pytest-cov", "pytest-subtests", "pytest-qt", "pytest-asyncio","xmltodict"]
+test = ["pytest", "pytest-cov", "pytest-subtests", "pytest-qt", "pytest-asyncio","xmltodict"]
+install = ["pyinstaller==6.10", "pillow"]
