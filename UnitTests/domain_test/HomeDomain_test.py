@@ -1,11 +1,9 @@
 import shutil
-import pytest
-from _pytest.fixtures import fixture
 
-from Domain.project.Project import Project
-from Domain.step_domain.HomeDomain import HomeDomain
-from Exceptions.EmptyFieldError import EmptyFieldError
-from Exceptions.WrongDatabaseError import WrongDatabaseError
+from otlmow_gui.Domain import Project
+from otlmow_gui.Domain.step_domain.HomeDomain import HomeDomain
+from otlmow_gui.Exceptions.EmptyFieldError import EmptyFieldError
+from otlmow_gui.Exceptions.WrongDatabaseError import WrongDatabaseError
 
 from UnitTests.general_fixtures.GUIFixtures import *
 

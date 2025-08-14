@@ -7,13 +7,13 @@ from unittest.mock import Mock, AsyncMock
 import pytest
 from _pytest.fixtures import fixture
 
-from Domain import global_vars
-from Domain.logger.OTLLogger import OTLLogger
-from Domain.ProgramFileStructure import ProgramFileStructure
-from Domain.step_domain.InsertDataDomain import InsertDataDomain
-from Domain.project.Project import Project
-from Domain.step_domain.RelationChangeDomain import RelationChangeDomain
-from Domain.util.Helpers import Helpers
+from otlmow_gui.Domain import global_vars
+from otlmow_gui.Domain.logger.OTLLogger import OTLLogger
+from otlmow_gui.Domain import ProgramFileStructure
+from otlmow_gui.Domain import InsertDataDomain
+from otlmow_gui.Domain import Project
+from otlmow_gui.Domain import RelationChangeDomain
+from otlmow_gui.Domain import Helpers
 
 OTLLogger.logger = Mock()
 global_vars.test_mode=True
@@ -84,7 +84,7 @@ def setup_test_project(root_directory: Path, mock_step3_visuals,mock_get_otl_wiz
     project_file_path: Path = (root_directory / "demo_projects"  /  "simpel_vergelijkings_project"
                                / "wizardProject")
 
-    global_vars.current_project = Project( eigen_referentie="test", project_path=project_file_path,
+    global_vars.current_project = Project(eigen_referentie="test", project_path=project_file_path,
                                           subset_path=Path(test_subset_file_path))
     original_get_otl_wizard_projects_dir = ProgramFileStructure.get_otl_wizard_projects_dir
     ProgramFileStructure.get_otl_wizard_projects_dir = Mock(

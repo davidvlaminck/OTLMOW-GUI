@@ -1,7 +1,7 @@
 from pathlib import Path
 
-from Domain.util.XSDCreator import XSDCreator
-from Domain.logger.OTLLogger import OTLLogger
+from otlmow_gui.Domain.logger.OTLLogger import OTLLogger
+from otlmow_gui.Domain.util.XSDCreator import XSDCreator
 
 if __name__ == "__main__":
     OTLLogger.init()

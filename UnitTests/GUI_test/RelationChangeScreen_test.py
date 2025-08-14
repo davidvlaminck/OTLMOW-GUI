@@ -1,19 +1,13 @@
 import asyncio
-from unittest.mock import AsyncMock
 
-import pytest
-from openpyxl.descriptors.excel import Relation
 from otlmow_model.OtlmowModel.Classes.Onderdeel.LigtOp import LigtOp
 from otlmow_modelbuilder.OSLOCollector import OSLOCollector
 from otlmow_modelbuilder.SQLDataClasses.OSLORelatie import OSLORelatie
 from pytestqt.plugin import qtbot
 from pytestqt.qtbot import QtBot
 
-from GUI.screens.DynamicDataVisualisationScreen import DynamicDataVisualisationScreen
-from GUI.screens.InsertDataScreen import InsertDataScreen
-from GUI.screens.RelationChangeScreen import RelationChangeScreen
-from GUI.screens.RelationChange_elements.AbstractInstanceListWidget import \
-    AbstractInstanceListWidget
+from otlmow_gui.GUI import InsertDataScreen
+from otlmow_gui.GUI import RelationChangeScreen
 from UnitTests.TestClasses.Classes.Installatie.AllCasesTestClassInstallatie import \
     AllCasesTestClassInstallatie
 from UnitTests.TestClasses.Classes.Onderdeel.AllCasesTestClass import AllCasesTestClass

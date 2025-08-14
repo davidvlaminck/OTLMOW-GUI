@@ -6,7 +6,7 @@ import pytest
 from _pytest.fixtures import fixture
 from otlmow_modelbuilder.SQLDataClasses.OSLOClass import OSLOClass
 
-from Domain.step_domain.TemplateDomain import TemplateDomain
+from otlmow_gui.Domain import TemplateDomain
 
 
 

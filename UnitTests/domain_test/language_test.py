@@ -1,8 +1,8 @@
 from pathlib import Path
 
-from Domain.Settings import Settings
+from otlmow_gui.Domain import Settings
 
-from Domain.enums import Language
+from otlmow_gui.Domain import Language
 
 ROOT_DIR = Path(__file__).parent
 

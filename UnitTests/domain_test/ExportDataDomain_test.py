@@ -1,14 +1,10 @@
-import os
-import shutil
-
-import pytest
 from openpyxl.reader.excel import load_workbook
 from pytestqt.qtbot import QtBot
 from pytestqt.plugin import qtbot
 
-from Domain.step_domain.ExportDataDomain import ExportDataDomain
-from GUI.screens.InsertDataScreen import InsertDataScreen
-from GUI.screens.RelationChangeScreen import RelationChangeScreen
+from otlmow_gui.Domain.step_domain.ExportDataDomain import ExportDataDomain
+from otlmow_gui.GUI import InsertDataScreen
+from otlmow_gui.GUI import RelationChangeScreen
 
 from UnitTests.general_fixtures.GUIFixtures import *
 from UnitTests.general_fixtures.DomainFixtures import *

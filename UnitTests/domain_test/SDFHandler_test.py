@@ -1,9 +1,7 @@
-import pytest
-
-from Domain.util.SDFHandler import SDFHandler
-from Exceptions.FDOToolboxNotInstalledError import FDOToolboxNotInstalledError
-from Exceptions.FDOToolboxProcessError import FDOToolboxProcessError
-from Exceptions.WrongFileTypeError import WrongFileTypeError
+from otlmow_gui.Domain import SDFHandler
+from otlmow_gui.Exceptions.FDOToolboxNotInstalledError import FDOToolboxNotInstalledError
+from otlmow_gui.Exceptions.FDOToolboxProcessError import FDOToolboxProcessError
+from otlmow_gui.Exceptions.WrongFileTypeError import WrongFileTypeError
 
 from UnitTests.general_fixtures.GUIFixtures import *
 from UnitTests.general_fixtures.DomainFixtures import *
