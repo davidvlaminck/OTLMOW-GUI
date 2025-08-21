@@ -16,7 +16,7 @@ from otlmow_gui.Domain.step_domain import InsertDataDomain
 from otlmow_gui.Domain.network.Updater import Updater
 from otlmow_gui.GUI.Styling import Styling
 from otlmow_gui.GUI.translation.GlobalTranslate import GlobalTranslate
-from exception_handler.ExceptionHandlers import create_task_reraise_exception, excepthook
+from otlmow_gui.exception_handler.ExceptionHandlers import create_task_reraise_exception, excepthook
 
 ROOT_DIR =  Path(Path(__file__).absolute()).parent
 sys.path.insert(0,str(ROOT_DIR.absolute()))# needed for python to import project files
