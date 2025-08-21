@@ -1,4 +1,4 @@
-from otlmow_gui.Domain import SDFHandler
+from otlmow_gui.Domain.util.SDFHandler import SDFHandler
 from otlmow_gui.Exceptions.FDOToolboxNotInstalledError import FDOToolboxNotInstalledError
 from otlmow_gui.Exceptions.FDOToolboxProcessError import FDOToolboxProcessError
 from otlmow_gui.Exceptions.WrongFileTypeError import WrongFileTypeError

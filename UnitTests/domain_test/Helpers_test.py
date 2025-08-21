@@ -1,4 +1,4 @@
-from otlmow_gui.Domain import Helpers
+from otlmow_gui.Domain.util.Helpers import Helpers
 from UnitTests.general_fixtures.DomainFixtures import mock_get_hardcoded_class_dict
 
 

@@ -4,9 +4,9 @@ from otlmow_converter.FileFormats.ExcelImporter import ExcelImporter
 from pytestqt.qtbot import QtBot
 
 from otlmow_gui.Domain.step_domain.ExportFilteredDataSubDomain import ExportFilteredDataSubDomain, ReportItem
-from otlmow_gui.Domain import ReportAction, FileState
-from otlmow_gui.GUI import InsertDataScreen
-from otlmow_gui.GUI import RelationChangeScreen
+from otlmow_gui.Domain.enums import ReportAction, FileState
+from otlmow_gui.GUI.screens.InsertDataScreen import InsertDataScreen
+from otlmow_gui.GUI.screens.RelationChangeScreen import RelationChangeScreen
 from UnitTests.project_files_test.OTLWizardProjects.Model.OtlmowModel.Classes.Onderdeel.AllCasesTestClass import \
     AllCasesTestClass
 from UnitTests.project_files_test.OTLWizardProjects.Model.OtlmowModel.Classes.Onderdeel.AnotherTestClass import \

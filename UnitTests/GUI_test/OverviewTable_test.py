@@ -5,13 +5,13 @@ from typing import Callable
 import pytest
 
 from otlmow_gui.Domain import global_vars
-from otlmow_gui.Domain import Project
+from otlmow_gui.Domain.project.Project import Project
 
 from otlmow_gui.Domain import Settings
 from otlmow_gui.Domain.step_domain.HomeDomain import HomeDomain
 from otlmow_gui.Exceptions.EmptySearchWarning import EmptySearchWarning
-from otlmow_gui.GUI import HomeScreen
-from otlmow_gui.GUI import OverviewTable
+from otlmow_gui.GUI.screens.HomeScreen import HomeScreen
+from otlmow_gui.GUI.screens.Home_elements.OverviewTable import OverviewTable
 
 ROOT_DIR = Path(__file__).parent
 

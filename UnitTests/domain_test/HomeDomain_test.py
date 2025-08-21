@@ -1,6 +1,6 @@
 import shutil
 
-from otlmow_gui.Domain import Project
+from otlmow_gui.Domain.project.Project import Project
 from otlmow_gui.Domain.step_domain.HomeDomain import HomeDomain
 from otlmow_gui.Exceptions.EmptyFieldError import EmptyFieldError
 from otlmow_gui.Exceptions.WrongDatabaseError import WrongDatabaseError

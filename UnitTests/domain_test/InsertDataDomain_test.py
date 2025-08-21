@@ -1,9 +1,9 @@
 from pytestqt.plugin import qtbot
 from pytestqt.qtbot import QtBot
 
-from otlmow_gui.Domain import FileState
-from otlmow_gui.GUI import InsertDataScreen
-from otlmow_gui.GUI import RelationChangeScreen
+from otlmow_gui.Domain.enums import FileState
+from otlmow_gui.GUI.screens.InsertDataScreen import InsertDataScreen
+from otlmow_gui.GUI.screens.RelationChangeScreen import RelationChangeScreen
 
 from UnitTests.general_fixtures.GUIFixtures import *
 from UnitTests.general_fixtures.DomainFixtures import *

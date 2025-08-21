@@ -8,12 +8,12 @@ import pytest
 from _pytest.fixtures import fixture
 
 from otlmow_gui.Domain import global_vars
+from otlmow_gui.Domain.ProgramFileStructure import ProgramFileStructure
 from otlmow_gui.Domain.logger.OTLLogger import OTLLogger
-from otlmow_gui.Domain import ProgramFileStructure
-from otlmow_gui.Domain import InsertDataDomain
-from otlmow_gui.Domain import Project
-from otlmow_gui.Domain import RelationChangeDomain
-from otlmow_gui.Domain import Helpers
+from otlmow_gui.Domain.project.Project import Project
+from otlmow_gui.Domain.step_domain.InsertDataDomain import InsertDataDomain
+from otlmow_gui.Domain.step_domain.RelationChangeDomain import RelationChangeDomain
+from otlmow_gui.Domain.util.Helpers import Helpers
 
 OTLLogger.logger = Mock()
 global_vars.test_mode=True

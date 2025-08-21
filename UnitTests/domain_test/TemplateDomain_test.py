@@ -6,9 +6,7 @@ import pytest
 from _pytest.fixtures import fixture
 from otlmow_modelbuilder.SQLDataClasses.OSLOClass import OSLOClass
 
-from otlmow_gui.Domain import TemplateDomain
-
-
+from otlmow_gui.Domain.step_domain.TemplateDomain import TemplateDomain
 
 PARENT_OF_THIS_FILE = Path(__file__).parent
 

@@ -5,7 +5,7 @@ import pytest
 from _pytest.fixtures import fixture
 
 from otlmow_gui.Domain import global_vars
-from otlmow_gui.GUI import DynamicDataVisualisationScreen
+from otlmow_gui.GUI.screens.DynamicDataVisualisationScreen import DynamicDataVisualisationScreen
 from otlmow_gui.GUI.translation.GlobalTranslate import GlobalTranslate
 
 

@@ -4,7 +4,7 @@ from pathlib import Path
 import pytest
 from _pytest.fixtures import fixture
 
-from otlmow_gui.Domain import SubsetDatabase
+from otlmow_gui.Domain.database.SubsetDatabase import SubsetDatabase
 from otlmow_gui.Exceptions.NotASqlliteFileError import NotASqlliteFileError
 
 ROOT_DIR = Path(__file__).parent.parent
