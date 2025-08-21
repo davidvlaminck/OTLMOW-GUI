@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    
+        <style>
+        .dash-border {border: 2px dashed #004d5c;background-color: #004d5c;}
+        
+        
+        </style>
+        
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <script src="qrc:///qtwebchannel/qwebchannel.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_2c02e81badd051863a0727d4165d48da {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            </style>
+
+            <style>html, body {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            </style>
+
+            <style>#map {
+                position:absolute;
+                top:0;
+                bottom:0;
+                right:0;
+                left:0;
+                }
+            </style>
+
+            <script>
+                L_NO_TOUCH = false;
+                L_DISABLE_3D = false;
+            </script>
+
+        
+</head>
+<body>
+    
+    
+            <div class="folium-map" id="map_2c02e81badd051863a0727d4165d48da" ></div>
+        
+</body>
+<script>
+    
+    var mapEl = document.getElementById('map_2c02e81badd051863a0727d4165d48da');
+var icon_path = 'data:image/png;base64,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';
+ var normal_color = '#FF7F00';
+var highlight_color = '#004d5c';
+
+        
+        //global state vars
+        var previousSelectedId = null;
+        var idToLayerDict = {}
+        var featureGroup = L.featureGroup()
+        
+        //turn cursor/mousepointer into crosshair
+        mapEl.style.cursor = "crosshair";
+        
+        // add webchannel to javascript to communicate with python
+        try{
+            var channel = new QWebChannel(qt.webChannelTransport, function(channel) {
+                window.pywebchannel = channel.objects.webBridge;
+            });
+        } catch (error) {
+          console.error(error);
+          alert("MapScreen: QWebChannel creation error");
+        }
+        
+        
+        function drawLines(latlngs, map_id, text, id)
+        {
+            var line = L.polyline(latlngs, {color:normal_color, weight:5}).addTo(eval(map_id)).bindPopup(text,{autoPan:false});
+            idToLayerDict[id] = line
+            line.on('click', function (e)
+            {
+                //highlight on click
+                var layer = e.target;
+                activateHighlightLayer(id);
+                sendSelectedIdToPython(id);
+            
+            });
+            featureGroup.addLayer(line);
+        }
+        
+        function drawPolygons(latlngs, map_id, text, id)
+        {
+            var line = L.polygon(latlngs, {color:normal_color, weight:5}).addTo(eval(map_id));
+            line.bindPopup(text,{offset:L.point(0,0),autoPan:false})
+            idToLayerDict[id] = line;
+            line.on('click', function (e)
+            {
+                //highlight on click
+                var layer = e.target;
+                activateHighlightLayer(id);
+                sendSelectedIdToPython(id);
+             
+            });
+            featureGroup.addLayer(line);
+        }
+        
+        function drawPoint(lat, lng, map_id, text, id)
+        {
+            var bolIcon = L.icon(
+            {
+                    iconUrl: icon_path,
+                    iconSize:     [15, 15], // size of the icon
+                    iconAnchor:   [7.5, 7.5], // point of the icon which will correspond to marker's location
+                    popupAnchor:  [0.5, 3] // point from which the popup should open relative to the iconAnchor
+            });
+            // Add marker dynamically
+            var marker = L.marker([lat, lng], {icon: bolIcon}).addTo(eval(map_id))
+            .bindPopup(text,{autoPan:false})
+            //.openPopup();
+            idToLayerDict[id] = marker
+           
+            // sendCoordinatesToPython(lat,lng);
+            marker.on('click', function (e)
+            {
+                //highlight on click
+                var layer = e.target;
+                activateHighlightLayer(id);
+                sendSelectedIdToPython(id);
+           
+            });
+            featureGroup.addLayer(marker);
+        }
+        
+        function activateHighlightLayer(id)
+        {
+            if(id in idToLayerDict)
+            {
+                var layer = idToLayerDict[id];
+                var htmlElement = undefined
+                if (layer._icon == undefined)
+                {
+                    //if the visual is line
+                    htmlElement = layer._path
+                    if(layer.options.color == normal_color)
+                    {
+                        disablePreviousHighlightLayer();
+                        layer.setStyle({color: highlight_color, weight:8})
+                        layer.options.color = highlight_color;
+                        layer.options.weight = 8;
+                        layer.redraw()
+                        previousSelectedId = id;
+                        layer.openPopup();
+                    }
+                }
+                else
+                {
+                    //if the visual is marker
+                    htmlElement = layer._icon
+                
+                    if(!L.DomUtil.hasClass(htmlElement, 'dash-border'))
+                    {
+                        disablePreviousHighlightLayer();
+                        L.DomUtil.addClass(htmlElement,'dash-border');
+                        previousSelectedId = id
+                        layer.openPopup();
+                    }
+                }
+            }
+            else
+            {
+                disablePreviousHighlightLayer();
+                previousSelectedId = id
+            }    
+        }
+        
+        function sendCoordinatesToPython(lat,lng)
+        {
+            if (window.pywebchannel) 
+            {
+                window.pywebchannel.receive_coordinates(JSON.stringify({lat: lat, lng: lng}));
+            } 
+            else 
+            {
+                console.log("QWebChannel is not initialized yet.");
+                alert("MapScreen: QWebChannel is not initialized");
+            }
+        }
+        
+        function sendSelectedIdToPython(id)
+        {
+            if (window.pywebchannel) 
+            {
+                window.pywebchannel.receive_selection_id(JSON.stringify({id: id}));
+            } 
+            else 
+            {
+                console.log("QWebChannel is not initialized yet.");
+            }
+        }
+        
+        function disablePreviousHighlightLayer()
+        {
+            if(previousSelectedId && (previousSelectedId in idToLayerDict))
+            {
+                var prevLayer = idToLayerDict[previousSelectedId]
+                var prevLayerhtmlElement = undefined
+                if (prevLayer._icon == undefined)
+                {
+                    //if the previous visual is line
+                    prevLayer.setStyle({color: normal_color, weight:5})
+                    prevLayer.options.color = normal_color
+                    prevLayer.options.weight = 5
+                    prevLayer.redraw()
+                }
+                else
+                {
+                    //if the previous visual is marker
+                    prevLayerhtmlElement = prevLayer._icon
+                    L.DomUtil.removeClass(prevLayerhtmlElement,'dash-border');
+                }
+                    
+            }
+        }
+        
+        function goToLayer(id, map_id)
+        {
+            if(id && (id in idToLayerDict))
+            {
+                var layer = idToLayerDict[id];
+                if (layer._icon == undefined)
+                {
+                    eval(map_id).fitBounds(layer.getBounds(),{maxZoom:20.5});
+                }
+                else
+                {
+                    //this means this is a marker (point geometry)
+                    eval(map_id).panTo(layer.getLatLng())
+                }
+            }
+        }
+        
+        
+        
+            
+    document.addEventListener("DOMContentLoaded", (event) => {
+var split_pair = ['565803.7184352066 6640405.970462618', ' 565805.3231555795 6640407.548768632']
+latlngs = [];
+for (const  coord of split_pair) 
+{
+    //console.log(coord);
+    var split = coord.trim().split(' ');
+    var point = L.CRS.EPSG3857.unproject(L.point([parseFloat(split[0].trim()), parseFloat(split[1].trim())] ));
+    //console.log(point);
+    latlngs.push([point.lat,point.lng]);
+}
+drawLines(latlngs,'map_2c02e81badd051863a0727d4165d48da','dummy_drLCdyy<br>Trajectcontrole','dummy_ZTxRroFsNu');
+var polygons = [['565803.7184352066 6640405.970462618 ', ' 565805.3231555795 6640407.548768632 ', ' 565806.9278765637 6640409.127074638 ', ' 565803.7184352066 6640405.970462618']]
+for (const  split_pair of polygons) 
+{
+    latlngs = [];
+    for (const  coord of split_pair) 
+    {
+        //console.log(coord);
+        var split = coord.trim().split(' ');
+        var point = L.CRS.EPSG3857.unproject(L.point([parseFloat(split[0].trim()), parseFloat(split[1].trim())] ));
+        //console.log(point);
+        latlngs.push([point.lat,point.lng]);
+    }
+   drawPolygons(latlngs,'map_2c02e81badd051863a0727d4165d48da','dummy_GSzUoP<br>AanvullendeGeometrie','dummy_pjpYbjp');
+}
+var split = '565803.7184352066 6640405.970462618'.split(' ');
+var point = L.CRS.EPSG3857.unproject(L.point([parseFloat(split[0]), parseFloat(split[1])] ));
+drawPoint(point.lat,point.lng,'map_2c02e81badd051863a0727d4165d48da','dummy_EgFjRfKZQ<br>Antenne','dummy_mSXr');
+var split_pair = ['565803.7184352066 6640405.970462618', ' 565805.3231555795 6640407.548768632']
+latlngs = [];
+for (const  coord of split_pair) 
+{
+    //console.log(coord);
+    var split = coord.trim().split(' ');
+    var point = L.CRS.EPSG3857.unproject(L.point([parseFloat(split[0].trim()), parseFloat(split[1].trim())] ));
+    //console.log(point);
+    latlngs.push([point.lat,point.lng]);
+}
+drawLines(latlngs,'map_2c02e81badd051863a0727d4165d48da','dummy_RBPeIv<br>Beschermbuis','dummy_oSfqQO');
+var split = '565803.7184352066 6640405.970462618'.split(' ');
+var point = L.CRS.EPSG3857.unproject(L.point([parseFloat(split[0]), parseFloat(split[1])] ));
+drawPoint(point.lat,point.lng,'map_2c02e81badd051863a0727d4165d48da','dummy_HDtnRx<br>Camera','dummy_VCZE');
+var split_pair = ['565803.7184352066 6640405.970462618', ' 565805.3231555795 6640407.548768632']
+latlngs = [];
+for (const  coord of split_pair) 
+{
+    //console.log(coord);
+    var split = coord.trim().split(' ');
+    var point = L.CRS.EPSG3857.unproject(L.point([parseFloat(split[0].trim()), parseFloat(split[1].trim())] ));
+    //console.log(point);
+    latlngs.push([point.lat,point.lng]);
+}
+drawLines(latlngs,'map_2c02e81badd051863a0727d4165d48da','dummy_hwKN<br>Datakabel','dummy_mgYnf');
+var split = '565803.7184352066 6640405.970462618'.split(' ');
+var point = L.CRS.EPSG3857.unproject(L.point([parseFloat(split[0]), parseFloat(split[1])] ));
+drawPoint(point.lat,point.lng,'map_2c02e81badd051863a0727d4165d48da','dummy_BiIxtV<br>Galgpaal','dummy_ZFNFnxwe');
+var split = '565803.7184352066 6640405.970462618'.split(' ');
+var point = L.CRS.EPSG3857.unproject(L.point([parseFloat(split[0]), parseFloat(split[1])] ));
+drawPoint(point.lat,point.lng,'map_2c02e81badd051863a0727d4165d48da','dummy_Ntxqy<br>Illuminator','dummy_Ntxqy');
+var split = '565803.7184352066 6640405.970462618'.split(' ');
+var point = L.CRS.EPSG3857.unproject(L.point([parseFloat(split[0]), parseFloat(split[1])] ));
+drawPoint(point.lat,point.lng,'map_2c02e81badd051863a0727d4165d48da','dummy_ZIxfDZvgQu<br>Laagspanningsbord','dummy_UHtjamiFsn');
+var split = '565803.7184352066 6640405.970462618'.split(' ');
+var point = L.CRS.EPSG3857.unproject(L.point([parseFloat(split[0]), parseFloat(split[1])] ));
+drawPoint(point.lat,point.lng,'map_2c02e81badd051863a0727d4165d48da','dummy_OuAnNpXqLc<br>Lichtmast','dummy_RhqMMK');
+var split = '565803.7184352066 6640405.970462618'.split(' ');
+var point = L.CRS.EPSG3857.unproject(L.point([parseFloat(split[0]), parseFloat(split[1])] ));
+drawPoint(point.lat,point.lng,'map_2c02e81badd051863a0727d4165d48da','dummy_lvXKm<br>Netwerkelement','dummy_iMvaCEfU');
+var split = '565803.7184352066 6640405.970462618'.split(' ');
+var point = L.CRS.EPSG3857.unproject(L.point([parseFloat(split[0]), parseFloat(split[1])] ));
+drawPoint(point.lat,point.lng,'map_2c02e81badd051863a0727d4165d48da','dummy_xglvWxuPo<br>Netwerkpoort','dummy_UmeKGaUE');
+var polygons = [['565803.7184352066 6640405.970462618 ', ' 565805.3231555795 6640407.548768632 ', ' 565806.9278765637 6640409.127074638 ', ' 565803.7184352066 6640405.970462618']]
+for (const  split_pair of polygons) 
+{
+    latlngs = [];
+    for (const  coord of split_pair) 
+    {
+        //console.log(coord);
+        var split = coord.trim().split(' ');
+        var point = L.CRS.EPSG3857.unproject(L.point([parseFloat(split[0].trim()), parseFloat(split[1].trim())] ));
+        //console.log(point);
+        latlngs.push([point.lat,point.lng]);
+    }
+   drawPolygons(latlngs,'map_2c02e81badd051863a0727d4165d48da','dummy_eiPPJMCjV<br>Onderdoorboring','dummy_SbjNI');
+}
+var split = '565803.7184352066 6640405.970462618'.split(' ');
+var point = L.CRS.EPSG3857.unproject(L.point([parseFloat(split[0]), parseFloat(split[1])] ));
+drawPoint(point.lat,point.lng,'map_2c02e81badd051863a0727d4165d48da','dummy_xSyAnU<br>RetroreflecterendVerkeersbord','dummy_UrlwJD');
+var split = '565803.7184352066 6640405.970462618'.split(' ');
+var point = L.CRS.EPSG3857.unproject(L.point([parseFloat(split[0]), parseFloat(split[1])] ));
+drawPoint(point.lat,point.lng,'map_2c02e81badd051863a0727d4165d48da','dummy_Qqcz<br>Verkeersbordsteun','dummy_EjTjGkDO');
+var split_pair = ['565803.7184352066 6640405.970462618', ' 565805.3231555795 6640407.548768632']
+latlngs = [];
+for (const  coord of split_pair) 
+{
+    //console.log(coord);
+    var split = coord.trim().split(' ');
+    var point = L.CRS.EPSG3857.unproject(L.point([parseFloat(split[0].trim()), parseFloat(split[1].trim())] ));
+    //console.log(point);
+    latlngs.push([point.lat,point.lng]);
+}
+drawLines(latlngs,'map_2c02e81badd051863a0727d4165d48da','dummy_urLHpKNX<br>Voedingskabel','dummy_yfLreezNR');
+var polygons = [['565803.7184352066 6640405.970462618 ', ' 565805.3231555795 6640407.548768632 ', ' 565806.9278765637 6640409.127074638 ', ' 565803.7184352066 6640405.970462618']]
+for (const  split_pair of polygons) 
+{
+    latlngs = [];
+    for (const  coord of split_pair) 
+    {
+        //console.log(coord);
+        var split = coord.trim().split(' ');
+        var point = L.CRS.EPSG3857.unproject(L.point([parseFloat(split[0].trim()), parseFloat(split[1].trim())] ));
+        //console.log(point);
+        latlngs.push([point.lat,point.lng]);
+    }
+   drawPolygons(latlngs,'map_2c02e81badd051863a0727d4165d48da','dummy_vmyDvtS<br>Wegkantkast','dummy_MreCs');
+}
+var previousSelectedId = 'None'
+                  if(previousSelectedId && previousSelectedId in idToLayerDict)
+                  {
+                      activateHighlightLayer(previousSelectedId)
+                  eval('map_2c02e81badd051863a0727d4165d48da').fitBounds(idToLayerDict[previousSelectedId].getBounds());
+                  }
+                  else if(featureGroup)
+                  {
+                 eval('map_2c02e81badd051863a0727d4165d48da').fitBounds(featureGroup.getBounds());}});
+    
+            var map_2c02e81badd051863a0727d4165d48da = L.map(
+                "map_2c02e81badd051863a0727d4165d48da",
+                {
+                    center: [51.16872907594677, 4.41375968966803],
+                    crs: L.CRS.EPSG3857,
+                    ...{
+  "zoom": 13,
+  "zoomControl": true,
+  "preferCanvas": false,
+}
+
+                }
+            );
+
+            
+
+        
+    
+            var tile_layer_304f6eaacc8f98404ca9131a85aff0d2 = L.tileLayer(
+                "https://geo.api.vlaanderen.be/OMW/wmts?SERVICE=WMTS\u0026VERSION=1.0.0\u0026REQUEST=GetTile\u0026LAYER=omwrgb24vl\u0026STYLE=\u0026FORMAT=image/png\u0026TILEMATRIXSET=GoogleMapsVL\u0026TILEMATRIX={z}\u0026TILEROW={y}\u0026TILECOL={x}",
+                {
+  "minZoom": 0,
+  "maxZoom": 18,
+  "maxNativeZoom": 18,
+  "noWrap": false,
+  "attribution": "GRB",
+  "subdomains": "abc",
+  "detectRetina": false,
+  "tms": false,
+  "opacity": 1,
+  "maxZoom": 23,
+  "maxNativeZoom": 21,
+}
+
+            );
+        
+    
+            tile_layer_304f6eaacc8f98404ca9131a85aff0d2.addTo(map_2c02e81badd051863a0727d4165d48da);
+        
+    
+            map_2c02e81badd051863a0727d4165d48da.on(
+                "click",
+                function onMapClick(e) {
+var icon_path = 'data:image/png;base64,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';
+ 
+                               
+                                var map_id = e.originalEvent.srcElement.id;
+                                var lat = e.latlng.lat;
+                                var lng = e.latlng.lng;
+             
+                                //drawPoint(lat,lng,map_id,"","");
+                                
+
+                                //console.log(e);-
+
+                                //drawing polygons
+                                var lat1 = lat+1;
+                                var lng1 = lng+1;
+
+                                //// var latlngs = [[lat, lng],[lat1, lng],[lat1, lng1],[lat, lng1]];// sqaure
+                                //// var latlngs = [[lat, lng],[lat1, lng]];// line
+                                var latlngs = [[lat, lng],[lat1, lng],[lat1, lng1]];// corner
+                                ////var latlngs = [[lat, lng]];// dot
+                                //var map = e.originalEvent.srcElement;
+                                
+                                ////var polygon = L.polygon(latlngs, {color: "red"}).addTo(eval(map_id));
+                                //// zoom the map to the polygon
+                                ////eval(e.originalEvent.srcElement.id).fitBounds(polygon.getBounds());
+                                
+                                //drawLines(latlngs, map_id);
+
+                                // Send coordinates to Python
+                                //activateHighlightLayer( 'e64e7fcb-d429-4e3d-8651-706297f14ca4-b25kZXJkZWVsI1ZvZXJ0dWlnbGFudGFhcm4');
+                                
+                            //}
+                             activateHighlightLayer( 'a303e80b-9863-4b47-b0c0-dadb8fc9b651-b25kZXJkZWVsI1ZvZXJ0dWlnbGFudGFhcm4');
+                            if('a303e80b-9863-4b47-b0c0-dadb8fc9b651-b25kZXJkZWVsI1ZvZXJ0dWlnbGFudGFhcm4' && ('a303e80b-9863-4b47-b0c0-dadb8fc9b651-b25kZXJkZWVsI1ZvZXJ0dWlnbGFudGFhcm4' in idToLayerDict))
+                            {
+                              eval(map_id).fitBounds(idToLayerDict['a303e80b-9863-4b47-b0c0-dadb8fc9b651-b25kZXJkZWVsI1ZvZXJ0dWlnbGFudGFhcm4'].getBounds());
+                              }
+                        }
+            );
+        
+</script>
+</html>
