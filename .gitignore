@@ -3,7 +3,10 @@
 /main.spec
 /build/
 /dist/
+/otlmow_gui/dist/
 /LatestReleaseMulti/
 /otlmow_gui.egg-info/
 /otlmow_gui/OTL Wizard 2.spec
+/otlmow_gui/build/
 /OTL Wizard 2.spec
+
