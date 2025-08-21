@@ -6,6 +6,7 @@ import platform
 from pathlib import Path
 
 from otlmow_gui.Domain.enums import Language
+from otlmow_gui.Domain.logger.OTLLogger import OTLLogger
 from otlmow_gui.Domain.ProgramFileStructure import ProgramFileStructure
 
 
@@ -13,7 +14,7 @@ class Settings:
     settings_filename = 'settings.json'
 
     @classmethod
-    def return_language(cls,locale_dir: Path, language: Language = Language.DUTCH):
+    def return_language(cls, locale_dir: Path, language: Language = Language.DUTCH):
         """
         Sets the application's language by loading the appropriate translation files.
 
@@ -33,13 +34,29 @@ class Settings:
 
         :example:
             translator = Settings.return_language(Path('/path/to/locales'), Language.ENGLISH)
-        """
 
+        Falls back to returning the original string if no translation is found.
+        """
         language_str = str(language)
         logging.debug(f"Changing language to: {language_str}")
-        translator = gettext.translation('messages', localedir=locale_dir, languages=[language.value])
-        translator.install()
-        return translator.gettext
+
+        try:
+            translator = gettext.translation(
+                'messages',
+                localedir=locale_dir,
+                languages=[language.value]
+            )
+            translator.install()
+            return translator.gettext
+        except FileNotFoundError:
+            OTLLogger.logger.warning(
+                f"Translation file for '{language.value}' not found in {locale_dir}. "
+                "Falling back to identity translation."
+            )
+            return lambda x: x
+        except Exception as e:
+            OTLLogger.logger.error(f"Error loading translations for {language.value}: {e}")
+            return lambda x: x
 
     @classmethod
     def get_or_create_settings_file(cls) -> dict:
