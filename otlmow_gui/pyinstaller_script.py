@@ -1,3 +1,4 @@
+import os
 import pathlib
 import sys
 
@@ -26,7 +27,7 @@ if not paths:
 
 OTLLogger.logger.debug("paths: " + paths)
 
-
+sep = ';' if os.name == 'nt' else ':'
 
 PyInstaller.__main__.run([
     r'OTL Wizard 2.py',
@@ -41,12 +42,12 @@ PyInstaller.__main__.run([
     '--collect-all', 'otlmow_modelbuilder',
     '--collect-all', 'otlmow_visuals',
     '--collect-all', 'pyvis',
-    '--add-data', 'locale:locale',
-    '--add-data', 'style:style',
-    '--add-data', 'demo_projects:demo_projects',
-    '--add-data', 'img:img',
+    '--add-data', f'locale{sep}locale',
+    '--add-data', f'style{sep}style',
+    '--add-data', f'demo_projects{sep}demo_projects',
+    '--add-data', f'img{sep}img',
     '--add-data', '../pyproject.toml:.',
-    '--add-data', 'javascripts_visualisation:javascripts_visualisation',
+    '--add-data', f'javascripts_visualisation{sep}javascripts_visualisation',
     '--icon','img/wizard.png',
     '--splash','img/Logo-OTL_Wizard_2_no_purple_edge_V3.png',
     '--noconfirm',
