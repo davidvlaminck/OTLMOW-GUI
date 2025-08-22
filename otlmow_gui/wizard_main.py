@@ -1,11 +1,14 @@
 import asyncio
 import importlib
-import os
-import sys
 import typing
 
 from datetime import datetime
 from pathlib import Path
+
+import sys
+import os
+if sys.platform.startswith("linux"):
+    os.environ["QT_QUICK_BACKEND"] = "software" # fixes a flickering issue on some linux systems
 
 from PyQt6 import QtCore
 
