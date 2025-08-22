@@ -121,15 +121,17 @@ class VisualisationHelper:
             add_data.extend(cls.create_UpdateCollectionAttributes_js_function())
             add_data.extend(cls.create_getFlatListOfRelationIdsInCollection())
             add_data.extend(cls.create_UpdateAllRelationHiddenStatesOfColor_js_function())
-            add_data.extend(cls.
-                            create_setAllNonCollectionEdgesToUnhidden_js_function())
+            add_data.extend(cls.create_setAllNonCollectionEdgesToUnhidden_js_function())
 
 
             add_data.extend(cls.load_js_script_file("dragMultiSelect.js"))
 
             cls.replace_and_add_lines(file_data, replace_index,
               "drawGraph();",
-              "var network = drawGraph();\n  document.getElementById('loadingBar').style.display = 'none';\n",add_data)
+              "var network = drawGraph();\n"
+                "var loadingBar = document.getElementById('loadingBar');\n"
+                "if (loadingBar) { loadingBar.style.display = 'none'; }"
+                ,add_data)
 
         with open(file_path, 'w') as file:
             for line in file_data:

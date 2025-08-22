@@ -653,11 +653,16 @@ Help voor het gebruik van het datavisualisatie scherm:
 
     @classmethod
     def disable_stabilisation_loading_screen(cls,file_data):
-        new_code = "var network = drawGraph();\ndocument.getElementById('loadingBar').style.display = 'none'"
-        if new_code in file_data:
+        new_code = (
+            "var network = drawGraph();\n"
+            "var loadingBar = document.getElementById('loadingBar');\n"
+            "if (loadingBar) { loadingBar.style.display = 'none'; }"
+        )
+        if "var network = drawGraph();" in file_data:
             file_data = file_data.replace(
-                "var network = drawGraph();" ,
-                 new_code)
+                "var network = drawGraph();",
+                new_code
+            )
         return file_data
 
     @classmethod
