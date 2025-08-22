@@ -40,5 +40,7 @@ class ProgramFileStructure:
             dynamic_library_path = Path('data', library_name)
         if not dynamic_library_path.exists():
             dynamic_library_path = Path('.').parent / library_name
+        if not dynamic_library_path.exists():
+            dynamic_library_path = Path(__file__).parent.parent / library_name
 
         return dynamic_library_path
