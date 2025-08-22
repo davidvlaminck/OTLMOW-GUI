@@ -16,7 +16,6 @@ from UnitTests.TestClasses.Classes.Onderdeel.Bevestiging import Bevestiging
 from UnitTests.general_fixtures.DomainFixtures import *
 from UnitTests.general_fixtures.GUIFixtures import *
 
-
 #################################################
 # FULL TESTS                                    #
 #################################################
@@ -25,7 +24,7 @@ from UnitTests.general_fixtures.GUIFixtures import *
 #######################################################
 @fixture
 def root_directory() -> Path:
-    return Path(__file__).parent.parent.parent
+    return Path(__file__).parent.parent.parent / 'otlmow_gui'
 
 
 @fixture
@@ -354,17 +353,18 @@ def mock_project(mock_collect_all) -> Project:
 
 @pytest.mark.asyncio
 async def test_fill_class_list_empty_list(qtbot,
-                                    create_translations,
-                                    mock_rel_screen: RelationChangeScreen,
-                                    mock_step3_visuals,
-                                    mock_project,
-                                    mock_load_validated_assets):
+                                          create_translations,
+                                          mock_rel_screen: RelationChangeScreen,
+                                          mock_step3_visuals,
+                                          mock_project,
+                                          mock_load_validated_assets):
     relation_change_screen = mock_rel_screen
 
     test_objects_list = []
 
     local_mock = RelationChangeDomain.set_instances
     RelationChangeDomain.set_instances = AsyncMock()
+    global_vars.current_project = mock_project
     RelationChangeDomain.init_static(mock_project)
     RelationChangeDomain.set_instances = local_mock
 
@@ -381,10 +381,11 @@ Just adding the qtbot to the fixtures makes the test complete without a timeout 
 
 @pytest.mark.asyncio
 async def test_fill_class_list_single_item_list(qtbot,
-                                          create_translations,
-                                          mock_rel_screen,
-                                          mock_project,
-                                          mock_load_validated_assets):
+                                                create_translations,
+                                                mock_rel_screen,
+                                                mock_project,
+                                                mock_load_validated_assets,
+                                                mock_step3_visuals):
     test_object = AllCasesTestClass()
     test_object.assetId.identificator = "dummy_identificator"
 
@@ -394,6 +395,7 @@ async def test_fill_class_list_single_item_list(qtbot,
 
     local_mock = RelationChangeDomain.set_instances
     RelationChangeDomain.set_instances = AsyncMock()
+    global_vars.current_project = mock_project
     RelationChangeDomain.init_static(mock_project)
     RelationChangeDomain.set_instances = local_mock
 

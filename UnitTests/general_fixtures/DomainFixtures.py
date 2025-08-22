@@ -51,7 +51,7 @@ def mock_save_validated_assets_function() -> None:
 
 
 @fixture
-def setup_test_project(root_directory: Path, mock_step3_visuals,mock_get_otl_wizard_projects_dir,mock_save_validated_assets_function) -> None:
+def setup_test_project(root_directory: Path, mock_step3_visuals, mock_get_otl_wizard_projects_dir, mock_save_validated_assets_function) -> None:
     """Set up a test project environment for unit testing.
 
        This fixture initializes a test project by setting the current project and mocking the
@@ -75,8 +75,6 @@ def setup_test_project(root_directory: Path, mock_step3_visuals,mock_get_otl_wiz
        Returns:
            None
        """
-
-
 
     test_subset_file_path: Path = (root_directory / "demo_projects"
                                    /  "simpel_vergelijkings_project"

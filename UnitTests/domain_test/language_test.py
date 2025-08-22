@@ -5,7 +5,7 @@ from otlmow_gui.Domain.enums import Language
 
 ROOT_DIR = Path(__file__).parent
 
-LOCALE_DIR = ROOT_DIR.parent.parent / 'locale/'
+LOCALE_DIR = ROOT_DIR.parent.parent / 'otlmow_gui' / 'locale/'
 
 
 def test_dutch_on_default():

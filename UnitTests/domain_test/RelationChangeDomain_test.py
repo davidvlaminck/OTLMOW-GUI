@@ -27,7 +27,7 @@ from UnitTests.general_fixtures.DomainFixtures import *
 #################################################
 @fixture
 def root_directory() -> Path:
-    return Path(__file__).parent.parent.parent
+    return Path(__file__).parent.parent.parent / 'otlmow_gui'
 
 
 @pytest.fixture(scope="function")

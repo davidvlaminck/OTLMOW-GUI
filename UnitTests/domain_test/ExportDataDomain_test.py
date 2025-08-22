@@ -11,7 +11,7 @@ from UnitTests.general_fixtures.DomainFixtures import *
 
 @fixture
 def root_directory() -> Path:
-    return Path(__file__).parent.parent.parent
+    return Path(__file__).parent.parent.parent / 'otlmow_gui'
 
 
 
@@ -45,7 +45,7 @@ def mock_fill_possible_relations_list(mock_rel_screen: RelationChangeScreen):
 
 @fixture
 def get_export_path_with_cleanup(root_directory: Path) -> Path:
-    export_path = (root_directory / "UnitTests" / "project_files_test" / "OTLWizardProjects" / "TestFiles" /
+    export_path = (root_directory.parent / "UnitTests" / "project_files_test" / "OTLWizardProjects" / "TestFiles" /
                    "testExport.xlsx")
     yield export_path
 
@@ -149,7 +149,7 @@ async def test_add_remove_generate_files(root_directory: Path,setup_simpel_verge
 
     wb = load_workbook(export_path)
 
-    ref_path_expected_workbook = (root_directory / "UnitTests" / "project_files_test" / "OTLWizardProjects" / "reference_files" / "ref_test_add_remove_generate_files.xlsx")
+    ref_path_expected_workbook = (root_directory.parent / "UnitTests" / "project_files_test" / "OTLWizardProjects" / "reference_files" / "ref_test_add_remove_generate_files.xlsx")
     expected_wb = load_workbook(Path(ref_path_expected_workbook))
 
     if 'Keuzelijsten' in expected_wb.sheetnames:
@@ -172,7 +172,7 @@ async def test_add_remove_generate_files(root_directory: Path,setup_simpel_verge
 
 @fixture
 def get_export_path_export_with_cleanup(root_directory: Path) -> Path:
-    export_path = (root_directory / "UnitTests" / "project_files_test" / "OTLWizardProjects" / "TestFiles" /
+    export_path = (root_directory.parent / "UnitTests" / "project_files_test" / "OTLWizardProjects" / "TestFiles" /
                    "testExport.xlsx")
     yield export_path
 
@@ -241,7 +241,7 @@ async def test_add_remove_inactive_relations_and_generate_files(root_directory: 
 
     wb = load_workbook(export_path)
 
-    ref_path_expected_workbook = (root_directory / "UnitTests" / "project_files_test" /
+    ref_path_expected_workbook = (root_directory.parent / "UnitTests" / "project_files_test" /
                                   "OTLWizardProjects" / "reference_files" /
                                   "ref_test_add_temove_inactive_relations_and_generate_files.xlsx")
     expected_wb = load_workbook(Path(ref_path_expected_workbook))
