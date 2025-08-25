@@ -34,9 +34,6 @@ class Updater:
 
     @classmethod
     def check_for_OTL_wizard_updates(cls):
-
-
-
         # TODO: catch and process ratelimit exceeded error
         try:
             contents = cls.github_downloader.download_file_to_memory("pyproject.toml").decode("utf-8")
