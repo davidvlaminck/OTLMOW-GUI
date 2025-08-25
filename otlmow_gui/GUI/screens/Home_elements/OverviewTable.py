@@ -289,7 +289,8 @@ class OverviewTable(QTableWidget):
             None
         """
 
-        UpsertProjectWindow(language_settings=self._,project=project)
+        window = UpsertProjectWindow(language_settings=self._,project=project)
+        window.exec()
 
     def reset_ui(self, lang_settings: dict) -> None:
         """

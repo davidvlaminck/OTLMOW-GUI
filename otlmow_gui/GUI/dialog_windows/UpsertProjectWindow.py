@@ -70,9 +70,6 @@ class UpsertProjectWindow(QDialog):
         layout.addWidget(self.error_label)
         # Fills the dialog with the created layout
         self.setLayout(layout)
-        # Shows the dialog
-        self.show()
-        self.exec()
 
     def create_subset_container(self) -> tuple[QHBoxLayout,QLineEdit]:
         """
@@ -86,9 +83,11 @@ class UpsertProjectWindow(QDialog):
 
         label_subset = QLabel(self._("subset") + ":")
         input_subset = QLineEdit()
+        input_subset.setObjectName("subset_edit")
         input_subset.setReadOnly(True)
         input_subset.setPlaceholderText(self._("subset"))
         file_picker_btn = QPushButton()
+        file_picker_btn.setObjectName("file_picker_btn")
         file_picker_btn.setIcon(qta.icon('mdi.folder-open-outline'))
         file_picker_btn.clicked.connect(lambda: self.open_file_picker(input_subset))
         container_subset = QHBoxLayout()
@@ -109,6 +108,7 @@ class UpsertProjectWindow(QDialog):
 
         label_bestek = QLabel(self._("service_order") + ":")
         input_bestek = QLineEdit()
+        input_bestek.setObjectName("bestek_edit")
         input_bestek.setPlaceholderText(self._("service_order"))
         container_bestek = QHBoxLayout()
         container_bestek.addWidget(label_bestek, alignment=Qt.AlignmentFlag.AlignLeft)
@@ -127,6 +127,7 @@ class UpsertProjectWindow(QDialog):
 
         label_eigen_ref = QLabel(self._("own_reference") + ":")
         input_eigen_ref = QLineEdit()
+        input_eigen_ref.setObjectName("eigen_ref_edit")
         input_eigen_ref.setPlaceholderText(self._("own_reference"))
         container_eigen_ref = QHBoxLayout()
         container_eigen_ref.addWidget(label_eigen_ref, alignment=Qt.AlignmentFlag.AlignLeft)

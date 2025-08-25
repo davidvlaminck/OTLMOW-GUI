@@ -185,9 +185,10 @@ class HeaderBar(QFrame):
 
     def start_dialog_window(self, id_: int = None, is_project=False) -> None:
         if is_project:
-            UpsertProjectWindow(language_settings=self._,project=id_)
+            dialog = UpsertProjectWindow(language_settings=self._,project=id_)
         else:
-            LanguageWindow(language_settings=self._,main_window=self.main_window)
+            dialog = LanguageWindow(language_settings=self._,main_window=self.main_window)
+        dialog.exec()
 
     def header_bar_detail_screen(self):
         if self.initialised:

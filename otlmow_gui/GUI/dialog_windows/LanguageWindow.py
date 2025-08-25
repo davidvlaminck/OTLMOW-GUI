@@ -29,8 +29,6 @@ class LanguageWindow(QDialog):
         layout.addWidget(button_ned)
         layout.addWidget(button_eng)
         self.setLayout(layout)
-        self.show()
-        self.exec()
 
     def change_language(self, lang: Language, main_window: QStackedWidget) -> None:
         """
