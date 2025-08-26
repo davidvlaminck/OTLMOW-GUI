@@ -118,7 +118,7 @@ def test_otl_wizard_full_playthrough(qtbot, patch_subset_file_picker):
     main_window.show()
     assert main_window.isVisible()
 
-    subset_to_use = Path(__file__).parent / 'test_files' / 'input' / 'voorbeeld-slagboom.db'
+    subset_to_use = Path(__file__).parent.parent / 'test_files' / 'input' / 'voorbeeld-slagboom.db'
 
     # Patch the file picker to return the desired subset file
     patch_subset_file_picker(subset_to_use)
