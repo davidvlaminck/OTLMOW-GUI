@@ -22,6 +22,13 @@ It is split into different packages to reduce compatibility issues
 - [otlmow_visuals](https://github.com/davidvlaminck/OTLMOW-Visuals)
 - [otlmow_gui](https://github.com/davidvlaminck/OTLMOW-GUI) (you are currently looking at this package)
 
+## Install with pip
+You can download install the OTL Wizard [here](https://github.com/davidvlaminck/otlmow-gui/wiki/Installation) if you're on Windows.
+Or you can use a Python virtual environment on any platform, install this package and run the otlwizard command.
+### Installing a virtual environment
+### Installing this package
+### Run the OTL wizard command
+
 ## Setup development environment guide
 ### NEEDS atleast python 3.13.2 to use the pyinstaller_script.py to create an .exe file
 
