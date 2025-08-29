@@ -60,3 +60,10 @@ include = ["otlmow_gui*",]
 [project.optional-dependencies]
 test = ["pytest", "pytest-cov", "pytest-subtests", "pytest-qt", "pytest-asyncio","xmltodict"]
 install = ["pyinstaller==6.10", "pillow"]
+
+[project.scripts]
+otlwizard = "otlmow_gui.wizard_main:otl_wizard_2_main"
+otlwizard2 = "otlmow_gui.wizard_main:otl_wizard_2_main"
+otl_wizard = "otlmow_gui.wizard_main:otl_wizard_2_main"
+otl_wizard_2 = "otlmow_gui.wizard_main:otl_wizard_2_main"
+otlmowgui = "otlmow_gui.wizard_main:otl_wizard_2_main"
