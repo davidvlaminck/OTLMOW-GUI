@@ -2,15 +2,21 @@ from pathlib import Path
 
 import shutil
 import pytest
+import json
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QLineEdit, QDialogButtonBox, QApplication, QPushButton
+from PyQt6.QtCore import QPoint
+from random import shuffle
 
 from otlmow_gui.Domain.logger.OTLLogger import OTLLogger
+from otlmow_gui.GUI.screens.Home_elements.OverviewTable import LastAddedProjectHighlightDelegate
 from otlmow_gui.wizard_main import Settings, LANG_DIR
 from otlmow_gui.GUI.MainWindow import MainWindow
 from otlmow_gui.GUI.translation.GlobalTranslate import GlobalTranslate
 from otlmow_gui.GUI.dialog_windows.UpsertProjectWindow import UpsertProjectWindow
 from otlmow_gui.GUI.dialog_windows.file_picker_dialog.SubsetLoadFilePickerDialog import SubsetLoadFilePickerDialog
+
+import otlmow_gui.Domain.global_vars as global_vars
 
 # --- Fixtures ---
 
@@ -99,7 +105,6 @@ def verify_project_files(project_dir, project_name, bestek, subset_filename):
     assert subset_file.exists(), f"Subset file {subset_file} does not exist in project directory."
     details_file = project_dir / 'project_details.json'
     assert details_file.exists(), f"Details file {details_file} does not exist."
-    import json
     with open(details_file, 'r', encoding='utf-8') as f:
         details = json.load(f)
     assert details['eigen_referentie'] == project_name
@@ -121,7 +126,6 @@ def test_1_checking_errors_when_creating_projects(qtbot, patch_subset_file_picke
     language = GlobalTranslate(settings, LANG_DIR).get_all()
     main_window = MainWindow(language)
 
-    import otlmow_gui.Domain.global_vars as global_vars
     global_vars.otl_wizard = type("FakeApp", (), {})()
     global_vars.otl_wizard.main_window = main_window
 
@@ -176,9 +180,6 @@ def test_1_checking_errors_when_creating_projects(qtbot, patch_subset_file_picke
 @pytest.mark.gui
 def test_2_project_table_sorting(qtbot, patch_subset_file_picker):
     """Test that clicking the project table column headers changes the sort order."""
-    import otlmow_gui.Domain.global_vars as global_vars
-    from random import shuffle
-
     # Clean up any old test projects
     base_dir = Path.home() / 'OTLWizardProjects' / 'Projects'
     test_projects = ["SortTestA", "SortTestB", "SortTestC"]
@@ -222,7 +223,6 @@ def test_2_project_table_sorting(qtbot, patch_subset_file_picker):
 
     # Click the column header to sort (assuming column 0 is the project name)
     header = main_window.home_screen.table.horizontalHeader()
-    from PyQt6.QtCore import QPoint
     section_pos = header.sectionPosition(0)
     section_size = header.sectionSize(0)
     center_x = section_pos + section_size // 2
@@ -246,3 +246,58 @@ def test_2_project_table_sorting(qtbot, patch_subset_file_picker):
         pdir = base_dir / name
         if pdir.exists():
             shutil.rmtree(pdir)
+
+
+@pytest.mark.gui
+def test_3_new_project_appears_first_and_highlighted(qtbot, patch_subset_file_picker):
+    """Maak een nieuw project aan met de Nieuw Project dialoog en een zelfgekozen eigen referentie.
+    Als subset selecteer de slagboom subset uit de repo.
+    Check of het nieuw project als eerst in de lijst komt (tenzij andere projecten dezelfde “Laatst bewerkt” datum hebben).
+    Check of het nieuwe project gehighlight wordt in licht groen.
+    """
+    # Setup
+    project_name = "FullTestRunProject"
+    project_dir = Path.home() / 'OTLWizardProjects' / 'Projects' / project_name
+    if project_dir.exists():
+        shutil.rmtree(project_dir)
+
+    settings = Settings.get_or_create_settings_file()
+    OTLLogger.init()
+    language = GlobalTranslate(settings, LANG_DIR).get_all()
+    main_window = MainWindow(language)
+    global_vars.otl_wizard = type("FakeApp", (), {})()
+    global_vars.otl_wizard.main_window = main_window
+    qtbot.addWidget(main_window)
+    main_window.show()
+    assert main_window.isVisible()
+
+    # Use the demo slagboom subset
+    slagboom_subset = Path(__file__).parent.parent.parent / "otlmow_gui" / "demo_projects" / "slagbomen_project" / "voorbeeld-slagboom.db"
+    patch_subset_file_picker(slagboom_subset)
+
+    # Create the new project
+    qtbot.mouseClick(main_window.home_screen.header.new_project_button, Qt.MouseButton.LeftButton)
+    dialog = wait_for_dialog(qtbot, UpsertProjectWindow)
+    fill_upsert_project_dialog(qtbot, dialog, eigen_ref=project_name, bestek="TestBestek", subset=str(slagboom_subset))
+    click_ok_and_expect_close(qtbot, dialog)
+
+    # Wait for the project to appear in the table
+    qtbot.waitUntil(lambda: main_window.home_screen.table.rowCount() > 0, timeout=10000)
+
+    # Check if the new project is at the top (row 0)
+    first_row_name = main_window.home_screen.table.item(0, 0).text()
+    assert first_row_name == project_name, (
+        f"Expected new project '{project_name}' to be first in the table, but got '{first_row_name}'"
+    )
+
+    # Check that the delegate is set and last_added_ref is correct
+    delegate = main_window.home_screen.table.itemDelegate()
+    assert isinstance(delegate, LastAddedProjectHighlightDelegate), "Highlight delegate is not set on the table"
+    assert main_window.home_screen.last_added_ref == project_name, (
+        f"Expected last_added_ref to be '{project_name}', got '{main_window.home_screen.last_added_ref}'"
+    )
+
+    # Clean up
+    main_window.close()
+    if project_dir.exists():
+        shutil.rmtree(project_dir)

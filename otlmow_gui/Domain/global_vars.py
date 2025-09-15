@@ -8,6 +8,8 @@ test_mode = False
 projects = []
 current_project = None
 otl_wizard = None
+
+
 # SDF files are only supported in Windows systems
 if "win" in sys.platform:
     supported_file_formats = {'Excel':"xlsx", 'CSV':"csv", 'JSON':'json','GeoJSON': 'geojson','SDF':'sdf'}
@@ -21,9 +23,8 @@ FDO_toolbox_installer_path_str =  str(Path(os.getcwd()) / "additional_programs" 
 
 def get_start_dir_subset_selection(input_subset_str:str) -> Optional[str]:
     if input_subset_str:
-        file_path = os.path.dirname(input_subset_str)
+        return os.path.dirname(input_subset_str)
     elif last_subset_selected_dir:
-        file_path = last_subset_selected_dir
+        return last_subset_selected_dir
     else:
-        file_path = None
-    return file_path
+        return None

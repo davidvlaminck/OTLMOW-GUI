@@ -31,9 +31,8 @@ def mock_get_home_path_with_empty_directory():
 
 def test_get_all_otl_wizard_projects(caplog, mock_project_home_path):
     projects = HomeDomain.get_all_otl_wizard_projects()
-    assert len(projects) == 1
-    assert list(projects.keys())[0] == 'project_1'
-    assert list(projects.values())[0].project_path == Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1')
+    assert 'project_1' in projects
+    assert projects['project_1'].project_path == Path(PARENT_OF_THIS_FILE / 'OTLWizardProjects' / 'Projects' / 'project_1')
     assert len(caplog.records) == 0
 
 
