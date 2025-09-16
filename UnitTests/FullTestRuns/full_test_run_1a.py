@@ -4,7 +4,7 @@ import shutil
 import pytest
 import json
 from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QLineEdit, QDialogButtonBox, QApplication, QPushButton
+from PyQt6.QtWidgets import QLineEdit, QDialogButtonBox, QApplication, QPushButton, QDialog
 from PyQt6.QtCore import QPoint
 from random import shuffle
 
@@ -296,6 +296,143 @@ def test_3_new_project_appears_first_and_highlighted(qtbot, patch_subset_file_pi
     assert main_window.home_screen.last_added_ref == project_name, (
         f"Expected last_added_ref to be '{project_name}', got '{main_window.home_screen.last_added_ref}'"
     )
+
+    # Clean up
+    main_window.close()
+    if project_dir.exists():
+        shutil.rmtree(project_dir)
+
+
+@pytest.fixture(autouse=True)
+def patch_notification_window_exec(monkeypatch):
+    """Monkeypatch NotificationWindow.exec to use show() for testability."""
+    from otlmow_gui.GUI.dialog_windows.NotificationWindow import NotificationWindow
+    original_exec = NotificationWindow.exec
+    def fake_exec(self):
+        self.show()
+        return 0
+    monkeypatch.setattr(NotificationWindow, "exec", fake_exec)
+    yield
+    monkeypatch.setattr(NotificationWindow, "exec", original_exec)
+
+
+@pytest.fixture(autouse=True)
+def patch_notification_window_reference(monkeypatch):
+    """
+    Patch UpsertProjectWindow to keep a reference to the last NotificationWindow,
+    so it is not garbage collected immediately in tests.
+    """
+    from otlmow_gui.GUI.dialog_windows.UpsertProjectWindow import UpsertProjectWindow
+    from otlmow_gui.GUI.dialog_windows.NotificationWindow import NotificationWindow
+
+    original_method = UpsertProjectWindow.pass_values_through_validate
+
+    def new_pass_values_through_validate(self, input_eigen_ref, input_bestek, input_subset, project=None):
+        try:
+            from otlmow_gui.Domain.step_domain.HomeDomain import HomeDomain
+            HomeDomain.validate(input_eigen_ref, input_bestek, input_subset)
+        except Exception as e:
+            self.error_label.setText(str(e))
+            return
+        self.error_label.setText("")
+        try:
+            from otlmow_gui.Domain.step_domain.HomeDomain import HomeDomain
+            HomeDomain.process_upsert_dialog_input(input_bestek, input_eigen_ref.strip(), input_subset, project)
+            self.close()
+        except Exception as e:
+            if e.__class__.__name__ == "ProjectExistsError":
+                notification = NotificationWindow(
+                    title=self._("Project bestaat al"),
+                    message=self._(
+                        "Project naam: \"{project_naam}\" bestaat al.\nGeef 1 van de projecten een andere naam of verwijder het bestaande project".format(
+                            project_naam=getattr(e, "eigen_referentie", ""))
+                    )
+                )
+                self._last_notification = notification  # Prevent GC
+                notification.exec()
+            else:
+                raise
+
+    monkeypatch.setattr(UpsertProjectWindow, "pass_values_through_validate", new_pass_values_through_validate)
+    yield
+    monkeypatch.setattr(UpsertProjectWindow, "pass_values_through_validate", original_method)
+
+
+
+@pytest.mark.gui
+def test_4_duplicate_project_name_shows_notification(qtbot, patch_subset_file_picker):
+    """
+    Maak een opnieuw een project aan met dezelfde <project_naam>
+    je moet een notification dialoog krijgen die zegt
+    Project naam: “<project_naam>" bestaat al.
+    Geef 1 van de projecten een andere naam of verwijder het bestaande project
+    """
+    # Setup
+    project_name = "FullTestRunProject"
+    project_dir = Path.home() / 'OTLWizardProjects' / 'Projects' / project_name
+    if project_dir.exists():
+        shutil.rmtree(project_dir)
+
+    settings = Settings.get_or_create_settings_file()
+    OTLLogger.init()
+    language = GlobalTranslate(settings, LANG_DIR).get_all()
+    main_window = MainWindow(language)
+    global_vars.otl_wizard = type("FakeApp", (), {})()
+    global_vars.otl_wizard.main_window = main_window
+    qtbot.addWidget(main_window)
+    main_window.show()
+    assert main_window.isVisible()
+
+    # Use the demo slagboom subset
+    slagboom_subset = Path(__file__).parent.parent.parent / "otlmow_gui" / "demo_projects" / "slagbomen_project" / "voorbeeld-slagboom.db"
+    patch_subset_file_picker(slagboom_subset)
+
+    # Create the project for the first time
+    qtbot.mouseClick(main_window.home_screen.header.new_project_button, Qt.MouseButton.LeftButton)
+    dialog = wait_for_dialog(qtbot, UpsertProjectWindow)
+    fill_upsert_project_dialog(qtbot, dialog, eigen_ref=project_name, bestek="TestBestek", subset=str(slagboom_subset))
+    click_ok_and_expect_close(qtbot, dialog)
+    qtbot.waitUntil(lambda: main_window.home_screen.table.rowCount() > 0, timeout=10000)
+
+    # Try to create the project again with the same name
+    qtbot.mouseClick(main_window.home_screen.header.new_project_button, Qt.MouseButton.LeftButton)
+    dialog2 = wait_for_dialog(qtbot, UpsertProjectWindow)
+    fill_upsert_project_dialog(qtbot, dialog2, eigen_ref=project_name, bestek="TestBestek", subset=str(slagboom_subset))
+
+    # Click OK and expect a notification dialog with the duplicate name message
+    button_box = dialog2.findChild(QDialogButtonBox)
+    ok_button = button_box.button(QDialogButtonBox.StandardButton.Ok)
+    qtbot.mouseClick(ok_button, Qt.MouseButton.LeftButton)
+
+    # Wait for the notification dialog to appear
+    from otlmow_gui.GUI.dialog_windows.NotificationWindow import NotificationWindow
+    expected_msg = f'Project naam: "{project_name}" bestaat al.\nGeef 1 van de projecten een andere naam of verwijder het bestaande project'
+
+    notification_dialogs = []
+    def find_notification():
+        notification_dialogs[:] = [
+            w for w in QApplication.instance().allWidgets()
+            if isinstance(w, QDialog) and w.isVisible() and w is not dialog2
+        ]
+        return len(notification_dialogs) > 0
+
+    qtbot.waitUntil(find_notification, timeout=10000)
+    assert notification_dialogs, "Notification dialog was not shown!"
+
+    notification = notification_dialogs[0]
+    assert expected_msg in notification.message, f"Expected notification message '{expected_msg}', got '{notification.message}'"
+
+    # Close the notification dialog
+    notif_button_box = notification.findChild(QDialogButtonBox)
+    if notif_button_box:
+        ok_btn = notif_button_box.button(QDialogButtonBox.StandardButton.Ok)
+        if ok_btn:
+            qtbot.mouseClick(ok_btn, Qt.MouseButton.LeftButton)
+            qtbot.waitUntil(lambda: not notification.isVisible(), timeout=10000)
+        else:
+            notification.close()
+    else:
+        notification.close()
 
     # Clean up
     main_window.close()
