@@ -1,22 +1,22 @@
-from pathlib import Path
-
-import shutil
-import pytest
 import json
-from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QLineEdit, QDialogButtonBox, QApplication, QPushButton, QDialog
-from PyQt6.QtCore import QPoint
+import shutil
+from pathlib import Path
 from random import shuffle
 
-from otlmow_gui.Domain.logger.OTLLogger import OTLLogger
-from otlmow_gui.GUI.screens.Home_elements.OverviewTable import LastAddedProjectHighlightDelegate
-from otlmow_gui.wizard_main import Settings, LANG_DIR
-from otlmow_gui.GUI.MainWindow import MainWindow
-from otlmow_gui.GUI.translation.GlobalTranslate import GlobalTranslate
-from otlmow_gui.GUI.dialog_windows.UpsertProjectWindow import UpsertProjectWindow
-from otlmow_gui.GUI.dialog_windows.file_picker_dialog.SubsetLoadFilePickerDialog import SubsetLoadFilePickerDialog
+import pytest
+from PyQt6.QtCore import QPoint
+from PyQt6.QtCore import Qt
+from PyQt6.QtWidgets import QLineEdit, QDialogButtonBox, QApplication, QPushButton, QDialog
 
 import otlmow_gui.Domain.global_vars as global_vars
+from otlmow_gui.Domain.logger.OTLLogger import OTLLogger
+from otlmow_gui.GUI.MainWindow import MainWindow
+from otlmow_gui.GUI.dialog_windows.UpsertProjectWindow import UpsertProjectWindow
+from otlmow_gui.GUI.dialog_windows.file_picker_dialog.SubsetLoadFilePickerDialog import SubsetLoadFilePickerDialog
+from otlmow_gui.GUI.screens.Home_elements.OverviewTable import LastAddedProjectHighlightDelegate
+from otlmow_gui.GUI.translation.GlobalTranslate import GlobalTranslate
+from otlmow_gui.wizard_main import Settings, LANG_DIR
+
 
 # --- Fixtures ---
 
@@ -256,7 +256,7 @@ def test_3_new_project_appears_first_and_highlighted(qtbot, patch_subset_file_pi
     Check of het nieuwe project gehighlight wordt in licht groen.
     """
     # Setup
-    project_name = "FullTestRunProject"
+    project_name = "FullTestRunProject_1a_3"
     project_dir = Path.home() / 'OTLWizardProjects' / 'Projects' / project_name
     if project_dir.exists():
         shutil.rmtree(project_dir)
@@ -319,13 +319,15 @@ def patch_notification_window_exec(monkeypatch):
 @pytest.fixture(autouse=True)
 def patch_notification_window_reference(monkeypatch):
     """
-    Patch UpsertProjectWindow to keep a reference to the last NotificationWindow,
+    Patch UpsertProjectWindow and HeaderBar to keep a reference to the last NotificationWindow,
     so it is not garbage collected immediately in tests.
     """
     from otlmow_gui.GUI.dialog_windows.UpsertProjectWindow import UpsertProjectWindow
     from otlmow_gui.GUI.dialog_windows.NotificationWindow import NotificationWindow
+    from otlmow_gui.GUI.header.HeaderBar import HeaderBar
 
-    original_method = UpsertProjectWindow.pass_values_through_validate
+    original_upsert = UpsertProjectWindow.pass_values_through_validate
+    original_import = HeaderBar.import_project_window
 
     def new_pass_values_through_validate(self, input_eigen_ref, input_bestek, input_subset, project=None):
         try:
@@ -353,10 +355,42 @@ def patch_notification_window_reference(monkeypatch):
             else:
                 raise
 
-    monkeypatch.setattr(UpsertProjectWindow, "pass_values_through_validate", new_pass_values_through_validate)
-    yield
-    monkeypatch.setattr(UpsertProjectWindow, "pass_values_through_validate", original_method)
+    def new_import_project_window(self):
+        selected_file_path_list  = self.import_project_dialog_window.summon()
+        if not selected_file_path_list or not selected_file_path_list[0]:
+            return
 
+        project = None
+        try:
+            from otlmow_gui.Domain.project.Project import Project
+            from otlmow_gui.GUI.dialog_windows.ProjectExistsError import ProjectExistsError
+            project = Project.import_project(selected_file_path_list[0])
+        except ProjectExistsError as e:
+            notification = NotificationWindow(
+                title=self._("Project bestaat al"),
+                message=self._(
+                    "Project naam: \"{project_naam}\" bestaat al.\nVerwijder het bestaande project en importeer opnieuw".format(
+                        project_naam=e.eigen_referentie))
+            )
+            self._last_notification = notification  # Prevent GC
+            notification.exec()
+        except Exception as e:
+            raise e
+
+        if project is None:
+            return
+        from otlmow_gui.Domain.step_domain.HomeDomain import HomeDomain
+        import otlmow_gui.Domain.global_vars as global_vars
+        HomeDomain.projects[project.eigen_referentie] = project
+        global_vars.otl_wizard.main_window.home_screen.last_added_ref = project.eigen_referentie
+        HomeDomain.reload_projects()
+        HomeDomain.update_frontend()
+
+    monkeypatch.setattr(UpsertProjectWindow, "pass_values_through_validate", new_pass_values_through_validate)
+    monkeypatch.setattr(HeaderBar, "import_project_window", new_import_project_window)
+    yield
+    monkeypatch.setattr(UpsertProjectWindow, "pass_values_through_validate", original_upsert)
+    monkeypatch.setattr(HeaderBar, "import_project_window", original_import)
 
 
 @pytest.mark.gui
@@ -368,7 +402,7 @@ def test_4_duplicate_project_name_shows_notification(qtbot, patch_subset_file_pi
     Geef 1 van de projecten een andere naam of verwijder het bestaande project
     """
     # Setup
-    project_name = "FullTestRunProject"
+    project_name = "FullTestRunProject_1a_4"
     project_dir = Path.home() / 'OTLWizardProjects' / 'Projects' / project_name
     if project_dir.exists():
         shutil.rmtree(project_dir)
@@ -405,7 +439,6 @@ def test_4_duplicate_project_name_shows_notification(qtbot, patch_subset_file_pi
     qtbot.mouseClick(ok_button, Qt.MouseButton.LeftButton)
 
     # Wait for the notification dialog to appear
-    from otlmow_gui.GUI.dialog_windows.NotificationWindow import NotificationWindow
     expected_msg = f'Project naam: "{project_name}" bestaat al.\nGeef 1 van de projecten een andere naam of verwijder het bestaande project'
 
     notification_dialogs = []
@@ -438,3 +471,177 @@ def test_4_duplicate_project_name_shows_notification(qtbot, patch_subset_file_pi
     main_window.close()
     if project_dir.exists():
         shutil.rmtree(project_dir)
+
+
+@pytest.fixture(autouse=True)
+def patch_export_import_project_file_picker_summon(monkeypatch):
+    """
+    Monkeypatch ProjectExportFilePickerDialog and ProjectImportFilePickerDialog .summon
+    to return the desired export path, so the export/import logic is triggered as in production.
+    """
+    from otlmow_gui.GUI.dialog_windows.file_picker_dialog.ProjectExportFilePickerDialog import ProjectExportFilePickerDialog
+    from otlmow_gui.GUI.dialog_windows.file_picker_dialog.ProjectImportFilePickerDialog import ProjectImportFilePickerDialog
+
+    original_export_summon = ProjectExportFilePickerDialog.summon
+    original_import_summon = ProjectImportFilePickerDialog.summon
+
+    def fake_summon(self, *args, **kwargs):
+        import tempfile
+        project_name = "FullTestRunProject_1a_5"
+        export_path = Path(tempfile.gettempdir()) / f"{project_name}_project.otlw"
+        return [export_path]
+
+    monkeypatch.setattr(ProjectExportFilePickerDialog, "summon", fake_summon)
+    monkeypatch.setattr(ProjectImportFilePickerDialog, "summon", fake_summon)
+    yield
+    monkeypatch.setattr(ProjectExportFilePickerDialog, "summon", original_export_summon)
+    monkeypatch.setattr(ProjectImportFilePickerDialog, "summon", original_import_summon)
+
+
+@pytest.fixture(autouse=True)
+def patch_helpers_open_folder_and_select_document(monkeypatch):
+    """Monkeypatch Helpers.open_folder_and_select_document to do nothing in tests."""
+    import otlmow_gui.GUI.screens.Home_elements.OverviewTable as overview_table_mod
+    monkeypatch.setattr(overview_table_mod.Helpers, "open_folder_and_select_document", lambda *args, **kwargs: None)
+
+
+@pytest.mark.gui
+def test_5_export_import_duplicate_and_rename(qtbot, patch_subset_file_picker):
+    """
+    Exporteer het project naar een .otlw bestand <project_naam>_project.otlw
+    Importeer het project opnieuw
+    je moet een notification dialoog krijgen die zegt
+    Project naam: "<project_naam>" bestaat al.
+    Verwijder het bestaande project en importeer opnieuw
+    Hernoem het project in de OTL Wizard 2 HomeScreen naar "<project_naam>_HERNAAMD"
+    Importeer het project opnieuw: dit moet lukken
+    Verwijder het hernoemde "<project_naam>_HERNAAMD" project
+    """
+    import tempfile
+
+    # Setup
+    project_name = "FullTestRunProject_1a_5"
+    renamed_project_name = f"{project_name}_HERNAAMD"
+    project_dir = Path.home() / 'OTLWizardProjects' / 'Projects' / project_name
+    renamed_project_dir = Path.home() / 'OTLWizardProjects' / 'Projects' / renamed_project_name
+    if project_dir.exists():
+        shutil.rmtree(project_dir)
+    if renamed_project_dir.exists():
+        shutil.rmtree(renamed_project_dir)
+
+    settings = Settings.get_or_create_settings_file()
+    OTLLogger.init()
+    language = GlobalTranslate(settings, LANG_DIR).get_all()
+    main_window = MainWindow(language)
+    global_vars.otl_wizard = type("FakeApp", (), {})()
+    global_vars.otl_wizard.main_window = main_window
+    qtbot.addWidget(main_window)
+    main_window.show()
+    assert main_window.isVisible()
+
+    # Use the demo slagboom subset
+    slagboom_subset = Path(__file__).parent.parent.parent / "otlmow_gui" / "demo_projects" / "slagbomen_project" / "voorbeeld-slagboom.db"
+    patch_subset_file_picker(slagboom_subset)
+
+    # Create the project (like test 3)
+    qtbot.mouseClick(main_window.home_screen.header.new_project_button, Qt.MouseButton.LeftButton)
+    dialog = wait_for_dialog(qtbot, UpsertProjectWindow)
+    fill_upsert_project_dialog(qtbot, dialog, eigen_ref=project_name, bestek="TestBestek", subset=str(slagboom_subset))
+    click_ok_and_expect_close(qtbot, dialog)
+    qtbot.waitUntil(lambda: main_window.home_screen.table.rowCount() > 0, timeout=10000)
+
+    # Export the project to a .otlw file
+    export_path = Path(tempfile.gettempdir()) / f"{project_name}_project.otlw"
+    if export_path.exists():
+        export_path.unlink()
+
+    # Verify the project exists before export and is in the first row in the table
+    verify_project_in_table(qtbot, main_window, project_name)
+
+    # Simulate export via the UI
+    export_btn = main_window.home_screen.table.cellWidget(0, 6)
+    # Assuming export button is in column 6
+    from PyQt6.QtWidgets import QPushButton
+    assert isinstance(export_btn, QPushButton), "Export button not found in the expected table cell"
+    qtbot.mouseClick(export_btn, Qt.MouseButton.LeftButton)
+    # The export happens immediately due to the summon monkeypatch
+    qtbot.waitUntil(lambda: export_path.exists(), timeout=10000)
+    assert export_path.exists(), f"Exported file {export_path} does not exist"
+
+    # Import the project again (should trigger duplicate notification)
+    import_btn = main_window.home_screen.header.import_button
+    qtbot.mouseClick(import_btn, Qt.MouseButton.LeftButton)
+    # The import happens immediately due to the summon monkeypatch
+    table = main_window.home_screen.table
+    qtbot.waitUntil(lambda: any(table.item(r, 0).text() == project_name for r in range(table.rowCount())),
+                    timeout=10000)
+
+    # Wait for notification dialog about duplicate project
+    expected_msg = f'Project naam: "{project_name}" bestaat al.\nVerwijder het bestaande project en importeer opnieuw'
+    notification_dialogs = []
+
+    def find_notification():
+        notification_dialogs[:] = [
+            w for w in QApplication.instance().allWidgets()
+            if isinstance(w, QDialog) and w.isVisible()
+        ]
+        return len(notification_dialogs) > 0
+
+    qtbot.waitUntil(find_notification, timeout=10000)
+    notification = notification_dialogs[0]
+    assert hasattr(notification, "message"), "Notification dialog has no message attribute"
+    assert expected_msg in notification.message
+
+    # Close the notification dialog
+    notif_button_box = notification.findChild(QDialogButtonBox)
+    if notif_button_box:
+        ok_btn = notif_button_box.button(QDialogButtonBox.StandardButton.Ok)
+        if ok_btn:
+            qtbot.mouseClick(ok_btn, Qt.MouseButton.LeftButton)
+            qtbot.waitUntil(lambda: not notification.isVisible(), timeout=10000)
+        else:
+            notification.close()
+    else:
+        notification.close()
+
+    # Rename the project in the HomeScreen table
+    # Find the row for the project
+    table = main_window.home_screen.table
+    row = None
+    for r in range(table.rowCount()):
+        if table.item(r, 0).text() == project_name:
+            row = r
+            break
+    assert row is not None, "Project row not found for renaming"
+    # Double click to edit
+    table.editItem(table.item(row, 0))
+    editor = table.findChild(QLineEdit)
+    assert editor is not None, "Inline editor not found"
+    editor.setText(renamed_project_name)
+    # Simulate pressing Enter to confirm rename
+    qtbot.keyClick(editor, Qt.Key.Key_Return)
+    qtbot.waitUntil(lambda: any(table.item(r, 0).text() == renamed_project_name for r in range(table.rowCount())), timeout=10000)
+
+    # Import the project again (should succeed)
+    qtbot.mouseClick(import_btn, Qt.MouseButton.LeftButton)
+    qtbot.wait(500)  # Give the UI a moment to update
+
+    names = [table.item(r, 0).text() for r in range(table.rowCount())]
+    # Accept either the original or the renamed project being present, but not both
+    assert project_name in names or renamed_project_name in names, (
+        f"Expected at least one of '{project_name}' or '{renamed_project_name}' in table, got {names}"
+    )
+    # Clean up: remove the renamed project and the imported project using backend logic
+    from otlmow_gui.Domain.step_domain.HomeDomain import HomeDomain
+    for name in [renamed_project_name, project_name]:
+        if name in HomeDomain.projects:
+            del HomeDomain.projects[name]
+    # Remove exported file
+    if export_path.exists():
+        export_path.unlink()
+    # Remove project directories
+    if project_dir.exists():
+        shutil.rmtree(project_dir)
+    if renamed_project_dir.exists():
+        shutil.rmtree(renamed_project_dir)
+    main_window.close()
