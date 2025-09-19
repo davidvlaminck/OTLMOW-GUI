@@ -179,7 +179,7 @@ def remove_first_row_from_excel(export_path):
 
 @pytest.mark.gui
 @pytest.mark.asyncio
-async def test_1_4_template_generation_and_class_selection(qtbot, patch_subset_file_picker):
+async def test_1_4_template_generation_and_class_selection_excel(qtbot, patch_subset_file_picker):
     """
     TEST stap 1: Aanmaken van template
     - Maak een nieuw project aan (zoals in 1a test_3).
