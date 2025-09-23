@@ -463,3 +463,129 @@ async def test_1_5_template_generation_and_class_selection_csv(qtbot, patch_subs
             class_file = export_path.parent / f"{export_path.stem}_{uri_to_filename(class_uri)}.csv"
             if class_file.exists():
                 class_file.unlink()
+
+@pytest.mark.skip(reason="SDF export only implemented on windows with FDO Toolbox installed")
+def test_1_6_template_generation_and_class_selection_sdf():
+    pass
+
+
+def assert_all_selected(class_table):
+    assert all(class_table.item(r).isSelected() for r in range(class_table.count()))
+
+
+def assert_none_selected(class_table):
+    assert not any(class_table.item(r).isSelected() for r in range(class_table.count()))
+
+
+def toggle_select_all(qtbot, checkbox, class_table, select=True):
+    qtbot.mouseClick(checkbox, Qt.MouseButton.LeftButton)
+    QApplication.processEvents()
+    qtbot.wait(200)
+    if select:
+        for r in range(class_table.count()):
+            class_table.item(r).setSelected(True)
+    else:
+        class_table.clearSelection()
+    class_table.sync_selected_items_with_backend()
+    QApplication.processEvents()
+    qtbot.wait(200)
+
+
+def click_class_item(qtbot, class_table, idx):
+    qtbot.mouseClick(class_table.viewport(), Qt.MouseButton.LeftButton,
+                     pos=class_table.visualItemRect(class_table.item(idx)).center())
+    QApplication.processEvents()
+    qtbot.wait(100)
+    class_table.sync_selected_items_with_backend()
+
+
+@pytest.mark.gui
+@pytest.mark.asyncio
+async def test_1_7_8_subset_adjust_and_select_all(qtbot, patch_subset_file_picker):
+    """
+    7 Test subset aanpassen feature
+        druk op “Aanpassen subset”
+        selecteer opnieuw de subset: demo_projects/slagbomen_project/voorbeeld-slagboom.db
+        check of er nog steeds 6 klasses zijn en dat alles opnieuw geselecteerd is
+    8 Test “selecteer alle asset types” checkbox
+        deselecteer de checkbox “selecteer alle asset types”
+            alle classes moeten geDEselecteerd zijn
+            “Exporteren” knop moet uitgegrijsd zijn en onbruikbaar een tooltip moet komen als je op de “exporteren” knop hovered met tekst “Selecteer minstens 1 klasse om te exporteren”
+        selecteer de checkbox “selecteer alle asset types”
+            alle klassen moeten geSElecteerd zijn
+            “Exporteren” knop moet groen en klikbaar zijn
+        als je 1 klasse deselecteert
+            de “Selecteer alle asset types” checkbox moet geDEselecteerd zijn
+        als je dezelfde klasse terug selecteert (zodat alle klasse geselecteerd zijn)
+            De “Selecteer alle asset types” checkbox met geselecteerd zijn
+    """
+    project_name = "FullTestRunProject_1b_7"
+    project_dir = Path.home() / 'OTLWizardProjects' / 'Projects' / project_name
+    slagboom_subset = Path(__file__).parent.parent.parent / "otlmow_gui" / "demo_projects" / "slagbomen_project" / "voorbeeld-slagboom.db"
+    export_tooltip_text = "Selecteer minstens 1 klasse om te exporteren"
+
+    # Cleanup
+    if project_dir.exists():
+        shutil.rmtree(project_dir)
+
+    try:
+        settings = Settings.get_or_create_settings_file()
+        OTLLogger.init()
+        language = GlobalTranslate(settings, LANG_DIR).get_all()
+        main_window = MainWindow(language)
+        import otlmow_gui.Domain.global_vars as global_vars
+        global_vars.otl_wizard = type("FakeApp", (), {})()
+        global_vars.otl_wizard.main_window = main_window
+        qtbot.addWidget(main_window)
+        main_window.show()
+        assert main_window.isVisible()
+
+        patch_subset_file_picker(slagboom_subset)
+        class_table = await create_and_open_project(qtbot, main_window, project_name, "TestBestek", slagboom_subset)
+        qtbot.waitUntil(lambda: class_table.count() > 0, timeout=10000)
+
+        # Adjust subset via UpsertProjectWindow
+        from otlmow_gui.Domain.step_domain.HomeDomain import HomeDomain
+        the_project = HomeDomain.projects[project_name]
+        upsert = UpsertProjectWindow(language, project=the_project)
+        qtbot.addWidget(upsert)
+        upsert.show()
+        file_picker_btn = upsert.findChild(QPushButton, "file_picker_btn")
+        assert file_picker_btn is not None, "file_picker_btn not found in UpsertProjectWindow"
+        qtbot.mouseClick(file_picker_btn, Qt.MouseButton.LeftButton)
+        subset_edit = upsert.findChild(QLineEdit, "subset_edit")
+        qtbot.waitUntil(lambda: subset_edit is not None and subset_edit.text() != "", timeout=10000)
+        click_ok_and_expect_close(qtbot, upsert)
+
+        qtbot.waitUntil(lambda: class_table.count() == 6, timeout=10000)
+        assert_all_selected(class_table)
+
+        select_all_checkbox = getattr(main_window.step1, "select_all_classes", None)
+        assert select_all_checkbox is not None, "select all checkbox not found on step1"
+        export_btn = main_window.step1.export_button
+        assert export_btn is not None
+
+        # Deselect all
+        toggle_select_all(qtbot, select_all_checkbox, class_table, select=False)
+        qtbot.waitUntil(lambda: not any(class_table.item(r).isSelected() for r in range(class_table.count())), timeout=10000)
+        assert_none_selected(class_table)
+        assert not export_btn.isEnabled()
+        assert export_btn.toolTip() == export_tooltip_text
+
+        # Select all
+        toggle_select_all(qtbot, select_all_checkbox, class_table, select=True)
+        qtbot.waitUntil(lambda: all(class_table.item(r).isSelected() for r in range(class_table.count())), timeout=10000)
+        assert_all_selected(class_table)
+        assert export_btn.isEnabled()
+
+        # Deselect a single class
+        click_class_item(qtbot, class_table, 0)
+        qtbot.waitUntil(lambda: not select_all_checkbox.isChecked(), timeout=10000)
+
+        # Re-select that class
+        click_class_item(qtbot, class_table, 0)
+        qtbot.waitUntil(lambda: select_all_checkbox.isChecked(), timeout=10000)
+
+    finally:
+        if project_dir.exists():
+            shutil.rmtree(project_dir)
