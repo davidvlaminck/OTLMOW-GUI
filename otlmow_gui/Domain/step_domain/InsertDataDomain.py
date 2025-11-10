@@ -382,7 +382,8 @@ class InsertDataDomain:
                     relations_per_filepath_str_dict.pop(file_path_str)
                     raise exception_group
 
-                project_file.state = FileState.OK
+                if project_file.state != FileState.ERROR:
+                    project_file.state = FileState.OK
             except Exception as ex:
                 error_set.append({"exception": ex, "path_str": file_path})
                 project_file.state = FileState.ERROR
