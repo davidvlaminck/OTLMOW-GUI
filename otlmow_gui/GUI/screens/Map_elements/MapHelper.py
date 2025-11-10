@@ -17,10 +17,16 @@ class MapHelper:
     highlight_color = "#004d5c"
 
     @classmethod
-    async def create_html_map(cls,id_to_object_with_text_and_data_dict:dict,ROOT_DIR,HTML_DIR,prev_selected_asset_id=None):
+    async def create_html_map(cls,id_to_object_with_text_and_data_dict:dict,IMG_DIR,HTML_DIR,prev_selected_asset_id=None):
         m = cls.create_folium_map()
+
+        OTLLogger.logger.debug(pathlib.Path.home().drive)
+        OTLLogger.logger.debug(IMG_DIR)
+        OTLLogger.logger.debug(str(
+            (IMG_DIR/ "bol_orange.png")))
+
         img_qurl = QUrl(pathlib.Path.home().drive + str(
-            (ROOT_DIR.parent.parent / "img" / "bol_orange.png").absolute()).replace("\\", "/"))
+            (IMG_DIR / "bol_orange.png").absolute()).replace("\\", "/"))
         img_path = img_qurl.path()
 
         with open(img_path, 'rb') as img_file:
@@ -331,15 +337,15 @@ class MapHelper:
         """)
         m.get_root().header.add_child(folium.Element(dash_style))
 
-        map_path = cls.get_map_html_save_path(HTML_DIR, ROOT_DIR)
+        map_path = cls.get_map_html_save_path(HTML_DIR, IMG_DIR)
         m.save(map_path)
         map_id = m.get_name()
         map = m
         return map_path, map , map_id
 
     @classmethod
-    def get_map_html_save_path(cls, HTML_DIR: pathlib.Path, ROOT_DIR: pathlib.Path) -> str:
-        html_dir = ROOT_DIR.parent.parent / 'img' / 'html'
+    def get_map_html_save_path(cls, HTML_DIR: pathlib.Path, IMG_DIR: pathlib.Path) -> str:
+        html_dir = IMG_DIR.parent / 'html'
         if not html_dir.exists():
             html_dir = HTML_DIR
 

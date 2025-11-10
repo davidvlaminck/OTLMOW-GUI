@@ -31,6 +31,7 @@ from otlmow_gui.exception_handler.ExceptionHandlers import create_task_reraise_e
 
 ROOT_DIR = Path(__file__).parent
 
+
 HTML_DIR = Path.home() / 'OTLWizardProjects' / 'img' / 'html'
 
 
@@ -199,8 +200,10 @@ class MapScreen(Screen):
 
         self.relation_change_screen_object_list_content_dict = self.load_assets()
 
+        IMG_DIR = ROOT_DIR.parent.parent / 'img/'
+
         map_path, self.map , self.map_id = await MapHelper.create_html_map(self.relation_change_screen_object_list_content_dict,
-                                                                     ROOT_DIR, HTML_DIR,self.prev_selected_asset_id)
+                                                                     IMG_DIR, HTML_DIR,self.prev_selected_asset_id)
         self.web_bridge.folium_map = self.map
         # self.webView.setHtml(open(map_path).read())
         map_QUrl = QUrl.fromLocalFile(map_path.replace("\\", "/"))
