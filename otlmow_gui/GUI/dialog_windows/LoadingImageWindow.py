@@ -8,6 +8,7 @@ from PyQt6.QtGui import QFont, QMovie
 from PyQt6.QtCore import Qt, QSize
 
 from otlmow_gui.Domain import global_vars
+from otlmow_gui.Domain.ProgramFileStructure import ProgramFileStructure
 from otlmow_gui.Domain.logger.OTLLogger import OTLLogger
 from otlmow_gui.exception_handler.ExceptionHandlers import create_task_reraise_exception
 
@@ -70,7 +71,9 @@ class LoadingImageWindow(QDialog):
     ref_key_to_time_dict = {}
     loading_window = None
 
-    image_path = ROOT_DIR / "img"/ "cat_fly_animation.gif"
+    IMG_DIR = ProgramFileStructure.get_dynamic_library_path('img')
+
+    image_path = IMG_DIR /  "cat_fly_animation.gif"
     # image_path = "C:\\Users\\chris\\PycharmProjects\\OTLMOW-GUI\\img\\yoda_patience.jpg"
     # image_path = "C:\\Users\\chris\\PycharmProjects\\OTLMOW-GUI\\img\\cat_fly_animation.gif"
 

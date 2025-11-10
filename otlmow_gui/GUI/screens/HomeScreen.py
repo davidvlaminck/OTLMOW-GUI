@@ -1,5 +1,4 @@
 
-from pathlib import Path
 from typing import Optional, Callable
 
 from PyQt6.QtGui import QPixmap
@@ -9,6 +8,7 @@ from PyQt6.QtWidgets import QWidget, QLabel, QHBoxLayout, QVBoxLayout, \
     QLineEdit, QFrame, QPushButton, QSizePolicy
 from PyQt6.QtCore import Qt
 
+from otlmow_gui.Domain.ProgramFileStructure import ProgramFileStructure
 from otlmow_gui.Domain.project.Project import Project
 from otlmow_gui.Domain.step_domain.HomeDomain import HomeDomain
 from otlmow_gui.Domain.network.Updater import Updater
@@ -21,9 +21,7 @@ from otlmow_gui.GUI.screens.Home_elements.OverviewTable import OverviewTable, \
 
 from otlmow_gui.GUI.screens.screen_interface.HomeScreenInterface import HomeScreenInterface
 
-ROOT_DIR = Path(__file__).parent
-
-IMG_DIR = ROOT_DIR.parent.parent / 'img/'
+IMG_DIR = ProgramFileStructure.get_dynamic_library_path('img')
 
 
 class HomeScreen(HomeScreenInterface):

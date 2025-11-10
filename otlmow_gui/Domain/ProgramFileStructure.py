@@ -31,8 +31,24 @@ class ProgramFileStructure:
 
         return model_dir_path
 
+    _dynamic_library_cache = {}
+
     @classmethod
     def get_dynamic_library_path(cls, library_name: str) -> Path:
+        """Returns the resolved path to a dynamic library, using a cache for efficiency.
+
+        This method attempts to resolve the path to the given library name using several strategies.
+        The result is cached per library name for faster repeated lookups.
+
+        Args:
+            library_name (str): The name of the dynamic library.
+
+        Returns:
+            Path: The resolved path to the dynamic library.
+        """
+        if library_name in cls._dynamic_library_cache:
+            return cls._dynamic_library_cache[library_name]
+
         dynamic_library_path = Path(library_name)
         if hasattr(sys, '_MEIPASS'):  # when in .exe file
             dynamic_library_path = Path(sys._MEIPASS, library_name)
@@ -45,4 +61,5 @@ class ProgramFileStructure:
         if not dynamic_library_path.exists() and library_name == 'pyproject.toml':
             dynamic_library_path = Path(__file__).parent.parent.parent / library_name
 
+        cls._dynamic_library_cache[library_name] = dynamic_library_path
         return dynamic_library_path

@@ -21,6 +21,7 @@ from otlmow_model.OtlmowModel.BaseClasses.OTLObject import OTLObject
 from otlmow_visuals.PyVisWrapper import PyVisWrapper
 
 from otlmow_gui.Domain import global_vars
+from otlmow_gui.Domain.ProgramFileStructure import ProgramFileStructure
 from otlmow_gui.Domain.logger.OTLLogger import OTLLogger
 from otlmow_gui.Domain.step_domain.RelationChangeDomain import RelationChangeDomain
 from otlmow_gui.GUI.dialog_windows.LoadingImageWindow import add_loading_screen
@@ -31,6 +32,7 @@ from otlmow_gui.exception_handler.ExceptionHandlers import create_task_reraise_e
 
 ROOT_DIR = Path(__file__).parent
 
+IMG_DIR = ProgramFileStructure.get_dynamic_library_path('img')
 
 HTML_DIR = Path.home() / 'OTLWizardProjects' / 'img' / 'html'
 
@@ -91,7 +93,7 @@ class MapScreen(Screen):
 
         self.channel = QWebChannel()
         self.img_qurl = QUrl(pathlib.Path.home().drive + str(
-            (ROOT_DIR.parent.parent / "img" / "bol.png").absolute()).replace("\\","/"))
+            (IMG_DIR / "bol.png").absolute()).replace("\\","/"))
 
         # self.relation_change_screen_object_list_content_dict = self.load_assets()
 
@@ -199,8 +201,6 @@ class MapScreen(Screen):
         gc.collect()
 
         self.relation_change_screen_object_list_content_dict = self.load_assets()
-
-        IMG_DIR = ROOT_DIR.parent.parent / 'img/'
 
         map_path, self.map , self.map_id = await MapHelper.create_html_map(self.relation_change_screen_object_list_content_dict,
                                                                      IMG_DIR, HTML_DIR,self.prev_selected_asset_id)

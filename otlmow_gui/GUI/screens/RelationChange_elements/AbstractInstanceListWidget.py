@@ -1,5 +1,4 @@
 import abc
-from pathlib import Path
 from typing import Optional, Collection
 
 from PyQt6.QtCore import Qt, QModelIndex, QItemSelectionModel
@@ -12,15 +11,17 @@ import qtawesome as qta
 from otlmow_model.OtlmowModel.Classes.ImplementatieElement.AIMObject import AIMObject
 from otlmow_visuals.PyVisWrapper import PyVisWrapper
 
+from otlmow_gui.Domain.ProgramFileStructure import ProgramFileStructure
 from otlmow_gui.Domain.logger.OTLLogger import OTLLogger
 from otlmow_gui.Domain.step_domain.RelationChangeDomain import RelationChangeDomain
 from otlmow_gui.GUI.Styling import Styling
 from otlmow_gui.GUI.screens.general_elements.ButtonWidget import ButtonWidget
 from otlmow_gui.GUI.screens.RelationChange_elements.FolderTreeView import FolderTreeView
 
-ROOT_DIR = Path(__file__).parent.parent.parent.parent
-IMG_DIR = ROOT_DIR / 'img/'
+IMG_DIR = ProgramFileStructure.get_dynamic_library_path('img')
 MULTI_SELECTION = QListWidget.SelectionMode.MultiSelection
+
+
 class AbstractInstanceListWidget:
 
     def __init__(self, language_settings,parent,labels,list_gui_style_class=None,needs_source_object= False):
