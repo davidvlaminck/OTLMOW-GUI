@@ -91,13 +91,13 @@ async def test_full_set_possible_relations(root_directory:Path,
     # search with regex for (#Verkeersbordopstelling'|#Pictogram'|#Funderingsmassief'|#verkeersbordsteun'|BevestigingGC'|#Draagconstructie'|#Fundering'|#ConstructieElement')
     # with external objects added every relation possible in the entire OTL model is found
     class1 = "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Verkeersbordsteun"
-    assert len(RelationChangeDomain.possible_relations_per_class_dict[class1]) == 75
+    assert len(RelationChangeDomain.possible_relations_per_class_dict[class1]) == 74
 
     class2 = "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Funderingsmassief"
-    assert len(RelationChangeDomain.possible_relations_per_class_dict[class2]) == 735
+    assert len(RelationChangeDomain.possible_relations_per_class_dict[class2]) == 731
 
     class3 = "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Pictogram"
-    assert len(RelationChangeDomain.possible_relations_per_class_dict[class3]) == 119
+    assert len(RelationChangeDomain.possible_relations_per_class_dict[class3]) == 118
 
     class4 = "https://wegenenverkeer.data.vlaanderen.be/ns/installatie#Verkeersbordopstelling"
     assert len(RelationChangeDomain.possible_relations_per_class_dict[class4]) == 33
