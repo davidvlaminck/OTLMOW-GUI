@@ -20,13 +20,13 @@ jobs:
           python-version: 3.13
 
       - name: Installing dependencies with uv
-        run: uv pip install -r pyproject.toml --extra install
-
-      - name: Export PYTHONPATH
-        run: echo "PYTHONPATH=${{ github.workspace }}" | Out-File -FilePath $env:GITHUB_ENV -Encoding ASCII
+        run: |
+          uv pip install -r pyproject.toml --extra install
+          pip install -e .
         shell: pwsh
 
       - name: Run PyInstaller script to create EXE
+        working-directory: ${{ github.workspace }}    # repo root
         run: python .\otlmow_gui\pyinstaller_script.py
         shell: pwsh
 
