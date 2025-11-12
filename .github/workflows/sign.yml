@@ -1,11 +1,11 @@
-name: Build EXE and Inno Installer
-run-name: Building an exe and setup files
+name: Sign a file
+run-name: sign a file
 on:
   push:
   workflow_dispatch:
 
 jobs:
-  build-and-package:
+  sign:
     runs-on: windows-latest
     env:
       PYTHON: 'C:\hostedtoolcache\windows\Python\3.13.2\x64\python.exe'
