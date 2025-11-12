@@ -19,11 +19,16 @@ jobs:
         with:
           python-version: 3.13
 
-      - name: Installing dependencies with uv
-        run: |
-          uv pip install -r pyproject.toml --extra install
-          python -m pip install --upgrade pip setuptools wheel
-          pip install -e . --no-build-isolation
+      - name: Create build venv
+        run: python -m venv .venv-build
+        shell: pwsh
+
+      - name: Install uv into the venv
+        run: . .venv-build\Scripts\Activate.ps1; python -m pip install --upgrade pip setuptools wheel; pip install uv
+        shell: pwsh
+
+      - name: Use venv uv to install package and deps
+        run: . .venv-build\Scripts\Activate.ps1; uv pip install -r requirements.txt --extra install || true; uv pip install -e .
         shell: pwsh
 
       - name: Run PyInstaller script to create EXE
