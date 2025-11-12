@@ -8,7 +8,7 @@ on:
       - main
 
 jobs:
-  build-and-package:
+  buildandpackage:
     runs-on: windows-latest
     env:
       PYTHON: 'C:\hostedtoolcache\windows\Python\3.13.2\x64\python.exe'
