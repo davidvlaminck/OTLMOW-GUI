@@ -1,12 +1,11 @@
 name: Build EXE and Inno Installer
 run-name: Building an exe and setup files
-
 on:
-  workflow_dispatch:
   push:
+  workflow_dispatch:
 
 jobs:
-  buildandpackage:
+  build-and-package:
     runs-on: windows-latest
     env:
       PYTHON: 'C:\hostedtoolcache\windows\Python\3.13.2\x64\python.exe'
@@ -44,7 +43,24 @@ jobs:
         shell: pwsh
 
       - name: Sign executable with signtool
+        env:
+          SIGTOOL_PATH: ${{ steps.signtool.outputs.signtool-x64 }}
+          PFX_PATH: ${{ env.PFX_PATH }}
+          SIGN_PFX_PASSWORD: ${{ secrets.SIGN_PFX_PASSWORD }}
         run: |
-          $signtool = '${{ steps.signtool.outputs.signtool-x64 }}'
-          & $signtool sign /fd SHA256 /tr http://timestamp.digicert.com /td SHA256 /f $env:PFX_PATH /p $env:SIGN_PFX_PASSWORD "path\to\your.exe"
+          if (-not $env:SIGTOOL_PATH) {
+            Write-Error "SIGTOOL_PATH is empty. Check the previous step outputs and the action's output name."
+            exit 1
+          }
+          Write-Host "Using SignTool: $env:SIGTOOL_PATH"
+          if (-not (Test-Path -Path $env:PFX_PATH)) {
+            Write-Error "PFX not found at $env:PFX_PATH"
+            exit 1
+          }
+          $exeToSign = Join-Path '${{ github.workspace }}' 'path\to\your.exe'
+          if (-not (Test-Path -Path $exeToSign)) {
+            Write-Error "Executable to sign not found: $exeToSign"
+            exit 1
+          }
+          & "$env:SIGTOOL_PATH" sign /fd SHA256 /tr http://timestamp.digicert.com /td SHA256 /f "$env:PFX_PATH" /p "$env:SIGN_PFX_PASSWORD" "$exeToSign"
         shell: pwsh
