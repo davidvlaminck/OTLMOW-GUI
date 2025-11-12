@@ -33,7 +33,7 @@ jobs:
 
       - name: Run PyInstaller script to create EXE
         working-directory: ${{ github.workspace }}\otlmow_gui
-        run: .venv-build\Scripts\python.exe .\otlmow_gui\pyinstaller_script.py
+        run: .\venv-build\Scripts\python.exe .\otlmow_gui\pyinstaller_script.py
         shell: pwsh
 
       - name: Prepare LatestRelease folder for packaging
