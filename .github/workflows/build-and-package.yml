@@ -22,10 +22,13 @@ jobs:
       - name: Installing dependencies with uv
         run: uv pip install -r pyproject.toml --extra install
 
+      - name: Export PYTHONPATH
+        run: echo "PYTHONPATH=${{ github.workspace }}" | Out-File -FilePath $env:GITHUB_ENV -Encoding ASCII
+        shell: pwsh
+
       - name: Run PyInstaller script to create EXE
-        run: |
-          python .\otlmow_gui\pyinstaller_script.py
-        working-directory: ${{ github.workspace }}
+        run: python .\otlmow_gui\pyinstaller_script.py
+        shell: pwsh
 
       - name: Prepare LatestRelease folder for packaging
         run: |
