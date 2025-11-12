@@ -75,8 +75,9 @@ jobs:
         run: |
           if (-not $env:SIGTOOL_PATH) { Write-Error "SIGTOOL_PATH not set; check previous step." ; exit 1 }
           Write-Host "Using SignTool: $env:SIGTOOL_PATH"
-          $exeToSign = Join-Path '${{ github.workspace }}' 'path\to\your.exe'
+          $exeToSign = Join-Path '${{ github.workspace }}' 'LatestReleaseMulti\OTL Wizard 2\OTL Wizard 2.exe'
           if (-not (Test-Path $exeToSign)) { Write-Error "Executable not found: $exeToSign"; exit 1 }
           if (-not (Test-Path $env:PFX_PATH)) { Write-Error "PFX not found at $env:PFX_PATH"; exit 1 }
           & "$env:SIGTOOL_PATH" sign /fd SHA256 /tr http://timestamp.digicert.com /td SHA256 /f "$env:PFX_PATH" /p "$env:SIGN_PFX_PASSWORD" "$exeToSign"
         shell: pwsh
+
