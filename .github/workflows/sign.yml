@@ -1,7 +1,6 @@
 name: Sign a file
 run-name: sign a file
 on:
-  push:
   workflow_dispatch:
 
 jobs:
