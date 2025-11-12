@@ -19,65 +19,36 @@ jobs:
         with:
           python-version: '3.13.2'
 
-      - name: Locate signtool and add to PATH
-        uses: KamaranL/add-signtool-action@v1
-        id: signtool
-
-      - name: Show located signtool path
-        env:
-          SIGTOOL_PATH: ${{ steps.signtool.outputs.signtool-x64 }}
+      - name: Install pip dependencies
         run: |
-          Write-Host "SignTool: $env:SIGTOOL_PATH"
-        shell: pwsh
+          python -m pip install --upgrade pip
+          pip install uv
+          uv pip install -r pyproject.toml
 
-      - name: Restore PFX from secret
-        env:
-          SIGN_PFX_BASE64: ${{ secrets.SIGN_PFX_BASE64 }}
-          SIGN_PFX_PASSWORD: ${{ secrets.SIGN_PFX_PASSWORD }}
+      - name: Run PyInstaller script to create EXE
         run: |
-          $pfxPath = Join-Path $env:RUNNER_TEMP "codesign.pfx"
-          $bytes = [System.Convert]::FromBase64String($env:SIGN_PFX_BASE64)
-          [System.IO.File]::WriteAllBytes($pfxPath, $bytes)
-          Write-Output "PFX written to $pfxPath"
-          "PFX_PATH=$pfxPath" | Out-File -FilePath $env:GITHUB_ENV -Encoding ASCII
-        shell: pwsh
+          python .\pyinstaller_script.py
+        working-directory: ${{ github.workspace }}
 
-      - name: Find SignTool on runner and expose path
-        id: find-signtool
+      - name: Prepare LatestRelease folder for packaging
         run: |
-          $path = (Get-Command signtool -ErrorAction SilentlyContinue).Path
-          if (-not $path) {
-            Write-Host "signtool not on PATH. Searching common SDK locations..."
-            $candidates = @(
-              "$Env:ProgramFiles(x86)\Windows Kits\10\bin\**\signtool.exe",
-              "$Env:ProgramFiles\Windows Kits\10\bin\**\signtool.exe"
-            )
-            foreach ($pattern in $candidates) {
-              $found = Get-ChildItem -Path $pattern -File -ErrorAction SilentlyContinue | Select-Object -First 1
-              if ($found) { $path = $found.FullName; break }
-            }
+          mkdir $Env:RELEASE_DIR\OTL_Wizard_2 || exit 0
+          # pyinstaller_script.py creates "LatestReleaseMulti/OTL Wizard 2"
+          # normalize path if spaces
+          if (Test-Path "$Env:RELEASE_DIR\OTL Wizard 2") {
+            Rename-Item -Path "$Env:RELEASE_DIR\OTL Wizard 2" -NewName "OTL_Wizard_2"
           }
-          if (-not $path) { Write-Error "SignTool not found. Install Windows 10 SDK or add signtool to PATH."; exit 1 }
-          Write-Host "Found signtool: $path"
-          "SIGTOOL_PATH=$path" | Out-File -FilePath $env:GITHUB_ENV -Encoding ASCII
-        shell: pwsh
+        shell: powershell
 
-      - name: Debug show PATH and signtool
+      - name: Run packaging script (Inno + zip + sign placeholders)
         run: |
-          Write-Host "PATH: $env:PATH"
-          Get-Command signtool -ErrorAction SilentlyContinue | Format-List *
-        shell: pwsh
+          .\scripts\create-installer.ps1 -ProjectRoot ${{ github.workspace }} -ReleaseDir $Env:RELEASE_DIR -VersionFile pyproject.toml
+        shell: powershell
 
-      - name: Sign executable with signtool
-        env:
-          PFX_PATH: ${{ env.PFX_PATH }}
-          SIGN_PFX_PASSWORD: ${{ secrets.SIGN_PFX_PASSWORD }}
-        run: |
-          if (-not $env:SIGTOOL_PATH) { Write-Error "SIGTOOL_PATH not set; check previous step." ; exit 1 }
-          Write-Host "Using SignTool: $env:SIGTOOL_PATH"
-          $exeToSign = Join-Path '${{ github.workspace }}' 'LatestReleaseMulti\OTL Wizard 2\OTL Wizard 2.exe'
-          if (-not (Test-Path $exeToSign)) { Write-Error "Executable not found: $exeToSign"; exit 1 }
-          if (-not (Test-Path $env:PFX_PATH)) { Write-Error "PFX not found at $env:PFX_PATH"; exit 1 }
-          & "$env:SIGTOOL_PATH" sign /fd SHA256 /tr http://timestamp.digicert.com /td SHA256 /f "$env:PFX_PATH" /p "$env:SIGN_PFX_PASSWORD" "$exeToSign"
-        shell: pwsh
-
+      - name: Upload generated artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: otlwizard-release
+          path: |
+            LatestReleaseMulti\OTL_Wizard_2\*.exe
+            LatestReleaseMulti\OTL_Wizard_2.zip
