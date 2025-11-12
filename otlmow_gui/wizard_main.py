@@ -7,6 +7,9 @@ from pathlib import Path
 
 import sys
 import os
+
+from otlmow_gui.Domain.ProgramFileStructure import ProgramFileStructure
+
 if sys.platform.startswith("linux"):
     os.environ["QT_QUICK_BACKEND"] = "software" # fixes a flickering issue on some linux systems
 
@@ -83,7 +86,9 @@ class OTLWizard(QApplication):
 
         Updater.check_for_OTL_wizard_updates()
 
-        app_icon = QIcon(str(Path('img', 'wizard.ico')))
+        IMG_DIR = ProgramFileStructure.get_dynamic_library_path('img')
+
+        app_icon = QIcon(str(IMG_DIR / 'wizard.ico'))
         self.setWindowIcon(app_icon)
 
         language = GlobalTranslate(settings, LANG_DIR).get_all()

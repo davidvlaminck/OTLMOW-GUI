@@ -28,23 +28,23 @@ classifiers = [
 ]
 requires-python = ">=3.11"
 dependencies = [
-    'PyQt6-Qt6 >= 6.5.3',
-    'otlmow-model >= 2.17.0.0',
+    'PyQt6-Qt6 ~= 6.10.0',
+    'otlmow-model ~= 2.17.0.0',
     'otlmow-converter >= 0.15rc4',
     'otlmow-visuals >= 0.3',
-    'otlmow_template>=1.7',
-    'pyqt6 >= 6.8.0',
-    'qtawesome >= 1.2.3',
-    'PyGithub >= 2.1.1',
-    'requests >= 2.31.0',
-    'PyQt6-WebEngine==6.6.0',
-    'fonttools>=4.56.0',
-    'pyperclip>=1.8.2',
-    'toml>=0.10.2',
-    'qasync>=0.27.1',
-    'folium>=0.19.5',
-    'shapely>=2.0.7',
-    'pyproj>=3.7.1'
+    'otlmow_template ~= 1.7',
+    'pyqt6 ~= 6.10.0',
+    'qtawesome ~= 1.4.0',
+    'PyGithub ~= 2.8.1',
+    'requests ~= 2.32.5',
+    'PyQt6-WebEngine~=6.10.0',
+    'fonttools~=4.60.1',
+    'pyperclip~=1.11.0',
+    'toml~=0.10.2',
+    'qasync~=0.28.0',
+    'folium~=0.20.0',
+    'shapely~=2.1.2',
+    'pyproj~=3.7.2'
 ]
 
 [tool.setuptools.packages.find]
