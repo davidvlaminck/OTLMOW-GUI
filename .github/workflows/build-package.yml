@@ -26,7 +26,7 @@ jobs:
         id: signtool
 
       - name: Show located signtool path
-        run:
+        run: | 
           Write-Host "SignTool: ${{ steps.signtool.outputs.signtool-x64 }}"
         shell: pwsh
 
