@@ -1,0 +1,48 @@
+name: Build EXE and Inno Installer
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-package:
+    runs-on: windows-latest
+    env:
+      PYTHON: 'C:\\hostedtoolcache\\windows\\Python\\3.13.2\\x64\\python.exe' # adjust if needed
+      RELEASE_DIR: ${{ github.workspace }}\LatestReleaseMulti
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.13
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.13.2'
+
+      - name: Locate signtool and add to PATH
+        uses: KamaranL/add-signtool-action@v1
+        id: signtool
+
+      - name: Show located signtool path
+        run:
+          Write-Host "SignTool: ${{ steps.signtool.outputs.signtool-x64 }}"
+        shell: pwsh
+
+      - name: Restore PFX from secret
+        env:
+          SIGN_PFX_BASE64: ${{ secrets.SIGN_PFX_BASE64 }}
+          SIGN_PFX_PASSWORD: ${{ secrets.SIGN_PFX_PASSWORD }}
+        run: |
+          $pfxPath = Join-Path $env:RUNNER_TEMP "codesign.pfx"
+          [System.Convert]::FromBase64String($env:SIGN_PFX_BASE64) | Set-Content -Path $pfxPath -Encoding Byte
+          Write-Output "PFX written to $pfxPath"
+          echo "PFX_PATH=$pfxPath" | Out-File -FilePath $env:GITHUB_ENV -Encoding ASCII
+        shell: pwsh
+
+      - name: Sign executable with signtool
+        run: |
+          $signtool = '${{ steps.signtool.outputs.signtool-x64 }}'
+          & $signtool sign /fd SHA256 /tr http://timestamp.digicert.com /td SHA256 /f $env:PFX_PATH /p $env:SIGN_PFX_PASSWORD "path\to\your.exe"
+        shell: pwsh
