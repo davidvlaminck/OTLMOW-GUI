@@ -1,0 +1,55 @@
+name: Build EXE and Inno Installer
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-package:
+    runs-on: windows-latest
+    env:
+      PYTHON: 'C:\\hostedtoolcache\\windows\\Python\\3.13.2\\x64\\python.exe' # adjust if needed
+      RELEASE_DIR: ${{ github.workspace }}\LatestReleaseMulti
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.13
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.13.2'
+
+      - name: Install pip dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run PyInstaller script to create EXE
+        run: |
+          python .\pyinstaller_script.py
+        working-directory: ${{ github.workspace }}
+
+      - name: Prepare LatestRelease folder for packaging
+        run: |
+          mkdir $Env:RELEASE_DIR\OTL_Wizard_2 || exit 0
+          # pyinstaller_script.py creates "LatestReleaseMulti/OTL Wizard 2"
+          # normalize path if spaces
+          if (Test-Path "$Env:RELEASE_DIR\OTL Wizard 2") {
+            Rename-Item -Path "$Env:RELEASE_DIR\OTL Wizard 2" -NewName "OTL_Wizard_2"
+          }
+        shell: powershell
+
+      - name: Run packaging script (Inno + zip + sign placeholders)
+        run: |
+          .\scripts\create-installer.ps1 -ProjectRoot ${{ github.workspace }} -ReleaseDir $Env:RELEASE_DIR -VersionFile pyproject.toml
+        shell: powershell
+
+      - name: Upload generated artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: otlwizard-release
+          path: |
+            LatestReleaseMulti\OTL_Wizard_2\*.exe
+            LatestReleaseMulti\OTL_Wizard_2.zip
