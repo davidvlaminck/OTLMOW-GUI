@@ -4,8 +4,6 @@ run-name: Building an exe and setup files
 on:
   workflow_dispatch:
   push:
-    branches:
-      - main
 
 jobs:
   buildandpackage:
