@@ -37,9 +37,10 @@ jobs:
           SIGN_PFX_PASSWORD: ${{ secrets.SIGN_PFX_PASSWORD }}
         run: |
           $pfxPath = Join-Path $env:RUNNER_TEMP "codesign.pfx"
-          [System.Convert]::FromBase64String($env:SIGN_PFX_BASE64) | Set-Content -Path $pfxPath -Encoding Byte
+          $bytes = [System.Convert]::FromBase64String($env:SIGN_PFX_BASE64)
+          [System.IO.File]::WriteAllBytes($pfxPath, $bytes)
           Write-Output "PFX written to $pfxPath"
-          echo "PFX_PATH=$pfxPath" | Out-File -FilePath $env:GITHUB_ENV -Encoding ASCII
+          "PFX_PATH=$pfxPath" | Out-File -FilePath $env:GITHUB_ENV -Encoding ASCII
         shell: pwsh
 
       - name: Sign executable with signtool
