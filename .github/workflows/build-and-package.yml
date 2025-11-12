@@ -24,7 +24,7 @@ jobs:
 
       - name: Run PyInstaller script to create EXE
         run: |
-          python .\pyinstaller_script.py
+          python .\otlmow_gui\pyinstaller_script.py
         working-directory: ${{ github.workspace }}
 
       - name: Prepare LatestRelease folder for packaging
