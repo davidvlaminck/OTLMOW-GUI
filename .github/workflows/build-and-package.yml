@@ -31,17 +31,17 @@ jobs:
         run: . .venv-build\Scripts\Activate.ps1; uv pip install -r pyproject.toml --extra install || true; uv pip install -e .
         shell: pwsh
 
-      - name: Run PyInstaller with venv python (robust)
+      - name: Run PyInstaller with venv python (fixed)
         run: |
           $pyPath = Join-Path $PWD '.venv-build\Scripts\python.exe'
           Write-Host "Resolved python: $pyPath"
           if (-not (Test-Path $pyPath)) {
-            Write-Host "Directory listing of $PWD:"
+            Write-Host "Directory listing of $($PWD.Path):"
             Get-ChildItem -Force | Format-Table -AutoSize
             Write-Error "Python executable not found at $pyPath"
             exit 1
           }
-          & $pyPath .\otlmow_gui\pyinstaller_script.py
+          & $pyPath $PWD.FullName\otlmow_gui\pyinstaller_script.py
         shell: pwsh
 
       - name: Prepare LatestRelease folder for packaging
