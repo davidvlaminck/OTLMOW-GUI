@@ -22,6 +22,7 @@ jobs:
       - name: Installing dependencies with uv
         run: |
           uv pip install -r pyproject.toml --extra install
+          python -m pip install --upgrade pip setuptools wheel
           pip install -e .
         shell: pwsh
 
