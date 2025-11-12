@@ -28,7 +28,7 @@ jobs:
         shell: pwsh
 
       - name: Use venv uv to install package and deps
-        run: . .venv-build\Scripts\Activate.ps1; uv pip install -r requirements.txt --extra install || true; uv pip install -e .
+        run: . .venv-build\Scripts\Activate.ps1; uv pip install -r pyproject.toml --extra install || true; uv pip install -e .
         shell: pwsh
 
       - name: Run PyInstaller script to create EXE
