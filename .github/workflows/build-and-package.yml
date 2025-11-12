@@ -42,25 +42,41 @@ jobs:
           "PFX_PATH=$pfxPath" | Out-File -FilePath $env:GITHUB_ENV -Encoding ASCII
         shell: pwsh
 
+      - name: Find SignTool on runner and expose path
+        id: find-signtool
+        run: |
+          $path = (Get-Command signtool -ErrorAction SilentlyContinue).Path
+          if (-not $path) {
+            Write-Host "signtool not on PATH. Searching common SDK locations..."
+            $candidates = @(
+              "$Env:ProgramFiles(x86)\Windows Kits\10\bin\**\signtool.exe",
+              "$Env:ProgramFiles\Windows Kits\10\bin\**\signtool.exe"
+            )
+            foreach ($pattern in $candidates) {
+              $found = Get-ChildItem -Path $pattern -File -ErrorAction SilentlyContinue | Select-Object -First 1
+              if ($found) { $path = $found.FullName; break }
+            }
+          }
+          if (-not $path) { Write-Error "SignTool not found. Install Windows 10 SDK or add signtool to PATH."; exit 1 }
+          Write-Host "Found signtool: $path"
+          "SIGTOOL_PATH=$path" | Out-File -FilePath $env:GITHUB_ENV -Encoding ASCII
+        shell: pwsh
+
+      - name: Debug show PATH and signtool
+        run: |
+          Write-Host "PATH: $env:PATH"
+          Get-Command signtool -ErrorAction SilentlyContinue | Format-List *
+        shell: pwsh
+
       - name: Sign executable with signtool
         env:
-          SIGTOOL_PATH: ${{ steps.signtool.outputs.signtool-x64 }}
           PFX_PATH: ${{ env.PFX_PATH }}
           SIGN_PFX_PASSWORD: ${{ secrets.SIGN_PFX_PASSWORD }}
         run: |
-          if (-not $env:SIGTOOL_PATH) {
-            Write-Error "SIGTOOL_PATH is empty. Check the previous step outputs and the action's output name."
-            exit 1
-          }
+          if (-not $env:SIGTOOL_PATH) { Write-Error "SIGTOOL_PATH not set; check previous step." ; exit 1 }
           Write-Host "Using SignTool: $env:SIGTOOL_PATH"
-          if (-not (Test-Path -Path $env:PFX_PATH)) {
-            Write-Error "PFX not found at $env:PFX_PATH"
-            exit 1
-          }
           $exeToSign = Join-Path '${{ github.workspace }}' 'path\to\your.exe'
-          if (-not (Test-Path -Path $exeToSign)) {
-            Write-Error "Executable to sign not found: $exeToSign"
-            exit 1
-          }
+          if (-not (Test-Path $exeToSign)) { Write-Error "Executable not found: $exeToSign"; exit 1 }
+          if (-not (Test-Path $env:PFX_PATH)) { Write-Error "PFX not found at $env:PFX_PATH"; exit 1 }
           & "$env:SIGTOOL_PATH" sign /fd SHA256 /tr http://timestamp.digicert.com /td SHA256 /f "$env:PFX_PATH" /p "$env:SIGN_PFX_PASSWORD" "$exeToSign"
         shell: pwsh
