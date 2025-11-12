@@ -30,7 +30,7 @@ OTLLogger.logger.debug("paths: " + paths)
 sep = ';' if os.name == 'nt' else ':'
 
 PyInstaller.__main__.run([
-    r'OTL Wizard 2.py',
+    str(root_path / 'otlmow_gui' / 'OTL Wizard 2.py'),
     '--distpath', str(root_path /  'LatestReleaseMulti'),
     '--contents-directory', 'data',
     '--paths', paths,
