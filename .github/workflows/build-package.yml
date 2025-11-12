@@ -27,8 +27,10 @@ jobs:
         id: signtool
 
       - name: Show located signtool path
+        env:
+          SIGTOOL_PATH: ${{ steps.signtool.outputs.signtool-x64 }}
         run: |
-          Write-Host "SignTool: ${{ steps.signtool.outputs.signtool-x64 }}"
+          Write-Host "SignTool: $env:SIGTOOL_PATH"
         shell: pwsh
 
       - name: Restore PFX from secret
