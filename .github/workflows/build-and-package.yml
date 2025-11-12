@@ -31,7 +31,7 @@ jobs:
         run: . .venv-build\Scripts\Activate.ps1; uv pip install -r pyproject.toml --extra install || true; uv pip install -e .
         shell: pwsh
 
-      - name: Run PyInstaller with venv python (fixed)
+      - name: Run PyInstaller with venv python (corrected)
         run: |
           $pyPath = Join-Path $PWD '.venv-build\Scripts\python.exe'
           Write-Host "Resolved python: $pyPath"
@@ -41,7 +41,15 @@ jobs:
             Write-Error "Python executable not found at $pyPath"
             exit 1
           }
-          & $pyPath $PWD.FullName\otlmow_gui\pyinstaller_script.py
+          $scriptPath = Join-Path $PWD 'otlmow_gui\pyinstaller_script.py'
+          Write-Host "Resolved script: $scriptPath"
+          if (-not (Test-Path $scriptPath)) {
+            Write-Host "Top-level files:"
+            Get-ChildItem -Path $PWD -Force | Format-Table -AutoSize
+            Write-Error "Script not found at $scriptPath"
+            exit 1
+          }
+          & $pyPath $scriptPath
         shell: pwsh
 
       - name: Prepare LatestRelease folder for packaging
