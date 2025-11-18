@@ -4,7 +4,129 @@ param(
   [string]$VersionFile = "pyproject.toml"
 )
 
-set -e
+# =====
+# First install Inno setup only if missing
+# =====
+
+# --- helper: common possible ISCC locations ---
+# --- ensure ISCC is available, install only if missing ---
+# possible disk locations to check (use proper env var syntax)
+$possibleIsccPaths = @(
+  "${Env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe",
+  "${Env:ProgramFiles}\Inno Setup 6\ISCC.exe",
+  "${Env:ProgramFiles(x86)}\Inno Setup 5\ISCC.exe",
+  "${Env:ProgramFiles}\Inno Setup 5\ISCC.exe"
+)
+
+# helper to find ISCC on disk or in PATH
+function Find-ISCC {
+  # try PATH first
+  $cmd = Get-Command ISCC.exe -ErrorAction SilentlyContinue
+  if ($cmd) { return $cmd.Source }
+
+  # try common disk locations
+  foreach ($p in $possibleIsccPaths) {
+    if (Test-Path $p) { return (Resolve-Path $p).Path }
+  }
+
+  return $null
+}
+
+$ISCC = Find-ISCC
+if ($ISCC) {
+  Write-Host "ISCC found at $ISCC. Skipping installer." -ForegroundColor Green
+} else {
+  Write-Host "ISCC not found. Installing Inno Setup..." -ForegroundColor Yellow
+
+  # installer variables
+  $downloadUrl   = 'https://www.jrsoftware.org/download.php/is.exe'
+  $installerPath = Join-Path $env:TEMP 'InnoSetupInstaller.exe'
+  $installDir    = 'C:\Program Files (x86)\Inno Setup 6'
+  $maxRetries    = 3
+  $retryDelaySec = 3
+
+  # elevation helper (relaunch elevated if needed)
+  function Ensure-Elevated {
+    $isAdmin = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")
+    if (-not $isAdmin) {
+      Write-Host "Not running as Administrator. Relaunching elevated..." -ForegroundColor Yellow
+      $pwsh = (Get-Command pwsh -ErrorAction SilentlyContinue).Source
+      if (-not $pwsh) { $pwsh = (Get-Command powershell).Source }
+      $args = "-NoProfile -NoLogo -ExecutionPolicy Bypass -File `"$($MyInvocation.MyCommand.Path)`""
+      $psi = New-Object System.Diagnostics.ProcessStartInfo($pwsh,$args)
+      $psi.Verb = "runas"
+      try { [System.Diagnostics.Process]::Start($psi) > $null; exit } catch { Write-Error "Elevation declined. Aborting."; exit 1 }
+    }
+  }
+
+  Ensure-Elevated
+
+  # download with retries
+  $attempt = 0
+  while ($attempt -lt $maxRetries) {
+    $attempt++
+    try {
+      Write-Host "Downloading Inno Setup installer (attempt $attempt) to $installerPath ..."
+      Invoke-WebRequest -Uri $downloadUrl -OutFile $installerPath -UseBasicParsing -TimeoutSec 60
+      if (Test-Path $installerPath) { break }
+    } catch {
+      Write-Warning "Download attempt $attempt failed: $($_.Exception.Message)"
+      if ($attempt -lt $maxRetries) { Start-Sleep -Seconds $retryDelaySec } else { Throw "Failed to download installer after $maxRetries attempts" }
+    }
+  }
+
+  # run silent installer
+  Unblock-File -Path $installerPath -ErrorAction SilentlyContinue
+  $dirArg = "/DIR=`"$installDir`""
+  $arguments = "/VERYSILENT","/SP-","/NORESTART",$dirArg
+  Write-Host "Running silent installer ..."
+  $proc = Start-Process -FilePath $installerPath -ArgumentList $arguments -Wait -PassThru -NoNewWindow
+  if ($proc.ExitCode -ne 0) {
+    Remove-Item -Force $installerPath -ErrorAction SilentlyContinue
+    Throw "Inno Setup installer exited with code $($proc.ExitCode)"
+  }
+
+  # refresh PATH from registry for current session (best-effort)
+  try {
+    $machinePath = [System.Environment]::GetEnvironmentVariable('Path','Machine')
+    $userPath    = [System.Environment]::GetEnvironmentVariable('Path','User')
+    if ($machinePath -or $userPath) { $env:Path = ($machinePath + ';' + $userPath).Trim(';') }
+  } catch { }
+
+  # find ISCC after install (do not rely solely on PATH)
+  $ISCC = Find-ISCC
+  if (-not $ISCC) {
+    # last-resort search under Program Files roots (use correct env var syntax)
+    $searchRoots = @($Env:ProgramFiles, ${Env:ProgramFiles(x86)})
+    $search = Get-ChildItem -Path $searchRoots -Filter ISCC.exe -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1
+    if ($search) { $ISCC = $search.FullName }
+  }
+
+  Remove-Item -Force $installerPath -ErrorAction SilentlyContinue
+
+  if (-not $ISCC) { Throw "ISCC.exe not found after install. Check installer logs." }
+
+  Write-Host "ISCC discovered at $ISCC" -ForegroundColor Green
+}
+
+# export $ISCC for the remainder of the script
+Set-Variable -Name ISCC -Value $ISCC -Scope Script -Force
+
+# =====
+# After ensuring Inno setup is available, try using it
+# =====
+
+$ProjectRoot = (Resolve-Path $ProjectRoot).Path
+
+if (-not $script:ISCC) {
+  $script:ISCC = Find-ISCC
+}
+if (-not $script:ISCC) {
+  Write-Error "ISCC.exe not found. Please install Inno Setup or ensure ISCC is discoverable."
+  exit 1
+}
+$ISCC = $script:ISCC
+Write-Host "Using ISCC at $ISCC"
 
 # === helper functions ===
 function Get-VersionFromPyproject {
@@ -58,7 +180,6 @@ if (-not (Test-Path $exePath)) {
 # }
 
 # === Step: Compile Inno Setup script ===
-# Expect the repository to contain LatestReleaseMulti\inno_setup_installer_setup_script.iss
 $issPath = Join-Path $ReleaseDir "inno_setup_installer_setup_script.iss"
 if (-not (Test-Path $issPath)) {
   Write-Error "Inno script not found at $issPath"
@@ -72,19 +193,12 @@ $issText = $issText -replace '#define\s+MyAppVersion\s+".*?"', "#define MyAppVer
 $tmpIss = Join-Path $env:TEMP "inno_build_$(Get-Random).iss"
 Set-Content -Path $tmpIss -Value $issText -Encoding UTF8
 
-# Ensure Inno Setup is available. If not, try to install via chocolatey (runner already may have Inno).
-if (-not (Get-Command "ISCC.exe" -ErrorAction SilentlyContinue)) {
-  Write-Host "ISCC.exe not found. Installing Inno Setup via chocolatey (requires admin)..." -ForegroundColor Yellow
-  choco install innosetup -y
-  if ($LASTEXITCODE -ne 0) { Write-Error "choco install innosetup failed"; exit 1 }
+# Compile with ISCC
+& $ISCC /Q /DMyAppDevRoot="$ProjectRoot" /DMyAppVersion="$version" $issPath
+if ($LASTEXITCODE -ne 0) {
+  Write-Error "Inno Setup compilation failed"
+  exit 1
 }
-
-$ISCC = (Get-Command "ISCC.exe").Source
-Write-Host "Using ISCC at $ISCC"
-& $ISCC /Q $tmpIss
-if ($LASTEXITCODE -ne 0) { Write-Error "Inno Setup compilation failed"; exit 1 }
-
-# Inno creates an installer in LatestReleaseMulti folder, with name like "OTL wizard 2 installer V<version>.exe"
 # Find the newest exe in the ReleaseDir
 $installer = Get-ChildItem -Path $ReleaseDir -Filter "*.exe" | Sort-Object LastWriteTime -Descending | Select-Object -First 1
 if (-not $installer) { Write-Error "Installer .exe not found in $ReleaseDir after Inno compile"; exit 1 }
