@@ -1,4 +1,4 @@
-name: Build EXE and Inno Installer
+name: Build EXE and create a Inno Installer
 run-name: Building an exe and setup files
 on:
   push:
@@ -52,25 +52,44 @@ jobs:
           & $pyPath $scriptPath
         shell: pwsh
 
-      - name: Prepare LatestRelease folder for packaging
-        run: |
-          mkdir $Env:RELEASE_DIR\OTL_Wizard_2 || exit 0
-          # pyinstaller_script.py creates "LatestReleaseMulti/OTL Wizard 2"
-          # normalize path if spaces
-          if (Test-Path "$Env:RELEASE_DIR\OTL Wizard 2") {
-            Rename-Item -Path "$Env:RELEASE_DIR\OTL Wizard 2" -NewName "OTL_Wizard_2"
-          }
-        shell: powershell
-
       - name: Run packaging script (Inno + zip + sign placeholders)
         run: |
           .\scripts\create-installer.ps1 -ProjectRoot ${{ github.workspace }} -ReleaseDir $Env:RELEASE_DIR -VersionFile pyproject.toml
         shell: powershell
 
-      - name: Upload generated artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: otlwizard-release
-          path: |
-            LatestReleaseMulti\OTL_Wizard_2\*.exe
-            LatestReleaseMulti\OTL_Wizard_2.zip
+      - name: Move versioned artifacts to LatestRelease
+        id: move_artifacts
+        run: |
+          $source = Join-Path $env:GITHUB_WORKSPACE 'LatestReleaseMulti'
+          $target = Join-Path $env:GITHUB_WORKSPACE 'LatestRelease'
+          New-Item -ItemType Directory -Force -Path $target | Out-Null
+
+          $exe = Get-ChildItem $source -Filter 'OTL_Wizard_2_installer_*.exe' -File | Sort-Object LastWriteTime -Descending | Select-Object -First 1
+          if (-not $exe) { Write-Error "No installer exe found"; exit 1 }
+
+          $zip = Get-ChildItem $source -Filter 'OTL_Wizard_2_*.zip' -File | Where-Object { $_.Name -notlike 'OTL_Wizard_2_installer_*' } | Sort-Object LastWriteTime -Descending | Select-Object -First 1
+          if (-not $zip) { Write-Error "No release zip found"; exit 1 }
+
+          Copy-Item $exe.FullName (Join-Path $target $exe.Name) -Force
+          Copy-Item $zip.FullName (Join-Path $target $zip.Name) -Force
+
+          Write-Host "Installer: $($exe.Name)"
+          Write-Host "Zip:       $($zip.Name)"
+
+          echo "exe_name=$($exe.Name)" >> $env:GITHUB_OUTPUT
+          echo "zip_name=$($zip.Name)" >> $env:GITHUB_OUTPUT
+        shell: pwsh
+
+      - name: Commit release artifacts
+        if: startsWith(github.ref, 'refs/heads/')
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add LatestRelease/OTL_Wizard_2_installer_*.exe LatestRelease/OTL_Wizard_2_*.zip || echo "Nothing to stage"
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+          git commit -m "chore: update release artifacts [skip ci]"
+          git push origin HEAD:${{ github.ref_name }}
+        shell: bash
