@@ -1,5 +1,6 @@
 import os
 import pathlib
+import shutil
 import sys
 
 import PyInstaller.__main__
@@ -23,7 +24,6 @@ for sys_path in sys.path:
 
 if not paths:
     raise FileNotFoundError("cannot find the site-packages folder")
-
 
 OTLLogger.logger.debug("paths: " + paths)
 
@@ -55,6 +55,23 @@ PyInstaller.__main__.run([
     '--noconsole', # no cmd/powershell window with debug output
     '--clean'
 ])
+
 OTLLogger.logger.debug("PyInstaller.__main__.run", extra={"timing_ref":"PyInstaller.__main__.run"})
+
+# rename dist folder
+original_folder = root_path / 'LatestReleaseMulti' / 'OTL Wizard 2'
+target_folder = root_path / 'LatestReleaseMulti' / 'OTL_Wizard_2'
+if original_folder.exists():
+    if target_folder.exists():
+        shutil.rmtree(target_folder)
+    shutil.move(str(original_folder), str(target_folder))
+else:
+    raise FileNotFoundError(f"Expected folder not found: {original_folder}")
+
+# final executable path
+exe_path = target_folder / 'OTL Wizard 2.exe'
+if not exe_path.exists():
+    raise FileNotFoundError(f"Executable missing: {exe_path}")
+print(f"Executable at: {exe_path}")
 
 # TODO: make sure custom.qss and demo projects are copied next to .exe > verify it is loaded same as locale
