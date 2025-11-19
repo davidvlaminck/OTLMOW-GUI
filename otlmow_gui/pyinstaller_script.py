@@ -12,7 +12,7 @@ home_path = pathlib.Path.home()
 OTLLogger.init()
 OTLLogger.logger.debug("PyInstaller.__main__.run", extra={"timing_ref":"PyInstaller.__main__.run"})
 
-root_path = pathlib.Path(__file__).parent.parent
+root_path = pathlib.Path(__file__).parent.parent  # repo root
 OTLLogger.logger.debug("root_path: " + str(root_path))
 OTLLogger.logger.debug("sys.path: " + str(sys.path))
 
@@ -31,9 +31,10 @@ sep = ';' if os.name == 'nt' else ':'
 
 PyInstaller.__main__.run([
     str(root_path / 'otlmow_gui' / 'OTL Wizard 2.py'),
-    '--distpath', str(root_path /  'LatestReleaseMulti'),
+    '--distpath', str(root_path.parent /  'LatestReleaseMulti'),
     '--contents-directory', 'data',
     '--paths', paths,
+    '--paths', str(root_path),
     '--exclude-module','otlmow_model',
     '--collect-all', 'otlmow_converter',
     '--collect-all', 'otlmow_model',
