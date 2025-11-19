@@ -52,7 +52,7 @@ PyInstaller.__main__.run([
     '--splash',f"{str(root_path / 'otlmow_gui' / 'img')}/Logo-OTL_Wizard_2_no_purple_edge_V3.png",
     '--noconfirm',
     # '--onefile',  # All files packed together in one executable file
-    '--noconsole', # no cmd/powershell window with debug output
+    # '--noconsole', # no cmd/powershell window with debug output
     '--clean'
 ])
 
