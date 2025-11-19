@@ -31,7 +31,7 @@ sep = ';' if os.name == 'nt' else ':'
 
 PyInstaller.__main__.run([
     str(root_path / 'otlmow_gui' / 'OTL Wizard 2.py'),
-    '--distpath', str(root_path.parent /  'LatestReleaseMulti'),
+    '--distpath', str(root_path /  'LatestReleaseMulti'),
     '--contents-directory', 'data',
     '--paths', paths,
     '--paths', str(root_path),
