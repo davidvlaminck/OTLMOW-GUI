@@ -154,7 +154,10 @@ class TemplateDomain:
     @classmethod
     def select_all_classes(cls):
         total_class_count = cls.get_total_amount_of_classes()
-        cls.selected_classes_indexes = list(range(total_class_count))
+        if cls.has_agent:
+            cls.selected_classes_indexes = list(range(total_class_count + 1))
+        else:
+            cls.selected_classes_indexes = list(range(total_class_count))
         TemplateDomain.all_classes_selected = True
 
         cls.get_screen().set_all_classes_selected()
