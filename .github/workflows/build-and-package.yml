@@ -31,6 +31,12 @@ jobs:
         run: . .venv-build\Scripts\Activate.ps1; uv pip install -r pyproject.toml --extra install || true; uv pip install -e .
         shell: pwsh
 
+      - name: Debug \- list installed packages
+        run: |
+          . .venv-build\Scripts\Activate.ps1
+          pip list
+        shell: pwsh
+
       - name: Run PyInstaller with venv python (corrected)
         run: |
           $pyPath = Join-Path $PWD '.venv-build\Scripts\python.exe'
