@@ -1,4 +1,5 @@
 name: Build EXE and create a Inno Installer
+run-name: Building an exe and setup files
 on:
   push:
   workflow_dispatch:
@@ -25,7 +26,7 @@ jobs:
         run: . .venv-build\Scripts\Activate.ps1; python -m pip install --upgrade pip setuptools wheel; pip install uv
         shell: pwsh
 
-      - name: Install project into venv
+      - name: Install project and dependencies into venv
         run: . .venv-build\Scripts\Activate.ps1; uv pip install -r pyproject.toml --extra install || true; uv pip install -e .
         shell: pwsh
 
@@ -48,6 +49,7 @@ jobs:
           if (-not $env:SIGN_PFX_BASE64) { Write-Error "SIGN_PFX_BASE64 missing"; exit 1 }
           $pfxPath = Join-Path $env:RUNNER_TEMP "codesign.pfx"
           [System.IO.File]::WriteAllBytes($pfxPath, [System.Convert]::FromBase64String($env:SIGN_PFX_BASE64))
+          Write-Output "PFX written to $pfxPath"
           "PFX_PATH=$pfxPath" | Out-File -FilePath $env:GITHUB_ENV -Encoding ASCII
         shell: pwsh
 
