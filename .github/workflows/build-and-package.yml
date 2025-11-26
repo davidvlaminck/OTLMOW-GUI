@@ -111,6 +111,7 @@ jobs:
           # locate the built app EXE produced by PyInstaller (search common locations)
           $candidates = Get-ChildItem -Path $PWD -Recurse -Filter 'OTL Wizard 2.exe' -File -ErrorAction SilentlyContinue
           if (-not $candidates) {
+            Write-Host "no candidates found yet; searching common build output locations..."
             $searchPaths = @('dist','build','LatestReleaseMulti')
             foreach ($p in $searchPaths) {
               $full = Join-Path $PWD $p
