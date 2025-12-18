@@ -257,13 +257,24 @@ class Helpers:
         return partner_type_uri
 
     @classmethod
-    def open_folder_and_select_document(cls,document_path:Path):
-        if document_path.exists():
-            command = f'explorer /select,"{document_path}"'
+    def open_folder_and_select_document(cls, document_path):
+        document_path = str(document_path)
+        if sys.platform.startswith("win"):
+            command = ['explorer', '/select,', document_path]
+            subprocess.Popen(command)
+        elif sys.platform.startswith("darwin"):
+            # macOS: open Finder and select the file
+            command = ['open', '-R', document_path]
+            subprocess.Popen(command)
+        elif sys.platform.startswith("linux"):
+            # Linux: open the containing folder with the default file manager
+            folder = os.path.dirname(document_path)
+            try:
+                subprocess.Popen(['xdg-open', folder])
+            except Exception as e:
+                print(f"Could not open folder: {e}")
         else:
-            command = f'explorer "{document_path.parent}"'
-        OTLLogger.logger.debug(command)
-        subprocess.Popen(command)
+            print(f"Platform not supported for opening folder: {sys.platform}")
 
     @classmethod
     def compare_RelatieObjects(cls, obj1, obj2):
