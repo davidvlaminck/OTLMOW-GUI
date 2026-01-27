@@ -45,7 +45,9 @@ dependencies = [
     'qasync>=0.27.1',
     'folium>=0.19.5',
     'shapely>=2.0.7',
-    'pyproj>=3.7.1'
+    'pyproj>=3.7.1',
+    'numpy >= 1.26',
+    'pandas >= 2.2'
 ]
 
 [tool.setuptools.packages.find]
