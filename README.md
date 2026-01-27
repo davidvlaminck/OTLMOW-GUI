@@ -42,13 +42,13 @@ venv\Scripts\activate
 source venv/bin/activate
 ```
 ### Installing this package
-Install the package with pip and uv:
+Install the package with pip and uv (recommended):
 ```
 pip install uv
-uv pip install otlmow-gui==1.1.1rc5
+uv pip install otlmow-gui
 ```
 ### Run the OTL wizard command
-You can now run the OTL wizard with the command:
+After installing, you can now run the OTL wizard with the command:
 ```
 otlwizard
 ```
