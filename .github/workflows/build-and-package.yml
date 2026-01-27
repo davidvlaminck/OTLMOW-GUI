@@ -1,0 +1,142 @@
+name: Build EXE and create a Inno Installer
+run-name: Building an exe and setup files
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build-and-package:
+    runs-on: windows-latest
+    env:
+      RELEASE_DIR: '${{ github.workspace }}\\LatestReleaseMulti'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python \(uv\)
+        uses: astral-sh/setup-uv@v5
+        with:
+          python-version: 3.13
+
+      - name: Create and activate build venv
+        run: python -m venv .venv-build
+        shell: pwsh
+
+      - name: Install build tooling into venv
+        run: . .venv-build\Scripts\Activate.ps1; python -m pip install --upgrade pip setuptools wheel; pip install uv
+        shell: pwsh
+
+      - name: Install project and dependencies into venv
+        run: . .venv-build\Scripts\Activate.ps1; uv pip install -r pyproject.toml --extra install || true; uv pip install -e .
+        shell: pwsh
+
+      - name: Run PyInstaller
+        run: |
+          $pyPath = Join-Path $PWD '.venv-build\Scripts\python.exe'
+          if (-not (Test-Path $pyPath)) { Write-Error "python not found at $pyPath"; exit 1 }
+          & $pyPath (Join-Path $PWD 'otlmow_gui\pyinstaller_script.py')
+        shell: pwsh
+
+      - name: Install signtool helper
+        uses: KamaranL/add-signtool-action@v1
+        id: add-signtool
+
+      - name: Restore PFX from secret
+        id: restore-pfx
+        env:
+          SIGN_PFX_BASE64: ${{ secrets.SIGN_PFX_BASE64 }}
+        run: |
+          if (-not $env:SIGN_PFX_BASE64) { Write-Error "SIGN_PFX_BASE64 missing"; exit 1 }
+          $pfxPath = Join-Path $env:RUNNER_TEMP "codesign.pfx"
+          [System.IO.File]::WriteAllBytes($pfxPath, [System.Convert]::FromBase64String($env:SIGN_PFX_BASE64))
+          Write-Output "PFX written to $pfxPath"
+          "PFX_PATH=$pfxPath" | Out-File -FilePath $env:GITHUB_ENV -Encoding ASCII
+        shell: pwsh
+
+      - name: Locate signtool
+        id: find-signtool
+        run: |
+          $path = (Get-Command signtool -ErrorAction SilentlyContinue).Path
+          if (-not $path) {
+            $candidates = @(
+              "$Env:ProgramFiles(x86)\Windows Kits\10\bin\**\signtool.exe",
+              "$Env:ProgramFiles\Windows Kits\10\bin\**\signtool.exe"
+            )
+            foreach ($pattern in $candidates) {
+              $found = Get-ChildItem -Path $pattern -File -ErrorAction SilentlyContinue | Select-Object -First 1
+              if ($found) { $path = $found.FullName; break }
+            }
+          }
+          if (-not $path) { Write-Error "SignTool not found"; exit 1 }
+          "SIGTOOL_PATH=$path" | Out-File -FilePath $env:GITHUB_ENV -Encoding ASCII
+        shell: pwsh
+
+      - name: Sign built application EXE \(before packaging\)
+        env:
+          PFX_PATH: ${{ env.PFX_PATH }}
+          SIGN_PFX_PASSWORD: ${{ secrets.SIGN_PFX_PASSWORD }}
+          SIGTOOL_PATH: ${{ env.SIGTOOL_PATH }}
+        run: |
+          if (-not $env:SIGTOOL_PATH) { Write-Error "SIGTOOL_PATH missing"; exit 1 }
+          # search common locations for the exe produced by PyInstaller
+          $candidates = Get-ChildItem -Path $PWD -Recurse -Filter 'OTL Wizard 2.exe' -File -ErrorAction SilentlyContinue
+          if (-not $candidates) {
+            $searchPaths = @('dist','build','LatestReleaseMulti')
+            foreach ($p in $searchPaths) {
+              $full = Join-Path $PWD $p
+              if (Test-Path $full) {
+                $candidates = Get-ChildItem -Path $full -Recurse -Filter 'OTL Wizard 2.exe' -File -ErrorAction SilentlyContinue
+                if ($candidates) { break }
+              }
+            }
+          }
+          if (-not $candidates) { Write-Error "Built app EXE not found to sign"; exit 1 }
+          $appExe = $candidates | Select-Object -First 1
+          Write-Host "Signing: $($appExe.FullName)"
+          pwsh -NoProfile -File scripts\sign.ps1 -TargetPath $appExe.FullName -PfxPath $env:PFX_PATH -Password $env:SIGN_PFX_PASSWORD -SigntoolPath $env:SIGTOOL_PATH
+        shell: pwsh
+
+      - name: Run packaging script
+        run: .\scripts\create-installer.ps1 -ProjectRoot ${{ github.workspace }} -ReleaseDir $Env:RELEASE_DIR -VersionFile pyproject.toml
+        shell: pwsh
+
+      - name: Sign installer EXE \(after packaging\)
+        env:
+          PFX_PATH: ${{ env.PFX_PATH }}
+          SIGN_PFX_PASSWORD: ${{ secrets.SIGN_PFX_PASSWORD }}
+          SIGTOOL_PATH: ${{ env.SIGTOOL_PATH }}
+        run: |
+          $installer = Get-ChildItem (Join-Path ${{ github.workspace }} 'LatestReleaseMulti') -Filter 'OTL_Wizard_2_installer_*.exe' -File | Sort-Object LastWriteTime -Descending | Select-Object -First 1
+          if (-not $installer) { Write-Error "Installer EXE not found"; exit 1 }
+          Write-Host "Signing installer: $($installer.FullName)"
+          pwsh -NoProfile -File scripts\sign.ps1 -TargetPath $installer.FullName -PfxPath $env:PFX_PATH -Password $env:SIGN_PFX_PASSWORD -SigntoolPath $env:SIGTOOL_PATH
+        shell: pwsh
+
+      - name: Move versioned artifacts
+        id: move_artifacts
+        run: |
+          $source = Join-Path $env:GITHUB_WORKSPACE 'LatestReleaseMulti'
+          $target = Join-Path $env:GITHUB_WORKSPACE 'LatestRelease'
+          New-Item -ItemType Directory -Force -Path $target | Out-Null
+          $exe = Get-ChildItem $source -Filter 'OTL_Wizard_2_installer_*.exe' -File | Sort-Object LastWriteTime -Descending | Select-Object -First 1
+          $zip = Get-ChildItem $source -Filter 'OTL_Wizard_2_*.zip' -File | Where-Object { $_.Name -notlike 'OTL_Wizard_2_installer_*' } | Sort-Object LastWriteTime -Descending | Select-Object -First 1
+          if (-not $exe -or -not $zip) { Write-Error "Missing artifacts"; exit 1 }
+          Copy-Item $exe.FullName (Join-Path $target $exe.Name) -Force
+          Copy-Item $zip.FullName (Join-Path $target $zip.Name) -Force
+          echo "exe_name=$($exe.Name)" >> $env:GITHUB_OUTPUT
+          echo "zip_name=$($zip.Name)" >> $env:GITHUB_OUTPUT
+        shell: pwsh
+
+      - name: Commit release artifacts
+        if: startsWith(github.ref, 'refs/heads/')
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add LatestRelease/OTL_Wizard_2_installer_*.exe LatestRelease/OTL_Wizard_2_*.zip || echo "Nothing to stage"
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+          git commit -m "Added release files for ${{ github.ref_name }}"
+          git push origin HEAD:${{ github.ref_name }}
+        shell: bash

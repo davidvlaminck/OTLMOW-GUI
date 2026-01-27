@@ -1,18 +1,12 @@
-import logging
 from pathlib import Path
 
-import pytest
-from _pytest.fixtures import fixture
 from otlmow_converter.FileFormats.ExcelImporter import ExcelImporter
 from pytestqt.qtbot import QtBot
 
-from Domain.logger.OTLLogger import OTLLogger
-from Domain.step_domain.ExportFilteredDataSubDomain import ExportFilteredDataSubDomain, ReportItem
-from Domain.enums import ReportAction, FileState
-from Domain.step_domain.InsertDataDomain import InsertDataDomain
-from GUI.screens.ExportData_elements.ExportFilteredDataSubScreen import ExportFilteredDataSubScreen
-from GUI.screens.InsertDataScreen import InsertDataScreen
-from GUI.screens.RelationChangeScreen import RelationChangeScreen
+from otlmow_gui.Domain.step_domain.ExportFilteredDataSubDomain import ExportFilteredDataSubDomain, ReportItem
+from otlmow_gui.Domain.enums import ReportAction, FileState
+from otlmow_gui.GUI.screens.InsertDataScreen import InsertDataScreen
+from otlmow_gui.GUI.screens.RelationChangeScreen import RelationChangeScreen
 from UnitTests.project_files_test.OTLWizardProjects.Model.OtlmowModel.Classes.Onderdeel.AllCasesTestClass import \
     AllCasesTestClass
 from UnitTests.project_files_test.OTLWizardProjects.Model.OtlmowModel.Classes.Onderdeel.AnotherTestClass import \
@@ -20,7 +14,6 @@ from UnitTests.project_files_test.OTLWizardProjects.Model.OtlmowModel.Classes.On
 
 model_directory_path = Path(__file__).parent.parent / 'project_files_test' / 'OTLWizardProjects' / 'Model'
 
-from UnitTests.general_fixtures.GUIFixtures import *
 from UnitTests.general_fixtures.DomainFixtures import *
 
 @fixture

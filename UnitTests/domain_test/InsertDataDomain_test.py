@@ -1,10 +1,9 @@
-import pytest
 from pytestqt.plugin import qtbot
 from pytestqt.qtbot import QtBot
 
-from Domain.enums import FileState
-from GUI.screens.InsertDataScreen import InsertDataScreen
-from GUI.screens.RelationChangeScreen import RelationChangeScreen
+from otlmow_gui.Domain.enums import FileState
+from otlmow_gui.GUI.screens.InsertDataScreen import InsertDataScreen
+from otlmow_gui.GUI.screens.RelationChangeScreen import RelationChangeScreen
 
 from UnitTests.general_fixtures.GUIFixtures import *
 from UnitTests.general_fixtures.DomainFixtures import *
@@ -17,7 +16,7 @@ from UnitTests.general_fixtures.DomainFixtures import *
 #######################################################
 @fixture
 def root_directory() -> Path:
-    return Path(__file__).parent.parent.parent
+    return Path(__file__).parent.parent.parent / 'otlmow_gui'
 
 
 

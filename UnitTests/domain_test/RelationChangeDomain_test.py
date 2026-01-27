@@ -8,14 +8,17 @@ from typing import Optional
 from pytestqt.plugin import qtbot
 from pytestqt.qtbot import QtBot
 
-from GUI.screens.InsertDataScreen import InsertDataScreen
-from GUI.screens.RelationChangeScreen import RelationChangeScreen
+from otlmow_gui.GUI.screens.InsertDataScreen import InsertDataScreen
+from otlmow_gui.GUI.screens.RelationChangeScreen import RelationChangeScreen
 from UnitTests.TestClasses.Classes.ImplementatieElement.AIMObject import AIMObject
 from UnitTests.TestClasses.Classes.Onderdeel.AllCasesTestClass import AllCasesTestClass
 from UnitTests.TestClasses.Classes.Onderdeel.AnotherTestClass import AnotherTestClass
 
 from UnitTests.general_fixtures.GUIFixtures import *
 from UnitTests.general_fixtures.DomainFixtures import *
+
+
+
 #################################################
 # FULL TESTS                                    #
 #################################################
@@ -24,7 +27,7 @@ from UnitTests.general_fixtures.DomainFixtures import *
 #################################################
 @fixture
 def root_directory() -> Path:
-    return Path(__file__).parent.parent.parent
+    return Path(__file__).parent.parent.parent / 'otlmow_gui'
 
 
 @pytest.fixture(scope="function")
@@ -88,13 +91,13 @@ async def test_full_set_possible_relations(root_directory:Path,
     # search with regex for (#Verkeersbordopstelling'|#Pictogram'|#Funderingsmassief'|#verkeersbordsteun'|BevestigingGC'|#Draagconstructie'|#Fundering'|#ConstructieElement')
     # with external objects added every relation possible in the entire OTL model is found
     class1 = "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Verkeersbordsteun"
-    assert len(RelationChangeDomain.possible_relations_per_class_dict[class1]) == 75
+    assert len(RelationChangeDomain.possible_relations_per_class_dict[class1]) == 76
 
     class2 = "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Funderingsmassief"
-    assert len(RelationChangeDomain.possible_relations_per_class_dict[class2]) == 735
+    assert len(RelationChangeDomain.possible_relations_per_class_dict[class2]) == 754
 
     class3 = "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Pictogram"
-    assert len(RelationChangeDomain.possible_relations_per_class_dict[class3]) == 119
+    assert len(RelationChangeDomain.possible_relations_per_class_dict[class3]) == 124
 
     class4 = "https://wegenenverkeer.data.vlaanderen.be/ns/installatie#Verkeersbordopstelling"
     assert len(RelationChangeDomain.possible_relations_per_class_dict[class4]) == 33

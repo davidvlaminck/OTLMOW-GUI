@@ -2,7 +2,11 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppID "{951D7784-A1E6-4A3D-97A8-6051FFF5DDB4}"
-#define MyAppVersion "1.1"
+
+#ifndef MyAppVersion
+#define MyAppVersion "dev"
+#endif
+
 #define MyAppBaseName "OTL wizard 2"
 #define MyAppName MyAppBaseName + " V" + MyAppVersion
 #define MyInstallerOutputName MyAppBaseName + " installer V" + MyAppVersion
@@ -12,7 +16,16 @@
 #define MyAppAssocName MyAppBaseName + " project"
 #define MyAppAssocExt ".otlw"
 #define MyAppAssocKey StringChange(MyAppAssocName, " ", "") + MyAppAssocExt
-#define MyAppDevRoot "C:\Users\chris\PycharmProjects\OTLMOW-GUI"
+
+#ifndef MyAppDevRoot
+#define MyAppDevRoot GetEnv("GITHUB_WORKSPACE")
+#endif
+; Fallback if not running in GitHub Actions (env var empty)
+#if FileExists(SourcePath + "otlmow_gui\img\wizard.ico")
+  #define MyAppEffectiveRoot SourcePath
+#else
+  #define MyAppEffectiveRoot MyAppDevRoot
+#endif
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.
@@ -40,11 +53,11 @@ DisableProgramGroupPage=yes
 PrivilegesRequired=lowest
 UsePreviousAppDir=no
 //PrivilegesRequiredOverridesAllowed=dialog
-InfoBeforeFile={#MyAppDevRoot}\LatestReleaseMulti\before_install_text_FDOtool_warning.txt
-InfoAfterFile={#MyAppDevRoot}\LatestReleaseMulti\long_startup_warning.txt
-OutputDir={#MyAppDevRoot}\LatestReleaseMulti
+InfoBeforeFile={#MyAppEffectiveRoot}\LatestReleaseMulti\before_install_text_FDOtool_warning.txt
+InfoAfterFile={#MyAppEffectiveRoot}\LatestReleaseMulti\long_startup_warning.txt
+OutputDir={#MyAppEffectiveRoot}\LatestReleaseMulti
 OutputBaseFilename={#MyInstallerOutputName}
-SetupIconFile={#MyAppDevRoot}\img\wizard.ico
+SetupIconFile={#MyAppEffectiveRoot}\otlmow_gui\img\wizard.ico
 Compression=lzma
 SolidCompression=yes
 WizardStyle=modern
@@ -57,9 +70,9 @@ Name: "dutch"; MessagesFile: "compiler:Languages\Dutch.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "{#MyAppDevRoot}\LatestReleaseMulti\OTL Wizard 2\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#MyAppDevRoot}\LatestReleaseMulti\OTL Wizard 2\data\*"; DestDir: "{app}\data"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "{#MyAppDevRoot}\LatestReleaseMulti\additional_programs\*"; DestDir: "{app}\additional_programs"; Flags: ignoreversion recursesubdirs createallsubdirs;
+Source: "{#MyAppEffectiveRoot}\LatestReleaseMulti\OTL_Wizard_2\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#MyAppEffectiveRoot}\LatestReleaseMulti\OTL_Wizard_2\data\*"; DestDir: "{app}\data"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#MyAppEffectiveRoot}\LatestReleaseMulti\additional_programs\*"; DestDir: "{app}\additional_programs"; Flags: ignoreversion recursesubdirs createallsubdirs;
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Registry]

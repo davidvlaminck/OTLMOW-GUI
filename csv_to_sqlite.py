@@ -3,9 +3,9 @@ from pathlib import Path
 
 import otlmow_converter.OtlmowConverter
 
-from Domain.util.Helpers import Helpers
-from Domain.logger.OTLLogger import OTLLogger
-from Exceptions.NotASqlliteFileError import NotASqlliteFileError
+from otlmow_gui.Domain import Helpers
+from otlmow_gui.Domain.logger.OTLLogger import OTLLogger
+from otlmow_gui.Exceptions.NotASqlliteFileError import NotASqlliteFileError
 
 OTLLogger.init()
 
