@@ -47,6 +47,11 @@ Install the package with pip and uv:
 pip install uv
 uv pip install otlmow-gui==1.1.1rc5
 ```
+### For Linux users
+You may have to install some additional system packages for PyQt6 to work properly.
+```
+sudo apt install libxcb-cursor0  
+```
 ### Run the OTL wizard command
 You can now run the OTL wizard with the command:
 ```
