@@ -80,10 +80,20 @@ class TabWidget(Screen):
                 # don't close project return to project
                 return
 
+        # Reset cached export names so new projects suggest their own names
         if (getattr(self.main_window, "step1", None) and
             getattr(self.main_window.step1, "template_export_file_picker", None)):
-            # Reset cached export name so a new project suggests its own name.
             self.main_window.step1.template_export_file_picker.previous_exported_file_name = None
+
+        if (getattr(self.main_window, "step4_export", None) and
+            getattr(self.main_window.step4_export, "sub_screen_option_1_all_data", None)):
+            if hasattr(self.main_window.step4_export.sub_screen_option_1_all_data, "export_file_dialog_window"):
+                self.main_window.step4_export.sub_screen_option_1_all_data.export_file_dialog_window.previous_exported_file_name = None
+
+        if (getattr(self.main_window, "step4_export", None) and
+            getattr(self.main_window.step4_export, "sub_screen_option_2_only_unedited_data", None)):
+            if hasattr(self.main_window.step4_export.sub_screen_option_2_only_unedited_data, "export_file_dialog_window"):
+                self.main_window.step4_export.sub_screen_option_2_only_unedited_data.export_file_dialog_window.previous_exported_file_name = None
 
         self.main_window.setCurrentIndex(0)
         global_vars.current_project.clear_model_builder_from_memory()
