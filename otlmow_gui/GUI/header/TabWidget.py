@@ -80,6 +80,10 @@ class TabWidget(Screen):
                 # don't close project return to project
                 return
 
+        if (getattr(self.main_window, "step1", None) and
+            getattr(self.main_window.step1, "template_export_file_picker", None)):
+            # Reset cached export name so a new project suggests its own name.
+            self.main_window.step1.template_export_file_picker.previous_exported_file_name = None
 
         self.main_window.setCurrentIndex(0)
         global_vars.current_project.clear_model_builder_from_memory()
