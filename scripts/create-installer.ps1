@@ -215,7 +215,25 @@ Move-Item -Path $installer.FullName -Destination $installerDest -Force
 # === Step: Create zip distribution (no installer) ===
 $zipName = Join-Path $ReleaseDir ("OTL_Wizard_2_V" + $version + ".zip")
 if (Test-Path $zipName) { Remove-Item $zipName -Force }
-Compress-Archive -Path (Join-Path $exeFolder "*") -DestinationPath $zipName -Force
+
+# Create temporary directory for zip contents
+$tempZipDir = Join-Path $env:TEMP "OTL_Wizard_2_zip_$(Get-Random)"
+New-Item -ItemType Directory -Path $tempZipDir -Force | Out-Null
+
+# Copy executable and data
+Copy-Item -Path (Join-Path $exeFolder "*") -Destination $tempZipDir -Recurse -Force
+
+# Copy additional_programs folder if it exists
+$additionalProgramsDir = Join-Path $ReleaseDir "additional_programs"
+if (Test-Path $additionalProgramsDir) {
+  Copy-Item -Path $additionalProgramsDir -Destination (Join-Path $tempZipDir "additional_programs") -Recurse -Force
+}
+
+# Create the zip file
+Compress-Archive -Path (Join-Path $tempZipDir "*") -DestinationPath $zipName -Force
+
+# Clean up temporary directory
+Remove-Item -Path $tempZipDir -Recurse -Force -ErrorAction SilentlyContinue
 
 Write-Host "Packaging complete."
 Write-Host "Executable: $exePath"
