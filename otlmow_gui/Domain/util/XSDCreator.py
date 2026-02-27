@@ -1,20 +1,12 @@
 import asyncio
+import datetime
 import xml.etree.cElementTree as ET
 from pathlib import Path
 from typing import Optional
 from xml.etree.ElementTree import Element
 
 from otlmow_converter.DotnotationHelper import DotnotationHelper
-from otlmow_model.OtlmowModel.BaseClasses.BooleanField import BooleanField
-from otlmow_model.OtlmowModel.BaseClasses.DateField import DateField
-from otlmow_model.OtlmowModel.BaseClasses.DateTimeField import DateTimeField
-from otlmow_model.OtlmowModel.BaseClasses.FloatOrDecimalField import FloatOrDecimalField
-from otlmow_model.OtlmowModel.BaseClasses.IntegerField import IntegerField
-from otlmow_model.OtlmowModel.BaseClasses.KeuzelijstField import KeuzelijstField
 from otlmow_model.OtlmowModel.BaseClasses.OTLObject import dynamic_create_instance_from_uri, OTLAttribuut, OTLObject
-from otlmow_model.OtlmowModel.BaseClasses.StringField import StringField
-from otlmow_model.OtlmowModel.BaseClasses.TimeField import TimeField
-from otlmow_model.OtlmowModel.BaseClasses.URIField import URIField
 from otlmow_model.OtlmowModel.Helpers.OTLObjectHelper import is_relation
 from otlmow_modelbuilder.OSLOCollector import OSLOCollector
 
@@ -207,19 +199,18 @@ class XSDCreator:
 
     @classmethod
     def create_type_from_attribute_in_element(cls, element: Element, attr_instance: OTLAttribuut):
-        if attr_instance.field == FloatOrDecimalField:
+        if attr_instance.field.native_type == float:
             simple_type = ET.SubElement(element, "{http://www.w3.org/2001/XMLSchema}simpleType")
             restriction = ET.SubElement(simple_type, "{http://www.w3.org/2001/XMLSchema}restriction", base="xs:decimal")
             ET.SubElement(restriction, "{http://www.w3.org/2001/XMLSchema}totalDigits", value="19")
             ET.SubElement(restriction, "{http://www.w3.org/2001/XMLSchema}fractionDigits", value="10")
-        elif attr_instance.field == BooleanField:
+        elif attr_instance.field.native_type == bool:
             simple_type = ET.SubElement(element, "{http://www.w3.org/2001/XMLSchema}simpleType")
             ET.SubElement(simple_type, "{http://www.w3.org/2001/XMLSchema}restriction", base="xs:boolean")
-        elif attr_instance.field in {StringField, DateField, DateTimeField, TimeField, URIField} or attr_instance.field.objectUri == 'http://www.w3.org/2001/XMLSchema#string':
+        elif attr_instance.field.native_type == int:
             simple_type = ET.SubElement(element, "{http://www.w3.org/2001/XMLSchema}simpleType")
-            restriction = ET.SubElement(simple_type, "{http://www.w3.org/2001/XMLSchema}restriction", base="xs:string")
-            ET.SubElement(restriction, "{http://www.w3.org/2001/XMLSchema}maxLength", value="9999")
-        elif issubclass(attr_instance.field, KeuzelijstField):
+            ET.SubElement(simple_type, "{http://www.w3.org/2001/XMLSchema}restriction", base="xs:int")
+        elif hasattr(attr_instance.field, 'options'):
             simple_type = ET.SubElement(element, "{http://www.w3.org/2001/XMLSchema}simpleType")
             restriction = ET.SubElement(simple_type, "{http://www.w3.org/2001/XMLSchema}restriction", base="xs:string")
             ET.SubElement(restriction, "{http://www.w3.org/2001/XMLSchema}enumeration", value='-')
@@ -231,8 +222,9 @@ class XSDCreator:
                 ET.SubElement(restriction, "{http://www.w3.org/2001/XMLSchema}enumeration", value=keuze)
                 max_length = max(max_length, len(keuze))
             ET.SubElement(restriction, "{http://www.w3.org/2001/XMLSchema}maxLength", value=str(max_length))
-        elif issubclass(attr_instance.field, IntegerField):
+        elif attr_instance.field.native_type in {str, datetime.date, datetime.datetime, datetime.time} or attr_instance.field.objectUri == 'http://www.w3.org/2001/XMLSchema#string':
             simple_type = ET.SubElement(element, "{http://www.w3.org/2001/XMLSchema}simpleType")
-            restriction = ET.SubElement(simple_type, "{http://www.w3.org/2001/XMLSchema}restriction", base="xs:int")
+            restriction = ET.SubElement(simple_type, "{http://www.w3.org/2001/XMLSchema}restriction", base="xs:string")
+            ET.SubElement(restriction, "{http://www.w3.org/2001/XMLSchema}maxLength", value="9999")
         else:
             raise NotImplementedError(f"Field {attr_instance.field} not implemented")
