@@ -31,7 +31,7 @@ requires-python = ">=3.11"
 dependencies = [
     'PyQt6-Qt6 >= 6.5.3',
     'otlmow-model >= 2.18.3.0',
-    'otlmow-converter >= 1.18',
+    'otlmow-converter >= 1.21',
     'otlmow-visuals >= 0.3',
     'otlmow_template>=1.10',
     'pyqt6 >= 6.8.0',
@@ -47,7 +47,7 @@ dependencies = [
     'shapely>=2.0.7',
     'pyproj>=3.7.1',
     'numpy >= 1.26',
-    'pandas >= 2.2'
+    'pandas >= 2.2, < 3.0'
 ]
 
 [tool.setuptools.packages.find]
