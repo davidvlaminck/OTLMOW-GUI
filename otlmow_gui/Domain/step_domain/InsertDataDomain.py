@@ -121,11 +121,11 @@ class InsertDataDomain:
                             delattr(asset,"FeatId")
 
                     assets.extend(assets_subset)
-                    if exception_group is not None:
-                        sdf_exception_list.extend(exception_group.exceptions)
+                    if exception_group_subset is not None:
+                        sdf_exception_list.extend(exception_group_subset.exceptions)
 
                 exception_group = ExceptionsGroup(
-                    message=f'Failed to create objects from Excel file {doc_location_path}')
+                    message=f'Failed to create objects from CSV file (SDF are split into CSV\'s) {doc_location_path}')
                 for exception in sdf_exception_list:
                     exception_group.add_exception(exception)
             else:
@@ -135,7 +135,7 @@ class InsertDataDomain:
             # second checks done by the GUI
             if exception_group is None:
                 exception_group = ExceptionsGroup(
-                    message=f'Failed to create objects from Excel file {doc_location_path}')
+                    message=f'Failed to create objects from {doc_location_path.suffix.upper()} file {doc_location_path}')
 
             cls.check_for_empty_identificators(assets=assets, exception_group=exception_group)
 
@@ -387,8 +387,6 @@ class InsertDataDomain:
             except Exception as ex:
                 error_set.append({"exception": ex, "path_str": file_path})
                 project_file.state = FileState.ERROR
-
-
 
         if len(error_set):
             OTLLogger.logger.debug(
