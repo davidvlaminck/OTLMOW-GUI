@@ -1,20 +1,21 @@
 # coding=utf-8
 from datetime import date
 from typing import List
-from otlmow_model.OtlmowModel.BaseClasses.OTLObject import OTLAttribuut
+from ...BaseClasses.OTLObject import OTLAttribuut
 from abc import abstractmethod
 from ...Classes.ImplementatieElement.AIMDBStatus import AIMDBStatus
 from ...Classes.ImplementatieElement.AIMToestand import AIMToestand
-from otlmow_model.OtlmowModel.BaseClasses.OTLAsset import OTLAsset
-from otlmow_model.OtlmowModel.BaseClasses.RelationInteractor import RelationInteractor
-from otlmow_model.OtlmowModel.BaseClasses.DateField import DateField
+from ...Classes.ImplementatieElement.AIMVersie import AIMVersie
+from ...BaseClasses.OTLAsset import OTLAsset
+from ...BaseClasses.RelationInteractor import RelationInteractor
+from ...BaseClasses.DateField import DateField
 from ...Datatypes.DtcIdentificator import DtcIdentificator, DtcIdentificatorWaarden
 from ...Datatypes.KwantWrdInMaand import KwantWrdInMaand, KwantWrdInMaandWaarden
-from otlmow_model.OtlmowModel.BaseClasses.StringField import StringField
+from ...BaseClasses.StringField import StringField
 
 
 # Generated with OTLClassCreator. To modify: extend, do not edit
-class AIMObject(AIMDBStatus, AIMToestand, OTLAsset, RelationInteractor):
+class AIMObject(AIMDBStatus, AIMToestand, AIMVersie, RelationInteractor, OTLAsset):
     """Abstracte als de basisklasse voor alle uniek geïdentificeerde OTL objecten met de basiseigenschappen die elk OTL object minstens heeft."""
 
     typeURI = 'https://wegenenverkeer.data.vlaanderen.be/ns/implementatieelement#AIMObject'

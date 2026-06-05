@@ -1,6 +1,6 @@
 from abc import abstractmethod
 
-from otlmow_model.OtlmowModel.GeometrieTypes.AbstracteGeometrie import AbstracteGeometrie
+from .AbstracteGeometrie import AbstracteGeometrie
 
 
 class PuntGeometrie(AbstracteGeometrie):

@@ -2,15 +2,14 @@ import warnings
 from pathlib import Path
 from typing import Optional
 
-from otlmow_model.OtlmowModel.BaseClasses.OTLObject import dynamic_create_instance_from_uri
-from otlmow_model.OtlmowModel.BaseClasses.RelationInteractor import RelationInteractor
-from otlmow_model.OtlmowModel.Classes.Agent import Agent
-from otlmow_model.OtlmowModel.Classes.ImplementatieElement.RelatieObject import RelatieObject
-from otlmow_model.OtlmowModel.Classes.Onderdeel.HeeftBetrokkene import HeeftBetrokkene
-from otlmow_model.OtlmowModel.Exceptions.CouldNotCreateRelationError import CouldNotCreateRelationError
-from otlmow_model.OtlmowModel.Helpers.GenericHelper import get_ns_and_name_from_uri, validate_guid, encode_short_uri, \
-    get_aim_id_from_uuid_and_typeURI
-from otlmow_model.OtlmowModel.Helpers.RelationValidator import is_valid_relation
+from ..BaseClasses.OTLObject import dynamic_create_instance_from_uri
+from ..BaseClasses.RelationInteractor import RelationInteractor
+from ..Classes.Agent import Agent
+from ..Classes.ImplementatieElement.RelatieObject import RelatieObject
+from ..Classes.Onderdeel.HeeftBetrokkene import HeeftBetrokkene
+from ..Exceptions.CouldNotCreateRelationError import CouldNotCreateRelationError
+from ..Helpers.GenericHelper import validate_guid, get_aim_id_from_uuid_and_typeURI
+from ..Helpers.RelationValidator import is_valid_relation
 
 
 def create_relation(relation_type: type[RelatieObject], source: Optional[RelationInteractor] = None,

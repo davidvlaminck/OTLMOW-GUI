@@ -8,22 +8,19 @@ from datetime import datetime
 from pathlib import Path
 from typing import Union, Dict, List, Generator, TypeVar, Type
 
-from otlmow_model.OtlmowModel.BaseClasses.DateField import DateField
-from otlmow_model.OtlmowModel.BaseClasses.DateTimeField import DateTimeField
-from otlmow_model.OtlmowModel.BaseClasses.KeuzelijstField import KeuzelijstField
-from otlmow_model.OtlmowModel.BaseClasses.OTLField import OTLField
-from otlmow_model.OtlmowModel.BaseClasses.TimeField import TimeField
-from otlmow_model.OtlmowModel.BaseClasses.URIField import URIField
-from otlmow_model.OtlmowModel.BaseClasses.UnionTypeField import UnionTypeField
-from otlmow_model.OtlmowModel.BaseClasses.UnionWaarden import UnionWaarden
-from otlmow_model.OtlmowModel.Exceptions.AttributeDeprecationWarning import AttributeDeprecationWarning
-from otlmow_model.OtlmowModel.Exceptions.CanNotClearAttributeError import CanNotClearAttributeError
-from otlmow_model.OtlmowModel.Exceptions.ClassDeprecationWarning import ClassDeprecationWarning
-from otlmow_model.OtlmowModel.Exceptions.CouldNotCreateInstanceError import CouldNotCreateInstanceError
-from otlmow_model.OtlmowModel.Exceptions.MethodNotApplicableError import MethodNotApplicableError
-from otlmow_model.OtlmowModel.Exceptions.NonStandardAttributeWarning import NonStandardAttributeWarning
-from otlmow_model.OtlmowModel.Helpers.GenericHelper import get_titlecase_from_ns, get_ns_and_name_from_uri
-from otlmow_model.OtlmowModel.Helpers.generated_lists import get_hardcoded_class_dict
+from .DateTimeField import DateTimeField
+from .OTLField import OTLField
+from .URIField import URIField
+from .UnionTypeField import UnionTypeField
+from .UnionWaarden import UnionWaarden
+from ..Exceptions.AttributeDeprecationWarning import AttributeDeprecationWarning
+from ..Exceptions.CanNotClearAttributeError import CanNotClearAttributeError
+from ..Exceptions.ClassDeprecationWarning import ClassDeprecationWarning
+from ..Exceptions.CouldNotCreateInstanceError import CouldNotCreateInstanceError
+from ..Exceptions.MethodNotApplicableError import MethodNotApplicableError
+from ..Exceptions.NonStandardAttributeWarning import NonStandardAttributeWarning
+from ..Helpers.GenericHelper import get_titlecase_from_ns
+from ..Helpers.generated_lists import get_hardcoded_class_dict
 
 
 class OTLAttribuut:
@@ -47,6 +44,7 @@ class OTLAttribuut:
         self.readonlyValue = None
         self.mark_to_be_cleared: bool = False
         self.waarde = None
+        self.is_otl_attribute: bool = True
         self.field: Type[OTLField] = field
 
         if self.field.waardeObject:
@@ -167,7 +165,7 @@ class OTLAttribuut:
             converted_values = []
             for el_value in value:
                 converted_value = self.field.convert_to_correct_type(el_value)
-                if issubclass(self.field, KeuzelijstField):
+                if hasattr(self.field, 'options') and self.field.options is not None:
                     converted_value = self.field.convert_to_invulwaarde(converted_value, self.field)
 
                 field_validated = self.field.validate(converted_value, self)
@@ -182,13 +180,23 @@ class OTLAttribuut:
                 self.waarde = value
             else:
                 converted_value = self.field.convert_to_correct_type(value)
-                if issubclass(self.field, KeuzelijstField):
+                if hasattr(self.field, 'options') and self.field.options is not None:
                     converted_value = self.field.convert_to_invulwaarde(converted_value, self.field)
                 if self.field.validate(value=converted_value, attribuut=self):
                     self.waarde = converted_value
                 else:
+                    if owner is None and self.owner is not None:
+                        if hasattr(self.owner, '_parent') and self.owner._parent is not None:
+                            raise ValueError(
+                                f'Could not assign the best effort converted value to {self.owner._parent.naam}.'
+                                f'{self.naam}. Value {value} is not valid (type: {self.field.label})')
+                        else:
+                            raise ValueError(
+                                f'Could not assign the best effort converted value to {self.owner.__class__.__name__}.'
+                                f'{self.naam} Value {value} is not valid (type: {self.field.label})')
                     raise ValueError(
-                        f'Could not assign the best effort converted value to {owner.__class__.__name__}.{self.naam}')
+                        f'Could not assign the best effort converted value to {owner.__class__.__name__}.{self.naam} '
+                        f'Value {value} is not valid (type: {self.field.label})')
 
         # check if kwant Wrd inside a union type, if so, call clear_props
         if (owner is not None and value is not None and hasattr(owner, 'field') and owner.field.waardeObject is not None
@@ -258,11 +266,13 @@ class OTLAttribuut:
         new_value_object = self.field.waardeObject()
         new_value_object._parent = self
 
-        if isinstance(new_value_object, UnionWaarden):
+        if getattr(new_value_object, '_is_union_waarden_object', False):
             selected_attr = random.choice(list(new_value_object))
             selected_attr.fill_with_dummy_data()
         else:
             for a in new_value_object:
+                if a == 'is_waarden_object':
+                    continue
                 a.fill_with_dummy_data()
 
         if self.kardinaliteit_max != '1':
@@ -301,6 +311,9 @@ class OTLObject(object):
                 warnings.warn(
                     message=f'used a class ({self.__class__.__name__}) that is deprecated since version {self.deprecated_version}',
                     category=ClassDeprecationWarning)
+
+    def return_is_otl_object(self) -> bool:
+        return True
 
     def clear_value(self, attribute_name: str) -> None:
         if attribute_name is None:
@@ -347,9 +360,11 @@ class OTLObject(object):
     def __iter__(self) -> Generator[OTLAttribuut, None, None]:
         yield from sorted(filter(lambda v: isinstance(v, OTLAttribuut), (vars(self).values())), key=lambda x: x.naam)
 
-    def __eq__(self, other):
+    def __eq__(self, value) -> bool:
+        if value is None:
+            return False
         return (create_dict_from_asset(self, warn_for_non_otl_conform_attributes=False) ==
-                create_dict_from_asset(other, warn_for_non_otl_conform_attributes=False))
+                create_dict_from_asset(value, warn_for_non_otl_conform_attributes=False))
 
     def is_instance_of(self, otl_type: type, dynamic_created: bool = False, model_directory: Path = None):
         if dynamic_created:
@@ -516,9 +531,10 @@ def _recursive_create_dict_from_asset(
     else:
         d = {}
         for attr_key, attr in vars(asset).items():
-            if attr_key in {'_parent', '_valid_relations', '_geometry_types'}:
+            if attr_key in {'_parent', '_valid_relations', '_geometry_types',
+                            '_is_waarden_object', '_is_union_waarden_object'}:
                 continue
-            if isinstance(attr, OTLAttribuut):
+            if hasattr(attr, 'is_otl_attribute') and attr.is_otl_attribute:
                 if not attr.mark_to_be_cleared:
                     if attr.waarde is None:
                         continue
@@ -554,18 +570,18 @@ def _recursive_create_dict_from_asset(
                 else:
                     if attr.mark_to_be_cleared:
                         d[attr.naam] = attr.field.clearing_value
-                    elif cast_datetime:
-                        if attr.field == TimeField:
+                    elif cast_datetime and attr.field.is_otl_field:
+                        if attr.field.native_type == time:
                             if isinstance(attr.waarde, list):
                                 d[attr.naam] = [time.strftime(list_item, "%H:%M:%S") for list_item in attr.waarde]
                             else:
                                 d[attr.naam] = time.strftime(attr.waarde, "%H:%M:%S")
-                        elif attr.field == DateField:
+                        elif attr.field.native_type == date:
                             if isinstance(attr.waarde, list):
                                 d[attr.naam] = [date.strftime(list_item, "%Y-%m-%d") for list_item in attr.waarde]
                             else:
                                 d[attr.naam] = date.strftime(attr.waarde, "%Y-%m-%d")
-                        elif attr.field == DateTimeField:
+                        elif attr.field.native_type == datetime:
                             if isinstance(attr.waarde, list):
                                 d[attr.naam] = [DateTimeField.value_default(list_item)
                                                 for list_item in attr.waarde]
@@ -614,9 +630,10 @@ def _recursive_create_rdf_dict_from_asset(
     else:
         d = {}
         for attr_key, attr in vars(asset).items():
-            if attr_key in {'_parent', '_valid_relations', '_geometry_types'}:
+            if attr_key in {'_parent', '_valid_relations', '_geometry_types',
+                            '_is_union_waarden_object', '_is_waarden_object'}:
                 continue
-            if isinstance(attr, OTLAttribuut):
+            if hasattr(attr, 'is_otl_attribute') and attr.is_otl_attribute:
                 if not attr.mark_to_be_cleared:
                     if attr.waarde is None:
                         continue
@@ -656,24 +673,24 @@ def _recursive_create_rdf_dict_from_asset(
                 else:
                     if attr.mark_to_be_cleared:
                         d[attr.objectUri] = attr.field.clearing_value
-                    elif cast_datetime:
-                        if attr.field == TimeField:
+                    elif cast_datetime and attr.field.is_otl_field:
+                        if attr.field.native_type == time:
                             if isinstance(attr.waarde, list):
                                 d[attr.objectUri] = [time.strftime(list_item, "%H:%M:%S") for list_item in attr.waarde]
                             else:
                                 d[attr.objectUri] = time.strftime(attr.waarde, "%H:%M:%S")
-                        elif attr.field == DateField:
+                        if attr.field.native_type == date:
                             if isinstance(attr.waarde, list):
                                 d[attr.objectUri] = [date.strftime(list_item, "%Y-%m-%d") for list_item in attr.waarde]
                             else:
                                 d[attr.objectUri] = date.strftime(attr.waarde, "%Y-%m-%d")
-                        elif attr.field == DateTimeField:
+                        if attr.field.native_type == datetime:
                             if isinstance(attr.waarde, list):
                                 d[attr.objectUri] = [datetime.strftime(list_item, "%Y-%m-%d %H:%M:%S")
                                                      for list_item in attr.waarde]
                             else:
                                 d[attr.objectUri] = datetime.strftime(attr.waarde, "%Y-%m-%d %H:%M:%S")
-                        elif issubclass(attr.field, KeuzelijstField):
+                        elif hasattr(attr.field, 'options') and attr.field.options is not None:
                             if isinstance(attr.waarde, list):
                                 if attr.waarde == [None]:
                                     d[attr.objectUri] = []
@@ -684,7 +701,7 @@ def _recursive_create_rdf_dict_from_asset(
                                 d[attr.objectUri] = attr.field.options[attr.waarde].objectUri
                         else:
                             d[attr.objectUri] = attr.waarde
-                    elif issubclass(attr.field, KeuzelijstField):
+                    elif hasattr(attr.field, 'options') and attr.field.options is not None:
                         if isinstance(attr.waarde, list):
                             if attr.waarde == [None]:
                                 d[attr.objectUri] = []
@@ -864,11 +881,13 @@ def set_value_by_dictitem(instance_or_attribute: Union[OTLObject, OTLAttribuut],
             if attribute_to_set.waarde is None:
                 attribute_to_set.add_empty_value()
 
-            if cast_datetime and attribute_to_set.waarde._waarde.field in [TimeField, DateField, DateTimeField]:
+            if (cast_datetime and attribute_to_set.field.is_otl_field and
+                    attribute_to_set.field.native_type in [date, datetime, time]):
                 value = attribute_to_set.waarde._waarde.field.convert_to_correct_type(value=value, log_warnings=False)
             attribute_to_set.waarde._waarde.set_waarde(value)
     else:
-        if cast_datetime and attribute_to_set.field in [TimeField, DateField, DateTimeField]:
+        if (cast_datetime and attribute_to_set.field.is_otl_field and
+                attribute_to_set.field.native_type in [date, datetime, time]):
             value = attribute_to_set.field.convert_to_correct_type(value=value, log_warnings=False)
         attribute_to_set.set_waarde(value)
 

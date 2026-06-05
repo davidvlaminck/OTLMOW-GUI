@@ -1,8 +1,8 @@
 import random
 from typing import Any
 
-from otlmow_model.OtlmowModel.BaseClasses.OTLField import OTLField
-from otlmow_model.OtlmowModel.BaseClasses.IntegerField import IntegerField
+from .OTLField import OTLField
+from .IntegerField import IntegerField
 
 
 class NonNegIntegerField(IntegerField):

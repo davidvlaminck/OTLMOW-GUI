@@ -3,10 +3,10 @@ import warnings
 from pathlib import Path
 from typing import Type, Optional
 
-from otlmow_model.OtlmowModel.BaseClasses.OTLObject import dynamic_create_instance_from_uri
-from otlmow_model.OtlmowModel.BaseClasses.RelationInteractor import RelationInteractor
-from otlmow_model.OtlmowModel.Classes.ImplementatieElement.RelatieObject import RelatieObject
-from otlmow_model.OtlmowModel.Exceptions.RelationDeprecationWarning import RelationDeprecationWarning
+from ..BaseClasses.OTLObject import dynamic_create_instance_from_uri
+from ..BaseClasses.RelationInteractor import RelationInteractor
+from ..Classes.ImplementatieElement.RelatieObject import RelatieObject
+from ..Exceptions.RelationDeprecationWarning import RelationDeprecationWarning
 
 
 def is_valid_relation_instance(source: RelationInteractor, relation_instance: RelatieObject,

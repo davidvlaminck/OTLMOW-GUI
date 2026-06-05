@@ -1,7 +1,7 @@
 from abc import abstractmethod
 from pathlib import Path
 
-from otlmow_model.OtlmowModel.Helpers.generated_lists import get_hardcoded_class_dict, get_concrete_subclasses_from_class_dict
+from ..Helpers.generated_lists import get_hardcoded_class_dict, get_concrete_subclasses_from_class_dict
 
 
 class RelationInteractor:

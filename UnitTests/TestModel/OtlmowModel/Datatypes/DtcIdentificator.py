@@ -1,8 +1,8 @@
 # coding=utf-8
-from otlmow_model.OtlmowModel.BaseClasses.OTLObject import OTLAttribuut
-from otlmow_model.OtlmowModel.BaseClasses.WaardenObject import WaardenObject
-from otlmow_model.OtlmowModel.BaseClasses.ComplexField import ComplexField
-from otlmow_model.OtlmowModel.BaseClasses.StringField import StringField
+from ..BaseClasses.OTLObject import OTLAttribuut
+from ..BaseClasses.WaardenObject import WaardenObject
+from ..BaseClasses.ComplexField import ComplexField
+from ..BaseClasses.StringField import StringField
 
 
 # Generated with OTLComplexDatatypeCreator. To modify: extend, do not edit

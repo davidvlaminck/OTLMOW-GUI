@@ -2,7 +2,7 @@ import random
 import string
 from typing import Optional, Any
 
-from otlmow_model.OtlmowModel.BaseClasses.StringField import StringField
+from .StringField import StringField
 import re
 
 

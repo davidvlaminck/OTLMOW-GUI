@@ -41,6 +41,16 @@
                 "https://wegenenverkeer.data.vlaanderen.be/ns/implementatieelement#AIMObject"
             ]
         },
+        "https://wegenenverkeer.data.vlaanderen.be/ns/implementatieelement#AIMVersie": {
+            "abstract": true,
+            "ns": "implementatieelement",
+            "name": "AIMVersie",
+            "label": "AIM versie",
+            "deprecated_version": "",
+            "direct_subclasses": [
+                "https://wegenenverkeer.data.vlaanderen.be/ns/implementatieelement#AIMObject"
+            ]
+        },
         "https://wegenenverkeer.data.vlaanderen.be/ns/implementatieelement#DirectioneleRelatie": {
             "abstract": true,
             "ns": "implementatieelement",

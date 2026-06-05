@@ -4,10 +4,9 @@ from collections import defaultdict
 from pathlib import Path
 from typing import Iterable, List, Dict
 
-from otlmow_model.OtlmowModel.BaseClasses.OTLObject import OTLObject, create_dict_from_asset, get_attribute_by_name, \
-    dynamic_create_instance_from_ns_and_name
-from otlmow_model.OtlmowModel.Helpers.GenericHelper import validate_guid
-from otlmow_model.OtlmowModel.Helpers.generated_lists import get_hardcoded_relation_dict
+from ..BaseClasses.OTLObject import OTLObject, create_dict_from_asset, dynamic_create_instance_from_ns_and_name
+from ..Helpers.GenericHelper import validate_guid
+from ..Helpers.generated_lists import get_hardcoded_relation_dict
 
 
 def count_assets_by_type(objects: Iterable[OTLObject]) -> defaultdict:

@@ -2,7 +2,7 @@ import base64
 import re
 from typing import Optional, Match
 
-from otlmow_model.OtlmowModel.BaseClasses.URIField import URIField
+from ..BaseClasses.URIField import URIField
 
 
 def get_shortened_uri(object_uri: str):

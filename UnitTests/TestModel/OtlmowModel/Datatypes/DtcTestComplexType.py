@@ -1,12 +1,13 @@
 # coding=utf-8
 from typing import List
-from otlmow_model.OtlmowModel.BaseClasses.OTLObject import OTLAttribuut
-from otlmow_model.OtlmowModel.BaseClasses.WaardenObject import WaardenObject
-from otlmow_model.OtlmowModel.BaseClasses.BooleanField import BooleanField
-from otlmow_model.OtlmowModel.BaseClasses.ComplexField import ComplexField
+from ..BaseClasses.OTLObject import OTLAttribuut
+from ..BaseClasses.WaardenObject import WaardenObject
+from ..BaseClasses.BooleanField import BooleanField
+from ..BaseClasses.ComplexField import ComplexField
 from ..Datatypes.DtcTestComplexType2 import DtcTestComplexType2, DtcTestComplexType2Waarden
+from ..Datatypes.KlTestKeuzelijst import KlTestKeuzelijst
 from ..Datatypes.KwantWrdTest import KwantWrdTest, KwantWrdTestWaarden
-from otlmow_model.OtlmowModel.BaseClasses.StringField import StringField
+from ..BaseClasses.StringField import StringField
 
 
 # Generated with OTLComplexDatatypeCreator. To modify: extend, do not edit
@@ -34,6 +35,13 @@ class DtcTestComplexTypeWaarden(WaardenObject):
                                                      kardinaliteit_max='*',
                                                      definition='Test attribuut voor complexe waarde met kardinaliteit > 1 in een complex datatype.',
                                                      owner=self)
+
+        self._testKeuzelijst = OTLAttribuut(field=KlTestKeuzelijst,
+                                            naam='testKeuzelijst',
+                                            label='Test Keuzelijst',
+                                            objectUri='https://wegenenverkeer.data.vlaanderen.be/ns/implementatieelement#DtcTestComplexType.testKeuzelijst',
+                                            definition='Test attribuut voor een keuzelijst in een complex datatype.',
+                                            owner=self)
 
         self._testKwantWrd = OTLAttribuut(field=KwantWrdTest,
                                           naam='testKwantWrd',
@@ -91,6 +99,15 @@ class DtcTestComplexTypeWaarden(WaardenObject):
     @testComplexType2MetKard.setter
     def testComplexType2MetKard(self, value):
         self._testComplexType2MetKard.set_waarde(value, owner=self._parent)
+
+    @property
+    def testKeuzelijst(self) -> str:
+        """Test attribuut voor een keuzelijst in een complex datatype."""
+        return self._testKeuzelijst.get_waarde()
+
+    @testKeuzelijst.setter
+    def testKeuzelijst(self, value):
+        self._testKeuzelijst.set_waarde(value, owner=self._parent)
 
     @property
     def testKwantWrd(self) -> KwantWrdTestWaarden:

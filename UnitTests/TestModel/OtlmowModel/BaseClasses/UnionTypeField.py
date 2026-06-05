@@ -1,7 +1,7 @@
 ﻿from typing import Any
 
-from otlmow_model.OtlmowModel.BaseClasses.OTLField import OTLField
-from otlmow_model.OtlmowModel.Exceptions.UnionTypeError import UnionTypeError
+from .OTLField import OTLField
+from ..Exceptions.UnionTypeError import UnionTypeError
 
 
 class UnionTypeField(OTLField):

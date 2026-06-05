@@ -1,9 +1,9 @@
 from typing import Any
 
-from otlmow_model.OtlmowModel.BaseClasses.OTLField import OTLField
-from otlmow_model.OtlmowModel.BaseClasses.StringField import StringField
-from otlmow_model.OtlmowModel.BaseClasses.WKTValidator import WKTValidator
-from otlmow_model.OtlmowModel.Exceptions.WrongGeometryTypeError import WrongGeometryTypeError
+from .OTLField import OTLField
+from .StringField import StringField
+from .WKTValidator import WKTValidator
+from ..Exceptions.WrongGeometryTypeError import WrongGeometryTypeError
 
 
 class WKTField(StringField):

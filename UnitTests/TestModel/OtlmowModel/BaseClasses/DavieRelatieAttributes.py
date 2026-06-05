@@ -1,8 +1,8 @@
 # coding=utf-8
 from abc import abstractmethod
 
-from otlmow_model.OtlmowModel.BaseClasses.DteAssetType import DteAssetType
-from otlmow_model.OtlmowModel.BaseClasses.OTLObject import OTLAttribuut
+from .DteAssetType import DteAssetType
+from .OTLObject import OTLAttribuut
 
 
 class DavieRelatieAttributes:
@@ -39,5 +39,3 @@ class DavieRelatieAttributes:
     @doel.setter
     def doel(self, value):
         self._doel.set_waarde(value, owner=self)
-
-    

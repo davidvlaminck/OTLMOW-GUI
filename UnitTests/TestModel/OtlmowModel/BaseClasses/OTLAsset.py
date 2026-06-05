@@ -1,6 +1,6 @@
 from abc import abstractmethod
 
-from otlmow_model.OtlmowModel.BaseClasses.OTLObject import OTLObject
+from .OTLObject import OTLObject
 
 
 class OTLAsset(OTLObject):
