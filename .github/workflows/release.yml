@@ -14,9 +14,9 @@ jobs:
     concurrency: release
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v7
       - name: Setup Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v6
         with:
           python-version: '3.12'
       - run: python3 -m pip install --upgrade build && python3 -m build

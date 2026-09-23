@@ -17,9 +17,9 @@ jobs:
       run:
         working-directory: ./UnitTests
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Install uv with Python version 3.13
-        uses: astral-sh/setup-uv@v5
+        uses: astral-sh/setup-uv@v7
         with:
           python-version: 3.13
       - name: Installing dependencies with uv for running the tests
