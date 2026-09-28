@@ -1,5 +1,6 @@
 import inspect
 import os
+from collections import Counter
 from pathlib import Path
 from typing import Optional, List, cast
 
@@ -14,11 +15,33 @@ from otlmow_gui.GUI.translation.GlobalTranslate import GlobalTranslate
 
 ROOT_DIR_GUI = Path(__file__).parent.parent.parent.parent
 SITE_PACKAGES_ROOT = ROOT_DIR
+
 class RelationChangeHelpers:
 
     unspecified_direction_icon:str = "<->"
     outgoing_direction_icon: str = "-->"
     incoming_direction_icon: str = "<--"
+
+    @classmethod
+    def is_unique_across_namespaces(cls, typeURI, objects):
+        split_typeURI = typeURI.split("#")
+        type_name = split_typeURI[-1]
+
+        # NOTE: the original code built a list of names whose count is < 2
+        # (i.e. UNIQUE names) into a variable misleadingly called
+        # "non_unique", then returned `type_name not in` that list. That means
+        # this method returns True when the type name is NON-unique (appears in
+        # >= 2 namespaces). Preserve that exact semantics.
+        # The original implementation was O(N**2) because list.count() was called
+        # for every name; a single Counter pass makes it O(N) instead.
+        # The original also deduplicated by full typeURI first, so we do the same.
+        unique_typeURIs = {otl_object.typeURI for otl_object in objects}
+        list_type_names = [uri.split("#")[-1] for uri in unique_typeURIs]
+        counts = Counter(list_type_names)
+        unique_type_names = {name for name, count in counts.items() if count < 2}
+
+        return type_name not in unique_type_names
+
     @classmethod
     def get_abbreviated_typeURI(cls, typeURI, add_namespace=False, is_relation=False):
         split_typeURI = typeURI.split("#")
@@ -68,19 +91,6 @@ class RelationChangeHelpers:
         return id.split("-")[0] + "-..." if OTLObjectHelper.is_aim_id(id) else id
 
     @classmethod
-    def is_unique_across_namespaces(cls, typeURI,objects):
-        split_typeURI = typeURI.split("#")
-        type_name = split_typeURI[-1]
-
-        unique_typeURIs = {otl_object.typeURI for otl_object in objects}
-        list_type_names = [typeURI.split("#")[-1] for typeURI in unique_typeURIs]
-
-        list_of_non_unique_type_names = filter(
-            lambda type_name: list_type_names.count(type_name) < 2, list_type_names)
-
-        return type_name not in list_of_non_unique_type_names
-
-    @classmethod
     def get_screen_icon_direction(cls, input_richting:str) -> str:
         richting = cls.unspecified_direction_icon
         if input_richting == "Source -> Destination":
@@ -114,7 +124,7 @@ class RelationChangeHelpers:
         classes_to_instantiate['Agent'] = class_location / 'Agent'
 
         for class_name, file_path in classes_to_instantiate.items():
-            
+
             import_path = f'{file_path.parts[-3]}.{file_path.parts[-2]}.{file_path.parts[-1]}'
             if "Agent" in str(file_path.absolute()):
                 import_path = f'{file_path.parts[-2]}.{file_path.parts[-1]}'

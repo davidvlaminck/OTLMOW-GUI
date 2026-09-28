@@ -160,6 +160,7 @@ class RelationChangeDomain:
     external_objects: list[RelationInteractor] = []  # Object outside the project (from DAVIE)
     agent_objects: list[Agent] = []  # Agent objects (not an AIMobject)
     shown_objects: list[RelationInteractor] = []  # All objects combined that are displayed on GUI (col 1)
+    shown_objects_by_id: dict[str, RelationInteractor] = {}  # O(1) lookup index for shown_objects
 
     possible_relations_per_class_dict: dict[str, list[OSLORelatie]] = {}
     possible_object_to_object_relations_dict: dict[
@@ -230,6 +231,7 @@ class RelationChangeDomain:
         cls.selected_object = None
 
         cls.shown_objects = []
+        cls.shown_objects_by_id = {}
         cls.internal_objects = []
         cls.external_objects = []
         cls.existing_relations = []
@@ -368,7 +370,11 @@ class RelationChangeDomain:
         cls.add_external_objects_to_shown_objects()
         cls.add_agent_objects_to_shown_objects()
 
+        cls.rebuild_shown_objects_index()
+
         await cls.create_and_add_missing_external_assets_from_relations()
+
+        cls.rebuild_shown_objects_index()
 
         cls.get_screen().fill_object_list(cls.shown_objects)
         cls.get_screen().fill_possible_relations_list(None, {})
@@ -475,6 +481,10 @@ class RelationChangeDomain:
         :returns: The matching OTL object if found, otherwise None.
         :rtype: Optional[RelationInteractor]
         """
+        if identificator in cls.shown_objects_by_id:
+            return cls.shown_objects_by_id[identificator]
+
+        # fallback to a linear scan (e.g. when the index is out of sync)
         filtered_objects = list(filter(cls.filter_on_id(id_to_check=identificator), cls.shown_objects))
 
         if filtered_objects:
@@ -485,6 +495,24 @@ class RelationChangeDomain:
             else:
                 return filtered_objects[0]
         return None
+
+    @classmethod
+    def rebuild_shown_objects_index(cls) -> None:
+        """
+        Rebuilds the O(1) lookup index for the shown_objects list.
+
+        This method populates the shown_objects_by_id dictionary using the corrected
+        identificator of every shown object, so that get_object() can resolve an object
+        by id in constant time instead of scanning the whole list.
+
+        :param cls: The class itself.
+        :returns: None
+        """
+        cls.shown_objects_by_id = {}
+        for otl_object in cls.shown_objects:
+            corrected_id = RelationChangeHelpers.get_corrected_identificator(otl_object)
+            if corrected_id:
+                cls.shown_objects_by_id[corrected_id] = otl_object
 
     @classmethod
     def filter_on_id(cls, id_to_check: str):
@@ -1384,6 +1412,7 @@ class RelationChangeDomain:
         """
 
         cls.shown_objects.extend(cls.external_objects)
+        cls.rebuild_shown_objects_index()
         cls.regenerate_relation_types = True
 
     @classmethod
@@ -1396,6 +1425,7 @@ class RelationChangeDomain:
         :return: None
         """
         cls.shown_objects.extend(cls.agent_objects)
+        cls.rebuild_shown_objects_index()
         cls.regenerate_relation_types = True
 
     @classmethod
@@ -1433,6 +1463,7 @@ class RelationChangeDomain:
             cls.external_objects.append(new_external_object)
 
         cls.shown_objects.append(new_external_object)
+        cls.rebuild_shown_objects_index()
 
         cls.regenerate_relation_types = True
 

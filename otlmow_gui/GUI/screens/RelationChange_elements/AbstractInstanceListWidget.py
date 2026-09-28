@@ -69,6 +69,14 @@ class AbstractInstanceListWidget:
 
         self.id_to_object_with_text_and_data_dict: dict = {}
 
+        # Cache for direction/relation icons. The base image depends only on the
+        # direction ("<->", "-->", "<--") and the painted color only on the
+        # typeURI, so the final QIcon can be reused across all items sharing the
+        # same (direction, typeURI) instead of reloading+painting from disk for
+        # every single item (which was the case for ~1200 relations).
+        self._direction_icon_cache: dict[tuple[str, str], QIcon] = {}
+        self._bol_icon_cache: dict[str, QIcon] = {}
+
 
     class LastAddedHighlightDelegate(QStyledItemDelegate):
 
@@ -499,30 +507,39 @@ class AbstractInstanceListWidget:
         self.type_open_status.clear()
 
     def add_direction_icon_to_item(self, instance_item: QStandardItem, direction: str, typeURI: str):
-        direction_icon_path = f'{str(IMG_DIR)}/bidirect.png'
-        if direction == "-->":
-            direction_icon_path = f'{str(IMG_DIR)}/right.png'
-        elif direction == "<--":
-            direction_icon_path = f'{str(IMG_DIR)}/left.png'
+        cache_key = (direction, typeURI)
+        icon = self._direction_icon_cache.get(cache_key)
+        if icon is None:
+            direction_icon_path = f'{str(IMG_DIR)}/bidirect.png'
+            if direction == "-->":
+                direction_icon_path = f'{str(IMG_DIR)}/right.png'
+            elif direction == "<--":
+                direction_icon_path = f'{str(IMG_DIR)}/left.png'
 
-        pixmap = QPixmap(direction_icon_path)
-        self.apply_relation_color(pixmap, typeURI)
+            pixmap = QPixmap(direction_icon_path)
+            self.apply_relation_color(pixmap, typeURI)
+            icon = QIcon(pixmap)
+            self._direction_icon_cache[cache_key] = icon
 
-        instance_item.setIcon(QIcon(pixmap))
+        instance_item.setIcon(icon)
 
     def add_colored_relation_bol_icon_to_item(self, instance_item: QStandardItem, typeURI: str):
-        direction_icon_path = f'{str(IMG_DIR)}/bol.png'
+        icon = self._bol_icon_cache.get(typeURI)
+        if icon is None:
+            direction_icon_path = f'{str(IMG_DIR)}/bol.png'
 
-        pixmap = QPixmap(direction_icon_path)
-        self.apply_relation_color(pixmap, typeURI)
+            pixmap = QPixmap(direction_icon_path)
+            self.apply_relation_color(pixmap, typeURI)
+            icon = QIcon(pixmap)
+            self._bol_icon_cache[typeURI] = icon
 
-        instance_item.setIcon(QIcon(pixmap))
+        instance_item.setIcon(icon)
 
     def apply_relation_color(self, pixmap, typeURI):
         painter = QPainter(pixmap)
         painter.setCompositionMode(QPainter.CompositionMode.CompositionMode_SourceIn)
         color_code = '000000'
-        if typeURI in self.color_legend.keys():
+        if typeURI in self.color_legend:
             color_code = self.color_legend[typeURI]
         color = QColor(f"#{color_code}")  # Choose the color you want
         painter.setBrush(color)
@@ -577,6 +594,8 @@ class AbstractInstanceListWidget:
     def clear(self):
         self.list_gui.clear()
         self.attribute_field.clear()
+        self._direction_icon_cache = {}
+        self._bol_icon_cache = {}
 
     # noinspection PyMethodMayBeStatic
     def set_clear_icon(self, button: QPushButton):
