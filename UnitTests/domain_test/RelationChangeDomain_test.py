@@ -97,10 +97,10 @@ async def test_full_set_possible_relations(root_directory:Path,
     assert len(RelationChangeDomain.possible_relations_per_class_dict[class2]) == 760
 
     class3 = "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Pictogram"
-    assert len(RelationChangeDomain.possible_relations_per_class_dict[class3]) == 126
+    assert len(RelationChangeDomain.possible_relations_per_class_dict[class3]) == 128
 
     class4 = "https://wegenenverkeer.data.vlaanderen.be/ns/installatie#Verkeersbordopstelling"
-    assert len(RelationChangeDomain.possible_relations_per_class_dict[class4]) == 34
+    assert len(RelationChangeDomain.possible_relations_per_class_dict[class4]) == 36
 
     #define the objects of each class in the test set
 

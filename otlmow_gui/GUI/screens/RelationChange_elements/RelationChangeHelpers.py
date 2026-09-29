@@ -149,10 +149,11 @@ class RelationChangeHelpers:
 
     @classmethod
     def get_corrected_identificator(cls, otl_object: RelationInteractor):
-        identificator = GlobalTranslate._("no_identificator")
-        if hasattr(otl_object,"assetId"):
-            identificator = str(otl_object.assetId.identificator)
-        elif hasattr(otl_object,"agentId"):
-            identificator = str(otl_object.agentId.identificator)
-
-        return identificator
+        # the translated fallback is only needed when the object has neither
+        # assetId nor agentId, so it is resolved lazily: this method is called
+        # hundreds of thousands of times while generating possible relations
+        if hasattr(otl_object, "assetId"):
+            return str(otl_object.assetId.identificator)
+        if hasattr(otl_object, "agentId"):
+            return str(otl_object.agentId.identificator)
+        return GlobalTranslate._("no_identificator")

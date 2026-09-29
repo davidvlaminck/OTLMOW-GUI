@@ -911,17 +911,23 @@ class RelationChangeDomain:
         :rtype: list
         """
 
+        # these two do not change while scanning relation_list, so resolve them
+        # once instead of once per relation
+        selected_id = RelationChangeHelpers.get_corrected_identificator(selected_object)
+        related_id = RelationChangeHelpers.get_corrected_identificator(related_object)
         return [relation for relation in relation_list
                 if cls.is_same_relation(existing_relation=relation, relation_def=relation_def,
                                         selected=selected_object, related=related_object,
-                                        reverse=reverse)
+                                        reverse=reverse, selected_id=selected_id,
+                                        related_id=related_id)
                 ]
 
 
     @classmethod
     def is_same_relation(cls, existing_relation: RelatieObject, relation_def: OSLORelatie,
                          selected:RelationInteractor, related: RelationInteractor,
-                         reverse: bool = False) -> bool:
+                         reverse: bool = False,
+                         selected_id: str = None, related_id: str = None) -> bool:
         """
         Determines whether an existing relation matches a specified relation definition
         based on the selected and related objects. This method checks the identifiers of the
@@ -943,17 +949,30 @@ class RelationChangeDomain:
         :param reverse: A boolean indicating whether to check for reverse relations. Defaults to False.
         :type reverse: bool, optional
 
+        :param selected_id: Already resolved identificator of selected, to avoid recomputing
+                            it for every relation while scanning a list.
+        :type selected_id: str, optional
+
+        :param related_id: Already resolved identificator of related, to avoid recomputing
+                           it for every relation while scanning a list.
+        :type related_id: str, optional
+
         :return: True if the existing relation matches the relation definition, otherwise False.
         :rtype: bool
         """
 
-        existing_source_id:str = existing_relation.bronAssetId.identificator
-        existing_target_id:str  = existing_relation.doelAssetId.identificator
-        related_id:str = RelationChangeHelpers.get_corrected_identificator(related)
-        selected_id:str = RelationChangeHelpers.get_corrected_identificator(selected)
-
+        # cheapest and most selective check first: this runs for every relation in
+        # the project, and the vast majority fail here
         if existing_relation.typeURI != relation_def.objectUri:
             return False
+
+        existing_source_id:str = existing_relation.bronAssetId.identificator
+        existing_target_id:str  = existing_relation.doelAssetId.identificator
+        if selected_id is None:
+            selected_id = RelationChangeHelpers.get_corrected_identificator(selected)
+        if related_id is None:
+            related_id = RelationChangeHelpers.get_corrected_identificator(related)
+
         if relation_def.richting == "Unspecified":
             return ((existing_source_id == related_id and existing_target_id == selected_id) or
                     (existing_source_id == selected_id and existing_target_id == related_id))
