@@ -629,6 +629,42 @@ class RelationChangeDomain:
         return {}
 
     @classmethod
+    def get_possible_relation_object(cls, source_id: str, target_id: str,
+                                     index: int) -> RelatieObject | None:
+        """
+        Resolves a (source_id, target_id, index) triple, as stored on a
+        PossibleRelationListWidget item, to its cached relation object.
+
+        The widget keeps these triples on its items, but
+        possible_object_to_object_relations_dict is rebuilt (and re-sorted) every
+        time another source object is selected. Qt emits selection-changed
+        asynchronously, so a queued selection can reference a triple that no
+        longer exists by the time it is handled.
+
+        :param source_id: The identifier of the source asset.
+        :type source_id: str
+
+        :param target_id: The identifier of the target asset.
+        :type target_id: str
+
+        :param index: The index of the relation object within the target's list.
+        :type index: int
+
+        :return: The relation object, or None when the triple is stale.
+        :rtype: RelatieObject | None
+        """
+
+        relations_for_source = cls.possible_object_to_object_relations_dict.get(source_id)
+        if not relations_for_source:
+            return None
+        relations_for_target = relations_for_source.get(target_id)
+        if not relations_for_target:
+            return None
+        if not isinstance(index, int) or not 0 <= index < len(relations_for_target):
+            return None
+        return relations_for_target[index]
+
+    @classmethod
     def set_selected_object(cls,selected_object:RelationInteractor) -> None:
         cls.selected_object = selected_object
 
@@ -694,9 +730,8 @@ class RelationChangeDomain:
                                              related_object=related_object, reverse=True)
 
         relation_count = 0
-        if (cls.possible_object_to_object_relations_dict[selected_object_id]):
-            for rel_obj in cls.possible_object_to_object_relations_dict[selected_object_id].keys():
-                relation_count += len(cls.possible_object_to_object_relations_dict[selected_object_id][rel_obj])
+        for rel_obj in cls.get_possible_relations_for(selected_id=selected_object_id).values():
+            relation_count += len(rel_obj)
 
         OTLLogger.logger.debug(
             f"Execute RelationChangeDomain.add_all_possible_relations_between_selected_and_related_objects({log_typeURI}) for project {global_vars.current_project.eigen_referentie} ({relation_count} relations)",
@@ -1109,6 +1144,16 @@ class RelationChangeDomain:
         :return: None
         """
 
+        # drop selections whose relation disappeared because the possible
+        # relations were regenerated after the user selected the rows
+        data_list = [data for data in data_list
+                     if cls.get_possible_relation_object(
+                         source_id=data.source_id, target_id=data.target_id,
+                         index=data.index) is not None]
+        if not data_list:
+            cls.update_frontend()
+            return
+
         # sourcery skip: use-named-expression
         heeft_betrokkene_in_selection = [True for data in data_list
                                          if cls.possible_object_to_object_relations_dict[
@@ -1310,9 +1355,15 @@ class RelationChangeDomain:
             cls.get_screen().fill_possible_relation_attribute_field({})
             return
         last_selected_keys = selected_relations_data[-1]
-        last_selected_relation = \
-        cls.possible_object_to_object_relations_dict[last_selected_keys.source_id][
-            last_selected_keys.target_id][last_selected_keys.index]
+        last_selected_relation = cls.get_possible_relation_object(
+            source_id=last_selected_keys.source_id,
+            target_id=last_selected_keys.target_id,
+            index=last_selected_keys.index)
+        if last_selected_relation is None:
+            # the possible relations were regenerated after this selection was
+            # made, so the selected row no longer refers to a relation
+            cls.get_screen().fill_possible_relation_attribute_field({})
+            return
 
         last_selected_relation_partner_asset: RelationInteractor = RelationChangeDomain.get_object(
             identificator=last_selected_relation.doelAssetId.identificator)

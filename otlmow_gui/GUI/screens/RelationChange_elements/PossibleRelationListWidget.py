@@ -171,13 +171,20 @@ class PossibleRelationListWidget(AbstractInstanceListWidget):
         create_task_reraise_exception(RelationChangeDomain.select_possible_relation_data(data_list))
 
     def get_selected_data(self):
-        return [
-            self.Data(self.list_gui.model.itemFromIndex(model_i).data(self.data_1_index)[0],
-                      self.list_gui.model.itemFromIndex(model_i).data(self.data_1_index)[1],
-                      self.list_gui.model.itemFromIndex(model_i).data(self.data_1_index)[2], False)
-
-            for model_i in self.list_gui.selectionModel().selectedIndexes()
-            if model_i.column() == 0] # we want one model_i per row, so only column == 0 is taken
+        selected = []
+        for model_i in self.list_gui.selectionModel().selectedIndexes():
+            # we want one model_i per row, so only column == 0 is taken
+            if model_i.column() != 0:
+                continue
+            item = self.list_gui.model.itemFromIndex(model_i)
+            # the list can be refilled between the selection and this signal
+            if item is None:
+                continue
+            data = item.data(self.data_1_index)
+            if not data or len(data) < 3:
+                continue
+            selected.append(self.Data(data[0], data[1], data[2], False))
+        return selected
 
 
     def extract_text_and_data_per_item(self, source_object: OTLObject, objects: Union[list[OTLObject],dict] , last_added):
