@@ -510,9 +510,24 @@ class RelationChangeDomain:
         """
         cls.shown_objects_by_id = {}
         for otl_object in cls.shown_objects:
-            corrected_id = RelationChangeHelpers.get_corrected_identificator(otl_object)
-            if corrected_id:
-                cls.shown_objects_by_id[corrected_id] = otl_object
+            cls.index_shown_object(otl_object)
+
+    @classmethod
+    def index_shown_object(cls, otl_object: RelationInteractor) -> None:
+        """
+        Adds a single object to the shown_objects lookup index.
+
+        Use this instead of rebuild_shown_objects_index() when a single object is
+        appended to shown_objects, so the cost stays O(1) per object.
+
+        :param cls: The class itself.
+        :param otl_object: The object to add to the index.
+        :type otl_object: RelationInteractor
+        :returns: None
+        """
+        corrected_id = RelationChangeHelpers.get_corrected_identificator(otl_object)
+        if corrected_id:
+            cls.shown_objects_by_id[corrected_id] = otl_object
 
     @classmethod
     def filter_on_id(cls, id_to_check: str):
@@ -1463,7 +1478,10 @@ class RelationChangeDomain:
             cls.external_objects.append(new_external_object)
 
         cls.shown_objects.append(new_external_object)
-        cls.rebuild_shown_objects_index()
+        # O(1) incremental index update. This method is called once per missing
+        # external asset (hundreds of times when loading a project), so a full
+        # rebuild here would be quadratic.
+        cls.index_shown_object(new_external_object)
 
         cls.regenerate_relation_types = True
 
