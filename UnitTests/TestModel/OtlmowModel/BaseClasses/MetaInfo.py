@@ -61,8 +61,14 @@ def _meta_info_attribute(attribute: OTLAttribuut) -> str:
     if hasattr(field, 'options'):
         object_string += f'valid values:\n'
         options = getattr(field, 'options', {})
-        for i, k in enumerate(options.keys()):
-            object_string += f'    {k}' + '\n'
+        valid_options = [(k, v) for k, v in options.items() if getattr(v, 'status', '') != 'verwijderd']
+        for i, (k, v) in enumerate(valid_options):
+            status = getattr(v, 'status', '')
+            status_display = {
+                'uitgebruik': '(waarde uit gebruik!)'
+            }.get(status, '')
+            status_note = f' {status_display}' if status_display else ''
+            object_string += f'    {k}{status_note}\n'
             if i >= 9:
                 naam = getattr(field, 'naam', '')
                 codelist = getattr(field, 'codelist', '')

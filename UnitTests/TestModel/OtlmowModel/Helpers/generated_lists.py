@@ -10,13 +10,11 @@ MODEL_ROOT_PATH = Path(__file__).parent.parent.parent
 
 def get_hardcoded_relation_dict(model_directory: Path = None) -> dict:
     global global_relation_dict_by_model
+    if model_directory is None:
+        model_directory = MODEL_ROOT_PATH
     model_dir_str = str(model_directory)
     if model_dir_str in global_relation_dict_by_model:
         return global_relation_dict_by_model[model_dir_str]
-
-    if model_directory is None:
-        model_directory = MODEL_ROOT_PATH
-        model_dir_str = str(model_directory)
 
     generated_info_path = model_directory / 'OtlmowModel' / 'generated_info.json'
     if not generated_info_path.exists():
@@ -31,13 +29,11 @@ def get_hardcoded_relation_dict(model_directory: Path = None) -> dict:
 
 def get_hardcoded_class_dict(model_directory: Path = None) -> dict:
     global global_class_dict_by_model
+    if model_directory is None:
+        model_directory = MODEL_ROOT_PATH
     model_dir_str = str(model_directory)
     if model_dir_str in global_class_dict_by_model:
         return global_class_dict_by_model[model_dir_str]
-
-    if model_directory is None:
-        model_directory = MODEL_ROOT_PATH
-        model_dir_str = str(model_directory)
 
     generated_info_path = model_directory / 'OtlmowModel' / 'generated_info.json'
     if not generated_info_path.exists():
