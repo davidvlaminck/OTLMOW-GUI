@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "otlmow_gui"
-version = "1.1.8rc2"
+version = "1.2.0"
 authors = [{name = "David Vlaminck", email = "david.vlaminck@mow.vlaanderen.be"},
     {name = "Jasper Berton", email = "jasperberton1@telenet.be"},
     {name = "Christiaan Vanbergen", email = "christiaan.vanbergen.btf@gmail.com"}]
@@ -30,10 +30,10 @@ classifiers = [
 requires-python = ">=3.11"
 dependencies = [
     'PyQt6-Qt6 >= 6.5.3',
-    'otlmow-model >= 2.20.3.0',
+    'otlmow-model >= 2.20.4.0',
     'otlmow-converter >= 1.26',
-    'otlmow-visuals >= 0.3',
-    'otlmow_template>=1.10',
+    'otlmow-visuals >= 1.0',
+    'otlmow_template>=1.11',
     'pyqt6 >= 6.8.0',
     'qtawesome >= 1.2.3',
     'PyGithub >= 2.1.1',
