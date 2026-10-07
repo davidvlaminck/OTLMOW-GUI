@@ -1,0 +1,52 @@
+[{
+  "assetId" : {
+    "toegekendDoor" : "AWV",
+    "identificator" : "8b11a199-3b3a-4b72-888d-d2ca3128024f-b25kZXJkZWVsI0JpdHVtaW5ldXplTGFhZw"
+  },
+  "typeURI" : "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#BitumineuzeLaag",
+  "toestand" : "in-gebruik",
+  "naampad" : null,
+  "isActief" : true,
+  "assetVersie" : {
+    "versienummer" : 7,
+    "timestamp" : "2026-10-05T09:59:24.195",
+    "context" : "entiteiten aanlevering DA-2026-01730"
+  },
+  "naam" : null,
+  "notitie" : "Voorbeeld_voor_demo",
+  "geometry" : "POLYGON Z ((107068.21 197519.11 0,107078.81 197515.52 0,107042.74 197399.82 0,107028.73 197354.36 0,107025.14 197344.28 0,107013.68 197318.47 0,106991.8 197258.66 0,106985.49 197261.59 0,107009.54 197328.93 0,107049.97 197460.28 0,107068.21 197519.11 0))"
+},{
+  "assetId" : {
+    "toegekendDoor" : "AWV",
+    "identificator" : "e69f1c50-9e20-4657-bbf6-72224197227b-b25kZXJkZWVsI0JpdHVtaW5ldXplTGFhZw"
+  },
+  "typeURI" : "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#BitumineuzeLaag",
+  "toestand" : "in-gebruik",
+  "assetVersie" : {
+    "versienummer" : 7,
+    "timestamp" : "2026-10-05T09:59:32.946",
+    "context" : "entiteiten aanlevering DA-2026-01730"
+  },
+  "isActief" : true,
+  "naam" : null,
+  "notitie" : "Voorbeeld_voor_demo",
+  "naampad" : null,
+  "geometry" : "POLYGON Z ((107104.98 197517.96 0,107116.52 197508.23 0,107095.51 197478.15 0,107074.68 197440.35 0,107061.98 197407.07 0,107051.51 197409.85 0,107062.21 197444.07 0,107072.49 197466.42 0,107087.47 197493.68 0,107095.42 197505.71 0,107104.98 197517.96 0))"
+},{
+  "assetId" : {
+    "toegekendDoor" : "AWV",
+    "identificator" : "ffd704c1-e338-4694-9455-10e2c2a23a40-b25kZXJkZWVsI0JpdHVtaW5ldXplTGFhZw"
+  },
+  "typeURI" : "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#BitumineuzeLaag",
+  "toestand" : "in-gebruik",
+  "naampad" : null,
+  "isActief" : true,
+  "naam" : null,
+  "notitie" : "Voorbeeld_voor_demo",
+  "assetVersie" : {
+    "versienummer" : 7,
+    "timestamp" : "2026-10-05T09:59:29.08",
+    "context" : "entiteiten aanlevering DA-2026-01730"
+  },
+  "geometry" : "POLYGON Z ((107058.24 197520.22 0,107054.71 197521.28 0,107046.08 197487.43 0,107038.85 197460.46 0,107003.94 197340.63 0,106981.43 197263.75 0,106984 197262.4 0,106990.95 197281.72 0,107041.34 197451.22 0,107058.24 197520.22 0))"
+}]
