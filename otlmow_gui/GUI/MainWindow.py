@@ -20,6 +20,7 @@ from otlmow_gui.GUI.dialog_windows.file_picker_dialog.SubsetLoadFilePickerDialog
 from otlmow_gui.GUI.screens.ExportDataScreen import ExportDataScreen
 from otlmow_gui.GUI.screens.HomeScreen import HomeScreen
 from otlmow_gui.GUI.screens.InsertDataScreen import InsertDataScreen
+from otlmow_gui.GUI.screens.InfoTemplateScreen import InfoTemplateScreen
 from otlmow_gui.GUI.screens.RelationChangeScreen import RelationChangeScreen
 from otlmow_gui.GUI.screens.Screen import Screen
 from otlmow_gui.GUI.screens.TemplateScreen import TemplateScreen
@@ -35,7 +36,9 @@ class MainWindow(QStackedWidget):
         self.home_screen:HomeScreen = HomeScreen(self._)
         self.step1:TemplateScreen = TemplateScreen(self._)
         self.step1_tabwidget:TabWidget = TabWidget(self._, page_nr=1, widget1=self.step1,
-                                         description1="template",
+                                         description1="aanlevertemplate",
+                                         widget2=InfoTemplateScreen(self._),
+                                         description2="infotemplate",
                                          has_save_btn=False)
         self.step2:InsertDataScreen = InsertDataScreen(self._)
         self.step2_tabwidget:TabWidget = TabWidget(self._, page_nr=2, widget1=self.step2,
@@ -69,7 +72,8 @@ class MainWindow(QStackedWidget):
         self.subset_picker = SubsetLoadFilePickerDialog(self._)
 
         # dummy translation so the pybabel system doesn't remove them
-        self._("template")
+        self._("aanlevertemplate")
+        self._("infotemplate")
         self._("insert_data")
         self._("data visuals")
         self._("data_change")

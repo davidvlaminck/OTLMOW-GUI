@@ -119,6 +119,14 @@ msgstr ""
 msgid "template"
 msgstr ""
 
+#: GUI/MainWindow.py:74
+msgid "aanlevertemplate"
+msgstr ""
+
+#: GUI/MainWindow.py:75
+msgid "infotemplate"
+msgstr ""
+
 #: GUI/MainWindow.py:75
 msgid "insert_data"
 msgstr ""

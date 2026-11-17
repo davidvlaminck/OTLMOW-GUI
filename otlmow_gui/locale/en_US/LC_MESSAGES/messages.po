@@ -138,6 +138,14 @@ msgstr "FDOToolbox not installed"
 msgid "template"
 msgstr "Template"
 
+#: GUI/MainWindow.py:74
+msgid "aanlevertemplate"
+msgstr "Create delivery template"
+
+#: GUI/MainWindow.py:75
+msgid "infotemplate"
+msgstr "Create info template"
+
 #: GUI/MainWindow.py:75
 msgid "insert_data"
 msgstr "Insert data"
@@ -516,7 +524,7 @@ msgstr ""
 
 #: GUI/header/StepperWidget.py:69
 msgid "step1"
-msgstr "Create Template"
+msgstr "Create Templates"
 
 #: GUI/header/StepperWidget.py:70
 msgid "step2"
