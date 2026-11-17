@@ -1004,3 +1004,6 @@ class TemplateScreen(TemplateScreenInterface):
 
     def open_folder_of_created_template(self,document_path:Path):
         Helpers.open_folder_and_select_document(document_path=document_path)
+
+    def opened(self):
+        TemplateDomain.update_frontend()

@@ -187,7 +187,10 @@ class TemplateDomain:
 
     @classmethod
     def get_screen(cls) -> TemplateScreenInterface:
-        return global_vars.otl_wizard.main_window.step1
+        step1_tabwidget = global_vars.otl_wizard.main_window.step1_tabwidget
+        if step1_tabwidget.tabs.currentIndex() == 1 and hasattr(step1_tabwidget, 'tab2'):
+            return step1_tabwidget.tab2
+        return step1_tabwidget.tab1
 
     @classmethod
     @add_loading_screen

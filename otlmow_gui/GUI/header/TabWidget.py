@@ -38,11 +38,16 @@ class TabWidget(Screen):
             self.tab2 = widget2
             self.desc2 = kwargs.get('description2', None)
             self.tabs.addTab(self.tab2, self._(self.desc2))
-            self.tabs.currentChanged.connect(self.tab2.opened)
         if widget3 is not None:
             self.tab3 = widget3
             self.desc3 = kwargs.get('description3', None)
             self.tabs.addTab(self.tab3, self._(self.desc3))
+        self.tabs.currentChanged.connect(self.on_tab_changed)
+
+    def on_tab_changed(self, index):
+        current_widget = self.tabs.widget(index)
+        if hasattr(current_widget, 'opened'):
+            current_widget.opened()
 
     def fill_up_layout(self):
         self.layout.addWidget(self.header)
